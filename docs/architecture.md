@@ -160,7 +160,7 @@ Realtime 不可以：
 | 正式复习音频 | Mac 本地文件 | Realtime 流式接收；Python 不落盘 | 滚动七天，Demo／POC 结束全删 |
 | 语音采集音频 | Mac 本地文件 | 转写任务期间 | 成功后删除；失败时保留重试 |
 | LangGraph checkpoint | 加密 SQLite | 当前工作流状态 | 完成后清理，异常按 TTL 到期删除 |
-| 技术指标 | 本机服务日志或本地统计 | 不含正文的状态、耗时和错误码 | 按调试周期清理 |
+| Agent 运行事件与技术指标 | 运行中保存在加密 checkpoint；Mac 可保留脱敏投影 | 当前任务的节点、分支、调用、耗时、重试和错误码，不含隐藏思维链 | 正文随 checkpoint 清理；脱敏投影按调试周期清理 |
 
 Mac 是长期事实来源。Python checkpoint 只是“任务做到哪里”的短期草稿，不能演变成第二份知识库。
 
@@ -209,6 +209,37 @@ queued
 
 具体 URL、JSON 字段命名和错误码仍需在实现前形成接口规格，不能从本文示例自行猜测。
 
+### 7.4 Agent 运行事件契约
+
+每个采集任务和正式复习会话维护一条任务范围内、只追加的结构化事件流。它不是新的长期知识库，也不是通用聊天记录；它只负责回答“这次任务实际走过什么路径、当前处于什么状态、失败后如何恢复”。
+
+事件至少覆盖：
+
+- 任务或会话开始、结束、取消与恢复；
+- 节点开始、成功、失败与耗时；
+- 条件分支及结构化选择原因；
+- 模型请求、工具调用和规范化结果；
+- 重试计划、实际重试次数和最终错误码；
+- Mac 本地提交请求、ACK 与拒绝原因。
+
+每条事件至少携带单调递增序号、时间、任务或会话 ID、事件类型、节点、关联尝试 ID 和脱敏载荷。普通产品状态、开发模式轨迹和恢复判断都从同一事件流与任务数据投影，不得各自维护另一套进度。
+
+在任务和调试保留期内，模型实际看到的请求应能由 Mac 任务快照、来源或知识版本、提示词版本、模型配置和结构化参数重建。运行记录不因此保存隐藏思维链、完整密钥或不必要的知识正文；需要定位内容差异时使用本地引用、版本、哈希和脱敏摘要。
+
+### 7.5 运行时不变式
+
+以下规则不能只依赖提示词或人工验收，必须由程序在运行时检查并失败关闭：
+
+- 没有 Mac ACK，采集任务不能进入 `completed`，复习服务也不能进入下一题；
+- 同一任务 ID 或 `attempt_id` 不能产生第二次正式写入；
+- `preview` 不能写入 FSRS、正式复习历史或 POC 指标；
+- Responses 评分失败、取消或结果未通过结构校验时不能运行 FSRS；
+- `knowledge_version` 不一致时必须拒绝提交，不能用旧结果覆盖新知识；
+- 已记录的节点、工具调用和提交事件必须拥有可解释的结束状态，恢复时不能把未闭合事件误判为成功；
+- checkpoint 完成或过期后必须清理正文，日志和事件不得包含密钥、Authorization 头、短时凭证或隐藏思维链。
+
+每条不变式都需要稳定错误码、可归因的运行记录和至少一个能够真实触发违规的反向测试。具体检查位置随接口规格确定，但规则本身不得在实现中弱化。
+
 ## 8. 失败与恢复
 
 - **App 重启**：从 SwiftData 恢复采集队列和正式会话；已完成题不重复，未完成题重新提问。
@@ -240,6 +271,7 @@ queued
 | [CobWeb 知识拆分](https://github.com/RexYoung000/CobWeb/blob/master/src/app/api/chat/extract/route.ts) | 知识拆分和来源追溯思路 | 草稿确认和自由聊天流程 |
 | [Typeless](https://www.typeless.com/) | 低摩擦语音入口、历史记录、失败重试、隐私表达 | 通用听写定位、升级与使用统计首页 |
 | [AirJelly](https://www.airjelly.ai/) | 今日状态、主动式帮助、可管理记忆、任务进度 | 持续屏幕采集、通用 Agent、复杂工作台 |
+| [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) | 追加式运行事件、可重放生命周期、运行时不变式、回放测试和真实入口验收 | Cordis、“一切皆插件”、通用编码 Agent 循环、Shell／沙箱／子 Agent／长会话压缩，以及把开发预览版作为运行时依赖 |
 
 ## 11. 外部技术依据
 
@@ -248,6 +280,8 @@ queued
 - [OpenAI 数据控制](https://platform.openai.com/docs/models/default-usage-policies-by-endpoint)：用于区分 Review Today 自身不保存与平台安全日志边界。
 - [LangGraph 概览](https://docs.langchain.com/oss/python/langgraph/overview)：状态化、可恢复的工作流编排。
 - [LangGraph persistence](https://docs.langchain.com/oss/python/langgraph/persistence)：checkpoint、SQLite 和持久化机制。
+- [DeepSeek Harness 架构](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.zh.md)：用于参考事件化运行事实、生命周期和能力边界；Review Today 不依赖其框架。
+- [DeepSeek Harness 测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.zh.md)：用于参考回放、真实入口和外部结果断言。
 
 外部框架和文档只提供能力依据，最终产品规则以本仓库文档为准。
 
@@ -264,4 +298,5 @@ queued
 - 没有任何架构代码、接口、SwiftData 模型或 LangGraph 图实现。
 - 第 78 项首次启动预检体验尚未选择。
 - 具体 OpenAI 模型、接口线格式、SQLite 加密实现和 TTL 数值尚未确认。
+- Agent 运行事件的精确 JSON schema、脱敏字段、保留周期和投影实现尚未确认。
 - 没有自动化测试、真实服务运行、性能数据或隐私审计证据。

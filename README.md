@@ -25,7 +25,7 @@ Review Today 是“个人记忆教练”的项目仓库。产品把每天零碎�
 | [Agent 与系统架构](docs/architecture.md) | LangGraph、OpenAI、SwiftData、数据流、状态机和异常恢复机制 |
 | [产品界面与体验方向](DESIGN.md) | “今日记忆跑道”、独立复习窗口和“安静的学习编辑台”方向 |
 | [21 天 POC 验证方案](docs/poc-validation.md) | Demo 通过后的行为验证、指标口径与复盘要求 |
-| [决策记录](docs/decision-log.md) | 本轮第 1–77 项已确认决策、修订关系和第 78 项待确认内容 |
+| [决策记录](docs/decision-log.md) | 第 1–77、79–82 项已确认决策、修订关系和第 78 项待确认内容 |
 
 原始创意摘要保留在 [ideas 创意库](https://github.com/RexYoung000/ideas/blob/main/memory-coach.md)，项目内文档是后续设计与实施的事实来源。
 
