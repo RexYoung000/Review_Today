@@ -1,24 +1,239 @@
-//
-//  ContentView.swift
-//  Review_Today
-//
-//  Created by Rex Young on 2026/8/11.
-//
-
+import SwiftData
 import SwiftUI
+import UserNotifications
+
+enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
+    case today
+    case library
+    case inbox
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .today: String(localized: "今天")
+        case .library: String(localized: "知识库")
+        case .inbox: String(localized: "待处理")
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .today: "sun.max"
+        case .library: "books.vertical"
+        case .inbox: "tray"
+        }
+    }
+}
+
+struct AppSidebar: View {
+    @Binding var selection: SidebarItem?
+    var inboxCount: Int
+    @Environment(\.runway) private var runway
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 10) {
+                CoachMark(pose: .idle, size: 36)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Review Today")
+                        .font(.headline)
+                    Text(String(localized: "记忆教练"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 8)
+                AnimatedThemeToggler()
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 18)
+            .padding(.bottom, 20)
+
+            VStack(spacing: 4) {
+                ForEach(SidebarItem.allCases) { item in
+                    sidebarRow(item)
+                }
+            }
+            .padding(.horizontal, 10)
+
+            Spacer()
+
+            SettingsLink {
+                Label(String(localized: "设置"), systemImage: "gearshape")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(10)
+                    .contentShape(Rectangle())
+                    .foregroundStyle(Color.secondary)
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 10)
+            .padding(.bottom, 16)
+        }
+        .background {
+            PaperSurface()
+        }
+    }
+
+    private func sidebarRow(_ item: SidebarItem) -> some View {
+        let selected = selection == item
+        return Button {
+            selection = item
+        } label: {
+            HStack {
+                Label(item.title, systemImage: item.systemImage)
+                Spacer()
+                if item == .inbox, inboxCount > 0 {
+                    Text("\(inboxCount)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(selected ? runway.ink : .secondary)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 2)
+                        .background(runway.field, in: Capsule())
+                }
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 9)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundStyle(selected ? runway.ink : Color.secondary)
+            .background(selected ? runway.field : .clear, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+}
 
 struct ContentView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.openWindow) private var openWindow
+    var coordinator: ReviewCoordinator
+    @State private var selection: SidebarItem? = .today
+    @State private var selectedKnowledgeID: UUID?
+    @State private var monitor = AgentServiceMonitor()
+    @Query private var inbox: [CaptureTask]
+    @Query private var knowledge: [Knowledge]
+    @Query private var settingsRows: [AppSettings]
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationSplitView {
+            AppSidebar(selection: $selection, inboxCount: inboxCount)
+                .navigationSplitViewColumnWidth(min: 200, ideal: Runway.sidebarIdeal, max: 260)
+        } detail: {
+            Group {
+                switch selection ?? .today {
+                case .today:
+                    TodayView(
+                        monitor: monitor,
+                        coordinator: coordinator,
+                        onOpenKnowledge: { id in
+                            selectedKnowledgeID = id
+                            selection = .library
+                        },
+                        onOpenInbox: { selection = .inbox },
+                        onOpenLibrary: { selection = .library }
+                    )
+                case .library:
+                    LibraryView(selectedID: $selectedKnowledgeID, coordinator: coordinator)
+                case .inbox:
+                    InboxView()
+                }
+            }
+            .background(PaperSurface())
         }
-        .padding()
+        .navigationSplitViewStyle(.balanced)
+        .frame(minWidth: 1100, minHeight: 720)
+        .task {
+            monitor.start()
+            ReminderNotifications.request()
+            while !Task.isCancelled {
+                await CaptureProcessor.tick(context: modelContext, monitor: monitor)
+                try? await Task.sleep(for: .seconds(2))
+            }
+        }
+        .onDisappear {
+            monitor.stop()
+        }
+        .onAppear {
+            UNUserNotificationCenter.current().delegate = NotificationRelay.shared
+            NotificationRelay.shared.onStart = { startDueReview() }
+            NotificationRelay.shared.onSnooze = { minutes in
+                handleSnooze(minutes)
+            }
+            NotificationRelay.shared.onSkip = { skipToday() }
+        }
+    }
+
+    private var inboxCount: Int {
+        inbox.filter { $0.status == "needs_attention" }.count
+    }
+
+    private func startDueReview() {
+        let developer = settingsRows.first?.developerMode == true
+        let due = knowledge.filter { ReviewQueue.isDue($0, developerMode: developer) }
+        guard !due.isEmpty else { return }
+        coordinator.startFormal(knowledgeIDs: due.map(\.id))
+        openWindow(id: "review")
+    }
+
+    private func handleSnooze(_ minutes: Int) {
+        guard let settings = settingsRows.first else { return }
+        let key = TodayView.todayStamp()
+        if settings.snoozeDay != key {
+            settings.snoozeDay = key
+            settings.snoozeCount = 0
+        }
+        guard settings.snoozeCount < 2 else { return }
+        settings.snoozeCount += 1
+        ReminderNotifications.snooze(minutes: minutes)
+        try? modelContext.save()
+    }
+
+    private func skipToday() {
+        settingsRows.first?.skipToday = TodayView.todayStamp()
+        try? modelContext.save()
+    }
+}
+
+final class NotificationRelay: NSObject, UNUserNotificationCenterDelegate {
+    static let shared = NotificationRelay()
+    var onStart: (() -> Void)?
+    var onSnooze: ((Int) -> Void)?
+    var onSkip: (() -> Void)?
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        switch response.actionIdentifier {
+        case "start", UNNotificationDefaultActionIdentifier:
+            onStart?()
+        case "later15":
+            onSnooze?(15)
+        case "later60":
+            onSnooze?(60)
+        case "skip":
+            onSkip?()
+        default:
+            break
+        }
+        completionHandler()
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(coordinator: ReviewCoordinator())
+        .runwayAppearance()
+        .modelContainer(
+            for: [
+                Source.self,
+                Knowledge.self,
+                Question.self,
+                CaptureTask.self,
+                AppSettings.self,
+                FsrsState.self,
+                ReviewSession.self,
+                ReviewAttempt.self,
+            ],
+            inMemory: true
+        )
 }

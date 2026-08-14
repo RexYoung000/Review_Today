@@ -1,0 +1,20 @@
+[project]
+name = "review-today-agent-service"
+version = "0.1.0"
+description = "Local FastAPI service for Review Today Demo"
+requires-python = ">=3.11"
+dependencies = [
+    "certifi>=2024.0",
+    "fastapi>=0.115",
+    "langgraph>=0.4",
+    "openai>=1.60",
+    "python-dotenv>=1.0",
+    "uvicorn[standard]>=0.32",
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["agent_service*"]

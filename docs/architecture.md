@@ -1,6 +1,6 @@
 # Review Today Agent 与系统架构
 
-> 文档状态：目标架构已对齐，尚未实现或运行验证
+> 文档状态：目标架构已对齐；采集图含意图分类与来源补全；Demo 切片 0–6 已在本机代码落地，待 Rex 体验验收
 
 ## 1. 架构目标
 
@@ -37,8 +37,8 @@
 flowchart LR
     U["Rex"] --> M["SwiftUI Mac App"]
     M --> D["SwiftData\n长期事实来源"]
-    M -->|"HTTPS / WebSocket"| P["本机 Python 服务\nFastAPI + LangGraph"]
-    P --> C["加密 SQLite checkpoint\n短期 + TTL"]
+    M -->|"HTTP / WebSocket"| P["本机 Python 服务\nFastAPI + LangGraph"]
+    P --> C["SQLite checkpoint\n短期 + TTL"]
     P --> R["OpenAI Responses"]
     P --> S["OpenAI Web Search"]
     M -->|"WebRTC + 短时凭证"| T["OpenAI Realtime"]
@@ -60,7 +60,7 @@ flowchart LR
 - 网页抓取、正文提取、风险规则和 SSRF 防护；
 - OpenAI 标准 Key 和短时 Realtime 凭证；
 - Responses、Web Search 与 Realtime sideband 控制；
-- 短期加密 checkpoint、重试和结构化运行记录；
+- 短期 SQLite checkpoint、重试和结构化运行记录；
 - 不拥有长期知识、FSRS 或最终复习历史。
 
 ### OpenAI 服务
@@ -77,10 +77,16 @@ flowchart TD
     B -->|"文字"| C["读取文字"]
     B -->|"网页"| D["安全抓取与正文提取"]
     B -->|"语音"| E["批量转写"]
-    C --> F["识别意图、主题、语言、类型与风险"]
+    C --> F["识别意图"]
     D --> F
     E --> F
-    F --> G{"是否触发核验"}
+    F -->|"过于宽泛"| K0["待处理：请收窄"]
+    F -->|"主题愿望且无来源"| K1["待处理：贴材料、给链接或找来源"]
+    K1 -->|"帮我找"| S["公开检索"]
+    S --> T["用户确认来源"]
+    T --> D
+    F -->|"已有材料"| R0["识别主题、语言、类型与风险"]
+    R0 --> G{"是否触发核验"}
     G -->|"否"| I["拆分知识点并绑定证据"]
     G -->|"是"| H["联网核验"]
     H --> J{"证据是否充分且无冲突"}
@@ -159,10 +165,76 @@ Realtime 不可以：
 | 复习历史 | SwiftData | 当前会话的最小上下文 | 用户永久删除或项目清理 |
 | 正式复习音频 | Mac 本地文件 | Realtime 流式接收；Python 不落盘 | 滚动七天，Demo／POC 结束全删 |
 | 语音采集音频 | Mac 本地文件 | 转写任务期间 | 成功后删除；失败时保留重试 |
-| LangGraph checkpoint | 加密 SQLite | 当前工作流状态 | 完成后清理，异常按 TTL 到期删除 |
-| Agent 运行事件与技术指标 | 运行中保存在加密 checkpoint；Mac 可保留脱敏投影 | 当前任务的节点、分支、调用、耗时、重试和错误码，不含隐藏思维链 | 正文随 checkpoint 清理；脱敏投影按调试周期清理 |
+| LangGraph checkpoint | 本机 SQLite（Demo 不加密） | 当前工作流状态 | 完成后清理，异常按 TTL 到期删除 |
+| Agent 运行事件与技术指标 | 运行中保存在 checkpoint；Mac 可保留脱敏投影 | 当前任务的节点、分支、调用、耗时、重试和错误码，不含隐藏思维链 | 正文随 checkpoint 清理；脱敏投影按调试周期清理 |
 
 Mac 是长期事实来源。Python checkpoint 只是“任务做到哪里”的短期草稿，不能演变成第二份知识库。
+
+### 6.1 领域模型草图
+
+以下是 SwiftData 与本机接口的字段级起点，不是最终 schema。实现可以增加字段；不能删掉身份、版本、`mode`、ACK 与 FSRS 版本字段。标识符用稳定 UUID。时间用绝对时间戳，日界按 Mac 本地日历解释。
+
+**Source（来源）**
+
+- `id`、`created_at`、`input_type`（`text` / `url` / `voice`）
+- `raw_text`、`url`（可空）、`audio_path`（可空，成功整理后清空）
+- `attribution`（客观主张 / 来源观点 / 个人想法）
+
+**Knowledge（知识点）**
+
+- `id`、`source_id`、`version`、`learning_goal`
+- `knowledge_type`（`fact` / `concept` / `procedure`）
+- `theme`、`content_language`、`question_language`、`answer_language`
+- `evidence_excerpt`、`evidence_locator`
+- `title`（卡片关键词：知识点名称，不是说明/描述句）
+- `explanation`（卡片详解：一两句用户主语言拆解，必须能对回 evidence_excerpt）
+- `lifecycle`（`active` / `paused` / `soft_deleted`）
+- 暂停或软删除时保留历史；恢复后不制造逾期债务
+
+**Question（复习问题）**
+
+- `id`、`knowledge_id`、`knowledge_version`
+- `variant_index`（`0` 主问题，最多两个变体）
+- `prompt_text`
+- `scoring_spec`：学习目标、必答点、同义表达、常见误解、证据、必要顺序
+
+**CaptureTask（采集任务）**
+
+- `id`、`status`（`queued` → `uploading` → `processing` → `committing` → `completed`，或 `retryable_failed` / `needs_attention` / `cancelled`）
+- `source_id`、`created_at`、`updated_at`、`retry_count`、`error_code`
+
+**ReviewSession（复习会话）**
+
+- `id`、`mode`（`formal` / `preview`）
+- `started_at`、`candidate_snapshot`（知识与问题 ID 列表，会话中冻结）
+- `window_started_at`、`ended_at`、`end_reason`
+
+**ReviewAttempt（复习尝试）**
+
+- `attempt_id`、`session_id`、`knowledge_id`、`knowledge_version`、`question_variant_id`
+- `mode`、`agent_grade`、`effective_grade`
+- `hint_used`、`transcript_retry_count`、`early_review`、`degraded_path`
+- `answer_text_cleaned`、`fsrs_algorithm_version`、`fsrs_parameter_version`
+- 提交需 Mac ACK；同一 `attempt_id` 不得第二次正式写入
+
+**FsrsState（排期）**
+
+- `knowledge_id`（每个知识点一份，变体共享）
+- `due_at`、`stability`、`difficulty`、`reps`、`lapses`
+- `algorithm_version`、`parameter_version`、`last_effective_grade`
+
+**AgentEvent（运行事件）**
+
+- `seq`（任务内单调递增）、`time`、`task_or_session_id`、`event_type`、`node`
+- `attempt_id`（可空）、脱敏 `payload`
+- 产品进度、开发轨迹和恢复判断都从同一事件流投影
+
+**AppSettings**
+
+- `daily_reminder_time`、`review_language_override`、`developer_mode`
+- 开发模式下才允许 `force_due` / 跳过两小时等待；正式模式忽略
+
+错误码采用 `RT.<AREA>.<CODE>`，例如 `RT.CAPTURE.NO_ACK`、`RT.REVIEW.VERSION_MISMATCH`。全表随切片增长，不在开工前写死。
 
 ## 7. 状态与接口契约
 
@@ -201,13 +273,15 @@ queued
 
 ### 7.3 通信方式
 
-- 采集任务使用本机 HTTPS/HTTP 请求提交和查询状态。
-- 正式复习的控制事件使用 WebSocket，以保持题目、评分、ACK 和中断状态同步。
+- 采集任务使用本机 HTTP：`http://127.0.0.1:8742`。
+- 健康检查：`GET /healthz`。
+- 正式复习的控制事件使用同一主机上的 WebSocket。
 - 实时音频使用 WebRTC 直连 OpenAI Realtime。
 - Python 使用 sideband 连接控制同一 Realtime 会话。
 - 标准 API Key 不离开 Python；Swift 只收到短时 Realtime 凭证。
+- Demo 不启用 TLS。HTTPS 留到远程部署。
 
-具体 URL、JSON 字段命名和错误码仍需在实现前形成接口规格，不能从本文示例自行猜测。
+每一刀只冻结该刀的路径、JSON 字段和错误码，并与代码一起进仓库。不要求开工前形成完整接口规格。
 
 ### 7.4 Agent 运行事件契约
 
@@ -254,7 +328,7 @@ queued
 
 ## 9. 安全与隐私边界
 
-- Demo 服务只绑定 `127.0.0.1`，不对局域网或公网开放。
+- Demo 服务只绑定 `127.0.0.1:8742`，不对局域网或公网开放，不启用 TLS。
 - 标准 OpenAI Key 存在 `.env`，必须 Git 忽略；日志统一脱敏。
 - URL 抓取阻止 localhost、私网、元数据服务、危险协议和重定向后的受限地址。
 - 模型只能调用图允许的工具；提示词是行为引导，程序校验、工具白名单、状态机和写入规则才是硬边界。
@@ -296,7 +370,6 @@ queued
 ## 13. 尚未完成
 
 - 没有任何架构代码、接口、SwiftData 模型或 LangGraph 图实现。
-- 第 78 项首次启动预检体验尚未选择。
-- 具体 OpenAI 模型、接口线格式、SQLite 加密实现和 TTL 数值尚未确认。
-- Agent 运行事件的精确 JSON schema、脱敏字段、保留周期和投影实现尚未确认。
+- 具体 OpenAI 模型尚未冻结；完整 JSON schema 和错误码全表随切片补齐。
+- Checkpoint TTL 默认 24 小时，精确秒数可在实现时配置。
 - 没有自动化测试、真实服务运行、性能数据或隐私审计证据。
