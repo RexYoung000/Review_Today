@@ -43,6 +43,39 @@
 - 当前有效结论：回声线只在说话、思考或理解时短暂出现；静止母形不得依赖回声线建立辨识度。
 - `mascot-character-study-v2.png` 左侧主立绘少一只眼属于生成错误。正面与三分之二侧面必须保留两颗豆豆眼，只有完整侧面允许隐藏一只。
 
+## 耳机方向
+
+- 帽子只增加角色感但语音语义弱；口哨会带来体育教练、裁判和催促心智，不继续。
+- 单侧 C 形耳扣与半环耳机方案未通过：静态示范更像耳朵、耳环或天线，不能清楚识别成耳机。
+- 当前方向改为正常、轻量的双耳头戴耳机：完整纤细头梁、左右两个小耳罩，不加麦克风杆或游戏化装饰。
+- 待机时完全不显示耳机；用户明确发起语音会话后直接戴上，聆听、思考和回应期间保持佩戴，会话结束或取消后消失。
+- 耳机不是录音或隐私的唯一反馈；原生界面仍需明确文字、权限状态和录音控制。Reduce Motion 直接切换待机与佩戴状态。
+
+### 正常双耳耳机状态稿
+
+- `headphones-session-storyboard-v3.png`：从左到右展示待机无耳机、会话准备、聆听／思考与回应状态，并提供无耳机／戴耳机头部近景。
+- 当前成立：完整头梁与两个小耳罩可以被立即识别为耳机；待机和语音会话状态关系清楚，不再像耳朵、耳环或天线。
+- 尚未解决：最后一格出现了不符合固定拓扑的手指；耳罩、头梁与角色头部的最终比例尚未通过小尺寸或 Spine 验证。
+
+### 正常双耳耳机状态稿提示词
+
+```text
+Use case: stylized-concept
+Asset type: corrected four-state voice-session accessory storyboard for the original Review Today mascot
+Input image: Image 1 is the exact mascot personality and anatomy reference: warm graphite animation sketch, softly irregular large head, compact curled S/comma torso, two tiny arms, two bean-dot eyes, one cute uneven square tooth. Correct the source defect: every front and three-quarter view must show exactly TWO visible bean-dot eyes.
+Primary request: Show the exact same mascot in four equally sized states from left to right, using a clearly recognizable NORMAL lightweight pair of over-ear headphones only during the voice session. Do not invent any storage mechanism or one-sided C-shaped device.
+Headphone design shared by panels 2–4: one complete thin headband visibly arches over the top of the head and connects to TWO small matching round earcups, one on each side. The earcups are modest, soft, and simple. No microphone boom, no antenna, no gaming shapes, no cat ears, no light strips, no ear-like C shapes. The headset must be unmistakably a pair of headphones at first glance.
+Panel 1 — idle: no headphones or headphone parts anywhere. Mascot rests in the quietly goofy tucked-arm pose, awake and attentive, two visible eyes, small square-tooth mouth.
+Panel 2 — voice conversation ready: same mascot now wearing the complete lightweight headphones. She perks up slightly as if ready to talk. Both earcups and the full top headband are clearly visible.
+Panel 3 — listening/thinking: same complete headphones remain. Character leans forward gently, eyes focused, mouth small and neutral, arms tucked. No sound waves.
+Panel 4 — responding: same complete headphones remain. Character opens the little hand-drawn tooth mouth naturally and makes one simple rounded-arm welcoming gesture. Add only one very short soft pencil echo stroke behind the outer head contour as a temporary speaking effect.
+Composition: clean horizontal four-state animation-development board on warm white paper, generous spacing, no text, no labels, no arrows, no borders, no UI, no app icon, no logo. Add two small matching head close-ups below: idle without headphones and active with complete headphones, useful only for comparing identity.
+Style/medium: monochrome graphite animation preproduction drawing, controlled lively pencil line, varied pressure, subtle construction traces, professional mascot charm, no polished vector art or 3D
+Color palette: graphite black and soft gray only; no teal, glow, gradients, dark mode, or color variants
+Constraints: exact same character identity, healthy head silhouette, proportions and facial placement in all panels; exactly TWO visible eyes in every full-body and head close-up; exactly one head, one compact torso, two arms, no legs. Headphones appear only in panels 2–4 and active close-up. Both earcups and complete headband must be visible whenever headphones are worn.
+Avoid: missing eye, one-eyed character, extra eyes, C-shaped ear, earring, earclip, single-sided headset, half headband, antenna, human ears, call-center headset, microphone boom, gaming headset, oversized DJ headphones, AirPods, hat, whistle, scarf, necklace, fingers, human hands, sad face, baby, plush toy, ghost, animal, Pixar or Soul replication, recognizable existing characters, text, watermark.
+```
+
 ### 回声线示范提示词
 
 ```text
