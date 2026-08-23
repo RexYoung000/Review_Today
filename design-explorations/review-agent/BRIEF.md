@@ -3,14 +3,14 @@
 > 状态：`mascot-bangs-ahoge-study-v4.png` 已被 Rex 接受为当前角色母形方向；`mascot-card-expression-study-v7.png` 左侧已被接受为当前静态品牌构图与默认表情方向
 > 证据边界：概念板只验证母形、情绪与品牌关系；不证明小尺寸图标、矢量结构、Spine 拆件、动画节奏或原生界面已经完成。
 
-## V8 正式品牌资产（已导出，待视觉验收）
+## V8 正式品牌资产（模型生成版，待视觉验收）
 
-- V8 不再通过生成式图片继续改变角色，而是把 V7 左侧闭口抱卡方向重构为确定性的 SVG 母版。
-- 正式资产包含彩色 App 图标、大尺寸完整吉祥物、单色品牌标志、菜单栏简化标志、标准色文件，以及 macOS 16–1024 px AppIcon 导出。
-- 64 px 及以下使用单独的小尺寸简化母版：加粗轮廓、放大五官与卡片、减少卡片内容线；不能机械缩小 1024 px 图标。
-- 产品正式名称尚未确认，本轮不制作 Wordmark。精确色值与最终几何需 Rex 检查渲染稿和真实 Dock／Finder 表现后才能视为接受；SVG 或构建通过本身不构成体验验收。
-- `brand/review-today-app-icon.svg`、`brand/review-today-mascot.svg`、`brand/review-today-mark.svg` 与 `brand/review-today-menu-bar-mark.svg` 是 V8 可维护母版；`brand/exports/brand-acceptance-board.png` 是本轮集中视觉验收入口。
-- `brand/export_brand_assets.sh` 已将大小尺寸母版分别导出到工程 `AppIcon.appiconset`；macOS Debug 构建与编译后的 `AppIcon.icns` 已验证通过，但 Dock、Finder、启动台和应用切换器仍待 Rex 真实视觉确认。
+- Rex 已否决把 V7 角色重新描成 SVG 的生产路径。V8 改为以 V4 锁定角色身份、以 V7 左侧锁定闭口微笑与抱卡构图，由 GPT Image 生成工作流产出正式位图内容；人工只负责选图和工程打包，不重新绘制角色。
+- `brand/raster/mascot-master-v8.png` 是统一暖白底的完整吉祥物母图；`brand/raster/app-icon-master-v8.png` 是陶土色 App 图标母图；`brand/raster/mark-master-v8.png` 是单色标志母图。三者均由模型分别生成，并以同一角色身份约束。
+- 代码只能对 App 图标母图进行裁切、缩放、圆角 Alpha 蒙版和 PNG 导出，不能补画五官、手臂、卡片、刘海或呆毛，也不能用 SVG 重新解释模型线条。
+- 内置生成工具两次把透明棋盘格画进 RGB 文件，因此当前完整吉祥物明确使用暖白产品底，不把假透明当作正式透明 cutout。透明角色资源需要后续单独提取并以 `hasAlpha: yes` 验证。
+- App 图标母图已导出为 16–1024 px 工程资源，`brand/exports/brand-acceptance-board.png` 已检查 128、64、32 与 16 px，并通过 macOS Debug 构建；真实 Dock／Finder 视觉仍待 Rex 验收。
+- 产品正式名称尚未确认，本轮不制作 Wordmark。最终角色质感、陶土底、App 图标裁切与小尺寸表现仍需 Rex 检查母图和真实 Dock／Finder 后才能接受；生成成功或构建通过本身不构成体验验收。
 
 ## V7 表情与知识卡优化（左侧已接受）
 
@@ -113,7 +113,7 @@ Avoid: teal, blue-green, blue, purple, generic AI colors, neon, gradients, aura,
 
 - 可保留：无腿悬浮、点眼、中性外形与固定拓扑。
 - 必须重做：正圆直立母形、发光胶囊嘴、被动垂手、机械深色反相和过早 Logo 提炼。
-- 第二轮只验证单色动画草图中的轮廓、表情与动作张力。方向被接受后，才重新构造矢量母版、16–1024 px 图标测试和 Spine 拆件图。
+- 第二轮只验证单色动画草图中的轮廓、表情与动作张力。方向被接受后，再通过生成模型制作正式位图母图与 16–1024 px 图标测试；Spine 拆件图仍需单独制作。
 
 ## 第二轮性格与动作方向稿
 

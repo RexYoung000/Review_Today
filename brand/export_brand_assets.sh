@@ -4,32 +4,26 @@ set -euo pipefail
 
 script_dir=${0:A:h}
 project_root=${script_dir:h}
+raster_dir="$script_dir/raster"
 exports_dir="$script_dir/exports"
 app_icon_dir="$project_root/Review_Today/Assets.xcassets/AppIcon.appiconset"
-renderer="$script_dir/render_brand_assets.swift"
+packager="$script_dir/package_raster_assets.swift"
+icon_master="$raster_dir/app-icon-master-v8.png"
 
 mkdir -p "$exports_dir"
 
-swift "$renderer" render "$script_dir/review-today-app-icon.svg" "$exports_dir/app-icon-1024.png" 1024
-swift "$renderer" render "$script_dir/review-today-app-icon-small.svg" "$exports_dir/app-icon-small-master-1024.png" 1024
-swift "$renderer" render "$script_dir/review-today-mascot.svg" "$exports_dir/mascot-1024.png" 1024
-swift "$renderer" render "$script_dir/review-today-mark.svg" "$exports_dir/mark-512.png" 512
-swift "$renderer" render "$script_dir/review-today-menu-bar-mark.svg" "$exports_dir/menu-bar-mark-32.png" 32
-swift "$renderer" render "$script_dir/review-today-menu-bar-mark.svg" "$exports_dir/menu-bar-mark-16.png" 16
+swift "$packager" resize "$raster_dir/mascot-master-v8.png" "$exports_dir/mascot-1024.png" 1024
+swift "$packager" icon "$icon_master" "$exports_dir/app-icon-1024.png" 1024
+swift "$packager" resize "$raster_dir/mark-master-v8.png" "$exports_dir/mark-512.png" 512
 
-swift "$renderer" render "$script_dir/review-today-app-icon-small.svg" "$app_icon_dir/icon_16.png" 16
-swift "$renderer" render "$script_dir/review-today-app-icon-small.svg" "$app_icon_dir/icon_32.png" 32
-swift "$renderer" render "$script_dir/review-today-app-icon-small.svg" "$app_icon_dir/icon_64.png" 64
-swift "$renderer" render "$script_dir/review-today-app-icon.svg" "$app_icon_dir/icon_128.png" 128
-swift "$renderer" render "$script_dir/review-today-app-icon.svg" "$app_icon_dir/icon_256.png" 256
-swift "$renderer" render "$script_dir/review-today-app-icon.svg" "$app_icon_dir/icon_512.png" 512
-swift "$renderer" render "$script_dir/review-today-app-icon.svg" "$app_icon_dir/icon_1024.png" 1024
+for size in 16 32 64 128 256 512 1024; do
+  swift "$packager" icon "$icon_master" "$app_icon_dir/icon_${size}.png" "$size"
+done
 
-swift "$renderer" board \
-  "$exports_dir/app-icon-1024.png" \
-  "$exports_dir/mascot-1024.png" \
-  "$exports_dir/mark-512.png" \
-  "$exports_dir/app-icon-small-master-1024.png" \
+swift "$packager" board \
+  "$raster_dir/mascot-master-v8.png" \
+  "$raster_dir/app-icon-master-v8.png" \
+  "$raster_dir/mark-master-v8.png" \
   "$exports_dir/brand-acceptance-board.png"
 
-echo "Brand assets exported to $exports_dir and $app_icon_dir"
+echo "Model-generated brand assets packaged into $exports_dir and $app_icon_dir"

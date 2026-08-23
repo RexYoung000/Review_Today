@@ -396,9 +396,10 @@ Agent 服务 就绪 · 麦克风已允许 · 通知已允许
 - 复习卡负责表达“带着内容帮助用户重温”，角色表情负责表达温柔老师人格，耳机和原生会话状态负责表达语音互动。App 图标不强行同时塞入复习、老师、语音与 AI 的全部符号，也不使用问号、对勾、文字、麦克风或通用聊天气泡替代角色辨识。
 - 复习卡不放真实英文、产品 Logo 或可阅读题目；使用小型陶土色标题条、两三条长短不一的石墨内容线和轻微错位的第二张卡建立知识资料语义。完整吉祥物中的卡片可有极浅的哑光纸纹和轻微纤维感，App 图标与小 Logo 必须简化为平面结构，不保留缩小后会变脏的材质细节。
 - App 图标中的默认表情采用居中、闭口的温柔微笑，不使用偏向一侧的不对称方牙笑。居中两颗小板牙保留为吉祥物说话或鼓励状态的候选表情，不作为当前常驻 Logo 表情；无牙开口版本不用于静态图标。
-- V8 正式品牌资产以 V7 左侧为唯一静态方向，交付彩色 App 图标 SVG、完整抱卡吉祥物 SVG、单色品牌标志、菜单栏简化标志与 macOS 16–1024 px 图标资源。产品正式名称尚未确认，因此本轮不制作或锁定 Wordmark。
-- V8 首轮渲染使用奶油黄角色、石墨轮廓、暖白知识卡与陶土珊瑚图标底色；精确色值记录在 `brand/palette.json`，大小尺寸母版已分别导出到工程 AppIcon 并通过 macOS Debug 构建。在 Rex 检查 `brand/exports/brand-acceptance-board.png` 及 Dock／Finder 小尺寸表现前，色值与几何仍属于已渲染待确认值。Spine 拆件与动态表情不由静态矢量资产或构建成功自动证明。
-- 可见证据：第一轮未通过稿为 `mascot-concept-v1.png` 与 `app-icon-logo-concept-v1.png`；第二轮性格与动作方向稿为 `mascot-character-study-v2.png`；正常双耳耳机会话状态稿为 `headphones-session-storyboard-v3.png`；`mascot-bangs-ahoge-study-v4.png` 已由 Rex 接受为当前角色母形方向；`mascot-logo-color-study-v5.png` 是第一张角色—耳机—App 图标—Logo 配色关系稿；`mascot-review-card-logo-study-v6.png` 比较抱卡、递卡与翻卡三种复习语义构图；`mascot-card-expression-study-v7.png` 左侧已被 Rex 接受为当前静态品牌方向；`brand/` 承载 V8 正式矢量母版、标准色、导出规则与验收边界。提示词、取舍与证据边界见同目录 `BRIEF.md`。
+- V8 正式品牌资产以 V7 左侧为唯一静态方向，通过 GPT Image 生成工作流分别产出完整抱卡吉祥物、彩色 App 图标与单色标志位图母版；不再用 SVG、Bezier 路径或代码重新描画角色。代码仅允许对选定的模型母图做无内容创作的裁切、缩放、圆角蒙版与格式导出。
+- V8 当前角色使用奶油黄身体、石墨铅笔轮廓、暖白知识卡与陶土珊瑚图标底色；颜色与手绘纹理以选定模型母图为准，不再用人工矢量色板覆盖。产品正式名称尚未确认，因此本轮不制作或锁定 Wordmark。
+- 模型曾把棋盘格直接画入 RGB 图片，不能视为透明资产；当前完整吉祥物使用统一暖白产品底，真正透明 cutout 需单独通过文件 Alpha 验证后才能交付。App 图标母图可以通过打包脚本生成 macOS 16–1024 px 资源，但构建成功不代表 Dock／Finder 视觉已经验收。Spine 拆件与动态表情也不由静态位图自动证明。
+- 可见证据：第一轮未通过稿为 `mascot-concept-v1.png` 与 `app-icon-logo-concept-v1.png`；第二轮性格与动作方向稿为 `mascot-character-study-v2.png`；正常双耳耳机会话状态稿为 `headphones-session-storyboard-v3.png`；`mascot-bangs-ahoge-study-v4.png` 已由 Rex 接受为当前角色母形方向；`mascot-logo-color-study-v5.png` 是第一张角色—耳机—App 图标—Logo 配色关系稿；`mascot-review-card-logo-study-v6.png` 比较抱卡、递卡与翻卡三种复习语义构图；`mascot-card-expression-study-v7.png` 左侧已被 Rex 接受为当前静态品牌方向；`brand/raster/` 承载 V8 选定的模型位图母版，生成约束与失败边界见 `brand/GENERATION.md`。提示词、取舍与证据边界见同目录 `BRIEF.md`。
 
 ## 9. 键盘、辅助功能和本地化
 
