@@ -3,6 +3,32 @@
 > 状态：`mascot-bangs-ahoge-study-v4.png` 已被 Rex 接受为当前角色母形方向
 > 证据边界：概念板只验证母形、情绪与品牌关系；不证明小尺寸图标、矢量结构、Spine 拆件、动画节奏或原生界面已经完成。
 
+## V6 复习语义构图（待验证）
+
+- Rex 已确认品牌核心动作采用“复习老师带着复习卡来找用户”，下一轮比较抱卡正视、递卡邀请与翻卡提问三种产品表达。
+- 空手抱臂不作为主方向，因为容易显得封闭、审视或严格；吹哨与胸前常驻哨子不进入常驻吉祥物、App 图标和 Logo，因为它们更像体育教练、裁判与催促，也会削弱温柔对话和知识复习语义。
+- 两张轻微错位的空白圆角卡表达问题与回忆，不在卡片上使用问号、对勾、文字、书本、奖章或学科符号。复习卡承担“来做什么”，角色承担“她是谁”，耳机及会话反馈承担“如何语音互动”。
+- V6 关系板需要在相同 V4 角色、V5 暖色假设和相同画面尺度下，为三种构图分别给出完整角色、App 图标裁切和小尺寸单色 Logo 提炼；构图比较通过前均不视为最终品牌动作或 Logo。
+- `mascot-review-card-logo-study-v6.png`：左、中、右依次比较抱卡正视、递卡邀请与翻卡提问，每组包含完整角色、App 图标和单色小 Logo。
+- 当前观察：左侧抱卡构图最像带着今日内容来找用户的复习老师，并保留了温柔陪伴关系；中间递卡容易像递票或交付资料；右侧翻卡能表达问题／回忆的两面，但也可能像卡牌产品。左侧只是当前设计推荐，仍需 Rex 视觉确认。
+
+### V6 复习语义构图提示词
+
+```text
+Use case: logo-brand
+Asset type: three-direction Review Today mascot, app-icon, and minimal-logo composition board focused on the meaning of REVIEW
+Input images: Image 1 is the exact accepted V4 character identity, anatomy, personality, bangs, ahoge, facial placement, and lively graphite line reference. Image 2 is only the accepted working color-and-finish reference: pale warm butter-cream mascot, graphite-charcoal contours and face, muted earthy terracotta-coral accents, warm ivory background. Do not copy Image 2's old empty-handed app-icon composition.
+Primary request: Create one clean landscape brand exploration board with THREE clearly separated vertical columns, showing three genuinely different ways the exact same mascot can communicate 'a caring review teacher bringing today's material to you.' Each column must contain one large full mascot pose at the top, one small rounded-square macOS app-icon crop derived from that exact pose in the middle, and one very small one-color logo-mark extraction at the bottom. No text labels.
+LEFT direction: the mascot faces the user with a slight playful head tilt and gently cradles two blank rounded rectangular review cards against the upper torso; the second card is visibly offset behind the first. Both rounded nub arms wrap around the card edges in an open, caring way, not crossed arms.
+CENTER direction: the mascot leans slightly forward and warmly offers one blank rounded review card toward the viewer with one rounded arm supporting it from below; the other rounded arm stays near the torso. The pose reads 'here is today's question' rather than sales, serving, or giving a gift.
+RIGHT direction: the mascot holds two blank rounded cards at chest height, with the front card tilted halfway aside so the second card is revealed behind it, suggesting question then recall. One rounded nub arm rests against the tilted card edge.
+App-icon extraction: a restrained terracotta-coral rounded-square field; each close crop retains the ahoge, asymmetrical head, two eyes, square-tooth mouth, both arms, and enough blank card geometry to preserve the review action. No headphones, microphone, sound waves, words, question marks, checkmarks, books, caps, trophies, clocks, or chat bubbles.
+Minimal-logo extraction: one-color graphite mark simplified from the same ahoge, asymmetrical head, arms, and one unmistakable rounded card corner or offset card edge; never reduce it to a plain circular face, document, playing card, chat bubble, or generic flashcard logo.
+Style and palette: controlled 2D brand exploration with lively graphite contour and restrained flat colored-pencil fills; pale warm butter-cream mascot clearly separated from warm ivory background; graphite face and outline; cream cards with one terracotta-coral edge or offset back card; quiet editorial macOS polish; no gradients, glow, gloss, or 3D.
+Constraints: preserve the exact V4 softly irregular head, compact S/comma floating torso, exactly two rounded-nub arms without fingers, two visible bean eyes, one uneven square tooth, two or three short side-swept bang strokes, one off-center comma ahoge, and no legs. Cards are the only new object. No headphones anywhere.
+Avoid: missing or extra eyes, crossed arms, stern teacher, scolding, whistle, lanyard, microphone, headphones, sound-wave symbol, text or study clichés, human hands, legs, long hair, generic smiley, generic chat/document/card logo, recognizable existing character, watermark.
+```
+
 ## V5 配色关系板（待验证）
 
 - 目的不是为角色套用通用“AI 色”，而是先确认角色自身的固有配色，再从同一角色提炼 App 图标、极简 Logo 与后续产品强调色。
