@@ -57,19 +57,31 @@ struct TodayView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
-                headline
-                metricGrid
-                captureCard
-                HStack(alignment: .top, spacing: 16) {
-                    agentWorkCard
-                    receiptsCard
-                }
+            VStack(alignment: .leading, spacing: Runway.gap) {
+                statusBoard
+                AgentComposer(
+                    draft: $draft,
+                    turns: todayTurns,
+                    forming: forming,
+                    pose: coachPose,
+                    recorder: recorder,
+                    onSubmit: saveDraft,
+                    onVoice: toggleVoice,
+                    onOpenInbox: onOpenInbox,
+                    onPreview: { id in
+                        coordinator.startPreview(knowledgeID: id)
+                        openWindow(id: "review")
+                    },
+                    onOpenKnowledge: onOpenKnowledge,
+                    receiptLine: { task in
+                        receiptLine(task, Self.decodeReceipt(task.receiptJSON))
+                    }
+                )
                 if !todayResults.isEmpty {
                     resultsCard
                 }
             }
-            .padding(28)
+            .padding(24)
         }
         .background(PaperSurface())
         .navigationTitle(String(localized: "今天"))
@@ -84,224 +96,73 @@ struct TodayView: View {
         }
     }
 
-    private var headline: some View {
-        HStack(alignment: .center, spacing: 16) {
-            VStack(alignment: .leading, spacing: 6) {
-                Text(dueItems.isEmpty ? String(localized: "今天无需复习") : tonightTitle)
-                    .font(.system(size: 34, weight: .bold))
-                Text(agentRailStatus)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            CoachMark(pose: coachPose, size: 56)
-            if !dueItems.isEmpty {
-                RunwayPrimaryButton(title: String(localized: "现在开始")) {
-                    coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
-                    openWindow(id: "review")
-                }
-            }
-        }
+    private var todayTurns: [CaptureTask] {
+        (forming + todayReceipts).sorted { $0.createdAt < $1.createdAt }
     }
 
-    private var metricGrid: some View {
-        LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
-            MetricTile(
-                title: String(localized: "今晚复习"),
-                value: dueItems.isEmpty ? "0" : "\(dueItems.count)",
-                note: dueItems.isEmpty
-                    ? String(localized: "没有到期的知识")
-                    : "预计约 \(dueItems.count) 分钟 · \(tonightClock)",
-                emphasized: !dueItems.isEmpty,
-                action: dueItems.isEmpty ? nil : {
-                    coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
-                    openWindow(id: "review")
-                }
-            )
-            MetricTile(
-                title: String(localized: "正在形成"),
-                value: "\(forming.count)",
-                note: forming.first?.userStatus ?? String(localized: "没有正在处理的内容")
-            )
-            MetricTile(
-                title: String(localized: "待处理"),
-                value: "\(inboxCount)",
-                note: inboxCount == 0
-                    ? String(localized: "没有需要你确认的事项")
-                    : String(localized: "需要你确认来源或冲突"),
-                emphasized: inboxCount > 0,
-                action: inboxCount == 0 ? nil : onOpenInbox
-            )
-            MetricTile(
-                title: String(localized: "知识库"),
-                value: "\(activeKnowledgeCount)",
-                note: String(localized: "在用的知识点"),
-                action: onOpenLibrary
-            )
-        }
-    }
-
-    private var captureCard: some View {
-        RunwayCard {
-            VStack(alignment: .leading, spacing: 14) {
-                Text(String(localized: "记住点什么"))
-                    .font(.headline)
-                PaperWell {
-                    TextField(
-                        String(localized: "输入文字或粘贴链接……"),
-                        text: $draft,
-                        axis: .vertical
-                    )
-                    .textFieldStyle(.plain)
-                    .font(.title3)
-                    .lineLimit(3 ... 6)
-                }
-                HStack {
-                    Button(recorder.isRecording ? String(localized: "停止录音") : String(localized: "语音")) {
-                        AVCaptureDevice.requestAccess(for: .audio) { granted in
-                            DispatchQueue.main.async { micAllowed = granted }
-                        }
-                        recorder.toggle()
-                        if !recorder.isRecording, let url = recorder.lastFileURL {
-                            saveVoice(url)
-                        }
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(recorder.isRecording ? Color.orange : .secondary)
-                    Spacer()
-                    if !dueItems.isEmpty {
-                        Button(String(localized: "现在开始")) {
-                            coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
-                            openWindow(id: "review")
-                        }
-                        .buttonStyle(.plain)
-                        .foregroundStyle(runway.action)
-                        .keyboardShortcut(.return, modifiers: [.command, .shift])
-                    }
-                    RunwayPrimaryButton(
-                        title: String(localized: "记住"),
-                        enabled: !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                        action: saveDraft
-                    )
-                    .keyboardShortcut(.return, modifiers: [.command])
-                }
-            }
-        }
-    }
-
-    private var agentWorkCard: some View {
-        RunwayCard {
-            VStack(alignment: .leading, spacing: 14) {
-                HStack {
-                    Text(String(localized: "Agent 正在做"))
-                        .font(.headline)
-                    Spacer()
-                    Circle()
-                        .fill(forming.isEmpty ? Color.secondary.opacity(0.25) : runway.agent)
-                        .frame(width: 8, height: 8)
-                }
-                if forming.isEmpty {
-                    Text(String(localized: "空闲。记下内容后，我会在这里展开整理步骤。"))
+    private var statusBoard: some View {
+        VStack(alignment: .leading, spacing: Runway.gap) {
+            HStack(alignment: .center, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(dueItems.isEmpty ? String(localized: "今天无需复习") : tonightTitle)
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(runway.ink)
+                    Text(boardSubtitle)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, minHeight: 88, alignment: .topLeading)
-                } else {
-                    ForEach(forming.prefix(3), id: \.id) { task in
-                        agentTaskBlock(task)
-                    }
                 }
-            }
-        }
-    }
-
-    private func agentTaskBlock(_ task: CaptureTask) -> some View {
-        let steps = CaptureProgress.steps(for: task)
-        let needsYou = task.status == "needs_attention"
-        return VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(task.userStatus)
-                    .font(.subheadline.weight(.medium))
-                Spacer()
-                if needsYou {
-                    Button(String(localized: "去处理"), action: onOpenInbox)
-                        .buttonStyle(.plain)
-                        .foregroundStyle(runway.action)
-                        .font(.subheadline.weight(.semibold))
-                }
-            }
-            ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
-                HStack(alignment: .firstTextBaseline, spacing: 10) {
-                    Circle()
-                        .strokeBorder(index == steps.count - 1 ? runway.agent : Color.secondary.opacity(0.35), lineWidth: 1.5)
-                        .background(Circle().fill(index == steps.count - 1 ? runway.agent : .clear))
-                        .frame(width: 8, height: 8)
-                    Text(step)
-                        .font(.caption)
-                        .foregroundStyle(index == steps.count - 1 ? Color.primary : Color.secondary)
-                }
-            }
-        }
-    }
-
-    private var receiptsCard: some View {
-        RunwayCard {
-            VStack(alignment: .leading, spacing: 14) {
-                Text(String(localized: "今天新增"))
-                    .font(.headline)
-                if todayReceipts.isEmpty {
-                    Text(String(localized: "还没有新的整理结果"))
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, minHeight: 88, alignment: .topLeading)
-                } else {
-                    ForEach(todayReceipts.prefix(4), id: \.id) { task in
-                        receiptRow(task)
-                        if task.id != todayReceipts.prefix(4).last?.id {
-                            Divider()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private func receiptRow(_ task: CaptureTask) -> some View {
-        let receipt = Self.decodeReceipt(task.receiptJSON)
-        return VStack(alignment: .leading, spacing: 8) {
-            Text(receiptLine(task, receipt))
-            if let receipt {
-                Text("\(receipt.theme) · \(receipt.knowledgeCount) 个知识点")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            if let first = task.source?.knowledgeItems.first {
-                HStack(spacing: 14) {
-                    Button(String(localized: "立即试一题")) {
-                        coordinator.startPreview(knowledgeID: first.id)
+                Spacer(minLength: 8)
+                if !dueItems.isEmpty {
+                    RunwayPrimaryButton(title: String(localized: "现在开始")) {
+                        coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
                         openWindow(id: "review")
                     }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(runway.action)
-                    .font(.subheadline.weight(.semibold))
-                    Button(String(localized: "查看知识点")) {
-                        onOpenKnowledge(first.id)
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.secondary)
-                    .font(.subheadline)
                 }
             }
+            StatStrip(items: [
+                StatCell(
+                    id: "due",
+                    value: dueItems.isEmpty ? "0" : "\(dueItems.count)",
+                    title: String(localized: "今晚复习"),
+                    action: dueItems.isEmpty ? nil : {
+                        coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
+                        openWindow(id: "review")
+                    }
+                ),
+                StatCell(
+                    id: "forming",
+                    value: "\(forming.count)",
+                    title: String(localized: "正在形成")
+                ),
+                StatCell(
+                    id: "inbox",
+                    value: "\(inboxCount)",
+                    title: String(localized: "待处理"),
+                    action: inboxCount == 0 ? nil : onOpenInbox
+                ),
+                StatCell(
+                    id: "library",
+                    value: "\(activeKnowledgeCount)",
+                    title: String(localized: "知识库"),
+                    action: onOpenLibrary
+                )
+            ])
         }
     }
 
     private var resultsCard: some View {
-        RunwayCard {
-            VStack(alignment: .leading, spacing: 12) {
-                Text(String(localized: "今日复习结果"))
-                    .font(.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            Text(String(localized: "今日复习结果"))
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(runway.ink)
+            VStack(alignment: .leading, spacing: 10) {
                 ForEach(todayResults, id: \.attemptId) { row in
                     let item = knowledge.first(where: { $0.id == row.knowledgeId })
-                    HStack {
+                    HStack(alignment: .firstTextBaseline) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(item.map { KnowledgeLexicon.keyword(for: $0, clipped: false) } ?? String(localized: "知识点"))
+                                .font(.callout)
+                                .foregroundStyle(runway.ink)
                             if let due = item?.dueAt {
                                 Text("下次 \(due.formatted(date: .abbreviated, time: .shortened))")
                                     .font(.caption)
@@ -310,11 +171,16 @@ struct TodayView: View {
                         }
                         Spacer()
                         Text(MasteryCopy.label(row.effectiveGrade))
+                            .font(.caption.weight(.medium))
                             .foregroundStyle(runway.agent)
                     }
                 }
             }
         }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(runway.card, in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
+        .shadow(color: runway.liftShadow, radius: 8, y: 2)
     }
 
     private var coachPose: CoachPose {
@@ -325,11 +191,10 @@ struct TodayView: View {
         return .idle
     }
 
-    private var agentRailStatus: String {
+    private var boardSubtitle: String {
         if monitor.connection != .ready { return String(localized: "等服务恢复") }
-        if let task = forming.first { return task.userStatus }
-        if !dueItems.isEmpty { return tonightTitle }
-        return String(localized: "待命")
+        if dueItems.isEmpty { return String(localized: "没有到期的知识") }
+        return "预计约 \(dueItems.count) 分钟"
     }
 
     private var tonightTitle: String {
@@ -347,6 +212,16 @@ struct TodayView: View {
             return "根据你确认的来源，整理了 \(receipt.theme) 的 \(receipt.knowledgeCount) 个知识点"
         }
         return "“\(understood)”"
+    }
+
+    private func toggleVoice() {
+        AVCaptureDevice.requestAccess(for: .audio) { granted in
+            DispatchQueue.main.async { micAllowed = granted }
+        }
+        recorder.toggle()
+        if !recorder.isRecording, let url = recorder.lastFileURL {
+            saveVoice(url)
+        }
     }
 
     private func saveDraft() {

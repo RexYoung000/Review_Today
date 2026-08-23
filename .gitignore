@@ -13,3 +13,4 @@ DerivedData/
 *.xcuserstate
 *.moved-aside
 .cursor/
+/output/

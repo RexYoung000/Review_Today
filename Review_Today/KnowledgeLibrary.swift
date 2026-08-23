@@ -40,41 +40,29 @@ struct LibraryView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 0) {
             header
             if visibleItems.isEmpty {
                 emptyState
             } else {
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 28) {
-                        ForEach(groupedItems, id: \.theme) { group in
-                            VStack(alignment: .leading, spacing: 12) {
-                                Text(group.theme)
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(.secondary)
-                                LazyVGrid(
-                                    columns: [
-                                        GridItem(.adaptive(minimum: 200, maximum: 280), spacing: 14, alignment: .leading)
-                                    ],
-                                    alignment: .leading,
-                                    spacing: 14
-                                ) {
-                                    ForEach(group.items, id: \.id) { item in
-                                        SummaryChip(title: KnowledgeLexicon.keyword(for: item, among: visibleItems)) {
-                                            openDeck(item)
-                                        }
-                                        .contextMenu { chipMenu(item) }
-                                    }
-                                }
+                GeometryReader { geo in
+                    let columns = Self.chipColumns(for: geo.size.width - Runway.section * 2)
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: Runway.section) {
+                            ForEach(groupedItems, id: \.theme) { group in
+                                sectionBlock(group, columns: columns)
                             }
                         }
+                        .padding(.horizontal, Runway.section)
+                        .padding(.top, Runway.gap)
+                        .padding(.bottom, 40)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .padding(.horizontal, 28)
-                    .padding(.bottom, 28)
                 }
             }
         }
         .background(PaperSurface())
+        .navigationTitle(String(localized: "知识库"))
         .overlay {
             if showDeck, !visibleItems.isEmpty {
                 KnowledgeDeckOverlay(
@@ -100,38 +88,88 @@ struct LibraryView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(String(localized: "知识库"))
-                .font(.system(size: 34, weight: .bold))
-            HStack(spacing: 4) {
-                FilterPill(title: String(localized: "在用"), selected: filter == "active") {
-                    filter = "active"
-                }
-                FilterPill(title: String(localized: "已暂停"), selected: filter == "paused") {
-                    filter = "paused"
-                }
-                FilterPill(title: String(localized: "已删除"), selected: filter == "soft_deleted") {
-                    filter = "soft_deleted"
+        VStack(alignment: .leading, spacing: Runway.gap) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(String(localized: "知识库"))
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundStyle(runway.ink)
+                Spacer(minLength: 12)
+                if !visibleItems.isEmpty {
+                    Text("\(visibleItems.count)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
             }
-            .padding(4)
-            .background(runway.field, in: Capsule())
 
-            if !themes.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        FilterPill(title: String(localized: "全部"), selected: theme == "all") { theme = "all" }
-                        ForEach(themes, id: \.self) { name in
-                            FilterPill(title: name, selected: theme == name) { theme = name }
+            HStack(spacing: Runway.gap) {
+                filterTrack {
+                    FilterPill(title: String(localized: "在用"), selected: filter == "active") {
+                        filter = "active"
+                    }
+                    FilterPill(title: String(localized: "已暂停"), selected: filter == "paused") {
+                        filter = "paused"
+                    }
+                    FilterPill(title: String(localized: "已删除"), selected: filter == "soft_deleted") {
+                        filter = "soft_deleted"
+                    }
+                }
+
+                if !themes.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        filterTrack {
+                            FilterPill(title: String(localized: "全部"), selected: theme == "all") { theme = "all" }
+                            ForEach(themes, id: \.self) { name in
+                                FilterPill(title: name, selected: theme == name) { theme = name }
+                            }
                         }
                     }
-                    .padding(4)
-                    .background(runway.field, in: Capsule())
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
-        .padding(.horizontal, 28)
-        .padding(.top, 24)
+        .padding(.horizontal, Runway.section)
+        .padding(.top, Runway.gap)
+        .padding(.bottom, Runway.space)
+    }
+
+    private func filterTrack<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        HStack(spacing: 4) {
+            content()
+        }
+        .padding(4)
+        .background(runway.field, in: Capsule())
+    }
+
+    private func sectionBlock(_ group: (theme: String, items: [Knowledge]), columns: [GridItem]) -> some View {
+        VStack(alignment: .leading, spacing: Runway.gap) {
+            HStack(alignment: .firstTextBaseline, spacing: Runway.space) {
+                Text(group.theme)
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(runway.ink)
+                Text("\(group.items.count)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: 0)
+            }
+            LazyVGrid(columns: columns, alignment: .leading, spacing: Runway.gap) {
+                ForEach(group.items, id: \.id) { item in
+                    SummaryChip(
+                        title: KnowledgeLexicon.chipTitle(for: item, among: group.items, theme: group.theme)
+                    ) {
+                        openDeck(item)
+                    }
+                    .contextMenu { chipMenu(item) }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private static func chipColumns(for width: CGFloat) -> [GridItem] {
+        let spacing = Runway.gap
+        let minWidth: CGFloat = 252
+        let count = max(1, min(3, Int((width + spacing) / (minWidth + spacing))))
+        return Array(repeating: GridItem(.flexible(), spacing: spacing, alignment: .top), count: count)
     }
 
     private var emptyState: some View {
@@ -182,28 +220,27 @@ private struct SummaryChip: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(alignment: .top, spacing: 8) {
+            IconLeadRow(iconWidth: 22, spacing: 12) {
                 Image(systemName: "plus")
                     .font(.caption.weight(.bold))
                     .foregroundStyle(runway.plus)
-                    .padding(.top, 2)
+                    .frame(height: 20, alignment: .center)
+            } content: {
                 Text(title)
                     .font(.body.weight(.medium))
                     .foregroundStyle(runway.ink)
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: 0)
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 13)
-            .frame(maxWidth: .infinity, minHeight: 52, alignment: .leading)
-            .background(runway.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .padding(.horizontal, Runway.gap)
+            .padding(.vertical, 14)
+            .frame(maxWidth: .infinity, minHeight: 72, maxHeight: 72, alignment: .leading)
+            .background(runway.card, in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous)
                     .strokeBorder(runway.hairline, lineWidth: 1)
             )
-            .shadow(color: hovering ? runway.liftShadow : .clear, radius: 10, y: 3)
+            .shadow(color: runway.liftShadow, radius: hovering ? Runway.shadowBlur : 10, y: hovering ? 6 : Runway.shadowY)
         }
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
@@ -246,6 +283,14 @@ enum KnowledgeLexicon {
         return clipped ? clip(base) : base
     }
 
+    static func chipTitle(for item: Knowledge, among siblings: [Knowledge], theme: String) -> String {
+        var text = keyword(for: item, among: siblings)
+        text = stripRepeatedTheme(text, theme: theme)
+        text = stripCommandLead(text)
+        if isWeak(text) { return keyword(for: item, among: siblings) }
+        return text
+    }
+
     static func explanationPieces(for item: Knowledge) -> [ExplanationPiece] {
         let written = item.explanation.trimmingCharacters(in: .whitespacesAndNewlines)
         if !written.isEmpty { return parse(written) }
@@ -271,6 +316,30 @@ enum KnowledgeLexicon {
         let fromTheme = finishPhrase(item.theme)
         if !isWeak(fromTheme) { return fromTheme }
         return fromGoal.isEmpty ? String(localized: "知识点") : fromGoal
+    }
+
+    private static func stripRepeatedTheme(_ text: String, theme: String) -> String {
+        var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let aliases = [theme, "检索增强生成 (RAG)", "检索增强生成", "RAG"]
+            .filter { !$0.isEmpty }
+            .sorted { $0.count > $1.count }
+        for alias in aliases {
+            guard value != alias, value.hasPrefix(alias) else { continue }
+            let rest = String(value.dropFirst(alias.count))
+                .trimmingCharacters(in: CharacterSet(charactersIn: " ·・-—：:（）()"))
+            if rest.count >= 2 { value = rest }
+        }
+        return value
+    }
+
+    private static func stripCommandLead(_ text: String) -> String {
+        var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        for prefix in commandPrefixes + ["什么是"] where value.hasPrefix(prefix) {
+            let rest = String(value.dropFirst(prefix.count))
+                .trimmingCharacters(in: CharacterSet(charactersIn: "：: 的"))
+            if rest.count >= 2 { return rest }
+        }
+        return value
     }
 
     private static func nounPhrase(from goal: String) -> String {
@@ -516,7 +585,7 @@ private struct KnowledgeDeckOverlay: View {
                     .foregroundStyle(runway.ink)
                     .frame(width: 32, height: 32)
                     .background(runway.card.opacity(0.94), in: Circle())
-                    .shadow(color: runway.liftShadow, radius: 8, y: 3)
+                    .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
             }
             .buttonStyle(.plain)
             .keyboardShortcut(.cancelAction)
@@ -584,56 +653,67 @@ private struct KnowledgeDepthCard: View {
     private var pieces: [ExplanationPiece] { KnowledgeLexicon.explanationPieces(for: item) }
 
     var body: some View {
-        ScrollView(.vertical, showsIndicators: true) {
-            VStack(alignment: .leading, spacing: 22) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(KnowledgeLexicon.displayTheme(for: item))
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                    Text(KnowledgeLexicon.keyword(for: item, among: siblings))
-                        .font(.title2.weight(.bold))
-                        .lineSpacing(3)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-
-                detailBlock
-                memoryBlock
-
-                HStack(alignment: .center) {
-                    Text("下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    Menu {
-                        if item.lifecycle == "active" {
-                            Button(String(localized: "暂停")) { item.lifecycle = "paused" }
-                            Button(String(localized: "软删除"), role: .destructive) { item.lifecycle = "soft_deleted" }
-                        } else {
-                            Button(String(localized: "恢复")) { item.lifecycle = "active" }
-                        }
-                        Button(String(localized: "永久删除"), role: .destructive, action: onDelete)
-                    } label: {
-                        Image(systemName: "ellipsis")
-                            .foregroundStyle(.secondary)
-                    }
-                    .menuStyle(.borderlessButton)
-                    RunwayPrimaryButton(title: String(localized: "试一题"), action: onPreview)
-                }
-                .padding(.top, 4)
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: Runway.space) {
+                Text(KnowledgeLexicon.displayTheme(for: item))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(KnowledgeLexicon.keyword(for: item, among: siblings))
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(runway.ink)
+                    .lineSpacing(2)
+                    .lineLimit(2)
             }
-            .padding(28)
-            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .padding(.horizontal, Runway.gap)
+            .padding(.top, Runway.gap)
+            .padding(.bottom, 12)
+
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(alignment: .leading, spacing: Runway.section) {
+                    detailBlock
+                    memoryBlock
+                }
+                .padding(.horizontal, Runway.gap)
+                .padding(.bottom, Runway.gap)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+            }
+            .scrollIndicators(.visible)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            HStack(alignment: .center, spacing: Runway.space) {
+                Text("下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Menu {
+                    if item.lifecycle == "active" {
+                        Button(String(localized: "暂停")) { item.lifecycle = "paused" }
+                        Button(String(localized: "软删除"), role: .destructive) { item.lifecycle = "soft_deleted" }
+                    } else {
+                        Button(String(localized: "恢复")) { item.lifecycle = "active" }
+                    }
+                    Button(String(localized: "永久删除"), role: .destructive, action: onDelete)
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.body.weight(.medium))
+                        .foregroundStyle(.secondary)
+                        .frame(width: 28, height: 28)
+                }
+                .menuStyle(.borderlessButton)
+                RunwayPrimaryButton(title: String(localized: "试一题"), action: onPreview)
+            }
+            .padding(.horizontal, Runway.gap)
+            .padding(.top, 12)
+            .padding(.bottom, Runway.gap)
         }
-        .scrollIndicators(.visible)
-        .scrollBounceBehavior(.basedOnSize)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(runway.card)
     }
 
     private var detailBlock: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: Runway.gap) {
             Text(String(localized: "详解"))
-                .font(.caption.weight(.semibold))
+                .font(.caption)
                 .foregroundStyle(.secondary)
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(pieces) { piece in
@@ -646,18 +726,18 @@ private struct KnowledgeDepthCard: View {
     private var memoryBlock: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(String(localized: "怎么记"))
-                .font(.caption.weight(.semibold))
+                .font(.caption)
                 .foregroundStyle(.secondary)
             if !orderHint.isEmpty {
                 Text(orderHint)
-                    .font(.callout.weight(.semibold))
-                    .foregroundStyle(runway.ink)
+                    .font(.callout)
+                    .foregroundStyle(runway.copy)
                     .fixedSize(horizontal: false, vertical: true)
             }
             if cover.isEmpty && mixups.isEmpty && orderHint.isEmpty {
                 Text(String(localized: "先说出学习目标里的限定，再用自己的话讲核心含义。"))
                     .font(.callout)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(runway.copy)
             }
             ForEach(Array(cover.prefix(4).enumerated()), id: \.offset) { _, line in
                 memoryRow(line, ok: true)
@@ -672,50 +752,51 @@ private struct KnowledgeDepthCard: View {
     private func explanationRow(_ piece: ExplanationPiece) -> some View {
         switch piece.kind {
         case .numbered(let number):
-            HStack(alignment: .top, spacing: 12) {
+            IconLeadRow {
                 Text("\(number)")
                     .font(.caption.weight(.bold))
                     .foregroundStyle(runway.onAction)
                     .frame(width: 22, height: 22)
                     .background(runway.ink, in: Circle())
-                    .padding(.top, 1)
+            } content: {
                 Text(piece.text)
-                    .font(.body)
-                    .foregroundStyle(runway.ink)
-                    .lineSpacing(5)
+                    .font(.callout)
+                    .foregroundStyle(runway.copy)
+                    .lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)
             }
         case .bullet:
-            HStack(alignment: .top, spacing: 12) {
+            IconLeadRow {
                 Circle()
-                    .fill(runway.ink)
+                    .fill(runway.copy)
                     .frame(width: 6, height: 6)
-                    .padding(.top, 8)
+                    .padding(.top, 7)
+            } content: {
                 Text(piece.text)
-                    .font(.body)
-                    .foregroundStyle(runway.ink)
-                    .lineSpacing(5)
+                    .font(.callout)
+                    .foregroundStyle(runway.copy)
+                    .lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)
             }
         case .paragraph:
             Text(piece.text)
-                .font(.body)
-                .foregroundStyle(runway.ink)
-                .lineSpacing(6)
+                .font(.callout)
+                .foregroundStyle(runway.copy)
+                .lineSpacing(5)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
 
     private func memoryRow(_ text: String, ok: Bool) -> some View {
-        HStack(alignment: .top, spacing: 10) {
+        IconLeadRow {
             Image(systemName: ok ? "checkmark" : "xmark")
-                .font(.body.weight(.bold))
+                .font(.callout.weight(.bold))
                 .foregroundStyle(ok ? runway.plus : Color.orange)
-                .frame(width: 18, alignment: .center)
-                .padding(.top, 2)
+                .frame(height: 20, alignment: .center)
+        } content: {
             Text(text)
-                .font(ok ? .callout.weight(.medium) : .callout)
-                .foregroundStyle(ok ? runway.ink : .secondary)
+                .font(.callout)
+                .foregroundStyle(ok ? runway.copy : .secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .accessibilityLabel((ok ? String(localized: "要覆盖") : String(localized: "别搞混")) + " " + text)

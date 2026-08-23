@@ -12,6 +12,7 @@ struct RunwayPalette: Equatable {
     var agent: Color
     var hairline: Color
     var liftShadow: Color
+    var copy: Color
     var scrim: Color
     var cardHighlight: Color
 
@@ -25,7 +26,8 @@ struct RunwayPalette: Equatable {
         plus: Color(red: 0.18, green: 0.68, blue: 0.42),
         agent: Color(red: 0.15, green: 0.63, blue: 0.60),
         hairline: Color.black.opacity(0.08),
-        liftShadow: Color.black.opacity(0.07),
+        liftShadow: Color(red: 0.61, green: 0.64, blue: 0.67).opacity(0.30),
+        copy: Color(red: 0.38, green: 0.38, blue: 0.40),
         scrim: Color.black.opacity(0.28),
         cardHighlight: Color.white.opacity(0.8)
     )
@@ -40,7 +42,8 @@ struct RunwayPalette: Equatable {
         plus: Color(red: 0.42, green: 0.86, blue: 0.58),
         agent: Color(red: 0.38, green: 0.82, blue: 0.78),
         hairline: Color.white.opacity(0.14),
-        liftShadow: Color.black.opacity(0.55),
+        liftShadow: Color(red: 0.02, green: 0.03, blue: 0.04).opacity(0.55),
+        copy: Color(red: 0.72, green: 0.72, blue: 0.74),
         scrim: Color.black.opacity(0.62),
         cardHighlight: Color.white.opacity(0.12)
     )
@@ -58,7 +61,14 @@ extension EnvironmentValues {
 }
 
 enum Runway {
-    static let cardRadius: CGFloat = 16
+    static let space: CGFloat = 8
+    static let gap: CGFloat = 16
+    static let section: CGFloat = 24
+    static let cardRadius: CGFloat = 24
+    static let innerRadius: CGFloat = 8
+    static let chipRadius: CGFloat = 16
+    static let shadowBlur: CGFloat = 16
+    static let shadowY: CGFloat = 4
     static let railWidth: CGFloat = 240
     static let sidebarIdeal: CGFloat = 220
 
@@ -83,7 +93,7 @@ struct PaperSurface: View {
 }
 
 struct RunwayCard<Content: View>: View {
-    var padding: CGFloat = 20
+    var padding: CGFloat = Runway.gap
     var tinted: Bool = false
     @ViewBuilder var content: () -> Content
     @State private var hovering = false
@@ -99,7 +109,7 @@ struct RunwayCard<Content: View>: View {
                 RoundedRectangle(cornerRadius: Runway.cardRadius, style: .continuous)
                     .strokeBorder(runway.hairline, lineWidth: 1)
             )
-            .shadow(color: runway.liftShadow, radius: hovering ? 16 : 8, y: hovering ? 6 : 3)
+            .shadow(color: runway.liftShadow, radius: hovering ? Runway.shadowBlur : 10, y: hovering ? 6 : Runway.shadowY)
             .offset(y: hovering && !reduceMotion ? -1 : 0)
             .animation(reduceMotion ? nil : Runway.spring, value: hovering)
             .onHover { hovering = $0 }
@@ -112,8 +122,8 @@ struct PaperWell<Content: View>: View {
 
     var body: some View {
         content()
-            .padding(12)
-            .background(runway.field, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .padding(Runway.gap)
+            .background(runway.field, in: RoundedRectangle(cornerRadius: Runway.innerRadius, style: .continuous))
     }
 }
 
@@ -145,44 +155,55 @@ struct RunwayPrimaryButton: View {
     }
 }
 
-struct MetricTile: View {
-    var title: String
+struct StatCell: Identifiable {
+    var id: String
     var value: String
-    var note: String
-    var emphasized: Bool = false
+    var title: String
     var action: (() -> Void)? = nil
-    @State private var hovering = false
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+}
+
+struct StatStrip: View {
+    var items: [StatCell]
     @Environment(\.runway) private var runway
 
     var body: some View {
-        Button(action: { action?() }) {
-            VStack(alignment: .leading, spacing: 6) {
-                Text(title)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Text(value)
-                    .font(.system(size: 32, weight: .semibold))
-                    .foregroundStyle(.primary)
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
-                Text(note)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+        HStack(spacing: Runway.gap) {
+            ForEach(items) { item in
+                Button(action: { item.action?() }) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(item.value)
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundStyle(runway.ink)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                        Text(item.title)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(14)
+                    .background(runway.card, in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
+                    .shadow(color: runway.liftShadow, radius: 8, y: 2)
+                }
+                .buttonStyle(.plain)
+                .disabled(item.action == nil)
             }
-            .frame(maxWidth: .infinity, minHeight: 96, alignment: .topLeading)
-            .padding(18)
-            .background(runway.card, in: RoundedRectangle(cornerRadius: Runway.cardRadius, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: Runway.cardRadius, style: .continuous)
-                    .strokeBorder(runway.hairline, lineWidth: 1)
-            )
-            .shadow(color: runway.liftShadow, radius: hovering ? 14 : 6, y: hovering ? 5 : 2)
         }
-        .buttonStyle(.plain)
-        .onHover { hovering = $0 }
-        .animation(reduceMotion ? nil : Runway.spring, value: hovering)
+    }
+}
+
+struct MetaTag: View {
+    var title: String
+    @Environment(\.runway) private var runway
+
+    var body: some View {
+        Text(title)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(runway.field, in: Capsule())
     }
 }
 
@@ -237,6 +258,34 @@ struct GradeChip: View {
     }
 }
 
+struct IconLeadRow<Icon: View, Content: View>: View {
+    var iconWidth: CGFloat = 22
+    var spacing: CGFloat = 12
+    var icon: () -> Icon
+    var content: () -> Content
+
+    init(
+        iconWidth: CGFloat = 22,
+        spacing: CGFloat = 12,
+        @ViewBuilder icon: @escaping () -> Icon,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.iconWidth = iconWidth
+        self.spacing = spacing
+        self.icon = icon
+        self.content = content
+    }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: spacing) {
+            icon()
+                .frame(width: iconWidth, alignment: .center)
+            content()
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+}
+
 struct FilterPill: View {
     var title: String
     var selected: Bool
@@ -247,11 +296,12 @@ struct FilterPill: View {
         Button(action: action) {
             Text(title)
                 .font(.subheadline.weight(.medium))
+                .lineLimit(1)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 7)
                 .foregroundStyle(selected ? runway.ink : Color.secondary)
                 .background(selected ? runway.card : Color.clear, in: Capsule())
-                .shadow(color: selected ? runway.liftShadow : .clear, radius: 4, y: 1)
+                .shadow(color: selected ? runway.liftShadow : .clear, radius: 8, y: 2)
         }
         .buttonStyle(.plain)
     }

@@ -160,7 +160,7 @@ struct AnimatedThemeToggler: View {
                 .contentTransition(.symbolEffect(.replace))
                 .background(runway.card, in: Circle())
                 .overlay(Circle().strokeBorder(runway.hairline, lineWidth: 1))
-                .shadow(color: runway.liftShadow, radius: 6, y: 2)
+                .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
         }
         .buttonStyle(.plain)
         .help(appearance.isDark ? String(localized: "切换到浅色") : String(localized: "切换到深色"))

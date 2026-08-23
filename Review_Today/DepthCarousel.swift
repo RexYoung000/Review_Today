@@ -52,7 +52,7 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
                                 .fill(Color.black.opacity(slot.tint))
                                 .allowsHitTesting(false)
                         )
-                        .shadow(color: runway.liftShadow, radius: 28, y: 14)
+                        .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
                         .blur(radius: reduceMotion ? 0 : slot.blur)
                         .opacity(slot.opacity)
                         .scaleEffect(slot.scale)
@@ -153,7 +153,7 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
                 .foregroundStyle(runway.ink)
                 .frame(width: 40, height: 40)
                 .background(runway.card.opacity(0.94), in: Circle())
-                .shadow(color: runway.liftShadow, radius: 10, y: 4)
+                .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
         }
         .buttonStyle(.plain)
         .padding(.horizontal, 12)
