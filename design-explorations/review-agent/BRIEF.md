@@ -3,6 +3,32 @@
 > 状态：`mascot-bangs-ahoge-study-v4.png` 已被 Rex 接受为当前角色母形方向
 > 证据边界：概念板只验证母形、情绪与品牌关系；不证明小尺寸图标、矢量结构、Spine 拆件、动画节奏或原生界面已经完成。
 
+## V7 表情与知识卡优化（待验证）
+
+- Rex 认为 V6 的不对称方牙笑近似坏笑，与抱卡邀请复习的动作不协调；V7 固定使用抱着两张复习卡的品牌动作，只比较闭口温柔微笑、居中开口微笑和居中两颗小板牙三种表达。
+- 卡片缩小并下移，双臂轻托而不是紧抓；前卡使用一个短陶土色标题条和两三条长短不一的石墨内容线，后卡轻微错位。所有信息均为语言无关的内容骨架，不放真实英文、产品 Logo、问题、答案、问号或对勾。
+- 完整吉祥物可使用极浅的哑光纸纹和轻微纤维感帮助卡片区别于普通色块；App 图标与单色 Logo 只保留标题条／内容线的平面结构，不使用厚阴影、折角、高光或拟真纸张。
+- V7 仍是表情与知识卡关系验证，不会直接确定最终 App 图标、角色标准表情或 Spine 嘴型。
+- `mascot-card-expression-study-v7.png`：左、中、右分别为闭口温柔微笑、居中开口无牙与居中两颗小板牙；每组包含完整角色、App 图标和单色小 Logo。
+- 当前观察：卡片的标题条、内容线与极浅纸纹能在不使用真实文字时建立知识资料语义。左侧闭口微笑最适合安静、可信的默认 App 图标；右侧两颗居中板牙不再像坏笑，可保留为角色说话或鼓励状态；中间开口无牙更像正在发声或轻微惊讶，不推荐作为静态 Logo。以上仍需 Rex 视觉确认。
+
+### V7 表情与知识卡优化提示词
+
+```text
+Use case: logo-brand
+Asset type: V7 expression and knowledge-card refinement board for the Review Today mascot and app icon
+Input images: Image 1 is the exact accepted V4 mascot identity, proportions, bangs, ahoge, eyes, floating S/comma torso, arms, and lively graphite line reference. Image 2 supplies only the left holding-two-cards composition, warm cream/graphite/terracotta palette, and app-icon extraction relationship. Correct Image 2's sly asymmetric square-tooth smile and blank oversized cards.
+Primary request: create one landscape comparison board with exactly three columns. Every column uses the exact same gentle front-facing, slightly tilted mascot pose and the exact same two knowledge-review cards; only the mouth differs. Each column contains one large full mascot, one rounded-square macOS app-icon crop, and one small one-color graphite logo-mark extraction.
+Shared cards: reduce and lower the cards so the mouth, arms and curled torso remain visible. The front card has one short terracotta title bar and two or three short graphite content strokes; the second card is subtly offset behind with one terracotta edge. Use language-neutral content lines, never readable text.
+Left expression: one small centered shallow closed smile, symmetrical, relaxed and kind, with no teeth.
+Center expression: one tiny centered rounded open smile with soft dark interior and no teeth; no surprise, laugh or shout.
+Right expression: one tiny centered soft open smile with exactly two equal small upper front teeth, symmetrical and gentle, never rabbit-like, babyish or mischievous.
+Material: extremely subtle matte paper tooth and fine fiber grain only on large full-mascot cards; app icons and logo marks simplify cards to flat cream with strong content strokes. No thick shadow, folded corner, gloss, bevel, depth, crumple or photorealism.
+Style and palette: controlled 2D brand-development art, lively graphite contour, pale butter-cream mascot, muted terracotta card accents and app-icon field, quiet warm-ivory canvas, warm editorial macOS polish, no gradients, glow or 3D.
+Constraints: preserve V4's asymmetric healthy head, short side-swept bangs, one comma ahoge, exactly two eyes, compact S/comma torso, exactly two rounded-nub arms and no legs. Exactly two cards per mascot and icon. No headphones. Keep all geometry identical across columns except the mouth.
+Avoid: asymmetric smirk, crooked or single tooth, fang, open laugh, eyebrows, blush, missing eye, fingers, crossed arms, whistle, microphone, headphones, real text, logo on card, playing-card symbols, study clichés, heavy paper effects, long hair, baby, rabbit, generic smiley, existing character, watermark.
+```
+
 ## V6 复习语义构图（待验证）
 
 - Rex 已确认品牌核心动作采用“复习老师带着复习卡来找用户”，下一轮比较抱卡正视、递卡邀请与翻卡提问三种产品表达。

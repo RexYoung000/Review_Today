@@ -394,8 +394,10 @@ Agent 服务 就绪 · 麦克风已允许 · 通知已允许
 - 极简 Logo 最终从同一角色提炼，用于菜单栏、状态图标、水印和小尺寸品牌位置；不预设必须由头部线圈或嘴构成。
 - 品牌的核心静态动作采用“复习老师带着今日复习卡来找用户”：优先探索双手抱着两张轻微错位的复习卡、向用户递卡邀请，以及翻卡提问三种构图。空手抱臂容易显得审视或封闭；吹哨与胸前常驻哨子偏向体育教练、裁判和催促，不进入常驻吉祥物、App 图标或 Logo。
 - 复习卡负责表达“带着内容帮助用户重温”，角色表情负责表达温柔老师人格，耳机和原生会话状态负责表达语音互动。App 图标不强行同时塞入复习、老师、语音与 AI 的全部符号，也不使用问号、对勾、文字、麦克风或通用聊天气泡替代角色辨识。
+- 复习卡不放真实英文、产品 Logo 或可阅读题目；使用小型陶土色标题条、两三条长短不一的石墨内容线和轻微错位的第二张卡建立知识资料语义。完整吉祥物中的卡片可有极浅的哑光纸纹和轻微纤维感，App 图标与小 Logo 必须简化为平面结构，不保留缩小后会变脏的材质细节。
+- App 图标中的默认表情不使用偏向一侧的不对称方牙笑。当前对比闭口温柔微笑、居中小幅开口微笑与居中两颗小板牙三种版本；两颗板牙即使成立，也可只用于吉祥物说话或鼓励状态，不必成为常驻 Logo 表情。
 - 单色母形已进入可继续探索状态，现阶段恢复吉祥物、App 图标与 Logo 的同源配色验证；第一张关系板仅测试“奶油黄角色、石墨线条、陶土珊瑚语音配件／图标底色”，属于待 Rex 验证的色彩假设，不是已确定品牌色。最终矢量结构、图标安全区、明暗模式版本与 Spine 拆件必须单独制作和验收。
-- 可见证据：第一轮未通过稿为 `mascot-concept-v1.png` 与 `app-icon-logo-concept-v1.png`；第二轮性格与动作方向稿为 `mascot-character-study-v2.png`；正常双耳耳机会话状态稿为 `headphones-session-storyboard-v3.png`；`mascot-bangs-ahoge-study-v4.png` 已由 Rex 接受为当前角色母形方向；`mascot-logo-color-study-v5.png` 是第一张角色—耳机—App 图标—Logo 配色关系稿；`mascot-review-card-logo-study-v6.png` 比较抱卡、递卡与翻卡三种复习语义构图，仍待 Rex 选择。提示词、取舍与证据边界见同目录 `BRIEF.md`。
+- 可见证据：第一轮未通过稿为 `mascot-concept-v1.png` 与 `app-icon-logo-concept-v1.png`；第二轮性格与动作方向稿为 `mascot-character-study-v2.png`；正常双耳耳机会话状态稿为 `headphones-session-storyboard-v3.png`；`mascot-bangs-ahoge-study-v4.png` 已由 Rex 接受为当前角色母形方向；`mascot-logo-color-study-v5.png` 是第一张角色—耳机—App 图标—Logo 配色关系稿；`mascot-review-card-logo-study-v6.png` 比较抱卡、递卡与翻卡三种复习语义构图；`mascot-card-expression-study-v7.png` 比较闭口、无牙开口与两颗板牙，并验证知识卡内容骨架和轻纸纹。V6、V7 仍待 Rex 选择。提示词、取舍与证据边界见同目录 `BRIEF.md`。
 
 ## 9. 键盘、辅助功能和本地化
 
