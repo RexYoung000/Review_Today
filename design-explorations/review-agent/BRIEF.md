@@ -36,6 +36,30 @@
 - 当前成立：主姿态比第一轮更俏皮、更像角色；嘴不再像硬件；思考、理解、纠正和鼓励可以通过全身动作区分。
 - 尚未解决：部分小稿出现手指，部分笑脸略偏儿童动画，各姿态的固定比例还不够严格。这张图只能作为性格与动作方向稿，不能直接作为 Spine 模型表。
 
+## 回声线示范与结论
+
+- `echo-line-motion-demo-v2.png`：左侧为补齐两眼的基础形象，中间为静止错位轮廓，右侧为说话时轮廓弹开的示意。
+- Rex 确认回声线更像动作表现，不是角色自带特征。
+- 当前有效结论：回声线只在说话、思考或理解时短暂出现；静止母形不得依赖回声线建立辨识度。
+- `mascot-character-study-v2.png` 左侧主立绘少一只眼属于生成错误。正面与三分之二侧面必须保留两颗豆豆眼，只有完整侧面允许隐藏一只。
+
+### 回声线示范提示词
+
+```text
+Use case: stylized-concept
+Asset type: a simple three-panel visual explanation of an optional 'echo contour line' signature for the existing Review Today mascot
+Input image: use Image 1 only as the identity reference for the mascot: graphite animation sketch, irregular large head, tiny curled S/comma torso, two small arms tucked near the belly, tiny bean-dot eyes, one cute uneven square-tooth mouth, warm white paper. Preserve the same personality and proportions. Correct the source generation defect: every front or three-quarter view must have exactly TWO visible bean-dot eyes. Never omit an eye.
+Primary request: Draw the exact same mascot in the exact same gentle three-quarter listening pose three times from left to right, at equal size, so the only meaningful difference is the echo contour line concept.
+Left figure: baseline character with one normal graphite outline and no echo line.
+Center figure: resting echo-line version. Add one deliberate, clean secondary graphite arc slightly outside the character's back-left head contour, offset by a small consistent gap. It starts near the upper-left crown, follows only about one third of the head curve, and fades before the neck. It should read as a delayed pencil echo, not hair, halo, shadow, duplicate character, or messy construction line.
+Right figure: speaking echo-line version. Preserve the same secondary arc, but let it separate into two short gently expanding graphite arcs behind the back-left head contour, plus one tiny motion beat near the upper torso, suggesting that the voice traveled through the outline. The mascot itself subtly perks up and opens the hand-drawn tooth mouth, but the mouth does not glow.
+Composition: clean horizontal three-panel comparison on warm white animation paper, generous spacing, no text, no labels, no arrows, no borders, no app icon, no logo. Each figure remains fully visible and similarly sized.
+Style/medium: monochrome graphite animation development drawing, lively controlled pencil line, a little roughness and varied pressure, no polished vector treatment
+Color palette: graphite black and soft gray only; no color, glow, gradient, or dark-mode version
+Constraints: exactly one mascot per panel; same character identity and fixed topology in all three; exactly two visible eyes per figure; exactly one head, one tiny torso, two arms, no legs; echo line only on the center and right figures. The echo arc must be visibly separate from the main body contour and easy to understand at a glance.
+Avoid: missing eye, one-eyed character, extra eyes, hair, antenna, eyebrow, ear, halo, aura, sound-wave icon, Wi-Fi symbol, multiple full outlines, double exposure, shadow silhouette, ghosting, neon effect, hardware mouth, fingers, human hands, sad expression, generic corporate mascot, Pixar or Soul replication, text, watermark.
+```
+
 ### 第二轮提示词
 
 ```text
