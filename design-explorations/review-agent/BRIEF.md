@@ -1,7 +1,7 @@
 # Review Today 品牌角色 Demo 简报
 
-> 状态：第一轮静态视觉探索，等待 Rex 视觉选择
-> 证据边界：两张概念板只验证母形、情绪与品牌同源关系；不证明小尺寸图标、矢量结构、Spine 拆件、动画节奏或原生界面已经完成。
+> 状态：第一轮静态视觉探索未通过；第二轮重新验证单色角色母形
+> 证据边界：概念板只验证母形、情绪与品牌关系；不证明小尺寸图标、矢量结构、Spine 拆件、动画节奏或原生界面已经完成。
 
 ## 已确认方向
 
@@ -9,23 +9,49 @@
 - 外形保持中性，女性人格通过女声、措辞、停顿和动作表达，不使用长发、睫毛、裙子或蝴蝶结。
 - 静止母形借鉴稳定、略带手绘感的小人；动态语言借鉴“活着的声音线”，不复制任何参考角色的具体轮廓或五官。
 - 大头、小型悬浮身体、无明确双腿、点状眼睛、固定两臂。
-- 默认表情略微发呆但专注倾听，不长期挂标准微笑。
-- 圆角“声音口”保留可爱记忆点；安静时像微张小嘴，说话时成为发光的声音窗口，不表现成牙齿。
+- 平时呆萌、回应时机灵；依靠歪头、前倾、收腹和弯曲形成俏皮动作，不长期挂标准微笑。
+- 嘴恢复为不规则手绘表情，可偶尔像露出一颗方牙；不发光，也不承担语音硬件标识。
+- 语音与 AI 感改由轮廓脉动、身体伸缩、重心变化和沿线游光表达。
 - 吉祥物、App 图标和极简 Logo 来自同一个角色：完整身体 → 头部近景 → 头部线圈与声音口。
 - 为未来 Spine 保持固定拓扑：头、身体、左臂、右臂、眼睛、声音口；不依赖任意增生或每帧重画。
 
-## 本轮保留资产
+## 第一轮资产与结论
 
 - `mascot-concept-v1.png`：角色母形、倾听、思考、说话、温柔纠正与头部近景。
 - `app-icon-logo-concept-v1.png`：浅色／深色 App 图标与小尺寸 Logo 简化关系。
 
-第一轮生成的圆头五指版本因过于标准、儿童化与轻 3D 被放弃，没有纳入项目资产。
+以上两张保留为未通过探索的决策证据，不能继续作为实现参考。Rex 的视觉反馈是：发光胶囊嘴出戏；角色偏丧；机械换色难看；整体缺少参考草图的俏皮和吉祥物感。
+
+更早生成的圆头五指版本因过于标准、儿童化与轻 3D 被放弃，没有纳入项目资产。
 
 ## 当前观察
 
-- 成立：无腿悬浮、点眼、声音口、同源图标关系与固定拓扑已经可见。
-- 仍需选择：当前连续线条母形是否足够有“她”的个性，还是需要增加更明显的不对称、手绘笨拙感或独有姿态。
-- 后续不是直接描摹生成图。方向被接受后，需要重新构造矢量母版、16–1024 px 图标测试和 Spine 拆件图。
+- 可保留：无腿悬浮、点眼、中性外形与固定拓扑。
+- 必须重做：正圆直立母形、发光胶囊嘴、被动垂手、机械深色反相和过早 Logo 提炼。
+- 第二轮只验证单色动画草图中的轮廓、表情与动作张力。方向被接受后，才重新构造矢量母版、16–1024 px 图标测试和 Spine 拆件图。
+
+## 第二轮性格与动作方向稿
+
+- `mascot-character-study-v2.png`：单色动画开发草图，验证方牙回归表情、S／逗号形头身重心、压缩与弹起，以及“平时呆萌、回应时机灵”。
+- 当前成立：主姿态比第一轮更俏皮、更像角色；嘴不再像硬件；思考、理解、纠正和鼓励可以通过全身动作区分。
+- 尚未解决：部分小稿出现手指，部分笑脸略偏儿童动画，各姿态的固定比例还不够严格。这张图只能作为性格与动作方向稿，不能直接作为 Spine 模型表。
+
+### 第二轮提示词
+
+```text
+Use case: stylized-concept
+Asset type: second-round animation preproduction pencil model sheet for an original Review Today voice-agent mascot, intended to validate personality and later inform a fixed Spine rig
+Primary request: Design one original mascot character who feels like a caring review teacher and always-available voice AI companion. The emotional formula is: quietly goofy at rest, suddenly alert and clever when responding, playful but never noisy or childish. The character gently corrects mistakes without blame.
+Input image: use only as high-level reference for lively animation-sketch energy, pose compression and expansion, imperfect pencil line weight, asymmetrical facial acting, and mascot charm. Do not trace or copy any existing silhouette, face, pose, costume, or character from the reference.
+Subject: a tiny floating gender-neutral line character with exactly one large softly irregular head, one very small curved torso, no legs or feet, exactly two short simple arms, two tiny dot eyes, and a small hand-drawn mouth. Head and torso are slightly offset so the resting silhouette has a gentle S-curve or curled-comma rhythm, not a straight snowman. The head is not a perfect circle. The torso feels compact and tucked, not dangling. One eye may sit subtly higher than the other. The mouth is an uneven short pencil shape, sometimes reading like one cute square tooth, but never a glowing capsule, screen, device, or voice indicator.
+Personality acting: the rest pose leans forward slightly with both little arms tucked near the belly, looking curious and awake rather than sad. When the character understands, the head lifts and the whole S-curve springs open. Thinking curls the body inward with one arm near the chin. Speaking uses natural tiny mouth changes while the outline and posture carry the rhythm. Gentle correction uses a slight head tilt and one relaxed open arm. Encouragement uses one small buoyant bounce, not celebration.
+Composition: one large hero three-quarter resting pose, plus six smaller drawings of the exact same character: listening, perk-up/understood, thinking, speaking, gently correcting, and encouraging. Add three small head-expression studies and one side-view construction sketch. Arrange freely like a professional animation animator's rough model sheet. No labels, no text, no UI, no icon, no logo.
+Style/medium: monochrome graphite animation development drawing on warm white animation paper; loose exploratory pencil strokes, subtle construction lines, varied pressure, a few deliberate redraw marks and faint smudges; readable silhouette and professional character design underneath the roughness. Mostly contour drawing, minimal soft graphite fill only where needed for expression. Not polished vector art.
+Color palette: graphite black and soft gray only on warm white paper; absolutely no teal, cyan, colored glow, gradients, dark-mode version, or color variants
+Rig constraint: despite elastic poses, preserve the same fixed parts and recognizable proportions: head, torso, left arm, right arm, two eyes, mouth. No extra limbs or topology changes.
+Mood: warm, mischievously intelligent, attentive, safe, slightly odd and memorable; an adult companion with mascot charm
+Avoid: sad, depressed, sleepy, drooping, vacant, timid, permanently surprised, permanent smile, generic corporate mascot, perfect circular head, symmetrical front-facing stiffness, straight vertical body, snowman, ghost, sperm or tadpole silhouette, animal, human woman, baby, plush toy, glossy 3D, polished vector, hardware mouth, neon mouth, microphone, headphones, hair, eyelashes, skirt, bow, cap, whistle, books, glasses, classroom props, logo presentation, app icon mockup, Pixar or Soul character replication, any recognizable existing character.
+```
 
 ## 保留角色概念板提示词
 
