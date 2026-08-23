@@ -3,6 +3,15 @@
 > 状态：`mascot-bangs-ahoge-study-v4.png` 已被 Rex 接受为当前角色母形方向；`mascot-card-expression-study-v7.png` 左侧已被接受为当前静态品牌构图与默认表情方向
 > 证据边界：概念板只验证母形、情绪与品牌关系；不证明小尺寸图标、矢量结构、Spine 拆件、动画节奏或原生界面已经完成。
 
+## V8 正式品牌资产（已导出，待视觉验收）
+
+- V8 不再通过生成式图片继续改变角色，而是把 V7 左侧闭口抱卡方向重构为确定性的 SVG 母版。
+- 正式资产包含彩色 App 图标、大尺寸完整吉祥物、单色品牌标志、菜单栏简化标志、标准色文件，以及 macOS 16–1024 px AppIcon 导出。
+- 64 px 及以下使用单独的小尺寸简化母版：加粗轮廓、放大五官与卡片、减少卡片内容线；不能机械缩小 1024 px 图标。
+- 产品正式名称尚未确认，本轮不制作 Wordmark。精确色值与最终几何需 Rex 检查渲染稿和真实 Dock／Finder 表现后才能视为接受；SVG 或构建通过本身不构成体验验收。
+- `brand/review-today-app-icon.svg`、`brand/review-today-mascot.svg`、`brand/review-today-mark.svg` 与 `brand/review-today-menu-bar-mark.svg` 是 V8 可维护母版；`brand/exports/brand-acceptance-board.png` 是本轮集中视觉验收入口。
+- `brand/export_brand_assets.sh` 已将大小尺寸母版分别导出到工程 `AppIcon.appiconset`；macOS Debug 构建与编译后的 `AppIcon.icns` 已验证通过，但 Dock、Finder、启动台和应用切换器仍待 Rex 真实视觉确认。
+
 ## V7 表情与知识卡优化（左侧已接受）
 
 - Rex 认为 V6 的不对称方牙笑近似坏笑，与抱卡邀请复习的动作不协调；V7 固定使用抱着两张复习卡的品牌动作，只比较闭口温柔微笑、居中开口微笑和居中两颗小板牙三种表达。

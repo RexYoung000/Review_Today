@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Review Today app icon</title>
+  <desc>Caring review teacher mascot holding two knowledge cards</desc>
+  <g fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="24" y="24" width="976" height="976" rx="220" fill="#D96F50"/>
+
+    <path d="M349 558C303 602 284 687 300 794C316 899 401 949 512 946C630 949 710 887 718 786C727 682 686 601 631 564C575 527 402 529 349 558Z" fill="#F7E6BE" stroke="#35312E" stroke-width="16"/>
+    <path d="M508 137C361 132 253 233 246 382C239 518 331 610 477 620C632 631 752 551 774 421C798 280 703 157 558 139C542 137 525 137 508 137Z" fill="#F7E6BE" stroke="#35312E" stroke-width="16"/>
+
+    <path d="M520 139C547 119 557 88 542 70C529 55 503 61 495 79" stroke="#35312E" stroke-width="15"/>
+    <path d="M400 285C435 272 462 250 480 222M437 294C471 280 497 256 514 229M477 298C504 285 526 264 540 241" stroke="#35312E" stroke-width="13"/>
+
+    <ellipse cx="431" cy="393" rx="16" ry="21" fill="#35312E"/>
+    <ellipse cx="586" cy="386" rx="16" ry="21" fill="#35312E"/>
+    <path d="M485 468Q520 493 555 463" stroke="#35312E" stroke-width="14"/>
+
+    <g transform="rotate(6 610 744)">
+      <rect x="484" y="625" width="274" height="246" rx="38" fill="#FFF8E8" stroke="#35312E" stroke-width="14"/>
+    </g>
+    <g transform="rotate(-3 506 770)">
+      <rect x="346" y="641" width="320" height="258" rx="40" fill="#FFF8E8" stroke="#35312E" stroke-width="14"/>
+      <rect x="388" y="686" width="112" height="18" rx="9" fill="#D96F50"/>
+      <path d="M390 741H556M390 785H526M390 829H574" stroke="#35312E" stroke-width="14"/>
+    </g>
+
+    <path d="M345 649C304 678 315 744 362 770C385 783 411 777 424 757" stroke="#35312E" stroke-width="62"/>
+    <path d="M345 649C304 678 315 744 362 770C385 783 411 777 424 757" stroke="#F7E6BE" stroke-width="38"/>
+    <circle cx="659" cy="805" r="43" fill="#F7E6BE" stroke="#35312E" stroke-width="14"/>
+  </g>
+</svg>
