@@ -392,8 +392,8 @@ Agent 服务 就绪 · 麦克风已允许 · 通知已允许
 - 吉祥物使用完整悬浮身体，用于复习窗口、语音状态和未来 Spine 表演。
 - App 图标最终应从被接受的角色母形提炼，在小尺寸保留最有生命力的轮廓与表情；是否使用头部近景不在角色确认前锁死。
 - 极简 Logo 最终从同一角色提炼，用于菜单栏、状态图标、水印和小尺寸品牌位置；不预设必须由头部线圈或嘴构成。
-- 当前暂停 App 图标、Logo 和换色探索，先验证单色吉祥物母形与俏皮动作；角色被 Rex 接受后再重新提炼同源图标。最终矢量结构、图标安全区、明暗模式版本与 Spine 拆件必须单独制作和验收。
-- 可见证据：第一轮未通过稿为 `mascot-concept-v1.png` 与 `app-icon-logo-concept-v1.png`；第二轮性格与动作方向稿为 `mascot-character-study-v2.png`；正常双耳耳机会话状态稿为 `headphones-session-storyboard-v3.png`；`mascot-bangs-ahoge-study-v4.png` 已由 Rex 接受为当前角色母形方向。提示词、取舍与证据边界见同目录 `BRIEF.md`。
+- 单色母形已进入可继续探索状态，现阶段恢复吉祥物、App 图标与 Logo 的同源配色验证；第一张关系板仅测试“奶油黄角色、石墨线条、陶土珊瑚语音配件／图标底色”，属于待 Rex 验证的色彩假设，不是已确定品牌色。最终矢量结构、图标安全区、明暗模式版本与 Spine 拆件必须单独制作和验收。
+- 可见证据：第一轮未通过稿为 `mascot-concept-v1.png` 与 `app-icon-logo-concept-v1.png`；第二轮性格与动作方向稿为 `mascot-character-study-v2.png`；正常双耳耳机会话状态稿为 `headphones-session-storyboard-v3.png`；`mascot-bangs-ahoge-study-v4.png` 已由 Rex 接受为当前角色母形方向；`mascot-logo-color-study-v5.png` 是尚待选择的第一张角色—耳机—App 图标—Logo 配色关系稿。提示词、取舍与证据边界见同目录 `BRIEF.md`。
 
 ## 9. 键盘、辅助功能和本地化
 
