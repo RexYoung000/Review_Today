@@ -12,6 +12,21 @@
 - `mascot-logo-color-study-v5.png`：第一张奶油黄、石墨与陶土珊瑚关系稿，包含待机角色、语音耳机状态、App 图标和三枚小 Logo。
 - 当前观察：陶土珊瑚用于耳机与 App 图标时能强化温暖、俏皮的角色气质；奶油色身体与暖白底的明度距离偏小，小尺寸纯色 Logo 也弱化了刘海识别点。两项都需 Rex 先判断整体气质，再决定是否进入针对性修正。
 
+### V5 配色关系板提示词
+
+```text
+Use case: logo-brand
+Asset type: first color relationship board for the Review Today mascot, app icon, and minimal logo
+Input image: Image 1 is the exact accepted V4 mascot identity and anatomy reference. Preserve the same softly irregular large head, compact curled S/comma floating torso, exactly two tiny rounded arms ending in blunt nubs, exactly two bean-dot eyes in all front and three-quarter views, one small uneven square tooth, two or three short side-swept bang strokes, exactly one tiny off-center comma-shaped ahoge, and the normal lightweight two-ear headphones only in the voice state.
+Primary request: Create one clean landscape brand color study that tests whether this exact mascot naturally belongs to a warm cream, graphite, and muted terracotta-coral palette. This is a color test, not a redesign. Show four coherent same-origin elements: (1) one large three-quarter full-body idle mascot without headphones, (2) one medium voice-session mascot wearing a complete thin headband and two small earcups, (3) one polished rounded-square macOS app icon derived from the same recognizable head and upper-body crop, and (4) three very small minimal logo-mark tests distilled from the exact same asymmetrical head, ahoge, eyes, and square-tooth expression, including at least one one-color graphite mark.
+Color palette: mascot body filled with very light warm butter-cream, never bright yellow; lively graphite-charcoal contour, eyes, mouth, bangs, and ahoge; headphones in muted earthy terracotta-coral with cream inner pads and graphite structure; app icon uses a restrained terracotta-coral field with the cream mascot and graphite face; minimal marks use graphite or terracotta only. Background is quiet warm ivory paper.
+Style/medium: controlled 2D brand exploration combining the accepted lively hand-drawn graphite line with restrained flat colored-pencil fills; warm editorial macOS polish; vector-friendly shapes but retain slight human irregularity; playful and mascot-like, not childish.
+Composition: generous white space; large idle mascot on the left, active headphone state near center, app icon and three small logo marks on the right; no words, no labels, no arrows, no UI screens, no device mockups.
+Mood: caring review teacher, quietly goofy at rest, attentive and clever in conversation, warm, safe, gently feminine, companionable rather than technological.
+Constraints: change only the color treatment and brand extraction; preserve the exact V4 character identity, healthy head silhouette, proportions, facial spacing, bangs, ahoge, square tooth, S/comma torso, and no-leg floating anatomy. The idle mascot has no headphones at all. The active mascot has one complete thin headband and exactly two visible small earcups. Every visible front or three-quarter character and icon face has exactly two eyes. Arms have no fingers. Flat color only, no gradient, no glow, no glossy material, no 3D, no realistic fur or fabric.
+Avoid: teal, blue-green, blue, purple, generic AI colors, neon, gradients, aura, light trails, translucent glass, saturated primary yellow, candy colors, peach skin tone, human skin, pink femininity stereotype, generic chat bubble, microphone logo, book logo, checkmark logo, generic smiley icon, perfect-circle head, missing eye, extra eye, one-eyed mascot, human ears, earring, antenna, multiple ahoge strands, full hairstyle, long hair, eyebrows, eyelashes, bow, hat, microphone boom, gaming headset, fingers, hands, legs, feet, baby, plush toy, bean character, snowman, ghost, animal, recognizable existing character, text, watermark.
+```
+
 ## 已确认方向
 
 - 角色是具备老师能力的女性 AI 搭档：贴心、随时回应、知道用户提供的内容、温柔提醒，纠正但不指责。
