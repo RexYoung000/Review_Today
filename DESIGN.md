@@ -1,7 +1,7 @@
 # Review Today 产品界面与体验方向
 
 > 完成阶段：direction aligned；知识库、待处理、设置、空状态与品牌角色方向已对齐
-> 证据边界：产品、交互与品牌角色方向已由 Rex 选择；`design-explorations/review-agent/` 的第一轮静态概念板未通过视觉验收，第二轮需要先重新验证角色母形。现有原生实现也尚未按新方向验收。本节规定信息顺序、窗口角色、状态规则与角色设计边界，不把静态概念图视为最终 Logo、Spine 动画或原生体验证据。
+> 证据边界：产品、交互与品牌角色方向已由 Rex 选择；`design-explorations/review-agent/mascot-bangs-ahoge-study-v4.png` 已被接受为当前角色母形方向，但尚不是最终模型表、Logo、App 图标或 Spine 资产，现有原生实现也尚未按该方向验收。本节规定信息顺序、窗口角色、状态规则与角色设计边界，不把静态概念图视为动画或原生体验证据。
 
 ## 1. 设计目标
 
@@ -393,7 +393,7 @@ Agent 服务 就绪 · 麦克风已允许 · 通知已允许
 - App 图标最终应从被接受的角色母形提炼，在小尺寸保留最有生命力的轮廓与表情；是否使用头部近景不在角色确认前锁死。
 - 极简 Logo 最终从同一角色提炼，用于菜单栏、状态图标、水印和小尺寸品牌位置；不预设必须由头部线圈或嘴构成。
 - 当前暂停 App 图标、Logo 和换色探索，先验证单色吉祥物母形与俏皮动作；角色被 Rex 接受后再重新提炼同源图标。最终矢量结构、图标安全区、明暗模式版本与 Spine 拆件必须单独制作和验收。
-- 可见证据：第一轮未通过稿为 `mascot-concept-v1.png` 与 `app-icon-logo-concept-v1.png`；第二轮性格与动作方向稿为 `mascot-character-study-v2.png`；正常双耳耳机会话状态稿为 `headphones-session-storyboard-v3.png`；当前刘海与小呆毛角色稿为 `mascot-bangs-ahoge-study-v4.png`，等待 Rex 视觉判断。提示词、取舍与证据边界见同目录 `BRIEF.md`。
+- 可见证据：第一轮未通过稿为 `mascot-concept-v1.png` 与 `app-icon-logo-concept-v1.png`；第二轮性格与动作方向稿为 `mascot-character-study-v2.png`；正常双耳耳机会话状态稿为 `headphones-session-storyboard-v3.png`；`mascot-bangs-ahoge-study-v4.png` 已由 Rex 接受为当前角色母形方向。提示词、取舍与证据边界见同目录 `BRIEF.md`。
 
 ## 9. 键盘、辅助功能和本地化
 
