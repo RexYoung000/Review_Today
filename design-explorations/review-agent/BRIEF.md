@@ -51,6 +51,35 @@
 - 待机时完全不显示耳机；用户明确发起语音会话后直接戴上，聆听、思考和回应期间保持佩戴，会话结束或取消后消失。
 - 耳机不是录音或隐私的唯一反馈；原生界面仍需明确文字、权限状态和录音控制。Reduce Motion 直接切换待机与佩戴状态。
 
+## 刘海与小呆毛
+
+- 固定头部特征采用两三笔短偏分刘海与一根偏离中心的逗号形小呆毛，轻微表达女性气质并补足圆头顶部留白。
+- 刘海不覆盖豆豆眼，不发展成完整长发；呆毛不做长卷、弹簧或天线造型。
+- 正常双耳耳机的头梁从刘海和呆毛后方经过，佩戴时仍应看见固定发型特征。
+- 呆毛只做轻微状态反馈：待机微弯、进入会话稍立、思考轻偏、回应小幅回弹；Reduce Motion 下保持固定。
+
+### 刘海与小呆毛角色稿
+
+- `mascot-bangs-ahoge-study-v4.png`：保留既有头身、方牙和正常双耳耳机，只增加短偏分刘海、一根小呆毛及其轻微状态变化。
+- 当前成立：顶部剪影不再空秃；刘海提供轻微女性气质；小呆毛在待机与会话状态中保持稳定辨识；耳机头梁仍清楚可见。
+- 尚未解决：回应姿态仍出现了不符合固定拓扑的手指；最终模型表需要统一无手指的圆钝手臂，并验证刘海、呆毛与耳机头梁的前后遮挡。
+
+### 刘海与小呆毛角色稿提示词
+
+```text
+Use case: stylized-concept
+Asset type: updated animation character sheet for the original Review Today mascot, adding only subtle side-swept bangs and one tiny ahoge while preserving the accepted mascot and normal headphones
+Input images: Image 1 is the accepted playful mascot personality and graphite sketch style. Image 2 is the accepted voice-session state logic and NORMAL lightweight two-ear headphones. Preserve the same compact S/comma torso, tiny arms, two bean-dot eyes, uneven single square tooth, and complete thin headphone headband with two small earcups. Correct all source defects: every front or three-quarter view must show exactly TWO visible bean-dot eyes, and arms must end in simple rounded nubs with no fingers.
+Primary request: Add one restrained permanent hairstyle signature to the same mascot: TWO OR THREE short separate side-swept pencil bang strokes resting near the upper forehead, plus exactly ONE tiny comma-shaped ahoge emerging slightly off-center from the crown. The bangs and ahoge add a subtle feminine, playful identity while keeping the character abstract and gender-light.
+Hair geometry: no solid hair mass and no filled hair cap. Bangs are only two or three clean curved graphite strokes, short enough not to cover the eyes. The single ahoge is a very small soft comma curve, clearly hair but not an antenna, spring, horn, flame, or question mark. It must remain attached to the crown and preserve the same placement in all poses. When headphones are worn, the complete thin headband passes BEHIND the bangs and ahoge, so both hair features remain visible and the headset still reads clearly.
+Composition: one large hero three-quarter idle pose without headphones; beside it four smaller exact-same-character states: voice-session ready wearing normal two-ear headphones with ahoge slightly more upright, listening wearing headphones with attentive lean, thinking wearing headphones with ahoge gently leaning to one side, and responding wearing headphones with ahoge slightly rebounding plus one simple rounded-arm gesture. Add two clean head close-ups: idle without headphones and active with headphones. No labels, no text, no arrows, no UI, no app icon, no logo.
+Style/medium: monochrome graphite animation character-development drawing on warm white paper; controlled lively pencil lines, varied pressure, subtle construction traces, professional mascot charm, not polished vector art and not 3D
+Color palette: graphite black and soft gray only; no color, teal, glow, gradients, dark mode, or color variants
+Mood: quietly goofy, attentive, warm, gently feminine, alert and clever when responding, playful but not childish or anime-like
+Constraints: exact same identity, healthy head silhouette, proportions, two eyes, tooth, bangs and one ahoge in every pose; exactly one head, one compact torso, exactly two arms, no legs. Headphones appear only in the four active states and active close-up; whenever worn they have a full headband and two visible small earcups. Hair motion is extremely subtle and does not change topology.
+Avoid: missing eye, one-eyed character, extra eyes, full hairstyle, long hair, bob haircut, blunt fringe, thick bangs, hair covering eyes, hair cap, wig, ponytail, pigtails, multiple ahoge strands, antenna, horn, sprout, flame, question mark, anime girl, eyelashes, eyebrows, bow, flower clip, human ears, earring, single-sided headset, C-shaped ear, microphone boom, gaming headset, fingers, human hands, hardware mouth, sad face, baby, plush toy, ghost, animal, Pixar or Soul replication, recognizable existing characters, text, watermark.
+```
+
 ### 正常双耳耳机状态稿
 
 - `headphones-session-storyboard-v3.png`：从左到右展示待机无耳机、会话准备、聆听／思考与回应状态，并提供无耳机／戴耳机头部近景。
