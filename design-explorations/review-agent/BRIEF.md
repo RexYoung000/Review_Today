@@ -7,6 +7,7 @@
 
 - Rex 已否决把 V7 角色重新描成 SVG 的生产路径。V8 改为以 V4 锁定角色身份、以 V7 左侧锁定闭口微笑与抱卡构图，由 GPT Image 生成工作流产出正式位图内容；人工只负责选图和工程打包，不重新绘制角色。
 - `brand/raster/mascot-master-v8.png` 是统一暖白底的完整吉祥物母图；`brand/raster/app-icon-master-v8.png` 是陶土色 App 图标母图；`brand/raster/mark-master-v8.png` 是单色标志母图。三者均由模型分别生成，并以同一角色身份约束。
+- V8 首轮模型母图的角色偏黄，App 图标底偏高饱和橙红且带中心晕染，与 V7 左侧草图不一致；修正版以该草图为唯一颜色参考，改为近纸白淡奶油角色、略亮暖白卡片、柔和石墨线和低饱和陶土粉橙实底，单色标志则使用中性暖灰白底。
 - 代码只能对 App 图标母图进行裁切、缩放、圆角 Alpha 蒙版和 PNG 导出，不能补画五官、手臂、卡片、刘海或呆毛，也不能用 SVG 重新解释模型线条。
 - 内置生成工具两次把透明棋盘格画进 RGB 文件，因此当前完整吉祥物明确使用暖白产品底，不把假透明当作正式透明 cutout。透明角色资源需要后续单独提取并以 `hasAlpha: yes` 验证。
 - App 图标母图已导出为 16–1024 px 工程资源，`brand/exports/brand-acceptance-board.png` 已检查 128、64、32 与 16 px，并通过 macOS Debug 构建；真实 Dock／Finder 视觉仍待 Rex 验收。
