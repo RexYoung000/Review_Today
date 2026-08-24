@@ -26,4 +26,4 @@ swift "$packager" board \
   "$raster_dir/mark-master-v8.png" \
   "$exports_dir/brand-acceptance-board.png"
 
-echo "Model-generated brand assets packaged into $exports_dir and $app_icon_dir"
+echo "Sampled-palette GPT Image brand assets packaged into $exports_dir and $app_icon_dir"

@@ -159,8 +159,8 @@ func makeBoard(mascotURL: URL, iconURL: URL, markURL: URL, output: URL) throws {
     background.setFill()
     NSRect(x: 0, y: 0, width: 1600, height: 1000).fill()
 
-    drawText("Review Today — GPT Image Brand Assets V8", at: NSPoint(x: 80, y: 920), size: 34, weight: .semibold, color: graphite)
-    drawText("模型负责角色内容；工程只负责选图、裁切、缩放与 macOS 图标蒙版", at: NSPoint(x: 80, y: 878), size: 18, color: secondary)
+    drawText("Review Today — GPT Image Brand Assets V8.2", at: NSPoint(x: 80, y: 920), size: 34, weight: .semibold, color: graphite)
+    drawText("模型负责角色内容；颜色按已接受草图直接取样，工程只做像素校色与打包", at: NSPoint(x: 80, y: 878), size: 18, color: secondary)
 
     let mascotPanel = NSRect(x: 80, y: 330, width: 480, height: 500)
     let iconPanel = NSRect(x: 600, y: 330, width: 480, height: 500)
@@ -187,7 +187,7 @@ func makeBoard(mascotURL: URL, iconURL: URL, markURL: URL, output: URL) throws {
         x += max(dimension + 70, 118)
     }
     drawText("静态品牌：闭口微笑 + 两张知识卡", at: NSPoint(x: 820, y: 165), size: 18, weight: .medium, color: graphite)
-    drawText("耳机与板牙只属于后续交互状态；当前母图不声明透明 cutout 已完成。", at: NSPoint(x: 820, y: 128), size: 14, color: secondary)
+    drawText("陶土底 #E58E6D；头部 #FFF7E8；下半身 #FCEFD6；不改变模型角色造型。", at: NSPoint(x: 820, y: 128), size: 14, color: secondary)
 
     NSGraphicsContext.restoreGraphicsState()
     try writePNG(bitmap, to: output)

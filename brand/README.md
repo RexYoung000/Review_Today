@@ -8,11 +8,13 @@
 - `raster/app-icon-master-v8.png`：陶土色 App 图标模型母图。
 - `raster/mark-master-v8.png`：暖白底单色石墨标志母图。
 - `exports/brand-acceptance-board.png`：三项母图与实际 AppIcon 尺寸的集中验收板。
+- `references/accepted-color-reference-v8.png`：Rex 提供的已接受草图颜色参考。
+- `palette-sampled.json`：从颜色参考干净区域直接取得的 sRGB 色值。
 
 ## 生产原则
 
 - 角色内容、线条、表情、卡片和材质均由生成模型产出，不使用 SVG 或代码重新描画。
-- 工程脚本只负责裁切、缩放、macOS 圆角蒙版和 PNG 打包，不添加或修改角色内容。
+- 工程脚本只负责按已取样色值校正现有像素、裁切、缩放、macOS 圆角蒙版和 PNG 打包，不描线、不补画也不修改角色内容。
 - AppIcon 的 16–1024 px 版本均从选定的 `app-icon-master-v8.png` 导出。
 - 产品正式名称尚未确认，本包不包含 Wordmark。
 - 当前完整吉祥物没有透明通道。模型把透明棋盘格画进 RGB 文件的失败稿已排除；只有文件真实包含 Alpha 时，才允许标记为透明 cutout。
@@ -26,6 +28,16 @@
 ```
 
 该命令不会生成或重画角色，只会从已选定的模型母图重新导出工程资源和验收板。
+
+如需从模型原始输出重做 V8.2 取样校色，可执行：
+
+```shell
+swift brand/apply_sampled_palette.swift mascot INPUT.png OUTPUT.png
+swift brand/apply_sampled_palette.swift icon INPUT.png OUTPUT.png
+swift brand/apply_sampled_palette.swift mark INPUT.png OUTPUT.png
+```
+
+校色器使用 `palette-sampled.json` 中记录的参考关系：产品底 `#FEF9F2`、头部 `#FFF7E8`、下半身 `#FCEFD6`、卡片 `#FEF8ED`、图标陶土底 `#E58E6D`、石墨 `#3B3A38`、卡片强调 `#E97C4D`。
 
 ## 验收要求
 
