@@ -37,6 +37,14 @@ struct Review_TodayApp: App {
                 .runwayAppearance()
         }
 
+#if DEBUG
+        WindowGroup(String(localized: "吉祥物动画 POC"), id: "mascot-animation-poc") {
+            MascotAnimationPOCView()
+                .runwayAppearance()
+        }
+        .defaultSize(width: 920, height: 680)
+#endif
+
         Settings {
             SettingsView()
                 .runwayAppearance()

@@ -199,6 +199,7 @@ struct SettingsView: View {
 
 private struct SettingsForm: View {
     @Bindable var settings: AppSettings
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         Section(String(localized: "外观")) {
@@ -226,6 +227,11 @@ private struct SettingsForm: View {
                 NavigationLink(String(localized: "Agent 运行记录")) {
                     AgentRunLogView()
                 }
+#if DEBUG
+                Button(String(localized: "打开吉祥物动画 POC")) {
+                    openWindow(id: "mascot-animation-poc")
+                }
+#endif
             }
         }
     }

@@ -1,7 +1,16 @@
 # Review Today 品牌角色 Demo 简报
 
-> 状态：`mascot-bangs-ahoge-study-v4.png` 已被 Rex 接受为当前角色母形方向；`mascot-card-expression-study-v7.png` 左侧已被接受为当前静态品牌构图与默认表情方向
-> 证据边界：概念板只验证母形、情绪与品牌关系；不证明小尺寸图标、矢量结构、Spine 拆件、动画节奏或原生界面已经完成。
+> 状态：`mascot-bangs-ahoge-study-v4.png` 已被 Rex 接受为当前角色母形方向；`mascot-card-expression-study-v7.png` 左侧已被接受为当前静态品牌构图与默认表情方向；V10 免费 SpriteKit 原生 POC 已可运行，等待 Rex 动态验收
+> 证据边界：概念板只验证母形、情绪与品牌关系；V10 只证明分层位图能在真实 macOS 窗口承载状态与打断，不证明正式 Spine 拆件、最终动画节奏或生产语音接入已经完成。
+
+## V10 免费原生动画 POC（待 Rex 动态验收）
+
+- `mascot-voice-mode-study-v9.png` 保留待机、抱卡和完整双耳耳机的语音状态关系，作为动画 POC 的会话配件参考，不替换 V8 静态母图。
+- `mascot-rig-parts-sheet-v10.png` 由 GPT Image 以 V8 透明吉祥物为身份母图生成；第一轮假棋盘格版本被拒绝，第二轮只把背景修复为真实 Alpha，不使用 SVG 或代码重画角色。
+- 原生 Debug POC 使用 SpriteKit 驱动头、身体、双臂、眼睛、刘海、呆毛、四档嘴型、完整耳机和两张复习卡；已在真实 Mac 窗口跑通待机、聆听、说话、音量、按钮／Escape 打断与模拟 Reduce Motion。
+- `mascot-spritekit-poc-idle-v10.png`、`mascot-spritekit-poc-listening-v10.png`、`mascot-spritekit-poc-speaking-v10.png` 和 `mascot-spritekit-poc-reduce-motion-v10.png` 是本轮真实运行截图，不是生成模型效果图。
+- 当前部件表足够验证状态机制，但身体拼接、耳罩左右一致性和动态节奏尚不能视为正式资产；是否继续 SpriteKit，仍需 Rex 先在应用中判断角色是否自然，再与 Rive／Spine 成本比较。
+- 运行入口、验证矩阵、生成提示词与证据边界见 `docs/mascot-animation-poc.md`。
 
 ## V8 正式品牌资产（模型生成版，透明资产待视觉验收）
 
