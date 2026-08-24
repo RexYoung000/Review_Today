@@ -17,6 +17,7 @@ enum PackageError: Error, CustomStringConvertible {
               package_raster_assets.swift icon INPUT.png OUTPUT.png SIZE
               package_raster_assets.swift resize INPUT.png OUTPUT.png SIZE
               package_raster_assets.swift board MASCOT.png ICON.png MARK.png OUTPUT.png
+              package_raster_assets.swift alpha-board MASCOT-CUTOUT.png MARK-CUTOUT.png OUTPUT.png
             """
         case .load(let url):
             return "Could not load image: \(url.path)"
@@ -72,6 +73,37 @@ func drawAspectFill(_ image: NSImage, in destination: NSRect) {
     image.draw(
         in: destination,
         from: sourceRect(for: image, destination: destination),
+        operation: .sourceOver,
+        fraction: 1,
+        respectFlipped: false,
+        hints: [.interpolation: NSImageInterpolation.high]
+    )
+}
+
+func drawAspectFit(_ image: NSImage, in destination: NSRect) {
+    let sourceAspect = image.size.width / image.size.height
+    let destinationAspect = destination.width / destination.height
+    let fitted: NSRect
+    if sourceAspect > destinationAspect {
+        let height = destination.width / sourceAspect
+        fitted = NSRect(
+            x: destination.minX,
+            y: destination.midY - height / 2,
+            width: destination.width,
+            height: height
+        )
+    } else {
+        let width = destination.height * sourceAspect
+        fitted = NSRect(
+            x: destination.midX - width / 2,
+            y: destination.minY,
+            width: width,
+            height: destination.height
+        )
+    }
+    image.draw(
+        in: fitted,
+        from: NSRect(origin: .zero, size: image.size),
         operation: .sourceOver,
         fraction: 1,
         respectFlipped: false,
@@ -220,6 +252,60 @@ func makeBoard(mascotURL: URL, iconURL: URL, markURL: URL, output: URL) throws {
     try writePNG(bitmap, to: output)
 }
 
+func makeAlphaBoard(mascotURL: URL, markURL: URL, output: URL) throws {
+    guard let mascot = NSImage(contentsOf: mascotURL) else { throw PackageError.load(mascotURL) }
+    guard let mark = NSImage(contentsOf: markURL) else { throw PackageError.load(markURL) }
+
+    let bitmap = try makeBitmap(width: 1600, height: 1000)
+    let canvas = NSColor(deviceRed: 0.965, green: 0.95, blue: 0.925, alpha: 1)
+    let warmIvory = NSColor(deviceRed: 254 / 255, green: 249 / 255, blue: 242 / 255, alpha: 1)
+    let terracotta = NSColor(deviceRed: 229 / 255, green: 142 / 255, blue: 109 / 255, alpha: 1)
+    let graphite = NSColor(deviceRed: 42 / 255, green: 41 / 255, blue: 39 / 255, alpha: 1)
+    let panelBorder = NSColor(deviceRed: 0.84, green: 0.80, blue: 0.75, alpha: 1)
+    let text = NSColor(deviceRed: 0.23, green: 0.22, blue: 0.21, alpha: 1)
+    let secondary = NSColor(deviceRed: 0.43, green: 0.40, blue: 0.37, alpha: 1)
+
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: bitmap)
+    canvas.setFill()
+    NSRect(x: 0, y: 0, width: 1600, height: 1000).fill()
+
+    drawText("Review Today — Transparent Asset QA V8.4", at: NSPoint(x: 80, y: 920), size: 34, weight: .semibold, color: text)
+    drawText("真实 Alpha 叠底检查：暖白／陶土为正式表面；深色只暴露边缘风险，不代表已完成深色适配", at: NSPoint(x: 80, y: 878), size: 18, color: secondary)
+
+    let panels = [
+        (NSRect(x: 80, y: 270, width: 450, height: 540), warmIvory, "暖白产品底"),
+        (NSRect(x: 575, y: 270, width: 450, height: 540), terracotta, "陶土品牌底"),
+        (NSRect(x: 1070, y: 270, width: 450, height: 540), graphite, "深色边缘检查")
+    ]
+
+    for (rect, background, label) in panels {
+        background.setFill()
+        let path = NSBezierPath(roundedRect: rect, xRadius: 30, yRadius: 30)
+        path.fill()
+        panelBorder.setStroke()
+        path.lineWidth = 2
+        path.stroke()
+        drawAspectFit(mascot, in: rect.insetBy(dx: 34, dy: 34))
+        drawText(label, at: NSPoint(x: rect.minX + 24, y: rect.maxY - 42), size: 16, weight: .medium, color: background == graphite ? .white : text)
+    }
+
+    drawText("透明单色标志（石墨）", at: NSPoint(x: 112, y: 205), size: 18, weight: .medium, color: text)
+    let markBackgrounds = [warmIvory, terracotta]
+    var markX: CGFloat = 360
+    for background in markBackgrounds {
+        let rect = NSRect(x: markX, y: 70, width: 130, height: 130)
+        background.setFill()
+        NSBezierPath(roundedRect: rect, xRadius: 24, yRadius: 24).fill()
+        drawAspectFit(mark, in: rect.insetBy(dx: 12, dy: 12))
+        markX += 180
+    }
+    drawText("当前石墨标志用于浅色／暖色表面；深色反白版本尚未制作。", at: NSPoint(x: 760, y: 120), size: 16, color: secondary)
+
+    NSGraphicsContext.restoreGraphicsState()
+    try writePNG(bitmap, to: output)
+}
+
 do {
     let args = CommandLine.arguments
     if args.count == 5, args[1] == "icon", let size = Int(args[4]), size > 0 {
@@ -232,6 +318,12 @@ do {
             iconURL: URL(fileURLWithPath: args[3]),
             markURL: URL(fileURLWithPath: args[4]),
             output: URL(fileURLWithPath: args[5])
+        )
+    } else if args.count == 5, args[1] == "alpha-board" {
+        try makeAlphaBoard(
+            mascotURL: URL(fileURLWithPath: args[2]),
+            markURL: URL(fileURLWithPath: args[3]),
+            output: URL(fileURLWithPath: args[4])
         )
     } else {
         throw PackageError.usage
