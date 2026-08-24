@@ -9,6 +9,7 @@
 - `brand/raster/mascot-master-v8.png` 是统一暖白底的完整吉祥物母图；`brand/raster/app-icon-master-v8.png` 是陶土色 App 图标母图；`brand/raster/mark-master-v8.png` 是单色标志母图。三者均由模型分别生成，并以同一角色身份约束。
 - V8 首轮模型母图的角色偏黄，App 图标底偏高饱和橙红且带中心晕染；V8.1 仍被 Rex 判断为偏橙、身体颜色不准。V8.2 将 Rex 提供的草图保存为 `brand/references/accepted-color-reference-v8.png` 并直接取样：产品底 `#FEF9F2`、头部 `#FFF7E8`、下半身 `#FCEFD6`、卡片 `#FEF8ED`、图标陶土底 `#E58E6D`、石墨 `#3B3A38`、卡片强调 `#E97C4D`。
 - GPT Image 保留并统一角色造型与铅笔纸面质感；由于模型按 Hex 输出的图标底仍约为 `#F59C79`，工程仅将已有像素确定性校准至草图取样中位色，不描线、不补画、不更改角色内容。该校准方式是 Rex 本轮明确要求的直接取色修正。
+- V8.3 进一步以同一草图锁定 App 图标显示范围：角色轮廓约占图标宽度的 72%，呆毛靠近上沿，头部为第一视觉层级，身体与知识卡在下沿自然裁掉；不再为了露出完整身体而缩小角色。
 - 代码只能按已接受草图的取样中位色移动模型已有像素，以及对 App 图标母图进行裁切、缩放、圆角 Alpha 蒙版和 PNG 导出；不能补画五官、手臂、卡片、刘海或呆毛，也不能用 SVG 重新解释模型线条。
 - 内置生成工具两次把透明棋盘格画进 RGB 文件，因此当前完整吉祥物明确使用暖白产品底，不把假透明当作正式透明 cutout。透明角色资源需要后续单独提取并以 `hasAlpha: yes` 验证。
 - App 图标母图已导出为 16–1024 px 工程资源，`brand/exports/brand-acceptance-board.png` 已检查 128、64、32 与 16 px，并通过 macOS Debug 构建；真实 Dock／Finder 视觉仍待 Rex 验收。

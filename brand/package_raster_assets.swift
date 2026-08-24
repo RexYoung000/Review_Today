@@ -79,6 +79,33 @@ func drawAspectFill(_ image: NSImage, in destination: NSRect) {
     )
 }
 
+func appIconSourceRect(for image: NSImage) -> NSRect {
+    // V8.3 reproduces the accepted sketch crop: a close character view with the
+    // ahoge near the top edge and the lower body/cards intentionally clipped.
+    let cropFraction: CGFloat = 0.85
+    let leftFraction: CGFloat = 0.110
+    let topFraction: CGFloat = 0.022
+    let cropWidth = image.size.width * cropFraction
+    let cropHeight = image.size.height * cropFraction
+    return NSRect(
+        x: image.size.width * leftFraction,
+        y: image.size.height * (1 - topFraction - cropFraction),
+        width: cropWidth,
+        height: cropHeight
+    )
+}
+
+func drawAppIconCrop(_ image: NSImage, in destination: NSRect) {
+    image.draw(
+        in: destination,
+        from: appIconSourceRect(for: image),
+        operation: .sourceOver,
+        fraction: 1,
+        respectFlipped: false,
+        hints: [.interpolation: NSImageInterpolation.high]
+    )
+}
+
 func exportIcon(input: URL, output: URL, size: Int) throws {
     guard let image = NSImage(contentsOf: input) else { throw PackageError.load(input) }
     let bitmap = try makeBitmap(width: size, height: size)
@@ -94,7 +121,7 @@ func exportIcon(input: URL, output: URL, size: Int) throws {
         xRadius: CGFloat(size) * 0.22,
         yRadius: CGFloat(size) * 0.22
     ).addClip()
-    drawAspectFill(image, in: iconRect)
+    drawAppIconCrop(image, in: iconRect)
     NSGraphicsContext.restoreGraphicsState()
     try writePNG(bitmap, to: output)
 }
@@ -138,7 +165,7 @@ func drawIconMaster(_ icon: NSImage, in rect: NSRect) {
         xRadius: rect.width * 0.22,
         yRadius: rect.height * 0.22
     ).addClip()
-    drawAspectFill(icon, in: rect)
+    drawAppIconCrop(icon, in: rect)
     NSGraphicsContext.restoreGraphicsState()
 }
 
@@ -159,8 +186,8 @@ func makeBoard(mascotURL: URL, iconURL: URL, markURL: URL, output: URL) throws {
     background.setFill()
     NSRect(x: 0, y: 0, width: 1600, height: 1000).fill()
 
-    drawText("Review Today — GPT Image Brand Assets V8.2", at: NSPoint(x: 80, y: 920), size: 34, weight: .semibold, color: graphite)
-    drawText("模型负责角色内容；颜色按已接受草图直接取样，工程只做像素校色与打包", at: NSPoint(x: 80, y: 878), size: 18, color: secondary)
+    drawText("Review Today — GPT Image Brand Assets V8.3", at: NSPoint(x: 80, y: 920), size: 34, weight: .semibold, color: graphite)
+    drawText("模型负责角色内容；颜色与 AppIcon 取景均按已接受草图校准", at: NSPoint(x: 80, y: 878), size: 18, color: secondary)
 
     let mascotPanel = NSRect(x: 80, y: 330, width: 480, height: 500)
     let iconPanel = NSRect(x: 600, y: 330, width: 480, height: 500)
@@ -187,7 +214,7 @@ func makeBoard(mascotURL: URL, iconURL: URL, markURL: URL, output: URL) throws {
         x += max(dimension + 70, 118)
     }
     drawText("静态品牌：闭口微笑 + 两张知识卡", at: NSPoint(x: 820, y: 165), size: 18, weight: .medium, color: graphite)
-    drawText("陶土底 #E58E6D；头部 #FFF7E8；下半身 #FCEFD6；不改变模型角色造型。", at: NSPoint(x: 820, y: 128), size: 14, color: secondary)
+    drawText("取景：呆毛接近上沿，头部为主视觉，身体与知识卡在下沿自然裁切。", at: NSPoint(x: 820, y: 128), size: 14, color: secondary)
 
     NSGraphicsContext.restoreGraphicsState()
     try writePNG(bitmap, to: output)

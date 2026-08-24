@@ -9,6 +9,7 @@
 - `raster/mark-master-v8.png`：暖白底单色石墨标志母图。
 - `exports/brand-acceptance-board.png`：三项母图与实际 AppIcon 尺寸的集中验收板。
 - `references/accepted-color-reference-v8.png`：Rex 提供的已接受草图颜色参考。
+- `references/accepted-app-icon-crop-v8.png`：Rex 提供的 App 图标人物显示范围参考。
 - `palette-sampled.json`：从颜色参考干净区域直接取得的 sRGB 色值。
 
 ## 生产原则
@@ -43,5 +44,5 @@ swift brand/apply_sampled_palette.swift mark INPUT.png OUTPUT.png
 
 1. 对照三张母图检查是否仍是同一个角色，尤其是眼距、刘海、呆毛、闭口微笑、双臂和两张知识卡。
 2. 检查 1024、128、64、32 和 16 px 的卡片语义与表情是否仍然可辨认。
-3. 在 Dock、Finder、启动台和应用切换器检查图标裁切、圆角、留白和陶土底质感。
+3. 在 Dock、Finder、启动台和应用切换器检查图标裁切：角色轮廓约占图标宽度的 72%，呆毛接近上沿，身体和卡片在下沿自然裁掉；不要缩成完整立绘。
 4. 视觉通过前，不把当前模型输出称为最终品牌定稿或 Spine 可用拆件。
