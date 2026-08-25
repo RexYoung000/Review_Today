@@ -26,6 +26,7 @@ Review Today 是“个人记忆教练”的项目仓库。长期方向是把日�
 | 文档 | 作用 |
 |---|---|
 | [最小闭环与渐进式里程碑](docs/demo-plan.md) | 当前唯一执行基线、减法边界、通过标准和后续阶段 |
+| [M1 纯文字最小闭环验收契约](docs/m1-acceptance.md) | M1 固定输入、知识卡要求、正确／错误回答和三层验收证据 |
 | [产品需求与边界](docs/product-requirements.md) | 长期产品方向与需求池，不代表当前全部实施 |
 | [Agent 与系统架构](docs/architecture.md) | 现有实现、目标架构、LangGraph 与 Harness 边界 |
 | [Apple Foundation Models 与 PCC 评估](docs/apple-foundation-models-evaluation.md) | Apple 设备端模型、PCC、适用场景、限制与里程碑二评测决定 |

@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "case_id": "m1-photosynthesis-concept-v1",
+  "milestone": "M1",
+  "description": "Pure-text minimum loop: one source, one knowledge card, one correct answer, and one clearly incorrect answer.",
+  "capture_request": {
+    "task_id": "11111111-1111-4111-8111-111111111111",
+    "source_id": "22222222-2222-4222-8222-222222222222",
+    "input_type": "text",
+    "raw_text": "光合作用是植物利用光能，把二氧化碳和水转化为有机物，并释放氧气的过程。",
+    "url": null,
+    "primary_language": "zh",
+    "audio_base64": "",
+    "audio_format": "m4a"
+  },
+  "expected_capture": {
+    "intent": "remember_content",
+    "knowledge_count": 1,
+    "initial_status_allowed": [
+      "processing",
+      "committing"
+    ],
+    "poll_while_statuses": [
+      "queued",
+      "uploading",
+      "processing"
+    ],
+    "status_before_ack": "committing",
+    "status_after_ack": "completed",
+    "attribution": "claim",
+    "risk_flagged": false,
+    "card": {
+      "knowledge_type": "concept",
+      "title_semantic_keywords": [
+        "光合作用"
+      ],
+      "theme_semantic_keywords": [
+        "光合作用"
+      ],
+      "content_language": "zh",
+      "question_language": "zh",
+      "answer_language": "zh",
+      "evidence_must_be_source_substring": true,
+      "required_semantic_points": [
+        {
+          "id": "energy",
+          "meaning": "植物利用光能",
+          "acceptable_phrases": [
+            "利用光能",
+            "借助光能"
+          ]
+        },
+        {
+          "id": "inputs",
+          "meaning": "输入包含二氧化碳和水",
+          "acceptable_phrases": [
+            "二氧化碳和水",
+            "水和二氧化碳"
+          ]
+        },
+        {
+          "id": "organic_matter",
+          "meaning": "生成或转化为有机物",
+          "acceptable_phrases": [
+            "转化为有机物",
+            "合成有机物",
+            "制造有机物"
+          ]
+        },
+        {
+          "id": "oxygen",
+          "meaning": "释放氧气",
+          "acceptable_phrases": [
+            "释放氧气",
+            "产生并释放氧气"
+          ]
+        }
+      ],
+      "main_question": {
+        "variant_index": 0,
+        "must_be_open_recall": true,
+        "must_not_be_yes_no": true,
+        "must_be_judgeable_from_scoring_spec": true
+      },
+      "scoring_spec": {
+        "must_cover_semantic_point_ids": [
+          "energy",
+          "inputs",
+          "organic_matter",
+          "oxygen"
+        ],
+        "evidence_must_reference_source": true
+      }
+    }
+  },
+  "grade_cases": [
+    {
+      "case_id": "correct-complete-no-hint",
+      "attempt_id": "33333333-3333-4333-8333-333333333333",
+      "answer_text": "植物借助光能，用二氧化碳和水合成有机物，同时释放氧气。",
+      "hint_used": false,
+      "expected_grade": "good",
+      "reason": "完整覆盖光能、二氧化碳和水、有机物、氧气四个原文语义点。"
+    },
+    {
+      "case_id": "clearly-incorrect-no-hint",
+      "attempt_id": "44444444-4444-4444-8444-444444444444",
+      "answer_text": "光合作用就是植物从土壤里直接吸收有机物。",
+      "hint_used": false,
+      "expected_grade": "again",
+      "reason": "核心机制错误，并遗漏原文中的输入、能量来源和氧气释放。"
+    }
+  ],
+  "style_tolerances": [
+    "标题可以是光合作用或植物的光合作用。",
+    "解释可以使用编号、短横线或其他清晰分点。",
+    "问题措辞可以变化，但必须是开放式主动回忆问题。",
+    "must_cover 可以合并相关关键点，但整体语义必须覆盖完整。",
+    "允许制造、合成、转化为有机物等不改变含义的表达。"
+  ],
+  "hard_failures": [
+    "生成零张或多张重复、拆碎知识卡。",
+    "遗漏四个核心语义点中的任一项。",
+    "evidence_excerpt 不是原文的连续子串。",
+    "问题无法依据 scoring_spec 判断。",
+    "正确回答不是 good，或明显错误回答不是 again。",
+    "模型、结构、本地写入或 ACK 失败后仍显示完成或已掌握。"
+  ],
+  "out_of_scope": [
+    "partial answers and nuanced semantic boundaries",
+    "voice and realtime interaction",
+    "web retrieval and fact verification",
+    "FSRS and notifications",
+    "persistent harness and full replay",
+    "Apple Foundation Models and PCC comparison",
+    "mascot and Spine animation",
+    "cross-platform deployment and commercialization"
+  ]
+}
