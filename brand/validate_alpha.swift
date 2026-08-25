@@ -46,7 +46,26 @@ func validate(path: String) throws {
         values.append(String(format: "%.3f", alpha))
     }
 
-    print("PASS \(path): \(bitmap.pixelsWide)x\(bitmap.pixelsHigh), corner alpha [\(values.joined(separator: ", "))]")
+    var minX = bitmap.pixelsWide
+    var minY = bitmap.pixelsHigh
+    var maxX = -1
+    var maxY = -1
+    for y in 0 ..< bitmap.pixelsHigh {
+        for x in 0 ..< bitmap.pixelsWide {
+            let alpha = bitmap.colorAt(x: x, y: y)?.usingColorSpace(.deviceRGB)?.alphaComponent ?? 0
+            if alpha > 0.01 {
+                minX = min(minX, x)
+                minY = min(minY, y)
+                maxX = max(maxX, x)
+                maxY = max(maxY, y)
+            }
+        }
+    }
+    let bounds = maxX >= minX && maxY >= minY
+        ? "\(maxX - minX + 1)x\(maxY - minY + 1) @ \(minX),\(minY)"
+        : "empty"
+
+    print("PASS \(path): \(bitmap.pixelsWide)x\(bitmap.pixelsHigh), alpha bounds \(bounds), corner alpha [\(values.joined(separator: ", "))]")
 }
 
 do {
