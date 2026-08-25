@@ -2,6 +2,13 @@
 
 > 状态：`mascot-bangs-ahoge-study-v4.png` 已被 Rex 接受为当前角色母形方向；`mascot-card-expression-study-v7.png` 左侧已被接受为当前静态品牌构图与默认表情方向；V10 拆件视觉已被否决，V11 只通过角色完整性、未通过说话表现；V12.1 无板牙嘴型已替换运行资源并通过构建与透明边距检查，等待代表速度录屏
 
+> Spine V13.1：V13 独立豆形手臂存在悬空与“像腿”风险，已停止沿用。Rex 接受 `mascot-spine-rig-decomposition-v13-1-candidate.png` 的拆件关系：胸前静置双臂合并进连续 `core_body_with_resting_arms_mesh`。当前开始制作透明生产层；正式 Spine Rig 仍未完成。
+
+- `spine-v1-layers/core-body-with-resting-arms-v13-1.png`：从已接受 V13.1 验收板机械裁取并去除连通暖白背景的第一张透明生产层；没有再次调用生成模型重画主体，Rex 已允许继续下一层。
+- `spine-v1-layers/headset-band-back-v13-1.png`、`headset-earcup-screen-left-v13-1.png`、`headset-earcup-screen-right-v13-1.png`：同源机械提取的真实 Alpha 耳机源层；等待统一缩放与静止重组，尚未锁定 Spine 装配坐标。
+- `spine-v1-headset-recomposition-v13-1.png`：头梁后置、左右耳罩前置的耳机静止重组基线；Rex 认为当前视觉重量可以沿用。
+- `spine-v1-face-open-recomposition-v13-1.png`、`spine-v1-face-blink-recomposition-v13-1.png`：叠加眼睛／眨眼、刘海、呆毛与 V12.1 闭口占位后的完整脸部静止重组候选；已通过脚本复现和 Alpha 检查，等待 Rex 最终视觉确认，五档嘴型尚未迁移。
+
 ## V12 真实说话表现（实现与冒烟通过，待体验验收）
 
 - Rex 确认 V11 说话状态过于接近待机：嘴型没有跟随语音，整体表现简陋，不能视为之前讨论的 Spine 效果。

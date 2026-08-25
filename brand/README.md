@@ -40,7 +40,7 @@
 swift brand/extract_alpha_cutout.swift brand/raster/mascot-master-v8.png brand/raster/mascot-cutout-v8.png 18 12
 ```
 
-该步骤只移除与画布相连的暖白背景，并对 12 px 外沿做底色去污染；角色内部像素、构图和五官不重画。
+该步骤只移除与画布相连的暖白背景，并对 12 px 外沿做底色去污染；角色内部像素、构图和五官不重画。可选第 5 个参数使用 `largest`（默认，仅保留最大连通前景）或 `all`（保留所有非背景拆件）；第 6 个参数使用 `auto`（默认，暖色边缘保留陶土色）或 `graphite`（边缘统一按石墨去污染）。
 
 如需从模型原始输出重做 V8.2 取样校色，可执行：
 

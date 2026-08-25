@@ -25,7 +25,7 @@ enum ExtractionError: Error, CustomStringConvertible {
     var description: String {
         switch self {
         case .usage:
-            return "Usage: extract_alpha_cutout.swift INPUT.png OUTPUT.png [background-distance] [edge-radius]"
+            return "Usage: extract_alpha_cutout.swift INPUT.png OUTPUT.png [background-distance] [edge-radius] [largest|all] [auto|graphite]"
         case .load(let url):
             return "Could not load image: \(url.path)"
         case .bitmap:
@@ -190,7 +190,14 @@ func clearPixel(at offset: Int, in buffer: UnsafeMutablePointer<UInt8>) {
     }
 }
 
-func extract(input: URL, output: URL, distance: Int, edgeRadius: Int) throws {
+func extract(
+    input: URL,
+    output: URL,
+    distance: Int,
+    edgeRadius: Int,
+    keepAll: Bool,
+    graphiteEdges: Bool
+) throws {
     guard let image = NSImage(contentsOf: input),
           let tiff = image.tiffRepresentation,
           let source = NSBitmapImageRep(data: tiff) else {
@@ -215,7 +222,9 @@ func extract(input: URL, output: URL, distance: Int, edgeRadius: Int) throws {
         color: sampledBackground,
         distance: distance
     )
-    let foreground = largestForeground(background: background, width: width, height: height)
+    let foreground = keepAll
+        ? background.map { !$0 }
+        : largestForeground(background: background, width: width, height: height)
     let decontaminationBand = edgeBand(
         foreground: foreground,
         width: width,
@@ -251,8 +260,8 @@ func extract(input: URL, output: URL, distance: Int, edgeRadius: Int) throws {
             let value = pixels[index]
             if decontaminationBand[index] {
                 let isWarmEdge = value.r - value.g > 6 && value.r - value.b > 12
-                let target = isWarmEdge ? accent : graphite
-                let targetDistance = isWarmEdge ? accentDistance : graphiteDistance
+                let target = !graphiteEdges && isWarmEdge ? accent : graphite
+                let targetDistance = !graphiteEdges && isWarmEdge ? accentDistance : graphiteDistance
                 let observedDistance = sqrt(Double(squaredDistance(value, sampledBackground)))
                 let alpha = min(1, max(0, observedDistance / targetDistance))
                 writePixel(target, alpha: UInt8(round(alpha * 255)), at: offset, into: buffer)
@@ -273,26 +282,34 @@ func extract(input: URL, output: URL, distance: Int, edgeRadius: Int) throws {
     let foregroundCount = foreground.reduce(0) { $0 + ($1 ? 1 : 0) }
     let percent = Double(foregroundCount) / Double(width * height) * 100
     print(String(
-        format: "background #%02X%02X%02X; foreground %.2f%%; threshold %d; edge radius %d",
+        format: "background #%02X%02X%02X; foreground %.2f%%; threshold %d; edge radius %d; mode %@; edge target %@",
         sampledBackground.r,
         sampledBackground.g,
         sampledBackground.b,
         percent,
         distance,
-        edgeRadius
+        edgeRadius,
+        keepAll ? "all" : "largest",
+        graphiteEdges ? "graphite" : "auto"
     ))
 }
 
 do {
     let arguments = CommandLine.arguments
-    guard (3...5).contains(arguments.count) else { throw ExtractionError.usage }
+    guard (3...7).contains(arguments.count) else { throw ExtractionError.usage }
     let distance = arguments.count >= 4 ? Int(arguments[3]) ?? 18 : 18
-    let edgeRadius = arguments.count == 5 ? Int(arguments[4]) ?? 8 : 8
+    let edgeRadius = arguments.count >= 5 ? Int(arguments[4]) ?? 8 : 8
+    let mode = arguments.count >= 6 ? arguments[5] : "largest"
+    let edgeTarget = arguments.count == 7 ? arguments[6] : "auto"
+    guard mode == "largest" || mode == "all" else { throw ExtractionError.usage }
+    guard edgeTarget == "auto" || edgeTarget == "graphite" else { throw ExtractionError.usage }
     try extract(
         input: URL(fileURLWithPath: arguments[1]),
         output: URL(fileURLWithPath: arguments[2]),
         distance: distance,
-        edgeRadius: max(1, edgeRadius)
+        edgeRadius: max(1, edgeRadius),
+        keepAll: mode == "all",
+        graphiteEdges: edgeTarget == "graphite"
     )
 } catch {
     FileHandle.standardError.write(Data("\(error)\n".utf8))
