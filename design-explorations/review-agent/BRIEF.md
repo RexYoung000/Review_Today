@@ -1,15 +1,25 @@
 # Review Today 品牌角色 Demo 简报
 
-> 状态：`mascot-bangs-ahoge-study-v4.png` 已被 Rex 接受为当前角色母形方向；`mascot-card-expression-study-v7.png` 左侧已被接受为当前静态品牌构图与默认表情方向；V10 免费 SpriteKit 原生 POC 已可运行，等待 Rex 动态验收
-> 证据边界：概念板只验证母形、情绪与品牌关系；V10 只证明分层位图能在真实 macOS 窗口承载状态与打断，不证明正式 Spine 拆件、最终动画节奏或生产语音接入已经完成。
+> 状态：`mascot-bangs-ahoge-study-v4.png` 已被 Rex 接受为当前角色母形方向；`mascot-card-expression-study-v7.png` 左侧已被接受为当前静态品牌构图与默认表情方向；V10 拆件视觉已被否决，V11 完整状态图 POC 等待 Rex 验收
+> 证据边界：V11 真实 Mac 截图证明角色不再分离和变形，但没有代表速度录屏，不能据此宣布动态节奏或最终 Spine 资产已通过。
 
-## V10 免费原生动画 POC（待 Rex 动态验收）
+## V11 完整角色状态图 POC（待 Rex 验收）
+
+- 待机状态直接复用 V8 完整透明抱卡母图；`mascot-voice-listening-full-v11.png` 与 `mascot-voice-speaking-full-v11.png` 分别是完整、连体的语音状态图，不再拆分头、身体和手臂。
+- 语音状态以 V4 左侧完整角色锁定 S／逗号连接几何，以 V8 锁定颜色、闭口表情和纸笔质感，以 V9 只锁定完整双耳耳机物体关系。直接从 V8 移除卡片而产生的雪人候选已拒绝。
+- 原生 SpriteKit 只在完整待机／聆听／说话图之间切换，并对整张角色做轻微悬浮、倾斜和语音强度伸缩；独立配件开关和四档拆件嘴型已移除。
+- `mascot-whole-state-poc-idle-v11.png`、`mascot-whole-state-poc-listening-v11.png` 和 `mascot-whole-state-poc-speaking-v11.png` 是真实 Mac 运行截图。当前可见结果没有领口双线、悬空手臂或分离身体，Escape 打断、100% 语音强度、深色背景与模拟 Reduce Motion 已冒烟。
+- 当前仍是原生 POC：没有代表速度录屏、真实系统 Reduce Motion、最小窗口和 Rex 视觉验收，也没有专业 Spine 遮挡补全或骨骼资产。
+- 运行入口、完整提示词、验证矩阵与证据边界见 `docs/mascot-animation-poc.md`。
+
+## V10 免费原生动画 POC（视觉未通过，留档）
 
 - `mascot-voice-mode-study-v9.png` 保留待机、抱卡和完整双耳耳机的语音状态关系，作为动画 POC 的会话配件参考，不替换 V8 静态母图。
 - `mascot-rig-parts-sheet-v10.png` 由 GPT Image 以 V8 透明吉祥物为身份母图生成；第一轮假棋盘格版本被拒绝，第二轮只把背景修复为真实 Alpha，不使用 SVG 或代码重画角色。
 - 原生 Debug POC 使用 SpriteKit 驱动头、身体、双臂、眼睛、刘海、呆毛、四档嘴型、完整耳机和两张复习卡；已在真实 Mac 窗口跑通待机、聆听、说话、音量、按钮／Escape 打断与模拟 Reduce Motion。
 - `mascot-spritekit-poc-idle-v10.png`、`mascot-spritekit-poc-listening-v10.png`、`mascot-spritekit-poc-speaking-v10.png` 和 `mascot-spritekit-poc-reduce-motion-v10.png` 是本轮真实运行截图，不是生成模型效果图。
-- 当前部件表足够验证状态机制，但身体拼接、耳罩左右一致性和动态节奏尚不能视为正式资产；是否继续 SpriteKit，仍需 Rex 先在应用中判断角色是否自然，再与 Rive／Spine 成本比较。
+- 当前部件表只能验证状态机制，不能继续作为角色资产：头部领口和身体上沿产生双线，葫芦身体偏离 S／逗号重心，双臂与主体分离，耳罩左右不一致。坐标和缩放不能修复已经变化的形状。
+- 替换方向使用完整、连体的待机／聆听／说话透明角色状态图。待机复用 V8 母图；语音状态逐张生成并验收后再接入 SpriteKit，暂不拆头、身体和手臂。
 - 运行入口、验证矩阵、生成提示词与证据边界见 `docs/mascot-animation-poc.md`。
 
 ## V8 正式品牌资产（模型生成版，透明资产待视觉验收）

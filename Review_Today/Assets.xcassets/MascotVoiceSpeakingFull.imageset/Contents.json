@@ -1,0 +1,13 @@
+{
+  "images" : [
+    {
+      "filename" : "mascot-voice-speaking-full-v11.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
