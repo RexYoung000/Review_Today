@@ -279,7 +279,7 @@ struct MascotAnimationPOCView: View {
             state: state,
             voiceIntensity: effectiveVoiceIntensity,
             reduceMotion: effectiveReduceMotion,
-            showToothSmile: speech.isShowingToothSmile
+            showFinishingSmile: speech.isShowingFinishingSmile
         )
     }
 }
@@ -325,7 +325,7 @@ private final class MascotSpriteScene: SKScene {
             "MascotMouthSmall",
             "MascotMouthMedium",
             "MascotMouthWide",
-            "MascotMouthTooth",
+            "MascotMouthFinish",
         ].map { name in
             let texture = SKTexture(imageNamed: name)
             texture.filteringMode = .linear
@@ -373,7 +373,7 @@ private final class MascotSpriteScene: SKScene {
         layoutCharacter()
     }
 
-    func apply(state: MascotPOCState, voiceIntensity: Double, reduceMotion: Bool, showToothSmile: Bool) {
+    func apply(state: MascotPOCState, voiceIntensity: Double, reduceMotion: Bool, showFinishingSmile: Bool) {
         self.state = state
         self.reduceMotion = reduceMotion
         targetVoiceIntensity = state == .speaking ? CGFloat(voiceIntensity) : 0
@@ -385,7 +385,7 @@ private final class MascotSpriteScene: SKScene {
         case .speaking:
             targetAlphas = SIMD3(0, 0, 1)
         }
-        targetMouthIndex = showToothSmile ? 4 : mouthIndex(for: targetVoiceIntensity)
+        targetMouthIndex = showFinishingSmile ? 4 : mouthIndex(for: targetVoiceIntensity)
 
         if reduceMotion {
             displayedVoiceIntensity = targetVoiceIntensity

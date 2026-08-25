@@ -4,7 +4,7 @@ import AppKit
 import CoreImage
 import Foundation
 
-private let names = ["closed", "small", "medium", "wide", "tooth"]
+private let names = ["closed", "small", "medium", "wide", "finish"]
 private let alphaThreshold: UInt8 = 10
 private let mergeGap = 18
 private let padding = 10
@@ -196,7 +196,7 @@ try FileManager.default.createDirectory(at: outputURL, withIntermediateDirectori
 for (index, topLeftBounds) in bounds.enumerated() {
     let sourceBounds = CGRect(
         x: topLeftBounds.minX,
-        y: CGFloat(height) - topLeftBounds.maxY,
+        y: topLeftBounds.minY,
         width: topLeftBounds.width,
         height: topLeftBounds.height
     )
@@ -215,7 +215,7 @@ for (index, topLeftBounds) in bounds.enumerated() {
         fputs("Unable to encode \(names[index]) mouth\n", stderr)
         exit(9)
     }
-    let destination = outputURL.appendingPathComponent("mascot-mouth-\(names[index])-v12.png")
+    let destination = outputURL.appendingPathComponent("mascot-mouth-\(names[index])-v12-1.png")
     try png.write(to: destination)
     print("WROTE \(destination.path) \(canvasWidth)x\(canvasHeight)")
 }

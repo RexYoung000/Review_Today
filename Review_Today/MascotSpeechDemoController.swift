@@ -37,7 +37,7 @@ final class MascotSpeechDemoController: NSObject, ObservableObject, AVAudioPlaye
         phase == .playing
     }
 
-    var isShowingToothSmile: Bool {
+    var isShowingFinishingSmile: Bool {
         phase == .finishing
     }
 
@@ -50,7 +50,7 @@ final class MascotSpeechDemoController: NSObject, ObservableObject, AVAudioPlaye
         case .playing:
             String(localized: "真实 TTS 正在播放 · 嘴型随音量变化")
         case .finishing:
-            String(localized: "回应完成 · 短暂方牙微笑")
+            String(localized: "回应完成 · 短暂温柔微笑")
         case let .failed(message):
             String(localized: "语音生成失败：\(message)")
         }
