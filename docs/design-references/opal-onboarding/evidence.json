@@ -1,0 +1,83 @@
+{
+  "case_id": "opal-onboarding-2026-08-27",
+  "review_date": "2026-08-27",
+  "status": "reference-only-not-an-approved-product-direction",
+  "source": {
+    "kind": "user-supplied-recording",
+    "basename": "13b5413afed0c77c8198f0907fba16a2.mp4",
+    "sha256": "43bdd232769067c0b36195be3d8e8a09b6840f56dba1f1851b6227254db6f66f",
+    "duration_seconds": 190.833333,
+    "width": 448,
+    "height": 960,
+    "video_codec": "hevc",
+    "average_frame_rate": "5652/229",
+    "audio_codec": "aac",
+    "app_version": null,
+    "os_version": null,
+    "raw_source_committed": false,
+    "absolute_path_omitted_for_privacy": true
+  },
+  "archive": {
+    "path": "assets/opal-onboarding-redacted.mp4",
+    "sha256": "387685b48a8603158cdf72710eafb6eccb5374ff86125f298aa500854618a76e",
+    "size_bytes": 7489261,
+    "duration_seconds": 190.833333,
+    "processing_tool": "ffmpeg 7.1.1",
+    "audio_removed": true,
+    "source_metadata_removed": true,
+    "timeline_trimmed": false,
+    "output_frame_rate": 30,
+    "redactions": [
+      {"start_seconds": 23, "end_seconds": 43, "x": 0, "y": 250, "width": 448, "height": 710, "reason": "account and sign-in details"},
+      {"start_seconds": 149, "end_seconds": 155, "x": 0, "y": 170, "width": 448, "height": 790, "reason": "installed-app picker"},
+      {"start_seconds": 163, "end_seconds": 168, "x": 0, "y": 250, "width": 448, "height": 710, "reason": "system share sheet and recipient details"}
+    ],
+    "verification": {
+      "checked_on": "2026-08-27",
+      "duration_matches_source": true,
+      "audio_stream_count": 0,
+      "source_metadata_absent": true,
+      "storyboards_visually_inspected": 4,
+      "redaction_boundary_frames_visually_inspected": 12,
+      "interior_mask_frames_checked": 921,
+      "interior_mask_test_region": {"x": 0, "y": 750, "width": 448, "height": 100},
+      "interior_mask_max_luma": 17,
+      "internal_links_and_media_presence": "passed",
+      "account_email_and_raw_user_path_text_scan": "passed",
+      "limit": "Pixel checks cover a lower strip inside each timed mask, not OCR of every pixel. No Opal runtime, accessibility, purchase, or outcome validation was performed."
+    }
+  },
+  "frames": [
+    {"id": "01", "seconds": 5, "file": "assets/01-rock.jpg", "label": "岩石"},
+    {"id": "02", "seconds": 9, "file": "assets/02-reveal.jpg", "label": "显露"},
+    {"id": "03", "seconds": 11.5, "file": "assets/03-gem.jpg", "label": "宝石"},
+    {"id": "04", "seconds": 17.5, "file": "assets/04-companion.jpg", "label": "对话开端"},
+    {"id": "05", "seconds": 50.8, "file": "assets/05-goal-response.jpg", "label": "目标回应"},
+    {"id": "06", "seconds": 61.5, "file": "assets/06-screen-time.jpg", "label": "使用时长"},
+    {"id": "07", "seconds": 67, "file": "assets/07-processing.jpg", "label": "查看答案"},
+    {"id": "08", "seconds": 86, "file": "assets/08-lifetime-cost.jpg", "label": "时间代价"},
+    {"id": "09", "seconds": 94, "file": "assets/09-reclaim.jpg", "label": "改变希望"},
+    {"id": "10", "seconds": 98, "file": "assets/10-permission.jpg", "label": "权限解释"},
+    {"id": "11", "seconds": 111, "file": "assets/11-personal-plan.jpg", "label": "收益摘要"},
+    {"id": "12", "seconds": 113.2, "file": "assets/12-commitment.jpg", "label": "行动转场"},
+    {"id": "13", "seconds": 121.5, "file": "assets/13-trial-reminder.jpg", "label": "试用提醒"},
+    {"id": "14", "seconds": 126, "file": "assets/14-paywall.jpg", "label": "订阅页"},
+    {"id": "15", "seconds": 131.5, "file": "assets/15-rule-explainer.jpg", "label": "规则解释"},
+    {"id": "16", "seconds": 134.5, "file": "assets/16-essential-apps.jpg", "label": "必备应用"},
+    {"id": "17", "seconds": 139, "file": "assets/17-unlock.jpg", "label": "解锁演示"},
+    {"id": "18", "seconds": 144.5, "file": "assets/18-hard-mode.jpg", "label": "Hard Mode"},
+    {"id": "19", "seconds": 148.5, "file": "assets/19-picker-demo.jpg", "label": "选择演示"},
+    {"id": "20", "seconds": 156.5, "file": "assets/20-recommended-rules.jpg", "label": "推荐规则"},
+    {"id": "21", "seconds": 162, "file": "assets/21-referral.jpg", "label": "邀请"},
+    {"id": "22", "seconds": 171.5, "file": "assets/22-crest.jpg", "label": "品牌印记"},
+    {"id": "23", "seconds": 175, "file": "assets/23-completion.jpg", "label": "完成场景"},
+    {"id": "24", "seconds": 185, "file": "assets/24-milestone.jpg", "label": "完成引导后解锁的 First 里程碑"}
+  ],
+  "storyboards": [
+    {"file": "assets/storyboard-01.jpg", "frames": ["01", "02", "03", "04", "05", "06"]},
+    {"file": "assets/storyboard-02.jpg", "frames": ["07", "08", "09", "10", "11", "12"]},
+    {"file": "assets/storyboard-03.jpg", "frames": ["13", "14", "15", "16", "17", "18"]},
+    {"file": "assets/storyboard-04.jpg", "frames": ["19", "20", "21", "22", "23", "24"]}
+  ],
+  "reuse": "Internal reference evidence only. No authorization for production assets, public redistribution, or claims of endorsement."
+}

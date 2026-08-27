@@ -31,6 +31,7 @@ Review Today 是“个人记忆教练”的项目仓库。长期方向是把日�
 | [Agent 与系统架构](docs/architecture.md) | 现有实现、目标架构、LangGraph 与 Harness 边界 |
 | [Apple Foundation Models 与 PCC 评估](docs/apple-foundation-models-evaluation.md) | Apple 设备端模型、PCC、适用场景、限制与里程碑二评测决定 |
 | [产品界面与体验方向](DESIGN.md) | 长期界面和体验方向 |
+| [设计参考案例库](docs/design-references/README.md) | 已研究的外部案例、画面证据与复用边界；不是已批准的产品需求 |
 | [21 天 POC 验证方案](docs/poc-validation.md) | 核心闭环稳定后的持续行为验证方案 |
 | [决策记录](docs/decision-log.md) | 历史决策及修订关系 |
 
