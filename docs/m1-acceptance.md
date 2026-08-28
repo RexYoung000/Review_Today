@@ -85,6 +85,16 @@ M1.4 Mac 客户端可以直接依赖以下服务字段：
 - 用户主动 `reprocess` 同样复用原任务记录，不创建第二份知识结果；
 - 没有 Mac ACK 时任务必须保持 `committing`；仅当 ACK 中的 knowledge IDs 与服务结果完整匹配时才能进入 `completed`。
 
+### 3.3 Mac 本地提交语义
+
+#12 的 Mac 端必须先建立可持久读取的 `Source` 与 `CaptureTask`，再异步提交服务：
+
+- 本地任务使用稳定的 `task_id` 与 `source_id`，服务不可用时保留原始文字和队列记录；
+- `processing`、`committing` 和 `completed` 按任务 ID 轮询，不能把提交响应的 `processing` 当作完成；
+- 服务返回 `committing` 后，Mac 先按服务知识 ID 幂等写入 `Knowledge`、`Question`、评分规格和 `FsrsState`，本地保存成功后才发送知识 ID ACK；
+- 本地写入或 ACK 失败时保留任务和原始输入，不显示为完成；下一次轮询可继续提交，不插入重复知识；
+- `retryable_failed` 是可恢复状态，待处理入口和首页计数必须可见，并提供重新整理操作。
+
 ## 4. 允许变化与失败边界
 
 以下差异属于生成文风，不应单独判为失败：
@@ -143,6 +153,15 @@ PYTHONPATH=. .venv/bin/python -m unittest discover -s tests -p 'test_*.py' -v
 
 应保存：操作路径、关键数据 ID、运行命令与结果、必要截图、失败现象和未覆盖项。
 
+#12 本地恢复检查还应覆盖：
+
+1. 关闭本机 Agent 服务后输入固定样本，确认原文仍留在本地 `Source` 和 `CaptureTask`，首页任务链路显示等待服务恢复；
+2. 启动服务后等待任务依次经过 `processing`、`committing` 与本地写入，确认同一 `task_id` 只产生一张知识卡，问题、评分规格和 `FsrsState` 均已保存；
+3. 在 `committing` 或已完成但本地未落库的补偿路径重复 tick 或重启 App，确认先完成本地幂等写入，再发送知识 ID ACK；
+4. ACK 失败时确认任务保持 `committing`，原始输入保留，下一次确认不会产生重复知识；
+5. 重新打开 App，确认已完成任务和原始 `Source` 仍可从 SwiftData 读取。
+
+服务级契约和客户端构建命令仍以第 5 节为准；本地保存失败与 ACK 失败需要同时保留任务原文和可归因错误码。
 ### 5.3 Rex 体验验收
 
 证明最小体验可以理解和使用：

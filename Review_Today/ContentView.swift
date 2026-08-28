@@ -163,7 +163,7 @@ struct ContentView: View {
     }
 
     private var inboxCount: Int {
-        inbox.filter { $0.status == "needs_attention" }.count
+        inbox.filter { $0.status == "needs_attention" || $0.status == "retryable_failed" }.count
     }
 
     private func startDueReview() {

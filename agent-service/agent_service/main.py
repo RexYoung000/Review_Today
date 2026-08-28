@@ -310,7 +310,7 @@ def capture_action(task_id: str, body: CaptureActionRequest, background: Backgro
         return record.view().model_dump()
 
     if body.action == "reprocess":
-        if record.status != "processing":
+        if record.status in {"retryable_failed", "needs_attention"}:
             _queue(record, background)
         return record.view().model_dump()
 

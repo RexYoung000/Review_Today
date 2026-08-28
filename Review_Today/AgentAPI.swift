@@ -330,4 +330,30 @@ private struct FastAPIError: Decodable {
 enum CaptureAPIError: Error {
     case server(code: String, message: String)
     case http(Int)
+
+    var errorCode: String {
+        switch self {
+        case .server(let code, _): return code
+        case .http(let status) where status == 408 || status == 429 || status >= 500:
+            return "RT.CAPTURE.SERVICE_UNAVAILABLE"
+        case .http:
+            return "RT.CAPTURE.REQUEST_FAILED"
+        }
+    }
+
+    static func code(for error: Error, fallback: String = "RT.CAPTURE.MODEL_FAILED") -> String {
+        if let captureError = error as? CaptureAPIError {
+            return captureError.errorCode
+        }
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .timedOut, .cannotConnectToHost, .networkConnectionLost,
+                 .notConnectedToInternet, .dnsLookupFailed, .cannotFindHost:
+                return "RT.CAPTURE.SERVICE_UNAVAILABLE"
+            default:
+                break
+            }
+        }
+        return fallback
+    }
 }
