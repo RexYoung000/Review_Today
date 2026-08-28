@@ -233,6 +233,28 @@ agent-service/.venv/bin/python agent-service/tests/m1_real_smoke.py
 
 真实界面最终体验由 Rex 判断，自动化和构建成功不能替代。
 
+### 5.4 当前验收记录
+
+已完成的机器与服务证据：
+
+- 固定样本服务入口生成 1 张知识卡，capture ACK 后为 `completed`；
+- 真实模型 smoke 返回正确回答 `good`、明显错误回答 `again`，重复评分与重复 ACK 保持幂等；
+- 无密钥快速测试 20 项通过，覆盖结构/来源校验、capture 幂等、评分失败、空回答、未知 ACK 和重复 ACK；
+- macOS Debug/Release 构建通过，真实容器启动正常，没有恢复出空白复习窗口；
+- `review` fixture 已检查问题输入页，`retry` fixture 已检查持久化 ACK 失败恢复页：保留 Agent 判断和重试入口，不显示总结成功状态，也不更新 FSRS。
+
+仍待 Rex 从真实 App 入口完成并确认：
+
+1. 启动本机 Agent 服务，从今天页输入第 2.1 节固定文本，确认本地 `Source`/`CaptureTask` 和服务任务状态；
+2. 打开真实知识卡并核对标题、详解、来源、主问题和评分关键点；
+3. 从卡片进入“试一题”，分别提交第 2.2 节正确回答和第 2.3 节错误回答，核对反馈；
+4. 正式复习采用判断后，重新读取 SwiftData，确认只有 ACK 成功的尝试有 `effectiveGrade`/`acked`，FSRS 和今天结果同步；
+5. 停止服务或制造评分失败，确认原始回答保留且没有错误成功；使用 `REVIEW_TODAY_M1_UI_FIXTURE=retry` 对照 ACK 失败恢复状态；
+6. 由 Rex 确认目标视口下页面无裁切、重叠和关键操作不可用。
+
+因此当前结论是：M1 服务级、客户端构建级和主要失败状态已收口，但在 Rex 完成以上真实入口体验验收前，不关闭 #17 或父 Issue #1，也不切换到 M2。
+
+
 ## 6. 父 Issue #1 映射
 
 | 父 Issue 完成标准 | 主要证据 |
