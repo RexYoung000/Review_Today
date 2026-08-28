@@ -66,6 +66,8 @@ M1 使用统一的固定知识、正确／错误回答和三层证据验收，�
    - 一个可判断的问题；
    - 评分关键点与可接受同义表达。
 
+   真实知识卡界面必须把“详解、主问题、判断关键点、来源证据”作为可直接查看的独立区块；只有当前知识存在非空 `variant_index = 0` 主问题、可解析评分规格、评分关键点和来源证据时，“试一题”才可用。异常卡片保留查看能力，但要显示明确的不可开始原因，不能进入空白或不可判断的问题页。
+
 3. **提问与回答**
    - 系统展示一个问题；
    - 用户直接输入自然语言回答；
@@ -121,6 +123,19 @@ M1 使用统一的固定知识、正确／错误回答和三层证据验收，�
 7. Rex 在真实 App 中完成一次视觉和交互验收。
 
 部分正确、同义表达、遗漏限定和常见误解等边界质量进入里程碑二，不阻塞第一条纵向链路。
+
+### 3.5 固定知识卡界面检查
+
+Debug 构建提供隔离的内存 fixture，不读取或修改用户现有 SwiftData。仓库根目录执行：
+
+```bash
+xcodebuild -project Review_Today.xcodeproj -scheme Review_Today \
+  -configuration Debug -derivedDataPath /tmp/ReviewTodayM1 build
+REVIEW_TODAY_M1_UI_FIXTURE=1 \
+  /tmp/ReviewTodayM1/Build/Products/Debug/Review_Today.app/Contents/MacOS/Review_Today
+```
+
+App 会直接打开固定光合作用知识卡，用于检查标题、详解、主问题、四个判断关键点、常见误解、来源证据和“试一题”入口。将环境变量值改为 `invalid`，可检查评分规格缺失时的禁用按钮与明确原因；改为 `review`，会使用固定 knowledge ID 与主问题 ID 打开真实试题窗口。该入口只在 Debug 编译中存在，不能替代真实采集和 Rex 最终体验验收。
 
 ## 4. 后续里程碑建议
 

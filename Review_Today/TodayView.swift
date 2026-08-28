@@ -76,7 +76,14 @@ struct TodayView: View {
                     onVoice: toggleVoice,
                     onOpenInbox: onOpenInbox,
                     onPreview: { id in
-                        coordinator.startPreview(knowledgeID: id)
+                        guard let item = knowledge.first(where: { $0.id == id }),
+                              let question = KnowledgeLexicon.mainQuestion(for: item),
+                              KnowledgeLexicon.previewUnavailableReason(for: item) == nil
+                        else {
+                            onOpenKnowledge(id)
+                            return
+                        }
+                        coordinator.startPreview(knowledgeID: id, questionID: question.id)
                         openWindow(id: "review")
                     },
                     onOpenKnowledge: onOpenKnowledge,
