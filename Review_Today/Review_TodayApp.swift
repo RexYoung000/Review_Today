@@ -9,6 +9,12 @@ struct Review_TodayApp: App {
 
     init() {
         do {
+#if DEBUG
+            if M1DebugFixture.enabled {
+                container = try M1DebugFixture.makeContainer()
+                return
+            }
+#endif
             container = try ModelContainer(
                 for: Source.self,
                 Knowledge.self,
@@ -36,6 +42,7 @@ struct Review_TodayApp: App {
                 .modelContainer(container)
                 .runwayAppearance()
         }
+        .restorationBehavior(.disabled)
 
 #if DEBUG
         WindowGroup(String(localized: "吉祥物动画 POC"), id: "mascot-animation-poc") {
