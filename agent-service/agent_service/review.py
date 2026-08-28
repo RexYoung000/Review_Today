@@ -1,31 +1,43 @@
+import json
+
 from agent_service.capture.prompts import GRADE_SYSTEM
 from agent_service.openai_client import parse_model
 from agent_service.schemas import GradeRequest, GradeResult
 
 
-def grade_answer(body: GradeRequest) -> GradeResult:
+def _has_cjk(text: str) -> bool:
+    return any("\u4e00" <= character <= "\u9fff" for character in text)
+
+
+def _grade_input(body: GradeRequest) -> str:
     spec = body.scoring_spec
-    parsed = parse_model(
-        GRADE_SYSTEM,
-        (
-            f"用户主语言：{body.primary_language}\n"
-            f"提示已使用：{'是' if body.hint_used else '否'}\n"
-            f"问题：{body.prompt_text}\n"
-            f"学习目标：{spec.learning_goal}\n"
-            f"必答点：{spec.must_cover}\n"
-            f"可接受同义：{spec.acceptable_paraphrases}\n"
-            f"常见误解：{spec.common_misconceptions}\n"
-            f"证据：{spec.evidence}\n"
-            f"顺序规则：{spec.order_rules}\n"
-            f"用户回答：{body.answer_text}"
-        ),
-        GradeResult,
+    payload = {
+        "primary_language": body.primary_language,
+        "hint_used": body.hint_used,
+        "prompt_text": body.prompt_text,
+        "learning_goal": spec.learning_goal,
+        "must_cover": spec.must_cover,
+        "acceptable_paraphrases": spec.acceptable_paraphrases,
+        "common_misconceptions": spec.common_misconceptions,
+        "evidence": spec.evidence,
+        "order_rules": spec.order_rules,
+        # Keep the user's answer verbatim. JSON is only the request envelope, not a
+        # separate extraction or normalization step.
+        "answer_text": body.answer_text,
+    }
+    return "请直接评估以下 JSON 中的原始回答，不要改写或预提取用户回答：\n" + json.dumps(
+        payload,
+        ensure_ascii=False,
     )
+
+
+def grade_answer(body: GradeRequest) -> GradeResult:
+    parsed = parse_model(GRADE_SYSTEM, _grade_input(body), GradeResult)
     result = GradeResult.model_validate(parsed.model_dump())
     result.attempt_id = body.attempt_id
     result.hint_used = body.hint_used
     if result.agent_grade == "good" and body.hint_used:
         result.agent_grade = "hard"
-    if result.agent_grade not in {"again", "hard", "good"}:
-        result.agent_grade = "again"
+    if body.primary_language.lower().startswith("zh") and not _has_cjk(result.brief_feedback):
+        raise ValueError("brief_feedback must use the user's primary language")
     return result
