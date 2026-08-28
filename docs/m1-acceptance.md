@@ -182,6 +182,21 @@ PYTHONPATH=. .venv/bin/python -m unittest discover -s tests -p 'test_*.py' -v
 
 服务级成功不能替代真实 App 验收。
 
+显式真实模型冒烟（会产生模型调用费用）使用 `agent-service/tests/m1_real_smoke.py`。先在一个终端启动本机服务：
+
+```bash
+cd agent-service
+PYTHONPATH=. .venv/bin/python -m agent_service.main
+```
+
+再在另一个终端执行：
+
+```bash
+agent-service/.venv/bin/python agent-service/tests/m1_real_smoke.py
+```
+
+脚本会使用临时 `task_id`、`source_id` 和 `attempt_id`，完成 capture 轮询与 ACK、知识卡结构/来源/主问题校验、正确与明显错误回答评分、重复评分和重复 ACK 检查。默认 `unittest discover` 不会加载该脚本，也不会调用真实模型；脚本输出只保留脱敏后的状态、ID、等级和反馈存在性，不输出 API Key 或 Authorization。
+
 ### 5.2 真实 Mac App 证据
 
 证明产品纵向链路可运行：
