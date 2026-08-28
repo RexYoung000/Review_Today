@@ -85,7 +85,7 @@ flowchart LR
 ### OpenAI 服务
 
 - Realtime 处理实时语音层；
-- Responses 处理可验证的结构化理解与评分；
+- Responses 优先处理可验证的结构化理解与评分；若兼容供应端将请求标为完成却返回空结构化结果，服务仅针对该空结果改用 Chat Completions 的同一 Pydantic schema；
 - Web Search 只在风险规则或模型分类触发时使用。
 
 ## 4. 采集整理图

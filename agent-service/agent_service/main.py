@@ -23,8 +23,9 @@ from __future__ import annotations
 import base64
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
+from pydantic import ValidationError
 
-from agent_service.capture import find_source_candidates, run_capture
+from agent_service.capture import find_source_candidates, run_capture, source_fidelity_issues
 from agent_service.capture.fetch import looks_like_url
 from agent_service.config import CA_BUNDLE, HOST, PORT, openai_key
 from agent_service.openai_client import transcribe_audio
@@ -71,7 +72,23 @@ def _apply_graph_result(record: TaskRecord, result: dict) -> None:
     record.user_status = result.get("user_status") or "正在整理"
     extracted = result.get("extracted")
     if extracted:
-        record.result = ExtractPayload.model_validate(extracted)
+        try:
+            payload = ExtractPayload.model_validate(extracted)
+        except ValidationError:
+            record.result = None
+            record.receipt = None
+            record.status = "retryable_failed"
+            record.error_code = "RT.CAPTURE.STRUCTURE_INVALID"
+            record.user_status = "需要重试"
+            return
+        if source_fidelity_issues(payload, record.raw_text):
+            record.result = None
+            record.receipt = None
+            record.status = "needs_attention"
+            record.error_code = "RT.CAPTURE.SEMANTIC_INVALID"
+            record.user_status = "需要处理"
+            return
+        record.result = payload
         if record.force_source_view:
             record.result.attribution = "source_view"
     if outcome == "committing" and record.result:
@@ -126,6 +143,13 @@ def _queue(record: TaskRecord, background: BackgroundTasks) -> None:
     record.status = "processing"
     record.user_status = "正在整理"
     record.error_code = None
+    record.receipt = None
+    record.result = None
+    record.intent = None
+    record.source_candidates = []
+    record.verify_reason = None
+    record.events = []
+    record.acked = False
     store.put(record)
     background.add_task(_process, record.task_id)
 
@@ -169,6 +193,8 @@ def submit_capture(body: CaptureSubmitRequest, background: BackgroundTasks) -> d
     stored, created = store.upsert_new(record)
     if created:
         background.add_task(_process, stored.task_id)
+    elif stored.status == "retryable_failed":
+        _queue(stored, background)
     return stored.view().model_dump()
 
 
@@ -284,7 +310,8 @@ def capture_action(task_id: str, body: CaptureActionRequest, background: Backgro
         return record.view().model_dump()
 
     if body.action == "reprocess":
-        _queue(record, background)
+        if record.status != "processing":
+            _queue(record, background)
         return record.view().model_dump()
 
     raise _http_error(400, "RT.CAPTURE.UNSUPPORTED_INPUT", "unknown action")

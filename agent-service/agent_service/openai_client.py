@@ -16,7 +16,8 @@ def _client() -> OpenAI:
 
 
 def parse_model(system: str, user: str, text_format: type[BaseModel]) -> BaseModel:
-    response = _client().responses.parse(
+    client = _client()
+    response = client.responses.parse(
         model=MODEL,
         input=[
             {"role": "developer", "content": system},
@@ -24,7 +25,20 @@ def parse_model(system: str, user: str, text_format: type[BaseModel]) -> BaseMod
         ],
         text_format=text_format,
     )
-    parsed = response.output_parsed
+    if response.output_parsed is not None:
+        return response.output_parsed
+
+    # Some OpenAI-compatible providers complete Responses requests without output.
+    # Fall back only for that empty-success case; transport and API errors still raise.
+    completion = client.chat.completions.parse(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+        response_format=text_format,
+    )
+    parsed = completion.choices[0].message.parsed
     if parsed is None:
         raise RuntimeError("RT.CAPTURE.MODEL_FAILED")
     return parsed

@@ -61,6 +61,30 @@ M1 证明一条真实纵向链路可用，不证明模型已经能稳定处理�
 
 问题不要求逐字固定，但必须能通过上述评分关键点判断用户是否理解光合作用过程。
 
+### 3.1 M1 capture 稳定字段
+
+M1.4 Mac 客户端可以直接依赖以下服务字段：
+
+- 任务层：`task_id`、`status`、`user_status`、`error_code`、`receipt`、`result`；
+- 回执层：`understood_as`、`theme`、`knowledge_count`、`attribution`；
+- 知识层：`id`、`learning_goal`、`knowledge_type`、`theme`、三类语言字段、`evidence_excerpt`、`evidence_locator`、`title`、`explanation`、`scoring_spec`、`questions`；
+- 评分规格：`learning_goal`、`must_cover`、`acceptable_paraphrases`、`common_misconceptions`、`evidence`、`order_rules`；
+- 问题层：`variant_index`、`prompt_text`。
+
+服务端必须在进入 `committing` 前完成以下硬校验：
+
+- 每个知识 `id` 是有效且批次内唯一的 UUID；
+- 每张知识卡恰有一个 `variant_index = 0` 的主问题，问题序号不得重复；
+- `evidence_excerpt` 与 `scoring_spec.evidence` 都是当前来源原文中的非空连续子串；
+- 结构或来源忠实性不合格时不返回可提交结果，也不能进入 `completed`。
+
+### 3.2 任务幂等与重试语义
+
+- 同一 `task_id` 处于 `processing`、`committing` 或 `completed` 时，重复提交只返回同一任务，不生成第二份服务结果，也不重复入队；
+- 同一 `task_id` 处于 `retryable_failed` 时，重复提交允许将原任务重新置为 `processing` 并入队，但仍复用同一任务记录；
+- 用户主动 `reprocess` 同样复用原任务记录，不创建第二份知识结果；
+- 没有 Mac ACK 时任务必须保持 `committing`；仅当 ACK 中的 knowledge IDs 与服务结果完整匹配时才能进入 `completed`。
+
 ## 4. 允许变化与失败边界
 
 以下差异属于生成文风，不应单独判为失败：
@@ -95,6 +119,13 @@ M1 证明一条真实纵向链路可用，不证明模型已经能稳定处理�
 - 返回一张符合第 3 节的知识卡；
 - 正确回答为 `good`，明显错误回答为 `again`；
 - 结果记录模型与命令，但不得输出 API Key、Authorization 头或完整凭证。
+
+无模型契约回归命令（仓库根目录执行）：
+
+```bash
+cd agent-service
+PYTHONPATH=. .venv/bin/python -m unittest discover -s tests -p 'test_*.py' -v
+```
 
 服务级成功不能替代真实 App 验收。
 
