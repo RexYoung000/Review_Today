@@ -233,7 +233,7 @@ Mac 是长期事实来源。Python checkpoint 只是“任务做到哪里”的�
 - `attempt_id`、`session_id`、`knowledge_id`、`knowledge_version`、`question_variant_id`
 - `mode`、`agent_grade`、`effective_grade`
 - `hint_used`、`transcript_retry_count`、`early_review`、`degraded_path`
-- `answer_text_cleaned`、`fsrs_algorithm_version`、`fsrs_parameter_version`
+- `answer_text`（保留用户原始自然语言回答）、`fsrs_algorithm_version`、`fsrs_parameter_version`
 - 提交需 Mac ACK；同一 `attempt_id` 不得第二次正式写入
 
 **FsrsState（排期）**
@@ -400,7 +400,7 @@ queued
 ### 尚未完成或尚未证明
 
 - 里程碑一尚未从真实 Mac App 入口完成端到端视觉与交互验收；
-- 没有固定评测集和自动化测试，模型质量只通过单一样本冒烟；
+- M1 已有固定样本和服务端契约测试，但完整客户端自动化与更广模型质量评测尚未完成；
 - Python `TaskStore`、评分 ACK 和任务事件主要保存在内存中，不是文中目标的 SQLite checkpoint + TTL；
 - 复习评分目前是直接 API 调用，不是完整的正式复习 LangGraph；
 - 正式提交尚未严格做到“Mac ACK 成功后才进入下一题”的持久事务；

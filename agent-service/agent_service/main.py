@@ -21,6 +21,7 @@ Statuses: processing → committing → completed
 from __future__ import annotations
 
 import base64
+import threading
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from pydantic import ValidationError
@@ -37,12 +38,15 @@ from agent_service.schemas import (
     ExtractPayload,
     GradeAckRequest,
     GradeRequest,
+    GradeResult,
     Receipt,
 )
 from agent_service.store import TaskRecord, store
 
 app = FastAPI(title="Review Today Agent", docs_url=None, redoc_url=None)
+_grade_results: dict[str, GradeResult] = {}
 _grade_acks: set[str] = set()
+_grade_lock = threading.Lock()
 
 
 @app.get("/healthz")
@@ -319,21 +323,32 @@ def capture_action(task_id: str, body: CaptureActionRequest, background: Backgro
 
 @app.post("/v1/review/grade")
 def review_grade(body: GradeRequest) -> dict:
-    if not openai_key():
-        raise _http_error(409, "RT.CAPTURE.NO_KEY", "key not configured")
-    if body.attempt_id in _grade_acks:
-        raise _http_error(409, "RT.REVIEW.DUPLICATE_ATTEMPT", "attempt already written")
-    try:
-        return grade_answer(body).model_dump()
-    except Exception:  # noqa: BLE001
-        raise _http_error(502, "RT.REVIEW.GRADE_FAILED", "grading failed") from None
+    with _grade_lock:
+        cached = _grade_results.get(body.attempt_id)
+        if cached is not None:
+            return cached.model_dump()
+        if not openai_key():
+            raise _http_error(409, "RT.CAPTURE.NO_KEY", "key not configured")
+        try:
+            result = GradeResult.model_validate(grade_answer(body).model_dump())
+            result.attempt_id = body.attempt_id
+            result.hint_used = body.hint_used
+            if result.agent_grade == "good" and body.hint_used:
+                result.agent_grade = "hard"
+        except Exception:  # noqa: BLE001
+            raise _http_error(502, "RT.REVIEW.GRADE_FAILED", "grading failed") from None
+        _grade_results[body.attempt_id] = result
+        return result.model_dump()
 
 
 @app.post("/v1/review/attempts/{attempt_id}/ack")
 def review_ack(attempt_id: str, body: GradeAckRequest) -> dict:
     if body.attempt_id != attempt_id:
         raise _http_error(409, "RT.REVIEW.ACK_MISMATCH", "attempt_id mismatch")
-    _grade_acks.add(attempt_id)
+    with _grade_lock:
+        if attempt_id not in _grade_results:
+            raise _http_error(409, "RT.REVIEW.UNKNOWN_ATTEMPT", "attempt has no valid grade result")
+        _grade_acks.add(attempt_id)
     return {"attempt_id": attempt_id, "status": "acked"}
 
 
