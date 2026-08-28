@@ -174,6 +174,9 @@ struct ContentView: View {
                         questionID: M1DebugFixture.questionID
                     )
                     openWindow(id: "review")
+                } else if M1DebugFixture.mode == "retry" {
+                    coordinator.startFormal(knowledgeIDs: [M1DebugFixture.knowledgeID])
+                    openWindow(id: "review")
                 } else {
                     Task { @MainActor in
                         try? await Task.sleep(for: .milliseconds(600))

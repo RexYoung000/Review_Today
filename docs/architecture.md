@@ -403,7 +403,7 @@ queued
 - M1 已有固定样本和服务端契约测试，但完整客户端自动化与更广模型质量评测尚未完成；
 - Python `TaskStore`、评分 ACK 和任务事件主要保存在内存中，不是文中目标的 SQLite checkpoint + TTL；
 - 复习评分目前是直接 API 调用，不是完整的正式复习 LangGraph；
-- 正式提交尚未严格做到“Mac ACK 成功后才进入下一题”的持久事务；
+- 正式提交已按“ACK 成功后才更新 FSRS 和 `effectiveGrade`，本地保存成功后才推进下一题”的顺序执行；
 - 没有 OpenAI Realtime、WebRTC、sideband、VAD 和语音复习闭环；
 - 运行记录不具备完整重放、内容重建和未闭合事件恢复能力；
 - 具体 OpenAI 模型冻结规则、完整错误码、性能数据和隐私审计证据仍未建立。

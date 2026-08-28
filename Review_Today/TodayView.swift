@@ -46,7 +46,7 @@ struct TodayView: View {
 
     private var todayResults: [ReviewAttempt] {
         attempts.filter { row in
-            guard row.mode != "preview", !row.effectiveGrade.isEmpty else { return false }
+            guard row.mode != "preview", row.acked, !row.effectiveGrade.isEmpty else { return false }
             let started = sessions.first(where: { $0.id == row.sessionId })?.startedAt ?? .distantPast
             return Calendar.current.isDateInToday(started)
         }
