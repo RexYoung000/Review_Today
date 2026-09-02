@@ -1,7 +1,7 @@
 # Review Today 产品界面与体验方向
 
-> 完成阶段：direction aligned；Harness V2 的学习工作区、Session、任务反馈与四模式方向已对齐，尚待原生实现和 Rex 体验验收
-> 当前实施基线：[Agent Harness V2 主规格](docs/agent-harness-v2.md)。产品、交互与品牌角色方向已由 Rex 选择；现有原生界面尚未按 Harness V2 验收。静态概念图不作为动画、运行状态或原生体验证据。
+> 完成阶段：direction implemented；Harness V2 的学习工作区、Session、任务反馈与四模式已进入原生 App，尚待 Rex 体验验收
+> 当前实施基线：[Agent Harness V2 主规格](docs/agent-harness-v2.md)。产品、交互与品牌角色方向已由 Rex 选择；原生界面已完成工程自检，但尚未按 Harness V2 获得用户验收。静态概念图和构建成功都不作为最终体验证据。
 
 ## 1. 设计目标
 

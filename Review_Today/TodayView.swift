@@ -1,29 +1,24 @@
-import AppKit
-import AVFoundation
 import SwiftData
 import SwiftUI
 import UserNotifications
 
 struct TodayView: View {
-    var monitor: AgentServiceMonitor
     var coordinator: ReviewCoordinator
     var onOpenKnowledge: (UUID) -> Void
     var onOpenInbox: () -> Void
     var onOpenLibrary: () -> Void = {}
+    var onOpenLearning: () -> Void
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openWindow) private var openWindow
     @Environment(\.runway) private var runway
-    @Query(sort: \CaptureTask.createdAt, order: .reverse) private var tasks: [CaptureTask]
+    @Query private var captureTasks: [CaptureTask]
     @Query private var knowledge: [Knowledge]
     @Query private var settingsRows: [AppSettings]
-    @Query private var sessions: [ReviewSession]
+    @Query private var reviewSessions: [ReviewSession]
     @Query private var attempts: [ReviewAttempt]
-    @State private var draft = ""
-    @State private var recorder = VoiceRecorder()
-    @State private var micAllowed = false
-    @State private var notifyAllowed = false
-    @State private var localSaveError: String?
+    @Query(sort: \AgentSession.updatedAt, order: .reverse) private var learningSessions: [AgentSession]
+    @Query private var learningTasks: [LearningTask]
 
     private var settings: AppSettings? { settingsRows.first }
     private var developerMode: Bool { settings?.developerMode == true }
@@ -32,22 +27,18 @@ struct TodayView: View {
         knowledge.filter { ReviewQueue.isDue($0, developerMode: developerMode) }
     }
 
-    private var forming: [CaptureTask] {
-        tasks.filter { !["completed", "cancelled"].contains($0.status) }
+    private var activeLearning: [LearningTask] {
+        learningTasks.filter { !["completed", "cancelled", "terminal_failed"].contains($0.status) }
     }
 
     private var inboxCount: Int {
-        tasks.filter { ["needs_attention", "retryable_failed"].contains($0.status) }.count
-    }
-
-    private var todayReceipts: [CaptureTask] {
-        tasks.filter { $0.status == "completed" && Calendar.current.isDateInToday($0.updatedAt) }
+        captureTasks.filter { ["needs_attention", "retryable_failed"].contains($0.status) }.count
     }
 
     private var todayResults: [ReviewAttempt] {
         attempts.filter { row in
             guard row.mode != "preview", row.acked, !row.effectiveGrade.isEmpty else { return false }
-            let started = sessions.first(where: { $0.id == row.sessionId })?.startedAt ?? .distantPast
+            let started = reviewSessions.first(where: { $0.id == row.sessionId })?.startedAt ?? .distantPast
             return Calendar.current.isDateInToday(started)
         }
     }
@@ -56,41 +47,17 @@ struct TodayView: View {
         knowledge.filter { $0.lifecycle == "active" }.count
     }
 
+    private var recentLearningSessions: [AgentSession] {
+        Array(learningSessions.filter { $0.status == "active" }.prefix(3))
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Runway.gap) {
                 statusBoard
-                if let localSaveError {
-                    Label(localSaveError, systemImage: "exclamationmark.triangle")
-                        .font(.callout)
-                        .foregroundStyle(Color.orange)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                if !recentLearningSessions.isEmpty {
+                    recentLearningCard
                 }
-                AgentComposer(
-                    draft: $draft,
-                    turns: todayTurns,
-                    forming: forming,
-                    pose: coachPose,
-                    recorder: recorder,
-                    onSubmit: saveDraft,
-                    onVoice: toggleVoice,
-                    onOpenInbox: onOpenInbox,
-                    onPreview: { id in
-                        guard let item = knowledge.first(where: { $0.id == id }),
-                              let question = KnowledgeLexicon.mainQuestion(for: item),
-                              KnowledgeLexicon.previewUnavailableReason(for: item) == nil
-                        else {
-                            onOpenKnowledge(id)
-                            return
-                        }
-                        coordinator.startPreview(knowledgeID: id, questionID: question.id)
-                        openWindow(id: "review")
-                    },
-                    onOpenKnowledge: onOpenKnowledge,
-                    receiptLine: { task in
-                        receiptLine(task, Self.decodeReceipt(task.receiptJSON))
-                    }
-                )
                 if !todayResults.isEmpty {
                     resultsCard
                 }
@@ -106,19 +73,14 @@ struct TodayView: View {
                 hasDue: !dueItems.isEmpty,
                 skippedToday: settings?.skipToday == Self.todayStamp()
             )
-            refreshPermissions()
         }
-    }
-
-    private var todayTurns: [CaptureTask] {
-        (forming + todayReceipts).sorted { $0.createdAt < $1.createdAt }
     }
 
     private var statusBoard: some View {
         VStack(alignment: .leading, spacing: Runway.gap) {
             HStack(alignment: .center, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(dueItems.isEmpty ? String(localized: "今天无需复习") : tonightTitle)
+                    Text(dueItems.isEmpty ? "今天的学习状态" : tonightTitle)
                         .font(.system(size: 28, weight: .bold))
                         .foregroundStyle(runway.ink)
                     Text(boardSubtitle)
@@ -131,12 +93,14 @@ struct TodayView: View {
                         coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
                         openWindow(id: "review")
                     }
+                } else {
+                    RunwayPrimaryButton(title: activeLearning.isEmpty ? "开始学习" : "继续学习", action: onOpenLearning)
                 }
             }
             StatStrip(items: [
                 StatCell(
                     id: "due",
-                    value: dueItems.isEmpty ? "0" : "\(dueItems.count)",
+                    value: "\(dueItems.count)",
                     title: String(localized: "今晚复习"),
                     action: dueItems.isEmpty ? nil : {
                         coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
@@ -144,9 +108,10 @@ struct TodayView: View {
                     }
                 ),
                 StatCell(
-                    id: "forming",
-                    value: "\(forming.count)",
-                    title: String(localized: "正在形成")
+                    id: "learning",
+                    value: "\(activeLearning.count)",
+                    title: String(localized: "学习中"),
+                    action: onOpenLearning
                 ),
                 StatCell(
                     id: "inbox",
@@ -161,6 +126,42 @@ struct TodayView: View {
                     action: onOpenLibrary
                 )
             ])
+        }
+    }
+
+    private var recentLearningCard: some View {
+        RunwayCard {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text("最近学习")
+                        .font(.subheadline.weight(.semibold))
+                    Spacer()
+                    Button("查看全部", action: onOpenLearning)
+                        .buttonStyle(.borderless)
+                }
+                ForEach(recentLearningSessions, id: \.id) { session in
+                    Button(action: onOpenLearning) {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(session.title)
+                                    .foregroundStyle(runway.ink)
+                                    .lineLimit(1)
+                                Text(latestStatus(for: session))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                            }
+                            Spacer()
+                            MetaTag(title: LearningWorkspace.modeLabel(session.modePreset))
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
         }
     }
 
@@ -197,107 +198,24 @@ struct TodayView: View {
         .shadow(color: runway.liftShadow, radius: 8, y: 2)
     }
 
-    private var coachPose: CoachPose {
-        if monitor.connection != .ready { return .waitYou }
-        if forming.contains(where: { ["needs_attention", "retryable_failed"].contains($0.status) }) { return .waitYou }
-        if !forming.isEmpty { return .working }
-        if !dueItems.isEmpty { return .whistle }
-        return .idle
-    }
-
     private var boardSubtitle: String {
-        if monitor.connection != .ready { return String(localized: "等服务恢复") }
-        if dueItems.isEmpty { return String(localized: "没有到期的知识") }
+        if !activeLearning.isEmpty { return "有 \(activeLearning.count) 个学习任务正在继续" }
+        if dueItems.isEmpty { return "没有到期知识，可以开始新的学习" }
         return "预计约 \(dueItems.count) 分钟"
     }
 
-    private var tonightTitle: String {
-        "今晚 \(tonightClock) 复习"
-    }
+    private var tonightTitle: String { "今晚 \(tonightClock) 复习" }
 
     private var tonightClock: String {
         let minutes = settings?.dailyReminderMinutes ?? 21 * 60
         return String(format: "%d:%02d", minutes / 60, minutes % 60)
     }
 
-    private func receiptLine(_ task: CaptureTask, _ receipt: ReceiptPayload?) -> String {
-        let understood = receipt?.understoodAs ?? task.userStatus
-        if task.intent == "learn_topic", let receipt {
-            return "根据你确认的来源，整理了 \(receipt.theme) 的 \(receipt.knowledgeCount) 个知识点"
-        }
-        return "“\(understood)”"
-    }
-
-    private func toggleVoice() {
-        AVCaptureDevice.requestAccess(for: .audio) { granted in
-            DispatchQueue.main.async { micAllowed = granted }
-        }
-        recorder.toggle()
-        if !recorder.isRecording, let url = recorder.lastFileURL {
-            saveVoice(url)
-        }
-    }
-
-    private func saveDraft() {
-        let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty else { return }
-        let url = Self.firstURL(in: text)
-        let source = Source(inputType: url == nil ? "text" : "url", rawText: text, url: url)
-        let task = CaptureTask()
-        task.source = source
-        CaptureProcessor.appendStatus(task.userStatus, to: task)
-        do {
-            try saveCapture(source: source, task: task)
-            draft = ""
-            localSaveError = nil
-        } catch {
-            modelContext.rollback()
-            localSaveError = String(localized: "本机保存失败，请重试。")
-        }
-    }
-
-    private func saveCapture(source: Source, task: CaptureTask) throws {
-        modelContext.insert(source)
-        modelContext.insert(task)
-        try modelContext.save()
-    }
-
-    private func saveVoice(_ url: URL) {
-        let source = Source(inputType: "voice", rawText: "", audioPath: url.path)
-        let task = CaptureTask()
-        task.source = source
-        CaptureProcessor.appendStatus(task.userStatus, to: task)
-        do {
-            try saveCapture(source: source, task: task)
-            localSaveError = nil
-        } catch {
-            modelContext.rollback()
-            localSaveError = String(localized: "本机保存失败，请重试。")
-        }
-    }
-
-    private func refreshPermissions() {
-        switch AVCaptureDevice.authorizationStatus(for: .audio) {
-        case .authorized: micAllowed = true
-        default: micAllowed = false
-        }
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            DispatchQueue.main.async {
-                notifyAllowed = settings.authorizationStatus == .authorized
-            }
-        }
-    }
-
-    private struct ReceiptPayload: Codable {
-        var understoodAs: String
-        var theme: String
-        var knowledgeCount: Int
-        var attribution: String?
-    }
-
-    private static func decodeReceipt(_ json: String?) -> ReceiptPayload? {
-        guard let json, let data = json.data(using: .utf8) else { return nil }
-        return try? JSONDecoder().decode(ReceiptPayload.self, from: data)
+    private func latestStatus(for session: AgentSession) -> String {
+        learningTasks
+            .filter { $0.sessionID == session.id }
+            .max(by: { $0.updatedAt < $1.updatedAt })?
+            .userSummary ?? "尚未开始任务"
     }
 
     static func firstURL(in text: String) -> String? {
@@ -310,9 +228,9 @@ struct TodayView: View {
     }
 
     static func todayStamp() -> String {
-        let f = DateFormatter()
-        f.calendar = Calendar.current
-        f.dateFormat = "yyyy-MM-dd"
-        return f.string(from: .now)
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar.current
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: .now)
     }
 }

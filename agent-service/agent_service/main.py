@@ -1,5 +1,14 @@
-"""Capture + review contract frozen with this code.
+"""Review Today local service.
 
+Harness V2:
+POST /v2/sessions/{session_id}/turns
+GET /v2/tasks/{task_id}
+GET /v2/tasks/{task_id}/events?after_seq=
+POST /v2/tasks/{task_id}/actions
+POST /v2/tasks/{task_id}/ack
+POST /v2/capabilities/probe
+
+V1 compatibility:
 POST /v1/capture/tasks
   body: {task_id, source_id, input_type, raw_text, url, primary_language, audio_base64, audio_format}
   200: CaptureTaskView
@@ -22,6 +31,7 @@ from __future__ import annotations
 
 import base64
 import threading
+import uuid
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from pydantic import ValidationError
@@ -29,6 +39,9 @@ from pydantic import ValidationError
 from agent_service.capture import find_source_candidates, run_capture, source_fidelity_issues
 from agent_service.capture.fetch import looks_like_url
 from agent_service.config import CA_BUNDLE, HOST, PORT, openai_key
+from agent_service.harness import process_action, process_task, record_action, resume_incomplete_tasks
+from agent_service.harness_store import HarnessTaskRecord, harness_store
+from agent_service.model_capabilities import snapshot as model_capability_snapshot, start_probe
 from agent_service.openai_client import transcribe_audio
 from agent_service.review import grade_answer
 from agent_service.schemas import (
@@ -39,7 +52,13 @@ from agent_service.schemas import (
     GradeAckRequest,
     GradeRequest,
     GradeResult,
+    LearningTaskView,
     Receipt,
+    SessionTurnAccepted,
+    SessionTurnRequest,
+    TaskAckRequest,
+    TaskActionRequest,
+    TaskEventPage,
 )
 from agent_service.store import TaskRecord, store
 
@@ -49,17 +68,134 @@ _grade_acks: set[str] = set()
 _grade_lock = threading.Lock()
 
 
+@app.on_event("startup")
+def check_model_capabilities() -> None:
+    start_probe()
+    threading.Thread(target=resume_incomplete_tasks, name="review-today-task-recovery", daemon=True).start()
+
+
 @app.get("/healthz")
 def healthz() -> dict[str, object]:
     return {
         "status": "ok",
         "key_configured": bool(openai_key()),
         "ca_bundle": bool(CA_BUNDLE),
+        "harness": "v2",
+        "model_roles": model_capability_snapshot(),
     }
+
+
+@app.post("/v2/capabilities/probe")
+def reprobe_model_capabilities() -> dict[str, object]:
+    start_probe()
+    return {"status": "checking", "model_roles": model_capability_snapshot()}
 
 
 def _http_error(status_code: int, error_code: str, message: str) -> HTTPException:
     return HTTPException(status_code=status_code, detail={"error_code": error_code, "message": message})
+
+
+def _require_uuid(value: str, *, code: str) -> str:
+    try:
+        return str(uuid.UUID(value))
+    except (ValueError, TypeError, AttributeError):
+        raise _http_error(422, code, "identifier must be a valid UUID") from None
+
+
+@app.post("/v2/sessions/{session_id}/turns", response_model=SessionTurnAccepted)
+def submit_session_turn(session_id: str, body: SessionTurnRequest, background: BackgroundTasks) -> dict:
+    normalized_session = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
+    if not openai_key():
+        raise _http_error(409, "RT.HARNESS.NO_KEY", "model credential is not configured")
+    record = HarnessTaskRecord(
+        task_id=str(uuid.uuid4()),
+        session_id=normalized_session,
+        client_message_id=body.client_message_id,
+        content=body.content.strip(),
+        content_type=body.content_type,
+        primary_language=body.primary_language,
+        mode_preset=body.mode_preset,
+        context=body.context.model_dump(),
+    )
+    stored, created = harness_store.create(record)
+    if created:
+        harness_store.cleanup()
+        background.add_task(process_task, stored.task_id)
+    return SessionTurnAccepted(
+        message_id=stored.client_message_id,
+        task_id=stored.task_id,
+        status="accepted" if created else "queued",
+        next_event_seq=len(stored.events) + 1,
+    ).model_dump()
+
+
+@app.get("/v2/tasks/{task_id}", response_model=LearningTaskView)
+def get_learning_task(task_id: str) -> dict:
+    normalized = _require_uuid(task_id, code="RT.TASK.INVALID_ID")
+    record = harness_store.get(normalized)
+    if record is None:
+        raise _http_error(404, "RT.TASK.UNKNOWN", "unknown task_id")
+    return record.view().model_dump()
+
+
+@app.get("/v2/tasks/{task_id}/events", response_model=TaskEventPage)
+def get_task_events(task_id: str, after_seq: int = 0) -> dict:
+    normalized = _require_uuid(task_id, code="RT.TASK.INVALID_ID")
+    if after_seq < 0:
+        raise _http_error(422, "RT.TASK.INVALID_SEQ", "after_seq must be non-negative")
+    events = harness_store.events_after(normalized, after_seq)
+    if events is None:
+        raise _http_error(404, "RT.TASK.UNKNOWN", "unknown task_id")
+    record = harness_store.get(normalized)
+    return TaskEventPage(task_id=normalized, events=events, last_seq=len(record.events) if record else 0).model_dump()
+
+
+@app.post("/v2/tasks/{task_id}/actions", response_model=LearningTaskView)
+def submit_task_action(task_id: str, body: TaskActionRequest, background: BackgroundTasks) -> dict:
+    normalized = _require_uuid(task_id, code="RT.TASK.INVALID_ID")
+    record, duplicate = record_action(normalized, body)
+    if record is None:
+        raise _http_error(404, "RT.TASK.UNKNOWN", "unknown task_id")
+    if not duplicate:
+        background.add_task(process_action, normalized, body)
+    return record.view().model_dump()
+
+
+@app.post("/v2/tasks/{task_id}/ack", response_model=LearningTaskView)
+def ack_learning_task(task_id: str, body: TaskAckRequest) -> dict:
+    normalized = _require_uuid(task_id, code="RT.TASK.INVALID_ID")
+    record = harness_store.get(normalized)
+    if record is None:
+        raise _http_error(404, "RT.TASK.UNKNOWN", "unknown task_id")
+    if body.last_event_seq > len(record.events):
+        raise _http_error(409, "RT.TASK.ACK_AHEAD", "cannot acknowledge unseen events")
+    if record.status == "committing":
+        expected = {item.get("id") for item in (record.memory_package or {}).get("knowledge", [])}
+        if expected and set(body.knowledge_ids) != expected:
+            raise _http_error(409, "RT.TASK.ACK_MISMATCH", "knowledge_ids do not match memory package")
+    try:
+        record = harness_store.acknowledge(normalized, body.last_event_seq) or record
+    except ValueError:
+        raise _http_error(409, "RT.TASK.ACK_AHEAD", "cannot acknowledge unseen events") from None
+    if record.status == "committing":
+        def complete(item: HarnessTaskRecord) -> None:
+            item.status = "completed"
+            item.stage = "completed"
+            item.user_summary = "学习任务已完成"
+            item.required_action = None
+            item.error_code = None
+
+        record = harness_store.mutate(normalized, complete) or record
+        harness_store.append_event(
+            normalized,
+            stage="completed",
+            state="completed",
+            node="mac_ack",
+            user_summary="记忆已保存，学习任务完成",
+            detail_summary="Mac 已确认知识数据持久化。",
+        )
+        record = harness_store.get(normalized) or record
+    return record.view().model_dump()
 
 
 def _apply_graph_result(record: TaskRecord, result: dict) -> None:

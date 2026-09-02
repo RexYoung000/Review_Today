@@ -1,6 +1,6 @@
 # Review Today 产品需求与边界
 
-> 文档状态：长期产品方向与需求池；当前 M1 施工基线以 [Agent Harness V2 主规格](agent-harness-v2.md) 与 [M1 验收契约](m1-acceptance.md) 为准
+> 文档状态：长期产品方向与需求池；当前 M1 Harness 已实施并完成工程自检，仍以 [Agent Harness V2 主规格](agent-harness-v2.md) 与 [M1 验收契约](m1-acceptance.md) 等待 Rex 真实体验验收
 
 ## 1. 产品定义
 

@@ -346,6 +346,7 @@ accepted
 - 增量事件：`GET /v2/tasks/{task_id}/events?after_seq=`。
 - 用户动作：`POST /v2/tasks/{task_id}/actions`。
 - 持久化确认：`POST /v2/tasks/{task_id}/ack`。
+- 模型能力重查：`POST /v2/capabilities/probe`；只重新探测角色能力，不重复提交现有 Task。
 - 正式复习的控制事件使用同一主机上的 WebSocket。
 - 实时音频使用 WebRTC 直连 OpenAI Realtime。
 - Python 使用 sideband 连接控制同一 Realtime 会话。
@@ -447,25 +448,27 @@ V2 以上路径和主规格中的必备字段已经冻结；具体枚举与错�
 ### 已实现
 
 - SwiftUI Mac App、SwiftData 领域模型和本机 FastAPI 接口；
+- `AgentSession`、`AgentMessage`、`LearningTask`、`TaskEventRecord`、`SourceReference`、`KnowledgeReference` 与 `SessionSummaryRecord` 本地模型；
+- V2 异步 Turn、Task 快照、增量 Event、Action 与 ACK 接口，SQLite checkpoint、事件顺序、动作幂等、TTL 清理和重启恢复；
+- 记忆整理、资料学习、主题探索、问题攻克及 JD 拆解受控工作流；模式切换与高置信新主题只建议，均由用户确认；
+- 独立学习工作区、Session 列表／归档／恢复／结构化交接、输入即时回显、可展开运行详情和 Today 纯数据看板；
+- Debug App 自动启动、监控并恢复项目 `.venv` 服务；模型清单加真实短生成能力探测、45 秒任务超时与显式可重试失败；
 - OpenAI 结构化知识整理与独立回答评分调用；
 - LangGraph 采集图，包含意图分类、提取、结构校验、语义校验、一次修复、风险判断和可选核验；
 - 文字采集到知识卡、本地提交 ACK、文字问答、评分和基础 FSRS 界面路径；
 - 基础任务事件摘要、服务健康检查与错误状态；
-- macOS Debug 构建和一次真实模型服务级冒烟验证。
+- macOS Debug 构建和旧模型服务级冒烟验证。
 
 ### 尚未完成或尚未证明
 
-- Harness V2 的 AgentSession、LearningTask、AgentMessage、TaskEvent 与 SessionSummary 尚未实现；
-- V2 异步接口、四模式图、增量事件回放和上下文压缩尚未实现；
-- App 尚未自动托管、监控和恢复 Python 服务；
-- “学习”工作区、Session 列表、即时反馈、运行详情和 Today 纯看板尚未实现；
 - 里程碑一尚未从真实 Mac App 入口完成端到端视觉与交互验收；
-- M1 已有固定样本、服务端契约测试和显式真实模型冒烟，但完整客户端自动化与更广模型质量评测尚未完成；
-- Python `TaskStore`、评分 ACK 和旧任务事件主要保存在内存中，不是文中目标的 SQLite checkpoint + TTL；
+- Harness V2 已有服务端契约、固定模型替身和原生手动自检，但完整客户端自动化与更广模型质量评测尚未完成；
+- 2026-09-03 当前角色模型可被提供方列出但真实生成探测超时，问题攻克真实测试只走到可恢复失败；模型服务恢复后仍需补齐四模式真实输出验收；
+- V2 Harness checkpoint 已持久化；v1 `TaskStore` 与评分 ACK 仍主要保存在内存中，保留到 V2 用户验收后再迁移或删除；
 - 复习评分目前是直接 API 调用，不是完整的正式复习 LangGraph；
 - 正式提交已按“ACK 成功后才更新 FSRS 和 `effectiveGrade`，本地保存成功后才推进下一题”的顺序执行；
 - 没有 OpenAI Realtime、WebRTC、sideband、VAD 和语音复习闭环；
-- 运行记录不具备完整重放、内容重建和未闭合事件恢复能力；
+- V2 Task Event 已可增量回放和恢复；跨版本事件迁移、长期诊断归档仍未建立；
 - 具体 OpenAI 模型冻结规则、完整错误码、性能数据和隐私审计证据仍未建立。
 
-当前必须先实现并验收 Harness V2，再关闭 #17 或进入 M2；不能以本文、构建成功或旧 capture 冒烟替代真实 Session 体验证据。
+当前必须先由 Rex 验收已实现的 Harness V2，再关闭 #17 或进入 M2；不能以本文、自动化、构建成功或旧 capture 冒烟替代真实 Session 体验证据。

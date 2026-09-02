@@ -26,6 +26,13 @@ enum M1DebugFixture {
             FsrsState.self,
             ReviewSession.self,
             ReviewAttempt.self,
+            AgentSession.self,
+            AgentMessage.self,
+            LearningTask.self,
+            TaskEventRecord.self,
+            SourceReference.self,
+            KnowledgeReference.self,
+            SessionSummaryRecord.self,
         ])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: schema, configurations: [configuration])

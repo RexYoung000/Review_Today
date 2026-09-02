@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import re
 from typing import Any, Literal, TypedDict
-from urllib.parse import quote
 
 from langgraph.graph import END, START, StateGraph
 from pydantic import ValidationError
@@ -52,17 +51,19 @@ class CaptureState(TypedDict, total=False):
     outcome: Literal["committing", "needs_attention", "retryable_failed"]
     error_code: str | None
     user_status: str
+    model: str | None
+    risk_model: str | None
 
 
 def _has_cjk(text: str) -> bool:
     return any("\u4e00" <= ch <= "\u9fff" for ch in text)
 
 
-def _parse_capture_model(system: str, user: str, schema: type):
+def _parse_capture_model(system: str, user: str, schema: type, *, model: str | None = None):
     """Retry one provider-completed but empty structured response at the failed node."""
     for attempt in range(2):
         try:
-            return parse_model(system, user, schema)
+            return parse_model(system, user, schema, model=model)
         except RuntimeError as exc:
             if str(exc) != "RT.CAPTURE.MODEL_FAILED" or attempt == 1:
                 raise
@@ -190,6 +191,7 @@ def classify_node(state: CaptureState) -> dict[str, Any]:
             CLASSIFY_SYSTEM,
             f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n{source}",
             IntentClass,
+            model=state.get("model"),
         )
         verdict = IntentClass.model_validate(parsed.model_dump())
         updates["intent"] = verdict.intent
@@ -226,6 +228,7 @@ def extract_node(state: CaptureState) -> dict[str, Any]:
             EXTRACT_SYSTEM + extra,
             f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n{source}",
             ExtractPayload,
+            model=state.get("model"),
         )
         payload = ExtractPayload.model_validate(parsed.model_dump())
         for item in payload.knowledge:
@@ -269,6 +272,7 @@ def semantic_validate_node(state: CaptureState) -> dict[str, Any]:
             f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n"
             f"{_source_text(state)}\n\n整理结果：\n{dump(extracted)}",
             SemanticVerdict,
+            model=state.get("model"),
         )
         payload = SemanticVerdict.model_validate(verdict.model_dump())
         payload.issues.extend(_language_drift_issues(extracted, state.get("primary_language", "zh")))
@@ -306,6 +310,7 @@ def repair_node(state: CaptureState) -> dict[str, Any]:
             EXTRACT_SYSTEM + "\n上一稿未通过语义校验，请只根据原文修正，不要引入新的外部事实。",
             f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n{_source_text(state)}\n\n上一稿：\n{dump(ExtractPayload.model_validate(state['extracted']))}",
             ExtractPayload,
+            model=state.get("model"),
         )
         payload = ExtractPayload.model_validate(parsed.model_dump())
         updates["extracted"] = payload.model_dump()
@@ -328,7 +333,12 @@ def risk_node(state: CaptureState) -> dict[str, Any]:
     extracted = ExtractPayload.model_validate(state.get("extracted") or {})
     model_hit = extracted.risk_flagged
     try:
-        parsed = _parse_capture_model(RISK_SYSTEM, source[:6000], RiskVerdict)
+        parsed = _parse_capture_model(
+            RISK_SYSTEM,
+            source[:6000],
+            RiskVerdict,
+            model=state.get("risk_model") or state.get("model"),
+        )
         model_hit = model_hit or RiskVerdict.model_validate(parsed.model_dump()).risk
     except Exception:  # noqa: BLE001
         pass
@@ -351,7 +361,10 @@ def verify_node(state: CaptureState) -> dict[str, Any]:
         return updates
     source = _source_text(state)
     updates["user_status"] = "正在核验"
-    search = web_search_text(f"核验以下主张是否与公开资料一致：\n{source[:1500]}")
+    search = web_search_text(
+        f"核验以下主张是否与公开资料一致：\n{source[:1500]}",
+        model=state.get("risk_model") or state.get("model"),
+    )
     if not search:
         updates.update(_event({**state, **updates}, "node_failed", "verify", {"error": "empty_search"}))
         updates["outcome"] = "needs_attention"
@@ -364,6 +377,7 @@ def verify_node(state: CaptureState) -> dict[str, Any]:
             VERIFY_SYSTEM,
             f"来源：\n{source[:4000]}\n\n检索：\n{search[:4000]}",
             VerifyVerdict,
+            model=state.get("risk_model") or state.get("model"),
         )
         verdict = VerifyVerdict.model_validate(parsed.model_dump())
     except Exception as exc:  # noqa: BLE001
@@ -439,8 +453,8 @@ def build_graph():
 capture_graph = build_graph()
 
 
-def find_source_candidates(topic: str) -> list[SourceCandidate]:
-    search = web_search_text(f"公开百科或文档：{topic}")
+def find_source_candidates(topic: str, *, model: str | None = None) -> list[SourceCandidate]:
+    search = web_search_text(f"为学习主题查找 2 到 4 个互补、可公开访问的可靠来源：{topic}", model=model)
     candidates: list[SourceCandidate] = []
     if search:
         try:
@@ -448,16 +462,11 @@ def find_source_candidates(topic: str) -> list[SourceCandidate]:
                 SEARCH_FALLBACK_SYSTEM,
                 f"主题：{topic}\n\n检索摘录：\n{search[:4000]}",
                 SourceList,
+                model=model,
             )
             candidates = SourceList.model_validate(parsed.model_dump()).candidates
         except Exception:  # noqa: BLE001
             candidates = []
-    if not candidates:
-        slug = quote(topic.strip().replace(" ", "_"))
-        candidates = [
-            SourceCandidate(url=f"https://zh.wikipedia.org/wiki/{slug}", title=f"{topic} · 中文维基", snippet="公开百科候选"),
-            SourceCandidate(url=f"https://en.wikipedia.org/wiki/{slug}", title=f"{topic} · English Wikipedia", snippet="Public encyclopedia candidate"),
-        ]
     safe: list[SourceCandidate] = []
     for item in candidates[:3]:
         try:
@@ -477,6 +486,8 @@ def run_capture(
     input_type: str = "text",
     url: str | None = None,
     force_source_view: bool = False,
+    model: str | None = None,
+    risk_model: str | None = None,
 ) -> CaptureState:
     return capture_graph.invoke(
         {
@@ -489,6 +500,8 @@ def run_capture(
             "force_source_view": force_source_view,
             "semantic_ok": False,
             "events": [],
+            "model": model,
+            "risk_model": risk_model,
         }
     )
 

@@ -3,22 +3,29 @@ import json
 from openai import OpenAI
 from pydantic import BaseModel
 
-from agent_service.config import BASE_URL, MODEL, openai_key
+from agent_service.config import BASE_URL, MODEL, MODEL_PROBE_TIMEOUT_SECONDS, MODEL_TIMEOUT_SECONDS, openai_key
 
 
-def _client() -> OpenAI:
+def _client(*, timeout: float = MODEL_TIMEOUT_SECONDS) -> OpenAI:
     key = openai_key()
     if not key:
         raise RuntimeError("RT.CAPTURE.NO_KEY")
     if BASE_URL:
-        return OpenAI(api_key=key, base_url=BASE_URL)
-    return OpenAI(api_key=key)
+        return OpenAI(api_key=key, base_url=BASE_URL, timeout=timeout, max_retries=0)
+    return OpenAI(api_key=key, timeout=timeout, max_retries=0)
 
 
-def parse_model(system: str, user: str, text_format: type[BaseModel]) -> BaseModel:
+def parse_model(
+    system: str,
+    user: str,
+    text_format: type[BaseModel],
+    *,
+    model: str | None = None,
+) -> BaseModel:
     client = _client()
+    selected_model = model or MODEL
     response = client.responses.parse(
-        model=MODEL,
+        model=selected_model,
         input=[
             {"role": "developer", "content": system},
             {"role": "user", "content": user},
@@ -31,7 +38,7 @@ def parse_model(system: str, user: str, text_format: type[BaseModel]) -> BaseMod
     # Some OpenAI-compatible providers complete Responses requests without output.
     # Fall back only for that empty-success case; transport and API errors still raise.
     completion = client.chat.completions.parse(
-        model=MODEL,
+        model=selected_model,
         messages=[
             {"role": "system", "content": system},
             {"role": "user", "content": user},
@@ -44,11 +51,27 @@ def parse_model(system: str, user: str, text_format: type[BaseModel]) -> BaseMod
     return parsed
 
 
-def web_search_text(query: str) -> str:
+def available_model_ids() -> set[str]:
+    """Return model IDs visible to the configured provider without exposing credentials."""
+    return {item.id for item in _client(timeout=MODEL_PROBE_TIMEOUT_SECONDS).models.list().data if getattr(item, "id", "")}
+
+
+def model_is_callable(model: str) -> bool:
+    """Probe a real generation so advertised-but-unreachable models are not reported ready."""
+    response = _client(timeout=MODEL_PROBE_TIMEOUT_SECONDS).responses.create(
+        model=model,
+        input="Reply OK.",
+        max_output_tokens=8,
+    )
+    return bool(getattr(response, "id", "")) and getattr(response, "status", None) != "failed"
+
+
+def web_search_text(query: str, *, model: str | None = None) -> str:
     client = _client()
+    selected_model = model or MODEL
     for tool in ({"type": "web_search_preview"}, {"type": "web_search"}):
         try:
-            response = client.responses.create(model=MODEL, tools=[tool], input=query)
+            response = client.responses.create(model=selected_model, tools=[tool], input=query)
             text = getattr(response, "output_text", "") or ""
             if text.strip():
                 return text.strip()[:8000]

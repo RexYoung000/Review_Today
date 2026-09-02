@@ -4,6 +4,7 @@ import UserNotifications
 
 enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case today
+    case learning
     case library
     case inbox
 
@@ -12,6 +13,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .today: String(localized: "今天")
+        case .learning: String(localized: "学习")
         case .library: String(localized: "知识库")
         case .inbox: String(localized: "待处理")
         }
@@ -20,6 +22,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     var systemImage: String {
         switch self {
         case .today: "sun.max"
+        case .learning: "bubble.left.and.bubble.right"
         case .library: "books.vertical"
         case .inbox: "tray"
         }
@@ -135,14 +138,22 @@ struct ContentView: View {
                 switch selection ?? .today {
                 case .today:
                     TodayView(
-                        monitor: monitor,
                         coordinator: coordinator,
                         onOpenKnowledge: { id in
                             selectedKnowledgeID = id
                             selection = .library
                         },
                         onOpenInbox: { selection = .inbox },
-                        onOpenLibrary: { selection = .library }
+                        onOpenLibrary: { selection = .library },
+                        onOpenLearning: { selection = .learning }
+                    )
+                case .learning:
+                    LearningWorkspace(
+                        monitor: monitor,
+                        onOpenKnowledge: { id in
+                            selectedKnowledgeID = id
+                            selection = .library
+                        }
                     )
                 case .library:
                     LibraryView(selectedID: $selectedKnowledgeID, coordinator: coordinator)
@@ -158,6 +169,7 @@ struct ContentView: View {
             monitor.start()
             ReminderNotifications.request()
             while !Task.isCancelled {
+                await HarnessProcessor.tick(context: modelContext, monitor: monitor)
                 await CaptureProcessor.tick(context: modelContext, monitor: monitor)
                 try? await Task.sleep(for: .seconds(2))
             }
@@ -265,6 +277,13 @@ final class NotificationRelay: NSObject, UNUserNotificationCenterDelegate {
                 FsrsState.self,
                 ReviewSession.self,
                 ReviewAttempt.self,
+                AgentSession.self,
+                AgentMessage.self,
+                LearningTask.self,
+                TaskEventRecord.self,
+                SourceReference.self,
+                KnowledgeReference.self,
+                SessionSummaryRecord.self,
             ],
             inMemory: true
         )

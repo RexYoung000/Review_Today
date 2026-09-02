@@ -23,7 +23,14 @@ struct Review_TodayApp: App {
                 AppSettings.self,
                 FsrsState.self,
                 ReviewSession.self,
-                ReviewAttempt.self
+                ReviewAttempt.self,
+                AgentSession.self,
+                AgentMessage.self,
+                LearningTask.self,
+                TaskEventRecord.self,
+                SourceReference.self,
+                KnowledgeReference.self,
+                SessionSummaryRecord.self
             )
         } catch {
             fatalError("SwiftData container failed: \(error)")
@@ -67,52 +74,30 @@ struct Review_TodayApp: App {
 }
 
 private struct MenuBarCapture: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \CaptureTask.updatedAt, order: .reverse) private var tasks: [CaptureTask]
-    @State private var text = ""
-    @State private var saveError: String?
+    @Query(sort: \AgentSession.updatedAt, order: .reverse) private var sessions: [AgentSession]
+    @Query(sort: \LearningTask.updatedAt, order: .reverse) private var tasks: [LearningTask]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(String(localized: "记住点什么"))
+            Text(String(localized: "学习进度"))
                 .font(.headline)
-            TextField(String(localized: "输入文字或粘贴链接……"), text: $text)
-            Button(String(localized: "记住")) {
-                let value = text.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !value.isEmpty else { return }
-                let url = TodayView.firstURL(in: value)
-                let source = Source(inputType: url == nil ? "text" : "url", rawText: value, url: url)
-                let task = CaptureTask()
-                task.source = source
-                CaptureProcessor.appendStatus(task.userStatus, to: task)
-                modelContext.insert(source)
-                modelContext.insert(task)
-                do {
-                    try modelContext.save()
-                    text = ""
-                    saveError = nil
-                } catch {
-                    modelContext.rollback()
-                    saveError = String(localized: "本机保存失败，请重试。")
-                }
-            }
-            .keyboardShortcut(.return)
-            if let saveError {
-                Text(saveError)
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-            }
             Divider()
-            if let latest = tasks.first(where: { $0.status != "cancelled" }) {
-                Text(latest.userStatus)
+            if let latest = tasks.first(where: { $0.status != "cancelled" }),
+               let session = sessions.first(where: { $0.id == latest.sessionID }) {
+                Text(session.title)
+                    .font(.callout.weight(.medium))
+                    .lineLimit(1)
+                Text(latest.userSummary)
+                    .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
             } else {
-                Text(String(localized: "还没有采集"))
+                Text(String(localized: "还没有学习 Session"))
                     .foregroundStyle(.secondary)
             }
             Button(String(localized: "打开主窗口")) {
                 NSApp.activate(ignoringOtherApps: true)
+                NSApp.windows.first(where: { $0.canBecomeMain })?.makeKeyAndOrderFront(nil)
             }
         }
         .padding(12)

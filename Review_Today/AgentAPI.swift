@@ -183,6 +183,164 @@ enum AgentAPI {
         }
     }
 
+    // MARK: Harness V2
+
+    struct SessionTurnAccepted: Decodable {
+        var messageId: String
+        var taskId: String
+        var status: String
+        var nextEventSeq: Int
+
+        enum CodingKeys: String, CodingKey {
+            case messageId = "message_id"
+            case taskId = "task_id"
+            case status
+            case nextEventSeq = "next_event_seq"
+        }
+    }
+
+    struct RequiredAction: Codable {
+        var type: String
+        var prompt: String
+        var options: [String]
+    }
+
+    struct HarnessMessage: Decodable {
+        var messageId: String
+        var role: String
+        var content: String
+        var createdAt: String
+
+        enum CodingKeys: String, CodingKey {
+            case messageId = "message_id"
+            case role, content
+            case createdAt = "created_at"
+        }
+    }
+
+    struct TaskEvent: Decodable {
+        var eventId: String
+        var sessionId: String
+        var taskId: String
+        var seq: Int
+        var occurredAt: String
+        var stage: String
+        var state: String
+        var node: String
+        var userSummary: String
+        var detailSummary: String
+        var attempt: Int
+        var durationMS: Int?
+        var errorCode: String?
+        var recoveryAction: String?
+        var requiredAction: RequiredAction?
+        var message: HarnessMessage?
+        var payload: EventPayload
+
+        enum CodingKeys: String, CodingKey {
+            case eventId = "event_id"
+            case sessionId = "session_id"
+            case taskId = "task_id"
+            case seq
+            case occurredAt = "occurred_at"
+            case stage, state, node
+            case userSummary = "user_summary"
+            case detailSummary = "detail_summary"
+            case attempt
+            case durationMS = "duration_ms"
+            case errorCode = "error_code"
+            case recoveryAction = "recovery_action"
+            case requiredAction = "required_action"
+            case message, payload
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            eventId = try container.decode(String.self, forKey: .eventId)
+            sessionId = try container.decode(String.self, forKey: .sessionId)
+            taskId = try container.decode(String.self, forKey: .taskId)
+            seq = try container.decode(Int.self, forKey: .seq)
+            occurredAt = try container.decode(String.self, forKey: .occurredAt)
+            stage = try container.decode(String.self, forKey: .stage)
+            state = try container.decode(String.self, forKey: .state)
+            node = try container.decode(String.self, forKey: .node)
+            userSummary = try container.decode(String.self, forKey: .userSummary)
+            detailSummary = try container.decodeIfPresent(String.self, forKey: .detailSummary) ?? ""
+            attempt = try container.decodeIfPresent(Int.self, forKey: .attempt) ?? 1
+            durationMS = try container.decodeIfPresent(Int.self, forKey: .durationMS)
+            errorCode = try container.decodeIfPresent(String.self, forKey: .errorCode)
+            recoveryAction = try container.decodeIfPresent(String.self, forKey: .recoveryAction)
+            requiredAction = try container.decodeIfPresent(RequiredAction.self, forKey: .requiredAction)
+            message = try container.decodeIfPresent(HarnessMessage.self, forKey: .message)
+            payload = try container.decodeIfPresent(EventPayload.self, forKey: .payload) ?? EventPayload()
+        }
+    }
+
+    struct EventPayload: Decodable {
+        var sourcePack: [SourcePackItem] = []
+
+        enum CodingKeys: String, CodingKey { case sourcePack = "source_pack" }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            sourcePack = try container.decodeIfPresent([SourcePackItem].self, forKey: .sourcePack) ?? []
+        }
+
+        init() {}
+    }
+
+    struct SourcePackItem: Decodable {
+        var url: String
+        var title: String
+        var snippet: String
+    }
+
+    struct TaskEventPage: Decodable {
+        var taskId: String
+        var events: [TaskEvent]
+        var lastSeq: Int
+
+        enum CodingKeys: String, CodingKey {
+            case taskId = "task_id"
+            case events
+            case lastSeq = "last_seq"
+        }
+    }
+
+    struct LearningTaskView: Decodable {
+        var taskId: String
+        var sessionId: String
+        var clientMessageId: String
+        var mode: String
+        var status: String
+        var stage: String
+        var userSummary: String
+        var retryCount: Int
+        var errorCode: String?
+        var requiredAction: RequiredAction?
+        var resultSummary: String
+        var lastEventSeq: Int
+        var lastAckedSeq: Int
+        var memoryPackage: ExtractPayload?
+        var memorySourceText: String
+
+        enum CodingKeys: String, CodingKey {
+            case taskId = "task_id"
+            case sessionId = "session_id"
+            case clientMessageId = "client_message_id"
+            case mode, status, stage
+            case userSummary = "user_summary"
+            case retryCount = "retry_count"
+            case errorCode = "error_code"
+            case requiredAction = "required_action"
+            case resultSummary = "result_summary"
+            case lastEventSeq = "last_event_seq"
+            case lastAckedSeq = "last_acked_seq"
+            case memoryPackage = "memory_package"
+            case memorySourceText = "memory_source_text"
+        }
+    }
+
     static func submitCapture(
         taskId: UUID,
         sourceId: UUID,
@@ -344,6 +502,91 @@ enum AgentAPI {
         return try await send(request)
     }
 
+    static func submitTurn(
+        sessionId: UUID,
+        messageId: UUID,
+        content: String,
+        contentType: String,
+        modePreset: String,
+        summary: String,
+        recentMessages: [(role: String, content: String)],
+        knowledgeSummaries: [String]
+    ) async throws -> SessionTurnAccepted {
+        var request = URLRequest(url: base.appending(path: "/v2/sessions/\(sessionId.uuidString.lowercased())/turns"))
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.timeoutInterval = 15
+        request.httpBody = try JSONSerialization.data(withJSONObject: [
+            "client_message_id": messageId.uuidString.lowercased(),
+            "content": content,
+            "content_type": contentType,
+            "mode_preset": modePreset,
+            "primary_language": UserLanguage.primaryCode,
+            "context": [
+                "summary": summary,
+                "recent_messages": recentMessages.map { ["role": $0.role, "content": $0.content] },
+                "knowledge_summaries": knowledgeSummaries,
+            ],
+        ])
+        return try await sendHarness(request, as: SessionTurnAccepted.self)
+    }
+
+    static func getLearningTask(taskId: UUID) async throws -> LearningTaskView {
+        var request = URLRequest(url: base.appending(path: "/v2/tasks/\(taskId.uuidString.lowercased())"))
+        request.timeoutInterval = 10
+        return try await sendHarness(request, as: LearningTaskView.self)
+    }
+
+    static func getTaskEvents(taskId: UUID, afterSeq: Int) async throws -> TaskEventPage {
+        var components = URLComponents(
+            url: base.appending(path: "/v2/tasks/\(taskId.uuidString.lowercased())/events"),
+            resolvingAgainstBaseURL: false
+        )!
+        components.queryItems = [URLQueryItem(name: "after_seq", value: String(afterSeq))]
+        var request = URLRequest(url: components.url!)
+        request.timeoutInterval = 10
+        return try await sendHarness(request, as: TaskEventPage.self)
+    }
+
+    static func taskAction(taskId: UUID, actionId: UUID, type: String, content: String) async throws -> LearningTaskView {
+        var request = URLRequest(url: base.appending(path: "/v2/tasks/\(taskId.uuidString.lowercased())/actions"))
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.timeoutInterval = 60
+        request.httpBody = try JSONSerialization.data(withJSONObject: [
+            "action_id": actionId.uuidString.lowercased(),
+            "action_type": type,
+            "content": content,
+            "selection": content,
+            "payload": [:],
+        ])
+        return try await sendHarness(request, as: LearningTaskView.self)
+    }
+
+    static func ackLearningTask(taskId: UUID, lastEventSeq: Int, knowledgeIds: [UUID] = []) async throws -> LearningTaskView {
+        var request = URLRequest(url: base.appending(path: "/v2/tasks/\(taskId.uuidString.lowercased())/ack"))
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.timeoutInterval = 15
+        request.httpBody = try JSONSerialization.data(withJSONObject: [
+            "last_event_seq": lastEventSeq,
+            "knowledge_ids": knowledgeIds.map { $0.uuidString.lowercased() },
+        ])
+        return try await sendHarness(request, as: LearningTaskView.self)
+    }
+
+    private static func sendHarness<T: Decodable>(_ request: URLRequest, as type: T.Type) async throws -> T {
+        let (data, response) = try await URLSession.shared.data(for: request)
+        let code = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard (200 ... 299).contains(code) else {
+            if let fastapi = try? JSONDecoder().decode(FastAPIError.self, from: data) {
+                throw HarnessAPIError.server(code: fastapi.detail.errorCode, message: fastapi.detail.message)
+            }
+            throw HarnessAPIError.http(code)
+        }
+        return try JSONDecoder().decode(T.self, from: data)
+    }
+
     private static func send(_ request: URLRequest) async throws -> CaptureView {
         let (data, response) = try await URLSession.shared.data(for: request)
         let http = response as? HTTPURLResponse
@@ -405,5 +648,34 @@ enum CaptureAPIError: Error {
             }
         }
         return fallback
+    }
+}
+
+enum HarnessAPIError: Error {
+    case server(code: String, message: String)
+    case http(Int)
+
+    var errorCode: String {
+        switch self {
+        case .server(let code, _): return code
+        case .http(let status) where status == 408 || status == 429 || status >= 500:
+            return "RT.HARNESS.SERVICE_UNAVAILABLE"
+        case .http:
+            return "RT.HARNESS.REQUEST_FAILED"
+        }
+    }
+
+    static func code(for error: Error) -> String {
+        if let harnessError = error as? HarnessAPIError { return harnessError.errorCode }
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .timedOut, .cannotConnectToHost, .networkConnectionLost,
+                 .notConnectedToInternet, .dnsLookupFailed, .cannotFindHost:
+                return "RT.HARNESS.SERVICE_UNAVAILABLE"
+            default:
+                break
+            }
+        }
+        return "RT.HARNESS.REQUEST_FAILED"
     }
 }
