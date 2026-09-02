@@ -1,34 +1,33 @@
 # Review Today Agent 与系统架构
 
-> 文档状态：包含长期目标架构与当前实现说明；当前施工范围以 [最小闭环与渐进式里程碑](demo-plan.md) 为准
+> 文档状态：包含长期目标与当前实现；当前 M1 工程契约以 [Agent Harness V2 主规格](agent-harness-v2.md) 为准
 
-## 0. 当前最小架构
+## 0. 当前 M1 架构
 
-里程碑一不扩建通用 Agent 架构，只使用一条受控文字路径：
+里程碑一不扩建通用 Agent 平台，但必须建立能够支撑连续学习的状态化 Harness：
 
 ```text
-SwiftUI 文字输入
-→ 本机 FastAPI
-→ LangGraph 采集整理图
-→ OpenAI 生成知识卡、问题与评分规格
-→ SwiftData 保存
-→ SwiftUI 展示问题并接收原始文字回答
-→ 独立 OpenAI 评分调用
-→ 返回结构化等级与简短反馈
+SwiftUI Learning Workspace
+→ Mac 先持久化 Session / Message / Task
+→ 本机 FastAPI 立即接受 Turn
+→ 受控工作流异步执行并追加 Task Event
+→ SwiftUI 增量回放 Message / Event / Required Action
+→ 用户在同一 Task 内选择、追问、回答或确认
+→ 需要形成记忆时复用现有知识卡与 ACK 原子提交
 ```
 
-当前回答链路不增加“用户话术结构化”节点：自然语言回答保持原样，结构化的是评分规格和评分结果。这样可以先验证模型的真实语义理解能力，避免新增一次模型调用和误差来源。
+自然语言回答保持原样，结构化的是路由、工作流状态、教学／问题输出、评分规格和评分结果。Session 不是把完整历史重复发送给模型；Harness 使用近期消息、结构化摘要、当前资料和少量相关知识组成受限上下文。
 
-本文后续的 Realtime、WebRTC、完整 checkpoint、严格 ACK、事件回放、通知与 FSRS 等内容是后续目标或需求池，不能据此宣称已经实现。Harness 的近期任务是收口真实流程、补齐恢复和可观测性，不是扩成通用多 Agent 平台。
+Task Event、短期 checkpoint、严格 ACK、事件回放和 App 托管本地服务属于当前 M1。Realtime、WebRTC、语音、通知分发和正式安装仍是后续目标，不能据此宣称已经实现。Harness 仍不是通用多 Agent 平台。
 
 ## 1. 架构目标
 
-系统采用“一个用户可感知的记忆教练、两条受控工作流、一个本地事实来源”：
+系统采用“一个用户可感知的学习教练、四条受控学习工作流、一个本地事实来源”：
 
 - 用户只面对一个 Review Today，不需要选择研究员、老师或评分员等多个 Agent 角色。
-- 内部用采集整理图和正式复习图拆分职责。
+- 内部用模式路由、记忆整理、资料学习、主题探索、问题攻克和既有正式复习图拆分职责；单次 Task 只激活一条主工作流。
 - AI 负责理解、生成和语义判断；确定性程序负责流程、权限、重试、写入和排期。
-- 完整知识与复习历史永远以 Mac 本地 SwiftData 为准。
+- 完整 Session、消息、知识与复习历史永远以 Mac 本地持久化为准。
 
 ## 2. 核心概念解释
 
@@ -54,9 +53,9 @@ SwiftUI 文字输入
 
 ```mermaid
 flowchart LR
-    U["Rex"] --> M["SwiftUI Mac App"]
-    M --> D["SwiftData\n长期事实来源"]
-    M -->|"HTTP / WebSocket"| P["本机 Python 服务\nFastAPI + LangGraph"]
+    U["Rex"] --> M["SwiftUI Mac App\nLearning Workspace"]
+    M --> D["SwiftData\nSession / Message / Task / Knowledge"]
+    M -->|"HTTP V2 + event polling"| P["本机 Python 服务\nFastAPI + 受控工作流"]
     P --> C["SQLite checkpoint\n短期 + TTL"]
     P --> R["OpenAI Responses"]
     P --> S["OpenAI Web Search"]
@@ -66,27 +65,36 @@ flowchart LR
 
 ### SwiftUI Mac App
 
-- 主窗口、菜单栏、通知和独立复习窗口；
+- 主窗口、学习工作区、Today、知识库、待处理和独立复习窗口；
 - 录音与本地音频生命周期；
-- SwiftData 数据模型和完整长期数据；
+- SwiftData 中的 Session、Message、Task、Event 消费位置、知识和完整长期数据；
 - 候选选择、固定会话快照、FSRS 和一题一事务；
-- 向 Realtime 发送音频并展示转写与反馈；
+- 启动、监控并恢复自己托管的本机 Python 服务；
+- 先保存输入，再增量取得 Task Event、Message 与 Required Action；
 - 决定用户最终改判和写入结果。
 
 ### 本机 Python 服务
 
-- FastAPI 暴露本机接口，LangGraph 执行两条工作流；
+- FastAPI 暴露本机 v1 兼容接口和 v2 异步接口，受控图执行四种学习工作流；
 - 网页抓取、正文提取、风险规则和 SSRF 防护；
-- OpenAI 标准 Key 和短时 Realtime 凭证；
-- Responses、Web Search 与 Realtime sideband 控制；
+- OpenAI 标准 Key、模型角色配置和启动能力检查；
+- Responses 与按风险触发的 Web Search；
 - 短期 SQLite checkpoint、重试和结构化运行记录；
 - 不拥有长期知识、FSRS 或最终复习历史。
 
 ### OpenAI 服务
 
-- Realtime 处理实时语音层；
+- Realtime 在后续里程碑处理实时语音层；
 - Responses 优先处理可验证的结构化理解与评分；若兼容供应端将请求标为完成却返回空结构化结果，服务仅针对该空结果改用 Chat Completions 的同一 Pydantic schema；
 - Web Search 只在风险规则或模型分类触发时使用。
+
+### 模型角色
+
+- Luna：模式路由、Session 关系判断和结构化摘要；
+- Terra：教学、问题回答、记忆生成与普通验证；
+- Sol：高风险事实与证据冲突判断。
+
+角色与模型 ID 由配置映射，启动时逐项检查；不可用时让受影响 Task 明确失败，不静默改用其他角色模型。
 
 ## 4. 采集整理图
 
@@ -177,6 +185,9 @@ Realtime 不可以：
 
 | 数据 | 长期位置 | Agent 服务可见范围 | 删除规则 |
 |---|---|---|---|
+| 学习 Session 与可见消息 | SwiftData | 当前 Session 的受限上下文 | 归档不删除；M1 不提供永久删除 |
+| Learning Task 与事件消费位置 | SwiftData | 当前 Task、短期 checkpoint 与事件窗口 | Session 保留任务摘要；服务正文按 TTL 清理 |
+| 结构化 Session 摘要与交接包 | SwiftData | 当前调用需要的摘要 | 随 Session 保留，归档不删除 |
 | 原始来源与证据 | SwiftData | 当前整理任务所需内容 | 用户删除且无其他知识引用 |
 | 知识点与版本 | SwiftData | 当前任务或会话涉及的版本 | 按暂停、软删除、永久删除规则 |
 | 问题和评分规格 | SwiftData | 当前题需要的规格 | 随知识版本管理 |
@@ -191,7 +202,42 @@ Mac 是长期事实来源。Python checkpoint 只是“任务做到哪里”的�
 
 ### 6.1 领域模型草图
 
-以下是 SwiftData 与本机接口的字段级起点，不是最终 schema。实现可以增加字段；不能删掉身份、版本、`mode`、ACK 与 FSRS 版本字段。标识符用稳定 UUID。时间用绝对时间戳，日界按 Mac 本地日历解释。
+以下是 SwiftData 与本机接口的字段级起点。标识符用稳定 UUID，时间用绝对时间戳，日界按 Mac 本地日历解释。
+
+**AgentSession（学习 Session）**
+
+- `id`、`title`、`mode_preset`（`auto` / 四种工作流）、`status`（`active` / `archived`）
+- `created_at`、`updated_at`、`archived_at`、`summary_id`
+- 关联 Message、LearningTask、Source 与 Knowledge；归档不级联删除
+
+**AgentMessage（可见消息）**
+
+- `id`、`client_message_id`（用户消息幂等键）、`session_id`、`task_id`（可空）
+- `role`（`user` / `coach` / `system_summary`）、`content`、`content_type`
+- `created_at`、`status`（`local` / `accepted` / `failed`）
+
+**LearningTask（学习任务）**
+
+- `id`、`session_id`、`mode`、`status`、`stage`
+- `created_at`、`updated_at`、`retry_count`、`error_code`
+- `required_action`、`last_event_seq`、`last_acked_seq`、`result_summary`
+
+**TaskEvent（任务事件）**
+
+- `event_id`、`session_id`、`task_id`、任务内单调递增 `seq`
+- `occurred_at`、`stage`、`state`、`node`
+- `user_summary`、`detail_summary`、`attempt`、`duration_ms`
+- `error_code`、`recovery_action`、`required_action`、消息或结果引用
+
+**SessionSummary（结构化摘要）**
+
+- `id`、`session_id`、`version`、`goal`、`confirmed_decisions`
+- `source_refs`、`knowledge_refs`、`open_questions`、`updated_at`
+
+**SourceReference / KnowledgeReference（引用）**
+
+- 稳定引用现有 Source / Knowledge，不复制完整正文；
+- 记录 Session、Task、对象 ID、版本与用途。
 
 **Source（来源）**
 
@@ -242,38 +288,39 @@ Mac 是长期事实来源。Python checkpoint 只是“任务做到哪里”的�
 - `due_at`、`stability`、`difficulty`、`reps`、`lapses`
 - `algorithm_version`、`parameter_version`、`last_effective_grade`
 
-**AgentEvent（运行事件）**
+**AgentEvent（旧运行事件）**
 
-- `seq`（任务内单调递增）、`time`、`task_or_session_id`、`event_type`、`node`
-- `attempt_id`（可空）、脱敏 `payload`
-- 产品进度、开发轨迹和恢复判断都从同一事件流投影
+- v1 兼容结构；Harness V2 新任务统一使用 TaskEvent；
+- v1 下线前产品进度、开发轨迹和恢复判断仍不得各自维护虚假状态。
 
 **AppSettings**
 
 - `daily_reminder_time`、`review_language_override`、`developer_mode`
 - 开发模式下才允许 `force_due` / 跳过两小时等待；正式模式忽略
 
-错误码采用 `RT.<AREA>.<CODE>`，例如 `RT.CAPTURE.NO_ACK`、`RT.REVIEW.VERSION_MISMATCH`。全表随切片增长，不在开工前写死。
+错误码采用 `RT.<AREA>.<CODE>`，例如 `RT.HARNESS.SERVICE_START_FAILED`、`RT.TASK.EVENT_GAP`、`RT.CAPTURE.NO_ACK`、`RT.REVIEW.VERSION_MISMATCH`。
 
 ## 7. 状态与接口契约
 
-### 7.1 采集任务状态机
+### 7.1 Learning Task 状态机
 
 ```text
-queued
-→ uploading
-→ processing
+accepted
+→ queued
+→ running
+↔ awaiting_user
 → committing
 → completed
 ```
 
 异常出口：
 
-- `retryable_failed`：网络、临时服务或可恢复抓取错误；自动退避重试，也允许手动重试。
+- `retryable_failed`：网络、临时服务、模型调用或可恢复结构错误；有限退避重试，也允许手动重试。
 - `needs_attention`：冲突、证据不足、转写异常或语义校验失败；等待用户处理。
 - `cancelled`：用户取消；保留可解释记录，不产生半完成知识。
+- `terminal_failed`：当前约束下无法继续；显示原因和可行下一步。
 
-客户端和 Agent 运行记录必须使用同一个任务状态来源。
+`awaiting_user` 必须停止处理中动效并给出明确动作。客户端、Task 卡片和 Agent 运行记录必须使用同一个 TaskEvent 来源。旧 CaptureTask 状态机继续用于 v1 兼容任务。
 
 ### 7.2 复习尝试
 
@@ -294,17 +341,22 @@ queued
 
 - 采集任务使用本机 HTTP：`http://127.0.0.1:8742`。
 - 健康检查：`GET /healthz`。
+- V2 Turn：`POST /v2/sessions/{session_id}/turns`。
+- 任务快照：`GET /v2/tasks/{task_id}`。
+- 增量事件：`GET /v2/tasks/{task_id}/events?after_seq=`。
+- 用户动作：`POST /v2/tasks/{task_id}/actions`。
+- 持久化确认：`POST /v2/tasks/{task_id}/ack`。
 - 正式复习的控制事件使用同一主机上的 WebSocket。
 - 实时音频使用 WebRTC 直连 OpenAI Realtime。
 - Python 使用 sideband 连接控制同一 Realtime 会话。
 - 标准 API Key 不离开 Python；Swift 只收到短时 Realtime 凭证。
 - Demo 不启用 TLS。HTTPS 留到远程部署。
 
-每一刀只冻结该刀的路径、JSON 字段和错误码，并与代码一起进仓库。不要求开工前形成完整接口规格。
+V2 以上路径和主规格中的必备字段已经冻结；具体枚举与错误码随实现补齐，但不能改变即时接受、事件回放、动作幂等和 Mac ACK 语义。
 
-### 7.4 Agent 运行事件契约
+### 7.4 Task Event 契约
 
-每个采集任务和正式复习会话维护一条任务范围内、只追加的结构化事件流。它不是新的长期知识库，也不是通用聊天记录；它只负责回答“这次任务实际走过什么路径、当前处于什么状态、失败后如何恢复”。
+每个 Learning Task 维护一条任务范围内、只追加的结构化事件流。它不是模型思维链，也不是另一份聊天记录；它只负责回答“这次任务实际走过什么路径、当前处于什么状态、为什么等待、失败后如何恢复”。
 
 事件至少覆盖：
 
@@ -315,7 +367,7 @@ queued
 - 重试计划、实际重试次数和最终错误码；
 - Mac 本地提交请求、ACK 与拒绝原因。
 
-每条事件至少携带单调递增序号、时间、任务或会话 ID、事件类型、节点、关联尝试 ID 和脱敏载荷。普通产品状态、开发模式轨迹和恢复判断都从同一事件流与任务数据投影，不得各自维护另一套进度。
+每条事件至少携带事件 ID、Session ID、Task ID、单调递增序号、时间、阶段、状态、节点、用户摘要、尝试次数和可选耗时／错误／恢复／等待动作。普通产品状态、展开详情、开发模式轨迹和恢复判断都从同一事件流与任务数据投影，不得各自维护另一套进度。
 
 在任务和调试保留期内，模型实际看到的请求应能由 Mac 任务快照、来源或知识版本、提示词版本、模型配置和结构化参数重建。运行记录不因此保存隐藏思维链、完整密钥或不必要的知识正文；需要定位内容差异时使用本地引用、版本、哈希和脱敏摘要。
 
@@ -333,7 +385,10 @@ queued
 
 每条不变式都需要稳定错误码、可归因的运行记录和至少一个能够真实触发违规的反向测试。具体检查位置随接口规格确定，但规则本身不得在实现中弱化。
 
-## 8. 失败与恢复
+## 8. 本地服务、失败与恢复
+
+- **App 托管服务**：App 启动后检查 localhost 健康状态；无外部实例时启动项目配置的 Python 服务并监控自己启动的子进程；退出时只终止自己托管的实例。
+- **启动失败**：用户消息和 Task 已先保存；显示解释、重试与诊断，不把“等待服务恢复”当作终态。
 
 - **App 重启**：从 SwiftData 恢复采集队列和正式会话；已完成题不重复，未完成题重新提问。
 - **Python 重启**：从未过期 checkpoint 恢复；若无法恢复，Mac 保留原任务并重新提交同一任务 ID。
@@ -380,6 +435,7 @@ queued
 
 ## 12. 相关文档
 
+- [Agent Harness V2 主规格](agent-harness-v2.md)
 - [产品需求与边界](product-requirements.md)
 - [本机 Demo 实施与验收](demo-plan.md)
 - [产品界面与体验方向](../DESIGN.md)
@@ -399,13 +455,17 @@ queued
 
 ### 尚未完成或尚未证明
 
+- Harness V2 的 AgentSession、LearningTask、AgentMessage、TaskEvent 与 SessionSummary 尚未实现；
+- V2 异步接口、四模式图、增量事件回放和上下文压缩尚未实现；
+- App 尚未自动托管、监控和恢复 Python 服务；
+- “学习”工作区、Session 列表、即时反馈、运行详情和 Today 纯看板尚未实现；
 - 里程碑一尚未从真实 Mac App 入口完成端到端视觉与交互验收；
 - M1 已有固定样本、服务端契约测试和显式真实模型冒烟，但完整客户端自动化与更广模型质量评测尚未完成；
-- Python `TaskStore`、评分 ACK 和任务事件主要保存在内存中，不是文中目标的 SQLite checkpoint + TTL；
+- Python `TaskStore`、评分 ACK 和旧任务事件主要保存在内存中，不是文中目标的 SQLite checkpoint + TTL；
 - 复习评分目前是直接 API 调用，不是完整的正式复习 LangGraph；
 - 正式提交已按“ACK 成功后才更新 FSRS 和 `effectiveGrade`，本地保存成功后才推进下一题”的顺序执行；
 - 没有 OpenAI Realtime、WebRTC、sideband、VAD 和语音复习闭环；
 - 运行记录不具备完整重放、内容重建和未闭合事件恢复能力；
 - 具体 OpenAI 模型冻结规则、完整错误码、性能数据和隐私审计证据仍未建立。
 
-后续应先完成最小文字闭环和质量评测，再根据已验证流程收口 Harness；不能以目标架构图替代实现证据。
+当前必须先实现并验收 Harness V2，再关闭 #17 或进入 M2；不能以本文、构建成功或旧 capture 冒烟替代真实 Session 体验证据。

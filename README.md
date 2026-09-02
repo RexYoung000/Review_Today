@@ -1,13 +1,14 @@
 # Review Today
 
-Review Today 是“个人记忆教练”的项目仓库。长期方向是把日常学习内容转化成主动回忆训练；当前先做减法，只验证最小的知识解析与回答判断闭环。
+Review Today 是“个人学习教练”的项目仓库。它帮助用户理解资料、探索主题、攻克问题，并在确认后把成果转化成主动回忆训练。
 
 ## 当前阶段
 
 ```text
-纯文字最小闭环
+旧纯文字知识卡与评分基线
+→ M1 Session Harness V2
+→ 真实 Mac 体验验收
 → 知识与判断质量验证
-→ Harness 收口
 → 语音闭环
 → 真实自用 POC
 → 再评估 Agent 动画、UI 载体与产品化
@@ -15,18 +16,19 @@ Review Today 是“个人记忆教练”的项目仓库。长期方向是把日�
 
 - 当前用户：Rex 本人。
 - 当前平台：原生 SwiftUI macOS 应用。
-- 当前目标：输入一段知识内容，形成知识卡和问题；用户用文字回答后，由独立评分调用判断是否正确并给出简短原因。
-- 当前边界：语音、网页核验、FSRS、通知、完整 Harness、Spine 动画、跨端和部署均不作为里程碑一的验收项。
-- 数据策略：Mac 本地 SwiftData 仍作为长期数据方向；本机 Python 服务负责当前 AI 调用。
+- 当前目标：完成可持续的学习 Session、即时反馈、服务恢复、可回放任务事件，以及记忆整理、资料学习、主题探索、问题攻克四种受控工作流。
+- 当前边界：文字与公开链接的开发 Mac POC；语音、Realtime、通知、Spine、跨端、正式安装和部署不属于本轮 M1。
+- 数据策略：Mac 本地持久化 Session、消息、任务、知识和复习历史；本机 Python 服务只执行当前任务并保留短期 checkpoint。
 
-当前执行范围与后续里程碑见[最小闭环与渐进式里程碑](docs/demo-plan.md)。
+当前执行范围以 [Agent Harness V2 主规格](docs/agent-harness-v2.md) 与 [M1 验收契约](docs/m1-acceptance.md) 为准。
 
 ## 文档入口
 
 | 文档 | 作用 |
 |---|---|
-| [最小闭环与渐进式里程碑](docs/demo-plan.md) | 当前唯一执行基线、减法边界、通过标准和后续阶段 |
-| [M1 纯文字最小闭环验收契约](docs/m1-acceptance.md) | M1 固定输入、知识卡要求、正确／错误回答和三层验收证据 |
+| [Agent Harness V2 主规格](docs/agent-harness-v2.md) | 当前唯一跨产品、交互和技术实施基线 |
+| [M1 Agent Harness V2 验收契约](docs/m1-acceptance.md) | Session、四模式、恢复、真实 Mac 验收及旧闭环回归 |
+| [最小闭环与渐进式里程碑](docs/demo-plan.md) | 历史里程碑记录及 2026-09-02 顺序修订 |
 | [产品需求与边界](docs/product-requirements.md) | 长期产品方向与需求池，不代表当前全部实施 |
 | [Agent 与系统架构](docs/architecture.md) | 现有实现、目标架构、LangGraph 与 Harness 边界 |
 | [Apple Foundation Models 与 PCC 评估](docs/apple-foundation-models-evaluation.md) | Apple 设备端模型、PCC、适用场景、限制与里程碑二评测决定 |
@@ -46,10 +48,12 @@ Review Today 是“个人记忆教练”的项目仓库。长期方向是把日�
 
 尚未完成：
 
-- 真实 Mac App 入口的完整端到端验收；
+- Harness V2 的领域模型、异步接口、四模式和学习工作区；
+- App 自动托管本机服务、增量事件回放和 Session 恢复；
+- 真实 Mac App 入口的 Harness V2 端到端验收；
 - 服务级固定样本已有自动化测试和显式真实模型冒烟，但客户端端到端自动化仍未建立；
 - 模型在部分正确、同义表达、遗漏限定和常见误解上的稳定性验证；
-- 持久化 checkpoint、严格 ACK 事务、完整事件回放与恢复；
+- 持久化 checkpoint、V2 ACK 事务、完整事件回放与恢复；
 - OpenAI Realtime 语音复习闭环。
 
-因此，当前工作重点是收口和验证，不是继续扩大功能面。
+因此，当前工作重点是按主规格收口 Harness，并保留旧知识卡与评分兼容，不是继续扩大到语音或通用 Agent。
