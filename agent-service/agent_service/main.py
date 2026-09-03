@@ -39,8 +39,8 @@ from pydantic import ValidationError
 from agent_service.capture import find_source_candidates, run_capture, source_fidelity_issues
 from agent_service.capture.fetch import looks_like_url
 from agent_service.config import CA_BUNDLE, HOST, PORT, openai_key
-from agent_service.harness import process_action, process_task, record_action, resume_incomplete_tasks
-from agent_service.harness_store import HarnessTaskRecord, harness_store
+from agent_service.harness import process_task, resume_incomplete_tasks
+from agent_service.harness_store import HarnessTaskRecord, harness_store, now_iso
 from agent_service.model_capabilities import snapshot as model_capability_snapshot, start_probe
 from agent_service.openai_client import transcribe_audio
 from agent_service.review import grade_answer
@@ -61,6 +61,8 @@ from agent_service.schemas import (
     TaskEventPage,
 )
 from agent_service.store import TaskRecord, store
+from agent_service.conversation import conversation_harness
+from agent_service.schemas import SessionMessageRequest, RunActionRequest, SessionAckRequest, MessageAccepted
 
 app = FastAPI(title="Review Today Agent", docs_url=None, redoc_url=None)
 _grade_results: dict[str, GradeResult] = {}
@@ -72,6 +74,7 @@ _grade_lock = threading.Lock()
 def check_model_capabilities() -> None:
     start_probe()
     threading.Thread(target=resume_incomplete_tasks, name="review-today-task-recovery", daemon=True).start()
+    threading.Thread(target=conversation_harness.recover, name="review-today-run-recovery", daemon=True).start()
 
 
 @app.get("/healthz")
@@ -81,6 +84,7 @@ def healthz() -> dict[str, object]:
         "key_configured": bool(openai_key()),
         "ca_bundle": bool(CA_BUNDLE),
         "harness": "v2",
+        "conversation_protocol": 1,
         "model_roles": model_capability_snapshot(),
     }
 
@@ -100,6 +104,74 @@ def _require_uuid(value: str, *, code: str) -> str:
         return str(uuid.UUID(value))
     except (ValueError, TypeError, AttributeError):
         raise _http_error(422, code, "identifier must be a valid UUID") from None
+
+
+@app.post("/v2/sessions/{session_id}/messages", response_model=MessageAccepted)
+def submit_message(session_id: str, body: SessionMessageRequest) -> dict:
+    session_id = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
+    try:
+        result = conversation_harness.accept(session_id, body)
+    except ValueError as exc:
+        raise _http_error(409, str(exc), "message conflicts with current Session state") from None
+    conversation_harness.start(session_id)
+    return result.model_dump()
+
+
+@app.get("/v2/sessions/{session_id}/events")
+def session_events(session_id: str, after_seq: int = 0) -> dict:
+    session_id = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
+    if after_seq < 0:
+        raise _http_error(422, "RT.SESSION.INVALID_SEQ", "after_seq must be non-negative")
+    data = conversation_harness.store.get(session_id)
+    if data is None:
+        raise _http_error(404, "RT.SESSION.UNKNOWN", "unknown Session")
+    if after_seq < data.get("event_base_seq", 0):
+        raise _http_error(409, "RT.SESSION.CURSOR_EXPIRED", "older acknowledged events are in the Mac history")
+    return dict(session_id=session_id, events=[e for e in data["events"] if e["seq"] > after_seq],
+                last_seq=conversation_harness.store.last_seq(data), paused=data["paused"], mode=data["mode"],
+                pending=data["pending"], runs=[conversation_harness.public_run(r) for r in data["runs"].values()])
+
+
+@app.post("/v2/sessions/{session_id}/ack")
+def session_ack(session_id: str, body: SessionAckRequest) -> dict:
+    session_id = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
+    if conversation_harness.store.get(session_id) is None:
+        raise _http_error(404, "RT.SESSION.UNKNOWN", "unknown Session")
+    with conversation_harness.store.transaction(session_id) as data:
+        if body.last_event_seq > conversation_harness.store.last_seq(data):
+            raise _http_error(409, "RT.SESSION.ACK_AHEAD", "cannot ACK unseen events")
+        data["last_acked_seq"] = max(data["last_acked_seq"], body.last_event_seq)
+        conversation_harness.store.compact_acknowledged(data)
+    return {"last_acked_seq": data["last_acked_seq"]}
+
+
+@app.get("/v2/runs/{run_id}")
+def get_run(run_id: str) -> dict:
+    run_id = _require_uuid(run_id, code="RT.RUN.INVALID_ID")
+    data = conversation_harness.store.locate_run(run_id)
+    if not data:
+        raise _http_error(404, "RT.RUN.UNKNOWN", "unknown Run")
+    return conversation_harness.public_run(data["runs"][run_id])
+
+
+@app.post("/v2/runs/{run_id}/actions")
+def run_action(run_id: str, body: RunActionRequest) -> dict:
+    run_id = _require_uuid(run_id, code="RT.RUN.INVALID_ID")
+    try:
+        result = conversation_harness.action(run_id, body)
+    except ValueError as exc:
+        raise _http_error(409, str(exc), "action does not match current Run state") from None
+    conversation_harness.start(result["session_id"])
+    return conversation_harness.public_run(result)
+
+
+@app.post("/v2/tasks/{task_id}/commit-claim")
+def claim_task_commit(task_id: str) -> dict:
+    task_id = _require_uuid(task_id, code="RT.TASK.INVALID_ID")
+    try:
+        return conversation_harness.claim_commit(task_id)
+    except ValueError as exc:
+        raise _http_error(409, str(exc), "this knowledge submission is no longer current") from None
 
 
 @app.post("/v2/sessions/{session_id}/turns", response_model=SessionTurnAccepted)
@@ -153,12 +225,45 @@ def get_task_events(task_id: str, after_seq: int = 0) -> dict:
 @app.post("/v2/tasks/{task_id}/actions", response_model=LearningTaskView)
 def submit_task_action(task_id: str, body: TaskActionRequest, background: BackgroundTasks) -> dict:
     normalized = _require_uuid(task_id, code="RT.TASK.INVALID_ID")
-    record, duplicate = record_action(normalized, body)
-    if record is None:
+    current = harness_store.get(normalized)
+    if current is None:
         raise _http_error(404, "RT.TASK.UNKNOWN", "unknown task_id")
-    if not duplicate:
-        background.add_task(process_action, normalized, body)
-    return record.view().model_dump()
+    operation = body.payload.get("operation")
+    if body.action_type in {"form_memory", "switch_mode", "create_handoff", "select_sources", "select_question"} and not operation:
+        raise _http_error(409, "RT.ACTION.CONFIRMATION_REQUIRED", "action requires an explicit object and version")
+    previous = next((item for item in current.action_history if item.get("action_id") == body.action_id), None)
+    if previous and any(previous.get(key) != value for key, value in body.model_dump().items()):
+        raise _http_error(409, "RT.ACTION.IDEMPOTENCY_CONFLICT", "action id already refers to different input")
+    if body.action_id in current.completed_action_ids:
+        return current.view().model_dump()
+    data = conversation_harness.store.get(current.session_id)
+    run = next((r for r in reversed(list(data["runs"].values())) if r.get("task_id") == normalized), None) if data else None
+    try:
+        if body.action_type in {"retry", "cancel"} and run:
+            conversation_harness.action(run["run_id"], RunActionRequest(action_id=body.action_id, action="retry" if body.action_type == "retry" else "cancel_task"))
+        elif body.action_type == "cancel" and current.status != "cancelled":
+            harness_store.append_event(normalized, stage="cancelled", state="cancelled", node="user_cancel", user_summary="此学习目标已取消，历史保留")
+        elif body.action_type == "cancel":
+            pass
+        else:
+            message = SessionMessageRequest(client_message_id=body.action_id,
+                                            content=body.content or body.selection or (current.content if body.action_type == "retry" else "继续"),
+                                            task_id=normalized, mode_preset=current.mode_preset, operation=operation)
+            conversation_harness.accept(current.session_id, message)
+    except ValueError as exc:
+        raise _http_error(409, str(exc), "action does not match current state") from None
+    # Record completion only AFTER the idempotent message/control acceptance.
+    # A rejected action must remain retryable with the same ID, not become a
+    # successful no-op just because its audit receipt was written first.
+    def accepted(record):
+        if body.action_id not in record.processed_action_ids:
+            record.processed_action_ids.append(body.action_id)
+            record.action_history.append({**body.model_dump(), "created_at": now_iso()})
+        if body.action_id not in record.completed_action_ids:
+            record.completed_action_ids.append(body.action_id)
+    harness_store.mutate(normalized, accepted)
+    conversation_harness.start(current.session_id)
+    return (harness_store.get(normalized) or current).view().model_dump()
 
 
 @app.post("/v2/tasks/{task_id}/ack", response_model=LearningTaskView)

@@ -48,6 +48,8 @@ class HarnessTaskRecord:
 
     def view(self) -> LearningTaskView:
         return LearningTaskView(
+            run_id=self.context.get("latest_run_id"),
+            understanding=self.context.get("understanding", "unknown"),
             task_id=self.task_id,
             session_id=self.session_id,
             client_message_id=self.client_message_id,

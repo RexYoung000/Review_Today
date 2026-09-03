@@ -33,6 +33,9 @@ enum M1DebugFixture {
             SourceReference.self,
             KnowledgeReference.self,
             SessionSummaryRecord.self,
+            AgentRun.self,
+            AgentRunControl.self,
+            SessionEventRecord.self,
         ])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: schema, configurations: [configuration])

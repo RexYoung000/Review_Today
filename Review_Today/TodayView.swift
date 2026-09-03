@@ -19,6 +19,7 @@ struct TodayView: View {
     @Query private var attempts: [ReviewAttempt]
     @Query(sort: \AgentSession.updatedAt, order: .reverse) private var learningSessions: [AgentSession]
     @Query private var learningTasks: [LearningTask]
+    @Query private var agentRuns: [AgentRun]
 
     private var settings: AppSettings? { settingsRows.first }
     private var developerMode: Bool { settings?.developerMode == true }
@@ -212,7 +213,10 @@ struct TodayView: View {
     }
 
     private func latestStatus(for session: AgentSession) -> String {
-        learningTasks
+        if let run = agentRuns.filter({ $0.sessionID == session.id }).max(by: { $0.updatedAt < $1.updatedAt }) {
+            return run.userSummary
+        }
+        return learningTasks
             .filter { $0.sessionID == session.id }
             .max(by: { $0.updatedAt < $1.updatedAt })?
             .userSummary ?? "尚未开始任务"

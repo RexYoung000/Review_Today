@@ -32,7 +32,7 @@ def probe() -> None:
                 try:
                     results[role] = ("ready", "") if future.result() else ("unavailable", "generation probe returned no choices")
                 except Exception as exc:  # noqa: BLE001
-                    results[role] = ("unavailable", f"generation probe failed: {type(exc).__name__}")
+                    results[role] = ("unavailable", f"structured probe failed: {getattr(exc, 'code', type(exc).__name__)}")
         with _lock:
             for role, value in _state.items():
                 status, error = results.get(role, ("unavailable", "configured model is not advertised by provider"))

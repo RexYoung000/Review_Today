@@ -308,6 +308,8 @@ enum AgentAPI {
     }
 
     struct LearningTaskView: Decodable {
+        var runId: String?
+        var understanding: String?
         var taskId: String
         var sessionId: String
         var clientMessageId: String
@@ -325,6 +327,8 @@ enum AgentAPI {
         var memorySourceText: String
 
         enum CodingKeys: String, CodingKey {
+            case runId = "run_id"
+            case understanding
             case taskId = "task_id"
             case sessionId = "session_id"
             case clientMessageId = "client_message_id"

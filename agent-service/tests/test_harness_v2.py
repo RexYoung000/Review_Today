@@ -13,6 +13,8 @@ import agent_service.main as main_module
 import agent_service.model_capabilities as capability_module
 from agent_service.harness import classify_mode, process_action, process_task, record_action, resume_incomplete_tasks
 from agent_service.harness_store import HarnessStore, HarnessTaskRecord
+from agent_service.conversation import ConversationHarness
+from agent_service.conversation_store import ConversationStore
 from agent_service.schemas import ProblemCoachBundle, SessionTurnRequest, SourceCandidate, TaskActionRequest
 
 
@@ -136,12 +138,15 @@ class HarnessHTTPContractTests(unittest.TestCase):
             patch.object(harness_module, "harness_store", self.store),
             patch.object(main_module, "openai_key", return_value="test-key"),
             patch.object(main_module, "process_task", return_value=None),
-            patch.object(main_module, "process_action", return_value=None),
+            patch.object(main_module, "conversation_harness", ConversationHarness(ConversationStore(self.store))),
         ]
         for item in self.store_patches:
             item.start()
+        self.run_start_patch = patch.object(main_module.conversation_harness, "start")
+        self.run_start_patch.start()
 
     def tearDown(self) -> None:
+        self.run_start_patch.stop()
         for item in reversed(self.store_patches):
             item.stop()
         self.temp.cleanup()

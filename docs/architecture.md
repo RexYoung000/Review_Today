@@ -207,7 +207,11 @@ Mac 是长期事实来源。Python checkpoint 只是“任务做到哪里”的�
 
 Luna 的 IntentDecision 是建议，程序检查对象归属、确认 ID/版本、理解条件和攻克验收才执行；不允许客户端关键词猜测授权。明确操作同样通过服务端守卫。主规格 §8.1 定义 messages、Session events/ACK、runs/actions 的新增接口；旧 Task 接口、旧数据和 v1 继续兼容。
 
-Mac 增加本地 Run、Session Event、待发操作和 Session 消费游标；事件与消息原子保存后 ACK。Run 可不关联 Task，资料草稿保留在会话；理解 unknown/self_reported/verified 与正式 FSRS 分离。来源 kind=user_material/public_web/agent_generated 与证据状态分开，生成讲义不是独立外部证据。
+Mac 增加本地 Run、Session Event、待发操作和 Session 消费游标；事件与消息原子保存后 ACK。Run 可不关联 Task，资料草稿保留在会话；理解 unknown/self_reported/verified 与正式 FSRS 分离。来源 source_type=user_material/public_source/agent_generated 与证据状态分开；待选来源标记 public_source_candidate，确认获取正文后更新引用，生成讲义不是独立外部证据。
+
+实际入口为 Swift `ConversationProcessor` → `/messages` → Python `ConversationHarness`；`IntentDecision` 负责语义，程序守卫负责授权。Session checkpoint 与兼容 Task 投影使用同一 SQLite 锁和事务；同一 Session 只有一个前台 worker。模型请求不占数据库事务，发布前校验 revision。明确按钮绑定对象版本，不额外调用 Luna。
+
+Mac 写知识前领取 `commit-claim`：领取前新补充先冻结未提交草稿，停止/纠正可撤销；领取后按相同 ID 幂等写入并 ACK，不假装撤回已完成提交。消息、动作、Run、事件游标分别持久化；同会话失败控制保持顺序，但不阻塞其他会话。Python 已 ACK 缓存保留最近 64 事件和至少 32 消息及未完成输入，序号不重置；旧 Task 投影继续保留，完整记录由 Mac 保存。
 
 以下旧字段草图仍为兼容基础，新契约优先；详细结构以代码 schema 和主规格共同维护。
 
@@ -401,6 +405,7 @@ V2 以上路径和主规格中的必备字段已经冻结；具体枚举与错�
 
 - **App 托管服务**：App 启动后检查 localhost 健康状态；无外部实例时启动项目配置的 Python 服务并监控自己启动的子进程；退出时只终止自己托管的实例。
 - **启动失败**：用户消息已先保存，可能尚未创建 Task；显示解释、重试与诊断，不把“等待服务恢复”当作终态。
+- **当前探测与等待**：真实结构化能力探测默认 45 秒，模型步骤默认 90 秒；角色不可用不静默替换，不阻塞不依赖该角色的步骤。本机服务 30 秒无健康响应则有限重启，最多四次；Debug 位于桌面目录，临时签名改变可能导致系统要求重新授权。权限由用户处理，不自动修改隐私设置。
 
 - **App 重启**：从 SwiftData 恢复采集队列和正式会话；已完成题不重复，未完成题重新提问。
 - **Python 重启**：从未过期 checkpoint 恢复；若无法恢复，Mac 保留原任务并重新提交同一任务 ID。
@@ -456,6 +461,12 @@ V2 以上路径和主规格中的必备字段已经冻结；具体枚举与错�
 
 ## 13. 当前实现与缺口
 
+### 五模式修订已实现（2026-09-03，非用户验收）
+
+`conversation.py`、`conversation_store.py`、`conversation_prompts.py` 与新增 Swift `ConversationModels` / `ConversationProcessor` 已替代新消息的强制四选一路由。普通对话无 Task，五模式工作流、独立作答/追问门槛、受控入库、会话事件恢复和结构化诊断已接入；旧数据和正式评分实现未删除。90 项受控测试、Debug 本机签名构建与 Release 无签名构建通过。
+
+真实模型已分别返回 Auto 答案、问题攻克首答与校准、知识整理草稿、资料学习生成讲义；原生 App 已检查轻量反馈、停止/恢复、重试后回答及重启持久化。最新 Debug 重启受系统桌面文件夹授权阻塞；另有间歇模型 CONNECTION/TIMEOUT。完整四工作流、提交/复习 UI 与权限恢复后的最新构建仍待验收。详细证据与下一步见主规格 §14、M1 验收 §0.8。
+
 ### 旧 V2 已实现（历史基线，不代表本轮五模式修订完成）
 
 - SwiftUI Mac App、SwiftData 领域模型和本机 FastAPI 接口；
@@ -474,12 +485,12 @@ V2 以上路径和主规格中的必备字段已经冻结；具体枚举与错�
 
 - 里程碑一尚未从真实 Mac App 入口完成端到端视觉与交互验收；
 - Harness V2 已有服务端契约、固定模型替身和原生手动自检，但完整客户端自动化与更广模型质量评测尚未完成；
-- 2026-09-03 当前角色模型可被提供方列出但真实生成探测超时，问题攻克真实测试只走到可恢复失败；模型服务恢复后仍需补齐四模式真实输出验收；
+- 旧 V2 曾只走到模型超时；本轮已取得上述真实输出，但间歇网络异常和最新 Debug 的系统授权问题仍影响完整原生验收；
 - V2 Harness checkpoint 已持久化；v1 `TaskStore` 与评分 ACK 仍主要保存在内存中，保留到 V2 用户验收后再迁移或删除；
 - 复习评分目前是直接 API 调用，不是完整的正式复习 LangGraph；
 - 正式提交已按“ACK 成功后才更新 FSRS 和 `effectiveGrade`，本地保存成功后才推进下一题”的顺序执行；
 - 没有 OpenAI Realtime、WebRTC、sideband、VAD 和语音复习闭环；
 - V2 Task Event 已可增量回放和恢复；跨版本事件迁移、长期诊断归档仍未建立；
-- 具体 OpenAI 模型冻结规则、完整错误码、性能数据和隐私审计证据仍未建立。
+- 模型角色已配置，结构化调用错误已分型；长期性能、精确上下文 token 限额与完整隐私审计证据仍未建立。
 
 当前必须先由 Rex 验收已实现的 Harness V2，再关闭 #17 或进入 M2；不能以本文、自动化、构建成功或旧 capture 冒烟替代真实 Session 体验证据。

@@ -289,6 +289,11 @@ final class AgentSession {
     var archivedAt: Date?
     var summaryText: String
     var sourceSessionID: UUID?
+    var lastSessionEventSeq: Int = 0
+    var runPaused: Bool = false
+    var pendingOperationJSON: String?
+    var handoffID: String?
+    var syncError: String?
 
     init(
         id: UUID = UUID(),
@@ -320,6 +325,10 @@ final class AgentMessage {
     var contentType: String
     var createdAt: Date
     var deliveryStatus: String
+    var runID: UUID?
+    var deliveryMode: String = "steer"
+    var operationJSON: String?
+    var lastDeliveryError: String?
 
     init(
         id: UUID = UUID(),
@@ -368,6 +377,8 @@ final class LearningTask {
     var pendingActionContent: String?
     var sourceID: UUID?
     var memoryCommitted: Bool
+    var conversationManaged: Bool = false
+    var understanding: String = "unknown"
 
     init(
         id: UUID = UUID(),
@@ -464,6 +475,7 @@ final class SourceReference {
     var evidenceState: String
     var locator: String
     var createdAt: Date
+    var sourceType: String = "public_source"
 
     init(sessionID: UUID, taskID: UUID? = nil, url: String, title: String, evidenceState: String = "unverified", locator: String = "") {
         self.id = UUID()

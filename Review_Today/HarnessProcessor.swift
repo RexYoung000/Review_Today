@@ -20,7 +20,7 @@ enum HarnessProcessor {
         context: ModelContext,
         monitor: AgentServiceMonitor
     ) async {
-        guard monitor.connection == .ready else {
+        guard monitor.connection == .ready || (task.conversationManaged && monitor.serviceReachable) else {
             if task.status == "accepted" || task.errorCode == "RT.HARNESS.SERVICE_UNAVAILABLE" {
                 task.userSummary = monitor.launchStatus
                 task.errorCode = "RT.HARNESS.SERVICE_UNAVAILABLE"
@@ -37,7 +37,7 @@ enum HarnessProcessor {
             return
         }
 
-        if task.status == "accepted" {
+        if task.status == "accepted" && !task.conversationManaged {
             await submit(task, context: context)
             return
         }
@@ -120,6 +120,15 @@ enum HarnessProcessor {
                 type: type,
                 content: task.pendingActionContent ?? ""
             )
+            if let rawID = view.runId, let runID = UUID(uuidString: rawID) {
+                let runs = (try? context.fetch(FetchDescriptor<AgentRun>())) ?? []
+                if !runs.contains(where: { $0.id == runID }) {
+                    let run = AgentRun(id: runID, sessionID: task.sessionID)
+                    run.taskID = task.id
+                    context.insert(run)
+                }
+                task.conversationManaged = true
+            }
             task.pendingActionID = nil
             task.pendingActionType = nil
             task.pendingActionContent = nil
@@ -144,7 +153,17 @@ enum HarnessProcessor {
             try context.save()
 
             if view.status == "committing" {
-                try await commitMemory(view, task: task, context: context)
+                if task.conversationManaged {
+                    let controls = (try? context.fetch(FetchDescriptor<AgentRunControl>())) ?? []
+                    let messages = fetchMessages(context)
+                    guard !controls.contains(where: { $0.sessionID == task.sessionID && !$0.sent }),
+                          !messages.contains(where: { $0.sessionID == task.sessionID && $0.deliveryStatus == "local" }) else { return }
+                    let claimed = try await AgentAPI.conversationRequest("/v2/tasks/\(task.id.uuidString.lowercased())/commit-claim", body: [:])
+                    let current = try JSONDecoder().decode(AgentAPI.LearningTaskView.self, from: JSONSerialization.data(withJSONObject: claimed))
+                    try await commitMemory(current, task: task, context: context)
+                } else {
+                    try await commitMemory(view, task: task, context: context)
+                }
             } else if page.lastSeq > task.lastAckedSeq {
                 let acked = try await AgentAPI.ackLearningTask(taskId: task.id, lastEventSeq: page.lastSeq)
                 task.lastAckedSeq = page.lastSeq
@@ -290,7 +309,8 @@ enum HarnessProcessor {
     }
 
     @MainActor
-    private static func apply(_ view: AgentAPI.LearningTaskView, to task: LearningTask) {
+    static func apply(_ view: AgentAPI.LearningTaskView, to task: LearningTask) {
+        task.understanding = view.understanding ?? "unknown"
         task.mode = view.mode
         task.status = view.status
         task.stage = view.stage
@@ -334,7 +354,7 @@ enum HarnessProcessor {
         return fractional.date(from: raw) ?? ISO8601DateFormatter().date(from: raw) ?? .now
     }
 
-    private static func relevantKnowledgeSummaries(for query: String, candidates: [Knowledge]) -> [String] {
+    static func relevantKnowledgeSummaries(for query: String, candidates: [Knowledge]) -> [String] {
         let queryTerms = searchTerms(query)
         guard !queryTerms.isEmpty else { return [] }
         return candidates.compactMap { knowledge -> (Int, String)? in

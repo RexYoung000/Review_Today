@@ -44,8 +44,30 @@ class ParseModelCompatibilityTests(unittest.TestCase):
         )
 
         with patch("agent_service.openai_client._client", return_value=client):
-            with self.assertRaisesRegex(RuntimeError, "RT.CAPTURE.MODEL_FAILED"):
+            with self.assertRaisesRegex(RuntimeError, "RT.MODEL.EMPTY"):
                 parse_model("system", "user", IntentClass)
+
+    def test_refusal_is_not_retried_as_empty_output(self) -> None:
+        client = Mock()
+        client.responses.parse.return_value = SimpleNamespace(output_parsed=None, output=[SimpleNamespace(content=[SimpleNamespace(type="refusal")])])
+        with patch("agent_service.openai_client._client", return_value=client):
+            with self.assertRaisesRegex(RuntimeError, "RT.MODEL.REFUSAL"):
+                parse_model("system", "user", IntentClass)
+        client.chat.completions.parse.assert_not_called()
+
+    def test_incomplete_response_is_not_a_success(self) -> None:
+        client = Mock()
+        client.responses.parse.return_value = SimpleNamespace(output_parsed=None, status="incomplete")
+        with patch("agent_service.openai_client._client", return_value=client):
+            with self.assertRaisesRegex(RuntimeError, "RT.MODEL.INCOMPLETE"):
+                parse_model("system", "user", IntentClass)
+        client.chat.completions.parse.assert_not_called()
+
+    def test_probe_requires_actual_structured_value(self) -> None:
+        from agent_service.openai_client import model_is_callable
+        with patch("agent_service.openai_client.parse_model", return_value=SimpleNamespace(ready=False)) as parse:
+            self.assertFalse(model_is_callable("configured-role"))
+            self.assertEqual(parse.call_args.kwargs["model"], "configured-role")
 
 
 if __name__ == "__main__":

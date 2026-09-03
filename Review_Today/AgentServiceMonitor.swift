@@ -18,11 +18,13 @@ struct HealthResponse: Decodable {
     let status: String
     let keyConfigured: Bool
     let modelRoles: [String: ModelRole]
+    let conversationProtocol: Int?
 
     enum CodingKeys: String, CodingKey {
         case status
         case keyConfigured = "key_configured"
         case modelRoles = "model_roles"
+        case conversationProtocol = "conversation_protocol"
     }
 }
 
@@ -37,14 +39,16 @@ final class AgentServiceMonitor {
     var keyConfigured = false
     var launchStatus = "正在连接本地学习服务"
     var launchDetail = ""
+    private(set) var serviceReachable = false
+    private(set) var conversationSupported = false
 
     @ObservationIgnored private var pollTask: Task<Void, Never>?
     @ObservationIgnored private var managedProcess: Process?
     @ObservationIgnored private var launchAttempts = 0
     @ObservationIgnored private var nextLaunchAt = Date.distantPast
+    @ObservationIgnored private var launchedAt = Date.distantPast
     @ObservationIgnored private var outputTail = ""
     @ObservationIgnored private var terminationObserver: NSObjectProtocol?
-    @ObservationIgnored private var serviceReachable = false
 
     func start() {
         guard pollTask == nil else { return }
@@ -113,7 +117,14 @@ final class AgentServiceMonitor {
                 return
             }
             serviceReachable = true
+            conversationSupported = health.conversationProtocol == 1
             keyConfigured = health.keyConfigured
+            if !conversationSupported {
+                connection = .unavailable
+                launchStatus = "本地学习服务版本较旧，需要重启服务"
+                launchDetail = "输入已保存在本机；请重启开发 App 与本地 Agent 服务"
+                return
+            }
             let checking = health.modelRoles.values.filter { $0.status == "checking" }
             let unavailable = health.modelRoles.values.filter { $0.status == "unavailable" }
             if !checking.isEmpty {
@@ -124,7 +135,9 @@ final class AgentServiceMonitor {
             }
             if !unavailable.isEmpty {
                 connection = .unavailable
-                launchStatus = "学习模型暂不可用；你的输入仍保存在本机"
+                launchStatus = unavailable.count < health.modelRoles.count
+                    ? "部分学习模型暂不可用；其余步骤仍可继续"
+                    : "学习模型暂不可用；你的输入仍保存在本机"
                 launchDetail = unavailable.map { "\($0.model)：\($0.error)" }.joined(separator: "；")
                 return
             }
@@ -141,6 +154,11 @@ final class AgentServiceMonitor {
 
     private func markUnavailable() {
         serviceReachable = false
+        conversationSupported = false
+        if managedProcess?.isRunning == true && Date.now.timeIntervalSince(launchedAt) > 30 {
+            launchDetail = "服务启动超时，正在重试；输入仍保存在本机"
+            managedProcess?.terminate()
+        }
         keyConfigured = false
         ensureServiceRunning()
         if managedProcess?.isRunning == true {
@@ -149,7 +167,9 @@ final class AgentServiceMonitor {
         } else if launchAttempts >= Self.maxLaunchAttempts {
             connection = .unavailable
             launchStatus = "本地学习服务未能启动；你的输入仍保存在本机"
-            launchDetail = outputTail.isEmpty ? "可点击重试，或检查 agent-service/.venv" : outputTail
+            launchDetail = outputTail.isEmpty
+                ? "请检查系统的文件夹访问提示及 agent-service/.venv；允许访问项目目录后重试"
+                : outputTail
         } else {
             connection = .connecting
             launchStatus = "正在启动本地学习服务；你的输入仍会先保存"
@@ -220,6 +240,7 @@ final class AgentServiceMonitor {
         }
         do {
             try process.run()
+            launchedAt = .now
             managedProcess = process
             launchDetail = "第 \(launchAttempts) 次启动"
         } catch {

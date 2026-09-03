@@ -23,7 +23,7 @@ from agent_service.schemas import (
 
 
 MODE_LABELS = {
-    "memory_organization": "记忆整理",
+    "memory_organization": "知识整理",
     "source_learning": "资料学习",
     "topic_exploration": "主题探索",
     "problem_solving": "问题攻克",
@@ -833,6 +833,8 @@ def record_action(task_id: str, action: TaskActionRequest) -> tuple[HarnessTaskR
 def resume_incomplete_tasks() -> None:
     """Replay durable work after a local service restart without inventing a new task."""
     for record in harness_store.all_records():
+        if record.context.get("conversation_managed"):
+            continue
         pending_action = next(
             (
                 item
@@ -846,5 +848,5 @@ def resume_incomplete_tasks() -> None:
                 process_action(record.task_id, TaskActionRequest.model_validate(pending_action))
             except Exception:  # noqa: BLE001
                 continue
-        elif record.status in {"accepted", "queued", "running", "retryable_failed"}:
+        elif record.status in {"accepted", "queued", "running"}:
             process_task(record.task_id)

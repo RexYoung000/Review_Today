@@ -13,6 +13,9 @@ struct LearningWorkspace: View {
     @Query(sort: \TaskEventRecord.seq) private var events: [TaskEventRecord]
     @Query(sort: \SourceReference.createdAt) private var sourceReferences: [SourceReference]
     @Query(sort: \KnowledgeReference.createdAt) private var knowledgeReferences: [KnowledgeReference]
+    @Query(sort: \AgentRun.createdAt) private var runs: [AgentRun]
+    @Query(sort: \SessionEventRecord.seq) private var runEvents: [SessionEventRecord]
+    @State private var queueInput = false
     @State private var selectedSessionID: UUID?
     @State private var draft = ""
     @State private var showArchived = false
@@ -194,18 +197,21 @@ struct LearningWorkspace: View {
                         set: { value in
                             session.modePreset = value
                             session.updatedAt = .now
+                            if let run = runs.last(where: { $0.sessionID == session.id }) {
+                                ConversationProcessor.queueControl(run, action: "set_mode", mode: value, context: modelContext)
+                            }
                             try? modelContext.save()
                         }
                     )) {
-                        Text("自动").tag("auto")
-                        Text("记忆整理").tag("memory_organization")
+                        Text("Auto").tag("auto")
+                        Text("知识整理").tag("memory_organization")
                         Text("资料学习").tag("source_learning")
                         Text("主题探索").tag("topic_exploration")
                         Text("问题攻克").tag("problem_solving")
                     }
                     .labelsHidden()
                     .frame(width: 120)
-                    .help("模式只作为预设；Agent 建议切换时仍需你确认")
+                    .help("作用于当前目标的下一步，保留已有资料与进度；Auto 自动安排同目标内的能力")
                 }
             }
             .controlSize(.small)
@@ -264,23 +270,45 @@ struct LearningWorkspace: View {
     }
 
     private func conversation(contentWidth: CGFloat) -> some View {
-        ScrollView {
+        ScrollViewReader { proxy in
+          ScrollView {
             LazyVStack(alignment: .leading, spacing: 14) {
                 if sessionMessages.isEmpty {
                     emptyConversation
                 } else {
                     ForEach(sessionMessages, id: \.id) { message in
                         messageBubble(message, contentWidth: contentWidth)
+                            .id(message.id)
+                        if message.role == "user" {
+                            if let runID = message.runID,
+                               let run = runs.first(where: { $0.id == runID }),
+                               sessionMessages.last(where: { $0.role == "user" && $0.runID == runID })?.id == message.id {
+                                runFeedback(run)
+                            } else if message.runID == nil && message.taskID == nil {
+                                Text(monitor.connection == .ready ? "已保存在本机，准备发送" : "已保存在本机，等待学习服务启动")
+                                    .font(.caption).foregroundStyle(.secondary)
+                                if let error = message.lastDeliveryError {
+                                    Text("提交尚未成功，输入保留：\(error)").font(.caption).foregroundStyle(.orange)
+                                }
+                            }
+                        }
                         if message.role == "user",
                            let task = sessionTasks.first(where: { $0.inputMessageID == message.id }) {
                             taskCard(task)
                         }
                     }
                 }
+                pendingOperation
             }
             .frame(width: contentWidth)
             .padding(.vertical, 24)
             .frame(maxWidth: .infinity)
+          }
+          .onChange(of: sessionMessages.map(\.id)) { _, _ in
+              if let last = sessionMessages.last {
+                  proxy.scrollTo(last.id, anchor: last.role == "user" ? .bottom : .top)
+              }
+          }
         }
     }
 
@@ -342,11 +370,15 @@ struct LearningWorkspace: View {
             }
             HStack(spacing: 8) {
                 MetaTag(title: Self.modeLabel(task.mode))
+                if task.conversationManaged {
+                    Text(task.understanding == "verified" ? "已验证理解" : task.understanding == "self_reported" ? "自述理解 · 未验证" : "尚未验证理解")
+                        .font(.caption2).foregroundStyle(.secondary)
+                }
                 Spacer()
                 if task.status == "retryable_failed" || task.status == "needs_attention" {
-                    Button("重试") { HarnessProcessor.queueAction(task, type: "retry", content: "", context: modelContext) }
+                    Button("重试") { taskControl(task, action: "retry") }
                         .buttonStyle(.borderless)
-                    Button("取消") { HarnessProcessor.queueAction(task, type: "cancel", content: "", context: modelContext) }
+                    Button("取消目标") { taskControl(task, action: "cancel_task") }
                         .buttonStyle(.borderless)
                 }
             }
@@ -356,7 +388,7 @@ struct LearningWorkspace: View {
                     .font(.callout.weight(.medium))
                     .foregroundStyle(runway.ink)
                     .fixedSize(horizontal: false, vertical: true)
-                if !options.isEmpty {
+                if !options.isEmpty && !task.conversationManaged {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(options, id: \.self) { option in
                             Button {
@@ -463,6 +495,9 @@ struct LearningWorkspace: View {
 
     private func composer(contentWidth: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 8) {
+            if let syncError = selectedSession?.syncError {
+                Text("正在恢复进度同步：\(syncError)").font(.caption).foregroundStyle(.orange)
+            }
             if let localError {
                 Label(localError, systemImage: "exclamationmark.triangle")
                     .font(.caption)
@@ -499,9 +534,17 @@ struct LearningWorkspace: View {
             .padding(10)
             .background(runway.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(runway.hairline))
-            Text("⌘ Return 发送 · 输入会先保存在本机")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+            HStack(spacing: 10) {
+                Text("⌘ Return 发送 · 输入先保存在本机")
+                Spacer()
+                Toggle("排队发送", isOn: $queueInput).toggleStyle(.checkbox)
+                if let run = runs.last(where: { $0.sessionID == selectedSessionID }),
+                   ["accepted", "running", "queued"].contains(run.status) {
+                    Button("停止回复") { ConversationProcessor.queueControl(run, action: "stop", context: modelContext) }
+                        .buttonStyle(.borderless)
+                }
+            }
+            .font(.caption2).foregroundStyle(.secondary)
         }
         .frame(width: contentWidth)
         .padding(.top, 8)
@@ -520,83 +563,120 @@ struct LearningWorkspace: View {
     private func submitDraft() {
         let content = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !content.isEmpty else { return }
-        if let active = sessionTasks.last(where: { $0.status == "awaiting_user" && $0.pendingActionID == nil }) {
-            respond(content, to: active)
-        } else {
-            createTask(content)
-        }
+        sendMessage(content)
     }
 
-    private func createTask(_ content: String) {
+    private func sendMessage(_ content: String, operation: [String: Any]? = nil) {
         let session = selectedSession ?? createSession()
-        let messageID = UUID()
-        let localTaskID = UUID()
-        let sourceID = UUID()
-        let contentType = TodayView.firstURL(in: content) == nil ? "text" : "url"
-        let message = AgentMessage(
-            id: messageID,
-            clientMessageID: messageID,
-            sessionID: session.id,
-            taskID: localTaskID,
-            role: "user",
-            content: content,
-            contentType: contentType
-        )
-        let task = LearningTask(
-            id: localTaskID,
-            sessionID: session.id,
-            inputMessageID: message.id,
-            sourceID: sourceID
-        )
-        let source = Source(
-            id: sourceID,
-            inputType: contentType,
-            rawText: content,
-            url: TodayView.firstURL(in: content)
-        )
-        modelContext.insert(message)
-        modelContext.insert(task)
-        modelContext.insert(source)
-        session.updatedAt = .now
-        if session.title == "新学习 Session" {
-            session.title = String(content.prefix(28))
+        guard session.status == "active" else {
+            localError = "请先恢复归档的会话，再继续输入。"
+            return
         }
+        let message = AgentMessage(sessionID: session.id, role: "user", content: content,
+                                   contentType: TodayView.firstURL(in: content) == nil ? "text" : "url")
+        message.clientMessageID = message.id
+        message.deliveryMode = queueInput ? "queue" : "steer"
+        message.operationJSON = operation.map(ConversationProcessor.json)
+        modelContext.insert(message)
+        session.updatedAt = .now
+        if session.title == "新学习 Session" { session.title = String(content.prefix(28)) }
         do {
             try modelContext.save()
-            updateSessionSummary(session)
             draft = ""
+            queueInput = false
             localError = nil
         } catch {
             modelContext.rollback()
-            localError = "本机保存失败，请重试。"
+            localError = "本机保存失败，输入仍保留，请重试。"
         }
     }
 
     private func respond(_ content: String, to task: LearningTask) {
-        guard let session = selectedSession else { return }
-        if task.requiredActionType == "confirm_new_session", content.contains("新建") {
-            handoff(task, from: session)
-            return
+        // All free text is semantically interpreted, never inferred from a button label.
+        sendMessage(content)
+    }
+
+    private func taskControl(_ task: LearningTask, action: String) {
+        if let run = runs.last(where: { $0.sessionID == task.sessionID && $0.taskID == task.id }) {
+            ConversationProcessor.queueControl(run, action: action, context: modelContext)
+        } else {
+            HarnessProcessor.queueAction(task, type: action == "cancel_task" ? "cancel" : action, content: "", context: modelContext)
         }
-        let actionType = Self.actionType(required: task.requiredActionType, content: content)
-        let message = AgentMessage(
-            sessionID: session.id,
-            taskID: task.id,
-            role: "user",
-            content: content
-        )
-        modelContext.insert(message)
-        HarnessProcessor.queueAction(task, type: actionType, content: content, context: modelContext)
-        session.updatedAt = .now
-        do {
-            try modelContext.save()
-            updateSessionSummary(session)
-            draft = ""
-            localError = nil
-        } catch {
-            modelContext.rollback()
-            localError = "反馈未能保存，请重试。"
+    }
+
+    private func runFeedback(_ run: AgentRun) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .top) {
+                Label(run.userSummary, systemImage: run.errorCode == nil ? "circle.dotted" : "exclamationmark.circle")
+                    .font(.caption).foregroundStyle(run.errorCode == nil ? runway.agent : .orange)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+                if ["interrupted", "retryable_failed", "terminal_failed"].contains(run.status) {
+                    Button(run.status == "interrupted" ? "恢复" : "重试") {
+                        ConversationProcessor.queueControl(run, action: run.status == "interrupted" ? "resume" : "retry", context: modelContext)
+                    }.buttonStyle(.borderless)
+                }
+                if run.taskID != nil && run.status != "stopping" {
+                    Button("取消目标") { ConversationProcessor.queueControl(run, action: "cancel_task", context: modelContext) }
+                        .buttonStyle(.borderless)
+                }
+            }
+            DisclosureGroup("运行详情") {
+                ForEach(runEvents.filter { $0.runID == run.id }, id: \.id) { event in
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(event.summary).font(.caption.weight(.medium))
+                        if !event.detail.isEmpty { Text(event.detail).font(.caption) }
+                        Text([event.stage, event.model, "第 \(max(1, event.attempt)) 次",
+                              event.durationMS.map { "\($0) ms" } ?? ""].filter { !$0.isEmpty }.joined(separator: " · "))
+                            .font(.caption2.monospaced()).foregroundStyle(.secondary)
+                        if let error = event.errorCode { Text(error).font(.caption2.monospaced()).foregroundStyle(.orange) }
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 3)
+                }
+            }
+            .font(.caption)
         }
+        .padding(.horizontal, 6)
+        .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder
+    private var pendingOperation: some View {
+        if let pending = ConversationProcessor.object(selectedSession?.pendingOperationJSON),
+           let kind = pending["kind"] as? String,
+           let target = pending["target_id"] as? String,
+           let version = pending["version"] as? Int {
+            VStack(alignment: .leading, spacing: 8) {
+                if kind == "save" {
+                    Text("整理版本 \(version) · 尚未入库").font(.caption).foregroundStyle(.secondary)
+                    HStack {
+                        Button("加入知识库与复习") { sendBound("save", title: "加入知识库与复习", target: target, version: version) }
+                        Button("暂不保存") { sendBound("reject_save", title: "暂不保存", target: target, version: version) }
+                    }
+                } else if kind == "new_session" {
+                    HStack {
+                        Button("新建学习会话") { sendBound(kind, title: "新建学习会话", target: target, version: version) }
+                        Button("继续放在这里") { sendBound("continue_session", title: "继续放在这里", target: target, version: version) }
+                    }
+                } else if kind == "select_sources" {
+                    Button("确认资料包，开始学习") {
+                        sendBound(kind, title: "确认资料包", target: target, version: version, selection: pending["options"] as? [String] ?? [])
+                    }
+                } else if kind == "select_question" {
+                    ForEach(pending["options"] as? [String] ?? [], id: \.self) { option in
+                        Button(option) { sendBound(kind, title: option, target: target, version: version, selection: [option]) }
+                    }
+                }
+            }
+            .controlSize(.small)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private func sendBound(_ kind: String, title: String, target: String, version: Int, selection: [String] = []) {
+        sendMessage(title, operation: ["kind": kind, "target_id": target, "version": version, "selection": selection])
     }
 
     @discardableResult
@@ -614,64 +694,6 @@ struct LearningWorkspace: View {
         selectedSessionID = session.id
         showsSessionPicker = false
         return session
-    }
-
-    private func handoff(_ task: LearningTask, from sourceSession: AgentSession) {
-        guard let original = messages.first(where: { $0.id == task.inputMessageID }) else {
-            localError = "找不到需要交接的原始输入，请在新 Session 中重新发送。"
-            return
-        }
-        let destination = createSession(handoffFrom: sourceSession)
-        destination.title = String(original.content.prefix(28))
-        destination.summaryText = [
-            handoffSummary(from: sourceSession),
-            "交接输入：\(original.content)",
-        ].joined(separator: "\n")
-
-        let messageID = UUID()
-        let localTaskID = UUID()
-        let sourceID = UUID()
-        let contentType = TodayView.firstURL(in: original.content) == nil ? "text" : "url"
-        modelContext.insert(AgentMessage(
-            id: messageID,
-            clientMessageID: messageID,
-            sessionID: destination.id,
-            taskID: localTaskID,
-            role: "user",
-            content: original.content,
-            contentType: contentType
-        ))
-        modelContext.insert(LearningTask(
-            id: localTaskID,
-            sessionID: destination.id,
-            inputMessageID: messageID,
-            sourceID: sourceID
-        ))
-        modelContext.insert(Source(
-            id: sourceID,
-            inputType: contentType,
-            rawText: original.content,
-            url: TodayView.firstURL(in: original.content)
-        ))
-
-        task.pendingActionID = UUID()
-        task.pendingActionType = "create_handoff"
-        task.pendingActionContent = destination.id.uuidString.lowercased()
-        task.requiredActionType = nil
-        task.requiredActionPrompt = nil
-        task.requiredActionOptionsJSON = nil
-        task.userSummary = "已新建 Session，正在完成交接"
-        task.updatedAt = .now
-        sourceSession.updatedAt = .now
-        do {
-            try modelContext.save()
-            draft = ""
-            localError = nil
-        } catch {
-            modelContext.rollback()
-            selectedSessionID = sourceSession.id
-            localError = "交接未能完整保存，请重试。"
-        }
     }
 
     private func handoffSummary(from source: AgentSession) -> String {
@@ -703,6 +725,9 @@ struct LearningWorkspace: View {
     }
 
     private func archive(_ session: AgentSession) {
+        if let run = runs.last(where: { $0.sessionID == session.id && ["running", "accepted", "queued"].contains($0.status) }) {
+            ConversationProcessor.queueControl(run, action: "stop", context: modelContext)
+        }
         session.status = "archived"
         session.archivedAt = .now
         session.updatedAt = .now
@@ -747,19 +772,6 @@ struct LearningWorkspace: View {
         try? modelContext.save()
     }
 
-    private static func actionType(required: String?, content: String) -> String {
-        switch required {
-        case "choose_sources": return "select_sources"
-        case "confirm_understanding": return content.contains("疑问") ? "respond" : "confirm_understanding"
-        case "choose_question": return "select_question"
-        case "submit_answer": return "submit_answer"
-        case "confirm_memory": return content.contains("暂不") ? "skip_memory" : "form_memory"
-        case "confirm_mode_switch": return content.contains("切换") ? "switch_mode" : "continue_session"
-        case "confirm_new_session": return content.contains("新建") ? "create_handoff" : "continue_session"
-        default: return "respond"
-        }
-    }
-
     private static func options(_ raw: String?) -> [String] {
         guard let raw, let data = raw.data(using: .utf8) else { return [] }
         return (try? JSONDecoder().decode([String].self, from: data)) ?? []
@@ -773,11 +785,11 @@ struct LearningWorkspace: View {
 
     static func modeLabel(_ mode: String) -> String {
         switch mode {
-        case "memory_organization": return "记忆整理"
+        case "memory_organization": return "知识整理"
         case "source_learning": return "资料学习"
         case "topic_exploration": return "主题探索"
         case "problem_solving": return "问题攻克"
-        default: return "自动"
+        default: return "Auto"
         }
     }
 

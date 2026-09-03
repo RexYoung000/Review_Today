@@ -355,6 +355,8 @@ class SessionTurnAccepted(BaseModel):
 
 
 class LearningTaskView(BaseModel):
+    run_id: str | None = None
+    understanding: Literal["unknown", "self_reported", "verified"] = "unknown"
     task_id: str
     session_id: str
     client_message_id: str
@@ -522,3 +524,92 @@ class CoachTurnOutput(BaseModel):
     required_action: TaskRequiredAction | None = None
     result_summary: str = ""
     evidence_state: EvidenceState = "unverified"
+
+
+# Message intent is deliberately not a five-way content classifier. Workflow is
+# optional: a greeting, correction or stop is useful without a learning goal.
+class IntentOperation(BaseModel):
+    kind: Literal["save", "new_session", "change_goal", "set_mode", "continue_session", "select_sources", "select_question"]
+    disposition: Literal["confirm", "reject", "conditional", "request"]
+    target_id: str = ""
+    version: int = 0
+    evidence: str = ""
+    selection: list[str] = Field(default_factory=list)
+
+
+class IntentDecision(BaseModel):
+    intents: list[Literal[
+        "greeting", "thanks", "capabilities", "question", "goal", "material",
+        "followup", "hint", "example", "answer", "correction", "confirm", "reject",
+        "continue", "skip_check", "self_report", "stop", "pause", "cancel", "queue",
+    ]] = Field(min_length=1)
+    target_task_id: str = ""
+    target_description: str = ""
+    relation: Literal["continuation", "related_subtopic", "new_topic", "uncertain"]
+    workflow: ResolvedMode | None = None
+    scope: Literal["conversation", "organize", "learning", "continue_goal"]
+    proposed_actions: list[IntentOperation] = Field(default_factory=list)
+    clarification: str = ""
+    rationale: str = Field(min_length=1)
+    understanding: Literal["unknown", "self_reported"] = "unknown"
+    direct_teaching: bool = False
+    answer_only: bool = False
+    is_jd: bool = False
+    needs_verification: bool = False
+    requested_mode: SessionMode | None = None
+
+
+class BoundOperation(BaseModel):
+    """An explicit UI action bound to the displayed object, never inferred by Swift."""
+    kind: Literal["save", "reject_save", "continue_session", "new_session", "select_sources", "select_question"]
+    target_id: str
+    version: int = Field(ge=1)
+    selection: list[str] = Field(default_factory=list)
+
+
+class SessionMessageRequest(SessionTurnRequest):
+    delivery: Literal["steer", "queue"] = "steer"
+    task_id: str | None = None
+    operation: BoundOperation | None = None
+
+
+class MessageAccepted(BaseModel):
+    message_id: str
+    run_id: str
+    task_id: str | None = None
+    status: str
+    revision: int
+
+
+class RunActionRequest(BaseModel):
+    action_id: str
+    action: Literal["stop", "resume", "retry", "cancel_task", "set_mode"]
+    mode: SessionMode | None = None
+
+    @field_validator("action_id")
+    @classmethod
+    def valid_action_id(cls, value: str) -> str:
+        return str(uuid.UUID(value))
+
+
+class SessionAckRequest(BaseModel):
+    last_event_seq: int = Field(ge=0)
+
+
+class ConversationOutput(BaseModel):
+    message: str = Field(min_length=1)
+    check_question: str = ""
+    evidence_state: EvidenceState = "unverified"
+
+
+class EvidenceAssessmentV2(BaseModel):
+    state: EvidenceState
+    summary: str
+    sources: list[str] = Field(default_factory=list)
+
+
+class ConversationSummary(BaseModel):
+    goal: str
+    confirmed_decisions: list[str]
+    open_questions: list[str]
+    summary: str

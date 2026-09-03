@@ -15,8 +15,8 @@ ROUTER_MODEL = os.getenv("OPENAI_ROUTER_MODEL", "gpt-5.6-luna").strip() or "gpt-
 COACH_MODEL = os.getenv("OPENAI_COACH_MODEL", "gpt-5.6-terra").strip() or "gpt-5.6-terra"
 RISK_MODEL = os.getenv("OPENAI_RISK_MODEL", "gpt-5.6-sol").strip() or "gpt-5.6-sol"
 BASE_URL = os.getenv("OPENAI_BASE_URL", "").strip()
-MODEL_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "45"))
-MODEL_PROBE_TIMEOUT_SECONDS = float(os.getenv("OPENAI_PROBE_TIMEOUT_SECONDS", "8"))
+MODEL_TIMEOUT_SECONDS = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "90"))
+MODEL_PROBE_TIMEOUT_SECONDS = float(os.getenv("OPENAI_PROBE_TIMEOUT_SECONDS", "45"))
 HARNESS_DB = os.getenv(
     "REVIEW_TODAY_HARNESS_DB",
     str(Path.home() / "Library" / "Application Support" / "Review Today" / "agent-harness.sqlite3"),

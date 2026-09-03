@@ -1,7 +1,7 @@
 import json
 
-from openai import OpenAI
-from pydantic import BaseModel
+from openai import OpenAI, APITimeoutError, APIConnectionError, APIStatusError
+from pydantic import BaseModel, ValidationError
 
 from agent_service.config import BASE_URL, MODEL, MODEL_PROBE_TIMEOUT_SECONDS, MODEL_TIMEOUT_SECONDS, openai_key
 
@@ -21,8 +21,31 @@ def parse_model(
     text_format: type[BaseModel],
     *,
     model: str | None = None,
+    timeout: float = MODEL_TIMEOUT_SECONDS,
 ) -> BaseModel:
-    client = _client()
+    try:
+        return _parse_model(system, user, text_format, model=model, timeout=timeout)
+    except ModelCallError:
+        raise
+    except APITimeoutError as exc:
+        raise ModelCallError("TIMEOUT", type(exc).__name__) from None
+    except APIConnectionError as exc:
+        raise ModelCallError("CONNECTION", type(exc).__name__) from None
+    except APIStatusError as exc:
+        raise ModelCallError("PROVIDER", f"HTTP {exc.status_code}") from None
+    except (ValidationError, json.JSONDecodeError) as exc:
+        raise ModelCallError("SCHEMA", type(exc).__name__) from None
+
+
+class ModelCallError(RuntimeError):
+    def __init__(self, kind: str, diagnostic: str = ""):
+        self.code = f"RT.MODEL.{kind}"
+        self.diagnostic = diagnostic  # class/status only, never provider body or credentials
+        super().__init__(self.code)
+
+
+def _parse_model(system, user, text_format, *, model, timeout):
+    client = _client(timeout=timeout)
     selected_model = model or MODEL
     response = client.responses.parse(
         model=selected_model,
@@ -32,6 +55,11 @@ def parse_model(
         ],
         text_format=text_format,
     )
+    if getattr(response, "status", None) in {"incomplete", "failed", "cancelled"}:
+        raise ModelCallError("INCOMPLETE", str(response.status))
+    for output in getattr(response, "output", []) or []:
+        if any(getattr(part, "type", "") == "refusal" for part in getattr(output, "content", []) or []):
+            raise ModelCallError("REFUSAL")
     if response.output_parsed is not None:
         return response.output_parsed
 
@@ -45,9 +73,13 @@ def parse_model(
         ],
         response_format=text_format,
     )
+    if not completion.choices:
+        raise ModelCallError("EMPTY")
+    if getattr(completion.choices[0].message, "refusal", None):
+        raise ModelCallError("REFUSAL")
     parsed = completion.choices[0].message.parsed
     if parsed is None:
-        raise RuntimeError("RT.CAPTURE.MODEL_FAILED")
+        raise ModelCallError("EMPTY")
     return parsed
 
 
@@ -57,13 +89,12 @@ def available_model_ids() -> set[str]:
 
 
 def model_is_callable(model: str) -> bool:
-    """Probe a real generation so advertised-but-unreachable models are not reported ready."""
-    response = _client(timeout=MODEL_PROBE_TIMEOUT_SECONDS).responses.create(
-        model=model,
-        input="Reply OK.",
-        max_output_tokens=8,
-    )
-    return bool(getattr(response, "id", "")) and getattr(response, "status", None) != "failed"
+    """A transport ID alone does not prove structured output is usable."""
+    class Probe(BaseModel):
+        ready: bool
+    result = parse_model("Return ready=true in the required schema.", "Check structured output.",
+                         Probe, model=model, timeout=MODEL_PROBE_TIMEOUT_SECONDS)
+    return result.ready is True
 
 
 def web_search_text(query: str, *, model: str | None = None) -> str:

@@ -169,6 +169,7 @@ struct ContentView: View {
             monitor.start()
             ReminderNotifications.request()
             while !Task.isCancelled {
+                await ConversationProcessor.tick(context: modelContext, monitor: monitor)
                 await HarnessProcessor.tick(context: modelContext, monitor: monitor)
                 await CaptureProcessor.tick(context: modelContext, monitor: monitor)
                 try? await Task.sleep(for: .seconds(2))

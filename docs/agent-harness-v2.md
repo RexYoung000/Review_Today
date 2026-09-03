@@ -1,6 +1,6 @@
 # Review Today Agent Harness V2 主规格
 
-> 状态：五模式意图识别修订已冻结，待实施及真实验收；旧 V2 工程证据不代表本轮完成
+> 状态：五模式意图识别已实现并通过受控测试；真实模型与原生 App 部分验证，完整体验未通过（见 §14）
 > 决策日期：2026-09-02  
 > 适用范围：开发 Mac 上的文字与公开链接 POC  
 > 关系：本文定义跨产品、交互与系统边界的 Harness 契约；产品语义见 `product-requirements.md`，界面语义见 `../DESIGN.md`，工程契约见 `architecture.md`，验收门槛见 `m1-acceptance.md`。
@@ -64,7 +64,7 @@ accepted
 
 异常与终止状态：
 
-- `retryable_failed`：外部服务、超时或可恢复结构错误；保留输入并允许自动或手动重试；
+- `retryable_failed`：外部服务、超时或可恢复结构错误；保留输入，由用户明确重试，不因重启自动重发模型请求；
 - `needs_attention`：证据冲突、内容风险或必须由用户决定；
 - `cancelled`：用户取消当前任务，Session 与已有消息仍保留；
 - `terminal_failed`：无法在当前约束下继续，显示原因和可行下一步。
@@ -304,7 +304,7 @@ Mac 本地数据库是长期事实来源，保存：
 - Source、Knowledge 和关联；
 - 结构化 Session 摘要。
 
-Python 只保存未完成 Task 的短期 checkpoint 与事件窗口，使用 TTL 清理。服务重新取得 Task 时必须依赖稳定 ID 保持幂等。
+Python 保留执行 checkpoint；Session 消息与事件按 Mac ACK 裁剪（§8.1），旧 Task 投影仍用原有保留规则。未完成输入、确认版本和幂等收据不能因普通缓存裁剪丢失；服务重新取得任务时使用稳定 ID。
 
 ### 7.3 上下文预算
 
@@ -316,7 +316,7 @@ Python 只保存未完成 Task 的短期 checkpoint 与事件窗口，使用 TTL
 - 当前资料相关片段；
 - 最多 5 条相关既有知识。
 
-默认预算：路由、关系判断和摘要约 3k tokens；教学、资料学习与问题攻克单轮约 16k tokens。达到预算前更新结构化摘要，不盲目发送全部历史。
+上下文目标预算：路由与摘要约 3k tokens，教学与问题攻克约 16k tokens。当前 POC 用近期条数、字段长度和阶段摘要限制叙事窗口，未实现精确 token 计量；不能把目标预算当作严格性能保证。当前结构化任务状态与版本不被摘要改写。
 
 跨 Session 只通过检索到的相关知识或用户确认的交接包引用，不能读取全部对话。
 
@@ -341,9 +341,14 @@ Python 只保存未完成 Task 的短期 checkpoint 与事件窗口，使用 TTL
 - `POST /v2/sessions/{session_id}/messages`：client_message_id、content、mode、delivery=steer|queue、受限上下文及可选明确操作；立即返回 message_id、run_id、可空 task_id。
 - `GET /v2/sessions/{session_id}/events?after_seq=` 与 `POST /v2/sessions/{session_id}/ack`：按 Session 回放与确认本地消费位置。
 - `GET /v2/runs/{run_id}` 与 `POST /v2/runs/{run_id}/actions`：稳定 action_id，stop/resume/retry/cancel_task/set_mode；明确操作检查 Session、Run、目标及状态。
+- `POST /v2/tasks/{task_id}/commit-claim`：本机知识写入前领取当前有效提交。领取前的停止／替代撤销该提交；领取后进入幂等本机事务，停止不宣称撤回已经提交的知识，重启续接同一提交并 ACK。
 - 自由文本一律进入 messages，不由 Swift 猜测 actions。旧 Task 动作接口保留，但同样使用确认与版本守卫。
 - `IntentDecision` 为严格结构化枚举，不确定用澄清而不是四选一；运行异常区分超时、模型服务、空输出、拒绝及结构校验。仅结构修复最多一次，重试计数按实际模型请求，不把首次失败显示为第二次。
 - 入库快照返回已确认的对象/草稿版本；Mac 只消费仍然有效的 committing 状态，同一知识 ID 与 ACK 幂等。停止或内容纠正先使未提交快照失效。已经完成提交不假装撤销。
+- Mac 完整落盘后才 ACK。Python 对已 ACK 的 Session 回放缓存保留最近 64 条事件、至少最近 32 条消息及未完成运行所需输入；累计序号不重置，已完成 Run 释放模型输出缓存。Task 历史兼容投影暂保留；Mac 是完整原文、事件和引用的长期记录来源。
+- 五模式修订的运行等待阈值：结构化能力探测默认 45 秒、正式模型步骤默认 90 秒，均可由环境变量覆盖。2026-09-03 的小型结构化探测实测约 33–39 秒，旧 8 秒探测会过早判为不可用；等待期间仍接收输入和停止操作，不以延长等待宣称模型已恢复正常。
+- 开发 App 托管进程若启动 30 秒后仍无法响应健康检查，终止该次启动并按既有退避重试，最多四次；不再仅因 Python 进程存在就无限显示启动中。模型能力检查不阻塞消息接收。
+- 开发工程位于 macOS 受保护的桌面目录；临时签名变化可能要求重新授权。启动超时且没有服务输出时，提示检查系统文件夹访问授权与 `.venv`，不一概标为模型故障。由用户在系统提示或隐私设置中授权，不自动改权限、不绕过系统保护。
 
 以下为旧 V2 Task 兼容接口：
 
@@ -425,7 +430,7 @@ v1 capture 与 review API 在 V2 真实体验验收通过前保留。
 
 - 已有 Source、Knowledge、Question、评分规格、ReviewAttempt 和 FSRS 数据不得破坏；
 - 旧 CaptureTask 可以继续完成或显示在待处理兼容队列；
-- 完整对话只保存在 Mac；Python checkpoint 到期删除；
+- 完整长期对话保存在 Mac；Python 已消费回放缓存按 ACK 裁剪，旧 Task checkpoint 按兼容保留规则处理；
 - 长期运行指标不得包含完整对话或知识正文；
 - 外部模型仍受对应服务数据政策约束；
 - M1 不做语音、Realtime、多模态文件、PDF、图片、登录、跨设备同步、公共部署、正式安装包或商业化；
@@ -488,3 +493,28 @@ v1 capture 与 review API 在 V2 真实体验验收通过前保留。
 当前工程证据：40 项 Python 契约与回归测试、Debug/Release 无签名构建、原生 App 的即时回显、主题收窄、增量运行详情、进程中断恢复、重启持久化及模型超时恢复界面。2026-09-03 实测配置中，Luna、Terra、Sol 均能出现在模型清单，但短生成探测超时，因此真实问题攻克只验证到“进入模式 → 显示回答准备阶段 → 超时后提供重试／取消”；这属于当前模型服务阻塞，不得记为问题攻克真实闭环通过。
 
 M1、#17 和 M2 状态不变：工程自检不是 `user accepted`。只有 Rex 按第 11.2 节完成真实体验验收后，才能关闭 M1 Harness 门槛并恢复后续里程碑。
+
+## 14. 五模式修订实施检查点（2026-09-03）
+
+文档冻结提交 `cda7a41` 已独立推送，之后才修改功能代码。下面是本轮工程事实，不是用户验收结论。
+
+### 14.1 已接入
+
+- Python `conversation.py` / `conversation_store.py` / `conversation_prompts.py`：统一结构化意图、局部能力调用、五模式默认行为、版本化授权、Run revision、单 Session 前台、补充/排队/停止/恢复、摘要与 ACK 缓存裁剪。
+- `main.py` 新消息、Session events/ACK、Run/actions、commit-claim；旧 Task actions 也进入授权守卫，旧 v1/Task 数据与接口保留。
+- Mac `ConversationModels.swift` / `ConversationProcessor.swift`：消息先保存、Run/事件/待发操作独立持久化，投影与消费游标同次保存后 ACK；单会话控制失败不堵住其他会话。
+- `LearningWorkspace.swift`：五项模式、轻量运行反馈、仅真实目标显示任务卡、真实理解状态、绑定版本按钮、排队与停止/恢复、最新回复滚动可达；沿用现有布局，不重做整体视觉。
+- 已确认的整理内容通过独立提交任务形成知识；程序检查理解、攻克追问、来源、版本和当前提交有效性。练习不触碰正式评分与 FSRS。
+- 启动检查是实际结构化请求，诊断区分 TIMEOUT、CONNECTION、PROVIDER、EMPTY、REFUSAL、SCHEMA、INCOMPLETE；不静默替换模型。按钮确认直接程序校验，不额外调用 Luna 猜测按钮意图。
+
+### 14.2 验证与未通过项
+
+- 90 项无密钥 Python 测试通过：新意图/多意图、否定与引用授权、对象版本、四工作流、JD、独立作答和迁移追问、幂等、补充竞争、停止后迟到结果、回答落盘后中断不重复、旧动作失败不提前消费 ID、重启与摘要、旧知识卡及评分回归。测试覆盖具体样本，不代表所有自然语言均已验证。
+- macOS Debug 本机临时签名构建、Release 无签名构建通过；Release 未打包 Python，不是分发验收。
+- 真实模型独立 checkpoint 测试：Auto 问候及 RAG 问答均无 Task；问题攻克得到基础答案/依赖/路径并进入校准；知识整理交付草稿未入库；资料学习得到标明 Agent 生成来源的讲义，跳过仍 unknown。其间真实出现 CONNECTION 与 TIMEOUT，未更换角色模型掩盖问题。
+- 原生 App 实际检查了本地即时回显、停止/恢复、请求失败后重试得到 RAG 回答、历史跨重启保留、五项模式菜单、Today 最近 Run 状态；没有在验收测试中提交正式知识或修改复习分数。
+- 最后一次最新 Debug 构建重启出现桌面权限阻塞：系统日志记录 `Failed to match existing code requirement`、`kTCCServiceSystemPolicyDesktopFolder` 与等待授权；Python 栈停在初始化读取文件，尚未进入服务入口。四次有限重试后停止并保留消息。需要用户恢复系统授权后重验，不能算自动启动通过。
+- 尚未完成：最新构建获得权限后的全程原生回归、四工作流完整真实闭环（含外部 2–4 来源、JD 逐题、攻克独立作答/追问到入库）、本轮正式复习 UI 回归、完整无障碍/系统偏好测试、长期上下文压力与精确 token 限额。
+- 历史 `MODEL_FAILED` 原始错误仍未知；当前可定位的权限与模型错误不能倒推历史原因。#17 和 M2 继续暂停。
+
+恢复入口与逐项验收：`m1-acceptance.md` §0.8。后续 Agent 先处理原生启动授权前置条件，复测当前代码，不从历史 §13 重新开发一遍。

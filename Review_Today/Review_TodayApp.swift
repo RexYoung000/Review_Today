@@ -30,7 +30,10 @@ struct Review_TodayApp: App {
                 TaskEventRecord.self,
                 SourceReference.self,
                 KnowledgeReference.self,
-                SessionSummaryRecord.self
+                SessionSummaryRecord.self,
+                AgentRun.self,
+                AgentRunControl.self,
+                SessionEventRecord.self
             )
         } catch {
             fatalError("SwiftData container failed: \(error)")
