@@ -43,6 +43,8 @@ struct Review_TodayApp: App {
                 .runwayAppearance()
         }
         .modelContainer(container)
+        .defaultSize(width: 1280, height: 820)
+        .windowResizability(.contentMinSize)
 
         WindowGroup(String(localized: "复习"), id: "review") {
             ReviewView(coordinator: coordinator)

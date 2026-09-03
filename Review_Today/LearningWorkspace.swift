@@ -17,6 +17,15 @@ struct LearningWorkspace: View {
     @State private var draft = ""
     @State private var showArchived = false
     @State private var localError: String?
+    @State private var showsSessionPicker = false
+
+    private enum Layout {
+        static let expandedWidth: CGFloat = 900
+        static let railWidth: CGFloat = 240
+        static let readingWidth: CGFloat = 820
+
+        static func gutter(for width: CGFloat) -> CGFloat { width < 650 ? 16 : 24 }
+    }
 
     private var visibleSessions: [AgentSession] {
         sessions.filter { showArchived ? $0.status == "archived" : $0.status == "active" }
@@ -37,11 +46,23 @@ struct LearningWorkspace: View {
     }
 
     var body: some View {
-        HSplitView {
-            sessionRail
-                .frame(minWidth: 210, idealWidth: 240, maxWidth: 290)
-            workspace
-                .frame(minWidth: 620)
+        // Bound the workspace to the actual viewport; nested split-view minimums
+        // otherwise let long message content expand the entire navigation shell.
+        GeometryReader { geometry in
+            let expanded = geometry.size.width >= Layout.expandedWidth
+            let workspaceWidth = max(0, geometry.size.width - (expanded ? Layout.railWidth + 1 : 0))
+            HStack(spacing: 0) {
+                if expanded {
+                    sessionRail.frame(width: Layout.railWidth)
+                    Rectangle().fill(runway.hairline).frame(width: 1)
+                }
+                workspace(width: workspaceWidth, compact: !expanded)
+                    .frame(width: workspaceWidth)
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .onChange(of: expanded) { _, expanded in
+                if expanded { showsSessionPicker = false }
+            }
         }
         .background(PaperSurface())
         .navigationTitle(String(localized: "学习"))
@@ -53,7 +74,7 @@ struct LearningWorkspace: View {
     private var sessionRail: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Sessions")
+                Text("学习会话")
                     .font(.headline)
                     .foregroundStyle(runway.ink)
                 Spacer()
@@ -81,6 +102,7 @@ struct LearningWorkspace: View {
                     ForEach(visibleSessions, id: \.id) { session in
                         Button {
                             selectedSessionID = session.id
+                            showsSessionPicker = false
                         } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(session.title)
@@ -95,10 +117,11 @@ struct LearningWorkspace: View {
                                 }
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
+                                .lineLimit(1)
                             }
                             .padding(10)
                             .background(
-                                selectedSessionID == session.id ? runway.card : Color.clear,
+                                selectedSessionID == session.id ? runway.field : Color.clear,
                                 in: RoundedRectangle(cornerRadius: 12, style: .continuous)
                             )
                             .contentShape(Rectangle())
@@ -106,76 +129,106 @@ struct LearningWorkspace: View {
                         .buttonStyle(.plain)
                     }
                     if visibleSessions.isEmpty {
-                        ContentUnavailableView(
-                            showArchived ? "还没有归档的 Session" : "从一个问题开始",
+                        Label(
+                            showArchived ? "还没有归档的会话" : "从一个问题开始",
                             systemImage: showArchived ? "archivebox" : "bubble.left.and.bubble.right"
                         )
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
                         .padding(.top, 24)
                     }
                 }
                 .padding(.horizontal, 8)
             }
         }
-        .background(runway.field.opacity(0.55))
+        .background(runway.canvas)
     }
 
-    private var workspace: some View {
-        VStack(spacing: 0) {
-            workspaceHeader
+    private func workspace(width: CGFloat, compact: Bool) -> some View {
+        let gutter = Layout.gutter(for: width)
+        let contentWidth = max(0, min(Layout.readingWidth, width - gutter * 2))
+        return VStack(spacing: 0) {
+            workspaceHeader(compact: compact)
             Divider()
             serviceBanner
-            conversation
-            composer
+            conversation(contentWidth: contentWidth)
+            composer(contentWidth: contentWidth)
         }
         .background(runway.canvas)
     }
 
-    private var workspaceHeader: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(selectedSession?.title ?? "新的学习 Session")
-                    .font(.title2.bold())
-                    .foregroundStyle(runway.ink)
-                Text("回答、学习路径和工作过程都保存在这里")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            if let session = selectedSession {
-                Picker("模式", selection: Binding(
-                    get: { session.modePreset },
-                    set: { value in
-                        session.modePreset = value
-                        session.updatedAt = .now
-                        try? modelContext.save()
-                    }
-                )) {
-                    Text("自动").tag("auto")
-                    Text("记忆整理").tag("memory_organization")
-                    Text("资料学习").tag("source_learning")
-                    Text("主题探索").tag("topic_exploration")
-                    Text("问题攻克").tag("problem_solving")
+    private func workspaceHeader(compact: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(selectedSession?.title ?? "新的学习 Session")
+                        .font(.title2.bold())
+                        .foregroundStyle(runway.ink)
+                        .lineLimit(2)
+                        .help(selectedSession?.title ?? "新的学习 Session")
+                    Text("回答、学习路径和工作过程都保存在这里")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
-                .frame(width: 150)
-                .help("模式只作为预设；Agent 建议切换时仍需你确认")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                if let session = selectedSession { sessionMenu(session) }
+            }
 
-                Menu {
-                    Button("带上下文新建 Session") { createSession(handoffFrom: session) }
-                    if session.status == "active" {
-                        Button("归档 Session") { archive(session) }
-                    } else {
-                        Button("恢复 Session") { restore(session) }
+            HStack(spacing: 12) {
+                if compact {
+                    Button { showsSessionPicker.toggle() } label: {
+                        Label("学习会话", systemImage: "list.bullet")
                     }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
+                    .popover(isPresented: $showsSessionPicker, arrowEdge: .bottom) {
+                        sessionRail.frame(width: 300, height: 460)
+                    }
+                    .accessibilityLabel("打开学习会话列表")
                 }
-                .menuStyle(.borderlessButton)
-                .frame(width: 28)
-                .accessibilityLabel("Session 操作")
+                Spacer(minLength: 0)
+                if let session = selectedSession {
+                    Text("模式").font(.caption).foregroundStyle(.secondary)
+                    Picker("模式", selection: Binding(
+                        get: { session.modePreset },
+                        set: { value in
+                            session.modePreset = value
+                            session.updatedAt = .now
+                            try? modelContext.save()
+                        }
+                    )) {
+                        Text("自动").tag("auto")
+                        Text("记忆整理").tag("memory_organization")
+                        Text("资料学习").tag("source_learning")
+                        Text("主题探索").tag("topic_exploration")
+                        Text("问题攻克").tag("problem_solving")
+                    }
+                    .labelsHidden()
+                    .frame(width: 120)
+                    .help("模式只作为预设；Agent 建议切换时仍需你确认")
+                }
             }
+            .controlSize(.small)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 14)
+    }
+
+    private func sessionMenu(_ session: AgentSession) -> some View {
+        Menu {
+            Button("新建学习 Session") { createSession() }
+            Button("带上下文新建 Session") { createSession(handoffFrom: session) }
+            if session.status == "active" {
+                Button("归档 Session") { archive(session) }
+            } else {
+                Button("恢复 Session") { restore(session) }
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
+        }
+        .menuStyle(.borderlessButton)
+        .frame(width: 28, height: 26)
+        .accessibilityLabel("Session 操作")
     }
 
     @ViewBuilder
@@ -188,17 +241,20 @@ struct LearningWorkspace: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(monitor.launchStatus)
                         .font(.callout.weight(.medium))
+                        .fixedSize(horizontal: false, vertical: true)
                     if !monitor.launchDetail.isEmpty {
                         Text(monitor.launchDetail)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .lineLimit(2)
+                            .help(monitor.launchDetail)
                     }
                 }
-                Spacer()
+                .frame(maxWidth: .infinity, alignment: .leading)
                 if monitor.connection == .unavailable {
                     Button("重试") { monitor.retryLaunch() }
                         .buttonStyle(.borderless)
+                        .fixedSize()
                 }
             }
             .padding(.horizontal, 20)
@@ -207,14 +263,14 @@ struct LearningWorkspace: View {
         }
     }
 
-    private var conversation: some View {
+    private func conversation(contentWidth: CGFloat) -> some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 14) {
                 if sessionMessages.isEmpty {
                     emptyConversation
                 } else {
                     ForEach(sessionMessages, id: \.id) { message in
-                        messageBubble(message)
+                        messageBubble(message, contentWidth: contentWidth)
                         if message.role == "user",
                            let task = sessionTasks.first(where: { $0.inputMessageID == message.id }) {
                             taskCard(task)
@@ -222,8 +278,8 @@ struct LearningWorkspace: View {
                     }
                 }
             }
-            .frame(maxWidth: 820)
-            .padding(24)
+            .frame(width: contentWidth)
+            .padding(.vertical, 24)
             .frame(maxWidth: .infinity)
         }
     }
@@ -245,14 +301,16 @@ struct LearningWorkspace: View {
         .padding(.top, 32)
     }
 
-    private func messageBubble(_ message: AgentMessage) -> some View {
-        HStack(alignment: .top, spacing: 10) {
-            if message.role == "user" { Spacer(minLength: 80) }
-            if message.role != "user" { CoachMark(pose: .idle, size: 30) }
+    private func messageBubble(_ message: AgentMessage, contentWidth: CGFloat) -> some View {
+        let isUser = message.role == "user"
+        let bubbleWidth = max(0, contentWidth - 40)
+        return HStack(alignment: .top, spacing: 10) {
+            if !isUser { CoachMark(pose: .idle, size: 30) }
             Text(.init(message.content))
                 .font(.body)
                 .foregroundStyle(runway.ink)
                 .textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 11)
                 .background(
@@ -263,17 +321,26 @@ struct LearningWorkspace: View {
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
                         .strokeBorder(message.role == "user" ? Color.clear : runway.hairline)
                 )
-            if message.role != "user" { Spacer(minLength: 60) }
+                .frame(maxWidth: bubbleWidth, alignment: isUser ? .trailing : .leading)
         }
-        .frame(maxWidth: .infinity)
+        .frame(width: contentWidth, alignment: isUser ? .trailing : .leading)
     }
 
     private func taskCard(_ task: LearningTask) -> some View {
         let taskEvents = events.filter { $0.taskID == task.id }.sorted { $0.seq < $1.seq }
         let options = Self.options(task.requiredActionOptionsJSON)
         return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 8) {
+                Circle()
+                    .fill(Self.tone(task.status) == .problem ? Color.orange : runway.agent)
+                    .frame(width: 6, height: 6)
+                    .padding(.top, 5)
+                Text(task.userSummary)
+                    .font(.callout.weight(.medium))
+                    .foregroundStyle(runway.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             HStack(spacing: 8) {
-                StatusChip(label: task.userSummary, tone: Self.tone(task.status))
                 MetaTag(title: Self.modeLabel(task.mode))
                 Spacer()
                 if task.status == "retryable_failed" || task.status == "needs_attention" {
@@ -288,6 +355,7 @@ struct LearningWorkspace: View {
                 Text(prompt)
                     .font(.callout.weight(.medium))
                     .foregroundStyle(runway.ink)
+                    .fixedSize(horizontal: false, vertical: true)
                 if !options.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(options, id: \.self) { option in
@@ -298,7 +366,7 @@ struct LearningWorkspace: View {
                                     Text(Self.optionLabel(option))
                                         .font(.callout.weight(.medium))
                                         .foregroundStyle(runway.ink)
-                                        .lineLimit(2)
+                                        .fixedSize(horizontal: false, vertical: true)
                                         .multilineTextAlignment(.leading)
                                     Spacer(minLength: 4)
                                     Image(systemName: "arrow.right")
@@ -332,11 +400,18 @@ struct LearningWorkspace: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(event.userSummary)
                                     .font(.caption.weight(.medium))
-                                HStack(spacing: 6) {
-                                    Text(event.node)
-                                    Text(event.occurredAt, format: .dateTime.hour().minute().second())
-                                    if let duration = event.durationMS { Text("\(duration) ms") }
-                                    if event.attempt > 1 { Text("第 \(event.attempt) 次") }
+                                    .fixedSize(horizontal: false, vertical: true)
+                                Text(event.node)
+                                    .font(.caption2.monospaced())
+                                    .foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                ViewThatFits(in: .horizontal) {
+                                    eventTiming(event)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(event.occurredAt, format: .dateTime.hour().minute().second())
+                                        if let duration = event.durationMS { Text("\(duration) ms") }
+                                        if event.attempt > 1 { Text("第 \(event.attempt) 次") }
+                                    }
                                 }
                                 .font(.caption2.monospaced())
                                 .foregroundStyle(.secondary)
@@ -344,21 +419,25 @@ struct LearningWorkspace: View {
                                     Text(event.detailSummary)
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
+                                        .fixedSize(horizontal: false, vertical: true)
                                 }
                                 if let error = event.errorCode {
                                     Text(error)
                                         .font(.caption2.monospaced())
                                         .foregroundStyle(.orange)
+                                        .fixedSize(horizontal: false, vertical: true)
                                 }
                                 if let recovery = event.recoveryAction {
                                     Text("恢复动作：\(recovery)")
                                         .font(.caption2.monospaced())
                                         .foregroundStyle(.secondary)
+                                        .fixedSize(horizontal: false, vertical: true)
                                 }
                             }
                         }
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 6)
             } label: {
                 Text("运行详情")
@@ -374,7 +453,15 @@ struct LearningWorkspace: View {
         .accessibilityLabel("学习任务：\(task.userSummary)")
     }
 
-    private var composer: some View {
+    private func eventTiming(_ event: TaskEventRecord) -> some View {
+        HStack(spacing: 6) {
+            Text(event.occurredAt, format: .dateTime.hour().minute().second())
+            if let duration = event.durationMS { Text("\(duration) ms") }
+            if event.attempt > 1 { Text("第 \(event.attempt) 次") }
+        }
+    }
+
+    private func composer(contentWidth: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             if let localError {
                 Label(localError, systemImage: "exclamationmark.triangle")
@@ -388,11 +475,14 @@ struct LearningWorkspace: View {
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 8)
+                            .lineLimit(2)
+                            .allowsHitTesting(false)
                     }
                     TextEditor(text: $draft)
                         .scrollContentBackground(.hidden)
-                        .frame(minHeight: 48, maxHeight: 130)
+                        .frame(height: 72)
                         .padding(.horizontal, 1)
+                        .accessibilityLabel("学习输入")
                 }
                 Button(action: submitDraft) {
                     Image(systemName: "arrow.up")
@@ -413,8 +503,8 @@ struct LearningWorkspace: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
-        .frame(maxWidth: 820)
-        .padding(.horizontal, 24)
+        .frame(width: contentWidth)
+        .padding(.top, 8)
         .padding(.bottom, 18)
         .frame(maxWidth: .infinity)
     }
@@ -522,6 +612,7 @@ struct LearningWorkspace: View {
         try? modelContext.save()
         showArchived = false
         selectedSessionID = session.id
+        showsSessionPicker = false
         return session
     }
 

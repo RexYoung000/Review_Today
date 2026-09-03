@@ -39,7 +39,7 @@ struct AppSidebar: View {
             HStack(spacing: 10) {
                 CoachMark(pose: .idle, size: 36)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Review Today")
+                    Text("Review\nToday")
                         .font(.headline)
                     Text(String(localized: "记忆教练"))
                         .font(.caption)
@@ -132,7 +132,7 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             AppSidebar(selection: $selection, inboxCount: inboxCount)
-                .navigationSplitViewColumnWidth(min: 200, ideal: Runway.sidebarIdeal, max: 260)
+                .navigationSplitViewColumnWidth(min: 200, ideal: Runway.sidebarIdeal, max: 240)
         } detail: {
             Group {
                 switch selection ?? .today {
@@ -164,7 +164,7 @@ struct ContentView: View {
             .background(PaperSurface())
         }
         .navigationSplitViewStyle(.balanced)
-        .frame(minWidth: 1100, minHeight: 720)
+        .frame(minWidth: 980, minHeight: 680)
         .task {
             monitor.start()
             ReminderNotifications.request()
