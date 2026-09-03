@@ -8,9 +8,10 @@
 
 ```text
 SwiftUI Learning Workspace
-→ Mac 先持久化 Session / Message / Task
-→ 本机 FastAPI 立即接受 Turn
-→ 受控工作流异步执行并追加 Task Event
+→ Mac 先独立持久化 Session / Message
+→ 本机 FastAPI 立即接受 Message / AgentRun
+→ 统一 IntentDecision 与程序授权
+→ 对话能力或学习工作流异步执行并追加 Session Event / Task Event
 → SwiftUI 增量回放 Message / Event / Required Action
 → 用户在同一 Task 内选择、追问、回答或确认
 → 需要形成记忆时复用现有知识卡与 ACK 原子提交
@@ -18,14 +19,14 @@ SwiftUI Learning Workspace
 
 自然语言回答保持原样，结构化的是路由、工作流状态、教学／问题输出、评分规格和评分结果。Session 不是把完整历史重复发送给模型；Harness 使用近期消息、结构化摘要、当前资料和少量相关知识组成受限上下文。
 
-Task Event、短期 checkpoint、严格 ACK、事件回放和 App 托管本地服务属于当前 M1。Realtime、WebRTC、语音、通知分发和正式安装仍是后续目标，不能据此宣称已经实现。Harness 仍不是通用多 Agent 平台。
+AgentRun、Session Event、Task Event、短期 checkpoint、严格 ACK、事件回放和 App 托管本地服务属于当前 M1。Realtime、WebRTC、语音、通知分发和正式安装仍是后续目标，不能据此宣称已经实现。Harness 仍不是通用多 Agent 平台。
 
 ## 1. 架构目标
 
 系统采用“一个用户可感知的学习教练、四条受控学习工作流、一个本地事实来源”：
 
 - 用户只面对一个 Review Today，不需要选择研究员、老师或评分员等多个 Agent 角色。
-- 内部用模式路由、记忆整理、资料学习、主题探索、问题攻克和既有正式复习图拆分职责；单次 Task 只激活一条主工作流。
+- 用户选择 Auto 或四个具体模式；内部统一识别意图并调度知识整理、资料学习、主题探索、问题攻克的局部能力或完整流程。每个 Session 同时只有一个前台执行，任务可以跨轮。
 - AI 负责理解、生成和语义判断；确定性程序负责流程、权限、重试、写入和排期。
 - 完整 Session、消息、知识与复习历史永远以 Mac 本地持久化为准。
 
@@ -90,13 +91,13 @@ flowchart LR
 
 ### 模型角色
 
-- Luna：模式路由、Session 关系判断和结构化摘要；
+- Luna：统一意图、指代、Session 关系、工作流选择及结构化摘要；
 - Terra：教学、问题回答、记忆生成与普通验证；
 - Sol：高风险事实与证据冲突判断。
 
 角色与模型 ID 由配置映射，启动时逐项检查；不可用时让受影响 Task 明确失败，不静默改用其他角色模型。
 
-## 4. 采集整理图
+## 4. 旧采集整理图（v1 兼容；不得作为新消息入口）
 
 ```mermaid
 flowchart TD
@@ -200,7 +201,17 @@ Realtime 不可以：
 
 Mac 是长期事实来源。Python checkpoint 只是“任务做到哪里”的短期草稿，不能演变成第二份知识库。
 
-### 6.1 领域模型草图
+### 6.1 五模式修订的数据与执行契约
+
+新增 AgentRun 与 SessionEventRecord；AgentMessage.taskID 保持可空并增加发送状态。消息先写 Mac，Run/事件可离线续接，不按输入无条件建 Task/Source。Python checkpoint 维护 Session 活动 Run、版本、队列与停止状态；每个 Session 单一前台执行。模型返回后先检查版本再发布或写 Task，旧请求不得覆盖新意图。
+
+Luna 的 IntentDecision 是建议，程序检查对象归属、确认 ID/版本、理解条件和攻克验收才执行；不允许客户端关键词猜测授权。明确操作同样通过服务端守卫。主规格 §8.1 定义 messages、Session events/ACK、runs/actions 的新增接口；旧 Task 接口、旧数据和 v1 继续兼容。
+
+Mac 增加本地 Run、Session Event、待发操作和 Session 消费游标；事件与消息原子保存后 ACK。Run 可不关联 Task，资料草稿保留在会话；理解 unknown/self_reported/verified 与正式 FSRS 分离。来源 kind=user_material/public_web/agent_generated 与证据状态分开，生成讲义不是独立外部证据。
+
+以下旧字段草图仍为兼容基础，新契约优先；详细结构以代码 schema 和主规格共同维护。
+
+### 6.2 领域模型草图
 
 以下是 SwiftData 与本机接口的字段级起点。标识符用稳定 UUID，时间用绝对时间戳，日界按 Mac 本地日历解释。
 
@@ -389,7 +400,7 @@ V2 以上路径和主规格中的必备字段已经冻结；具体枚举与错�
 ## 8. 本地服务、失败与恢复
 
 - **App 托管服务**：App 启动后检查 localhost 健康状态；无外部实例时启动项目配置的 Python 服务并监控自己启动的子进程；退出时只终止自己托管的实例。
-- **启动失败**：用户消息和 Task 已先保存；显示解释、重试与诊断，不把“等待服务恢复”当作终态。
+- **启动失败**：用户消息已先保存，可能尚未创建 Task；显示解释、重试与诊断，不把“等待服务恢复”当作终态。
 
 - **App 重启**：从 SwiftData 恢复采集队列和正式会话；已完成题不重复，未完成题重新提问。
 - **Python 重启**：从未过期 checkpoint 恢复；若无法恢复，Mac 保留原任务并重新提交同一任务 ID。
@@ -445,12 +456,12 @@ V2 以上路径和主规格中的必备字段已经冻结；具体枚举与错�
 
 ## 13. 当前实现与缺口
 
-### 已实现
+### 旧 V2 已实现（历史基线，不代表本轮五模式修订完成）
 
 - SwiftUI Mac App、SwiftData 领域模型和本机 FastAPI 接口；
 - `AgentSession`、`AgentMessage`、`LearningTask`、`TaskEventRecord`、`SourceReference`、`KnowledgeReference` 与 `SessionSummaryRecord` 本地模型；
 - V2 异步 Turn、Task 快照、增量 Event、Action 与 ACK 接口，SQLite checkpoint、事件顺序、动作幂等、TTL 清理和重启恢复；
-- 记忆整理、资料学习、主题探索、问题攻克及 JD 拆解受控工作流；模式切换与高置信新主题只建议，均由用户确认；
+- 旧四工作流和 JD 的替身测试基线保留；本轮由主规格的新意图、授权、Auto 自动转接与主动选模式规则替代旧路由；
 - 独立学习工作区、Session 列表／归档／恢复／结构化交接、输入即时回显、可展开运行详情和 Today 纯数据看板；
 - Debug App 自动启动、监控并恢复项目 `.venv` 服务；模型清单加真实短生成能力探测、45 秒任务超时与显式可重试失败；
 - OpenAI 结构化知识整理与独立回答评分调用；
