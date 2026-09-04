@@ -12,6 +12,7 @@ import threading
 import time
 import uuid
 from dataclasses import asdict
+from datetime import datetime
 from pydantic import ValidationError
 
 from agent_service.capture import RISK_RULE, find_source_candidates, run_capture
@@ -22,6 +23,7 @@ from agent_service.conversation_store import ConversationStore, Superseded, conv
 from agent_service.harness import JD_SYSTEM, PROBLEM_SYSTEM, _render_problem
 from agent_service.harness_store import HarnessTaskRecord, now_iso
 from agent_service.openai_client import ModelCallError, parse_model, web_search_text
+from agent_service.response_projection import public_preview
 from agent_service.schemas import (
     ConversationOutput, EvidenceAssessmentV2, IntentDecision, JDAnalysis, MasteryEvaluation,
     MessageAccepted, ProblemCoachBundle, RunActionRequest, SessionMessageRequest, TaskEvent, ConversationSummary,
@@ -35,7 +37,8 @@ FINISHED = {"completed", "cancelled", "terminal_failed"}
 def _new_run(session_id: str, message_id: str, status: str) -> dict:
     return dict(run_id=str(uuid.uuid4()), session_id=session_id, task_id=None, input_ids=[message_id],
                 revision=1, status=status, stage="accepted", user_summary="已保存", attempt=0,
-                intent=None, steps={}, action_ids=[], error_code=None, created_at=now_iso(), updated_at=now_iso())
+                intent=None, steps={}, action_ids=[], error_code=None, created_at=now_iso(), updated_at=now_iso(),
+                started_at=None, elapsed_ms=0, attempt_durations=[], first_text_ms=None)
 
 
 class ConversationHarness:
@@ -43,6 +46,7 @@ class ConversationHarness:
         self.store = store
         self._workers: set[str] = set()
         self._worker_lock = threading.Lock()
+        self._cancel_handles: dict[tuple, object] = {}
 
     def accept(self, session_id: str, body: SessionMessageRequest) -> MessageAccepted:
         with self.store.transaction(session_id) as data:
@@ -76,6 +80,7 @@ class ConversationHarness:
                 active = data["runs"].get(data["foreground"])
                 if active and active["status"] in {"running", "accepted"} and not active.get("execution_complete") and body.delivery == "steer":
                     run = active
+                    self._end_response(data, run, "interrupted")
                     run["revision"] += 1
                     run["status"] = "accepted"
                     run["input_ids"].append(body.client_message_id)
@@ -109,6 +114,7 @@ class ConversationHarness:
                 self.store.event(data, run, "queued" if run["status"] == "queued" else "received", summary)
             accepted = MessageAccepted(message_id=body.client_message_id, run_id=run["run_id"],
                                        task_id=run.get("task_id"), status=run["status"], revision=run["revision"])
+        self._cancel_older(session_id, accepted.run_id, accepted.revision)
         return accepted
 
     def action(self, run_id: str, body: RunActionRequest) -> dict:
@@ -133,6 +139,7 @@ class ConversationHarness:
                     if body.mode != "auto":
                         task["mode"] = body.mode
                 if target["status"] in {"running", "accepted"}:
+                    self._end_response(data, target, "interrupted")
                     target["revision"] += 1
                     target["status"] = "accepted"
                 self.store.event(data, target, "mode_changed", f"已选择{LABELS[body.mode]}，从下一步生效")
@@ -158,10 +165,23 @@ class ConversationHarness:
                     data["foreground"] = run_id
                 self.store.event(data, run, "resuming", "已恢复，将从未完成的步骤继续")
             result = dict(run)
+        self._cancel_older(found["session_id"], target["run_id"], target["revision"])
         return result
+
+    def _cancel_older(self, sid, rid, revision):
+        with self._worker_lock:
+            handles = [handle for key, handle in self._cancel_handles.items() if key[:2] == (sid, rid) and key[2] != revision]
+        for handle in handles:
+            # Closing a transport can block; never delay the durable control ACK.
+            def close(callback=handle):
+                try: callback()
+                except Exception: pass
+            threading.Thread(target=close, daemon=True).start()
 
     def _stop(self, data: dict, run: dict, *, cancel: bool = False):
         already_replied = run["status"] == "completed"
+        self._end_response(data, run, "interrupted")
+        self._freeze_clock(run)
         run["revision"] += 1
         run["status"] = "completed" if already_replied else "interrupted"
         if already_replied:
@@ -206,6 +226,10 @@ class ConversationHarness:
             with self.store.transaction(session_id) as data:
                 for run in data["runs"].values():
                     if run["status"] == "running":
+                        if run.get("active_response") and not run.get("execution_complete"):
+                            self._stop(data, run)
+                            self.store.event(data, run, "interrupted", "服务中断，已保留未完成内容；继续后重试未完成步骤")
+                            continue
                         run["revision"] += 1
                         run["status"] = "accepted"
                         self.store.event(data, run, "recovering", "服务已恢复，将续接未完成步骤")
@@ -225,6 +249,8 @@ class ConversationHarness:
                 data["foreground"] = run["run_id"]
                 run["status"] = "running"
                 run["attempt"] += 1
+                if not run.get("started_at"):
+                    run.update(started_at=now_iso(), elapsed_ms=0, first_text_ms=None)
                 run_id, revision = run["run_id"], run["revision"]
                 bound_input = next((m.get("operation") for m in data["messages"] if m["message_id"] == run["input_ids"][-1]), None)
                 self.store.event(data, run, "understanding", "正在校验这次明确操作" if bound_input else "正在理解本轮意图", model="" if bound_input else ROUTER_MODEL)
@@ -252,6 +278,7 @@ class ConversationHarness:
                             task.update(status="committing", stage="committing", user_summary="已回应补充，继续原先确认的入库")
                             data["pending"] = None
                         self._project_event(data, run, task)
+                    self._freeze_clock(run)
                     run["status"] = "completed"
                     self.store.event(data, run, "completed", "本轮已回应")
                     data["foreground"] = None
@@ -263,6 +290,8 @@ class ConversationHarness:
                         run = data["runs"][run_id]
                         code = exc.code if isinstance(exc, ModelCallError) else (
                             str(exc) if str(exc).startswith("RT.") else "RT.RUN.EXECUTION_FAILED")
+                        self._end_response(data, run, "failed")
+                        self._freeze_clock(run)
                         run["status"] = "retryable_failed"
                         task = self._task(data, run)
                         if task and task["status"] not in FINISHED | {"committing"}:
@@ -306,15 +335,70 @@ class ConversationHarness:
         with self.store.transaction(session_id, run_id, revision) as data:
             self.store.event(data, data["runs"][run_id], node,
                              {"intent": "正在理解本轮意图", "evaluate": "正在评价这次独立作答",
-                              "answer": "正在准备回答", "lesson": "正在准备讲解", "organize": "正在整理知识关系"}.get(node, "正在处理当前步骤"), model=model)
+                              "answer": "正在准备回答", "lesson": "正在准备讲解", "organize": "正在整理知识关系",
+                              "problem_answer": "正在组织基础答案与学习路径", "jd_analysis": "正在拆解岗位要求",
+                              "evidence_assessment": "正在核验回答依据", "session_summary": "正在整理会话摘要"}.get(node, "正在处理当前步骤"), model=model)
         started = time.monotonic()
+        last_emit = 0.0
+        latest = ""
+
+        def emit(partial, *, force=False):
+            nonlocal last_emit, latest
+            # Check even non-public chunks: a stopped generation closes promptly.
+            self._snapshot(session_id, run_id, revision)
+            text = public_preview(node, partial)
+            if not text:
+                return
+            latest = text
+            if not force and time.monotonic() - last_emit < 0.075:
+                return
+            with self.store.transaction(session_id, run_id, revision) as current:
+                active = current["runs"][run_id]
+                response = active.get("active_response")
+                if not response or response["revision"] != revision or response["status"] != "streaming":
+                    response = dict(response_id=str(uuid.uuid4()), revision=revision, chunk_seq=0, text="", delta="", status="streaming")
+                    active["active_response"] = response
+                    self.store.event(current, active, "response.started", "开始输出正文", payload={"response": dict(response)})
+                if response["text"] == text:
+                    return
+                previous = response["text"]
+                response.update(chunk_seq=response["chunk_seq"] + 1, text=text, delta=text[len(previous):] if text.startswith(previous) else "")
+                if active.get("first_text_ms") is None:
+                    active["first_text_ms"] = self._elapsed(active)
+                self.store.event(current, active, "response.delta", "正文增量", model=model, payload={"response": dict(response)})
+            last_emit = time.monotonic()
+
+        def transport(kind):
+            if kind == "buffered":
+                with self.store.transaction(session_id, run_id, revision) as current:
+                    active = current["runs"][run_id]
+                    active["transport"] = "buffered"
+                    self.store.event(current, active, "transport", "当前模型服务整段返回，未通过实时流式验收", model=model)
+
+        handle_key = (session_id, run_id, revision)
+        def register_cancel(handle):
+            with self._worker_lock:
+                self._cancel_handles[handle_key] = handle
+            try:
+                self._snapshot(session_id, run_id, revision)
+            except Superseded:
+                handle()
+                raise
+
         try:
-            parsed = parse_model(system, prompt, schema, model=model)
+            streamable = node in {"answer", "lesson", "organize", "problem_answer", "evaluate", "jd_analysis"}
+            parsed = parse_model(system, prompt, schema, model=model, on_cancel_handle=register_cancel,
+                                 **({"on_partial": emit, "on_transport": transport} if streamable else {}))
+            if streamable and latest:
+                emit(parsed.model_dump(), force=True)
         except ModelCallError as exc:
             with self.store.transaction(session_id, run_id, revision) as data:
                 self.store.event(data, data["runs"][run_id], node, "模型步骤未完成", model=model,
                                  duration_ms=int((time.monotonic() - started) * 1000), error=exc.code, detail=exc.diagnostic)
             raise
+        finally:
+            with self._worker_lock:
+                self._cancel_handles.pop(handle_key, None)
         if parsed is None:
             raise ModelCallError("EMPTY")
         try:
@@ -327,6 +411,24 @@ class ConversationHarness:
             self.store.event(data, run, node, "本步骤已完成", model=model,
                              duration_ms=int((time.monotonic() - started) * 1000))
         return output
+
+    @staticmethod
+    def _elapsed(run):
+        if run.get("started_at"):
+            return max(0, int((datetime.fromisoformat(now_iso()) - datetime.fromisoformat(run["started_at"])).total_seconds() * 1000))
+        return run.get("elapsed_ms", 0)
+
+    def _freeze_clock(self, run):
+        if run.get("started_at"):
+            run["elapsed_ms"] = self._elapsed(run)
+            run.setdefault("attempt_durations", []).append(run["elapsed_ms"])
+            run["started_at"] = None
+
+    def _end_response(self, data, run, status):
+        response = run.get("active_response")
+        if response and response["status"] == "streaming":
+            response.update(status=status, delta="", chunk_seq=response["chunk_seq"] + 1)
+            self.store.event(data, run, f"response.{status}", "未完成内容已保留", payload={"response": dict(response)})
 
     def _task(self, data, run):
         return data["tasks"].get(run.get("task_id") or data["active_task_id"])
@@ -344,7 +446,13 @@ class ConversationHarness:
     def _publish(self, sid, rid, rev, text, *, stage=None, task_status="awaiting_user", required=None, draft=False, source_type=None, draft_content=None, complete=True):
         with self.store.transaction(sid, rid, rev) as data:
             run = data["runs"][rid]
-            event = self.store.event(data, run, stage or "response", "已回应", message=text)
+            response = run.get("active_response")
+            if response and response["revision"] == rev and response["status"] == "streaming":
+                response.update(text=text, delta="", status="complete", chunk_seq=response["chunk_seq"] + 1)
+                event = self.store.event(data, run, "response.completed", "正文已完成校验", message=text,
+                                        message_id=response["response_id"], payload={"response": dict(response)})
+            else:
+                event = self.store.event(data, run, stage or "response", "已回应", message=text)
             task = self._task(data, run)
             if task and stage:
                 task.update(stage=stage, status=task_status, user_summary="已交付整理结果" if task_status == "completed" else "等你继续",
@@ -365,6 +473,8 @@ class ConversationHarness:
                 # share one commit. A crash before the worker's final status/summary
                 # must not replay an answer the Mac may already have consumed.
                 run["execution_complete"] = True
+                if run.get("active_response", {}).get("status") == "complete":
+                    run.pop("active_response", None)
 
     def _context(self, data, run):
         selected = [m for m in data["messages"] if m.get("message_id") in run["input_ids"]]
@@ -387,6 +497,32 @@ class ConversationHarness:
                     recent_messages=recent or external.get("recent_messages", [])[-10:],
                     related_knowledge=external.get("knowledge_summaries", [])[:5]), last
 
+    @staticmethod
+    def _light_reply(decision, last, *, has_active_task=False, has_pending=False, has_draft=False):
+        intents = set(decision.intents)
+        basic = bool(intents) and intents <= {"greeting", "thanks", "capabilities"}
+        defer = intents == {"defer"}
+        # Runs created before `defer` existed may already have a validated
+        # self_report checkpoint. It is only side-effect free without learning
+        # state; an active-task self report must still update understanding.
+        legacy_defer = (intents == {"self_report"} and
+                        not has_active_task and not has_pending and not has_draft)
+        allowed = ((basic and bool(decision.light_reply.strip())) or defer or legacy_defer)
+        if not (allowed and decision.scope == "conversation" and not decision.workflow and not decision.target_task_id
+                and not decision.proposed_actions and not decision.clarification and not decision.needs_verification
+                and not decision.requested_mode and decision.understanding == "unknown"
+                and not decision.direct_teaching and not decision.is_jd and not last.get("operation")):
+            return ""
+        if decision.light_reply.strip():
+            return decision.light_reply.strip()
+        if defer:
+            return "好的，你慢慢想。准备好后继续。"
+        return "收到。准备好后可以继续告诉我。"
+
+    @classmethod
+    def _light_reply_allowed(cls, decision, last, **state):
+        return bool(cls._light_reply(decision, last, **state))
+
     def _execute(self, sid, rid, rev):
         data, run = self._snapshot(sid, rid, rev)
         context, last = self._context(data, run)
@@ -402,6 +538,21 @@ class ConversationHarness:
         else:
             decision = self._call(sid, rid, rev, "intent", INTENT_SYSTEM,
                                   json.dumps(context, ensure_ascii=False), IntentDecision, ROUTER_MODEL)
+        light_reply = self._light_reply(
+            decision,
+            last,
+            has_active_task=bool(self._task(data, run)),
+            has_pending=bool(data.get("pending")),
+            has_draft=bool(data.get("draft")),
+        )
+        if light_reply:
+            with self.store.transaction(sid, rid, rev) as current:
+                active = current["runs"][rid]
+                active.update(intent=decision.model_dump(), decision_input_ids=list(active["input_ids"]), decision_mode=current["mode"], task_id=None)
+                self.store.event(current, active, "intent_decided", "已识别为轻量对话", model=ROUTER_MODEL,
+                                 detail=decision.rationale, payload={"intent": decision.model_dump()})
+            self._publish(sid, rid, rev, light_reply)
+            return
         if "queue" in decision.intents and len(run["input_ids"]) > 1:
             with self.store.transaction(sid, rid, rev) as data:
                 current = data["runs"][rid]

@@ -541,7 +541,7 @@ class IntentDecision(BaseModel):
     intents: list[Literal[
         "greeting", "thanks", "capabilities", "question", "goal", "material",
         "followup", "hint", "example", "answer", "correction", "confirm", "reject",
-        "continue", "skip_check", "self_report", "stop", "pause", "cancel", "queue",
+        "defer", "continue", "skip_check", "self_report", "stop", "pause", "cancel", "queue",
     ]] = Field(min_length=1)
     target_task_id: str = ""
     target_description: str = ""
@@ -557,6 +557,7 @@ class IntentDecision(BaseModel):
     is_jd: bool = False
     needs_verification: bool = False
     requested_mode: SessionMode | None = None
+    light_reply: str = Field(default="", max_length=600)
 
 
 class BoundOperation(BaseModel):

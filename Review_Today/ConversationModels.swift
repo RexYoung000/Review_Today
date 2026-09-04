@@ -15,6 +15,11 @@ final class AgentRun {
     var errorCode: String?
     var createdAt: Date
     var updatedAt: Date
+    var startedAt: Date?
+    var elapsedMS: Int = 0
+    var firstTextMS: Int?
+    var attemptDurationsJSON: String = "[]"
+    var transport: String = ""
 
     init(id: UUID, sessionID: UUID) {
         self.id = id

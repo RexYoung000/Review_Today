@@ -79,6 +79,14 @@ class ConversationStore:
         return data.get("event_base_seq", 0) + len(data["events"])
 
     def compact_acknowledged(self, data: dict):
+        # The Mac stores the visible snapshot atomically before ACK. Keep event
+        # metadata without retaining O(n²) answer copies in Python checkpoints.
+        for event in data["events"]:
+            if event["seq"] <= data["last_acked_seq"] and event["stage"] == "response.delta":
+                response = event.get("payload", {}).get("response")
+                if response:
+                    response["text"] = ""
+                    response["delta"] = ""
         removable = [e for e in data["events"][:-64] if e["seq"] <= data["last_acked_seq"]]
         if removable:
             data["event_base_seq"] = removable[-1]["seq"]
@@ -107,7 +115,8 @@ class ConversationStore:
     @staticmethod
     def event(data: dict, run: dict, stage: str, summary: str, *, message: str = "",
               detail: str = "", model: str = "", duration_ms: int | None = None,
-              error: str | None = None, payload: dict | None = None) -> dict:
+              error: str | None = None, payload: dict | None = None,
+              message_id: str | None = None) -> dict:
         event = dict(event_id=str(uuid.uuid4()), session_id=data["session_id"], run_id=run["run_id"],
                      task_id=run.get("task_id"), seq=ConversationStore.last_seq(data) + 1, occurred_at=now_iso(),
                      revision=run["revision"], stage=stage, state=run["status"], node=stage,
@@ -115,10 +124,11 @@ class ConversationStore:
                      attempt=run["attempt"], duration_ms=duration_ms, error_code=error,
                      payload=payload or {}, message=None)
         if message:
-            event["message"] = dict(message_id=str(uuid.uuid4()), role="coach", content=message, created_at=event["occurred_at"])
+            event["message"] = dict(message_id=message_id or str(uuid.uuid4()), role="coach", content=message, created_at=event["occurred_at"])
             data["messages"].append(dict(event["message"], run_id=run["run_id"], task_id=run.get("task_id")))
         data["events"].append(event)
-        run.update(stage=stage, user_summary=summary, error_code=error, updated_at=event["occurred_at"])
+        if not stage.startswith("response."):
+            run.update(stage=stage, user_summary=summary, error_code=error, updated_at=event["occurred_at"])
         return event
 
 

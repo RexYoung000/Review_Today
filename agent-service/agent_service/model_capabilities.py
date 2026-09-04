@@ -4,7 +4,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL, openai_key
-from agent_service.openai_client import available_model_ids, model_is_callable
+from agent_service.openai_client import available_model_ids, model_is_callable, model_stream_capability
 
 
 _lock = threading.Lock()
@@ -46,8 +46,37 @@ def probe() -> None:
 def start_probe() -> None:
     with _lock:
         for value in _state.values():
-            value.update(status="checking", error="")
-    threading.Thread(target=probe, name="review-today-model-capabilities", daemon=True).start()
+            value.update(status="checking", error="", streaming="checking")
+    threading.Thread(target=probe_with_streaming, name="review-today-model-capabilities", daemon=True).start()
+
+
+def probe_with_streaming() -> None:
+    probe()
+    # Only Terra emits public incremental prose. Luna routing/light replies and
+    # Sol evidence assessment are validated structurally but are never projected.
+    current = snapshot()
+    ready = {"coach": current["coach"]["model"]} if current["coach"]["status"] == "ready" else {}
+    with _lock:
+        for role in {"router", "risk"}:
+            _state[role]["streaming"] = "not_applicable"
+    with ThreadPoolExecutor(max_workers=max(len(ready), 1)) as executor:
+        futures = {executor.submit(model_stream_capability, model): role for role, model in ready.items()}
+        for future in as_completed(futures):
+            role = futures[future]
+            try:
+                result = future.result()
+                state = result["streaming"] if result["ready"] else "unavailable"
+                diagnostic = ""
+            except Exception as exc:
+                state = "unavailable"
+                diagnostic = getattr(exc, "code", type(exc).__name__)
+            with _lock:
+                _state[role].update(streaming=state, stream_error=diagnostic)
+    with _lock:
+        # Only coach streaming is a product capability. Router/risk are
+        # deliberately structured-only and must not be reported as failures.
+        if "coach" not in ready:
+            _state["coach"]["streaming"] = "unavailable"
 
 
 def snapshot() -> dict[str, dict[str, object]]:

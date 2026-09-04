@@ -294,6 +294,7 @@ final class AgentSession {
     var pendingOperationJSON: String?
     var handoffID: String?
     var syncError: String?
+    var composerDraft: String = ""
 
     init(
         id: UUID = UUID(),
@@ -329,6 +330,13 @@ final class AgentMessage {
     var deliveryMode: String = "steer"
     var operationJSON: String?
     var lastDeliveryError: String?
+    var responseState: String = "complete"
+    var responseRevision: Int = 0
+    var responseChunkSeq: Int = 0
+    var firstDisplayedAt: Date?
+    var firstReceivedAt: Date?
+    var localEchoMS: Int?
+    var localSavedMS: Int?
 
     init(
         id: UUID = UUID(),

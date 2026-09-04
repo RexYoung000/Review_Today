@@ -174,6 +174,21 @@ class HarnessHTTPContractTests(unittest.TestCase):
         self.assertEqual(response.json()["status"], "checking")
         start.assert_called_once_with()
 
+    def test_stream_probe_marks_structured_only_roles_not_applicable(self) -> None:
+        states = {
+            "router": {"model": "router", "status": "ready", "error": "", "streaming": "checking"},
+            "coach": {"model": "coach", "status": "ready", "error": "", "streaming": "checking"},
+            "risk": {"model": "risk", "status": "unavailable", "error": "timeout", "streaming": "checking"},
+        }
+        with patch.object(capability_module, "_state", states), \
+             patch.object(capability_module, "probe"), \
+             patch.object(capability_module, "model_stream_capability", return_value={"ready": True, "streaming": "streaming"}):
+            capability_module.probe_with_streaming()
+            result = capability_module.snapshot()
+            self.assertEqual(result["router"]["streaming"], "not_applicable")
+            self.assertEqual(result["risk"]["streaming"], "not_applicable")
+            self.assertEqual(result["coach"]["streaming"], "streaming")
+
     def test_events_are_incremental_and_actions_are_idempotent(self) -> None:
         session_id = str(uuid.uuid4())
         accepted = self.client.post(

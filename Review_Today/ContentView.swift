@@ -165,11 +165,11 @@ struct ContentView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .frame(minWidth: 980, minHeight: 680)
+        .task { await ConversationSync().run(context: modelContext, monitor: monitor) }
         .task {
             monitor.start()
             ReminderNotifications.request()
             while !Task.isCancelled {
-                await ConversationProcessor.tick(context: modelContext, monitor: monitor)
                 await HarnessProcessor.tick(context: modelContext, monitor: monitor)
                 await CaptureProcessor.tick(context: modelContext, monitor: monitor)
                 try? await Task.sleep(for: .seconds(2))

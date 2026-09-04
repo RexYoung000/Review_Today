@@ -8,19 +8,25 @@ struct LearningWorkspace: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.runway) private var runway
     @Query(sort: \AgentSession.updatedAt, order: .reverse) private var sessions: [AgentSession]
-    @Query(sort: \AgentMessage.createdAt) private var messages: [AgentMessage]
     @Query(sort: \LearningTask.createdAt) private var tasks: [LearningTask]
     @Query(sort: \TaskEventRecord.seq) private var events: [TaskEventRecord]
     @Query(sort: \SourceReference.createdAt) private var sourceReferences: [SourceReference]
     @Query(sort: \KnowledgeReference.createdAt) private var knowledgeReferences: [KnowledgeReference]
     @Query(sort: \AgentRun.createdAt) private var runs: [AgentRun]
-    @Query(sort: \SessionEventRecord.seq) private var runEvents: [SessionEventRecord]
     @State private var queueInput = false
     @State private var selectedSessionID: UUID?
     @State private var draft = ""
     @State private var showArchived = false
     @State private var localError: String?
     @State private var showsSessionPicker = false
+    @State private var inputHeight: CGFloat = 64
+    @State private var inputFocused = false
+    @State private var focusRequest = 0
+    @State private var draftSessionID: UUID?
+    @State private var draftSave: Task<Void, Never>?
+    @State private var followsLatest = true
+    @State private var userScrolling = false
+    @State private var sentMessageID: UUID?
 
     private enum Layout {
         static let expandedWidth: CGFloat = 900
@@ -38,9 +44,8 @@ struct LearningWorkspace: View {
         sessions.first { $0.id == selectedSessionID }
     }
 
-    private var sessionMessages: [AgentMessage] {
-        guard let selectedSessionID else { return [] }
-        return messages.filter { $0.sessionID == selectedSessionID }.sorted { $0.createdAt < $1.createdAt }
+    private func messages(for id: UUID) -> [AgentMessage] {
+        (try? modelContext.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == id }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
     }
 
     private var sessionTasks: [LearningTask] {
@@ -72,6 +77,24 @@ struct LearningWorkspace: View {
         .onAppear(perform: selectInitialSession)
         .onChange(of: showArchived) { _, _ in selectInitialSession() }
         .onChange(of: sessions.map(\.id)) { _, _ in selectInitialSession() }
+        .onChange(of: selectedSessionID) { _, id in
+            saveDraft()
+            draftSessionID = id
+            draft = sessions.first(where: { $0.id == id })?.composerDraft ?? ""
+            queueInput = false
+            localError = nil
+            followsLatest = true
+        }
+        .onChange(of: draft) { _, _ in
+            draftSave?.cancel()
+            draftSave = Task {
+                try? await Task.sleep(for: .milliseconds(250))
+                guard !Task.isCancelled else { return }
+                saveDraft()
+            }
+        }
+        .onDisappear { saveDraft() }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in saveDraft() }
     }
 
     private var sessionRail: some View {
@@ -266,11 +289,30 @@ struct LearningWorkspace: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
             .background(runway.field)
+        } else if !monitor.capabilityNotice.isEmpty || !monitor.streamNotice.isEmpty {
+            VStack(alignment: .leading, spacing: 2) {
+                if !monitor.capabilityNotice.isEmpty {
+                    Text(monitor.capabilityNotice)
+                }
+                if !monitor.streamNotice.isEmpty {
+                    Text(monitor.streamNotice)
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 20).padding(.vertical, 6)
         }
     }
 
     private func conversation(contentWidth: CGFloat) -> some View {
-        ScrollViewReader { proxy in
+        SessionTranscriptData(sessionID: selectedSessionID) { messages, events in
+            transcript(messages, runEvents: events, contentWidth: contentWidth)
+        }
+    }
+
+    private func transcript(_ sessionMessages: [AgentMessage], runEvents: [SessionEventRecord], contentWidth: CGFloat) -> some View {
+        return ScrollViewReader { proxy in
           ScrollView {
             LazyVStack(alignment: .leading, spacing: 14) {
                 if sessionMessages.isEmpty {
@@ -280,10 +322,11 @@ struct LearningWorkspace: View {
                         messageBubble(message, contentWidth: contentWidth)
                             .id(message.id)
                         if message.role == "user" {
-                            if let runID = message.runID,
+                            let task = sessionTasks.first(where: { $0.inputMessageID == message.id })
+                            if task == nil, let runID = message.runID,
                                let run = runs.first(where: { $0.id == runID }),
                                sessionMessages.last(where: { $0.role == "user" && $0.runID == runID })?.id == message.id {
-                                runFeedback(run)
+                                runFeedback(run, sessionMessages: sessionMessages, runEvents: runEvents)
                             } else if message.runID == nil && message.taskID == nil {
                                 Text(monitor.connection == .ready ? "已保存在本机，准备发送" : "已保存在本机，等待学习服务启动")
                                     .font(.caption).foregroundStyle(.secondary)
@@ -292,21 +335,39 @@ struct LearningWorkspace: View {
                                 }
                             }
                         }
-                        if message.role == "user",
-                           let task = sessionTasks.first(where: { $0.inputMessageID == message.id }) {
-                            taskCard(task)
+                        if message.role == "user", let task = sessionTasks.first(where: { $0.inputMessageID == message.id }) {
+                            taskCard(task, run: message.runID.flatMap { id in runs.first(where: { $0.id == id }) }, runEvents: runEvents)
                         }
                     }
                 }
                 pendingOperation
+                Color.clear.frame(height: 1).id("latest")
             }
             .frame(width: contentWidth)
             .padding(.vertical, 24)
             .frame(maxWidth: .infinity)
           }
-          .onChange(of: sessionMessages.map(\.id)) { _, _ in
-              if let last = sessionMessages.last {
-                  proxy.scrollTo(last.id, anchor: last.role == "user" ? .bottom : .top)
+          .onScrollGeometryChange(for: Bool.self) { geometry in
+              geometry.contentSize.height - geometry.visibleRect.maxY < 48
+          } action: { _, nearBottom in
+              // Content growth alone is not the user scrolling away from bottom.
+              if userScrolling || nearBottom { followsLatest = nearBottom }
+          }
+          .onScrollPhaseChange { _, phase in userScrolling = phase == .interacting || phase == .decelerating }
+          .onChange(of: sessionMessages.last?.content) { _, _ in
+              if followsLatest { proxy.scrollTo("latest", anchor: .bottom) }
+          }
+          .onChange(of: selectedSessionID) { _, _ in proxy.scrollTo("latest", anchor: .bottom) }
+          .onChange(of: sentMessageID) { _, id in
+              if let id { proxy.scrollTo(id, anchor: .bottom); followsLatest = true }
+          }
+          .overlay(alignment: .bottomTrailing) {
+              if !followsLatest && !sessionMessages.isEmpty {
+                  Button { proxy.scrollTo("latest", anchor: .bottom); followsLatest = true } label: {
+                      Label("回到最新", systemImage: "arrow.down")
+                  }
+                  .buttonStyle(.bordered).controlSize(.small)
+                  .padding(12)
               }
           }
         }
@@ -315,7 +376,6 @@ struct LearningWorkspace: View {
     private var emptyConversation: some View {
         RunwayCard {
             HStack(alignment: .top, spacing: 14) {
-                CoachMark(pose: .idle, size: 42)
                 VStack(alignment: .leading, spacing: 8) {
                     Text("把你真正想解决的学习问题发过来")
                         .font(.headline)
@@ -333,8 +393,8 @@ struct LearningWorkspace: View {
         let isUser = message.role == "user"
         let bubbleWidth = max(0, contentWidth - 40)
         return HStack(alignment: .top, spacing: 10) {
-            if !isUser { CoachMark(pose: .idle, size: 30) }
-            Text(.init(message.content))
+            VStack(alignment: .leading, spacing: 5) {
+              Text(.init(message.content))
                 .font(.body)
                 .foregroundStyle(runway.ink)
                 .textSelection(.enabled)
@@ -350,23 +410,40 @@ struct LearningWorkspace: View {
                         .strokeBorder(message.role == "user" ? Color.clear : runway.hairline)
                 )
                 .frame(maxWidth: bubbleWidth, alignment: isUser ? .trailing : .leading)
+              if ["interrupted", "failed"].contains(message.responseState) {
+                  Text("未完成 · 内容保留，不作为正式结果").font(.caption2).foregroundStyle(.secondary)
+              } else if message.responseState == "streaming" {
+                  Text("正在输出 · 尚未完成校验").font(.caption2).foregroundStyle(.secondary)
+              }
+            }
         }
         .frame(width: contentWidth, alignment: isUser ? .trailing : .leading)
+        .onAppear {
+            if message.firstDisplayedAt == nil {
+                message.firstDisplayedAt = .now
+                if isUser { message.localEchoMS = Int(Date.now.timeIntervalSince(message.createdAt) * 1000) }
+                try? modelContext.save()
+            }
+        }
     }
 
-    private func taskCard(_ task: LearningTask) -> some View {
+    private func taskCard(_ task: LearningTask, run: AgentRun?, runEvents: [SessionEventRecord]) -> some View {
         let taskEvents = events.filter { $0.taskID == task.id }.sorted { $0.seq < $1.seq }
         let options = Self.options(task.requiredActionOptionsJSON)
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 8) {
-                Circle()
-                    .fill(Self.tone(task.status) == .problem ? Color.orange : runway.agent)
-                    .frame(width: 6, height: 6)
-                    .padding(.top, 5)
-                Text(task.userSummary)
-                    .font(.callout.weight(.medium))
-                    .foregroundStyle(runway.ink)
-                    .fixedSize(horizontal: false, vertical: true)
+                if let run, run.status != "completed" {
+                    RunPhaseLine(run: run)
+                } else {
+                    Circle()
+                        .fill(Self.tone(task.status) == .problem ? Color.orange : runway.agent)
+                        .frame(width: 6, height: 6)
+                        .padding(.top, 5)
+                    Text(task.userSummary)
+                        .font(.callout.weight(.medium))
+                        .foregroundStyle(runway.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             HStack(spacing: 8) {
                 MetaTag(title: Self.modeLabel(task.mode))
@@ -416,9 +493,12 @@ struct LearningWorkspace: View {
                 }
             }
 
-            DisclosureGroup {
+            RunDetails(title: run?.status == "completed" && (run?.elapsedMS ?? 0) > 0
+                       ? String(format: "已完成 · %.1f 秒 · 运行详情", Double(run!.elapsedMS) / 1000)
+                       : "运行详情") {
                 VStack(alignment: .leading, spacing: 8) {
-                    if taskEvents.isEmpty {
+                    let sessionEvents = run.map { item in runEvents.filter { $0.runID == item.id } } ?? []
+                    if taskEvents.isEmpty && sessionEvents.isEmpty {
                         Text("等待第一个运行事件")
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -468,13 +548,19 @@ struct LearningWorkspace: View {
                             }
                         }
                     }
+                    if !sessionEvents.isEmpty {
+                        ForEach(sessionEvents, id: \.id) { event in
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(event.summary).font(.caption.weight(.medium))
+                                if !event.detail.isEmpty { Text(event.detail).font(.caption).foregroundStyle(.secondary) }
+                                Text([event.stage, event.model, event.durationMS.map { "\($0) ms" } ?? ""].filter { !$0.isEmpty }.joined(separator: " · "))
+                                    .font(.caption2.monospaced()).foregroundStyle(.secondary)
+                            }.padding(.vertical, 2)
+                        }
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 6)
-            } label: {
-                Text("运行详情")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
         }
         .padding(13)
@@ -503,22 +589,15 @@ struct LearningWorkspace: View {
                     .font(.caption)
                     .foregroundStyle(.orange)
             }
-            HStack(alignment: .bottom, spacing: 10) {
-                ZStack(alignment: .topLeading) {
-                    if draft.isEmpty {
-                        Text(activeActionPlaceholder)
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 8)
-                            .lineLimit(2)
-                            .allowsHitTesting(false)
-                    }
-                    TextEditor(text: $draft)
-                        .scrollContentBackground(.hidden)
-                        .frame(height: 72)
-                        .padding(.horizontal, 1)
-                        .accessibilityLabel("学习输入")
-                }
+            VStack(spacing: 4) {
+                LearningTextInput(text: $draft, height: $inputHeight, focused: $inputFocused,
+                                  focusRequest: focusRequest, sessionID: selectedSessionID,
+                                  placeholder: activeActionPlaceholder, ink: NSColor(runway.ink), onSubmit: submitDraft)
+                    .frame(height: inputHeight)
+                HStack {
+                  Text("Return 发送 · Shift Return 换行")
+                      .font(.caption2).foregroundStyle(.secondary)
+                  Spacer(minLength: 8)
                 Button(action: submitDraft) {
                     Image(systemName: "arrow.up")
                         .font(.system(size: 13, weight: .bold))
@@ -527,19 +606,21 @@ struct LearningWorkspace: View {
                         .background(runway.action, in: Circle())
                 }
                 .buttonStyle(.plain)
-                .keyboardShortcut(.return, modifiers: [.command])
                 .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .help("发送（Return 或 ⌘ Return）")
                 .accessibilityLabel("发送")
+                }
+                .padding(.horizontal, 8)
             }
             .padding(10)
             .background(runway.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(runway.hairline))
+            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(inputFocused ? runway.agent.opacity(0.65) : runway.hairline, lineWidth: inputFocused ? 1.5 : 1))
             HStack(spacing: 10) {
-                Text("⌘ Return 发送 · 输入先保存在本机")
+                Text("草稿仅保存在当前会话 · 输入先保存在本机")
                 Spacer()
                 Toggle("排队发送", isOn: $queueInput).toggleStyle(.checkbox)
                 if let run = runs.last(where: { $0.sessionID == selectedSessionID }),
-                   ["accepted", "running", "queued"].contains(run.status) {
+                   ["accepted", "running", "queued", "adjusting"].contains(run.status) {
                     Button("停止回复") { ConversationProcessor.queueControl(run, action: "stop", context: modelContext) }
                         .buttonStyle(.borderless)
                 }
@@ -567,6 +648,7 @@ struct LearningWorkspace: View {
     }
 
     private func sendMessage(_ content: String, operation: [String: Any]? = nil) {
+        let started = Date.now
         let session = selectedSession ?? createSession()
         guard session.status == "active" else {
             localError = "请先恢复归档的会话，再继续输入。"
@@ -578,13 +660,25 @@ struct LearningWorkspace: View {
         message.deliveryMode = queueInput ? "queue" : "steer"
         message.operationJSON = operation.map(ConversationProcessor.json)
         modelContext.insert(message)
+        if !queueInput, let active = runs.last(where: { $0.sessionID == session.id && ["running", "accepted", "adjusting"].contains($0.status) }) {
+            active.status = "adjusting"
+            active.userSummary = "已收到补充，正在调整"
+            for response in messages(for: session.id) where response.runID == active.id && response.responseState == "streaming" {
+                response.responseState = "interrupted"
+            }
+        }
         session.updatedAt = .now
         if session.title == "新学习 Session" { session.title = String(content.prefix(28)) }
         do {
+            if operation == nil { session.composerDraft = "" }
             try modelContext.save()
-            draft = ""
+            if operation == nil { draft = "" }
+            message.localSavedMS = Int(Date.now.timeIntervalSince(started) * 1000)
             queueInput = false
             localError = nil
+            sentMessageID = message.id
+            focusRequest += 1
+            ConversationSync.wake()
         } catch {
             modelContext.rollback()
             localError = "本机保存失败，输入仍保留，请重试。"
@@ -604,12 +698,11 @@ struct LearningWorkspace: View {
         }
     }
 
-    private func runFeedback(_ run: AgentRun) -> some View {
+    private func runFeedback(_ run: AgentRun, sessionMessages: [AgentMessage], runEvents: [SessionEventRecord]) -> some View {
         VStack(alignment: .leading, spacing: 6) {
+          if run.status != "completed" {
             HStack(alignment: .top) {
-                Label(run.userSummary, systemImage: run.errorCode == nil ? "circle.dotted" : "exclamationmark.circle")
-                    .font(.caption).foregroundStyle(run.errorCode == nil ? runway.agent : .orange)
-                    .fixedSize(horizontal: false, vertical: true)
+                RunPhaseLine(run: run)
                 Spacer()
                 if ["interrupted", "retryable_failed", "terminal_failed"].contains(run.status) {
                     Button(run.status == "interrupted" ? "恢复" : "重试") {
@@ -621,8 +714,9 @@ struct LearningWorkspace: View {
                         .buttonStyle(.borderless)
                 }
             }
-            DisclosureGroup("运行详情") {
-                ForEach(runEvents.filter { $0.runID == run.id }, id: \.id) { event in
+          }
+            RunDetails(title: run.status == "completed" ? (run.elapsedMS > 0 ? String(format: "已完成 · %.1f 秒 · 运行详情", Double(run.elapsedMS) / 1000) : "已完成 · 运行详情") : "运行详情") {
+                ForEach(runEvents.filter { $0.runID == run.id && $0.stage != "response.delta" }, id: \.id) { event in
                     VStack(alignment: .leading, spacing: 3) {
                         Text(event.summary).font(.caption.weight(.medium))
                         if !event.detail.isEmpty { Text(event.detail).font(.caption) }
@@ -634,6 +728,15 @@ struct LearningWorkspace: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.vertical, 3)
+                }
+                if let first = run.firstTextMS {
+                    Text("首段生成：\(first) ms · 历次执行耗时：\(run.attemptDurationsJSON) ms")
+                        .font(.caption2.monospaced()).foregroundStyle(.secondary)
+                }
+                if let response = sessionMessages.first(where: { $0.runID == run.id && $0.role != "user" }),
+                   let received = response.firstReceivedAt, let displayed = response.firstDisplayedAt {
+                    Text("首段收到至呈现：\(max(0, Int(displayed.timeIntervalSince(received) * 1000))) ms")
+                        .font(.caption2.monospaced()).foregroundStyle(.secondary)
                 }
             }
             .font(.caption)
@@ -679,6 +782,14 @@ struct LearningWorkspace: View {
         sendMessage(title, operation: ["kind": kind, "target_id": target, "version": version, "selection": selection])
     }
 
+    private func saveDraft() {
+        draftSave?.cancel()
+        guard let id = draftSessionID, let session = sessions.first(where: { $0.id == id }), session.composerDraft != draft else { return }
+        session.composerDraft = draft
+        do { try modelContext.save() }
+        catch { localError = "草稿尚未保存，请保留当前窗口并重试。" }
+    }
+
     @discardableResult
     private func createSession(handoffFrom source: AgentSession? = nil) -> AgentSession {
         let session = AgentSession(
@@ -697,7 +808,7 @@ struct LearningWorkspace: View {
     }
 
     private func handoffSummary(from source: AgentSession) -> String {
-        let latestInput = messages
+        let latestInput = messages(for: source.id)
             .filter { $0.sessionID == source.id && $0.role == "user" }
             .sorted { $0.createdAt < $1.createdAt }
             .last?.content
@@ -751,7 +862,7 @@ struct LearningWorkspace: View {
 
     private func updateSessionSummary(_ session: AgentSession) {
         let rows = ((try? modelContext.fetch(FetchDescriptor<AgentMessage>())) ?? [])
-            .filter { $0.sessionID == session.id }
+            .filter { $0.sessionID == session.id && $0.responseState == "complete" }
             .sorted { $0.createdAt < $1.createdAt }
         guard rows.count > 20 else { return }
         let older = rows.dropLast(10).suffix(40)
@@ -801,4 +912,20 @@ struct LearningWorkspace: View {
         default: return .quiet
         }
     }
+}
+
+/// Incremental changes invalidate only the selected transcript, not all stored
+/// sessions or the composer. Run phase timers live in their own small view.
+private struct SessionTranscriptData<Content: View>: View {
+    @Query private var messages: [AgentMessage]
+    @Query private var events: [SessionEventRecord]
+    var content: ([AgentMessage], [SessionEventRecord]) -> Content
+
+    init(sessionID: UUID?, @ViewBuilder content: @escaping ([AgentMessage], [SessionEventRecord]) -> Content) {
+        let id = sessionID ?? UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+        _messages = Query(filter: #Predicate<AgentMessage> { $0.sessionID == id }, sort: \AgentMessage.createdAt)
+        _events = Query(filter: #Predicate<SessionEventRecord> { $0.sessionID == id && $0.stage != "response.delta" }, sort: \SessionEventRecord.seq)
+        self.content = content
+    }
+    var body: some View { content(messages, events) }
 }

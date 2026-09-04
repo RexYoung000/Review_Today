@@ -13,19 +13,29 @@ struct HealthResponse: Decodable {
         let model: String
         let status: String
         let error: String
+        let streaming: String?
     }
 
     let status: String
     let keyConfigured: Bool
     let modelRoles: [String: ModelRole]
     let conversationProtocol: Int?
+    let responseStreamProtocol: Int?
 
     enum CodingKeys: String, CodingKey {
         case status
         case keyConfigured = "key_configured"
         case modelRoles = "model_roles"
         case conversationProtocol = "conversation_protocol"
+        case responseStreamProtocol = "response_stream_protocol"
     }
+}
+
+struct AgentCapabilityPresentation: Equatable {
+    let connection: AgentConnectionState
+    let status: String
+    let detail: String
+    let notice: String
 }
 
 @Observable
@@ -41,6 +51,9 @@ final class AgentServiceMonitor {
     var launchDetail = ""
     private(set) var serviceReachable = false
     private(set) var conversationSupported = false
+    private(set) var responseStreamSupported = false
+    private(set) var streamNotice = ""
+    private(set) var capabilityNotice = ""
 
     @ObservationIgnored private var pollTask: Task<Void, Never>?
     @ObservationIgnored private var managedProcess: Process?
@@ -118,6 +131,16 @@ final class AgentServiceMonitor {
             }
             serviceReachable = true
             conversationSupported = health.conversationProtocol == 1
+            responseStreamSupported = health.responseStreamProtocol == 1
+            if !responseStreamSupported {
+                streamNotice = "当前服务不支持实时输出，请重启开发 App 与本地服务。"
+            } else if let coach = health.modelRoles["coach"], coach.streaming == "buffered" {
+                streamNotice = "当前模型服务只能整段返回；仍可使用，但尚未通过流式验收。"
+            } else if health.modelRoles["coach"]?.streaming == "unavailable" {
+                streamNotice = "实时输出能力检查未通过；可重试检查，不会静默更换模型。"
+            } else if health.modelRoles["coach"]?.streaming == "checking" {
+                streamNotice = ""
+            } else { streamNotice = "" }
             keyConfigured = health.keyConfigured
             if !conversationSupported {
                 connection = .unavailable
@@ -127,34 +150,55 @@ final class AgentServiceMonitor {
             }
             let checking = health.modelRoles.values.filter { $0.status == "checking" }
             let unavailable = health.modelRoles.values.filter { $0.status == "unavailable" }
-            if !checking.isEmpty {
-                connection = .connecting
-                launchStatus = "正在验证学习模型能力；你的输入仍会先保存"
-                launchDetail = checking.map(\.model).joined(separator: "、")
-                return
-            }
-            if !unavailable.isEmpty {
-                connection = .unavailable
-                launchStatus = unavailable.count < health.modelRoles.count
-                    ? "部分学习模型暂不可用；其余步骤仍可继续"
-                    : "学习模型暂不可用；你的输入仍保存在本机"
-                launchDetail = unavailable.map { "\($0.model)：\($0.error)" }.joined(separator: "；")
-                return
-            }
-            connection = .ready
-            launchStatus = health.keyConfigured
-                ? "学习服务已就绪"
-                : "学习服务已启动，等待配置模型凭证"
-            launchDetail = managedProcess == nil ? "已连接现有本地服务" : "由 App 托管本地服务"
+            let presentation = Self.capabilityPresentation(
+                checking: checking,
+                unavailable: unavailable,
+                totalRoleCount: health.modelRoles.count,
+                readyDetail: managedProcess == nil ? "已连接现有本地服务" : "由 App 托管本地服务"
+            )
+            connection = presentation.connection
+            capabilityNotice = presentation.notice
+            launchStatus = health.keyConfigured ? presentation.status : "学习服务已启动，等待配置模型凭证"
+            launchDetail = presentation.detail
             launchAttempts = 0
         } catch {
             markUnavailable()
         }
     }
 
+    static func capabilityPresentation(
+        checking: [HealthResponse.ModelRole],
+        unavailable: [HealthResponse.ModelRole],
+        totalRoleCount: Int,
+        readyDetail: String
+    ) -> AgentCapabilityPresentation {
+        if !checking.isEmpty {
+            // Capability probes run in the background. Once health and the
+            // conversation protocol are available, they are not the current
+            // message's state and must not block the learning workspace.
+            return AgentCapabilityPresentation(
+                connection: .ready,
+                status: "学习服务已连接，正在后台检查能力",
+                detail: "",
+                notice: ""
+            )
+        }
+        if !unavailable.isEmpty {
+            let allUnavailable = unavailable.count == totalRoleCount
+            return AgentCapabilityPresentation(
+                connection: allUnavailable ? .unavailable : .ready,
+                status: allUnavailable ? "学习模型暂不可用；你的输入仍保存在本机" : "学习服务可用，部分能力受限",
+                detail: unavailable.map { "\($0.model)：\($0.error)" }.joined(separator: "；"),
+                notice: allUnavailable ? "" : "部分学习能力暂不可用；受影响的任务会显示具体原因。"
+            )
+        }
+        return AgentCapabilityPresentation(connection: .ready, status: "学习服务已就绪", detail: readyDetail, notice: "")
+    }
+
     private func markUnavailable() {
         serviceReachable = false
         conversationSupported = false
+        capabilityNotice = ""
         if managedProcess?.isRunning == true && Date.now.timeIntervalSince(launchedAt) > 30 {
             launchDetail = "服务启动超时，正在重试；输入仍保存在本机"
             managedProcess?.terminate()
