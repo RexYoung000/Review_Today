@@ -6,6 +6,8 @@
 
 2026-09-04 修订：学习输入采用原生 NSTextView；消息和控制操作本地落盘后立即唤醒会话同步，与旧采集轮询分离。Session SSE 已接入，沿用现有事件顺序号、版本守卫与 ACK；SwiftData 保存部分回答、最终回答和草稿。最终校验前的文本预览不触发 Task 完成或知识提交。完整接口、兼容及验证约束见 [主规格 §15](agent-harness-v2.md#15-学习界面与实时反馈修订2026-09-04)。代码与受控测试已完成，Mac 锁屏使原生视觉验收仍未完成。
 
+同日结构修订：根 `NavigationSplitView` 成为唯一 Session 导航入口，Today、侧栏和学习区共享选择状态；Session 标签、AgentRun 活动语义与 ReviewAttempt 完成时间由 SwiftData 持久化，Today 在本地投影 26 周活动。该部分已完成文档冻结、尚未实施；契约见 [主规格 §16](agent-harness-v2.md#16-学习工作区结构与活动反馈修订2026-09-04)。
+
 里程碑一不扩建通用 Agent 平台，但必须建立能够支撑连续学习的状态化 Harness：
 
 ```text
@@ -225,6 +227,7 @@ Mac 写知识前领取 `commit-claim`：领取前新补充先冻结未提交草�
 
 - `id`、`title`、`mode_preset`（`auto` / 四种工作流）、`status`（`active` / `archived`）
 - `created_at`、`updated_at`、`archived_at`、`summary_id`
+- `auto_topic_tags_json`、可空 `manual_topic_tags_json`、`topic_tag_revision`、`topic_tags_updated_at`；显示时人工值优先，清除人工值恢复自动
 - 关联 Message、LearningTask、Source 与 Knowledge；归档不级联删除
 
 **AgentMessage（可见消息）**
@@ -232,6 +235,12 @@ Mac 写知识前领取 `commit-claim`：领取前新补充先冻结未提交草�
 - `id`、`client_message_id`（用户消息幂等键）、`session_id`、`task_id`（可空）
 - `role`（`user` / `coach` / `system_summary`）、`content`、`content_type`
 - `created_at`、`status`（`local` / `accepted` / `failed`）
+
+**AgentRun（单轮执行）**
+
+- 既有 `id`、`session_id`、可空 `task_id`、状态、阶段、revision、attempt、耗时和错误字段继续有效；
+- 新增可空 `activity_kind`（只允许 `knowledge_answer` / `lesson_step`）与 `completed_at`；只有最终结构校验与 revision 守卫通过的完成 Run 才能写入；
+- 问候、输入、页面打开、失败、中断和未完成生成不写活动类型。重试与事件回放复用 Run ID，不重复累计。
 
 **LearningTask（学习任务）**
 
@@ -295,6 +304,7 @@ Mac 写知识前领取 `commit-claim`：领取前新补充先冻结未提交草�
 
 - `attempt_id`、`session_id`、`knowledge_id`、`knowledge_version`、`question_variant_id`
 - `mode`、`agent_grade`、`effective_grade`
+- `created_at`、可空 `completed_at`；只有非 preview、ACK 成功且最终等级有效时写完成时间
 - `hint_used`、`transcript_retry_count`、`early_review`、`degraded_path`
 - `answer_text`（保留用户原始自然语言回答）、`fsrs_algorithm_version`、`fsrs_parameter_version`
 - 提交需 Mac ACK；同一 `attempt_id` 不得第二次正式写入
@@ -372,6 +382,8 @@ accepted
 
 V2 以上路径和主规格中的必备字段已经冻结；具体枚举与错误码随实现补齐，但不能改变即时接受、事件回放、动作幂等和 Mac ACK 语义。
 
+Session 主题标签、归档状态和 Today 活动投影以 Mac SwiftData 为事实来源，不增加远程 Session 写接口。Python 通过现有 `IntentDecision`／Session Event 可选携带 `session_tags` 和运行活动语义；Mac 仍负责对象归属、revision、归档、完成条件和幂等检查。
+
 ### 7.4 Task Event 契约
 
 每个 Learning Task 维护一条任务范围内、只追加的结构化事件流。它不是模型思维链，也不是另一份聊天记录；它只负责回答“这次任务实际走过什么路径、当前处于什么状态、为什么等待、失败后如何恢复”。
@@ -437,7 +449,7 @@ V2 以上路径和主规格中的必备字段已经冻结；具体枚举与错�
 | [CobWeb 网页读取](https://github.com/RexYoung000/CobWeb/blob/master/src/lib/web-page.ts) | 公开网页读取与来源保留思路 | CobWeb 的产品定位、账户和知识蛛网 |
 | [CobWeb 知识拆分](https://github.com/RexYoung000/CobWeb/blob/master/src/app/api/chat/extract/route.ts) | 知识拆分和来源追溯思路 | 草稿确认和自由聊天流程 |
 | [Typeless](https://www.typeless.com/) | 低摩擦语音入口、历史记录、失败重试、隐私表达 | 通用听写定位、升级与使用统计首页 |
-| [AirJelly](https://www.airjelly.ai/) | 今日状态、主动式帮助、可管理记忆、任务进度 | 持续屏幕采集、通用 Agent、复杂工作台 |
+| [AirJelly](https://www.airjelly.ai/) | 一条侧栏承载主导航与会话、开放式 Agent 内容区、输入区锚定和就近恢复动作 | 品牌视觉、人物、积分、升级、文件夹、账户、通用工具、原始命令错误、持续屏幕采集与通用 Agent |
 | [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) | 追加式运行事件、可重放生命周期、运行时不变式、回放测试和真实入口验收 | Cordis、“一切皆插件”、通用编码 Agent 循环、Shell／沙箱／子 Agent／长会话压缩，以及把开发预览版作为运行时依赖 |
 
 ## 11. 外部技术依据
@@ -485,6 +497,7 @@ V2 以上路径和主规格中的必备字段已经冻结；具体枚举与错�
 
 ### 尚未完成或尚未证明
 
+- 2026-09-04 冻结的单侧栏、开放式 Agent 工作区、Session 标签和 Today 活动投影尚未实施；旧第二 Session 栏／窄窗弹层仅为历史代码；
 - 里程碑一尚未从真实 Mac App 入口完成端到端视觉与交互验收；
 - Harness V2 已有服务端契约、固定模型替身和原生手动自检，但完整客户端自动化与更广模型质量评测尚未完成；
 - 旧 V2 曾只走到模型超时；本轮已取得上述真实输出，但间歇网络异常和最新 Debug 的系统授权问题仍影响完整原生验收；
