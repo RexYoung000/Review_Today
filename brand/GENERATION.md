@@ -1,5 +1,7 @@
 # V8 模型生成记录
 
+> 本文件以下为 V8 历史生成证据，继续保留。当前新路线由用户明确指定为 OneWorks 网页实际制作抽象学习伙伴，先文档 push 再操作网页；造型/来源/导出/选择记录见品牌 README 与后续 oneworks 目录。新候选不受旧位图-only 限制，但未经 Rex 选择不覆盖 V8，不扩整套动画。
+
 ## 参考图角色
 
 - `design-explorations/review-agent/mascot-bangs-ahoge-study-v4.png`：只锁定角色身份、比例、刘海和呆毛。
