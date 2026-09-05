@@ -8,7 +8,7 @@ from openai import OpenAI, APITimeoutError, APIConnectionError, APIStatusError
 from openai.lib._parsing._responses import type_to_text_format_param
 from pydantic import BaseModel, ValidationError
 
-from agent_service.config import BASE_URL, MODEL, MODEL_PROBE_TIMEOUT_SECONDS, MODEL_TIMEOUT_SECONDS, openai_key
+from agent_service.config import BASE_URL, MODEL, PROVIDER, MODEL_PROBE_TIMEOUT_SECONDS, MODEL_TIMEOUT_SECONDS, openai_key
 from agent_service.execution_policy import budget_scope, current_budget
 
 
@@ -19,6 +19,53 @@ def _client(*, timeout: float = MODEL_TIMEOUT_SECONDS) -> OpenAI:
     client = OpenAI(api_key=key, timeout=timeout, max_retries=0, **({"base_url": BASE_URL} if BASE_URL else {}))
     if current_budget.get(): current_budget.get().register(client.close)
     return client
+
+
+def _input(system, user):
+    # DeepSeek treats developer messages as user input. Preserve trusted rules.
+    if PROVIDER == "deepseek":
+        system += ("\n输出必须是一个严格符合本次 text.format JSON Schema 的 JSON 对象。"
+                   "不要使用 Markdown 代码围栏，不要在 JSON 之外输出任何文字。"
+                   "对用户的回答、解释和 Markdown 排版只能放在结构定义的正文字符串字段内。")
+    return [{"role": "system" if PROVIDER == "deepseek" else "developer", "content": system},
+            {"role": "user", "content": user}]
+
+
+def _reasoning(effort):
+    # DeepSeek defaults to high; smart must explicitly disable it, not silently
+    # inherit a slow provider default. User-selected deep always stays high.
+    if PROVIDER == "deepseek":
+        return {"reasoning": {"effort": effort or "none"}}
+    return {"reasoning": {"effort": effort}} if effort else {}
+
+
+def _text_format(schema):
+    fmt = type_to_text_format_param(schema)
+    if PROVIDER != "deepseek":
+        return fmt
+    root = fmt["schema"]
+
+    def expand(node, stack=frozenset()):
+        if isinstance(node, list):
+            return [expand(value, stack) for value in node]
+        if not isinstance(node, dict):
+            return node
+        if "$ref" in node:
+            ref = node["$ref"]
+            if not ref.startswith("#/") or ref in stack:
+                raise ModelCallError("UNSUPPORTED", "recursive or external schema reference")
+            target = root
+            try:
+                for part in ref[2:].split("/"):
+                    target = target[part.replace("~1", "/").replace("~0", "~")]
+            except (KeyError, TypeError):
+                raise ModelCallError("UNSUPPORTED", "unresolved schema reference") from None
+            # SDK-generated refs contain annotations as siblings, not alternate
+            # assertions. Preserve all constraints instead of weakening JSON mode.
+            return expand({**target, **{key: value for key, value in node.items() if key != "$ref"}}, stack | {ref})
+        return {key: expand(value, stack) for key, value in node.items() if key != "$defs"}
+
+    return {**fmt, "schema": expand(root)}
 
 
 def parse_model(
@@ -85,10 +132,9 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
     try:
         # Use raw SDK events: some compatible providers emit whitespace keepalives
         # before response.created, which the SDK's snapshot aggregator rejects.
-        with client.responses.create(model=selected, input=[
-            {"role": "developer", "content": system}, {"role": "user", "content": user},
-        ], text={"format": type_to_text_format_param(text_format)}, stream=True,
-           timeout=current_budget.get().take(), **({"reasoning": {"effort": reasoning_effort}} if reasoning_effort else {})) as stream:
+        with client.responses.create(model=selected, input=_input(system, user),
+           text={"format": _text_format(text_format)}, stream=True,
+           timeout=current_budget.get().take(), **_reasoning(reasoning_effort)) as stream:
             for event in stream:
                 current_budget.get().remaining()
                 if event.type == "response.refusal.delta":
@@ -140,7 +186,7 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
                         on_cancel_handle=on_cancel_handle, reasoning_effort=reasoning_effort)
 
 
-def model_stream_capability(model: str) -> dict:
+def model_stream_capability(model: str, *, reasoning_effort: str | None = None) -> dict:
     class Probe(BaseModel):
         message: str
         ready: bool
@@ -148,6 +194,7 @@ def model_stream_capability(model: str) -> dict:
     transports = []
     result = parse_model("Return ready=true and message counting from one to twenty. Use the required schema.",
                          "Check structured streaming.", Probe, model=model, timeout=MODEL_PROBE_TIMEOUT_SECONDS,
+                         reasoning_effort=reasoning_effort,
                          on_partial=lambda value: chunks.append(value.get("message", "")),
                          on_transport=transports.append)
     distinct = {text for text in chunks if text and text != result.message}
@@ -159,21 +206,23 @@ def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=
     if on_cancel_handle:
         on_cancel_handle(client.close)
     selected_model = model or MODEL
-    response = client.responses.parse(
-        model=selected_model,
-        input=[
-            {"role": "developer", "content": system},
-            {"role": "user", "content": user},
-        ],
-        text_format=text_format,
-        timeout=current_budget.get().take(),
-        **({"reasoning": {"effort": reasoning_effort}} if reasoning_effort else {}),
-    )
+    params = dict(model=selected_model, input=_input(system, user),
+                  timeout=current_budget.get().take(), **_reasoning(reasoning_effort))
+    if PROVIDER == "deepseek":
+        response = client.responses.create(**params, text={"format": _text_format(text_format)})
+    else:
+        response = client.responses.parse(**params, text_format=text_format)
     if getattr(response, "status", None) in {"incomplete", "failed", "cancelled"}:
         raise ModelCallError("INCOMPLETE", str(response.status))
     for output in getattr(response, "output", []) or []:
         if any(getattr(part, "type", "") == "refusal" for part in getattr(output, "content", []) or []):
             raise ModelCallError("REFUSAL")
+    if PROVIDER == "deepseek":
+        text = "".join(getattr(part, "text", "") for output in getattr(response, "output", []) or []
+                       for part in getattr(output, "content", []) or [] if getattr(part, "type", "") == "output_text")
+        if text.strip():
+            return text_format.model_validate_json(text)
+        raise ModelCallError("EMPTY")
     if response.output_parsed is not None:
         return response.output_parsed
 
@@ -204,12 +253,12 @@ def available_model_ids() -> set[str]:
     return {item.id for item in _client(timeout=MODEL_PROBE_TIMEOUT_SECONDS).models.list().data if getattr(item, "id", "")}
 
 
-def model_is_callable(model: str) -> bool:
+def model_is_callable(model: str, *, reasoning_effort: str | None = None) -> bool:
     """A transport ID alone does not prove structured output is usable."""
     class Probe(BaseModel):
         ready: bool
     result = parse_model("Return ready=true in the required schema.", "Check structured output.",
-                         Probe, model=model, timeout=MODEL_PROBE_TIMEOUT_SECONDS)
+                         Probe, model=model, timeout=MODEL_PROBE_TIMEOUT_SECONDS, reasoning_effort=reasoning_effort)
     return result.ready is True
 
 
@@ -221,12 +270,24 @@ def web_search_text(query: str, *, model: str | None = None, reasoning_effort: s
             on_cancel_handle(client.close)
         for tool in ({"type": "web_search"}, {"type": "web_search_preview"}):
             try:
-                response = client.responses.create(model=selected_model, tools=[tool], input=query, timeout=budget.take(),
-                    **({"reasoning": {"effort": reasoning_effort}} if reasoning_effort else {}))
+                search_input = ([{"role": "system", "content": "必须实际调用 web_search 查证公开资料，然后给出简短结论和可定位的来源链接。不能只凭模型记忆回答；没有找到证据就明确说明。"},
+                                 {"role": "user", "content": query}] if PROVIDER == "deepseek" else query)
+                # Forcing web_search on every continuation can yield only tool
+                # items. Allow the final answer, but require completed search proof.
+                response = client.responses.create(model=selected_model, tools=[tool], input=search_input, timeout=budget.take(),
+                    **_reasoning(reasoning_effort))
                 budget.remaining()
+                if PROVIDER == "deepseek":
+                    if getattr(response, "status", None) != "completed":
+                        raise ModelCallError("INCOMPLETE", "search response not completed")
+                    if not any(getattr(item, "type", "") == "web_search_call" and getattr(item, "status", "") == "completed"
+                               for item in getattr(response, "output", [])):
+                        raise ModelCallError("UNSUPPORTED", "provider did not execute web search")
                 text = getattr(response, "output_text", "") or ""
                 if text.strip():
                     return text.strip()[:8000]
+                if PROVIDER == "deepseek":
+                    raise ModelCallError("EMPTY", "search completed without an answer")
             except APIStatusError as exc:
                 # Only an explicitly unsupported tool permits the compatibility
                 # form. Access denial, rate limits and outages are not retried
@@ -242,6 +303,8 @@ def web_search_text(query: str, *, model: str | None = None, reasoning_effort: s
 
 
 def transcribe_audio(data: bytes, filename: str) -> str:
+    if PROVIDER == "deepseek":
+        raise ModelCallError("UNSUPPORTED", "audio transcription not configured")
     client = _client()
     transcript = client.audio.transcriptions.create(
         model="whisper-1",

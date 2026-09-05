@@ -12,12 +12,16 @@ Rex 在核对旧线路仍为 `api.aijws.com` 后明确要求接入已提供的 D
 - 主连接固定为 `https://api.deepseek.com`。路由/摘要、日常教学/生成使用 `deepseek-v4-flash`；风险与证据判断使用 `deepseek-v4-pro`。职责不变，旧段落的 Luna/Terra/Sol 仅表示历史模型映射，不代表当前实际调用名称。
 - 使用独立 provider 选择及 DeepSeek 凭证命名空间；旧 OpenAI-compatible `.env` 值原样保留，便于显式恢复。DeepSeek 凭证只留本机被 Git 忽略、权限受限的配置，不进文档、提交、测试记录或错误消息。不将 DeepSeek key 发给旧域名。
 - 复用 Responses、结构化校验、真实 SSE 正文投影、取消及统一步骤预算。按官方兼容规则把系统约束放到 `system`/`instructions`，不使用被 DeepSeek 当作普通用户内容的 `developer` 角色。
+- 实测兼容限制：`anyOf` 内的本地 `$ref` 被官方结构编译器以 400 拒绝。发送前等价展开本地 schema 引用，保留 required/nullable/枚举/长度等约束；最终仍用原 Pydantic 类型校验，不降为无约束 JSON。未知/递归引用显式报不支持，不悄悄删字段。路由轻量回应只使用产品身份，不把旧 Luna 名称暴露给用户。
+- 官方宣称支持 schema 不能代替实测：曾接受格式参数却返回代码围栏/普通正文。适配层补充明确的单一 JSON 对象输出要求，不自动剥围栏或把普通正文编造为结构；最终校验不通过仍诚实失败。公网查证必须取得真实搜索调用完成记录，不能将普通模型回答当作已检索证据。
 - 智能模式显式采用非思考调用，深入思考采用 `high`；已有会话强度不重置、不静默降档。结构化和流式能力按两种强度分别验证；实际模型如实进入开发诊断。
 - 只投影 `output_text` 白名单正文，忽略推理文本；最终 schema 校验成功后才推进目标、理解和入库状态。空响应、截断、拒绝、403、超时分别失败，不放松守卫。
 - 公开查证沿用当前服务端搜索/公网抓取边界。单独验证 DeepSeek 的 `web_search`；不支持时诚实报告，不退回旧服务、伪造来源或绕过核验。语音本轮不接通。
 - 配置修改后核对/刷新真实本地服务的有效 provider；已有失败回复仍由用户重试，停止/归档不自动恢复。验收使用隔离数据库，保留用户原数据。
 
 参考：已读取 [官方模型说明](https://api-docs.deepseek.com/quick_start/pricing/)、[Responses 兼容与流式](https://api-docs.deepseek.com/guides/responses_api/)及[思考强度](https://api-docs.deepseek.com/guides/thinking_mode/)。模型列表 200 仅证明鉴权与可见 ID，不代替结构化、流式及真实 Harness 验收。
+
+实施状态：文档检查点 `e77569b` 已推送后完成代码/配置适配。179 项服务回归、Mac 契约及官方结构化/流式/公网搜索和隔离 Harness 首轮通过，正常 Mac App 已自行托管 DeepSeek 服务；具体计时、初期失败与未验证范围见验收 §0.13。此状态不等于完整五模式/Rex 验收完成。
 
 ## 19. M1 全量收敛：当前实施入口
 

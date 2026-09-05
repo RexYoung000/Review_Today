@@ -626,7 +626,7 @@ class ConversationHarness:
                 for index, selected_model in enumerate(choices):
                     try:
                         model = selected_model
-                        require_model(selected_model)
+                        require_model(selected_model, thinking_strength=strength)
                         parsed = parse_model(system, prompt, schema, model=selected_model, on_cancel_handle=register_cancel,
                                              timeout=budget.remaining(), reasoning_effort="high" if strength == "deep" else None,
                                              **({"on_partial": emit, "on_transport": transport} if streamable else {}))

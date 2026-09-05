@@ -4,7 +4,7 @@ Review Today 是“个人学习教练”的项目仓库。它帮助用户理解�
 
 ## 当前阶段
 
-2026-09-05：Rex 已明确授权接入 DeepSeek 官方。已验证其凭证可读取官方模型列表；正在按 [Harness §20](docs/agent-harness-v2.md#20-deepseek-官方接入2026-09-05) 实施 Flash 路由/教学、Pro 风险判断和思考/流式兼容。接入实测统一见验收 §0.13；下方 Luna/Terra/Sol 与 HTTP 403 是前批旧供应商记录，不代表 DeepSeek 失败。
+2026-09-05：已按 Rex 授权接入 DeepSeek 官方，Flash 路由/教学、Pro 风险判断；智能非思考、深入 high，旧配置保留、不自动备用。179 项服务回归、Mac 契约、真实结构化/流式/搜索和隔离 Harness 首轮样本通过；正常 App 已自行托管新配置服务。记录见 [验收 §0.13](docs/m1-acceptance.md#013-deepseek-官方接入2026-09-05)。下方旧 Luna/Terra/Sol 与 HTTP 403 是前批记录，不代表 DeepSeek 失败，也不再是等待接入的理由。
 
 ```text
 旧纯文字知识卡与评分基线
@@ -60,11 +60,18 @@ Review Today 是“个人学习教练”的项目仓库。它帮助用户理解�
 尚未完成：
 
 - 真实 Mac App 入口的 Harness V2 端到端验收；
-- 原供应商本轮复测先成功、后再次 HTTP 403；完整五模式、深入思考和问题攻克修复后的真实调用仍未通过。新的内部主备仅受控验证，本次没有合格且获准的备用组合；
+- DeepSeek 当前已通过接入和首轮样本；完整五模式、多轮独立作答/入库及长期供应商稳定性仍未验收。原供应商 403 留作历史，新内部主备没有启用；
 - 客户端端到端自动化仍未建立，Session 交接、四模式完成和完整记忆 ACK 仍需 Rex 在原生界面逐项确认；
 - 模型在部分正确、同义表达、遗漏限定和常见误解上的稳定性验证；
 - OpenAI Realtime 语音复习闭环。
 
-因此，当前工作重点是按 [M1 验收契约](docs/m1-acceptance.md)完成解锁后的新原生路径和原供应商恢复后的真实闭环验证，不是扩大到语音或通用 Agent。#17 与 M2 继续暂停。
+因此，当前重点是使用已接入的 DeepSeek 按 [M1 验收契约](docs/m1-acceptance.md)继续完整原生/学习闭环验收，而不是继续等待旧供应商、扩大到语音或通用 Agent。#17 与 M2 继续暂停。
+
+## 开发 Mac 的模型配置
+
+- `agent-service/.env` 的 `REVIEW_TODAY_LLM_PROVIDER=deepseek` 选择 DeepSeek 官方；省略或 `openai_compatible` 保留旧兼容配置。
+- DeepSeek 使用 `agent-service/providers/deepseek/.env` 中的 `DEEPSEEK_API_KEY` 及可选角色模型字段，模板见同目录 `.env.example`。该文件被 Git 忽略，权限应为 600；仓库不提供密钥。旧 `.env` 的 OPENAI 字段保留，选 DeepSeek 时不会继承旧端点、模型或密钥。
+- 改配置后重启本地服务；Debug App 在无外部实例时自动托管。`GET /healthz` 的 `provider`、`model_roles` 和 `strengths` 为脱敏检查依据。失败的历史回复仍需手动重试，配置切换不自动恢复停止/归档。
+- 无密钥回归：`bash agent-service/run-controlled.sh`（脚本主动清空两种凭证、使用隔离库）。真实模型检查：在 `agent-service` 运行 `.venv/bin/python -m tests.stream_real_smoke`，或加 `--case rag_answer --deep`；使用合成输入和临时数据库，会产生真实 API 用量。
 
 当前目标主规格为 [Harness §19 / §18](docs/agent-harness-v2.md)，新门槛与旧实施证据分别见 [验收 §0.12 / §0.11 / §0.10](docs/m1-acceptance.md)。旧「已有」只说明基础存在，不保证新目标完成。先独立文档 commit/push，后续实现按契约分批验证与提交；本轮文档检查点推送成功后连续实施，不在文档完成处停止；各批实际证据另记。新图标候选按 [品牌记录](brand/README.md) 交 Rex 选择，正式 V8 保留至明确接受。

@@ -42,7 +42,7 @@ from typing import Literal
 
 from agent_service.capture import find_source_candidates, run_capture, source_fidelity_issues
 from agent_service.capture.fetch import looks_like_url
-from agent_service.config import CA_BUNDLE, HOST, PORT, openai_key
+from agent_service.config import CA_BUNDLE, HOST, PORT, PROVIDER, openai_key
 from agent_service.harness import process_task, resume_incomplete_tasks
 from agent_service.harness_store import HarnessTaskRecord, harness_store, now_iso
 from agent_service.model_capabilities import snapshot as model_capability_snapshot, start_probe
@@ -87,6 +87,7 @@ def healthz() -> dict[str, object]:
     return {
         "status": "ok",
         "key_configured": bool(openai_key()),
+        "provider": PROVIDER,
         "ca_bundle": bool(CA_BUNDLE),
         "harness": "v2",
         "conversation_protocol": 1,
