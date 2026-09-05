@@ -4,6 +4,8 @@ Review Today 是“个人学习教练”的项目仓库。它帮助用户理解�
 
 ## 当前阶段
 
+2026-09-05：Rex 已明确授权接入 DeepSeek 官方。已验证其凭证可读取官方模型列表；正在按 [Harness §20](docs/agent-harness-v2.md#20-deepseek-官方接入2026-09-05) 实施 Flash 路由/教学、Pro 风险判断和思考/流式兼容。接入实测统一见验收 §0.13；下方 Luna/Terra/Sol 与 HTTP 403 是前批旧供应商记录，不代表 DeepSeek 失败。
+
 ```text
 旧纯文字知识卡与评分基线
 → M1 Session Harness V2
