@@ -17,6 +17,10 @@ final class ConversationSync {
     private var snapshotters: [UUID: Task<Void, Never>] = [:]
 
     func run(context: ModelContext, monitor: AgentServiceMonitor) async {
+        for session in (try? context.fetch(FetchDescriptor<AgentSession>())) ?? [] {
+            session.memoryPolicySyncedRevision = -1
+            session.memoryContentSyncedRevision = -1
+        }
         let (signals, continuation) = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(1))
         let observer = NotificationCenter.default.addObserver(forName: Self.wakeName, object: nil, queue: .main) { _ in continuation.yield(()) }
         let recovery = Task {
@@ -59,11 +63,11 @@ final class ConversationSync {
                     defer { self.streams[session.id] = nil }
                     do {
                         if monitor.responseStreamSupported {
-                            try await AgentAPI.consumeSessionEvents(session.id, after: session.lastSessionEventSeq) { page in
+                            try await AgentAPI.consumeSessionEvents(session.id, after: session.lastSessionEventSeq, recoveryVersion: ConversationCheckpoint.version(session.checkpointJSON)) { page in
                                 try await self.consume(page, session: session, context: context)
                             }
                         } else {
-                            let page = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/events?after_seq=\(session.lastSessionEventSeq)")
+                            let page = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/events?after_seq=\(session.lastSessionEventSeq)&recovery_version=\(ConversationCheckpoint.version(session.checkpointJSON))")
                             try await self.consume(page, session: session, context: context)
                         }
                         self.synced.insert(session.id)
@@ -96,13 +100,14 @@ final class ConversationSync {
         ackTargets[session.id] = max(ackTargets[session.id] ?? 0, session.lastSessionEventSeq)
         scheduleACK(session.id)
         let active = (page["runs"] as? [[String: Any]] ?? []).contains { ["running", "accepted"].contains($0["status"] as? String ?? "") }
-        if !active && snapshotters[session.id] == nil {
+        if page["recovery"] == nil && !active && snapshotters[session.id] == nil {
             snapshotters[session.id] = Task {
                 defer { self.snapshotters[session.id] = nil }
                 let lifecycle = session.lifecycleRevision
                 guard let snapshot = try? await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/snapshot") else { return }
                 guard session.lifecycleRevision == lifecycle,
                       let checkpoint = snapshot["checkpoint"] as? [String: Any],
+                      (checkpoint["event_base_seq"] as? Int ?? 0) + (checkpoint["events"] as? [Any] ?? []).count >= session.lastSessionEventSeq,
                       (checkpoint["lifecycle_revision"] as? Int ?? 0) == lifecycle else { return }
                 session.checkpointJSON = ConversationProcessor.json(snapshot)
                 try? context.save()
@@ -126,8 +131,8 @@ final class ConversationSync {
 
 extension AgentAPI {
     @MainActor
-    static func consumeSessionEvents(_ id: UUID, after: Int, endpoint: URL? = nil, receive: @MainActor ([String: Any]) async throws -> Void) async throws {
-        let url = URL(string: (endpoint ?? base).absoluteString.trimmingCharacters(in: CharacterSet(charactersIn: "/")) + "/v2/sessions/\(id.uuidString.lowercased())/events/stream?after_seq=\(after)")!
+    static func consumeSessionEvents(_ id: UUID, after: Int, recoveryVersion: Int = 0, endpoint: URL? = nil, receive: @MainActor ([String: Any]) async throws -> Void) async throws {
+        let url = URL(string: (endpoint ?? base).absoluteString.trimmingCharacters(in: CharacterSet(charactersIn: "/")) + "/v2/sessions/\(id.uuidString.lowercased())/events/stream?after_seq=\(after)&recovery_version=\(recoveryVersion)")!
         var request = URLRequest(url: url)
         request.timeoutInterval = 30 // reset by SSE keepalives while generation is active
         request.setValue("text/event-stream", forHTTPHeaderField: "Accept")

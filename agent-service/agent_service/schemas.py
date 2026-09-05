@@ -279,6 +279,8 @@ class TurnContext(BaseModel):
     recent_messages: list[ContextMessage] = Field(default_factory=list, max_length=20)
     knowledge_summaries: list[str] = Field(default_factory=list, max_length=5)
     handoff: dict | None = None
+    memory_candidates: list[dict[str, Any]] = Field(default_factory=list, max_length=12)
+    invalid_memory_run_ids: list[str] = Field(default_factory=list, max_length=1000)
 
 
 class SessionTurnRequest(BaseModel):
@@ -360,6 +362,7 @@ class LearningTaskView(BaseModel):
     learning_plan_json: str | None = None
     learning_outcome_json: str | None = None
     sources_json: str | None = None
+    memory_references_json: str | None = None
     draft_target_id: str | None = None
     run_id: str | None = None
     understanding: Literal["unknown", "self_reported", "verified"] = "unknown"
@@ -454,6 +457,8 @@ class LearningPlan(BaseModel):
     goal: str
     steps: list[str] = Field(min_length=1, max_length=8)
     success_check: str
+    # Existing IDs only. Empty entries create new steps; title edits retain ID.
+    step_ids: list[str] = Field(default_factory=list, max_length=8, description="Only IDs of existing steps from context, aligned with steps. For a new plan return an empty list. Never invent existing IDs.")
 
 
 class LessonStep(BaseModel):
@@ -543,6 +548,11 @@ class IntentOperation(BaseModel):
     selection: list[str] = Field(default_factory=list)
 
 
+class MemorySelection(BaseModel):
+    id: str
+    relation: Literal["prerequisite", "analogy", "contrast", "transfer"]
+
+
 class IntentDecision(BaseModel):
     intents: list[Literal[
         "greeting", "thanks", "capabilities", "question", "goal", "material",
@@ -563,10 +573,13 @@ class IntentDecision(BaseModel):
     is_jd: bool = False
     needs_verification: bool = False
     requested_mode: SessionMode | None = None
+    refresh_sources: bool = False
+    public_search_query: str = Field(default="", max_length=180)
     light_reply: str = Field(default="", max_length=600)
     session_tags: list[str] = Field(default_factory=list, max_length=5)
     handoff_source_ids: list[str] = Field(default_factory=list, max_length=8)
     handoff_step_ids: list[str] = Field(default_factory=list, max_length=10)
+    memory_selections: list[MemorySelection] = Field(default_factory=list, max_length=2)
 
 
 class BoundOperation(BaseModel):
@@ -583,6 +596,7 @@ class SessionMessageRequest(SessionTurnRequest):
     operation: BoundOperation | None = None
     expected_event_seq: int | None = Field(default=None, ge=0)
     lifecycle_revision: int | None = Field(default=None, ge=0)
+    thinking_strength: Literal["smart", "deep"] | None = None
 
 
 class MessageAccepted(BaseModel):
@@ -595,8 +609,9 @@ class MessageAccepted(BaseModel):
 
 class RunActionRequest(BaseModel):
     action_id: str
-    action: Literal["stop", "resume", "retry", "cancel_task", "set_mode"]
+    action: Literal["stop", "resume", "retry", "cancel_task", "set_mode", "set_thinking"]
     mode: SessionMode | None = None
+    thinking_strength: Literal["smart", "deep"] | None = None
 
     @field_validator("action_id")
     @classmethod
@@ -613,6 +628,7 @@ class ConversationOutput(BaseModel):
     check_question: str = ""
     evidence_state: EvidenceState = "unverified"
     learning_plan: LearningPlan | None = None
+    learning_concepts: list[str] = Field(default_factory=list, max_length=6)
 
 
 class EvidenceAssessmentV2(BaseModel):

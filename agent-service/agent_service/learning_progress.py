@@ -1,16 +1,33 @@
 """Deterministic learning evidence. Display progress is never write authority."""
 import uuid
+from copy import deepcopy
 
 
-def set_plan(task, titles, success_check=""):
+def set_plan(task, titles, success_check="", step_ids=None):
     old = task["context"].get("learning_plan") or {}
     old_steps = {s["title"]: s for s in old.get("steps", [])}
-    titles = list(dict.fromkeys(titles))[:10]
-    steps = [old_steps.get(title) or dict(
-        id=str(uuid.uuid5(uuid.UUID(task["task_id"]), title)), title=title,
-        state="pending", understanding="unknown", message_ids=[], completion_condition=success_check
-    ) for title in titles]
-    unchanged = [s["title"] for s in old.get("steps", [])] == titles
+    by_id = {s["id"]: s for s in old.get("steps", [])}
+    step_ids = step_ids or [""] * len(titles)
+    if not by_id and len(step_ids) == len(titles):
+        # There is no prior evidence to inherit on first creation. Model-generated
+        # identifiers are suggestions only; runtime owns all new stable IDs.
+        step_ids = [""] * len(titles)
+    explicit = [value for value in step_ids if value]
+    if len(step_ids) != len(titles) or len(set(explicit)) != len(explicit) or any(value not in by_id for value in explicit):
+        raise ValueError("RT.PLAN.INVALID_STEP_REFERENCE")
+    steps, seen = [], set()
+    for title, identity in zip(titles, step_ids):
+        if not title.strip() or title in seen or len(steps) == 10:
+            continue
+        seen.add(title)
+        prior = by_id.get(identity) if identity else old_steps.get(title)
+        step = deepcopy(prior) if prior else dict(
+            id=str(uuid.uuid4()), state="pending", understanding="unknown", message_ids=[], completion_condition=success_check)
+        if any(s["id"] == step["id"] for s in steps):
+            raise ValueError("RT.PLAN.INVALID_STEP_REFERENCE")
+        step["title"] = title
+        steps.append(step)
+    unchanged = [(s["id"], s["title"]) for s in old.get("steps", [])] == [(s["id"], s["title"]) for s in steps]
     task["context"]["learning_plan"] = dict(
         id=task["task_id"], version=old.get("version", 0) + (0 if unchanged else 1),
         goal=task["context"].get("learning_goal") or task["content"], steps=steps,

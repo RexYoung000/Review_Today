@@ -26,6 +26,9 @@ from agent_service.openai_client import ModelCallError, parse_model, web_search_
 from agent_service.model_capabilities import require_model
 from agent_service.service_diagnostics import diagnose
 from agent_service.learning_progress import set_plan, current_step, record_understanding, advance, outcome
+from agent_service.learning_memory import make_evidence, select_references, merge_references
+from agent_service.execution_policy import budget_scope, alternatives
+from agent_service.context_budget import prepare as prepare_context, configured_window
 from agent_service.response_projection import public_preview
 from agent_service.schemas import (
     ConversationOutput, EvidenceAssessmentV2, IntentDecision, JDAnalysis, MasteryEvaluation,
@@ -76,6 +79,10 @@ class ConversationHarness:
                     raise ValueError("RT.MESSAGE.IDEMPOTENCY_CONFLICT")
                 run = data["runs"][existing["run_id"]]
             else:
+                for invalid_id in body.context.invalid_memory_run_ids:
+                    if invalid_id in data["runs"]:
+                        data["runs"][invalid_id]["memory_invalidated"] = True
+                self._invalidate_memory(data)
                 if body.task_id:
                     task = data["tasks"].get(body.task_id)
                     if not task or task["session_id"] != session_id:
@@ -88,6 +95,7 @@ class ConversationHarness:
                 # are explicit set_mode actions, never incidental stale submit fields.
                 if not data["runs"]:
                     data["mode"] = body.mode_preset
+                    data["thinking_strength"] = body.thinking_strength or "smart"
                 active = data["runs"].get(data["foreground"])
                 if active and active["status"] in {"running", "accepted"} and not active.get("execution_complete") and body.delivery == "steer":
                     run = active
@@ -137,9 +145,14 @@ class ConversationHarness:
             if data.get("status", "active") != "active":
                 raise ValueError("RT.SESSION.ARCHIVED")
             run = data["runs"][run_id]
+            action_fingerprint = hashlib.sha256(json.dumps(body.model_dump(), sort_keys=True).encode()).hexdigest()
+            prior_action = run.setdefault("action_receipts", {}).get(body.action_id)
+            if prior_action is not None and prior_action != action_fingerprint:
+                raise ValueError("RT.RUN.IDEMPOTENCY_CONFLICT")
             if body.action_id in run["action_ids"]:
                 return dict(run)
             run["action_ids"].append(body.action_id)
+            run["action_receipts"][body.action_id] = action_fingerprint
             # Controls address the foreground when sent from an older completed run.
             target = data["runs"].get(data["foreground"]) or run
             if body.action == "set_mode":
@@ -157,6 +170,16 @@ class ConversationHarness:
                     target["revision"] += 1
                     target["status"] = "accepted"
                 self.store.event(data, target, "mode_changed", f"已选择{LABELS[body.mode]}，从下一步生效")
+            elif body.action == "set_thinking":
+                if body.thinking_strength not in {"smart", "deep"}:
+                    raise ValueError("RT.THINKING.INVALID")
+                data["thinking_strength"] = body.thinking_strength
+                target["thinking_strength"] = body.thinking_strength
+                if target["status"] in {"running", "accepted"}:
+                    self._end_response(data, target, "interrupted")
+                    target["revision"] += 1
+                    target["status"] = "accepted"
+                self.store.event(data, target, "thinking_changed", "思考强度已保存，从下一步生效")
             elif body.action in {"stop", "cancel_task"}:
                 if body.action == "cancel_task" and run.get("task_id") != data["active_task_id"]:
                     task = data["tasks"].get(run.get("task_id"))
@@ -216,11 +239,59 @@ class ConversationHarness:
             self._cancel_older(sid, rid, rev)
         return dict(status=data["status"], lifecycle_revision=lifecycle_revision)
 
+    def memory_policy(self, sid, *, allowed, policy_version, content_version):
+        cancelled = []
+        with self.store._lock:
+            self.store.set_memory_policy(sid, dict(allowed=allowed, policy_version=policy_version, content_version=content_version))
+            for owner in self.store.sessions():
+                existing = self.store.get(owner)
+                if not any(not self.store.memory_valid(r.get("memory_references", [])) for r in existing["runs"].values()):
+                    continue
+                with self.store.transaction(owner) as data:
+                    self._invalidate_memory(data)
+                    for run in data["runs"].values():
+                        if not self.store.memory_valid(run.get("memory_references", [])) and run["status"] in {"running", "accepted", "queued"}:
+                            self._stop(data, run)
+                            cancelled.append((owner, run["run_id"], run["revision"]))
+        for owner, rid, revision in cancelled:
+            self._cancel_older(owner, rid, revision)
+        return dict(status="saved", policy_version=policy_version, content_version=content_version)
+
+    def _memory_run_valid(self, run):
+        return not run.get("memory_invalidated") and self.store.memory_valid(run.get("memory_references", []))
+
+    def _invalidate_memory(self, data):
+        invalid = [r for r in data["runs"].values() if not self._memory_run_valid(r) and not r.get("memory_invalidation_applied")]
+        if not invalid:
+            return
+        data["summary"] = ""
+        data["summary_memory_references"] = []
+        data["summary_invalidated"] = True
+        data["summary_version"] += 1
+        data["pending"] = None
+        invalid_ids = {r["run_id"] for r in invalid}
+        for run in invalid:
+            run["memory_invalidated"] = True
+            run["memory_invalidation_applied"] = True
+        for task in data["tasks"].values():
+            ctx = task["context"]
+            if ctx.get("latest_run_id") in invalid_ids or not self.store.memory_valid(ctx.get("memory_references", [])):
+                ctx["memory_invalidated"] = True
+                task["required_action"] = None
+                if task["status"] != "completed":
+                    task.update(status="awaiting_user", stage="memory_updated", memory_package=None,
+                                user_summary="关联学习内容已更新，需要重新明确学习依据")
+        if data.get("draft") and (not self.store.memory_valid(data["draft"].get("memory_references", [])) or
+                                 data["tasks"].get(data["draft"].get("id"), {}).get("context", {}).get("memory_invalidated")):
+            data["draft"]["invalidated"] = True
+
     def export_snapshot(self, sid):
         data = self.store.get(sid)
         if data is None:
             raise ValueError("RT.SESSION.UNKNOWN")
-        return dict(schema_version=1, session_id=sid, checkpoint=data)
+        from agent_service.checkpoint_delta import recovery_projection
+        return dict(schema_version=1, session_id=sid, checkpoint=recovery_projection(data),
+                    recovery_version=data.get("recovery_version", 0))
 
     def restore_snapshot(self, sid, snapshot):
         if snapshot.get("schema_version") != 1 or snapshot.get("session_id") != sid:
@@ -294,8 +365,6 @@ class ConversationHarness:
 
     def start(self, session_id: str):
         from agent_service.model_capabilities import snapshot
-        if snapshot()["router"]["status"] != "ready":
-            return
         data = self.store.get(session_id)
         if not data or data.get("status", "active") != "active":
             return
@@ -303,6 +372,11 @@ class ConversationHarness:
         if data.get("paused") and not (foreground and foreground.get("paused_entry") and foreground["status"] == "accepted"):
             return
         if not any(r["status"] in {"accepted", "queued"} for r in data["runs"].values()):
+            return
+        candidate = foreground if foreground and foreground["status"] in {"accepted", "queued"} else next(r for r in data["runs"].values() if r["status"] in {"accepted", "queued"})
+        last = next((m for m in data["messages"] if m["message_id"] == candidate["input_ids"][-1]), {})
+        cached_intent = candidate.get("intent") and candidate.get("decision_input_ids") == candidate["input_ids"] and candidate.get("decision_mode") == data["mode"]
+        if not last.get("operation") and not cached_intent and snapshot()["router"]["status"] != "ready":
             return
         with self._worker_lock:
             if session_id in self._workers:
@@ -351,6 +425,7 @@ class ConversationHarness:
                     return
                 data["foreground"] = run["run_id"]
                 run["status"] = "running"
+                run["thinking_strength"] = data.get("thinking_strength", "smart")
                 run["attempt"] += 1
                 if not run.get("started_at"):
                     run.update(started_at=now_iso(), elapsed_ms=0, first_text_ms=None)
@@ -385,9 +460,17 @@ class ConversationHarness:
                     run["status"] = "completed"
                     run["activity_kind"] = self._activity_kind(data, run)
                     run["completed_at"] = now_iso() if run["activity_kind"] else None
+                    reply = next((m for m in reversed(data["messages"]) if m.get("run_id") == run_id and m["role"] == "coach"), None)
+                    evidence = make_evidence(run, self._task(data, run), reply["message_id"], reply["content"], session_id) if reply else None
+                    if evidence:
+                        self.store.event(data, run, "learning_evidence", "学习记录已更新", payload={"learning_evidence": evidence})
                     self.store.event(data, run, "completed", "本轮已回应")
                     data["foreground"] = None
             except Superseded:
+                with self.store.transaction(session_id) as data:
+                    obsolete = data["runs"].get(run_id)
+                    if obsolete and obsolete["revision"] == revision and obsolete["status"] == "running" and not self._memory_run_valid(obsolete):
+                        self._stop(data, obsolete)
                 continue
             except Exception as exc:  # each failure is persisted, not swallowed as a blank UI
                 try:
@@ -395,6 +478,8 @@ class ConversationHarness:
                         run = data["runs"][run_id]
                         code = exc.code if isinstance(exc, ModelCallError) else (
                             str(exc) if str(exc).startswith("RT.") else "RT.RUN.EXECUTION_FAILED")
+                        if code == "RT.PLAN.INVALID_STEP_REFERENCE":
+                            run["steps"] = {key: value for key, value in run["steps"].items() if not isinstance(value, dict) or "learning_plan" not in value}
                         self._end_response(data, run, "failed")
                         self._freeze_clock(run)
                         run["status"] = "retryable_failed"
@@ -402,7 +487,8 @@ class ConversationHarness:
                         if task and task["status"] not in FINISHED | {"committing"}:
                             task.update(status="retryable_failed", user_summary="当前步骤未完成，可重试；学习进度保留", error_code=code)
                             self._project_event(data, run, task)
-                        self.store.event(data, run, "failed", "这一步暂时无法完成，可重试；输入和进度已保留",
+                        summary = "当前内容超过可处理的上下文容量，请缩小本次范围；输入已保留" if code.startswith("RT.CONTEXT.") else "这一步暂时无法完成，可重试；输入和进度已保留"
+                        self.store.event(data, run, "failed", summary,
                                          error=code, detail=json.dumps(diagnose(exc), ensure_ascii=False))
                         data["foreground"] = None
                         data["paused"] = True
@@ -413,7 +499,8 @@ class ConversationHarness:
         data = self.store.get(session_id)
         run = data["runs"][run_id]
         if (data.get("status", "active") != "active" or run["revision"] != revision or run["status"] != "running"
-                or run.get("lifecycle_revision", 0) != data.get("lifecycle_revision", 0)):
+                or run.get("lifecycle_revision", 0) != data.get("lifecycle_revision", 0)
+                or not self._memory_run_valid(run)):
             raise Superseded()
         return data, run
 
@@ -440,7 +527,11 @@ class ConversationHarness:
             return
         version = (self.store.last_seq(data), data.get("lifecycle_revision", 0), data["summary_version"])
         older = [dict(role=m["role"], content=m["content"][:3000]) for m in data["messages"][data.get("summarized_count", 0):end]
-                 if data["runs"].get(m.get("run_id"), {}).get("status") == "completed"]
+                 if data["runs"].get(m.get("run_id"), {}).get("status") == "completed" and self._memory_run_valid(data["runs"].get(m.get("run_id"), {}))]
+        dependencies = merge_references(data.get("summary_memory_references", []), *[
+            data["runs"].get(m.get("run_id"), {}).get("memory_references", [])
+            for m in data["messages"][data.get("summarized_count", 0):end]
+            if self._memory_run_valid(data["runs"].get(m.get("run_id"), {}))])
         try:
             output = parse_model(
                 "压缩已完成对话为交接摘要。保留目标、明确决定、未解决问题；不推断理解或授权。",
@@ -453,6 +544,8 @@ class ConversationHarness:
             if version != (self.store.last_seq(current), current.get("lifecycle_revision", 0), current["summary_version"]) or current.get("foreground"):
                 return
             current["summary"] = output.summary[:10000]
+            current["summary_memory_references"] = dependencies
+            current["summary_invalidated"] = False
             current["summary_version"] += 1
             current["summarized_count"] = end
             current.pop("summary_error", None)
@@ -465,16 +558,19 @@ class ConversationHarness:
 
     def _call(self, session_id, run_id, revision, node, system, prompt, schema, model=COACH_MODEL):
         data, run = self._snapshot(session_id, run_id, revision)
-        key = hashlib.sha256((node + system + prompt + model).encode()).hexdigest()
+        strength = run.get("thinking_strength", data.get("thinking_strength", "smart"))
+        prompt, capacity = prepare_context(system, prompt, window=configured_window(), schema=schema.model_json_schema())
+        key = hashlib.sha256((node + system + prompt + model + strength).encode()).hexdigest()
         if key in run["steps"]:
             return schema.model_validate(run["steps"][key])
-        require_model(model)
         with self.store.transaction(session_id, run_id, revision) as data:
+            data["runs"][run_id]["context_capacity"] = capacity
             self.store.event(data, data["runs"][run_id], node,
                              {"intent": "正在理解本轮意图", "evaluate": "正在评价这次独立作答",
                               "answer": "正在准备回答", "lesson": "正在准备讲解", "organize": "正在整理知识关系",
                               "problem_answer": "正在组织基础答案与学习路径", "jd_analysis": "正在拆解岗位要求",
-                              "evidence_assessment": "正在核验回答依据", "session_summary": "正在整理会话摘要"}.get(node, "正在处理当前步骤"), model=model)
+                              "evidence_assessment": "正在核验回答依据", "session_summary": "正在整理会话摘要"}.get(node, "正在处理当前步骤"), model=model,
+                             payload={"context_capacity": capacity})
         started = time.monotonic()
         last_emit = 0.0
         latest = ""
@@ -524,8 +620,32 @@ class ConversationHarness:
 
         try:
             streamable = node in {"answer", "lesson", "organize", "problem_answer", "evaluate", "jd_analysis"}
-            parsed = parse_model(system, prompt, schema, model=model, on_cancel_handle=register_cancel,
-                                 **({"on_partial": emit, "on_transport": transport} if streamable else {}))
+            with budget_scope() as budget:
+                choices = ([model] + alternatives(model, strength, streamable))[:2]
+                repaired = False
+                for index, selected_model in enumerate(choices):
+                    try:
+                        model = selected_model
+                        require_model(selected_model)
+                        parsed = parse_model(system, prompt, schema, model=selected_model, on_cancel_handle=register_cancel,
+                                             timeout=budget.remaining(), reasoning_effort="high" if strength == "deep" else None,
+                                             **({"on_partial": emit, "on_transport": transport} if streamable else {}))
+                        model = selected_model
+                        break
+                    except ModelCallError as error:
+                        # Never splice a second generation into already shown text,
+                        # retry refusals/access restrictions or exceed shared budget.
+                        if error.code == "RT.MODEL.SCHEMA" and not latest and not repaired and budget.attempts < budget.limit:
+                            repaired = True
+                            choices[index + 1:] = [selected_model]
+                            prompt += "\n输出结构校验失败。仅重新生成严格符合已给定结构的结果；不补造授权、证据、来源或已掌握状态。"
+                            prompt, repaired_capacity = prepare_context(system, prompt, window=configured_window(), schema=schema.model_json_schema())
+                            with self.store.transaction(session_id, run_id, revision) as current:
+                                current["runs"][run_id]["context_capacity"] = repaired_capacity
+                            continue
+                        if latest or not diagnose(error)["retryable"] or index + 1 == len(choices) or budget.attempts >= budget.limit:
+                            raise
+                        self._snapshot(session_id, run_id, revision)
             if streamable and latest:
                 emit(parsed.model_dump(), force=True)
         except ModelCallError as exc:
@@ -571,6 +691,7 @@ class ConversationHarness:
         return data["tasks"].get(run.get("task_id") or data["active_task_id"])
 
     def _project_event(self, data, run, task, message=None):
+        task["context"]["memory_references"] = merge_references(task["context"].get("memory_references", []), run.get("memory_references", []))
         task["context"]["latest_run_id"] = run["run_id"]
         task["context"]["lifecycle_revision"] = data.get("lifecycle_revision", 0)
         event = TaskEvent(event_id=str(uuid.uuid4()), session_id=data["session_id"], task_id=task["task_id"],
@@ -579,7 +700,8 @@ class ConversationHarness:
                           required_action=task["required_action"], message=message)
         task["events"].append(event.model_dump())
         self.store.event(data, run, "task_updated", task["user_summary"],
-                         payload={"task": HarnessTaskRecord(**task).view().model_dump()})
+                         payload={"task": HarnessTaskRecord(**task).view().model_dump(),
+                                  "memory_references": task["context"].get("memory_references", run.get("memory_references", []))})
 
     def _publish(self, sid, rid, rev, text, *, stage=None, task_status="awaiting_user", required=None, draft=False, source_type=None, draft_content=None, complete=True):
         with self.store.transaction(sid, rid, rev) as data:
@@ -612,6 +734,8 @@ class ConversationHarness:
                 value = dict(id=task["task_id"] if task else rid, version=previous.get("version", 0) + 1,
                              content=draft_content or text, understanding=(task["context"].get("understanding", "unknown") if task else "unknown"),
                              source_type=source_type or "user_material")
+                value["memory_references"] = run.get("memory_references", [])
+                value["public_search_query"] = (run.get("intent") or {}).get("public_search_query", "")
                 if task:
                     task["context"]["draft"] = value
                 data["draft"] = value
@@ -635,16 +759,23 @@ class ConversationHarness:
         task_context = None
         if task:
             task_context = {k: task[k] for k in ("task_id", "mode", "stage", "status", "content", "required_action", "context")}
+            if task["context"].get("memory_invalidated"):
+                task_context = dict(task_id=task["task_id"], mode=task["mode"], content=task["content"],
+                                    status=task["status"], stage="memory_updated", context={"memory_invalidated": True})
         # Explicit structured state is never compressed into model prose. Limit only
         # the narrative window; local Mac retains the complete original transcript.
-        eligible = [m for m in data["messages"] if m not in selected and data["runs"].get(m.get("run_id"), {}).get("status") != "queued"]
+        eligible = [m for m in data["messages"] if m not in selected and data["runs"].get(m.get("run_id"), {}).get("status") != "queued"
+                    and self._memory_run_valid(data["runs"].get(m.get("run_id"), {}))]
         recent = [dict(message_id=m["message_id"], role=m["role"], content=m["content"][:3000]) for m in eligible[-16:]]
         external = last.get("context", {})
         return dict(mode=data["mode"], session_goal=data.get("focus_goal", ""),
                     current_inputs=[run["resolved_input"]] if run.get("resolved_input") else [m["content"] for m in selected], task=task_context,
-                    pending=data["pending"], draft=data["draft"], summary=data["summary"] or external.get("summary", ""),
-                    recent_messages=recent or external.get("recent_messages", [])[-10:],
-                    related_knowledge=external.get("knowledge_summaries", [])[:5], handoff=external.get("handoff")), last
+                    pending=data["pending"], draft=None if data.get("draft", {}) and data["draft"].get("invalidated") else data["draft"],
+                    summary=data["summary"] if data.get("summary_invalidated") else data["summary"] or external.get("summary", ""),
+                    recent_messages=recent if data.get("summary_invalidated") else recent or external.get("recent_messages", [])[-10:],
+                    related_knowledge=external.get("knowledge_summaries", [])[:5],
+                    memory_candidates=[c for c in external.get("memory_candidates", [])[:12] if self.store.memory_valid([c])] if not run.get("intent") else [],
+                    related_learning=run.get("memory_references", []), handoff=external.get("handoff")), last
 
     @staticmethod
     def _light_reply(decision, last, *, has_active_task=False, has_pending=False, has_draft=False):
@@ -681,6 +812,18 @@ class ConversationHarness:
     def _execute(self, sid, rid, rev):
         data, run = self._snapshot(sid, rid, rev)
         context, last = self._context(data, run)
+        # Context reuse inherits the source versions even when Luna chooses no
+        # additional cross-Session example on this turn.
+        contextual = [r.get("memory_references", []) for r in data["runs"].values()
+                      if self._memory_run_valid(r) and any(m.get("run_id") == r["run_id"] and m["message_id"] in
+                         {v.get("message_id") for v in context["recent_messages"]} for m in data["messages"])]
+        task = self._task(data, run)
+        if task and not task["context"].get("memory_invalidated"):
+            contextual.append(task["context"].get("memory_references", []))
+        if data.get("summary") and self.store.memory_valid(data.get("summary_memory_references", [])):
+            contextual.append(data.get("summary_memory_references", []))
+        with self.store.transaction(sid, rid, rev) as current:
+            current["runs"][rid]["memory_references"] = merge_references(*contextual)
         if last.get("operation"):
             kind = last["operation"]["kind"]
             task = self._task(data, run)
@@ -705,7 +848,7 @@ class ConversationHarness:
                 active = current["runs"][rid]
                 active.update(intent=decision.model_dump(), decision_input_ids=list(active["input_ids"]), decision_mode=current["mode"], task_id=None)
                 self.store.event(current, active, "intent_decided", "已识别为轻量对话", model=ROUTER_MODEL,
-                                 detail=decision.rationale, payload={"intent": decision.model_dump()})
+                                 detail=decision.rationale, payload={"intent": decision.model_dump(), "memory_references": active.get("memory_references", [])})
             self._publish(sid, rid, rev, light_reply)
             return
         if "queue" in decision.intents and len(run["input_ids"]) > 1:
@@ -728,8 +871,17 @@ class ConversationHarness:
             run["decision_input_ids"] = list(run["input_ids"])
             run["decision_mode"] = data["mode"]
             run["task_id"] = decision.target_task_id or data["active_task_id"]
+            selected_memory = select_references([c for c in last.get("context", {}).get("memory_candidates", []) if self.store.memory_valid([c])],
+                                                [s.model_dump() for s in decision.memory_selections])
+            run["memory_references"] = merge_references(run.get("memory_references", []), selected_memory)
+            task = self._task(data, run)
+            if task and "hint" in decision.intents:
+                task["context"]["hint_used"] = True
+            if "correction" in decision.intents:
+                self.store.event(data, run, "memory_corrected", "已收到纠正，正在调整相关内容", payload={"invalidate_memory": True})
             self.store.event(data, run, "intent_decided", "已理解本轮要求", detail=decision.rationale,
-                             model="" if last.get("operation") else ROUTER_MODEL, payload={"intent": decision.model_dump()})
+                             model="" if last.get("operation") else ROUTER_MODEL,
+                             payload={"intent": decision.model_dump(), "memory_references": run["memory_references"]})
             if data.get("draft") and decision.understanding == "self_reported":
                 if data["draft"]["understanding"] != "verified":
                     data["draft"]["understanding"] = "self_reported"
@@ -790,10 +942,23 @@ class ConversationHarness:
                 data["focus_goal"] = last["content"][:2000]
         task = self._task(data, run)
         intents = set(decision.intents)
+        if task and task["context"].get("memory_invalidated") and intents & {"question", "material", "goal"} and not intents & {"followup", "answer", "continue", "hint", "example"}:
+            # Explicit fresh input can re-ground this topic. Keep the old task and
+            # all its evidence in history; do not reinterpret its excluded material.
+            with self.store.transaction(sid, rid, rev) as current:
+                current["active_task_id"] = None
+                current["draft"] = None
+                current["pending"] = None
+                current["runs"][rid]["task_id"] = None
+            data, run = self._snapshot(sid, rid, rev)
+            task = None
         if intents <= {"greeting", "thanks", "capabilities"}:
             self._respond(sid, rid, rev, decision, "自然回应；不要展开学习流程。", node="answer")
             return
         if task and task["status"] not in {"cancelled", "terminal_failed"}:
+            if task["context"].get("memory_invalidated"):
+                self._publish(sid, rid, rev, "关联的旧学习内容已更新或不再用于关联；历史和学习进度仍保留。请提供接下来要使用的资料或明确的新问题，我不会沿用失效内容评价或入库。")
+                return
             if intents & {"followup", "hint", "example", "correction"}:
                 if "correction" in intents:
                     with self.store.transaction(sid, rid, rev) as data:
@@ -1056,7 +1221,10 @@ class ConversationHarness:
             return {"state": "unverified", "summary": "稳定基础知识直接回答，未作实时查证", "sources": []}
         with self.store.transaction(sid, rid, rev) as data:
             self.store.event(data, data["runs"][rid], "evidence_check", "正在查证风险或时效信息", model=RISK_MODEL)
-        evidence = web_search_text("核验并附可定位来源：" + text[:3000], model=RISK_MODEL)
+        query = self._public_query(decision.public_search_query)
+        if not query:
+            return {"state": "insufficient", "summary": "尚未形成不含私人资料的公开核验主题，当前内容未核验", "sources": []}
+        evidence = self._search(sid, rid, rev, "核验并附可定位来源：" + query, RISK_MODEL)
         self._snapshot(sid, rid, rev)
         if not evidence:
             return {"state": "insufficient", "summary": "未取得可核验证据，不能认定已核验", "sources": []}
@@ -1086,19 +1254,34 @@ class ConversationHarness:
             task = self._task(data, run)
         prior = task["context"] if task else {}
         sources = list(prior.get("sources", []))
+        source_cache = run.get("source_cache", {})
         urls = (task["context"].get("selected_sources", []) if task else [])
         if "material" in decision.intents and looks_like_url(last["content"]):
             urls = [looks_like_url(last["content"])]
         for url in urls[:4]:
-            if any(s.get("url") == url and s.get("content") for s in sources):
+            previous = next((s for s in sources if s.get("url") == url and s.get("content")), None)
+            if previous and not decision.refresh_sources:
                 continue
-            title, body = fetch_public_url(url)
-            sources.append(dict(source_id=str(uuid.uuid5(uuid.UUID(sid), url)), version=1,
-                                fetched_at=now_iso(), type="public_source", url=url, title=title, content=body[:10000]))
+            saved = source_cache.get(url)
+            if saved is None:
+                title, body = fetch_public_url(url)
+                saved = dict(source_id=str(uuid.uuid5(uuid.UUID(sid), url)), version=(previous or {}).get("version", 0) + 1,
+                             fetched_at=now_iso(), type="public_source", url=url, title=title, content=body[:10000])
+                with self.store.transaction(sid, rid, rev) as current:
+                    current["runs"][rid].setdefault("source_cache", {})[url] = saved
+                    if previous and task:
+                        self._task(current, current["runs"][rid])["context"].setdefault("source_history", []).append(previous)
+            sources = [s for s in sources if s.get("url") != url] + [saved]
             self._snapshot(sid, rid, rev)
         evidence = self._evidence(sid, rid, rev, decision, last["content"])
         source_type = "agent_generated" if generated else prior.get("source_type") or ("public_source" if sources else "user_material")
-        if not sources and source_type in {"agent_generated", "user_material"}:
+        new_user_material = "material" in decision.intents and not looks_like_url(last["content"])
+        if new_user_material:
+            material_id = str(uuid.uuid5(uuid.UUID(sid), f"material:{last['message_id']}"))
+            if not any(s.get("source_id") == material_id for s in sources):
+                sources.append(dict(source_id=material_id, version=1, type="user_material", url="",
+                                    title="用户提供的资料", fetched_at=last.get("created_at", now_iso()), locator=last["message_id"], content=last["content"]))
+        if (not sources and (generated or new_user_material or draft) and source_type in {"agent_generated", "user_material"}) or (generated and not any(s.get("type") == "agent_generated" for s in sources)):
             owner = task["task_id"] if task else run["run_id"]
             sources.append(dict(source_id=str(uuid.uuid5(uuid.UUID(sid), f"{owner}:{source_type}")), version=1,
                                 type=source_type, url="", title="Agent 生成讲义" if source_type == "agent_generated" else "用户提供的资料",
@@ -1109,6 +1292,8 @@ class ConversationHarness:
         output = self._call(sid, rid, rev, node, COACH_SYSTEM,
                             json.dumps(dict(instruction=instruction, context=context, sources=sources,
                                             source_type=source_type, evidence=evidence), ensure_ascii=False), ConversationOutput)
+        with self.store.transaction(sid, rid, rev) as current:
+            current["runs"][rid]["learning_concepts"] = output.learning_concepts
         if output.evidence_state in {"insufficient", "conflicting", "outdated"} and not decision.needs_verification:
             evidence = self._evidence(sid, rid, rev, decision.model_copy(update={"needs_verification": True}), last["content"])
         text = output.message
@@ -1130,7 +1315,7 @@ class ConversationHarness:
                 task["context"]["evidence"] = evidence
                 if teaching:
                     if output.learning_plan and (not task["context"].get("learning_plan") or "correction" in decision.intents):
-                        set_plan(task, output.learning_plan.steps, output.learning_plan.success_check)
+                        set_plan(task, output.learning_plan.steps, output.learning_plan.success_check, output.learning_plan.step_ids)
                     elif not task["context"].get("learning_plan"):
                         set_plan(task, ["当前资料讲解"], output.check_question)
                     task["context"].setdefault("understanding_by_lesson", {})[str(task["context"].get("lesson_index", 0))] = task["context"].get("understanding", "unknown")
@@ -1174,7 +1359,8 @@ class ConversationHarness:
             data["runs"][rid]["activity_candidate"] = "knowledge_answer"
             task["context"].update(reference_answer=output.answer.direct_answer, requires_mastery=True,
                                     evidence=evidence, calibration_question=output.analysis.calibration_question)
-            set_plan(task, output.learning_plan.steps + ["独立作答", "迁移追问"], output.learning_plan.success_check)
+            set_plan(task, output.learning_plan.steps + ["独立作答", "迁移追问"], output.learning_plan.success_check,
+                     (output.learning_plan.step_ids or [""] * len(output.learning_plan.steps)) + ["", ""])
         text = _render_problem(output)
         if evidence["state"] != "unverified":
             text += "\n\n证据状态：" + evidence["state"] + "；" + evidence["summary"]
@@ -1190,7 +1376,12 @@ class ConversationHarness:
         with self.store.transaction(sid, rid, rev) as data:
             task = self._task(data, data["runs"][rid])
             ctx = task["context"]
+            data["runs"][rid]["evaluated_step_id"] = (ctx.get("learning_plan") or {}).get("current_step_id")
             previous_pass = ctx.get("independent_passed", False)
+            hint_used = ctx.get("hint_used", False)
+            if hint_used and result.passed:
+                result.passed = False
+                result.feedback += "\n这次使用过提示，不计为独立验证。请尝试下一道不带提示的追问。"
             if result.passed and ctx.get("requires_mastery"):
                 if previous_pass and task["stage"] == "transfer":
                     ctx["transfer_passed"] = True
@@ -1201,7 +1392,8 @@ class ConversationHarness:
                 record_understanding(task, "verified")
                 steps = (ctx.get("learning_plan") or {}).get("steps", [])
                 ctx["understanding"] = "verified" if all(s["understanding"] == "verified" for s in steps) else "unknown"
-            ctx.setdefault("practice", []).append(dict(message_id=last["message_id"], evaluation=result.model_dump()))
+            ctx.setdefault("practice", []).append(dict(message_id=last["message_id"], hint_used=hint_used, evaluation=result.model_dump()))
+            ctx["hint_used"] = False  # the next distinct check starts without a hint
             mastered = ctx.get("understanding") == "verified"
             plan = ctx.get("learning_plan")
             if plan and ctx.get("requires_mastery"):
@@ -1229,7 +1421,11 @@ class ConversationHarness:
     def _sources(self, sid, rid, rev, goal):
         with self.store.transaction(sid, rid, rev) as data:
             self.store.event(data, data["runs"][rid], "source_search", "正在建立学习地图和互补资料包", model=COACH_MODEL)
-        candidates = find_source_candidates(goal[:1000], model=COACH_MODEL)
+        _, run = self._snapshot(sid, rid, rev)
+        query = self._public_query((run.get("intent") or {}).get("public_search_query", ""))
+        candidates = find_source_candidates(query, model=COACH_MODEL,
+            model_runner=lambda system, prompt, schema, model=None: self._call(sid, rid, rev, "source_pack", system, prompt, schema, model or COACH_MODEL),
+            search_runner=lambda text, model=None: self._search(sid, rid, rev, text, model or COACH_MODEL)) if query else []
         self._snapshot(sid, rid, rev)
         candidates = [c for c in candidates if looks_like_url(c.url)][:4]
         if len(candidates) < 2:
@@ -1245,6 +1441,42 @@ class ConversationHarness:
                              "sources": [dict(type="public_source_candidate", url=c.url, title=c.title, content=c.snippet) for c in candidates]})
         text = "建议先建立基础概念，再看应用与局限。以下资料供确认后学习：\n\n" + "\n\n".join(f"{c.title}\n{c.url}\n{c.snippet}\n证据状态：待阅读核验；日期未知" for c in candidates)
         self._publish(sid, rid, rev, text, stage="source_confirmation", required={"type": "choose_sources", "prompt": "是否使用这些资料？", "options": []})
+
+    @staticmethod
+    def _public_query(value):
+        value = value.strip()
+        if not 2 <= len(value) <= 180 or re.search(r"(?:https?://|\bsk-|\bBearer\b|[^\s]+@[^\s]+|\d{7,}|-----BEGIN|(?:密钥|密码)\s*[:：])", value, re.I):
+            return ""
+        return value
+
+    def _search(self, sid, rid, rev, query, model):
+        data, run = self._snapshot(sid, rid, rev)
+        strength = run.get("thinking_strength", data.get("thinking_strength", "smart"))
+        key = hashlib.sha256((query + model + strength).encode()).hexdigest()
+        if key in run.get("search_results", {}):
+            return run["search_results"][key]
+        handle_key = (sid, rid, rev)
+        def register(handle):
+            with self._worker_lock:
+                self._cancel_handles[handle_key] = handle
+            try:
+                self._snapshot(sid, rid, rev)
+            except Superseded:
+                handle()
+                raise
+        started = time.monotonic()
+        try:
+            require_model(model)
+            result = web_search_text(query, model=model, reasoning_effort="high" if strength == "deep" else None,
+                                     on_cancel_handle=register)
+            with self.store.transaction(sid, rid, rev) as current:
+                current["runs"][rid].setdefault("search_results", {})[key] = result
+                self.store.event(current, current["runs"][rid], "public_search", "公开资料检索已返回", model=model,
+                                 duration_ms=int((time.monotonic() - started) * 1000))
+            return result
+        finally:
+            with self._worker_lock:
+                self._cancel_handles.pop(handle_key, None)
 
     def _save_memory(self, sid, rid, rev, decision):
         data, run = self._snapshot(sid, rid, rev)
@@ -1265,6 +1497,7 @@ class ConversationHarness:
         with self.store.transaction(sid, rid, rev) as data:
             run = data["runs"][rid]
             # Separate controlled commit task; do not regenerate the delivered draft.
+            run["memory_references"] = draft.get("memory_references", [])
             commit_id = str(uuid.uuid5(uuid.UUID(sid), f"memory:{draft['id']}:{draft['version']}"))
             existing = data["tasks"].get(commit_id)
             if existing and existing["status"] in {"completed", "committing"}:
@@ -1281,8 +1514,26 @@ class ConversationHarness:
             run["task_id"] = commit_id
             data["active_task_id"] = commit_id
             self.store.event(data, run, "memory_generation", "正在提交已确认的整理版本", model=COACH_MODEL)
+        def memory_model(system, prompt, schema, *, model=None):
+            return self._call(sid, rid, rev, "memory_" + schema.__name__, system, prompt, schema, model or COACH_MODEL)
+
+        def memory_search(_private_query, *, model=None):
+            query = self._public_query(draft.get("public_search_query", ""))
+            if not query:
+                return ""
+            _, current_run = self._snapshot(sid, rid, rev)
+            if "memory_search" in current_run:
+                return current_run["memory_search"]
+            result = self._search(sid, rid, rev, query, model or RISK_MODEL)
+            with self.store.transaction(sid, rid, rev) as current:
+                current["runs"][rid]["memory_search"] = result
+            return result
+
         result = run_capture(commit_id, draft["content"], "zh", force_source_view=draft["source_type"] in {"agent_generated", "mixed"},
-                             model=COACH_MODEL, risk_model=RISK_MODEL)
+                             model=COACH_MODEL, risk_model=RISK_MODEL, confirmed_content=True,
+                             model_runner=memory_model, search_runner=memory_search)
+        if result.get("outcome") == "retryable_failed":
+            raise RuntimeError(result.get("error_code") or "RT.MEMORY.GENERATION_FAILED")
         with self.store.transaction(sid, rid, rev) as data:
             run = data["runs"][rid]
             task = data["tasks"][commit_id]
@@ -1297,13 +1548,14 @@ class ConversationHarness:
             self._project_event(data, run, task)
             data["pending"] = None
 
-    @staticmethod
-    def _validate_commit(data, task):
+    def _validate_commit(self, data, task):
         if data.get("status", "active") != "active" or task["context"].get("lifecycle_revision", 0) != data.get("lifecycle_revision", 0):
             raise ValueError("RT.TASK.COMMIT_REVOKED")
         if task["status"] not in {"committing", "completed"}:
             raise ValueError("RT.TASK.COMMIT_REVOKED")
         origin = data["runs"].get(task["context"].get("origin_run_id"))
+        if origin and not self.store.memory_valid(origin.get("memory_references", [])):
+            raise ValueError("RT.TASK.COMMIT_REVOKED")
         if origin and (origin["revision"] != task["context"].get("commit_revision") or origin["status"] in {"interrupted", "cancelled"}):
             raise ValueError("RT.TASK.COMMIT_REVOKED")
 

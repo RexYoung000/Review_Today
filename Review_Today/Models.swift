@@ -164,6 +164,12 @@ final class AppSettings {
     var snoozeDay: String
     var skipToday: String
     var notificationGranted: Bool
+    var agentDraftID: UUID?
+    var agentDraftMessageID: UUID?
+    var agentDraftText: String = ""
+    var agentDraftMode: String = "auto"
+    var agentDraftThinking: String = "smart"
+    var lastThinkingStrength: String = "smart"
 
     init(
         dailyReminderMinutes: Int = 21 * 60,
@@ -308,6 +314,14 @@ final class AgentSession {
     var manualTopicTagsJSON: String?
     var topicTagRevision: Int = 0
     var topicTagsUpdatedAt: Date?
+    var memoryUseAllowed: Bool = true
+    var memoryPolicyRevision: Int = 0
+    var memoryContentRevision: Int = 0
+    var memoryPolicySyncedRevision: Int = -1
+    var memoryContentSyncedRevision: Int = -1
+    var learningEvidenceJSON: String = "[]"
+    var thinkingStrength: String = "smart"
+    var contextCapacityJSON: String?
 
     init(
         id: UUID = UUID(),
@@ -449,6 +463,7 @@ final class LearningTask {
     var learningOutcomeJSON: String?
     var sourcesJSON: String?
     var draftTargetID: String?
+    var memoryReferencesJSON: String = "[]"
 
     init(
         id: UUID = UUID(),
@@ -549,6 +564,7 @@ final class SourceReference {
     var sourceVersion: Int = 1
     var fetchedAt: Date?
     var contentSnapshot: String = ""
+    var versionHistoryJSON: String = "[]"
 
     init(sessionID: UUID, taskID: UUID? = nil, url: String, title: String, evidenceState: String = "unverified", locator: String = "") {
         self.id = UUID()

@@ -4,6 +4,26 @@ import SwiftData
 @main
 struct ConversationReplayTests {
     @MainActor static func main() async throws {
+        let recoveryID = UUID()
+        let full: [String: Any] = ["version": 1, "checkpoint": ["session_id": recoveryID.uuidString,
+            "event_base_seq": 1, "events": [], "runs": ["r": ["text": "中文"]], "pending": NSNull()]]
+        let base = try ConversationCheckpoint.merge(full, into: nil, sessionID: recoveryID, cursor: 1)
+        let delta: [String: Any] = ["version": 2, "deltas": [["base_version": 1, "version": 2, "changes": [
+            ["op": "append", "path": ["runs", "r", "text"], "value": "😀"],
+            ["op": "set", "path": ["event_base_seq"], "value": 2]]]]]
+        let caughtUp = try ConversationCheckpoint.merge(delta, into: base, sessionID: recoveryID, cursor: 2)
+        precondition(ConversationCheckpoint.version(caughtUp) == 2)
+        precondition(caughtUp.contains("中文😀"))
+        let repeated = try ConversationCheckpoint.merge(delta, into: caughtUp, sessionID: recoveryID, cursor: 2)
+        precondition(ConversationCheckpoint.version(repeated) == 2)
+        do {
+            _ = try ConversationCheckpoint.merge(delta, into: nil, sessionID: recoveryID, cursor: 2)
+            preconditionFailure("delta must not silently skip its base checkpoint")
+        } catch {}
+        do {
+            _ = try ConversationCheckpoint.merge(full, into: caughtUp, sessionID: recoveryID, cursor: 2)
+            preconditionFailure("background snapshot cannot overtake or lag saved cursor")
+        } catch {}
         let schema = Schema([Source.self, Knowledge.self, Question.self, CaptureTask.self, AppSettings.self,
                              FsrsState.self, ReviewSession.self, ReviewAttempt.self, AgentSession.self,
                              AgentMessage.self, LearningTask.self, TaskEventRecord.self, SourceReference.self,

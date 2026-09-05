@@ -3,6 +3,7 @@
 Uses synthetic inputs and an isolated temporary database, never user knowledge.
 PYTHONPATH may point at an older checkout to measure the same cases before/after.
 """
+import argparse
 import json
 import os
 from pathlib import Path
@@ -23,6 +24,13 @@ CASES = [
 ]
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--case", choices=[c[0] for c in CASES])
+    parser.add_argument("--deep", action="store_true")
+    parser.add_argument("--follow-up", action="append", default=[], help="Synthetic follow-up; requires --case")
+    args = parser.parse_args()
+    if args.follow_up and not args.case:
+        parser.error("--follow-up requires a single --case")
     with tempfile.TemporaryDirectory(prefix="review-today-stream-smoke-") as directory:
         os.environ["REVIEW_TODAY_HARNESS_DB"] = str(Path(directory) / "checkpoint.sqlite3")
         from agent_service.conversation import ConversationHarness
@@ -32,23 +40,33 @@ def main():
         store = ConversationStore(HarnessStore(os.environ["REVIEW_TODAY_HARNESS_DB"]))
         harness = ConversationHarness(store)
         for label, mode, content in CASES:
+            if args.case and label != args.case:
+                continue
             sid = str(uuid.uuid4())
-            start = time.monotonic()
-            accepted = harness.accept(sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content=content, mode_preset=mode))
-            local_ms = round((time.monotonic() - start) * 1000)
-            with patch("agent_service.conversation.run_capture", side_effect=AssertionError("Smoke tests must not submit knowledge")):
-                harness.drain(sid)
-            elapsed = round((time.monotonic() - start) * 1000)
-            data = store.get(sid)
-            run = data["runs"][accepted.run_id]
-            created = datetime.fromisoformat(run["created_at"])
-            public = next((e for e in data["events"] if e["stage"] == "response.delta" or e.get("message")), None)
-            first_ms = round((datetime.fromisoformat(public["occurred_at"]) - created).total_seconds() * 1000) if public else None
-            print(json.dumps(dict(case=label, status=run["status"], local_accept_ms=local_ms,
+            for turn, text in enumerate([content] + args.follow_up):
+                start = time.monotonic()
+                accepted = harness.accept(sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content=text, mode_preset=mode,
+                    thinking_strength="deep" if args.deep else "smart"))
+                local_ms = round((time.monotonic() - start) * 1000)
+                with patch("agent_service.conversation.run_capture", side_effect=AssertionError("Smoke tests must not submit knowledge")):
+                    harness.drain(sid)
+                elapsed = round((time.monotonic() - start) * 1000)
+                data = store.get(sid)
+                run = data["runs"][accepted.run_id]
+                events = [e for e in data["events"] if e["run_id"] == accepted.run_id]
+                task = data["tasks"].get(run.get("task_id"), {})
+                created = datetime.fromisoformat(run["created_at"])
+                public = next((e for e in events if e["stage"] == "response.delta" or e.get("message")), None)
+                first_ms = round((datetime.fromisoformat(public["occurred_at"]) - created).total_seconds() * 1000) if public else None
+                print(json.dumps(dict(case=label, turn=turn, status=run["status"], strength=run.get("thinking_strength"), local_accept_ms=local_ms,
                                   first_public_event_ms=first_ms, total_ms=elapsed,
-                                  response_chunks=sum(e["stage"] == "response.delta" for e in data["events"]),
-                                  steps=[dict(node=e["node"], model=e["model"], ms=e["duration_ms"], error=e["error_code"])
-                                         for e in data["events"] if e.get("duration_ms")],
+                                  response_chunks=sum(e["stage"] == "response.delta" for e in events),
+                                  steps=[dict(node=e["node"], model=e["model"], ms=e["duration_ms"], error=e["error_code"], diagnostic=e.get("detail_summary", "") if e["error_code"] else "")
+                                         for e in events if e.get("duration_ms")],
+                                  task_state=task.get("status"), task_stage=task.get("stage"), pending=data.get("pending", {}),
+                                  response=next((m["content"] for m in reversed(data["messages"]) if m.get("run_id") == accepted.run_id and m["role"] == "coach"), ""),
                                   error=run.get("error_code")), ensure_ascii=False), flush=True)
+                if run["status"] != "completed":
+                    break
 
 if __name__ == "__main__": main()

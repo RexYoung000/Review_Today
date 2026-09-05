@@ -45,6 +45,39 @@ class ConversationHTTPTests(unittest.TestCase):
         ahead = self.client.post(f"/v2/sessions/{self.sid}/ack", json={"last_event_seq": page["last_seq"] + 1})
         self.assertEqual(ahead.status_code, 409)
 
+    def test_recovery_delta_catches_up_before_background_snapshot(self):
+        from agent_service.checkpoint_delta import apply_changes, recovery_projection
+        self.submit()
+        first = self.client.get(f"/v2/sessions/{self.sid}/events").json()
+        state = first["recovery"]["checkpoint"]
+        version = first["recovery"]["version"]
+        self.h.drain(self.sid)
+        page = self.client.get(f"/v2/sessions/{self.sid}/events?after_seq={first['last_seq']}&recovery_version={version}").json()
+        for delta in page["recovery"]["deltas"]:
+            self.assertEqual(delta["base_version"], version)
+            state = apply_changes(state, delta["changes"])
+            version = delta["version"]
+        self.assertEqual(state, recovery_projection(self.h.store.get(self.sid)))
+        self.assertEqual(state["event_base_seq"], page["last_seq"])
+        calls = len(self.fixture.calls)
+        from agent_service.conversation import ConversationHarness
+        from agent_service.conversation_store import ConversationStore
+        from agent_service.harness_store import HarnessStore
+        fresh = ConversationHarness(ConversationStore(HarnessStore(self.fixture.tmp.name + "/delta-restored.sqlite3")))
+        restored = fresh.restore_snapshot(self.sid, dict(schema_version=1, session_id=self.sid, checkpoint=state))
+        self.assertTrue(restored["checkpoint"]["paused"])
+        self.assertIsNone(restored["checkpoint"]["pending"])
+        self.assertEqual(len(self.fixture.calls), calls)
+
+    def test_old_recovery_version_gets_full_snapshot_not_broken_delta(self):
+        self.submit()
+        for i in range(36):
+            with self.h.store.transaction(self.sid) as data:
+                data["summary_version"] = i
+        page = self.client.get(f"/v2/sessions/{self.sid}/events?recovery_version=1").json()
+        self.assertIn("checkpoint", page["recovery"])
+        self.assertEqual(page["recovery"]["checkpoint"]["summary_version"], 35)
+
     def test_run_controls_are_idempotent_and_stop_does_not_delete_message(self):
         accepted = self.submit().json()
         path = f"/v2/runs/{accepted['run_id']}/actions"

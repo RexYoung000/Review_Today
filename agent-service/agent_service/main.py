@@ -66,6 +66,7 @@ from agent_service.schemas import (
 )
 from agent_service.store import TaskRecord, store
 from agent_service.conversation import conversation_harness
+from agent_service.checkpoint_delta import recovery_page
 from agent_service.schemas import SessionMessageRequest, RunActionRequest, SessionAckRequest, MessageAccepted
 
 app = FastAPI(title="Review Today Agent", docs_url=None, redoc_url=None)
@@ -113,14 +114,19 @@ def _require_uuid(value: str, *, code: str) -> str:
 
 class SessionLifecycleAction(BaseModel):
     action_id: uuid.UUID
-    action: Literal["archive", "restore"]
-    lifecycle_revision: int = Field(ge=1)
+    action: Literal["archive", "restore", "memory_policy"]
+    lifecycle_revision: int = Field(default=0, ge=0)
+    allowed: bool = True
+    policy_version: int = Field(default=0, ge=0)
+    content_version: int = Field(default=0, ge=0)
 
 
 @app.post("/v2/sessions/{session_id}/actions")
 def session_lifecycle_action(session_id: str, body: SessionLifecycleAction) -> dict:
     sid = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
     try:
+        if body.action == "memory_policy":
+            return conversation_harness.memory_policy(sid, allowed=body.allowed, policy_version=body.policy_version, content_version=body.content_version)
         return conversation_harness.session_action(sid, str(body.action_id), body.action, body.lifecycle_revision)
     except ValueError as exc:
         raise _http_error(409, str(exc), "Session lifecycle version conflicts") from None
@@ -159,9 +165,9 @@ def submit_message(session_id: str, body: SessionMessageRequest) -> dict:
 
 
 @app.get("/v2/sessions/{session_id}/events")
-def session_events(session_id: str, after_seq: int = 0) -> dict:
+def session_events(session_id: str, after_seq: int = 0, recovery_version: int = 0) -> dict:
     session_id = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
-    if after_seq < 0:
+    if after_seq < 0 or recovery_version < 0:
         raise _http_error(422, "RT.SESSION.INVALID_SEQ", "after_seq must be non-negative")
     data = conversation_harness.store.get(session_id)
     if data is None:
@@ -171,19 +177,22 @@ def session_events(session_id: str, after_seq: int = 0) -> dict:
     return dict(session_id=session_id, events=[e for e in data["events"] if e["seq"] > after_seq],
                 status=data.get("status", "active"), lifecycle_revision=data.get("lifecycle_revision", 0),
                 last_seq=conversation_harness.store.last_seq(data), paused=data["paused"], mode=data["mode"],
+                recovery=recovery_page(data, recovery_version),
+                thinking_strength=data.get("thinking_strength", "smart"),
                 pending=data["pending"], runs=[conversation_harness.public_run(r) for r in data["runs"].values()])
 
 
 @app.get("/v2/sessions/{session_id}/events/stream")
-async def stream_session_events(session_id: str, request: Request, after_seq: int = 0):
+async def stream_session_events(session_id: str, request: Request, after_seq: int = 0, recovery_version: int = 0):
     # Validate before headers; callers receive the same cursor errors as polling.
-    first = await asyncio.to_thread(session_events, session_id, after_seq)
+    first = await asyncio.to_thread(session_events, session_id, after_seq, recovery_version)
 
     async def generate():
-        page, cursor, ticks = first, after_seq, 0
+        page, cursor, ticks, recovered = first, after_seq, 0, recovery_version
         while not await request.is_disconnected():
-            if page["events"]:
+            if page["events"] or page["recovery"]["version"] != recovered:
                 cursor = page["last_seq"]
+                recovered = page["recovery"]["version"]
                 yield f"id: {cursor}\nevent: session\ndata: {json.dumps(page, ensure_ascii=False)}\n\n"
             active = any(run["status"] in {"running", "accepted"} for run in page["runs"])
             queued = not page["paused"] and any(run["status"] == "queued" for run in page["runs"])
@@ -193,7 +202,7 @@ async def stream_session_events(session_id: str, request: Request, after_seq: in
             ticks += 1
             if ticks % 300 == 0:
                 yield ": keepalive\n\n"
-            page = await asyncio.to_thread(session_events, session_id, cursor)
+            page = await asyncio.to_thread(session_events, session_id, cursor, recovered)
 
     return StreamingResponse(generate(), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})

@@ -15,6 +15,45 @@ class ClosureRepairTests(unittest.TestCase):
     state = fixture.ConversationTests.state
     control = fixture.ConversationTests.control
 
+    def test_fetched_source_is_reused_on_generation_retry_and_refresh_has_version(self):
+        from agent_service.openai_client import ModelCallError
+        from agent_service.schemas import ConversationOutput
+        self.decision = intent("material", workflow="source_learning", scope="learning")
+        def fail_answer(*args, **kwargs):
+            if args[2] is ConversationOutput: raise ModelCallError("TIMEOUT")
+            return self.model(*args, **kwargs)
+        with patch("agent_service.conversation.fetch_public_url", return_value=("公开资料", "版本一")) as fetch:
+            with patch("agent_service.conversation.parse_model", side_effect=fail_answer):
+                accepted = self.send("https://example.com/rag", mode="source_learning")
+            self.assertEqual(fetch.call_count, 1)
+            self.control(accepted.run_id, "retry")
+            self.harness.drain(self.sid)
+            self.assertEqual(fetch.call_count, 1, "retry must reuse the completed fetch step")
+            self.decision = intent("followup", refresh_sources=True)
+            fetch.return_value = ("公开资料", "版本二")
+            with self.store.transaction(self.sid) as data:
+                data["tasks"][data["active_task_id"]]["context"]["selected_sources"] = ["https://example.com/rag"]
+            self.send("刷新资料再解释")
+        task = self.state()["tasks"][self.state()["active_task_id"]]
+        self.assertEqual(task["context"]["sources"][0]["version"], 2)
+        self.assertEqual(task["context"]["source_history"][0]["content"], "版本一")
+
+    def test_mixed_material_keeps_generated_identity(self):
+        self.decision = intent("goal", workflow="source_learning", scope="learning", direct_teaching=True)
+        self.send("直接教我 RAG")
+        self.decision = intent("material", "followup")
+        self.send("补充资料：检索可能采用关键词与向量混合")
+        task = self.state()["tasks"][self.state()["active_task_id"]]
+        self.assertEqual({s["type"] for s in task["context"]["sources"]}, {"agent_generated", "user_material"})
+
+    def test_search_uses_minimal_public_topic_not_private_material(self):
+        self.decision = intent("question", needs_verification=True, public_search_query="贷款基准利率 官方标准")
+        with patch("agent_service.conversation.web_search_text", return_value="") as search:
+            self.send("私人材料：客户电话 13812345678。请解释当前贷款基准利率。")
+            self.assertNotIn("13812345678", search.call_args.args[0])
+            self.assertNotIn("私人材料", search.call_args.args[0])
+        self.assertEqual(self.harness._public_query("私人电话 13812345678"), "")
+
     def test_mastery_complete_before_optional_save_and_decline_clears_action(self):
         self.decision = intent("question", workflow="problem_solving")
         self.send("RAG 是什么", mode="problem_solving")

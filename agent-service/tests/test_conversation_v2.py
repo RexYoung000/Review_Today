@@ -89,6 +89,172 @@ class ConversationTests(unittest.TestCase):
             self.assertIsNone(run["completed_at"])
         self.capture.assert_not_called()
 
+    def test_memory_policy_fences_pending_and_late_output_without_empty_sessions(self):
+        origin = str(uuid.uuid4())
+        self.harness.memory_policy(origin, allowed=True, policy_version=0, content_version=0)
+        self.assertIsNone(self.store.get(origin), "syncing memory policy does not create an empty Session")
+        candidate = dict(id="old-lesson", session_id=origin, policy_version=0, content_version=0,
+                         concept="检索", excerpt="索引使查找更有效率", kind="explained")
+        self.decision = intent("question", memory_selections=[dict(id="old-lesson", relation="analogy")])
+        request = SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="RAG 如何检索", context={"memory_candidates": [candidate]})
+        accepted = self.harness.accept(self.sid, request)
+        self.harness.drain(self.sid)
+        run = self.state()["runs"][accepted.run_id]
+        self.assertEqual(run["status"], "completed")
+        self.assertEqual(run["memory_references"][0]["kind"], "explained")
+        with self.store.transaction(self.sid) as data:
+            data["runs"][accepted.run_id]["status"] = "running"
+            data["pending"] = {"kind": "save"}
+            data["draft"] = {"memory_references": [candidate]}
+        self.harness.memory_policy(origin, allowed=False, policy_version=1, content_version=0)
+        self.assertIsNone(self.state()["pending"])
+        self.assertTrue(self.state()["draft"]["invalidated"])
+        self.assertEqual(self.state()["runs"][accepted.run_id]["status"], "interrupted")
+        self.assertFalse(self.store.memory_valid([candidate]))
+        self.harness.memory_policy(origin, allowed=True, policy_version=2, content_version=0)
+        self.assertFalse(self.store.memory_valid([candidate]), "restoring permission cannot revive old versions")
+        with self.assertRaisesRegex(ValueError, "VERSION_CONFLICT"):
+            self.harness.memory_policy(origin, allowed=True, policy_version=0, content_version=0)
+
+    def test_thinking_preference_persists_and_control_id_conflicts(self):
+        body = SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="你好", thinking_strength="deep")
+        accepted = self.harness.accept(self.sid, body)
+        self.harness.drain(self.sid)
+        self.assertEqual(self.state()["thinking_strength"], "deep")
+        self.send("再问一次")
+        self.assertEqual(self.state()["thinking_strength"], "deep", "default next-turn fields cannot reset explicit choice")
+        action = RunActionRequest(action_id=str(uuid.uuid4()), action="set_thinking", thinking_strength="smart")
+        self.harness.action(accepted.run_id, action)
+        self.harness.action(accepted.run_id, action)
+        self.assertEqual(self.state()["thinking_strength"], "smart")
+        with self.assertRaisesRegex(ValueError, "IDEMPOTENCY_CONFLICT"):
+            self.harness.action(accepted.run_id, action.model_copy(update={"thinking_strength": "deep"}))
+
+    def test_memory_dependencies_survive_followup_and_exclusion_removes_model_context(self):
+        origin = str(uuid.uuid4())
+        self.harness.memory_policy(origin, allowed=True, policy_version=0, content_version=0)
+        candidate = dict(id="prior", session_id=origin, policy_version=0, content_version=0, kind="explained",
+                         concept="检索", excerpt="旧关联内容")
+        self.decision = intent("question", memory_selections=[dict(id="prior", relation="analogy")])
+        first = self.harness.accept(self.sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="RAG 是什么", context={"memory_candidates": [candidate]}))
+        self.harness.drain(self.sid)
+        self.decision = intent("followup")
+        second = self.send("再举例")
+        self.assertEqual(self.state()["runs"][second.run_id]["memory_references"][0]["id"], "prior")
+        self.harness.memory_policy(origin, allowed=False, policy_version=1, content_version=0)
+        self.calls.clear()
+        self.decision = intent("question")
+        third = self.send("另一个基础问题")
+        self.assertEqual(self.state()["runs"][third.run_id]["status"], "completed")
+        routing = next(value for schema, value in self.calls if schema is IntentDecision)
+        self.assertNotIn("这是本轮真实回答", json.dumps(routing, ensure_ascii=False))
+        self.assertEqual(routing["related_learning"], [])
+        self.assertTrue(any(m.get("run_id") == first.run_id for m in self.state()["messages"]), "history remains")
+
+    def test_stale_memory_candidate_cannot_create_authority_or_strand_run(self):
+        candidate = dict(id="missing", session_id=str(uuid.uuid4()), policy_version=0, content_version=0,
+                         kind="explained", excerpt="不应进入模型")
+        self.decision = intent("question", memory_selections=[dict(id="missing", relation="analogy")])
+        result = self.harness.accept(self.sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="RAG 是什么", context={"memory_candidates": [candidate]}))
+        self.harness.drain(self.sid)
+        self.assertEqual(self.state()["runs"][result.run_id]["status"], "completed")
+        self.assertEqual(self.state()["runs"][result.run_id]["memory_references"], [])
+        self.assertIsNone(self.store.memory_policy(candidate["session_id"]))
+        self.assertNotIn("不应进入模型", json.dumps(self.calls[0][1], ensure_ascii=False))
+
+    def test_ordinary_answer_does_not_create_fake_material_or_goal(self):
+        self.decision = intent("question", answer_only=True)
+        self.send("RAG 是什么")
+        self.assertEqual(self.state()["tasks"], {})
+        self.assertFalse(any(e.get("payload", {}).get("sources") for e in self.state()["events"]))
+
+    def test_mac_card_version_invalidation_filters_historical_context(self):
+        self.decision = intent("question")
+        first = self.send("旧问题")
+        self.calls.clear()
+        second = self.harness.accept(self.sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="新的问题",
+            context={"invalid_memory_run_ids": [first.run_id], "summary": "失效摘要"}))
+        self.harness.drain(self.sid)
+        self.assertEqual(self.state()["runs"][second.run_id]["status"], "completed")
+        routing = next(value for schema, value in self.calls if schema is IntentDecision)
+        self.assertEqual(routing["summary"], "")
+        self.assertEqual(routing["recent_messages"], [])
+        with self.store.transaction(self.sid) as data:
+            data["pending"] = {"kind": "save", "target_id": "fresh-version", "version": 1}
+        self.harness.accept(self.sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="暂时不要确认",
+            context={"invalid_memory_run_ids": [first.run_id]}))
+        self.assertEqual(self.state()["pending"]["target_id"], "fresh-version", "replaying an old exclusion cannot clear a new decision")
+
+    def test_schema_repair_is_bounded_and_preserves_deep_strength(self):
+        from agent_service.openai_client import ModelCallError
+        from agent_service.execution_policy import current_budget
+        calls = []
+        def malformed_once(system, user, schema, **kwargs):
+            current_budget.get().take()
+            calls.append(kwargs)
+            if len(calls) == 1:
+                raise ModelCallError("SCHEMA", "ValidationError")
+            return intent("greeting", light_reply="你好")
+        with patch("agent_service.conversation.parse_model", side_effect=malformed_once):
+            result = self.harness.accept(self.sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="你好", thinking_strength="deep"))
+            self.harness.drain(self.sid)
+        self.assertEqual(len(calls), 2)
+        self.assertTrue(all(c["reasoning_effort"] == "high" for c in calls))
+        self.assertEqual(self.state()["runs"][result.run_id]["status"], "completed")
+
+    def test_approved_fallback_shares_budget_but_access_denial_never_switches(self):
+        from agent_service.openai_client import ModelCallError
+        from agent_service.execution_policy import current_budget
+        for error, expected_calls, status in [(ModelCallError("CONNECTION"), 2, "completed"),
+                                               (ModelCallError("PROVIDER", "HTTP 403"), 1, "retryable_failed")]:
+            calls = []
+            def alternate(system, prompt, schema, **kwargs):
+                current_budget.get().take()
+                calls.append(kwargs)
+                if len(calls) == 1:
+                    raise error
+                return intent("greeting", light_reply="你好")
+            sid = str(uuid.uuid4())
+            with patch("agent_service.conversation.alternatives", return_value=["approved-fixture"]), \
+                 patch("agent_service.conversation.require_model"), \
+                 patch("agent_service.conversation.parse_model", side_effect=alternate):
+                self.send(sid=sid)
+            self.assertEqual(len(calls), expected_calls)
+            run = next(iter(self.store.get(sid)["runs"].values()))
+            self.assertEqual(run["status"], status)
+            if expected_calls == 2:
+                self.assertEqual(calls[-1]["model"], "approved-fixture")
+
+    def test_failed_memory_generation_is_retryable_not_false_evidence_conflict(self):
+        self.decision = intent("material", workflow="memory_organization", scope="organize")
+        self.send("知识资料")
+        self.decision = intent("self_report", understanding="self_reported")
+        self.send("我理解了")
+        draft = self.state()["draft"]
+        self.decision = intent("confirm", proposed_actions=[IntentOperation(kind="save", target_id=draft["id"], version=draft["version"], disposition="confirm", evidence="请保存")])
+        self.capture.return_value = {"outcome": "retryable_failed", "error_code": "RT.CAPTURE.RISK_CHECK_FAILED"}
+        result = self.send("请保存")
+        self.assertEqual(self.state()["runs"][result.run_id]["status"], "retryable_failed")
+        self.assertFalse(any(t["stage"] == "knowledge_conflict" for t in self.state()["tasks"].values()))
+        self.assertTrue(self.capture.call_args.kwargs["confirmed_content"])
+        self.assertTrue(callable(self.capture.call_args.kwargs["model_runner"]))
+
+    def test_hint_answer_is_not_independent_verification(self):
+        self.decision = intent("question", workflow="problem_solving")
+        self.send("RAG 是什么", mode="problem_solving")
+        self.decision = intent("hint")
+        self.send("给我一点提示")
+        with self.store.transaction(self.sid) as data:
+            task = next(iter(data["tasks"].values()))
+            task["stage"] = "practice"
+            task["context"]["check_question"] = "解释 RAG"
+        self.decision = intent("answer")
+        self.send("先检索再生成")
+        task = next(iter(self.state()["tasks"].values()))
+        self.assertFalse(task["context"]["practice"][-1]["evaluation"]["passed"])
+        self.assertTrue(task["context"]["practice"][-1]["hint_used"])
+        self.assertFalse(task["context"].get("transfer_passed"))
+
     def test_auto_question_is_answer_only_but_problem_preset_starts_goal(self):
         self.decision = intent("question", workflow="problem_solving")
         self.send("RAG 是什么")
@@ -417,10 +583,10 @@ class ConversationTests(unittest.TestCase):
     def test_source_pack_needs_confirmation_before_public_fetch(self):
         self.decision = intent("goal", workflow="topic_exploration", scope="learning")
         self.send("我想了解 RAG")
-        self.decision = intent("answer", workflow="topic_exploration", scope="continue_goal")
+        self.decision = intent("answer", workflow="topic_exploration", scope="continue_goal", public_search_query="RAG 检索增强生成 入门与应用")
         candidates = [SourceCandidate(url=f"https://example.com/{i}", title=f"资料{i}", snippet="互补内容") for i in range(2)]
         # A goal-clarifying answer should enter source selection, not mastery grading.
-        self.decision = intent("answer", workflow="topic_exploration", scope="continue_goal")
+        self.decision = intent("answer", workflow="topic_exploration", scope="continue_goal", public_search_query="RAG 检索增强生成 入门与应用")
         with patch("agent_service.conversation.find_source_candidates", return_value=candidates), patch("agent_service.conversation.fetch_public_url") as fetch:
             self.send("用于面试，先找资料")
             self.assertEqual(self.state()["pending"]["kind"], "select_sources")
@@ -442,7 +608,7 @@ class ConversationTests(unittest.TestCase):
         self.assertEqual(self.state()["tasks"][self.state()["active_task_id"]]["stage"], "calibration")
 
     def test_high_risk_no_evidence_is_not_supported(self):
-        self.decision = intent("question", needs_verification=True)
+        self.decision = intent("question", needs_verification=True, public_search_query="当前官方贷款基准利率")
         with patch("agent_service.conversation.web_search_text", return_value="") as search:
             self.send("当前贷款利率如何")
             search.assert_called_once()

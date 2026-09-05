@@ -33,6 +33,8 @@ struct ModelMigrationTests {
             precondition(reviews.count == 1 && reviews[0].acked && reviews[0].effectiveGrade == "good")
 #if NEW_SCHEMA
             precondition(sessions[0].lifecycleRevision == 0 && sessions[0].lifecycleActionsJSON == "[]")
+            precondition(sessions[0].memoryUseAllowed && sessions[0].memoryPolicyRevision == 0 && sessions[0].learningEvidenceJSON == "[]")
+            precondition(sessions[0].thinkingStrength == "smart" && sessions[0].contextCapacityJSON == nil)
             let tasks = try context.fetch(FetchDescriptor<LearningTask>())
             precondition(tasks.count == 1 && tasks[0].learningPlanJSON == nil && tasks[0].learningOutcomeJSON == nil)
 #endif

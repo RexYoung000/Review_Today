@@ -22,6 +22,9 @@ final class AgentRun {
     var transport: String = ""
     var activityKind: String?
     var completedAt: Date?
+    var memoryReferencesJSON: String = "[]"
+    var memoryInvalidationRevision: Int = -1
+    var thinkingStrength: String = "smart"
 
     init(id: UUID, sessionID: UUID) {
         self.id = id
@@ -75,6 +78,7 @@ final class AgentRunControl {
     var sessionID: UUID
     var action: String
     var mode: String?
+    var thinkingStrength: String?
     var createdAt: Date
     var sent: Bool
     var lastError: String?

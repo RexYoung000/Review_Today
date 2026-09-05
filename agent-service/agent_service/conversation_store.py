@@ -11,6 +11,7 @@ import uuid
 from contextlib import contextmanager
 
 from agent_service.harness_store import HarnessStore, harness_store, now_iso
+from agent_service.checkpoint_delta import update_journal
 
 
 class Superseded(Exception):
@@ -23,6 +24,36 @@ class ConversationStore:
         self._lock = tasks._lock
         with tasks._connection() as db:
             db.execute("CREATE TABLE IF NOT EXISTS agent_sessions_v2 (session_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
+            db.execute("CREATE TABLE IF NOT EXISTS agent_memory_policy_v2 (session_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
+
+    def memory_policy(self, sid):
+        with self._lock, self.tasks._connection() as db:
+            row = db.execute("SELECT payload FROM agent_memory_policy_v2 WHERE session_id=?", (sid,)).fetchone()
+            return json.loads(row[0]) if row else None
+
+    def set_memory_policy(self, sid, value):
+        with self._lock, self.tasks._connection() as db:
+            row = db.execute("SELECT payload FROM agent_memory_policy_v2 WHERE session_id=?", (sid,)).fetchone()
+            old = json.loads(row[0]) if row else None
+            if old:
+                if any(value[key] < old[key] for key in ("policy_version", "content_version")):
+                    raise ValueError("RT.MEMORY.VERSION_CONFLICT")
+                if value["policy_version"] == old["policy_version"] and value["allowed"] != old["allowed"]:
+                    raise ValueError("RT.MEMORY.VERSION_CONFLICT")
+            db.execute("INSERT INTO agent_memory_policy_v2 VALUES (?, ?) ON CONFLICT(session_id) DO UPDATE SET payload=excluded.payload", (sid, json.dumps(value)))
+
+    def memory_valid(self, refs, depth=0):
+        if depth > 6:
+            return False
+        for ref in refs:
+            if ref.get("knowledge_id"):
+                continue  # Mac owns the final formal-card version check.
+            policy = self.memory_policy(ref.get("session_id"))
+            if not policy or not policy["allowed"] or any(policy[key] != ref.get(key) for key in ("policy_version", "content_version")):
+                return False
+            if not self.memory_valid(ref.get("dependencies", []), depth + 1):
+                return False
+        return True
 
     @staticmethod
     def empty(session_id: str) -> dict:
@@ -62,6 +93,8 @@ class ConversationStore:
                         or run.get("lifecycle_revision", 0) != data.get("lifecycle_revision", 0)):
                     raise Superseded()
             yield data
+            if run_id is not None and (data["runs"][run_id].get("memory_invalidated") or not self.memory_valid(data["runs"][run_id].get("memory_references", []))):
+                raise Superseded()
             # Both projections are committed together; an exception above writes neither.
             with self.tasks._connection() as db:
                 for task in data["tasks"].values():
@@ -72,6 +105,10 @@ class ConversationStore:
                         "INSERT INTO harness_tasks VALUES (?, ?, ?, ?, ?) ON CONFLICT(task_id) DO UPDATE SET updated_at=excluded.updated_at, payload=excluded.payload",
                         (task["task_id"], session_id, task["client_message_id"], task["updated_at"], json.dumps(task, ensure_ascii=False)),
                     )
+                # Journal the committed state, including mutations after the last
+                # visible event. ACK may trim transport copies, never the Mac's
+                # recoverable state. Appends avoid resending whole streamed text.
+                update_journal(data)
                 payload = {k: v for k, v in data.items() if k != "tasks"}
                 encoded = json.dumps(payload, ensure_ascii=False)
                 if encoded != prior_payload or not self.get(session_id):
@@ -102,7 +139,11 @@ class ConversationStore:
             data["messages"] = data["messages"][count:]
             data["summarized_count"] = max(0, data.get("summarized_count", 0) - count)
         for run in data["runs"].values():
-            if run["status"] == "completed" and not any(e["run_id"] == run["run_id"] and e["seq"] > data["last_acked_seq"] for e in data["events"]):
+            task = data["tasks"].get(run.get("task_id"))
+            referenced = task and (task["status"] not in {"completed", "cancelled", "terminal_failed"} or
+                                   task["task_id"] == data.get("active_task_id"))
+            referenced = referenced or bool(data.get("draft") and not data["draft"].get("invalidated"))
+            if run["status"] == "completed" and not referenced and not any(e["run_id"] == run["run_id"] and e["seq"] > data["last_acked_seq"] for e in data["events"]):
                 run["steps"] = {}
 
     def sessions(self) -> list[str]:

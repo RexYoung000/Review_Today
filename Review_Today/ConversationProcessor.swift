@@ -33,12 +33,24 @@ enum ConversationProcessor {
     @MainActor
     static func tick(context: ModelContext, monitor: AgentServiceMonitor, pollEvents: Bool = true, onlySession: UUID? = nil, controlsOnly: Bool = false, skipControls: Bool = false) async {
         guard monitor.serviceReachable && monitor.conversationSupported else { return }
-        let sessions = ((try? context.fetch(FetchDescriptor<AgentSession>())) ?? []).filter { onlySession == nil || $0.id == onlySession }
+        let allSessions = (try? context.fetch(FetchDescriptor<AgentSession>())) ?? []
+        let sessions = allSessions.filter { onlySession == nil || $0.id == onlySession }
         // Durable controls run before pulling committable output. Never lose rapid
         // stop/mode/resume operations by storing only one pending field on a Task.
         let controls = (try? context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { !$0.sent }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
         var blockedSessions = Set<UUID>()
         for session in sessions where !skipControls {
+            if session.memoryPolicySyncedRevision != session.memoryPolicyRevision || session.memoryContentSyncedRevision != session.memoryContentRevision {
+                let policy = session.memoryPolicyRevision, content = session.memoryContentRevision
+                do {
+                    _ = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/actions", body: [
+                        "action_id": UUID().uuidString.lowercased(), "action": "memory_policy", "allowed": session.memoryUseAllowed,
+                        "policy_version": policy, "content_version": content])
+                    session.memoryPolicySyncedRevision = policy
+                    session.memoryContentSyncedRevision = content
+                    try context.save()
+                } catch { session.syncError = HarnessAPIError.code(for: error); blockedSessions.insert(session.id) }
+            }
             let actions = (session.lifecycleActionsJSON.data(using: .utf8).flatMap { try? JSONSerialization.jsonObject(with: $0) } as? [[String: Any]]) ?? []
             for action in actions where (action["lifecycle_revision"] as? Int ?? 0) > session.lifecycleSyncedRevision {
                 do {
@@ -58,6 +70,7 @@ enum ConversationProcessor {
             do {
                 var body: [String: Any] = ["action_id": control.id.uuidString.lowercased(), "action": control.action]
                 if let mode = control.mode { body["mode"] = mode }
+                if let strength = control.thinkingStrength { body["thinking_strength"] = strength }
                 _ = try await AgentAPI.conversationRequest("/v2/runs/\(control.runID.uuidString.lowercased())/actions", body: body)
                 control.sent = true
                 control.lastError = nil
@@ -75,7 +88,10 @@ enum ConversationProcessor {
         let messages = (try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.role == "user" && $0.deliveryStatus == "local" }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
         for message in messages where message.role == "user" && message.deliveryStatus == "local" {
             guard let session = sessions.first(where: { $0.id == message.sessionID }), session.status == "active" else { continue }
-            guard monitor.canSubmitMessages, session.lifecycleRevision == session.lifecycleSyncedRevision else { continue }
+            // Durable acceptance is not a model invocation. Bound confirmations
+            // and stop/recovery must not wait for an unrelated routing-role probe.
+            guard session.lifecycleRevision == session.lifecycleSyncedRevision else { continue }
+            guard session.memoryPolicySyncedRevision == session.memoryPolicyRevision && session.memoryContentSyncedRevision == session.memoryContentRevision else { continue }
             guard !controls.contains(where: { $0.sessionID == session.id && !$0.sent }) else { continue }
             guard !blockedSessions.contains(session.id) else { continue }
             // Historic inputs already attached to a v2 Task use its compatibility
@@ -87,16 +103,27 @@ enum ConversationProcessor {
                 let before = message.createdAt
                 var recentQuery = FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == sid && $0.createdAt < before && $0.responseState == "complete" }, sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
                 recentQuery.fetchLimit = 10
-                let recent = try context.fetch(recentQuery).reversed().map { ["role": $0.role == "assistant" ? "coach" : $0.role, "content": String($0.content.prefix(3000))] }
                 let knowledge = (try? context.fetch(FetchDescriptor<Knowledge>())) ?? []
+                let sessionRuns = try context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }))
+                let invalidRuns = Set(sessionRuns.filter {
+                    !LearningMemory.valid(LearningMemory.array($0.memoryReferencesJSON), sessions: allSessions, knowledge: knowledge)
+                }.map(\.id))
+                let recent = try context.fetch(recentQuery).reversed().filter { message in
+                    message.runID.map { !invalidRuns.contains($0) } ?? true
+                }.map { ["role": $0.role == "assistant" ? "coach" : $0.role, "content": String($0.content.prefix(3000))] }
                 let relatedKnowledge = HarnessProcessor.relevantKnowledgeSummaries(for: message.content, candidates: knowledge.filter { $0.lifecycle == "active" })
+                let memoryCandidates = try LearningMemory.candidates(for: message.content, excluding: sid, context: context)
                 var body: [String: Any] = [
                     "client_message_id": (message.clientMessageID ?? message.id).uuidString.lowercased(),
                     "content": message.content, "content_type": message.contentType,
                     "mode_preset": session.modePreset, "delivery": message.deliveryMode,
+                    "thinking_strength": session.thinkingStrength,
                     "primary_language": UserLanguage.primaryCode,
                     "expected_event_seq": session.lastSessionEventSeq, "lifecycle_revision": session.lifecycleRevision,
-                    "context": ["summary": String(session.summaryText.prefix(12000)), "recent_messages": Array(recent), "knowledge_summaries": Array(relatedKnowledge.prefix(5))],
+                    "context": ["summary": invalidRuns.isEmpty ? String(session.summaryText.prefix(12000)) : "", "recent_messages": Array(recent),
+                                "knowledge_summaries": memoryCandidates.isEmpty ? Array(relatedKnowledge.prefix(5)) : [],
+                                "memory_candidates": memoryCandidates,
+                                "invalid_memory_run_ids": invalidRuns.map { $0.uuidString.lowercased() }],
                 ]
                 if let operation = object(message.operationJSON), !operation.isEmpty { body["operation"] = operation }
                 if let handoff = object(session.handoffJSON), var supplied = body["context"] as? [String: Any] {
@@ -144,7 +171,7 @@ enum ConversationProcessor {
         let allRuns = (try? context.fetch(FetchDescriptor<AgentRun>())) ?? []
         for session in sessions where allRuns.contains(where: { $0.sessionID == session.id }) {
             do {
-                let page = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/events?after_seq=\(session.lastSessionEventSeq)")
+                let page = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/events?after_seq=\(session.lastSessionEventSeq)&recovery_version=\(ConversationCheckpoint.version(session.checkpointJSON))")
                 try persist(page, session: session, context: context)
                 session.syncError = nil
                 try context.save()
@@ -198,11 +225,13 @@ enum ConversationProcessor {
 
     @MainActor
     @discardableResult
-    static func queueControl(_ run: AgentRun, action: String, mode: String? = nil, context: ModelContext) -> Bool {
+    static func queueControl(_ run: AgentRun, action: String, mode: String? = nil, thinkingStrength: String? = nil, context: ModelContext) -> Bool {
         let sid = run.sessionID
         guard let session = try? context.fetch(FetchDescriptor<AgentSession>(predicate: #Predicate { $0.id == sid })).first,
               session.status == "active" else { return false }
-        context.insert(AgentRunControl(runID: run.id, sessionID: run.sessionID, action: action, mode: mode))
+        let control = AgentRunControl(runID: run.id, sessionID: run.sessionID, action: action, mode: mode)
+        control.thinkingStrength = thinkingStrength
+        context.insert(control)
         if action == "stop" || action == "cancel_task" {
             if let started = run.startedAt { run.elapsedMS = Int(Date.now.timeIntervalSince(started) * 1000) }
             run.startedAt = nil
@@ -235,6 +264,9 @@ enum ConversationProcessor {
         let steering = Set(runs.filter { $0.status == "adjusting" }.map(\.id))
         let pendingControls = try context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { $0.sessionID == sid && !$0.sent }))
         let stopping = Set(pendingControls.filter { ["stop", "cancel_task"].contains($0.action) }.map(\.runID))
+        var memorySessions: [AgentSession]?
+        var memoryKnowledge: [Knowledge]?
+        var invalidMemoryInPage = false
         for raw in page["runs"] as? [[String: Any]] ?? [] {
             guard uuid(raw["session_id"]) == sid else { throw HarnessAPIError.http(409) }
             guard session.status == "active", (raw["lifecycle_revision"] as? Int ?? 0) >= session.lifecycleRevision else { continue }
@@ -265,6 +297,7 @@ enum ConversationProcessor {
             run.firstTextMS = raw["first_text_ms"] as? Int
             run.attemptDurationsJSON = json(raw["attempt_durations"] ?? [])
             run.transport = raw["transport"] as? String ?? ""
+            run.thinkingStrength = raw["thinking_strength"] as? String ?? run.thinkingStrength
             run.activityKind = rawActivityKind
             run.completedAt = rawCompletedAt
             for message in messages where message.runID == id && message.responseState == "streaming" && message.responseRevision < run.revision {
@@ -299,11 +332,31 @@ enum ConversationProcessor {
             let payload = raw["payload"] as? [String: Any] ?? [:]
             let revision = raw["revision"] as? Int ?? 1
             let currentRevision = runs.first(where: { $0.id == runID })?.revision ?? revision
+            let lifecycleBlocked = session.status == "archived" || (raw["lifecycle_revision"] as? Int ?? 0) < session.lifecycleRevision || stopping.contains(runID) || steering.contains(runID) || revision < currentRevision
+            if !lifecycleBlocked, let references = payload["memory_references"] as? [[String: Any]], let run = runs.first(where: { $0.id == runID }) {
+                if !(LearningMemory.array(run.memoryReferencesJSON) as NSArray).isEqual(to: references) {
+                    run.memoryInvalidationRevision = -1
+                }
+                run.memoryReferencesJSON = json(references)
+            }
+            let memoryRefs = LearningMemory.array(runs.first(where: { $0.id == runID })?.memoryReferencesJSON ?? "[]")
+            if !memoryRefs.isEmpty && memorySessions == nil {
+                memorySessions = try context.fetch(FetchDescriptor<AgentSession>())
+                memoryKnowledge = try context.fetch(FetchDescriptor<Knowledge>())
+            }
+            let memoryValid = memoryRefs.isEmpty || LearningMemory.valid(memoryRefs, sessions: memorySessions ?? [], knowledge: memoryKnowledge ?? [])
             // Archiving is a durable UI fence, not only a navigation filter. The
             // service may still replay an event that was already in flight after
             // the stop control was accepted; keep its audit record, but never let
             // it revive visible output, task state, tags, or follow-on effects.
-            let blocked = session.status == "archived" || (raw["lifecycle_revision"] as? Int ?? 0) < session.lifecycleRevision || stopping.contains(runID) || steering.contains(runID) || revision < currentRevision
+            let blocked = !memoryValid || lifecycleBlocked
+            if !memoryValid { invalidMemoryInPage = true; try LearningMemory.fenceInvalidReferences(context: context) }
+            if !blocked, let capacity = payload["context_capacity"] as? [String: Any] { session.contextCapacityJSON = json(capacity) }
+            if !blocked, payload["invalidate_memory"] as? Bool == true {
+                session.memoryContentRevision += 1
+                try LearningMemory.fenceInvalidReferences(context: context)
+            }
+            if !blocked, let evidence = payload["learning_evidence"] as? [String: Any] { LearningMemory.store(evidence, session: session) }
             if !blocked, revision >= currentRevision,
                let intent = payload["intent"] as? [String: Any],
                let tags = intent["session_tags"] as? [String], !tags.isEmpty {
@@ -359,6 +412,7 @@ enum ConversationProcessor {
                 if !tasks.contains(where: { $0.id == taskID }) { context.insert(task); tasks.append(task) }
                 task.conversationManaged = true
                 HarnessProcessor.apply(view, to: task)
+                task.memoryReferencesJSON = json(payload["memory_references"] ?? memoryRefs)
             }
             for source in !blocked ? (payload["sources"] as? [[String: Any]] ?? []) : [] {
                 guard let url = source["url"] as? String else { continue }
@@ -368,10 +422,20 @@ enum ConversationProcessor {
                 let saved = sources.first(where: { $0.sessionID == session.id && (sourceID != nil ? $0.id == sourceID : $0.url == url && !url.isEmpty) }) ??
                     SourceReference(sessionID: session.id, taskID: uuid(raw["task_id"]), url: url, title: source["title"] as? String ?? url)
                 guard version >= saved.sourceVersion else { continue }
+                if version > saved.sourceVersion && !saved.contentSnapshot.isEmpty {
+                    var history = LearningMemory.array(saved.versionHistoryJSON)
+                    if !history.contains(where: { $0["version"] as? Int == saved.sourceVersion }) {
+                        history.append(["version": saved.sourceVersion, "type": saved.sourceType, "title": saved.title,
+                                        "content": saved.contentSnapshot, "locator": saved.locator,
+                                        "fetched_at": saved.fetchedAt?.ISO8601Format() ?? ""])
+                        saved.versionHistoryJSON = json(history)
+                    }
+                }
                 if let sourceID { saved.id = sourceID }
                 if !sources.contains(where: { $0.id == saved.id }) { context.insert(saved) }
                 saved.sourceType = source["type"] as? String ?? "public_source"
                 saved.sourceVersion = version
+                saved.title = source["title"] as? String ?? saved.title
                 saved.fetchedAt = optionalDate(source["fetched_at"])
                 if let locator = source["locator"] as? String { saved.locator = locator }
                 if let content = source["content"] as? String, !content.isEmpty { saved.contentSnapshot = content }
@@ -406,7 +470,22 @@ enum ConversationProcessor {
         }
         if session.status != "archived" && (page["lifecycle_revision"] as? Int ?? 0) >= session.lifecycleRevision {
             if !pendingControls.contains(where: { $0.action == "set_mode" }), let mode = page["mode"] as? String { session.modePreset = mode }
-            session.pendingOperationJSON = (page["pending"] as? [String: Any]).map(json)
+            if !pendingControls.contains(where: { $0.action == "set_thinking" }), let strength = page["thinking_strength"] as? String {
+                session.thinkingStrength = strength
+            }
+            if !invalidMemoryInPage {
+                let pending = page["pending"] as? [String: Any]
+                let target = pending?["target_id"] as? String
+                let targetTask = tasks.first { $0.draftTargetID == target || $0.id.uuidString.lowercased() == target }
+                let targetRun = runs.first { $0.id.uuidString.lowercased() == target }
+                let references = LearningMemory.array(targetTask?.memoryReferencesJSON ?? targetRun?.memoryReferencesJSON ?? "[]")
+                let valid = try references.isEmpty || LearningMemory.valid(references, sessions: context.fetch(FetchDescriptor<AgentSession>()), knowledge: context.fetch(FetchDescriptor<Knowledge>()))
+                session.pendingOperationJSON = valid ? pending.map(json) : nil
+            }
+        }
+        if let recovery = page["recovery"] as? [String: Any] {
+            session.checkpointJSON = try ConversationCheckpoint.merge(recovery, into: session.checkpointJSON,
+                                                                      sessionID: sid, cursor: session.lastSessionEventSeq)
         }
         try context.save()
     }

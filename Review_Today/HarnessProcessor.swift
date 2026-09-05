@@ -162,6 +162,9 @@ enum HarnessProcessor {
                 let messages = fetchMessages(context)
                 guard !controls.contains(where: { $0.sessionID == task.sessionID && !$0.sent }),
                       !messages.contains(where: { $0.sessionID == task.sessionID && $0.deliveryStatus == "local" }) else { return }
+                guard LearningMemory.valid(LearningMemory.array(task.memoryReferencesJSON),
+                                           sessions: try context.fetch(FetchDescriptor<AgentSession>()),
+                                           knowledge: try context.fetch(FetchDescriptor<Knowledge>())) else { return }
                 let claimed = try await AgentAPI.conversationRequest("/v2/tasks/\(task.id.uuidString.lowercased())/commit-claim", body: [:])
                 let current = try JSONDecoder().decode(AgentAPI.LearningTaskView.self, from: JSONSerialization.data(withJSONObject: claimed))
                 try await commitMemory(current, task: task, context: context)
@@ -185,6 +188,11 @@ enum HarnessProcessor {
         context: ModelContext
     ) async throws {
         guard writable(task, context: context) else { throw HarnessProcessorError.invalidResponse }
+        guard LearningMemory.valid(LearningMemory.array(task.memoryReferencesJSON),
+                                   sessions: try context.fetch(FetchDescriptor<AgentSession>()),
+                                   knowledge: try context.fetch(FetchDescriptor<Knowledge>())) else {
+            throw HarnessProcessorError.invalidResponse
+        }
         let sid = task.sessionID
         guard ((try? context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { $0.sessionID == sid && !$0.sent }))) ?? []).isEmpty,
               ((try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == sid && $0.role == "user" && $0.deliveryStatus == "local" }))) ?? []).isEmpty else {
@@ -324,6 +332,7 @@ enum HarnessProcessor {
         task.learningPlanJSON = view.learningPlanJSON
         task.learningOutcomeJSON = view.learningOutcomeJSON
         task.sourcesJSON = view.sourcesJSON
+        if let refs = view.memoryReferencesJSON { task.memoryReferencesJSON = refs }
         task.draftTargetID = view.draftTargetID
         task.understanding = view.understanding ?? "unknown"
         task.mode = view.mode

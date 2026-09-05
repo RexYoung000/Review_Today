@@ -9,15 +9,16 @@ from openai.lib._parsing._responses import type_to_text_format_param
 from pydantic import BaseModel, ValidationError
 
 from agent_service.config import BASE_URL, MODEL, MODEL_PROBE_TIMEOUT_SECONDS, MODEL_TIMEOUT_SECONDS, openai_key
+from agent_service.execution_policy import budget_scope, current_budget
 
 
 def _client(*, timeout: float = MODEL_TIMEOUT_SECONDS) -> OpenAI:
     key = openai_key()
     if not key:
         raise RuntimeError("RT.CAPTURE.NO_KEY")
-    if BASE_URL:
-        return OpenAI(api_key=key, base_url=BASE_URL, timeout=timeout, max_retries=0)
-    return OpenAI(api_key=key, timeout=timeout, max_retries=0)
+    client = OpenAI(api_key=key, timeout=timeout, max_retries=0, **({"base_url": BASE_URL} if BASE_URL else {}))
+    if current_budget.get(): current_budget.get().register(client.close)
+    return client
 
 
 def parse_model(
@@ -27,15 +28,22 @@ def parse_model(
     *,
     model: str | None = None,
     timeout: float = MODEL_TIMEOUT_SECONDS,
+    reasoning_effort: str | None = None,
     on_partial: Callable[[dict], None] | None = None,
     on_transport: Callable[[str], None] | None = None,
     on_cancel_handle: Callable[[Callable[[], None]], None] | None = None,
 ) -> BaseModel:
     try:
-        if on_partial is not None:
-            return _stream_model(system, user, text_format, model=model, timeout=timeout,
-                                 on_partial=on_partial, on_transport=on_transport, on_cancel_handle=on_cancel_handle)
-        return _parse_model(system, user, text_format, model=model, timeout=timeout, on_cancel_handle=on_cancel_handle)
+        with budget_scope(timeout) as budget:
+            if on_partial is not None:
+                result = _stream_model(system, user, text_format, model=model, timeout=timeout,
+                                     on_partial=on_partial, on_transport=on_transport, on_cancel_handle=on_cancel_handle,
+                                     reasoning_effort=reasoning_effort)
+            else:
+                result = _parse_model(system, user, text_format, model=model, timeout=timeout, on_cancel_handle=on_cancel_handle,
+                                reasoning_effort=reasoning_effort)
+            budget.remaining()
+            return result
     except ModelCallError:
         raise
     except APITimeoutError as exc:
@@ -60,7 +68,7 @@ class ModelCallError(RuntimeError):
         super().__init__(self.code)
 
 
-def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_transport, on_cancel_handle=None):
+def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_transport, on_cancel_handle=None, reasoning_effort=None):
     """Only output_text reaches the projection callback; reasoning is never read.
 
     A projection is a preview, not a validated model result. Once any preview has
@@ -79,8 +87,10 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
         # before response.created, which the SDK's snapshot aggregator rejects.
         with client.responses.create(model=selected, input=[
             {"role": "developer", "content": system}, {"role": "user", "content": user},
-        ], text={"format": type_to_text_format_param(text_format)}, stream=True) as stream:
+        ], text={"format": type_to_text_format_param(text_format)}, stream=True,
+           timeout=current_budget.get().take(), **({"reasoning": {"effort": reasoning_effort}} if reasoning_effort else {})) as stream:
             for event in stream:
+                current_budget.get().remaining()
                 if event.type == "response.refusal.delta":
                     raise ModelCallError("REFUSAL")
                 if event.type in {"response.failed", "response.incomplete", "error"}:
@@ -126,7 +136,8 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
             raise
     if on_transport:
         on_transport("buffered")
-    return _parse_model(system, user, text_format, model=model, timeout=timeout, on_cancel_handle=on_cancel_handle)
+    return _parse_model(system, user, text_format, model=model, timeout=current_budget.get().remaining(),
+                        on_cancel_handle=on_cancel_handle, reasoning_effort=reasoning_effort)
 
 
 def model_stream_capability(model: str) -> dict:
@@ -143,7 +154,7 @@ def model_stream_capability(model: str) -> dict:
     return {"ready": result.ready, "streaming": "ready" if distinct and "buffered" not in transports else "buffered"}
 
 
-def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=None):
+def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=None, reasoning_effort=None):
     client = _client(timeout=timeout)
     if on_cancel_handle:
         on_cancel_handle(client.close)
@@ -155,6 +166,8 @@ def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=
             {"role": "user", "content": user},
         ],
         text_format=text_format,
+        timeout=current_budget.get().take(),
+        **({"reasoning": {"effort": reasoning_effort}} if reasoning_effort else {}),
     )
     if getattr(response, "status", None) in {"incomplete", "failed", "cancelled"}:
         raise ModelCallError("INCOMPLETE", str(response.status))
@@ -173,6 +186,8 @@ def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=
             {"role": "user", "content": user},
         ],
         response_format=text_format,
+        timeout=current_budget.get().take(),
+        **({"reasoning_effort": reasoning_effort} if reasoning_effort else {}),
     )
     if not completion.choices:
         raise ModelCallError("EMPTY")
@@ -198,17 +213,31 @@ def model_is_callable(model: str) -> bool:
     return result.ready is True
 
 
-def web_search_text(query: str, *, model: str | None = None) -> str:
-    client = _client()
+def web_search_text(query: str, *, model: str | None = None, reasoning_effort: str | None = None, on_cancel_handle=None) -> str:
     selected_model = model or MODEL
-    for tool in ({"type": "web_search_preview"}, {"type": "web_search"}):
-        try:
-            response = client.responses.create(model=selected_model, tools=[tool], input=query)
-            text = getattr(response, "output_text", "") or ""
-            if text.strip():
-                return text.strip()[:8000]
-        except Exception:  # noqa: BLE001
-            continue
+    with budget_scope() as budget:
+        client = _client()
+        if on_cancel_handle:
+            on_cancel_handle(client.close)
+        for tool in ({"type": "web_search"}, {"type": "web_search_preview"}):
+            try:
+                response = client.responses.create(model=selected_model, tools=[tool], input=query, timeout=budget.take(),
+                    **({"reasoning": {"effort": reasoning_effort}} if reasoning_effort else {}))
+                budget.remaining()
+                text = getattr(response, "output_text", "") or ""
+                if text.strip():
+                    return text.strip()[:8000]
+            except APIStatusError as exc:
+                # Only an explicitly unsupported tool permits the compatibility
+                # form. Access denial, rate limits and outages are not retried
+                # behind a different tool name or hidden as "no sources".
+                description = str(exc).lower()
+                if exc.status_code not in {400, 404, 422, 501} or not any(v in description for v in ("web_search", "unsupported tool", "unknown tool")):
+                    raise ModelCallError("PROVIDER", f"HTTP {exc.status_code}", getattr(exc, "request_id", None)) from None
+            except (APITimeoutError, httpx.TimeoutException):
+                raise ModelCallError("TIMEOUT") from None
+            except (APIConnectionError, httpx.TransportError):
+                raise ModelCallError("CONNECTION") from None
     return ""
 
 

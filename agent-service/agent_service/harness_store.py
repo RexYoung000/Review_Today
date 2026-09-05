@@ -59,6 +59,7 @@ class HarnessTaskRecord:
             learning_plan_json=json.dumps(self.context["learning_plan"], ensure_ascii=False) if self.context.get("learning_plan") else None,
             learning_outcome_json=json.dumps(self.context["learning_outcome"], ensure_ascii=False) if self.context.get("learning_outcome") else None,
             sources_json=json.dumps(self.context["sources"], ensure_ascii=False) if self.context.get("sources") else None,
+            memory_references_json=json.dumps(self.context.get("memory_references", []), ensure_ascii=False),
             draft_target_id=self.context.get("draft_id"),
             run_id=self.context.get("latest_run_id"),
             understanding=self.context.get("understanding", "unknown"),

@@ -9,6 +9,16 @@ from agent_service.schemas import IntentClass
 
 
 class ParseModelCompatibilityTests(unittest.TestCase):
+    def test_deep_reasoning_survives_endpoint_compatibility(self):
+        parsed = IntentClass(intent="remember_content")
+        client = Mock()
+        client.responses.parse.return_value = SimpleNamespace(output_parsed=None)
+        client.chat.completions.parse.return_value = SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(parsed=parsed))])
+        with patch("agent_service.openai_client._client", return_value=client):
+            parse_model("system", "user", IntentClass, reasoning_effort="high")
+        self.assertEqual(client.responses.parse.call_args.kwargs["reasoning"], {"effort": "high"})
+        self.assertEqual(client.chat.completions.parse.call_args.kwargs["reasoning_effort"], "high")
+
     def test_returns_responses_structured_output_without_fallback(self) -> None:
         parsed = IntentClass(intent="remember_content")
         client = Mock()
