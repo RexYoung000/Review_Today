@@ -247,6 +247,8 @@ final class ReviewAttempt {
     var degradedPath: String
     var answerText: String
     var acked: Bool
+    var createdAt: Date = Date.now
+    var completedAt: Date?
 
     init(
         sessionId: UUID,
@@ -273,6 +275,7 @@ final class ReviewAttempt {
         self.degradedPath = "text"
         self.answerText = ""
         self.acked = false
+        self.createdAt = .now
     }
 }
 
@@ -295,6 +298,10 @@ final class AgentSession {
     var handoffID: String?
     var syncError: String?
     var composerDraft: String = ""
+    var autoTopicTagsJSON: String = "[]"
+    var manualTopicTagsJSON: String?
+    var topicTagRevision: Int = 0
+    var topicTagsUpdatedAt: Date?
 
     init(
         id: UUID = UUID(),
@@ -312,6 +319,50 @@ final class AgentSession {
         self.updatedAt = createdAt
         self.summaryText = ""
         self.sourceSessionID = sourceSessionID
+    }
+}
+
+extension AgentSession {
+    var automaticTopicTags: [String] { Self.decodeTags(autoTopicTagsJSON) }
+    var manualTopicTags: [String]? { manualTopicTagsJSON.map(Self.decodeTags) }
+    var displayTopicTags: [String] { manualTopicTags ?? automaticTopicTags }
+
+    func setAutomaticTopicTags(_ tags: [String]) {
+        let normalized = Self.normalizedTags(tags)
+        guard !normalized.isEmpty, normalized != automaticTopicTags else { return }
+        autoTopicTagsJSON = Self.encodeTags(normalized)
+        topicTagRevision += 1
+        topicTagsUpdatedAt = .now
+    }
+
+    func setManualTopicTags(_ tags: [String]) {
+        manualTopicTagsJSON = Self.encodeTags(Self.normalizedTags(tags))
+        topicTagRevision += 1
+        topicTagsUpdatedAt = .now
+    }
+
+    func restoreAutomaticTopicTags() {
+        manualTopicTagsJSON = nil
+        topicTagRevision += 1
+        topicTagsUpdatedAt = .now
+    }
+
+    private static func normalizedTags(_ tags: [String]) -> [String] {
+        var seen = Set<String>()
+        return tags.compactMap { raw in
+            let tag = String(raw.trimmingCharacters(in: .whitespacesAndNewlines).prefix(18))
+            guard !tag.isEmpty, seen.insert(tag.lowercased()).inserted else { return nil }
+            return tag
+        }.prefix(5).map { $0 }
+    }
+
+    private static func encodeTags(_ tags: [String]) -> String {
+        guard let data = try? JSONEncoder().encode(tags) else { return "[]" }
+        return String(decoding: data, as: UTF8.self)
+    }
+
+    private static func decodeTags(_ raw: String) -> [String] {
+        (try? JSONDecoder().decode([String].self, from: Data(raw.utf8))) ?? []
     }
 }
 

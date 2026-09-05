@@ -54,6 +54,13 @@ struct LearningInputContractTests {
         let one = AgentSession(title: "A"), two = AgentSession(title: "B")
         one.composerDraft = "A 的独立草稿"
         two.composerDraft = "B 的独立草稿"
+        one.setAutomaticTopicTags(["RAG", "面试", "RAG"])
+        precondition(one.displayTopicTags == ["RAG", "面试"])
+        one.setManualTopicTags(["人工标签"])
+        one.setAutomaticTopicTags(["自动更新"])
+        precondition(one.displayTopicTags == ["人工标签"], "manual tags must win")
+        one.restoreAutomaticTopicTags()
+        precondition(one.displayTopicTags == ["自动更新"])
         context.insert(one); context.insert(two)
         try context.save()
         let freshContext = ModelContext(container)
@@ -67,6 +74,14 @@ struct LearningInputContractTests {
         try context.save()
         let persisted = try ModelContext(container).fetch(FetchDescriptor<AgentMessage>()).first!
         precondition(persisted.responseState == "interrupted" && persisted.responseRevision == 2 && persisted.responseChunkSeq == 4)
-        print("PASS: Return/Shift Return/Cmd Return, blank/repeat guard, marked-text guard, failed-send retention, isolated Session drafts, partial response persistence")
+        let calendar = Calendar(identifier: .gregorian)
+        let today = calendar.startOfDay(for: .now)
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
+        let older = calendar.date(byAdding: .day, value: -2, to: today)!
+        precondition(LearningActivityCalendar.uniqueDays([today, today.addingTimeInterval(200), yesterday]).count == 2)
+        precondition(LearningActivityCalendar.currentStreak([yesterday, older], today: today, calendar: calendar) == 2)
+        precondition(LearningActivityCalendar.longestStreak([today, yesterday, older], calendar: calendar) == 3)
+        precondition([0, 1, 2, 3, 4, 5].map(LearningActivityCalendar.intensity) == [0, 1, 2, 3, 3, 4])
+        print("PASS: input contract, isolated drafts/tags, partial response persistence, activity dedupe/intensity/streaks")
     }
 }

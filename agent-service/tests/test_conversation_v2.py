@@ -84,17 +84,32 @@ class ConversationTests(unittest.TestCase):
             self.assertEqual(data["tasks"], {})
             self.assertEqual(len([m for m in data["messages"] if m["role"] == "coach"]), 1)
             self.assertEqual(data["mode"], mode)
+            run = next(iter(data["runs"].values()))
+            self.assertIsNone(run["activity_kind"])
+            self.assertIsNone(run["completed_at"])
         self.capture.assert_not_called()
 
     def test_auto_question_is_answer_only_but_problem_preset_starts_goal(self):
         self.decision = intent("question", workflow="problem_solving")
         self.send("RAG 是什么")
         self.assertFalse(self.state()["tasks"])
+        run = next(iter(self.state()["runs"].values()))
+        self.assertEqual(run["activity_kind"], "knowledge_answer")
+        self.assertIsNotNone(run["completed_at"])
         sid = str(uuid.uuid4())
         self.send("RAG 是什么", mode="problem_solving", sid=sid)
         task = next(iter(self.store.get(sid)["tasks"].values()))
         self.assertEqual(task["stage"], "calibration")
         self.assertTrue(task["context"]["requires_mastery"])
+
+    def test_session_tags_are_navigation_suggestions_in_intent_event(self):
+        self.decision = intent("goal", workflow="topic_exploration", scope="learning",
+                               session_tags=["RAG", "面试准备"])
+        self.send("我想系统准备 RAG 面试")
+        decided = next(event for event in self.state()["events"] if event["stage"] == "intent_decided")
+        self.assertEqual(decided["payload"]["intent"]["session_tags"], ["RAG", "面试准备"])
+        self.assertFalse(any(action["kind"] in {"save", "new_session"}
+                             for action in decided["payload"]["intent"]["proposed_actions"]))
 
     def test_no_purpose_material_is_light_organization_not_save(self):
         self.decision = intent("material", workflow="source_learning", scope="organize")

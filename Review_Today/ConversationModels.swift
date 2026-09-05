@@ -20,6 +20,8 @@ final class AgentRun {
     var firstTextMS: Int?
     var attemptDurationsJSON: String = "[]"
     var transport: String = ""
+    var activityKind: String?
+    var completedAt: Date?
 
     init(id: UUID, sessionID: UUID) {
         self.id = id
@@ -85,5 +87,52 @@ final class AgentRunControl {
         self.mode = mode
         createdAt = .now
         sent = false
+    }
+}
+
+enum LearningActivityCalendar {
+    static func uniqueDays(_ dates: [Date], calendar: Calendar = .current) -> [Date] {
+        Array(Set(dates.map { calendar.startOfDay(for: $0) })).sorted()
+    }
+
+    static func intensity(_ count: Int) -> Int {
+        switch count {
+        case 0: return 0
+        case 1: return 1
+        case 2: return 2
+        case 3 ... 4: return 3
+        default: return 4
+        }
+    }
+
+    static func currentStreak(_ dates: [Date], today: Date = .now, calendar: Calendar = .current) -> Int {
+        let days = Set(uniqueDays(dates, calendar: calendar))
+        var cursor = calendar.startOfDay(for: today)
+        if !days.contains(cursor), let yesterday = calendar.date(byAdding: .day, value: -1, to: cursor) {
+            cursor = yesterday
+        }
+        var count = 0
+        while days.contains(cursor) {
+            count += 1
+            guard let previous = calendar.date(byAdding: .day, value: -1, to: cursor) else { break }
+            cursor = previous
+        }
+        return count
+    }
+
+    static func longestStreak(_ dates: [Date], calendar: Calendar = .current) -> Int {
+        let days = uniqueDays(dates, calendar: calendar)
+        guard !days.isEmpty else { return 0 }
+        var best = 1
+        var current = 1
+        for index in 1 ..< days.count {
+            if calendar.dateComponents([.day], from: days[index - 1], to: days[index]).day == 1 {
+                current += 1
+                best = max(best, current)
+            } else {
+                current = 1
+            }
+        }
+        return best
     }
 }

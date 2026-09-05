@@ -130,7 +130,8 @@ enum ConversationProcessor {
     }
 
     @MainActor
-    static func queueControl(_ run: AgentRun, action: String, mode: String? = nil, context: ModelContext) {
+    @discardableResult
+    static func queueControl(_ run: AgentRun, action: String, mode: String? = nil, context: ModelContext) -> Bool {
         context.insert(AgentRunControl(runID: run.id, sessionID: run.sessionID, action: action, mode: mode))
         if action == "stop" || action == "cancel_task" {
             if let started = run.startedAt { run.elapsedMS = Int(Date.now.timeIntervalSince(started) * 1000) }
@@ -144,8 +145,14 @@ enum ConversationProcessor {
         } else if action == "resume" || action == "retry" {
             run.userSummary = "恢复请求已保存"
         }
-        try? context.save()
-        ConversationSync.wake()
+        do {
+            try context.save()
+            ConversationSync.wake()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
     }
 
     @MainActor
@@ -164,10 +171,13 @@ enum ConversationProcessor {
             let run = runs.first(where: { $0.id == id }) ?? AgentRun(id: id, sessionID: session.id)
             if !runs.contains(where: { $0.id == id }) { context.insert(run); runs.append(run) }
             guard (raw["revision"] as? Int ?? 1) >= run.revision else { continue }
+            let rawActivityKind = raw.keys.contains("activity_kind") ? raw["activity_kind"] as? String : run.activityKind
+            let rawCompletedAt = raw.keys.contains("completed_at") ? optionalDate(raw["completed_at"]) : run.completedAt
             // Delta-only pages do not change the run header or its clock. Avoid
             // invalidating every session/header observer on each text fragment.
             if run.updatedAt == date(raw["updated_at"]), run.status == raw["status"] as? String,
-               run.revision == raw["revision"] as? Int { continue }
+               run.revision == raw["revision"] as? Int,
+               run.activityKind == rawActivityKind, run.completedAt == rawCompletedAt { continue }
             run.taskID = uuid(raw["task_id"])
             run.status = raw["status"] as? String ?? "accepted"
             run.stage = raw["stage"] as? String ?? "received"
@@ -184,6 +194,8 @@ enum ConversationProcessor {
             run.firstTextMS = raw["first_text_ms"] as? Int
             run.attemptDurationsJSON = json(raw["attempt_durations"] ?? [])
             run.transport = raw["transport"] as? String ?? ""
+            run.activityKind = rawActivityKind
+            run.completedAt = rawCompletedAt
             for message in messages where message.runID == id && message.responseState == "streaming" && message.responseRevision < run.revision {
                 message.responseState = "interrupted"
             }
@@ -216,7 +228,16 @@ enum ConversationProcessor {
             let payload = raw["payload"] as? [String: Any] ?? [:]
             let revision = raw["revision"] as? Int ?? 1
             let currentRevision = runs.first(where: { $0.id == runID })?.revision ?? revision
-            let blocked = stopping.contains(runID) || steering.contains(runID)
+            // Archiving is a durable UI fence, not only a navigation filter. The
+            // service may still replay an event that was already in flight after
+            // the stop control was accepted; keep its audit record, but never let
+            // it revive visible output, task state, tags, or follow-on effects.
+            let blocked = session.status == "archived" || stopping.contains(runID) || steering.contains(runID)
+            if !blocked, revision >= currentRevision,
+               let intent = payload["intent"] as? [String: Any],
+               let tags = intent["session_tags"] as? [String], !tags.isEmpty {
+                session.setAutomaticTopicTags(tags)
+            }
             if let response = payload["response"] as? [String: Any], let messageID = uuid(response["response_id"]),
                let text = response["text"] as? String, !text.isEmpty {
                 let state = response["status"] as? String ?? "streaming"
@@ -243,7 +264,7 @@ enum ConversationProcessor {
                 saved.responseState = "complete"
                 if saved.firstReceivedAt == nil { saved.firstReceivedAt = .now }
             }
-            if let summary = payload["session_summary"] as? [String: Any] {
+            if !blocked, let summary = payload["session_summary"] as? [String: Any] {
                 let record = SessionSummaryRecord(sessionID: session.id, version: summary["version"] as? Int ?? 1,
                                                   goal: summary["goal"] as? String ?? session.title)
                 record.confirmedDecisionsJSON = json(summary["confirmed_decisions"] ?? [])
@@ -251,7 +272,7 @@ enum ConversationProcessor {
                 session.summaryText = summary["summary"] as? String ?? session.summaryText
                 context.insert(record)
             }
-            if payload["source_type"] as? String == "agent_generated" {
+            if !blocked, payload["source_type"] as? String == "agent_generated" {
                 let sources = try context.fetch(FetchDescriptor<SourceReference>())
                 if !sources.contains(where: { $0.sessionID == session.id && $0.locator == runID.uuidString }) {
                     let source = SourceReference(sessionID: session.id, taskID: uuid(raw["task_id"]), url: "", title: "Agent 生成讲义",
@@ -268,7 +289,7 @@ enum ConversationProcessor {
                 task.conversationManaged = true
                 HarnessProcessor.apply(view, to: task)
             }
-            for source in payload["sources"] as? [[String: Any]] ?? [] {
+            for source in !blocked ? (payload["sources"] as? [[String: Any]] ?? []) : [] {
                 guard let url = source["url"] as? String else { continue }
                 let sources = try context.fetch(FetchDescriptor<SourceReference>())
                 let saved = sources.first(where: { $0.sessionID == session.id && $0.url == url }) ??
@@ -277,7 +298,7 @@ enum ConversationProcessor {
                 saved.sourceType = source["type"] as? String ?? "public_source"
                 if let content = source["content"] as? String, !content.isEmpty { saved.locator = content }
             }
-            if let handoff = payload["handoff"] as? [String: Any], let key = handoff["handoff_id"] as? String {
+            if !blocked, let handoff = payload["handoff"] as? [String: Any], let key = handoff["handoff_id"] as? String {
                 let sessions = try context.fetch(FetchDescriptor<AgentSession>())
                 if !sessions.contains(where: { $0.handoffID == key }) {
                     let destination = AgentSession(title: String((handoff["goal"] as? String ?? "新学习目标").prefix(28)),
@@ -291,7 +312,9 @@ enum ConversationProcessor {
             }
             session.lastSessionEventSeq = seq
         }
-        session.runPaused = page["paused"] as? Bool ?? false
+        if session.status != "archived" {
+            session.runPaused = page["paused"] as? Bool ?? false
+        }
         for control in pendingControls {
             if let run = runs.first(where: { $0.id == control.runID }) {
                 run.userSummary = control.lastError.map { "控制请求尚未送达，将继续重试：\($0)" } ?? "操作已保存在本机，等待服务确认"
@@ -302,8 +325,10 @@ enum ConversationProcessor {
             run.status = "adjusting"
             run.userSummary = "已收到补充，正在调整"
         }
-        if !pendingControls.contains(where: { $0.action == "set_mode" }), let mode = page["mode"] as? String { session.modePreset = mode }
-        session.pendingOperationJSON = (page["pending"] as? [String: Any]).map(json)
+        if session.status != "archived" {
+            if !pendingControls.contains(where: { $0.action == "set_mode" }), let mode = page["mode"] as? String { session.modePreset = mode }
+            session.pendingOperationJSON = (page["pending"] as? [String: Any]).map(json)
+        }
         try context.save()
     }
 
@@ -320,5 +345,11 @@ enum ConversationProcessor {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return (value as? String).flatMap(formatter.date(from:)) ?? .now
+    }
+    private static func optionalDate(_ value: Any?) -> Date? {
+        guard let value = value as? String else { return nil }
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.date(from: value)
     }
 }

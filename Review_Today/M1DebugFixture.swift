@@ -13,7 +13,7 @@ enum M1DebugFixture {
 
     static var enabled: Bool {
         guard let mode else { return false }
-        return ["1", "invalid", "review", "retry"].contains(mode)
+        return ["1", "invalid", "review", "retry", "learning", "today"].contains(mode)
     }
 
     static func makeContainer() throws -> ModelContainer {
@@ -120,7 +120,45 @@ enum M1DebugFixture {
             context.insert(previousAttempt)
         }
         context.insert(AppSettings())
+        try seedLearningWorkspace(context)
         try context.save()
+    }
+
+    private static func seedLearningWorkspace(_ context: ModelContext) throws {
+        let now = Date.now
+        let samples: [(String, String, [String], String)] = [
+            ("RAG 面试准备", "problem_solving", ["RAG", "面试"], "RAG 是什么？它在面试中应该怎么回答？"),
+            ("向量数据库基础", "source_learning", ["向量检索", "数据库"], "请按初学者路径讲解向量数据库。"),
+            ("检索质量评估", "topic_exploration", ["评估", "检索"], "我想系统了解检索质量怎么评估。"),
+        ]
+        for (index, sample) in samples.enumerated() {
+            let session = AgentSession(title: sample.0, modePreset: sample.1, createdAt: now.addingTimeInterval(Double(-index * 3600)))
+            session.updatedAt = now.addingTimeInterval(Double(-index * 900))
+            session.setAutomaticTopicTags(sample.2)
+            context.insert(session)
+            let user = AgentMessage(sessionID: session.id, role: "user", content: sample.3,
+                                    createdAt: session.createdAt, deliveryStatus: "sent")
+            let answer = AgentMessage(sessionID: session.id, role: "assistant",
+                                      content: index == 0 ? "RAG 是先检索与问题相关的外部信息，再把结果作为上下文交给模型生成答案。面试回答还应说明它解决的边界、检索质量和评估方法。" : "已经建立学习路径，下一步会沿当前目标继续。",
+                                      createdAt: session.createdAt.addingTimeInterval(12), deliveryStatus: "received")
+            let run = AgentRun(id: UUID(), sessionID: session.id)
+            user.runID = run.id; answer.runID = run.id
+            run.status = index == 2 ? "retryable_failed" : "completed"
+            run.userSummary = index == 2 ? "资料检索暂时失败，可重试" : "已完成"
+            run.startedAt = nil; run.elapsedMS = 4_800 + index * 900
+            run.activityKind = index == 1 ? "lesson_step" : (index == 0 ? "knowledge_answer" : nil)
+            run.completedAt = run.activityKind == nil ? nil : answer.createdAt
+            context.insert(user); context.insert(answer); context.insert(run)
+        }
+        if let session = try context.fetch(FetchDescriptor<AgentSession>()).first {
+            for offset in [2, 3, 7, 8, 14, 21, 28, 42, 56, 70, 91, 126] {
+                let run = AgentRun(id: UUID(), sessionID: session.id)
+                run.status = "completed"
+                run.activityKind = offset % 2 == 0 ? "knowledge_answer" : "lesson_step"
+                run.completedAt = Calendar.current.date(byAdding: .day, value: -offset, to: now)
+                context.insert(run)
+            }
+        }
     }
 }
 #endif

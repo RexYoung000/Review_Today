@@ -2,7 +2,7 @@
 
 > 状态：Harness V2 阻塞性验收基线；原纯文字知识卡与评分样本作为兼容子基线保留
 > 对应 Issue：[#9 M1.1：冻结最小闭环验收契约与固定样本](https://github.com/RexYoung000/Review_Today/issues/9)
-> 2026-09-04：单侧栏、开放式 Agent 工作区、Session 标签和 Today 活动反馈已完成文档冻结，尚未实施；本文件新增 §0.9 作为本轮验收门槛，旧 §0.6 仅保留历史证据。
+> 2026-09-04：单侧栏、开放式 Agent 工作区、Session 标签和 Today 活动反馈已完成代码实施、构建与受控检查；§0.9 仍是 Rex 的真实体验验收门槛，旧 §0.6 仅保留历史证据。
 > 机器可读样本：`agent-service/tests/fixtures/m1_acceptance.json`
 > 主规格：[Agent Harness V2](agent-harness-v2.md)
 
@@ -225,6 +225,8 @@ Rex 反馈左右裁切后，先补充 DESIGN 4.1.1，再修改原生呈现层。
 ### 0.9 单侧栏、Session 导航与活动反馈验收（2026-09-04）
 
 本节替代 §0.6 中第二 Session 栏和窄窗弹层的目标。AirJelly 截图只作为结构参考，不是 Review Today 的交互验收证据。
+
+当前工程证据：文档检查点 `bb88512` 已在代码修改前独立推送；根侧栏 Session 导航、共享 selectedSessionID、开放式消息画布、直接归档／只读恢复、自动与人工标签、AgentRun／ReviewAttempt 活动事实、26 周热力图和最近学习页面内展开均已接入。108 项 Python 回归、两个原生独立契约测试及 macOS Debug 无签名构建通过；Debug 固定数据已实际查看深色学习结构和 Today 热力图。屏幕随后进入锁定，未继续操作系统主题、Reduce Motion、中文输入法、侧栏拖拽、归档中的真实请求或日期明细跳转，因此这些不能标为通过。
 
 #### 自动化
 

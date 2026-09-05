@@ -70,6 +70,40 @@ struct ConversationReplayTests {
         try ConversationProcessor.persist(page([event(8, text: "重试中的新回答", chunk: 1, revision: 2, id: resumed)], revision: 2), session: session, context: context)
         let resumedMessages = try context.fetch(FetchDescriptor<AgentMessage>())
         precondition(resumedMessages.first(where: { $0.id == resumed })?.content == "重试中的新回答")
+        var tagPage = page([], revision: 2)
+        tagPage["runs"] = [["session_id": session.id.uuidString, "run_id": runID.uuidString, "revision": 2,
+                            "status": "completed", "updated_at": now, "activity_kind": "knowledge_answer", "completed_at": now]]
+        tagPage["events"] = [["session_id": session.id.uuidString, "event_id": UUID().uuidString,
+                              "run_id": runID.uuidString, "seq": 9, "revision": 2, "stage": "intent_decided",
+                              "occurred_at": now, "payload": ["intent": ["session_tags": ["RAG", "面试"]]]]]
+        try ConversationProcessor.persist(tagPage, session: session, context: context)
+        precondition(session.displayTopicTags == ["RAG", "面试"])
+        precondition(run.activityKind == "knowledge_answer" && run.completedAt != nil)
+        session.setManualTopicTags(["自定义"])
+        precondition(session.displayTopicTags == ["自定义"])
+
+        // Once archived, audit sequence may advance but an in-flight response,
+        // automatic tag suggestion, pending action, or mode may not revive UI state.
+        session.status = "archived"
+        session.modePreset = "problem_solving"
+        session.pendingOperationJSON = nil
+        try context.save()
+        let archivedResponse = UUID()
+        var archivedEvent = event(10, text: "归档后的迟到回答", chunk: 1, revision: 2, id: archivedResponse)
+        archivedEvent["payload"] = [
+            "response": ["response_id": archivedResponse.uuidString, "text": "归档后的迟到回答", "chunk_seq": 1,
+                         "revision": 2, "status": "streaming"],
+            "intent": ["session_tags": ["不应覆盖"]]
+        ]
+        var archivedPage = page([archivedEvent], revision: 2)
+        archivedPage["mode"] = "auto"
+        archivedPage["pending"] = ["kind": "confirm_memory"]
+        try ConversationProcessor.persist(archivedPage, session: session, context: context)
+        let afterArchiveMessages = try context.fetch(FetchDescriptor<AgentMessage>())
+        precondition(afterArchiveMessages.allSatisfy { $0.id != archivedResponse })
+        precondition(session.lastSessionEventSeq == 10)
+        precondition(session.displayTopicTags == ["自定义"] && session.modePreset == "problem_solving")
+        precondition(session.pendingOperationJSON == nil)
         do {
             try ConversationProcessor.persist(page([]), session: other, context: context)
             preconditionFailure("cross-Session events must be rejected")
@@ -77,11 +111,11 @@ struct ConversationReplayTests {
         let reopened = ModelContext(container)
         let recoveredSession = try reopened.fetch(FetchDescriptor<AgentSession>()).first(where: { $0.id == session.id })!
         let recoveredPartial = try reopened.fetch(FetchDescriptor<AgentMessage>()).first(where: { $0.id == secondResponse })!
-        precondition(recoveredSession.lastSessionEventSeq == 8 && recoveredPartial.responseState == "interrupted")
+        precondition(recoveredSession.lastSessionEventSeq == 10 && recoveredPartial.responseState == "interrupted")
         let knowledge = try reopened.fetch(FetchDescriptor<Knowledge>())
         let reviews = try reopened.fetch(FetchDescriptor<ReviewAttempt>())
         precondition(knowledge.isEmpty && reviews.isEmpty)
-        print("PASS: ordered/repeated/gapped replay, stable final ID, stop and revision fencing, atomic cursor recovery, Session isolation, no knowledge/review writes")
+        print("PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes")
         print("Controlled stop save: \(stopTime); full replay suite: \(start.duration(to: .now))")
         if let endpoint = CommandLine.arguments.dropFirst().first.flatMap(URL.init(string:)) {
             var received: [Date] = []

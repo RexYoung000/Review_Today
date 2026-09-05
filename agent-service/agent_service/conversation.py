@@ -38,7 +38,8 @@ def _new_run(session_id: str, message_id: str, status: str) -> dict:
     return dict(run_id=str(uuid.uuid4()), session_id=session_id, task_id=None, input_ids=[message_id],
                 revision=1, status=status, stage="accepted", user_summary="已保存", attempt=0,
                 intent=None, steps={}, action_ids=[], error_code=None, created_at=now_iso(), updated_at=now_iso(),
-                started_at=None, elapsed_ms=0, attempt_durations=[], first_text_ms=None)
+                started_at=None, elapsed_ms=0, attempt_durations=[], first_text_ms=None,
+                activity_candidate=None, activity_kind=None, completed_at=None)
 
 
 class ConversationHarness:
@@ -280,6 +281,8 @@ class ConversationHarness:
                         self._project_event(data, run, task)
                     self._freeze_clock(run)
                     run["status"] = "completed"
+                    run["activity_kind"] = self._activity_kind(data, run)
+                    run["completed_at"] = now_iso() if run["activity_kind"] else None
                     self.store.event(data, run, "completed", "本轮已回应")
                     data["foreground"] = None
             except Superseded:
@@ -522,6 +525,12 @@ class ConversationHarness:
     @classmethod
     def _light_reply_allowed(cls, decision, last, **state):
         return bool(cls._light_reply(decision, last, **state))
+
+    @staticmethod
+    def _activity_kind(data: dict, run: dict) -> str | None:
+        """Project only completed learning value, never UI chatter, into Today."""
+        candidate = run.get("activity_candidate")
+        return candidate if candidate in {"knowledge_answer", "lesson_step"} else None
 
     def _execute(self, sid, rid, rev):
         data, run = self._snapshot(sid, rid, rev)
@@ -926,6 +935,10 @@ class ConversationHarness:
             text += "\n\n证据状态：" + evidence["state"] + "；" + evidence["summary"]
         with self.store.transaction(sid, rid, rev) as data:
             task = self._task(data, data["runs"][rid])
+            if teaching:
+                data["runs"][rid]["activity_candidate"] = "lesson_step"
+            elif node == "answer" and "question" in decision.intents:
+                data["runs"][rid]["activity_candidate"] = "knowledge_answer"
             if task:
                 task["context"]["evidence"] = evidence
                 if teaching:
@@ -967,6 +980,7 @@ class ConversationHarness:
             evidence = self._evidence(sid, rid, rev, decision.model_copy(update={"needs_verification": True}), task["content"])
         with self.store.transaction(sid, rid, rev) as data:
             task = self._task(data, data["runs"][rid])
+            data["runs"][rid]["activity_candidate"] = "knowledge_answer"
             task["context"].update(reference_answer=output.answer.direct_answer, requires_mastery=True,
                                     evidence=evidence, calibration_question=output.analysis.calibration_question)
         text = _render_problem(output)

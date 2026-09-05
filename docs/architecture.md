@@ -6,7 +6,7 @@
 
 2026-09-04 修订：学习输入采用原生 NSTextView；消息和控制操作本地落盘后立即唤醒会话同步，与旧采集轮询分离。Session SSE 已接入，沿用现有事件顺序号、版本守卫与 ACK；SwiftData 保存部分回答、最终回答和草稿。最终校验前的文本预览不触发 Task 完成或知识提交。完整接口、兼容及验证约束见 [主规格 §15](agent-harness-v2.md#15-学习界面与实时反馈修订2026-09-04)。代码与受控测试已完成，Mac 锁屏使原生视觉验收仍未完成。
 
-同日结构修订：根 `NavigationSplitView` 成为唯一 Session 导航入口，Today、侧栏和学习区共享选择状态；Session 标签、AgentRun 活动语义与 ReviewAttempt 完成时间由 SwiftData 持久化，Today 在本地投影 26 周活动。该部分已完成文档冻结、尚未实施；契约见 [主规格 §16](agent-harness-v2.md#16-学习工作区结构与活动反馈修订2026-09-04)。
+同日结构修订：根 `NavigationSplitView` 已成为唯一 Session 导航入口，Today、侧栏和学习区共享选择状态；Session 标签、AgentRun 活动语义与 ReviewAttempt 完成时间由 SwiftData 持久化，Today 在本地投影 26 周活动。代码与受控检查已完成，真实交互仍待 Rex 验收；契约见 [主规格 §16](agent-harness-v2.md#16-学习工作区结构与活动反馈修订2026-09-04)。
 
 里程碑一不扩建通用 Agent 平台，但必须建立能够支撑连续学习的状态化 Harness：
 
@@ -497,7 +497,7 @@ Session 主题标签、归档状态和 Today 活动投影以 Mac SwiftData 为�
 
 ### 尚未完成或尚未证明
 
-- 2026-09-04 冻结的单侧栏、开放式 Agent 工作区、Session 标签和 Today 活动投影尚未实施；旧第二 Session 栏／窄窗弹层仅为历史代码；
+- 2026-09-04 冻结的单侧栏、开放式 Agent 工作区、Session 标签和 Today 活动投影已实施；旧第二 Session 栏／窄窗弹层已从当前学习页移除。侧栏拖宽恢复、归档中止、热力图跳转和系统偏好仍需在真实 App 中由 Rex 验收；
 - 里程碑一尚未从真实 Mac App 入口完成端到端视觉与交互验收；
 - Harness V2 已有服务端契约、固定模型替身和原生手动自检，但完整客户端自动化与更广模型质量评测尚未完成；
 - 旧 V2 曾只走到模型超时；本轮已取得上述真实输出，但间歇网络异常和最新 Debug 的系统授权问题仍影响完整原生验收；

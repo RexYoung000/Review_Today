@@ -412,6 +412,7 @@ struct ReviewView: View {
         row.answerText = answerSnapshot
         row.agentGrade = ""
         row.effectiveGrade = ""
+        row.completedAt = nil
         row.pendingGrade = ""
         row.reviewState = "grading"
         row.reviewErrorCode = nil
@@ -554,6 +555,7 @@ struct ReviewView: View {
             attempt.pendingGrade = ""
             attempt.acked = true
             attempt.reviewState = "completed"
+            attempt.completedAt = .now
             attempt.reviewErrorCode = nil
             attempt.reviewUserStatus = "已计入复习"
             try modelContext.save()
@@ -564,6 +566,7 @@ struct ReviewView: View {
             attempt.pendingGrade = grade
             attempt.effectiveGrade = ""
             attempt.acked = false
+            attempt.completedAt = nil
             attempt.reviewState = "retryable_failed"
             attempt.reviewErrorCode = "RT.REVIEW.LOCAL_SAVE_FAILED"
             attempt.reviewUserStatus = "判断已确认，但本机暂未保存，可以重试"

@@ -558,6 +558,7 @@ class IntentDecision(BaseModel):
     needs_verification: bool = False
     requested_mode: SessionMode | None = None
     light_reply: str = Field(default="", max_length=600)
+    session_tags: list[str] = Field(default_factory=list, max_length=5)
 
 
 class BoundOperation(BaseModel):

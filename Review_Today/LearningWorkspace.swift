@@ -3,6 +3,7 @@ import SwiftUI
 
 struct LearningWorkspace: View {
     var monitor: AgentServiceMonitor
+    @Binding var selectedSessionID: UUID?
     var onOpenKnowledge: (UUID) -> Void
 
     @Environment(\.modelContext) private var modelContext
@@ -14,11 +15,9 @@ struct LearningWorkspace: View {
     @Query(sort: \KnowledgeReference.createdAt) private var knowledgeReferences: [KnowledgeReference]
     @Query(sort: \AgentRun.createdAt) private var runs: [AgentRun]
     @State private var queueInput = false
-    @State private var selectedSessionID: UUID?
     @State private var draft = ""
-    @State private var showArchived = false
     @State private var localError: String?
-    @State private var showsSessionPicker = false
+    @State private var editingSessionID: UUID?
     @State private var inputHeight: CGFloat = 64
     @State private var inputFocused = false
     @State private var focusRequest = 0
@@ -29,15 +28,9 @@ struct LearningWorkspace: View {
     @State private var sentMessageID: UUID?
 
     private enum Layout {
-        static let expandedWidth: CGFloat = 900
-        static let railWidth: CGFloat = 240
         static let readingWidth: CGFloat = 820
 
         static func gutter(for width: CGFloat) -> CGFloat { width < 650 ? 16 : 24 }
-    }
-
-    private var visibleSessions: [AgentSession] {
-        sessions.filter { showArchived ? $0.status == "archived" : $0.status == "active" }
     }
 
     private var selectedSession: AgentSession? {
@@ -54,28 +47,13 @@ struct LearningWorkspace: View {
     }
 
     var body: some View {
-        // Bound the workspace to the actual viewport; nested split-view minimums
-        // otherwise let long message content expand the entire navigation shell.
         GeometryReader { geometry in
-            let expanded = geometry.size.width >= Layout.expandedWidth
-            let workspaceWidth = max(0, geometry.size.width - (expanded ? Layout.railWidth + 1 : 0))
-            HStack(spacing: 0) {
-                if expanded {
-                    sessionRail.frame(width: Layout.railWidth)
-                    Rectangle().fill(runway.hairline).frame(width: 1)
-                }
-                workspace(width: workspaceWidth, compact: !expanded)
-                    .frame(width: workspaceWidth)
-            }
-            .frame(width: geometry.size.width, height: geometry.size.height)
-            .onChange(of: expanded) { _, expanded in
-                if expanded { showsSessionPicker = false }
-            }
+            workspace(width: geometry.size.width)
+                .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .background(PaperSurface())
         .navigationTitle(String(localized: "学习"))
         .onAppear(perform: selectInitialSession)
-        .onChange(of: showArchived) { _, _ in selectInitialSession() }
         .onChange(of: sessions.map(\.id)) { _, _ in selectInitialSession() }
         .onChange(of: selectedSessionID) { _, id in
             saveDraft()
@@ -95,87 +73,21 @@ struct LearningWorkspace: View {
         }
         .onDisappear { saveDraft() }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in saveDraft() }
-    }
-
-    private var sessionRail: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("学习会话")
-                    .font(.headline)
-                    .foregroundStyle(runway.ink)
-                Spacer()
-                Button(action: { createSession() }) {
-                    Image(systemName: "plus")
-                        .frame(width: 28, height: 28)
-                }
-                .buttonStyle(.plain)
-                .help("新建 Session")
-                .accessibilityLabel("新建学习 Session")
-            }
-            .padding(.horizontal, 14)
-            .padding(.top, 16)
-
-            Picker("Session 状态", selection: $showArchived) {
-                Text("进行中").tag(false)
-                Text("已归档").tag(true)
-            }
-            .pickerStyle(.segmented)
-            .labelsHidden()
-            .padding(.horizontal, 12)
-
-            ScrollView {
-                LazyVStack(spacing: 5) {
-                    ForEach(visibleSessions, id: \.id) { session in
-                        Button {
-                            selectedSessionID = session.id
-                            showsSessionPicker = false
-                        } label: {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(session.title)
-                                    .font(.callout.weight(.medium))
-                                    .foregroundStyle(runway.ink)
-                                    .lineLimit(2)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                HStack(spacing: 5) {
-                                    Text(Self.modeLabel(session.modePreset))
-                                    Text("·")
-                                    Text(session.updatedAt, style: .relative)
-                                }
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
-                            }
-                            .padding(10)
-                            .background(
-                                selectedSessionID == session.id ? runway.field : Color.clear,
-                                in: RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            )
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    if visibleSessions.isEmpty {
-                        Label(
-                            showArchived ? "还没有归档的会话" : "从一个问题开始",
-                            systemImage: showArchived ? "archivebox" : "bubble.left.and.bubble.right"
-                        )
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 24)
-                    }
-                }
-                .padding(.horizontal, 8)
+        .sheet(isPresented: Binding(
+            get: { editingSessionID != nil },
+            set: { if !$0 { editingSessionID = nil } }
+        )) {
+            if let id = editingSessionID, let session = sessions.first(where: { $0.id == id }) {
+                SessionTagEditor(session: session)
             }
         }
-        .background(runway.canvas)
     }
 
-    private func workspace(width: CGFloat, compact: Bool) -> some View {
+    private func workspace(width: CGFloat) -> some View {
         let gutter = Layout.gutter(for: width)
         let contentWidth = max(0, min(Layout.readingWidth, width - gutter * 2))
         return VStack(spacing: 0) {
-            workspaceHeader(compact: compact)
+            workspaceHeader
             Divider()
             serviceBanner
             conversation(contentWidth: contentWidth)
@@ -184,7 +96,7 @@ struct LearningWorkspace: View {
         .background(runway.canvas)
     }
 
-    private func workspaceHeader(compact: Bool) -> some View {
+    private var workspaceHeader: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
@@ -199,18 +111,28 @@ struct LearningWorkspace: View {
                         .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                if let session = selectedSession { sessionMenu(session) }
+                if let session = selectedSession {
+                    Button {
+                        if session.status == "active" { archive(session) }
+                        else { restore(session) }
+                    } label: {
+                        Label(session.status == "active" ? "归档" : "恢复", systemImage: session.status == "active" ? "archivebox" : "arrow.uturn.backward")
+                    }
+                    .buttonStyle(.borderless)
+                    sessionMenu(session)
+                }
             }
 
             HStack(spacing: 12) {
-                if compact {
-                    Button { showsSessionPicker.toggle() } label: {
-                        Label("学习会话", systemImage: "list.bullet")
+                if let session = selectedSession {
+                    ForEach(Array(session.displayTopicTags.prefix(3)), id: \.self) { tag in
+                        MetaTag(title: tag)
                     }
-                    .popover(isPresented: $showsSessionPicker, arrowEdge: .bottom) {
-                        sessionRail.frame(width: 300, height: 460)
+                    if session.displayTopicTags.count > 3 {
+                        Text("+\(session.displayTopicTags.count - 3)").font(.caption2).foregroundStyle(.secondary)
                     }
-                    .accessibilityLabel("打开学习会话列表")
+                    Button { editingSessionID = session.id } label: { Image(systemName: "tag") }
+                        .buttonStyle(.plain).help("编辑主题标签")
                 }
                 Spacer(minLength: 0)
                 if let session = selectedSession {
@@ -247,11 +169,7 @@ struct LearningWorkspace: View {
         Menu {
             Button("新建学习 Session") { createSession() }
             Button("带上下文新建 Session") { createSession(handoffFrom: session) }
-            if session.status == "active" {
-                Button("归档 Session") { archive(session) }
-            } else {
-                Button("恢复 Session") { restore(session) }
-            }
+            Button("编辑主题标签") { editingSessionID = session.id }
         } label: {
             Image(systemName: "ellipsis.circle")
         }
@@ -394,22 +312,19 @@ struct LearningWorkspace: View {
         let bubbleWidth = max(0, contentWidth - 40)
         return HStack(alignment: .top, spacing: 10) {
             VStack(alignment: .leading, spacing: 5) {
-              Text(.init(message.content))
-                .font(.body)
-                .foregroundStyle(runway.ink)
-                .textSelection(.enabled)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 11)
-                .background(
-                    message.role == "user" ? runway.field : runway.card,
-                    in: RoundedRectangle(cornerRadius: 16, style: .continuous)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .strokeBorder(message.role == "user" ? Color.clear : runway.hairline)
-                )
-                .frame(maxWidth: bubbleWidth, alignment: isUser ? .trailing : .leading)
+              if isUser {
+                  Text(.init(message.content))
+                      .font(.body).foregroundStyle(runway.ink).textSelection(.enabled)
+                      .fixedSize(horizontal: false, vertical: true)
+                      .padding(.horizontal, 14).padding(.vertical, 10)
+                      .background(runway.field, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
+                      .frame(maxWidth: bubbleWidth, alignment: .trailing)
+              } else {
+                  Text(.init(message.content))
+                      .font(.body).foregroundStyle(runway.ink).textSelection(.enabled)
+                      .fixedSize(horizontal: false, vertical: true)
+                      .frame(maxWidth: bubbleWidth, alignment: .leading)
+              }
               if ["interrupted", "failed"].contains(message.responseState) {
                   Text("未完成 · 内容保留，不作为正式结果").font(.caption2).foregroundStyle(.secondary)
               } else if message.responseState == "streaming" {
@@ -563,9 +478,9 @@ struct LearningWorkspace: View {
                 .padding(.top, 6)
             }
         }
-        .padding(13)
-        .background(runway.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(runway.hairline))
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(runway.field.opacity(0.55), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("学习任务：\(task.userSummary)")
@@ -579,7 +494,17 @@ struct LearningWorkspace: View {
         }
     }
 
+    @ViewBuilder
     private func composer(contentWidth: CGFloat) -> some View {
+        if selectedSession?.status == "archived" {
+            HStack {
+                Label("已归档 · 会话只读", systemImage: "archivebox")
+                    .font(.callout).foregroundStyle(.secondary)
+                Spacer()
+                if let session = selectedSession { Button("撤销") { restore(session) } }
+            }
+            .frame(width: contentWidth).padding(.vertical, 16).frame(maxWidth: .infinity)
+        } else {
         VStack(alignment: .leading, spacing: 8) {
             if let syncError = selectedSession?.syncError {
                 Text("正在恢复进度同步：\(syncError)").font(.caption).foregroundStyle(.orange)
@@ -631,6 +556,7 @@ struct LearningWorkspace: View {
         .padding(.top, 8)
         .padding(.bottom, 18)
         .frame(maxWidth: .infinity)
+        }
     }
 
     private var activeActionPlaceholder: String {
@@ -801,9 +727,7 @@ struct LearningWorkspace: View {
         }
         modelContext.insert(session)
         try? modelContext.save()
-        showArchived = false
         selectedSessionID = session.id
-        showsSessionPicker = false
         return session
     }
 
@@ -836,28 +760,22 @@ struct LearningWorkspace: View {
     }
 
     private func archive(_ session: AgentSession) {
-        if let run = runs.last(where: { $0.sessionID == session.id && ["running", "accepted", "queued"].contains($0.status) }) {
-            ConversationProcessor.queueControl(run, action: "stop", context: modelContext)
+        if !LearningSessionActions.archive(session, context: modelContext) {
+            localError = "归档尚未保存，请重试。"
         }
-        session.status = "archived"
-        session.archivedAt = .now
-        session.updatedAt = .now
-        try? modelContext.save()
-        selectInitialSession()
     }
 
     private func restore(_ session: AgentSession) {
-        session.status = "active"
-        session.archivedAt = nil
-        session.updatedAt = .now
-        showArchived = false
+        guard LearningSessionActions.restore(session, context: modelContext) else {
+            localError = "恢复尚未保存，请重试。"
+            return
+        }
         selectedSessionID = session.id
-        try? modelContext.save()
     }
 
     private func selectInitialSession() {
-        if let selectedSessionID, visibleSessions.contains(where: { $0.id == selectedSessionID }) { return }
-        self.selectedSessionID = visibleSessions.first?.id
+        if let selectedSessionID, sessions.contains(where: { $0.id == selectedSessionID }) { return }
+        self.selectedSessionID = sessions.first(where: { $0.status == "active" })?.id ?? sessions.first?.id
     }
 
     private func updateSessionSummary(_ session: AgentSession) {
