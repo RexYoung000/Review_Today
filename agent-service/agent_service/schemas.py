@@ -278,6 +278,7 @@ class TurnContext(BaseModel):
     summary: str = Field(default="", max_length=12_000)
     recent_messages: list[ContextMessage] = Field(default_factory=list, max_length=20)
     knowledge_summaries: list[str] = Field(default_factory=list, max_length=5)
+    handoff: dict | None = None
 
 
 class SessionTurnRequest(BaseModel):
@@ -355,6 +356,11 @@ class SessionTurnAccepted(BaseModel):
 
 
 class LearningTaskView(BaseModel):
+    lifecycle_revision: int = 0
+    learning_plan_json: str | None = None
+    learning_outcome_json: str | None = None
+    sources_json: str | None = None
+    draft_target_id: str | None = None
     run_id: str | None = None
     understanding: Literal["unknown", "self_reported", "verified"] = "unknown"
     task_id: str
@@ -559,6 +565,8 @@ class IntentDecision(BaseModel):
     requested_mode: SessionMode | None = None
     light_reply: str = Field(default="", max_length=600)
     session_tags: list[str] = Field(default_factory=list, max_length=5)
+    handoff_source_ids: list[str] = Field(default_factory=list, max_length=8)
+    handoff_step_ids: list[str] = Field(default_factory=list, max_length=10)
 
 
 class BoundOperation(BaseModel):
@@ -573,6 +581,8 @@ class SessionMessageRequest(SessionTurnRequest):
     delivery: Literal["steer", "queue"] = "steer"
     task_id: str | None = None
     operation: BoundOperation | None = None
+    expected_event_seq: int | None = Field(default=None, ge=0)
+    lifecycle_revision: int | None = Field(default=None, ge=0)
 
 
 class MessageAccepted(BaseModel):
@@ -602,6 +612,7 @@ class ConversationOutput(BaseModel):
     message: str = Field(min_length=1)
     check_question: str = ""
     evidence_state: EvidenceState = "unverified"
+    learning_plan: LearningPlan | None = None
 
 
 class EvidenceAssessmentV2(BaseModel):

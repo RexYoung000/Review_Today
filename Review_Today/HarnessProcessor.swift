@@ -20,6 +20,7 @@ enum HarnessProcessor {
         context: ModelContext,
         monitor: AgentServiceMonitor
     ) async {
+        guard writable(task, context: context) else { return }
         guard monitor.connection == .ready || (task.conversationManaged && monitor.serviceReachable) else {
             if task.status == "accepted" || task.errorCode == "RT.HARNESS.SERVICE_UNAVAILABLE" {
                 task.userSummary = monitor.launchStatus
@@ -87,6 +88,7 @@ enum HarnessProcessor {
                 recentMessages: Array(recent),
                 knowledgeSummaries: Array(knowledge)
             )
+            guard writable(task, context: context) else { return }
             guard let remoteTaskID = UUID(uuidString: accepted.taskId) else {
                 throw HarnessProcessorError.invalidResponse
             }
@@ -120,6 +122,7 @@ enum HarnessProcessor {
                 type: type,
                 content: task.pendingActionContent ?? ""
             )
+            guard writable(task, context: context) else { return }
             if let rawID = view.runId, let runID = UUID(uuidString: rawID) {
                 let runs = (try? context.fetch(FetchDescriptor<AgentRun>())) ?? []
                 if !runs.contains(where: { $0.id == runID }) {
@@ -145,32 +148,31 @@ enum HarnessProcessor {
     private static func synchronize(_ task: LearningTask, context: ModelContext) async {
         do {
             let view = try await AgentAPI.getLearningTask(taskId: task.id)
+            guard writable(task, context: context), (view.lifecycleRevision ?? 0) >= task.lifecycleRevision else { return }
             apply(view, to: task)
             let page = try await AgentAPI.getTaskEvents(taskId: task.id, afterSeq: task.lastEventSeq)
-            try persist(page.events, for: task, context: context)
+            guard writable(task, context: context) else { return }
+            if !task.conversationManaged { try persist(page.events, for: task, context: context) }
             task.lastEventSeq = max(task.lastEventSeq, page.lastSeq)
             task.updatedAt = .now
             try context.save()
 
             if view.status == "committing" {
-                if task.conversationManaged {
-                    let controls = (try? context.fetch(FetchDescriptor<AgentRunControl>())) ?? []
-                    let messages = fetchMessages(context)
-                    guard !controls.contains(where: { $0.sessionID == task.sessionID && !$0.sent }),
-                          !messages.contains(where: { $0.sessionID == task.sessionID && $0.deliveryStatus == "local" }) else { return }
-                    let claimed = try await AgentAPI.conversationRequest("/v2/tasks/\(task.id.uuidString.lowercased())/commit-claim", body: [:])
-                    let current = try JSONDecoder().decode(AgentAPI.LearningTaskView.self, from: JSONSerialization.data(withJSONObject: claimed))
-                    try await commitMemory(current, task: task, context: context)
-                } else {
-                    try await commitMemory(view, task: task, context: context)
-                }
+                let controls = (try? context.fetch(FetchDescriptor<AgentRunControl>())) ?? []
+                let messages = fetchMessages(context)
+                guard !controls.contains(where: { $0.sessionID == task.sessionID && !$0.sent }),
+                      !messages.contains(where: { $0.sessionID == task.sessionID && $0.deliveryStatus == "local" }) else { return }
+                let claimed = try await AgentAPI.conversationRequest("/v2/tasks/\(task.id.uuidString.lowercased())/commit-claim", body: [:])
+                let current = try JSONDecoder().decode(AgentAPI.LearningTaskView.self, from: JSONSerialization.data(withJSONObject: claimed))
+                try await commitMemory(current, task: task, context: context)
             } else if page.lastSeq > task.lastAckedSeq {
                 let acked = try await AgentAPI.ackLearningTask(taskId: task.id, lastEventSeq: page.lastSeq)
                 task.lastAckedSeq = page.lastSeq
-                apply(acked, to: task)
+                if writable(task, context: context) { apply(acked, to: task) }
                 try context.save()
             }
         } catch {
+            guard writable(task, context: context) else { return }
             handle(error, task: task, fallback: "进度已保存在本机，稍后继续同步")
             try? context.save()
         }
@@ -182,6 +184,12 @@ enum HarnessProcessor {
         task: LearningTask,
         context: ModelContext
     ) async throws {
+        guard writable(task, context: context) else { throw HarnessProcessorError.invalidResponse }
+        let sid = task.sessionID
+        guard ((try? context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { $0.sessionID == sid && !$0.sent }))) ?? []).isEmpty,
+              ((try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == sid && $0.role == "user" && $0.deliveryStatus == "local" }))) ?? []).isEmpty else {
+            return // a new correction or stop gets priority over an uncommitted result
+        }
         guard let payload = view.memoryPackage else { throw HarnessProcessorError.invalidResponse }
         let ids = payload.knowledge.compactMap { UUID(uuidString: $0.id) }
         guard ids.count == payload.knowledge.count, Set(ids).count == ids.count else {
@@ -216,6 +224,7 @@ enum HarnessProcessor {
             knowledgeIds: ids
         )
         task.lastAckedSeq = task.lastEventSeq
+        guard writable(task, context: context) else { try context.save(); return }
         apply(acked, to: task)
         let completionPage = try await AgentAPI.getTaskEvents(taskId: task.id, afterSeq: task.lastEventSeq)
         try persist(completionPage.events, for: task, context: context)
@@ -297,6 +306,7 @@ enum HarnessProcessor {
 
     @MainActor
     static func queueAction(_ task: LearningTask, type: String, content: String, context: ModelContext) {
+        guard writable(task, context: context) else { return }
         task.pendingActionID = UUID()
         task.pendingActionType = type
         task.pendingActionContent = content
@@ -310,6 +320,11 @@ enum HarnessProcessor {
 
     @MainActor
     static func apply(_ view: AgentAPI.LearningTaskView, to task: LearningTask) {
+        task.lifecycleRevision = view.lifecycleRevision ?? 0
+        task.learningPlanJSON = view.learningPlanJSON
+        task.learningOutcomeJSON = view.learningOutcomeJSON
+        task.sourcesJSON = view.sourcesJSON
+        task.draftTargetID = view.draftTargetID
         task.understanding = view.understanding ?? "unknown"
         task.mode = view.mode
         task.status = view.status
@@ -328,6 +343,12 @@ enum HarnessProcessor {
             task.requiredActionOptionsJSON = nil
         }
         task.updatedAt = .now
+    }
+
+    @MainActor
+    private static func writable(_ task: LearningTask, context: ModelContext) -> Bool {
+        guard let session = fetchSessions(context).first(where: { $0.id == task.sessionID }) else { return false }
+        return session.status == "active" && session.lifecycleRevision == session.lifecycleSyncedRevision && task.lifecycleRevision == session.lifecycleRevision
     }
 
     @MainActor

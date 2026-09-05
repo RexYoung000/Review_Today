@@ -438,6 +438,20 @@ def _form_memory(record: HarnessTaskRecord, *, force_source_view: bool | None = 
 
 
 def process_task(task_id: str) -> None:
+    from agent_service.harness_store import execution_epoch, StaleExecution
+    record = harness_store.get(task_id)
+    if not record:
+        return
+    token = execution_epoch.set((record.session_id, record.context.get("lifecycle_revision", 0)))
+    try:
+        _process_task(task_id)
+    except StaleExecution:
+        return
+    finally:
+        execution_epoch.reset(token)
+
+
+def _process_task(task_id: str) -> None:
     record = harness_store.get(task_id)
     if record is None or record.status not in {"accepted", "queued", "running", "retryable_failed"}:
         return
@@ -688,6 +702,20 @@ def _evaluate_answer(record: HarnessTaskRecord, answer: str) -> None:
 
 
 def process_action(task_id: str, action: TaskActionRequest) -> None:
+    from agent_service.harness_store import execution_epoch, StaleExecution
+    record = harness_store.get(task_id)
+    if not record:
+        return
+    token = execution_epoch.set((record.session_id, record.context.get("lifecycle_revision", 0)))
+    try:
+        _process_action(task_id, action)
+    except StaleExecution:
+        return
+    finally:
+        execution_epoch.reset(token)
+
+
+def _process_action(task_id: str, action: TaskActionRequest) -> None:
     record = harness_store.get(task_id)
     if record is None:
         return
@@ -835,6 +863,10 @@ def resume_incomplete_tasks() -> None:
     for record in harness_store.all_records():
         if record.context.get("conversation_managed"):
             continue
+        if record.status == "running":
+            _update(record.task_id, status="retryable_failed", error_code="RT.TASK.INTERRUPTED",
+                    user_summary="服务中断，进度已保留；请手动重试")
+            continue
         pending_action = next(
             (
                 item
@@ -848,5 +880,5 @@ def resume_incomplete_tasks() -> None:
                 process_action(record.task_id, TaskActionRequest.model_validate(pending_action))
             except Exception:  # noqa: BLE001
                 continue
-        elif record.status in {"accepted", "queued", "running"}:
+        elif record.status in {"accepted", "queued"}:
             process_task(record.task_id)

@@ -5,6 +5,7 @@ import sqlite3
 import threading
 import uuid
 from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -12,6 +13,12 @@ from typing import Any
 
 from agent_service.config import HARNESS_DB
 from agent_service.schemas import LearningTaskView, TaskEvent
+
+execution_epoch = ContextVar("legacy_execution_epoch", default=None)
+
+
+class StaleExecution(Exception):
+    pass
 
 
 def now_iso() -> str:
@@ -48,6 +55,11 @@ class HarnessTaskRecord:
 
     def view(self) -> LearningTaskView:
         return LearningTaskView(
+            lifecycle_revision=self.context.get("lifecycle_revision", 0),
+            learning_plan_json=json.dumps(self.context["learning_plan"], ensure_ascii=False) if self.context.get("learning_plan") else None,
+            learning_outcome_json=json.dumps(self.context["learning_outcome"], ensure_ascii=False) if self.context.get("learning_outcome") else None,
+            sources_json=json.dumps(self.context["sources"], ensure_ascii=False) if self.context.get("sources") else None,
+            draft_target_id=self.context.get("draft_id"),
             run_id=self.context.get("latest_run_id"),
             understanding=self.context.get("understanding", "unknown"),
             task_id=self.task_id,
@@ -102,6 +114,14 @@ class HarnessStore:
             )
 
     def _save_unlocked(self, record: HarnessTaskRecord) -> None:
+        epoch = execution_epoch.get()
+        with self._connection() as connection:
+            table = connection.execute("SELECT name FROM sqlite_master WHERE name='agent_sessions_v2'").fetchone()
+            row = connection.execute("SELECT payload FROM agent_sessions_v2 WHERE session_id=?", (record.session_id,)).fetchone() if table else None
+        if epoch and row:
+            session = json.loads(row[0])
+            if session.get("status", "active") != "active" or epoch != (record.session_id, session.get("lifecycle_revision", 0)):
+                raise StaleExecution()
         record.updated_at = now_iso()
         payload = json.dumps(asdict(record), ensure_ascii=False)
         with self._connection() as connection:
@@ -228,8 +248,14 @@ class HarnessStore:
             ).fetchall()
             terminal = []
             for task_id, payload in rows:
-                status = json.loads(payload).get("status")
-                if status in {"completed", "cancelled", "terminal_failed"}:
+                record = json.loads(payload)
+                session_table = connection.execute("SELECT name FROM sqlite_master WHERE name='agent_sessions_v2'").fetchone()
+                session = connection.execute("SELECT payload FROM agent_sessions_v2 WHERE session_id=?", (record["session_id"],)).fetchone() if session_table else None
+                # Session-owned tasks are needed for snapshots, plan/source refs and
+                # resumable context. Only orphaned, fully ACKed terminal projections
+                # may be aged out. Age alone is never a deletion condition.
+                if (not session and record.get("status") in {"completed", "cancelled", "terminal_failed"}
+                        and record.get("last_acked_seq", 0) >= len(record.get("events", []))):
                     terminal.append((task_id,))
             connection.executemany("DELETE FROM harness_tasks WHERE task_id = ?", terminal)
             return len(terminal)

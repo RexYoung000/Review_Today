@@ -22,7 +22,10 @@
 - Mac 原子保存归档状态、递增 lifecycle_revision 与待发控制，立即冻结输出，服务同步版本。恢复/撤销只恢复编辑，不恢复旧 Run/队列。
 - 新旧 Task、Run、事件及提交 claim/本地知识写入共同检查 active、生命周期、Run revision、确认对象/内容版本。归档禁止发送/改模式/重试/入库，可读历史。
 - 新版会话任务由会话处理器执行，旧处理器只适配旧任务，不重复投影新版消息；迟到事件可消费诊断，不恢复内容/成果/知识。已原子完成的知识不回滚，未提交旧版本拒绝。
-- 新增 `POST /v2/sessions/{id}/actions`（action_id/action/lifecycle_revision）；`GET /v2/sessions/{id}/snapshot` 与 `POST /v2/sessions/{id}/snapshot`（schema_version=1，仅恢复缺失 checkpoint）。冲突返回 409，不静默覆盖。
+- Task ACK 与归档使用同一事务锁检查版本并记录完成，新 Mac 的旧/新 Task 保存均先 claim。旧客户端没有 claim 时仅可确认仍 active 且版本有效的任务；已 claim 的本机原子提交允许迟到确认，但不恢复 Session 或生成。
+- 新增 `POST /v2/sessions/{id}/actions`（action_id/action/lifecycle_revision）；`GET /v2/sessions/{id}/snapshot` 与 `POST /v2/sessions/{id}/snapshot/restore`（schema_version=1，仅恢复缺失 checkpoint）。冲突返回 409，不静默覆盖。
+- messages 兼容增加 `expected_event_seq` 与 `lifecycle_revision`；客户端已有历史、服务检查点却缺失时返回 CHECKPOINT_REQUIRED，不能静默新建空会话。相同恢复快照使用指纹幂等；恢复撤销旧 pending/草稿授权，只导入状态，不触发模型。
+- 当前恢复实现只接受覆盖本机已消费游标且事件范围连续的快照。后台快照滞后时保留本机历史并报告 SNAPSHOT_STALE，不猜测重建模型检查点；任意崩溃时刻的增量快照合成仍需补齐验收，不能宣称全量恢复完成。
 - 快照包含身份/生命周期/模式/摘要、消息、Run 元数据、Task/计划、来源和待办；恢复旧运行成 interrupted，不调用模型/入库，不把导入当作新授权。
 - Mac 长期保存完整记录，Python 仅执行检查点。清理须终态、已 ACK、无活跃引用，不能仅按 TTL。任务/事件兼容增加计划/来源/生命周期，健康结果增加分类/时间/恢复方式；旧接口不删。
 - SwiftData 增量字段可空或安全默认；只有有证据的旧记录回填，缺失来源、步骤、掌握不猜测。

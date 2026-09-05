@@ -293,9 +293,15 @@ final class AgentSession {
     var summaryText: String
     var sourceSessionID: UUID?
     var lastSessionEventSeq: Int = 0
+    var lifecycleRevision: Int = 0
+    var lifecycleSyncedRevision: Int = 0
+    var lifecycleActionsJSON: String = "[]"
+    var checkpointJSON: String?
+    var learningChecklistExpanded: Bool = false
     var runPaused: Bool = false
     var pendingOperationJSON: String?
     var handoffID: String?
+    var handoffJSON: String?
     var syncError: String?
     var composerDraft: String = ""
     var autoTopicTagsJSON: String = "[]"
@@ -438,6 +444,11 @@ final class LearningTask {
     var memoryCommitted: Bool
     var conversationManaged: Bool = false
     var understanding: String = "unknown"
+    var lifecycleRevision: Int = 0
+    var learningPlanJSON: String?
+    var learningOutcomeJSON: String?
+    var sourcesJSON: String?
+    var draftTargetID: String?
 
     init(
         id: UUID = UUID(),
@@ -535,6 +546,9 @@ final class SourceReference {
     var locator: String
     var createdAt: Date
     var sourceType: String = "public_source"
+    var sourceVersion: Int = 1
+    var fetchedAt: Date?
+    var contentSnapshot: String = ""
 
     init(sessionID: UUID, taskID: UUID? = nil, url: String, title: String, evidenceState: String = "unverified", locator: String = "") {
         self.id = UUID()

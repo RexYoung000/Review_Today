@@ -104,6 +104,16 @@ struct ConversationReplayTests {
         precondition(session.lastSessionEventSeq == 10)
         precondition(session.displayTopicTags == ["自定义"] && session.modePreset == "problem_solving")
         precondition(session.pendingOperationJSON == nil)
+        session.status = "active"
+        session.lifecycleRevision = 2
+        session.runPaused = true
+        var lateRestorePage = page([])
+        lateRestorePage["pending"] = ["kind": "save", "target_id": "old", "version": 1]
+        lateRestorePage["mode"] = "auto"
+        try ConversationProcessor.persist(lateRestorePage, session: session, context: context)
+        precondition(session.pendingOperationJSON == nil && session.modePreset == "problem_solving" && session.runPaused)
+        session.status = "archived"
+        try context.save()
         do {
             try ConversationProcessor.persist(page([]), session: other, context: context)
             preconditionFailure("cross-Session events must be rejected")

@@ -47,15 +47,16 @@ def parse_model(
     except httpx.TransportError as exc:
         raise ModelCallError("CONNECTION", type(exc).__name__) from None
     except APIStatusError as exc:
-        raise ModelCallError("PROVIDER", f"HTTP {exc.status_code}") from None
+        raise ModelCallError("PROVIDER", f"HTTP {exc.status_code}", request_id=getattr(exc, "request_id", None)) from None
     except (ValidationError, json.JSONDecodeError) as exc:
         raise ModelCallError("SCHEMA", type(exc).__name__) from None
 
 
 class ModelCallError(RuntimeError):
-    def __init__(self, kind: str, diagnostic: str = ""):
+    def __init__(self, kind: str, diagnostic: str = "", request_id: str | None = None):
         self.code = f"RT.MODEL.{kind}"
         self.diagnostic = diagnostic  # class/status only, never provider body or credentials
+        self.request_id = request_id
         super().__init__(self.code)
 
 

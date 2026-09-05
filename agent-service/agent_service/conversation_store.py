@@ -28,7 +28,8 @@ class ConversationStore:
     def empty(session_id: str) -> dict:
         return dict(session_id=session_id, mode="auto", paused=False, foreground=None,
                     active_task_id=None, messages=[], runs={}, events=[], last_acked_seq=0,
-                    tasks={}, pending=None, draft=None, summary="", summary_version=0, event_base_seq=0)
+                    tasks={}, pending=None, draft=None, summary="", summary_version=0, event_base_seq=0,
+                    status="active", lifecycle_revision=0, lifecycle_actions={})
 
     def get(self, session_id: str) -> dict | None:
         with self._lock, self.tasks._connection() as db:
@@ -56,7 +57,9 @@ class ConversationStore:
             prior_payload = json.dumps({k: v for k, v in data.items() if k != "tasks"}, ensure_ascii=False)
             if run_id is not None:
                 run = data["runs"].get(run_id)
-                if not run or run["revision"] != revision or run["status"] != "running":
+                if (data.get("status", "active") != "active" or not run or run["revision"] != revision
+                        or run["status"] != "running"
+                        or run.get("lifecycle_revision", 0) != data.get("lifecycle_revision", 0)):
                     raise Superseded()
             yield data
             # Both projections are committed together; an exception above writes neither.
@@ -93,7 +96,8 @@ class ConversationStore:
             data["events"] = data["events"][len(removable):]
         required = {mid for run in data["runs"].values() if run["status"] != "completed" for mid in run["input_ids"]}
         first_required = next((i for i, message in enumerate(data["messages"]) if message["message_id"] in required), len(data["messages"]))
-        count = min(max(0, len(data["messages"]) - 32), first_required)
+        # A slow/failed background summary must never discard unsummarized context.
+        count = min(max(0, len(data["messages"]) - 32), first_required, data.get("summarized_count", 0))
         if count:
             data["messages"] = data["messages"][count:]
             data["summarized_count"] = max(0, data.get("summarized_count", 0) - count)
@@ -119,7 +123,7 @@ class ConversationStore:
               message_id: str | None = None) -> dict:
         event = dict(event_id=str(uuid.uuid4()), session_id=data["session_id"], run_id=run["run_id"],
                      task_id=run.get("task_id"), seq=ConversationStore.last_seq(data) + 1, occurred_at=now_iso(),
-                     revision=run["revision"], stage=stage, state=run["status"], node=stage,
+                     revision=run["revision"], lifecycle_revision=data.get("lifecycle_revision", 0), stage=stage, state=run["status"], node=stage,
                      user_summary=summary, detail_summary=detail, model=model,
                      attempt=run["attempt"], duration_ms=duration_ms, error_code=error,
                      payload=payload or {}, message=None)

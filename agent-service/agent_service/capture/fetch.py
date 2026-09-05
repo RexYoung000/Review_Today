@@ -4,10 +4,11 @@ import ipaddress
 import re
 import socket
 import ssl
+import time
+import http.client
 from html.parser import HTMLParser
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse
-from urllib.request import Request, urlopen
+from urllib.parse import urlparse, urljoin
 
 from agent_service.certs import ssl_context
 
@@ -81,7 +82,9 @@ def looks_like_url(text: str) -> str | None:
 
 def _is_blocked_ip(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
     return bool(
-        ip.is_private
+        not ip.is_global
+        or ip.is_reserved
+        or ip.is_private
         or ip.is_loopback
         or ip.is_link_local
         or ip.is_multicast
@@ -90,7 +93,7 @@ def _is_blocked_ip(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
     )
 
 
-def assert_public_http_url(url: str) -> str:
+def _public_addresses(url: str):
     parsed = urlparse(url)
     if parsed.scheme not in {"http", "https"}:
         raise ValueError("RT.CAPTURE.SSRF")
@@ -109,35 +112,80 @@ def assert_public_http_url(url: str) -> str:
         infos = socket.getaddrinfo(host, parsed.port or (443 if parsed.scheme == "https" else 80), type=socket.SOCK_STREAM)
     except OSError as exc:
         raise ValueError("RT.CAPTURE.FETCH_FAILED") from exc
+    if not infos:
+        raise ValueError("RT.CAPTURE.FETCH_FAILED")
     for info in infos:
         sockaddr = info[4]
         ip = ipaddress.ip_address(sockaddr[0])
         if _is_blocked_ip(ip):
             raise ValueError("RT.CAPTURE.SSRF")
+    return parsed, infos
+
+
+def assert_public_http_url(url: str) -> str:
+    _public_addresses(url)
     return url
 
 
-def fetch_public_url(url: str, limit: int = 20000) -> tuple[str, str]:
-    safe = assert_public_http_url(url)
-    request = Request(
-        safe,
-        headers={
-            "User-Agent": (
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
-            ),
-            "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-        },
-    )
+def _read_public(url: str, deadline: float):
+    parsed, addresses = _public_addresses(url)
+    family, socktype, proto, _, address = addresses[0]
+    # Connect to the exact validated DNS result. HTTP Host and TLS SNI retain
+    # the origin hostname, but neither performs another DNS resolution.
+    sock = socket.socket(family, socktype, proto)
+    connection = http.client.HTTPConnection(parsed.hostname, port=parsed.port or (443 if parsed.scheme == "https" else 80))
     try:
-        with urlopen(request, timeout=20, context=ssl_context()) as response:
-            if response.status >= 400:
+        sock.settimeout(max(.01, deadline - time.monotonic()))
+        sock.connect(address)
+        if _is_blocked_ip(ipaddress.ip_address(sock.getpeername()[0])):
+            raise ValueError("RT.CAPTURE.SSRF")
+        if parsed.scheme == "https":
+            sock = ssl_context().wrap_socket(sock, server_hostname=parsed.hostname)
+        connection.sock = sock
+        path = parsed.path or "/"
+        if parsed.query:
+            path += "?" + parsed.query
+        connection.request("GET", path, headers={"User-Agent": "ReviewToday/1.0", "Accept": "text/html,text/plain", "Accept-Encoding": "identity"})
+        response = connection.getresponse()
+        if response.status in {301, 302, 303, 307, 308}:
+            location = response.getheader("Location")
+            if not location:
                 raise ValueError("RT.CAPTURE.FETCH_FAILED")
-            raw = response.read(800_000)
-    except HTTPError as exc:
-        raise ValueError("RT.CAPTURE.FETCH_FAILED") from exc
-    except (URLError, TimeoutError, ssl.SSLError, OSError) as exc:
+            return urljoin(url, location), b""
+        if response.status >= 400:
+            raise ValueError("RT.CAPTURE.FETCH_FAILED")
+        if response.getheader("Content-Encoding", "identity") not in {"identity", ""}:
+            raise ValueError("RT.CAPTURE.UNSUPPORTED_ENCODING")
+        chunks, size = [], 0
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError()
+            sock.settimeout(remaining)
+            chunk = response.read1(min(64_000, 800_001 - size))
+            if not chunk:
+                break
+            size += len(chunk)
+            if size > 800_000:
+                raise ValueError("RT.CAPTURE.RESPONSE_TOO_LARGE")
+            chunks.append(chunk)
+        return None, b"".join(chunks)
+    finally:
+        connection.close()
+        sock.close()
+
+
+def fetch_public_url(url: str, limit: int = 20000) -> tuple[str, str]:
+    safe, deadline = url, time.monotonic() + 20
+    try:
+        for _ in range(6):
+            redirect, raw = _read_public(safe, deadline)
+            if not redirect:
+                break
+            safe = redirect
+        else:
+            raise ValueError("RT.CAPTURE.TOO_MANY_REDIRECTS")
+    except (http.client.HTTPException, TimeoutError, ssl.SSLError, OSError) as exc:
         raise ValueError("RT.CAPTURE.FETCH_FAILED") from exc
     html = raw.decode("utf-8", errors="ignore")
     parser = _TextExtractor()

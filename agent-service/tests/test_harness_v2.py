@@ -117,9 +117,9 @@ class HarnessRoutingTests(unittest.TestCase):
                 raise TimeoutError("probe timeout")
             return True
 
-        with patch.object(capability_module, "openai_key", return_value="test-key"), patch.object(
-            capability_module, "available_model_ids", return_value=models
-        ), patch.object(capability_module, "model_is_callable", side_effect=callable_model):
+        with patch.object(capability_module, "openai_key", return_value="test-key"), patch.object(capability_module, "model_is_callable", side_effect=callable_model):
+            original_state = {k: dict(v) for k, v in capability_module._state.items()}
+            self.addCleanup(lambda: capability_module._state.update(original_state))
             capability_module.probe()
         status = capability_module.snapshot()
         self.assertEqual(status["router"]["status"], "ready")
@@ -181,6 +181,7 @@ class HarnessHTTPContractTests(unittest.TestCase):
             "risk": {"model": "risk", "status": "unavailable", "error": "timeout", "streaming": "checking"},
         }
         with patch.object(capability_module, "_state", states), \
+             patch("agent_service.conversation.conversation_harness.start"), \
              patch.object(capability_module, "probe"), \
              patch.object(capability_module, "model_stream_capability", return_value={"ready": True, "streaming": "streaming"}):
             capability_module.probe_with_streaming()
@@ -275,6 +276,33 @@ class HarnessHTTPContractTests(unittest.TestCase):
         )
         self.assertEqual(ack.status_code, 200)
         self.assertEqual(ack.json()["status"], "completed")
+
+    def test_old_lifecycle_cannot_complete_through_legacy_ack(self) -> None:
+        sid = str(uuid.uuid4())
+        task = self.client.post(f"/v2/sessions/{sid}/turns", json=self.body(str(uuid.uuid4()))).json()
+        def stale(record):
+            record.status = "committing"
+            record.context["lifecycle_revision"] = -1
+        self.store.mutate(task["task_id"], stale)
+        response = self.client.post(f"/v2/tasks/{task['task_id']}/ack", json={"last_event_seq": 0})
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(self.store.get(task["task_id"]).status, "committing")
+
+    def test_claimed_atomic_commit_can_ack_after_archive_without_resuming(self) -> None:
+        sid = str(uuid.uuid4())
+        task = self.client.post(f"/v2/sessions/{sid}/turns", json=self.body(str(uuid.uuid4()))).json()
+        self.store.mutate(task["task_id"], lambda record: setattr(record, "status", "committing"))
+        main_module.conversation_harness.claim_commit(task["task_id"])
+        main_module.conversation_harness.session_action(sid, str(uuid.uuid4()), "archive", 1)
+        url = f"/v2/tasks/{task['task_id']}/ack"
+        first = self.client.post(url, json={"last_event_seq": 0})
+        second = self.client.post(url, json={"last_event_seq": 0})
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(first.json()["status"], "completed")
+        self.assertEqual(first.json(), second.json())
+        state = main_module.conversation_harness.store.get(sid)
+        self.assertEqual(state["status"], "archived")
+        self.assertTrue(state["paused"])
 
 
 class TopicExplorationIntegrationTests(unittest.TestCase):

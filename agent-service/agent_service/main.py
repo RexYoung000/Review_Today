@@ -37,7 +37,8 @@ import uuid
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from pydantic import ValidationError
+from pydantic import ValidationError, BaseModel, Field
+from typing import Literal
 
 from agent_service.capture import find_source_candidates, run_capture, source_fidelity_issues
 from agent_service.capture.fetch import looks_like_url
@@ -110,6 +111,42 @@ def _require_uuid(value: str, *, code: str) -> str:
         raise _http_error(422, code, "identifier must be a valid UUID") from None
 
 
+class SessionLifecycleAction(BaseModel):
+    action_id: uuid.UUID
+    action: Literal["archive", "restore"]
+    lifecycle_revision: int = Field(ge=1)
+
+
+@app.post("/v2/sessions/{session_id}/actions")
+def session_lifecycle_action(session_id: str, body: SessionLifecycleAction) -> dict:
+    sid = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
+    try:
+        return conversation_harness.session_action(sid, str(body.action_id), body.action, body.lifecycle_revision)
+    except ValueError as exc:
+        raise _http_error(409, str(exc), "Session lifecycle version conflicts") from None
+
+
+@app.get("/v2/sessions/{session_id}/snapshot")
+def session_snapshot(session_id: str) -> dict:
+    sid = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
+    try:
+        return conversation_harness.export_snapshot(sid)
+    except ValueError as exc:
+        raise _http_error(404, str(exc), "Session checkpoint is unavailable") from None
+
+
+@app.post("/v2/sessions/{session_id}/snapshot/restore")
+def restore_session_snapshot(session_id: str, body: dict) -> dict:
+    sid = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
+    if len(json.dumps(body)) > 16_000_000:
+        raise _http_error(413, "RT.SESSION.SNAPSHOT_TOO_LARGE", "Snapshot exceeds restore limit")
+    try:
+        return conversation_harness.restore_snapshot(sid, body)
+    except (ValueError, TypeError, KeyError) as exc:
+        code = str(exc) if str(exc).startswith("RT.") else "RT.SESSION.INVALID_SNAPSHOT"
+        raise _http_error(409, code, "Snapshot conflicts with existing state or schema") from None
+
+
 @app.post("/v2/sessions/{session_id}/messages", response_model=MessageAccepted)
 def submit_message(session_id: str, body: SessionMessageRequest) -> dict:
     session_id = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
@@ -132,6 +169,7 @@ def session_events(session_id: str, after_seq: int = 0) -> dict:
     if after_seq < data.get("event_base_seq", 0):
         raise _http_error(409, "RT.SESSION.CURSOR_EXPIRED", "older acknowledged events are in the Mac history")
     return dict(session_id=session_id, events=[e for e in data["events"] if e["seq"] > after_seq],
+                status=data.get("status", "active"), lifecycle_revision=data.get("lifecycle_revision", 0),
                 last_seq=conversation_harness.store.last_seq(data), paused=data["paused"], mode=data["mode"],
                 pending=data["pending"], runs=[conversation_harness.public_run(r) for r in data["runs"].values()])
 
@@ -208,6 +246,12 @@ def submit_session_turn(session_id: str, body: SessionTurnRequest, background: B
     normalized_session = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
     if not openai_key():
         raise _http_error(409, "RT.HARNESS.NO_KEY", "model credential is not configured")
+    # A legacy caller still enters the same Session owner. This also serializes
+    # it against a concurrently accepted archive/restore operation.
+    with conversation_harness.store.transaction(normalized_session) as state:
+        if state.get("status", "active") != "active":
+            raise _http_error(409, "RT.SESSION.ARCHIVED", "Session is read-only")
+        lifecycle = state.get("lifecycle_revision", 0)
     record = HarnessTaskRecord(
         task_id=str(uuid.uuid4()),
         session_id=normalized_session,
@@ -216,7 +260,7 @@ def submit_session_turn(session_id: str, body: SessionTurnRequest, background: B
         content_type=body.content_type,
         primary_language=body.primary_language,
         mode_preset=body.mode_preset,
-        context=body.context.model_dump(),
+        context={**body.context.model_dump(), "lifecycle_revision": lifecycle},
     )
     stored, created = harness_store.create(record)
     if created:
@@ -257,6 +301,9 @@ def submit_task_action(task_id: str, body: TaskActionRequest, background: Backgr
     current = harness_store.get(normalized)
     if current is None:
         raise _http_error(404, "RT.TASK.UNKNOWN", "unknown task_id")
+    state = conversation_harness.store.get(current.session_id)
+    if state and state.get("status", "active") != "active":
+        raise _http_error(409, "RT.SESSION.ARCHIVED", "Session is read-only")
     operation = body.payload.get("operation")
     if body.action_type in {"form_memory", "switch_mode", "create_handoff", "select_sources", "select_question"} and not operation:
         raise _http_error(409, "RT.ACTION.CONFIRMATION_REQUIRED", "action requires an explicit object and version")
@@ -298,38 +345,10 @@ def submit_task_action(task_id: str, body: TaskActionRequest, background: Backgr
 @app.post("/v2/tasks/{task_id}/ack", response_model=LearningTaskView)
 def ack_learning_task(task_id: str, body: TaskAckRequest) -> dict:
     normalized = _require_uuid(task_id, code="RT.TASK.INVALID_ID")
-    record = harness_store.get(normalized)
-    if record is None:
-        raise _http_error(404, "RT.TASK.UNKNOWN", "unknown task_id")
-    if body.last_event_seq > len(record.events):
-        raise _http_error(409, "RT.TASK.ACK_AHEAD", "cannot acknowledge unseen events")
-    if record.status == "committing":
-        expected = {item.get("id") for item in (record.memory_package or {}).get("knowledge", [])}
-        if expected and set(body.knowledge_ids) != expected:
-            raise _http_error(409, "RT.TASK.ACK_MISMATCH", "knowledge_ids do not match memory package")
     try:
-        record = harness_store.acknowledge(normalized, body.last_event_seq) or record
-    except ValueError:
-        raise _http_error(409, "RT.TASK.ACK_AHEAD", "cannot acknowledge unseen events") from None
-    if record.status == "committing":
-        def complete(item: HarnessTaskRecord) -> None:
-            item.status = "completed"
-            item.stage = "completed"
-            item.user_summary = "学习任务已完成"
-            item.required_action = None
-            item.error_code = None
-
-        record = harness_store.mutate(normalized, complete) or record
-        harness_store.append_event(
-            normalized,
-            stage="completed",
-            state="completed",
-            node="mac_ack",
-            user_summary="记忆已保存，学习任务完成",
-            detail_summary="Mac 已确认知识数据持久化。",
-        )
-        record = harness_store.get(normalized) or record
-    return record.view().model_dump()
+        return conversation_harness.acknowledge_task(normalized, body.last_event_seq, body.knowledge_ids)
+    except ValueError as exc:
+        raise _http_error(404 if str(exc) == "RT.TASK.UNKNOWN" else 409, str(exc), "task receipt does not match current state") from None
 
 
 def _apply_graph_result(record: TaskRecord, result: dict) -> None:

@@ -31,14 +31,29 @@ extension AgentAPI {
 
 enum ConversationProcessor {
     @MainActor
-    static func tick(context: ModelContext, monitor: AgentServiceMonitor, pollEvents: Bool = true) async {
+    static func tick(context: ModelContext, monitor: AgentServiceMonitor, pollEvents: Bool = true, onlySession: UUID? = nil, controlsOnly: Bool = false, skipControls: Bool = false) async {
         guard monitor.serviceReachable && monitor.conversationSupported else { return }
-        let sessions = (try? context.fetch(FetchDescriptor<AgentSession>())) ?? []
+        let sessions = ((try? context.fetch(FetchDescriptor<AgentSession>())) ?? []).filter { onlySession == nil || $0.id == onlySession }
         // Durable controls run before pulling committable output. Never lose rapid
         // stop/mode/resume operations by storing only one pending field on a Task.
         let controls = (try? context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { !$0.sent }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
         var blockedSessions = Set<UUID>()
-        for control in controls where !control.sent {
+        for session in sessions where !skipControls {
+            let actions = (session.lifecycleActionsJSON.data(using: .utf8).flatMap { try? JSONSerialization.jsonObject(with: $0) } as? [[String: Any]]) ?? []
+            for action in actions where (action["lifecycle_revision"] as? Int ?? 0) > session.lifecycleSyncedRevision {
+                do {
+                    _ = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/actions", body: action)
+                    session.lifecycleSyncedRevision = action["lifecycle_revision"] as? Int ?? session.lifecycleSyncedRevision
+                    try context.save()
+                } catch {
+                    blockedSessions.insert(session.id)
+                    session.syncError = HarnessAPIError.code(for: error)
+                    try? context.save()
+                    break
+                }
+            }
+        }
+        for control in controls where !skipControls && !control.sent && sessions.contains(where: { $0.id == control.sessionID }) {
             guard !blockedSessions.contains(control.sessionID) else { continue }
             do {
                 var body: [String: Any] = ["action_id": control.id.uuidString.lowercased(), "action": control.action]
@@ -56,15 +71,19 @@ enum ConversationProcessor {
                 try? context.save()
             }
         }
+        if controlsOnly { return }
         let messages = (try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.role == "user" && $0.deliveryStatus == "local" }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
         for message in messages where message.role == "user" && message.deliveryStatus == "local" {
             guard let session = sessions.first(where: { $0.id == message.sessionID }), session.status == "active" else { continue }
+            guard monitor.canSubmitMessages, session.lifecycleRevision == session.lifecycleSyncedRevision else { continue }
+            guard !controls.contains(where: { $0.sessionID == session.id && !$0.sent }) else { continue }
             guard !blockedSessions.contains(session.id) else { continue }
             // Historic inputs already attached to a v2 Task use its compatibility
             // processor. All newly-created UI input has no Task before recognition.
             if message.taskID != nil && message.runID == nil && message.operationJSON == nil { continue }
             do {
                 let sid = session.id
+                let lifecycle = session.lifecycleRevision
                 let before = message.createdAt
                 var recentQuery = FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == sid && $0.createdAt < before && $0.responseState == "complete" }, sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
                 recentQuery.fetchLimit = 10
@@ -76,9 +95,14 @@ enum ConversationProcessor {
                     "content": message.content, "content_type": message.contentType,
                     "mode_preset": session.modePreset, "delivery": message.deliveryMode,
                     "primary_language": UserLanguage.primaryCode,
+                    "expected_event_seq": session.lastSessionEventSeq, "lifecycle_revision": session.lifecycleRevision,
                     "context": ["summary": String(session.summaryText.prefix(12000)), "recent_messages": Array(recent), "knowledge_summaries": Array(relatedKnowledge.prefix(5))],
                 ]
                 if let operation = object(message.operationJSON), !operation.isEmpty { body["operation"] = operation }
+                if let handoff = object(session.handoffJSON), var supplied = body["context"] as? [String: Any] {
+                    supplied["handoff"] = handoff
+                    body["context"] = supplied
+                }
                 // Import only the current unfinished legacy goal when this Session
                 // has never used message/run processing. No cross-Session context.
                 let runs = (try? context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }))) ?? []
@@ -90,6 +114,11 @@ enum ConversationProcessor {
                     }
                 }
                 let response = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/messages", body: body)
+                guard session.status == "active", session.lifecycleRevision == lifecycle else {
+                    message.deliveryStatus = "held"
+                    try context.save()
+                    continue
+                }
                 guard let rawID = response["run_id"] as? String, let id = UUID(uuidString: rawID) else { continue }
                 message.runID = id
                 message.lastDeliveryError = nil
@@ -104,6 +133,9 @@ enum ConversationProcessor {
             } catch {
                 // Keep the exact same message ID in the local outbox for recovery.
                 message.lastDeliveryError = HarnessAPIError.code(for: error)
+                if message.lastDeliveryError == "RT.SESSION.CHECKPOINT_REQUIRED" {
+                    try? await restoreCheckpoint(session, context: context)
+                }
                 try? context.save()
                 continue
             }
@@ -130,8 +162,46 @@ enum ConversationProcessor {
     }
 
     @MainActor
+    static func restoreCheckpoint(_ session: AgentSession, context: ModelContext) async throws {
+        guard var snapshot = object(session.checkpointJSON), var checkpoint = snapshot["checkpoint"] as? [String: Any] else {
+            throw HarnessAPIError.server(code: "RT.SESSION.NO_LOCAL_CHECKPOINT", message: "历史仍在本机，执行检查点需要恢复")
+        }
+        let lifecycle = session.lifecycleRevision
+        let storedSeq = (checkpoint["event_base_seq"] as? Int ?? 0) + (checkpoint["events"] as? [Any] ?? []).count
+        guard storedSeq >= session.lastSessionEventSeq,
+              (checkpoint["event_base_seq"] as? Int ?? 0) <= session.lastSessionEventSeq else {
+            // Never pretend a stale checkpoint contains newer learning decisions.
+            throw HarnessAPIError.server(code: "RT.SESSION.SNAPSHOT_STALE", message: "历史已保留，执行快照尚未补齐，不能自动恢复")
+        }
+        // Local history/cursor wins; restore is deliberately paused and never
+        // replays a model call or grants a former save confirmation.
+        checkpoint["lifecycle_revision"] = lifecycle
+        checkpoint["status"] = session.status
+        checkpoint["last_acked_seq"] = min(checkpoint["last_acked_seq"] as? Int ?? 0, session.lastSessionEventSeq)
+        checkpoint["paused"] = true
+        checkpoint["pending"] = NSNull()
+        snapshot["checkpoint"] = checkpoint
+        _ = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/snapshot/restore", body: snapshot)
+        guard session.lifecycleRevision == lifecycle else { return }
+        session.runPaused = true
+        session.pendingOperationJSON = nil
+        session.syncError = nil
+        let sid = session.id
+        for run in try context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid })) where ["running", "accepted", "queued", "adjusting", "stopping"].contains(run.status) {
+            run.status = "interrupted"
+            if let start = run.startedAt { run.elapsedMS = Int(Date.now.timeIntervalSince(start) * 1000) }
+            run.startedAt = nil
+            run.userSummary = "执行记录已恢复，未完成回复需要手动重试"
+        }
+        try context.save()
+    }
+
+    @MainActor
     @discardableResult
     static func queueControl(_ run: AgentRun, action: String, mode: String? = nil, context: ModelContext) -> Bool {
+        let sid = run.sessionID
+        guard let session = try? context.fetch(FetchDescriptor<AgentSession>(predicate: #Predicate { $0.id == sid })).first,
+              session.status == "active" else { return false }
         context.insert(AgentRunControl(runID: run.id, sessionID: run.sessionID, action: action, mode: mode))
         if action == "stop" || action == "cancel_task" {
             if let started = run.startedAt { run.elapsedMS = Int(Date.now.timeIntervalSince(started) * 1000) }
@@ -167,6 +237,7 @@ enum ConversationProcessor {
         let stopping = Set(pendingControls.filter { ["stop", "cancel_task"].contains($0.action) }.map(\.runID))
         for raw in page["runs"] as? [[String: Any]] ?? [] {
             guard uuid(raw["session_id"]) == sid else { throw HarnessAPIError.http(409) }
+            guard session.status == "active", (raw["lifecycle_revision"] as? Int ?? 0) >= session.lifecycleRevision else { continue }
             guard let id = uuid(raw["run_id"]) else { continue }
             let run = runs.first(where: { $0.id == id }) ?? AgentRun(id: id, sessionID: session.id)
             if !runs.contains(where: { $0.id == id }) { context.insert(run); runs.append(run) }
@@ -232,7 +303,7 @@ enum ConversationProcessor {
             // service may still replay an event that was already in flight after
             // the stop control was accepted; keep its audit record, but never let
             // it revive visible output, task state, tags, or follow-on effects.
-            let blocked = session.status == "archived" || stopping.contains(runID) || steering.contains(runID)
+            let blocked = session.status == "archived" || (raw["lifecycle_revision"] as? Int ?? 0) < session.lifecycleRevision || stopping.contains(runID) || steering.contains(runID) || revision < currentRevision
             if !blocked, revision >= currentRevision,
                let intent = payload["intent"] as? [String: Any],
                let tags = intent["session_tags"] as? [String], !tags.isEmpty {
@@ -272,7 +343,7 @@ enum ConversationProcessor {
                 session.summaryText = summary["summary"] as? String ?? session.summaryText
                 context.insert(record)
             }
-            if !blocked, payload["source_type"] as? String == "agent_generated" {
+            if !blocked, payload["source_type"] as? String == "agent_generated", (payload["sources"] as? [[String: Any]] ?? []).isEmpty {
                 let sources = try context.fetch(FetchDescriptor<SourceReference>())
                 if !sources.contains(where: { $0.sessionID == session.id && $0.locator == runID.uuidString }) {
                     let source = SourceReference(sessionID: session.id, taskID: uuid(raw["task_id"]), url: "", title: "Agent 生成讲义",
@@ -292,11 +363,18 @@ enum ConversationProcessor {
             for source in !blocked ? (payload["sources"] as? [[String: Any]] ?? []) : [] {
                 guard let url = source["url"] as? String else { continue }
                 let sources = try context.fetch(FetchDescriptor<SourceReference>())
-                let saved = sources.first(where: { $0.sessionID == session.id && $0.url == url }) ??
+                let sourceID = uuid(source["source_id"])
+                let version = source["version"] as? Int ?? 1
+                let saved = sources.first(where: { $0.sessionID == session.id && (sourceID != nil ? $0.id == sourceID : $0.url == url && !url.isEmpty) }) ??
                     SourceReference(sessionID: session.id, taskID: uuid(raw["task_id"]), url: url, title: source["title"] as? String ?? url)
+                guard version >= saved.sourceVersion else { continue }
+                if let sourceID { saved.id = sourceID }
                 if !sources.contains(where: { $0.id == saved.id }) { context.insert(saved) }
                 saved.sourceType = source["type"] as? String ?? "public_source"
-                if let content = source["content"] as? String, !content.isEmpty { saved.locator = content }
+                saved.sourceVersion = version
+                saved.fetchedAt = optionalDate(source["fetched_at"])
+                if let locator = source["locator"] as? String { saved.locator = locator }
+                if let content = source["content"] as? String, !content.isEmpty { saved.contentSnapshot = content }
             }
             if !blocked, let handoff = payload["handoff"] as? [String: Any], let key = handoff["handoff_id"] as? String {
                 let sessions = try context.fetch(FetchDescriptor<AgentSession>())
@@ -304,6 +382,7 @@ enum ConversationProcessor {
                     let destination = AgentSession(title: String((handoff["goal"] as? String ?? "新学习目标").prefix(28)),
                                                    modePreset: handoff["mode"] as? String ?? "auto", sourceSessionID: session.id)
                     destination.handoffID = key
+                    destination.handoffJSON = json(handoff)
                     destination.summaryText = handoff["summary"] as? String ?? ""
                     context.insert(destination)
                     let message = AgentMessage(sessionID: destination.id, role: "user", content: handoff["goal"] as? String ?? "")
@@ -312,12 +391,12 @@ enum ConversationProcessor {
             }
             session.lastSessionEventSeq = seq
         }
-        if session.status != "archived" {
+        if session.status != "archived" && (page["lifecycle_revision"] as? Int ?? 0) >= session.lifecycleRevision {
             session.runPaused = page["paused"] as? Bool ?? false
         }
         for control in pendingControls {
             if let run = runs.first(where: { $0.id == control.runID }) {
-                run.userSummary = control.lastError.map { "控制请求尚未送达，将继续重试：\($0)" } ?? "操作已保存在本机，等待服务确认"
+                run.userSummary = control.lastError != nil ? "控制请求尚未送达，操作已保留，将继续重试" : "操作已保存在本机，等待服务确认"
                 if ["stop", "cancel_task"].contains(control.action) { run.status = "stopping" }
             }
         }
@@ -325,7 +404,7 @@ enum ConversationProcessor {
             run.status = "adjusting"
             run.userSummary = "已收到补充，正在调整"
         }
-        if session.status != "archived" {
+        if session.status != "archived" && (page["lifecycle_revision"] as? Int ?? 0) >= session.lifecycleRevision {
             if !pendingControls.contains(where: { $0.action == "set_mode" }), let mode = page["mode"] as? String { session.modePreset = mode }
             session.pendingOperationJSON = (page["pending"] as? [String: Any]).map(json)
         }

@@ -451,6 +451,7 @@ class ConversationTests(unittest.TestCase):
     def test_summary_keeps_raw_transcript_and_is_session_scoped(self):
         for i in range(13):
             self.send(f"你好 {i}")
+        self.harness.maintain_summary(self.sid)
         data = self.state()
         self.assertEqual(len([m for m in data["messages"] if m["role"] == "user"]), 13)
         self.assertEqual(data["summary_version"], 1)
@@ -491,6 +492,7 @@ class ConversationTests(unittest.TestCase):
         accepted = self.harness.accept(self.sid, original)
         self.harness.drain(self.sid)
         for i in range(20): self.send(f"你好 {i}")
+        self.harness.maintain_summary(self.sid)
         with self.store.transaction(self.sid) as data:
             last = self.store.last_seq(data)
             data["last_acked_seq"] = last
@@ -529,10 +531,10 @@ class ConversationTests(unittest.TestCase):
             return normal(*args, **kwargs)
         with patch("agent_service.conversation.parse_model", side_effect=fail_summary):
             run = self.send("第十二条")
-        self.assertEqual(self.state()["runs"][run.run_id]["status"], "retryable_failed")
+            self.harness.maintain_summary(self.sid)
+        self.assertEqual(self.state()["runs"][run.run_id]["status"], "completed")
         self.assertEqual(len([m for m in self.state()["messages"] if m["role"] == "coach"]), 12)
-        self.control(run.run_id, "retry")
-        self.harness.drain(self.sid)
+        self.harness.maintain_summary(self.sid)
         self.assertEqual(len([m for m in self.state()["messages"] if m["role"] == "coach"]), 12)
 
     def test_bound_operation_does_not_require_a_second_intent_model_call(self):

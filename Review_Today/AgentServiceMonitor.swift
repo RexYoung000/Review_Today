@@ -14,6 +14,8 @@ struct HealthResponse: Decodable {
         let status: String
         let error: String
         let streaming: String?
+        var category: String? = nil
+        var diagnostic: String? = nil
     }
 
     let status: String
@@ -54,6 +56,8 @@ final class AgentServiceMonitor {
     private(set) var responseStreamSupported = false
     private(set) var streamNotice = ""
     private(set) var capabilityNotice = ""
+    private(set) var canSubmitMessages = false
+    private(set) var technicalDetail = ""
 
     @ObservationIgnored private var pollTask: Task<Void, Never>?
     @ObservationIgnored private var managedProcess: Process?
@@ -88,6 +92,16 @@ final class AgentServiceMonitor {
         pollTask?.cancel()
         pollTask = nil
     }
+
+#if DEBUG
+    func useFixturePresentation() {
+        stop()
+        connection = .ready
+        keyConfigured = true
+        serviceReachable = false
+        capabilityNotice = "界面演示数据 · 未调用真实模型，不代表 Harness 验收通过"
+    }
+#endif
 
     func retryLaunch() {
         launchAttempts = 0
@@ -142,6 +156,8 @@ final class AgentServiceMonitor {
                 streamNotice = ""
             } else { streamNotice = "" }
             keyConfigured = health.keyConfigured
+            canSubmitMessages = health.keyConfigured && health.modelRoles["router"]?.status == "ready"
+            technicalDetail = health.modelRoles.sorted(by: { $0.key < $1.key }).map { "\($0.key) · \($0.value.model) · \($0.value.category ?? $0.value.status) · \($0.value.diagnostic ?? "")" }.joined(separator: "\n")
             if !conversationSupported {
                 connection = .unavailable
                 launchStatus = "本地学习服务版本较旧，需要重启服务"
@@ -187,8 +203,8 @@ final class AgentServiceMonitor {
             let allUnavailable = unavailable.count == totalRoleCount
             return AgentCapabilityPresentation(
                 connection: allUnavailable ? .unavailable : .ready,
-                status: allUnavailable ? "学习模型暂不可用；你的输入仍保存在本机" : "学习服务可用，部分能力受限",
-                detail: unavailable.map { "\($0.model)：\($0.error)" }.joined(separator: "；"),
+                status: allUnavailable ? (unavailable.contains { $0.category == "access_denied" } ? "学习服务访问受限；你的输入已保留" : "暂时无法连接学习服务；你的输入已保留") : "学习服务可用，部分能力受限",
+                detail: unavailable.contains { $0.category == "credential_missing" } ? "请在设置中配置连接后重试。" : unavailable.contains { $0.category == "access_denied" } ? "服务方暂未允许访问。检查连接配置后可重试；这不一定是你的网络问题。" : "未开始的消息将在连接恢复后处理；失败的回复需手动重试。",
                 notice: allUnavailable ? "" : "部分学习能力暂不可用；受影响的任务会显示具体原因。"
             )
         }
@@ -196,6 +212,7 @@ final class AgentServiceMonitor {
     }
 
     private func markUnavailable() {
+        canSubmitMessages = false
         serviceReachable = false
         conversationSupported = false
         capabilityNotice = ""

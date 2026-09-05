@@ -23,6 +23,9 @@ from agent_service.conversation_store import ConversationStore, Superseded, conv
 from agent_service.harness import JD_SYSTEM, PROBLEM_SYSTEM, _render_problem
 from agent_service.harness_store import HarnessTaskRecord, now_iso
 from agent_service.openai_client import ModelCallError, parse_model, web_search_text
+from agent_service.model_capabilities import require_model
+from agent_service.service_diagnostics import diagnose
+from agent_service.learning_progress import set_plan, current_step, record_understanding, advance, outcome
 from agent_service.response_projection import public_preview
 from agent_service.schemas import (
     ConversationOutput, EvidenceAssessmentV2, IntentDecision, JDAnalysis, MasteryEvaluation,
@@ -48,9 +51,16 @@ class ConversationHarness:
         self._workers: set[str] = set()
         self._worker_lock = threading.Lock()
         self._cancel_handles: dict[tuple, object] = {}
+        self._summary_workers: set[str] = set()
 
     def accept(self, session_id: str, body: SessionMessageRequest) -> MessageAccepted:
         with self.store.transaction(session_id) as data:
+            if body.expected_event_seq and self.store.last_seq(data) < body.expected_event_seq:
+                raise ValueError("RT.SESSION.CHECKPOINT_REQUIRED")
+            if body.lifecycle_revision is not None and body.lifecycle_revision != data.get("lifecycle_revision", 0):
+                raise ValueError("RT.SESSION.VERSION_CONFLICT")
+            if data.get("status", "active") != "active":
+                raise ValueError("RT.SESSION.ARCHIVED")
             receipts = data.setdefault("message_receipts", {})
             fingerprint = hashlib.sha256(json.dumps(dict(content=body.content, operation=body.operation.model_dump() if body.operation else None), sort_keys=True).encode()).hexdigest()
             receipt = receipts.get(body.client_message_id)
@@ -99,6 +109,7 @@ class ConversationHarness:
                                task_id=body.task_id, context=body.context.model_dump(),
                                operation=body.operation.model_dump() if body.operation else None)
                 data["messages"].append(message)
+                run["lifecycle_revision"] = data.get("lifecycle_revision", 0)
                 if body.task_id:
                     data["tasks"][body.task_id]["context"]["latest_run_id"] = run["run_id"]
                 receipts[body.client_message_id] = dict(fingerprint=fingerprint, run_id=run["run_id"])
@@ -123,6 +134,8 @@ class ConversationHarness:
         if not found:
             raise ValueError("RT.RUN.UNKNOWN")
         with self.store.transaction(found["session_id"]) as data:
+            if data.get("status", "active") != "active":
+                raise ValueError("RT.SESSION.ARCHIVED")
             run = data["runs"][run_id]
             if body.action_id in run["action_ids"]:
                 return dict(run)
@@ -162,12 +175,87 @@ class ConversationHarness:
                     run["status"] = "completed"
                 if run["status"] in {"interrupted", "retryable_failed", "terminal_failed", "queued"}:
                     run["revision"] += 1
+                    run["lifecycle_revision"] = data.get("lifecycle_revision", 0)
                     run["status"] = "accepted"
                     data["foreground"] = run_id
                 self.store.event(data, run, "resuming", "已恢复，将从未完成的步骤继续")
             result = dict(run)
         self._cancel_older(found["session_id"], target["run_id"], target["revision"])
         return result
+
+    def session_action(self, sid, action_id, action, lifecycle_revision):
+        if action not in {"archive", "restore"} or lifecycle_revision < 1:
+            raise ValueError("RT.SESSION.INVALID_ACTION")
+        cancelled = []
+        with self.store.transaction(sid) as data:
+            receipt = dict(action=action, revision=lifecycle_revision)
+            receipts = data.setdefault("lifecycle_actions", {})
+            if action_id in receipts:
+                if receipts[action_id] != receipt:
+                    raise ValueError("RT.SESSION.IDEMPOTENCY_CONFLICT")
+                return dict(status=data.get("status", "active"), lifecycle_revision=data.get("lifecycle_revision", 0))
+            if lifecycle_revision <= data.get("lifecycle_revision", 0):
+                raise ValueError("RT.SESSION.VERSION_CONFLICT")
+            data["lifecycle_revision"] = lifecycle_revision
+            data["status"] = "archived" if action == "archive" else "active"
+            data["paused"] = True
+            data["pending"] = None
+            if data.get("draft"):
+                data["draft"]["invalidated"] = True
+            for run in data["runs"].values():
+                if run["status"] in {"running", "accepted", "queued"}:
+                    self._stop(data, run)
+                    cancelled.append((run["run_id"], run["revision"]))
+            data["foreground"] = None
+            for task in data["tasks"].values():
+                if task["status"] not in FINISHED and not task["context"].get("commit_claimed"):
+                    task.update(status="awaiting_user", stage="stopped", memory_package=None,
+                                required_action=None, user_summary="已暂停，历史和进度保留")
+            receipts[action_id] = receipt
+        for rid, rev in cancelled:
+            self._cancel_older(sid, rid, rev)
+        return dict(status=data["status"], lifecycle_revision=lifecycle_revision)
+
+    def export_snapshot(self, sid):
+        data = self.store.get(sid)
+        if data is None:
+            raise ValueError("RT.SESSION.UNKNOWN")
+        return dict(schema_version=1, session_id=sid, checkpoint=data)
+
+    def restore_snapshot(self, sid, snapshot):
+        if snapshot.get("schema_version") != 1 or snapshot.get("session_id") != sid:
+            raise ValueError("RT.SESSION.SNAPSHOT_INVALID")
+        incoming = json.loads(json.dumps(snapshot.get("checkpoint", {})))
+        fingerprint = hashlib.sha256(json.dumps(snapshot, sort_keys=True).encode()).hexdigest()
+        if incoming.get("session_id") != sid or not isinstance(incoming.get("runs"), dict):
+            raise ValueError("RT.SESSION.SNAPSHOT_INVALID")
+        # Serialized with the store lock, including the absence check.
+        with self.store._lock:
+            existing = self.store.get(sid)
+            if existing and existing.get("restore_fingerprint") == fingerprint:
+                return self.export_snapshot(sid)
+            if existing is not None:
+                raise ValueError("RT.SESSION.SNAPSHOT_EXISTS")
+            for task in incoming.get("tasks", {}).values():
+                if task.get("session_id") != sid:
+                    raise ValueError("RT.SESSION.SNAPSHOT_INVALID")
+                HarnessTaskRecord(**task)  # validate shape before any write
+                if task.get("status") == "committing":
+                    task.update(status="awaiting_user", stage="stopped", memory_package=None, required_action=None)
+                    task["context"].pop("commit_claimed", None)
+            for run in incoming["runs"].values():
+                if run.get("session_id") != sid:
+                    raise ValueError("RT.SESSION.SNAPSHOT_INVALID")
+                run.setdefault("steps", {})
+                run.setdefault("action_ids", [])
+                if run["status"] not in {"completed", "cancelled", "terminal_failed", "retryable_failed"}:
+                    run.update(status="interrupted", started_at=None, revision=run["revision"] + 1)
+            incoming.update(foreground=None, paused=True, pending=None, restore_fingerprint=fingerprint)
+            if incoming.get("draft"):
+                incoming["draft"]["invalidated"] = True
+            with self.store.transaction(sid) as data:
+                data.update(incoming)
+        return self.export_snapshot(sid)
 
     def _cancel_older(self, sid, rid, revision):
         with self._worker_lock:
@@ -205,6 +293,17 @@ class ConversationHarness:
                          "目标已取消，历史已保留" if cancel else "本轮已结束，队列已暂停" if already_replied else "已停止回复；目标与进度保留，队列已暂停")
 
     def start(self, session_id: str):
+        from agent_service.model_capabilities import snapshot
+        if snapshot()["router"]["status"] != "ready":
+            return
+        data = self.store.get(session_id)
+        if not data or data.get("status", "active") != "active":
+            return
+        foreground = data["runs"].get(data.get("foreground"))
+        if data.get("paused") and not (foreground and foreground.get("paused_entry") and foreground["status"] == "accepted"):
+            return
+        if not any(r["status"] in {"accepted", "queued"} for r in data["runs"].values()):
+            return
         with self._worker_lock:
             if session_id in self._workers:
                 return
@@ -221,25 +320,28 @@ class ConversationHarness:
             data = self.store.get(session_id)
             if data and not data["paused"] and any(r["status"] in {"accepted", "queued"} for r in data["runs"].values()):
                 self.start(session_id)  # closes the submit/worker-exit race
+            self._schedule_summary(session_id)
 
     def recover(self):
         for session_id in self.store.sessions():
             with self.store.transaction(session_id) as data:
                 for run in data["runs"].values():
                     if run["status"] == "running":
-                        if run.get("active_response") and not run.get("execution_complete"):
+                        if run.get("execution_complete"):
+                            self._freeze_clock(run)
+                            run["status"] = "completed"
+                            data["foreground"] = None
+                        else:
                             self._stop(data, run)
-                            self.store.event(data, run, "interrupted", "服务中断，已保留未完成内容；继续后重试未完成步骤")
-                            continue
-                        run["revision"] += 1
-                        run["status"] = "accepted"
-                        self.store.event(data, run, "recovering", "服务已恢复，将续接未完成步骤")
+                            self.store.event(data, run, "interrupted", "服务中断，内容已保留；请手动重试未完成步骤")
             self.start(session_id)
 
     def drain(self, session_id: str):
         """Synchronous worker entry for deterministic tests; one worker per Session."""
         while True:
             with self.store.transaction(session_id) as data:
+                if data.get("status", "active") != "active":
+                    return
                 run = data["runs"].get(data["foreground"])
                 if data["paused"] and not (run and run.get("paused_entry") and run["status"] == "accepted"):
                     return
@@ -260,7 +362,6 @@ class ConversationHarness:
                     self._execute(session_id, run_id, revision)
                     with self.store.transaction(session_id, run_id, revision) as data:
                         data["runs"][run_id]["execution_complete"] = True
-                self._compress(session_id, run_id, revision)
                 with self.store.transaction(session_id, run_id, revision) as data:
                     run = data["runs"][run_id]
                     for task in data["tasks"].values():
@@ -277,6 +378,7 @@ class ConversationHarness:
                         elif task["stage"] == "commit_held" and not (run.get("intent") or {}).get("clarification"):
                             task["memory_package"] = task["context"].pop("held_commit")
                             task.update(status="committing", stage="committing", user_summary="已回应补充，继续原先确认的入库")
+                            task["context"].update(origin_run_id=run_id, commit_revision=revision)
                             data["pending"] = None
                         self._project_event(data, run, task)
                     self._freeze_clock(run)
@@ -301,7 +403,7 @@ class ConversationHarness:
                             task.update(status="retryable_failed", user_summary="当前步骤未完成，可重试；学习进度保留", error_code=code)
                             self._project_event(data, run, task)
                         self.store.event(data, run, "failed", "这一步暂时无法完成，可重试；输入和进度已保留",
-                                         error=code, detail=getattr(exc, "diagnostic", type(exc).__name__))
+                                         error=code, detail=json.dumps(diagnose(exc), ensure_ascii=False))
                         data["foreground"] = None
                         data["paused"] = True
                 except Superseded:
@@ -310,31 +412,63 @@ class ConversationHarness:
     def _snapshot(self, session_id, run_id, revision):
         data = self.store.get(session_id)
         run = data["runs"][run_id]
-        if run["revision"] != revision or run["status"] != "running":
+        if (data.get("status", "active") != "active" or run["revision"] != revision or run["status"] != "running"
+                or run.get("lifecycle_revision", 0) != data.get("lifecycle_revision", 0)):
             raise Superseded()
         return data, run
 
-    def _compress(self, sid, rid, rev):
-        data, run = self._snapshot(sid, rid, rev)
+    def _schedule_summary(self, sid):
+        with self._worker_lock:
+            if sid in self._summary_workers:
+                return
+            self._summary_workers.add(sid)
+        def work():
+            try:
+                self.maintain_summary(sid)
+            finally:
+                with self._worker_lock:
+                    self._summary_workers.discard(sid)
+        threading.Thread(target=work, daemon=True, name="review-today-summary").start()
+
+    def maintain_summary(self, sid):
+        """Best-effort maintenance: never owns a foreground Run or its success."""
+        data = self.store.get(sid)
+        if not data or data.get("status", "active") != "active" or data.get("foreground"):
+            return
         end = len(data["messages"]) - 12
         if end - data.get("summarized_count", 0) < 12:
             return
-        older = [dict(role=m["role"], content=m["content"][:3000]) for m in data["messages"][data.get("summarized_count", 0):end]]
-        output = self._call(sid, rid, rev, "session_summary",
-                            "压缩本 Session 已发生的对话为交接摘要。保留目标、用户明确决定、未解决问题；不要把生成内容或条件句当作用户确认。不推断理解或保存授权。",
-                            json.dumps(dict(previous=data["summary"], messages=older), ensure_ascii=False), ConversationSummary, ROUTER_MODEL)
-        with self.store.transaction(sid, rid, rev) as data:
-            data["summary"] = output.summary[:10000]
-            data["summary_version"] += 1
-            data["summarized_count"] = end
-            self.store.event(data, data["runs"][rid], "session_summary", "上下文摘要已更新，原文仍保留",
-                             payload={"session_summary": dict(output.model_dump(), version=data["summary_version"])})
+        version = (self.store.last_seq(data), data.get("lifecycle_revision", 0), data["summary_version"])
+        older = [dict(role=m["role"], content=m["content"][:3000]) for m in data["messages"][data.get("summarized_count", 0):end]
+                 if data["runs"].get(m.get("run_id"), {}).get("status") == "completed"]
+        try:
+            output = parse_model(
+                "压缩已完成对话为交接摘要。保留目标、明确决定、未解决问题；不推断理解或授权。",
+                json.dumps(dict(previous=data["summary"], messages=older), ensure_ascii=False), ConversationSummary, model=ROUTER_MODEL)
+        except Exception as exc:
+            with self.store.transaction(sid) as current:
+                current["summary_error"] = dict(code=getattr(exc, "code", "RT.SUMMARY.FAILED"), at=now_iso())
+            return
+        with self.store.transaction(sid) as current:
+            if version != (self.store.last_seq(current), current.get("lifecycle_revision", 0), current["summary_version"]) or current.get("foreground"):
+                return
+            current["summary"] = output.summary[:10000]
+            current["summary_version"] += 1
+            current["summarized_count"] = end
+            current.pop("summary_error", None)
+            run = next((r for r in reversed(list(current["runs"].values())) if r["status"] == "completed"), None)
+            if run:
+                old_run = dict(run)
+                self.store.event(current, run, "session_summary", "上下文摘要已更新，原文仍保留",
+                                 payload={"session_summary": dict(output.model_dump(), version=current["summary_version"])})
+                run.update(old_run)
 
     def _call(self, session_id, run_id, revision, node, system, prompt, schema, model=COACH_MODEL):
         data, run = self._snapshot(session_id, run_id, revision)
         key = hashlib.sha256((node + system + prompt + model).encode()).hexdigest()
         if key in run["steps"]:
             return schema.model_validate(run["steps"][key])
+        require_model(model)
         with self.store.transaction(session_id, run_id, revision) as data:
             self.store.event(data, data["runs"][run_id], node,
                              {"intent": "正在理解本轮意图", "evaluate": "正在评价这次独立作答",
@@ -438,6 +572,7 @@ class ConversationHarness:
 
     def _project_event(self, data, run, task, message=None):
         task["context"]["latest_run_id"] = run["run_id"]
+        task["context"]["lifecycle_revision"] = data.get("lifecycle_revision", 0)
         event = TaskEvent(event_id=str(uuid.uuid4()), session_id=data["session_id"], task_id=task["task_id"],
                           seq=len(task["events"]) + 1, occurred_at=now_iso(), stage=task["stage"], state=task["status"],
                           node=task["stage"], user_summary=task["user_summary"], attempt=max(run["attempt"], 1),
@@ -458,8 +593,19 @@ class ConversationHarness:
                 event = self.store.event(data, run, stage or "response", "已回应", message=text)
             task = self._task(data, run)
             if task and stage:
-                task.update(stage=stage, status=task_status, user_summary="已交付整理结果" if task_status == "completed" else "等你继续",
+                step = current_step(task)
+                if step:
+                    if event["message"]["message_id"] not in step["message_ids"]:
+                        step["message_ids"].append(event["message"]["message_id"])
+                    if step["state"] == "pending":
+                        step["state"] = "explained"
+                task.update(stage=stage, status=task_status, user_summary=("本次学习目标已完成" if stage == "mastered" else "已交付整理结果") if task_status == "completed" else "等你继续",
                             required_action=required)
+                if task_status == "completed":
+                    if stage == "lesson_complete":
+                        task["user_summary"] = "本次学习安排已讲解完毕"
+                    task["context"]["learning_outcome"] = outcome(task)
+                    task["context"]["learning_outcome"]["message_id"] = event["message"]["message_id"]
                 self._project_event(data, run, task, event["message"])
             if draft:
                 previous = (task["context"].get("draft") if task else data.get("draft")) or {}
@@ -498,7 +644,7 @@ class ConversationHarness:
                     current_inputs=[run["resolved_input"]] if run.get("resolved_input") else [m["content"] for m in selected], task=task_context,
                     pending=data["pending"], draft=data["draft"], summary=data["summary"] or external.get("summary", ""),
                     recent_messages=recent or external.get("recent_messages", [])[-10:],
-                    related_knowledge=external.get("knowledge_summaries", [])[:5]), last
+                    related_knowledge=external.get("knowledge_summaries", [])[:5], handoff=external.get("handoff")), last
 
     @staticmethod
     def _light_reply(decision, last, *, has_active_task=False, has_pending=False, has_draft=False):
@@ -667,6 +813,7 @@ class ConversationHarness:
                     task = self._task(data, data["runs"][rid])
                     if "self_report" in intents and task["context"].get("understanding") != "verified":
                         task["context"]["understanding"] = "self_reported"
+                    record_understanding(task, task["context"].get("understanding", "unknown"), skipped="skip_check" in intents)
                     if task["context"].get("draft"):
                         task["context"]["draft"]["understanding"] = task["context"].get("understanding", "unknown")
                         data["draft"] = task["context"]["draft"]
@@ -837,6 +984,10 @@ class ConversationHarness:
             if op["disposition"] == "reject" or op["kind"] == "reject_save":
                 with self.store.transaction(sid, rid, rev) as data:
                     data["pending"] = None
+                    current_task = self._task(data, data["runs"][rid])
+                    if current_task and (current_task.get("required_action") or {}).get("type") == "confirm_memory":
+                        current_task["required_action"] = None
+                        self._project_event(data, data["runs"][rid], current_task)
                 if set(decision.intents) & {"followup", "hint", "example", "correction"}:
                     continue
                 self._publish(sid, rid, rev, "好的，不执行这项操作；已有内容和学习进度保留。", complete=False)
@@ -852,10 +1003,19 @@ class ConversationHarness:
                     if op["kind"] == "new_session":
                         # The Mac creates the local Session and persists this explicit
                         # handoff before submitting its first message. No history dump.
+                        origin = self._task(data, data["runs"][rid]) or {}
+                        ctx = origin.get("context", {})
+                        selected = pending.get("decision", {})
+                        sources = [s for s in ctx.get("sources", []) if s.get("source_id") in selected.get("handoff_source_ids", [])]
+                        steps = [s for s in (ctx.get("learning_plan") or {}).get("steps", []) if s.get("id") in selected.get("handoff_step_ids", [])]
+                        knowledge = [dict(knowledge_id=k["id"], version=k.get("version", 1))
+                                     for t in data["tasks"].values() if steps and t["status"] == "completed" and t["context"].get("draft_id") == origin.get("task_id")
+                                     for k in (t.get("memory_package") or {}).get("knowledge", [])]
                         package = dict(handoff_id=f"{pending['target_id']}:{pending['version']}", goal=pending["content"],
                                        mode=data["mode"], source_session_id=sid,
                                        summary="用户确认的新目标：" + pending["content"][:2000],
-                                       source_refs=[], knowledge_refs=[], open_questions=[])
+                                       source_refs=sources, knowledge_refs=knowledge, progress=steps,
+                                       open_questions=[ctx["check_question"]] if steps and ctx.get("check_question") else [])
                         self.store.event(data, data["runs"][rid], "handoff", "已准备新会话交接", payload={"handoff": package})
                         return True
                     data["active_task_id"] = None
@@ -913,23 +1073,50 @@ class ConversationHarness:
         data, run = self._snapshot(sid, rid, rev)
         context, last = self._context(data, run)
         task = self._task(data, run)
-        sources = []
+        if teaching and task and not task["context"].get("requires_mastery"):
+            with self.store.transaction(sid, rid, rev) as current:
+                live_task = self._task(current, current["runs"][rid])
+                finished = advance(live_task) if set(decision.intents) & {"continue", "skip_check"} else False
+            if finished:
+                self._publish(sid, rid, rev, "这份学习安排已讲解完毕。未检查或跳过的部分仍需练习；你可以继续追问或调整学习安排。",
+                              stage="lesson_complete", task_status="completed")
+                return
+            data, run = self._snapshot(sid, rid, rev)
+            context, last = self._context(data, run)
+            task = self._task(data, run)
+        prior = task["context"] if task else {}
+        sources = list(prior.get("sources", []))
         urls = (task["context"].get("selected_sources", []) if task else [])
         if "material" in decision.intents and looks_like_url(last["content"]):
             urls = [looks_like_url(last["content"])]
         for url in urls[:4]:
+            if any(s.get("url") == url and s.get("content") for s in sources):
+                continue
             title, body = fetch_public_url(url)
-            sources.append(dict(type="public_source", url=url, title=title, content=body[:10000]))
+            sources.append(dict(source_id=str(uuid.uuid5(uuid.UUID(sid), url)), version=1,
+                                fetched_at=now_iso(), type="public_source", url=url, title=title, content=body[:10000]))
             self._snapshot(sid, rid, rev)
         evidence = self._evidence(sid, rid, rev, decision, last["content"])
-        source_type = "agent_generated" if generated else "public_source" if sources else "user_material"
+        source_type = "agent_generated" if generated else prior.get("source_type") or ("public_source" if sources else "user_material")
+        if not sources and source_type in {"agent_generated", "user_material"}:
+            owner = task["task_id"] if task else run["run_id"]
+            sources.append(dict(source_id=str(uuid.uuid5(uuid.UUID(sid), f"{owner}:{source_type}")), version=1,
+                                type=source_type, url="", title="Agent 生成讲义" if source_type == "agent_generated" else "用户提供的资料",
+                                fetched_at=now_iso(), locator=last["message_id"], content="" if source_type == "agent_generated" else last["content"]))
+        types = {s.get("type", "public_source") for s in sources}
+        if len(types) > 1:
+            source_type = "mixed"
         output = self._call(sid, rid, rev, node, COACH_SYSTEM,
                             json.dumps(dict(instruction=instruction, context=context, sources=sources,
                                             source_type=source_type, evidence=evidence), ensure_ascii=False), ConversationOutput)
         if output.evidence_state in {"insufficient", "conflicting", "outdated"} and not decision.needs_verification:
             evidence = self._evidence(sid, rid, rev, decision.model_copy(update={"needs_verification": True}), last["content"])
         text = output.message
-        if generated and "Agent 生成讲义" not in text:
+        for source in sources:
+            if source.get("type") == "agent_generated" and not source.get("content"):
+                source["content"] = text
+                source["locator"] = f"task:{task['task_id']}" if task else f"run:{rid}"
+        if "agent_generated" in types and "Agent 生成讲义" not in text:
             text = "来源：Agent 生成讲义（不作为独立外部证据）\n\n" + text
         if decision.needs_verification or evidence["state"] != "unverified":
             text += "\n\n证据状态：" + evidence["state"] + "；" + evidence["summary"]
@@ -942,6 +1129,10 @@ class ConversationHarness:
             if task:
                 task["context"]["evidence"] = evidence
                 if teaching:
+                    if output.learning_plan and (not task["context"].get("learning_plan") or "correction" in decision.intents):
+                        set_plan(task, output.learning_plan.steps, output.learning_plan.success_check)
+                    elif not task["context"].get("learning_plan"):
+                        set_plan(task, ["当前资料讲解"], output.check_question)
                     task["context"].setdefault("understanding_by_lesson", {})[str(task["context"].get("lesson_index", 0))] = task["context"].get("understanding", "unknown")
                     task["context"]["understanding"] = "unknown"
                     task["context"]["check_question"] = output.check_question
@@ -983,6 +1174,7 @@ class ConversationHarness:
             data["runs"][rid]["activity_candidate"] = "knowledge_answer"
             task["context"].update(reference_answer=output.answer.direct_answer, requires_mastery=True,
                                     evidence=evidence, calibration_question=output.analysis.calibration_question)
+            set_plan(task, output.learning_plan.steps + ["独立作答", "迁移追问"], output.learning_plan.success_check)
         text = _render_problem(output)
         if evidence["state"] != "unverified":
             text += "\n\n证据状态：" + evidence["state"] + "；" + evidence["summary"]
@@ -1006,14 +1198,30 @@ class ConversationHarness:
                 else:
                     ctx["independent_passed"] = True
             elif result.passed:
-                ctx["understanding"] = "verified"
+                record_understanding(task, "verified")
+                steps = (ctx.get("learning_plan") or {}).get("steps", [])
+                ctx["understanding"] = "verified" if all(s["understanding"] == "verified" for s in steps) else "unknown"
             ctx.setdefault("practice", []).append(dict(message_id=last["message_id"], evaluation=result.model_dump()))
             mastered = ctx.get("understanding") == "verified"
+            plan = ctx.get("learning_plan")
+            if plan and ctx.get("requires_mastery"):
+                for step in plan["steps"]:
+                    if mastered or step["title"] == "独立作答" and ctx.get("independent_passed"):
+                        step.update(state="verified", understanding="verified")
+                target = "迁移追问" if ctx.get("independent_passed") else "独立作答"
+                selected = next((s for s in plan["steps"] if s["title"] == target), None)
+                if selected:
+                    plan["current_step_id"] = selected["id"]
+            if ctx.get("requires_mastery"):
+                record_understanding(task, ctx.get("understanding", "unknown"))
             ctx["check_question"] = result.followup_question or "请换一个应用场景，解释你的判断与局限。"
         if mastered:
             self._publish(sid, rid, rev, result.feedback + "\n\n这次理解检查已通过。是否要将确认过的内容加入知识库与复习？",
-                          stage="mastered", required={"type": "confirm_memory", "prompt": "是否加入知识库？", "options": []}, draft=True,
+                          stage="mastered", task_status="completed", required={"type": "confirm_memory", "prompt": "是否加入知识库？", "options": []}, draft=True,
                           draft_content=ctx.get("reference_answer") or ctx.get("last_lesson") or task["content"], source_type=ctx.get("source_type"))
+        elif result.passed and not ctx.get("requires_mastery"):
+            self._publish(sid, rid, rev, result.feedback + "\n\n这一节的理解检查已通过。你可以继续下一节，也可以继续追问。",
+                          stage="lesson_checked", required={"type": "respond", "prompt": "继续下一节或追问", "options": []})
         else:
             self._publish(sid, rid, rev, result.feedback + "\n\n请独立回答追问：" + ctx["check_question"], stage="transfer" if result.passed else "practice",
                           required={"type": "submit_answer", "prompt": ctx["check_question"], "options": []})
@@ -1021,7 +1229,7 @@ class ConversationHarness:
     def _sources(self, sid, rid, rev, goal):
         with self.store.transaction(sid, rid, rev) as data:
             self.store.event(data, data["runs"][rid], "source_search", "正在建立学习地图和互补资料包", model=COACH_MODEL)
-        candidates = find_source_candidates(goal[:1000])
+        candidates = find_source_candidates(goal[:1000], model=COACH_MODEL)
         self._snapshot(sid, rid, rev)
         candidates = [c for c in candidates if looks_like_url(c.url)][:4]
         if len(candidates) < 2:
@@ -1066,12 +1274,14 @@ class ConversationHarness:
                 record = HarnessTaskRecord(task_id=commit_id, session_id=sid, client_message_id=run["input_ids"][-1],
                                            content=draft["content"], content_type="text", primary_language="zh", mode_preset=data["mode"],
                                            mode="memory_organization", context=dict(conversation_managed=True, draft_id=draft["id"], draft_version=draft["version"],
-                                                                                    source_type=draft["source_type"], origin_run_id=rid))
+                                                                                    source_type=draft["source_type"], origin_run_id=rid,
+                                                                                    sources=(task or {}).get("context", {}).get("sources", []),
+                                                                                    lifecycle_revision=data.get("lifecycle_revision", 0)))
                 data["tasks"][commit_id] = asdict(record)
             run["task_id"] = commit_id
             data["active_task_id"] = commit_id
             self.store.event(data, run, "memory_generation", "正在提交已确认的整理版本", model=COACH_MODEL)
-        result = run_capture(commit_id, draft["content"], "zh", force_source_view=draft["source_type"] == "agent_generated",
+        result = run_capture(commit_id, draft["content"], "zh", force_source_view=draft["source_type"] in {"agent_generated", "mixed"},
                              model=COACH_MODEL, risk_model=RISK_MODEL)
         with self.store.transaction(sid, rid, rev) as data:
             run = data["runs"][rid]
@@ -1087,14 +1297,51 @@ class ConversationHarness:
             self._project_event(data, run, task)
             data["pending"] = None
 
+    @staticmethod
+    def _validate_commit(data, task):
+        if data.get("status", "active") != "active" or task["context"].get("lifecycle_revision", 0) != data.get("lifecycle_revision", 0):
+            raise ValueError("RT.TASK.COMMIT_REVOKED")
+        if task["status"] not in {"committing", "completed"}:
+            raise ValueError("RT.TASK.COMMIT_REVOKED")
+        origin = data["runs"].get(task["context"].get("origin_run_id"))
+        if origin and (origin["revision"] != task["context"].get("commit_revision") or origin["status"] in {"interrupted", "cancelled"}):
+            raise ValueError("RT.TASK.COMMIT_REVOKED")
+
+    def acknowledge_task(self, task_id, last_event_seq, knowledge_ids):
+        record = self.store.tasks.get(task_id)
+        if not record:
+            raise ValueError("RT.TASK.UNKNOWN")
+        # Permission, receipt and completion share the archive transaction lock.
+        with self.store.transaction(record.session_id) as data:
+            task = data["tasks"][task_id]
+            if last_event_seq > len(task["events"]):
+                raise ValueError("RT.TASK.ACK_AHEAD")
+            if task["status"] == "committing":
+                expected = {item.get("id") for item in (task.get("memory_package") or {}).get("knowledge", [])}
+                if expected and set(knowledge_ids) != expected:
+                    raise ValueError("RT.TASK.ACK_MISMATCH")
+                # A claimed local atomic write may have finished before archive;
+                # acknowledging it is not permission to restart generation.
+                if not task["context"].get("commit_claimed"):
+                    self._validate_commit(data, task)
+                task.update(status="completed", stage="completed", user_summary="记忆已保存，学习任务完成",
+                            required_action=None, error_code=None)
+                task["events"].append(TaskEvent(
+                    event_id=str(uuid.uuid4()), session_id=record.session_id, task_id=task_id,
+                    seq=len(task["events"]) + 1, occurred_at=now_iso(), stage="completed", state="completed",
+                    node="mac_ack", user_summary=task["user_summary"], detail_summary="Mac 已确认知识数据持久化。",
+                    attempt=max(task.get("retry_count", 0) + 1, 1),
+                ).model_dump())
+            task["last_acked_seq"] = max(task["last_acked_seq"], last_event_seq)
+        return self.store.tasks.get(task_id).view().model_dump()
+
     def claim_commit(self, task_id: str):
         record = self.store.tasks.get(task_id)
         if not record:
             raise ValueError("RT.TASK.UNKNOWN")
         with self.store.transaction(record.session_id) as data:
             task = data["tasks"][task_id]
-            if task["status"] not in {"committing", "completed"}:
-                raise ValueError("RT.TASK.COMMIT_REVOKED")
+            self._validate_commit(data, task)
             task["context"]["commit_claimed"] = True
             return HarnessTaskRecord(**task).view().model_dump()
 

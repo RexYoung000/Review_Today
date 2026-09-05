@@ -1,0 +1,34 @@
+name: M1 controlled regression
+on:
+  pull_request:
+  push:
+    branches: [main, 'm1/**', 'codex/**']
+permissions:
+  contents: read
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -e ./agent-service
+      - run: bash agent-service/run-controlled.sh
+        env:
+          REVIEW_TODAY_TEST_PYTHON: python
+  mac:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Select an installed Xcode 26 runtime
+        shell: bash
+        run: |
+          candidate=$(find /Applications -maxdepth 1 -name 'Xcode_26*.app' | sort | tail -1)
+          test -n "$candidate" || { echo 'Xcode 26 is required; this runner cannot validate the native build.'; exit 1; }
+          sudo xcode-select -s "$candidate/Contents/Developer"
+      - run: xcodebuild -project Review_Today.xcodeproj -scheme Review_Today -configuration Debug -destination 'platform=macOS' -derivedDataPath /tmp/review-today-ci MACOSX_DEPLOYMENT_TARGET=26.0 CODE_SIGNING_ALLOWED=NO build
+      - run: bash tests/mac/run-contracts.sh
+      - run: bash tests/mac/run-migration.sh

@@ -35,24 +35,48 @@ enum LearningSessionActions {
     static func archive(_ session: AgentSession, context: ModelContext) -> Bool {
         let sid = session.id
         let runs = (try? context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }))) ?? []
-        if let run = runs.filter({ ["running", "accepted", "queued", "adjusting"].contains($0.status) })
-            .max(by: { $0.updatedAt < $1.updatedAt }) {
-            guard ConversationProcessor.queueControl(run, action: "stop", context: context) else { return false }
+        for run in runs where ["running", "accepted", "queued", "adjusting", "stopping"].contains(run.status) {
+            if let started = run.startedAt { run.elapsedMS = max(0, Int(Date.now.timeIntervalSince(started) * 1000)) }
+            run.startedAt = nil
+            run.status = "interrupted"
+            run.revision += 1
+            run.userSummary = "已停止；会话已归档"
         }
+        let messages = (try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == sid }))) ?? []
+        for message in messages {
+            if message.responseState == "streaming" { message.responseState = "interrupted" }
+            if message.deliveryStatus == "local" { message.deliveryStatus = "held" }
+        }
+        for control in (try? context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { $0.sessionID == sid && !$0.sent }))) ?? [] {
+            control.sent = true // superseded by the atomic Session lifecycle action
+            control.lastError = "RT.SESSION.ARCHIVED"
+        }
+        session.runPaused = true
+        session.pendingOperationJSON = nil
+        appendLifecycle("archive", session: session)
         session.status = "archived"
         session.archivedAt = .now
         session.updatedAt = .now
-        do { try context.save(); return true }
+        do { try context.save(); ConversationSync.wake(); return true }
         catch { context.rollback(); return false }
     }
 
     @discardableResult
     static func restore(_ session: AgentSession, context: ModelContext) -> Bool {
+        appendLifecycle("restore", session: session)
         session.status = "active"
+        session.runPaused = true
         session.archivedAt = nil
         session.updatedAt = .now
-        do { try context.save(); return true }
+        do { try context.save(); ConversationSync.wake(); return true }
         catch { context.rollback(); return false }
+    }
+
+    private static func appendLifecycle(_ action: String, session: AgentSession) {
+        session.lifecycleRevision += 1
+        var actions = (session.lifecycleActionsJSON.data(using: .utf8).flatMap { try? JSONSerialization.jsonObject(with: $0) } as? [[String: Any]]) ?? []
+        actions.append(["action_id": UUID().uuidString.lowercased(), "action": action, "lifecycle_revision": session.lifecycleRevision])
+        session.lifecycleActionsJSON = ConversationProcessor.json(actions)
     }
 }
 
@@ -122,6 +146,7 @@ struct AppSidebar: View {
     @Environment(\.runway) private var runway
     @Query(sort: \AgentSession.updatedAt, order: .reverse) private var sessions: [AgentSession]
     @Query(sort: \AgentRun.updatedAt, order: .reverse) private var runs: [AgentRun]
+    @Query(sort: \LearningTask.updatedAt, order: .reverse) private var tasks: [LearningTask]
     @State private var searchText = ""
     @State private var showArchived = false
     @State private var hoveredSessionID: UUID?
@@ -352,8 +377,12 @@ struct AppSidebar: View {
         guard session.status == "active" else { return ("archivebox", "已归档", false) }
         guard let run = runs.first(where: { $0.sessionID == session.id }) else { return ("circle", "尚未运行", false) }
         if ["retryable_failed", "terminal_failed"].contains(run.status) { return ("exclamationmark.triangle", "运行失败", true) }
+        if ["interrupted", "cancelled"].contains(run.status) { return ("pause.circle", "已停止", false) }
         if ["running", "accepted", "queued", "adjusting", "stopping"].contains(run.status) { return ("circle.dotted", "\(run.userSummary)", false) }
-        return ("checkmark.circle", "已完成", false)
+        if let task = tasks.first(where: { $0.sessionID == session.id }), task.status == "awaiting_user" {
+            return ("bubble.left", task.requiredActionType == "submit_answer" ? "等待作答" : "可继续学习", false)
+        }
+        return ("checkmark.circle", "本轮已回应", false)
     }
 }
 
@@ -371,6 +400,8 @@ struct ContentView: View {
     @Query private var inbox: [CaptureTask]
     @Query private var knowledge: [Knowledge]
     @Query private var settingsRows: [AppSettings]
+    @Query private var learningTasks: [LearningTask]
+    @Query private var learningSessions: [AgentSession]
 
     init(coordinator: ReviewCoordinator) {
         self.coordinator = coordinator
@@ -418,7 +449,7 @@ struct ContentView: View {
                 case .library:
                     LibraryView(selectedID: $selectedKnowledgeID, coordinator: coordinator)
                 case .inbox:
-                    InboxView()
+                    InboxView(onOpenSession: { id in selectedLearningSessionID = id; selection = .learning })
                 }
             }
             .background(PaperSurface())
@@ -426,8 +457,16 @@ struct ContentView: View {
         .navigationSplitViewStyle(.balanced)
         .frame(minWidth: 760, minHeight: 620)
         .onChange(of: columnVisibility) { _, value in sidebarVisible = value != .detailOnly }
-        .task { await ConversationSync().run(context: modelContext, monitor: monitor) }
         .task {
+#if DEBUG
+            if M1DebugFixture.enabled { monitor.useFixturePresentation(); return }
+#endif
+            await ConversationSync().run(context: modelContext, monitor: monitor)
+        }
+        .task {
+#if DEBUG
+            if M1DebugFixture.enabled { monitor.useFixturePresentation(); return }
+#endif
             monitor.start()
             ReminderNotifications.request()
             while !Task.isCancelled {
@@ -470,7 +509,8 @@ struct ContentView: View {
     }
 
     private var inboxCount: Int {
-        inbox.filter { $0.status == "needs_attention" || $0.status == "retryable_failed" }.count
+        inbox.filter { $0.status == "needs_attention" || $0.status == "retryable_failed" }.count +
+        learningTasks.filter { LearningDecisionInbox.includes($0, sessions: learningSessions) }.count
     }
 
     private func startDueReview() {
