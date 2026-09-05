@@ -48,9 +48,35 @@ struct LearningInputContractTests {
         editor.keyDown(with: key())
         precondition(editor.string == "保存失败仍保留")
 
-        let schema = Schema([AgentSession.self, AgentMessage.self, AgentRun.self, SessionEventRecord.self, AgentRunControl.self])
+        let schema = Schema([AgentSession.self, AgentMessage.self, AgentRun.self, SessionEventRecord.self, AgentRunControl.self, AppSettings.self])
         let container = try ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
         let context = container.mainContext
+        let landing = try AgentComposerStore.prepare(context)
+        let preparedID = landing.agentDraftID
+        landing.agentDraftText = "RAG 草稿"
+        landing.agentDraftMode = "source_learning"
+        landing.agentDraftThinking = "deep"
+        landing.lastThinkingStrength = "deep"
+        try context.save()
+        let sameLanding = try AgentComposerStore.prepare(context)
+        precondition(sameLanding.agentDraftID == preparedID && sameLanding.agentDraftText == "RAG 草稿")
+        let noSessions = try context.fetch(FetchDescriptor<AgentSession>())
+        precondition(noSessions.isEmpty, "opening start page must not create a Session")
+        enum SimulatedFailure: Error { case disk }
+        do {
+            _ = try AgentComposerStore.sendFirst("RAG 草稿", context: context, save: { throw SimulatedFailure.disk })
+            preconditionFailure("save failure must propagate")
+        } catch SimulatedFailure.disk {}
+        let afterFailedSave = try context.fetch(FetchDescriptor<AgentSession>())
+        let afterFailedMessage = try context.fetch(FetchDescriptor<AgentMessage>())
+        precondition(afterFailedSave.isEmpty && afterFailedMessage.isEmpty)
+        let recoveredDraft = try AgentComposerStore.prepare(context)
+        precondition(recoveredDraft.agentDraftText == "RAG 草稿" && recoveredDraft.agentDraftID == preparedID)
+        let (created, firstMessage) = try AgentComposerStore.sendFirst("RAG 草稿", context: context)
+        precondition(created.id == preparedID && created.modePreset == "source_learning" && created.thinkingStrength == "deep")
+        precondition(firstMessage.sessionID == created.id && firstMessage.clientMessageID == firstMessage.id)
+        let nextDraft = try AgentComposerStore.prepare(context)
+        precondition(nextDraft.agentDraftID != preparedID && nextDraft.agentDraftText.isEmpty && nextDraft.agentDraftMode == "auto" && nextDraft.agentDraftThinking == "deep")
         let one = AgentSession(title: "A"), two = AgentSession(title: "B")
         one.composerDraft = "A 的独立草稿"
         two.composerDraft = "B 的独立草稿"
@@ -72,7 +98,7 @@ struct LearningInputContractTests {
         partial.responseState = "interrupted"; partial.responseRevision = 2; partial.responseChunkSeq = 4
         context.insert(partial)
         try context.save()
-        let persisted = try ModelContext(container).fetch(FetchDescriptor<AgentMessage>()).first!
+        let persisted = try ModelContext(container).fetch(FetchDescriptor<AgentMessage>()).first { $0.id == partial.id }!
         precondition(persisted.responseState == "interrupted" && persisted.responseRevision == 2 && persisted.responseChunkSeq == 4)
         let calendar = Calendar(identifier: .gregorian)
         let today = calendar.startOfDay(for: .now)
@@ -82,6 +108,6 @@ struct LearningInputContractTests {
         precondition(LearningActivityCalendar.currentStreak([yesterday, older], today: today, calendar: calendar) == 2)
         precondition(LearningActivityCalendar.longestStreak([today, yesterday, older], calendar: calendar) == 3)
         precondition([0, 1, 2, 3, 4, 5].map(LearningActivityCalendar.intensity) == [0, 1, 2, 3, 3, 4])
-        print("PASS: input contract, isolated drafts/tags, partial response persistence, activity dedupe/intensity/streaks")
+        print("PASS: native input, atomic first-send failure/retry, no empty Sessions, independent drafts/preferences, tags, partial persistence, activity")
     }
 }

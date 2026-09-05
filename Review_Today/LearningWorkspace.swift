@@ -27,6 +27,10 @@ struct LearningWorkspace: View {
     @State private var userScrolling = false
     @State private var sentMessageID: UUID?
     @State private var stepMessageID: UUID?
+    @State private var memoryDestination: (sessionID: UUID, messageID: UUID)?
+    @State private var draftSettings: AppSettings?
+    @State private var insertion: EditorInsertion?
+    @State private var showKnowledgePicker = false
 
     private enum Layout {
         static let readingWidth: CGFloat = 820
@@ -37,6 +41,8 @@ struct LearningWorkspace: View {
     private var selectedSession: AgentSession? {
         sessions.first { $0.id == selectedSessionID }
     }
+
+    private var developerDiagnostics: Bool { draftSettings?.developerMode == true }
 
     private func messages(for id: UUID) -> [AgentMessage] {
         (try? modelContext.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == id }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
@@ -118,13 +124,11 @@ struct LearningWorkspace: View {
                 .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .background(PaperSurface())
-        .navigationTitle(String(localized: "学习"))
-        .onAppear(perform: selectInitialSession)
-        .onChange(of: sessions.map(\.id)) { _, _ in selectInitialSession() }
-        .onChange(of: selectedSessionID) { _, id in
+        .navigationTitle("Agent")
+        .onAppear(perform: loadDraft)
+        .onChange(of: selectedSessionID) { _, _ in
             saveDraft()
-            draftSessionID = id
-            draft = sessions.first(where: { $0.id == id })?.composerDraft ?? ""
+            loadDraft()
             queueInput = false
             localError = nil
             followsLatest = true
@@ -139,6 +143,30 @@ struct LearningWorkspace: View {
         }
         .onDisappear { saveDraft() }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in saveDraft() }
+        .sheet(isPresented: $showKnowledgePicker) {
+            ComposerKnowledgePicker { card in
+                insertion = EditorInsertion(text: "[\(card.title.isEmpty ? card.learningGoal : card.title)](reviewtoday://knowledge/\(card.id.uuidString.lowercased()))")
+                showKnowledgePicker = false
+            }
+        }
+        .environment(\.openURL, OpenURLAction { url in
+            guard url.scheme == "reviewtoday" else { return .systemAction }
+            let key = url.lastPathComponent
+            if url.host == "knowledge", let id = UUID(uuidString: key) { onOpenKnowledge(id); return .handled }
+            if url.host == "memory",
+               let ref = runs.filter({ $0.sessionID == selectedSessionID }).flatMap({ LearningMemory.array($0.memoryReferencesJSON) }).first(where: { $0["id"] as? String == key }) {
+                if let id = (ref["knowledge_id"] as? String).flatMap(UUID.init(uuidString:)) { onOpenKnowledge(id) }
+                else if let id = (ref["session_id"] as? String).flatMap(UUID.init(uuidString:)) {
+                    if let messageID = (ref["message_id"] as? String).flatMap(UUID.init(uuidString:)) {
+                        memoryDestination = (id, messageID)
+                    }
+                    selectedSessionID = id
+                    stepMessageID = (ref["message_id"] as? String).flatMap(UUID.init(uuidString:))
+                }
+                return .handled
+            }
+            return .discarded
+        })
         .sheet(isPresented: Binding(
             get: { editingSessionID != nil },
             set: { if !$0 { editingSessionID = nil } }
@@ -153,12 +181,40 @@ struct LearningWorkspace: View {
         let gutter = Layout.gutter(for: width)
         let contentWidth = max(0, min(Layout.readingWidth, width - gutter * 2))
         return VStack(spacing: 0) {
+          if selectedSession == nil {
+            serviceBanner
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack(spacing: 16) {
+                        CoachMark(pose: .idle, size: 58)
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Review Today").font(.system(size: 30, weight: .semibold))
+                            Text("从一个问题开始，把理解留住。").font(.callout).foregroundStyle(.secondary)
+                        }
+                    }.frame(maxWidth: .infinity).padding(.top, 28)
+                    composer(contentWidth: contentWidth)
+                    Text("快捷开始").font(.subheadline.weight(.medium)).foregroundStyle(.secondary)
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 220), spacing: 10)], spacing: 10) {
+                        ForEach(AgentQuickStart.allCases) { start in
+                            Button { insertion = EditorInsertion(text: (draft.isEmpty ? "" : "\n") + start.prompt) } label: {
+                                Label(start.title, systemImage: start.symbol)
+                                    .font(.callout.weight(.medium)).frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(16).contentShape(Rectangle())
+                                    .background(runway.card, in: RoundedRectangle(cornerRadius: 14))
+                                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(runway.hairline))
+                            }.buttonStyle(.plain).help("填入可编辑草稿，不会自动发送")
+                        }
+                    }
+                }.frame(width: contentWidth).padding(.bottom, 24).frame(maxWidth: .infinity)
+            }
+          } else {
             workspaceHeader
             learningChecklist
             Divider()
             serviceBanner
             conversation(contentWidth: contentWidth)
             composer(contentWidth: contentWidth)
+          }
         }
         .background(runway.canvas)
     }
@@ -200,30 +256,6 @@ struct LearningWorkspace: View {
                     }
                 }
                 Spacer(minLength: 0)
-                if let session = selectedSession {
-                    Text("模式").font(.caption).foregroundStyle(.secondary)
-                    Picker("模式", selection: Binding(
-                        get: { session.modePreset },
-                        set: { value in
-                            session.modePreset = value
-                            session.updatedAt = .now
-                            if let run = runs.last(where: { $0.sessionID == session.id }) {
-                                ConversationProcessor.queueControl(run, action: "set_mode", mode: value, context: modelContext)
-                            }
-                            try? modelContext.save()
-                        }
-                    )) {
-                        Text("Auto").tag("auto")
-                        Text("知识整理").tag("memory_organization")
-                        Text("资料学习").tag("source_learning")
-                        Text("主题探索").tag("topic_exploration")
-                        Text("问题攻克").tag("problem_solving")
-                    }
-                    .labelsHidden()
-                    .disabled(session.status != "active")
-                    .frame(width: 120)
-                    .help("作用于当前目标的下一步，保留已有资料与进度；Auto 自动安排同目标内的能力")
-                }
             }
             .controlSize(.small)
         }
@@ -233,9 +265,11 @@ struct LearningWorkspace: View {
 
     private func sessionMenu(_ session: AgentSession) -> some View {
         Menu {
-            Button("新建学习 Session") { createSession() }
-            Button("带上下文新建 Session") { createSession(handoffFrom: session) }
+            Button("新对话") { selectedSessionID = nil }
             Button("编辑主题标签") { editingSessionID = session.id }
+            Button(session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆") {
+                if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { localError = "记忆设置未保存，请重试。" }
+            }
         } label: {
             Image(systemName: "ellipsis.circle")
         }
@@ -262,7 +296,7 @@ struct LearningWorkspace: View {
                             .lineLimit(2)
                             .help(monitor.launchDetail)
                     }
-                    if !monitor.technicalDetail.isEmpty {
+                    if developerDiagnostics && !monitor.technicalDetail.isEmpty {
                         DisclosureGroup("技术详情") {
                             Text(monitor.technicalDetail).font(.caption.monospaced()).textSelection(.enabled)
                         }.font(.caption).foregroundStyle(.secondary)
@@ -349,7 +383,16 @@ struct LearningWorkspace: View {
           .onChange(of: sessionMessages.last?.content) { _, _ in
               if followsLatest { proxy.scrollTo("latest", anchor: .bottom) }
           }
-          .onChange(of: selectedSessionID) { _, _ in proxy.scrollTo("latest", anchor: .bottom) }
+          .task(id: selectedSessionID) {
+              await Task.yield() // the destination transcript must own the scroll IDs first
+              guard !Task.isCancelled else { return }
+              if let destination = memoryDestination, destination.sessionID == selectedSessionID,
+                 sessionMessages.contains(where: { $0.id == destination.messageID }) {
+                  followsLatest = false
+                  proxy.scrollTo(destination.messageID, anchor: .top)
+                  memoryDestination = nil
+              } else { proxy.scrollTo("latest", anchor: .bottom) }
+          }
           .onChange(of: sentMessageID) { _, id in
               if id != nil { proxy.scrollTo("latest", anchor: .bottom); followsLatest = true }
           }
@@ -502,10 +545,10 @@ struct LearningWorkspace: View {
                                 Text(event.userSummary)
                                     .font(.caption.weight(.medium))
                                     .fixedSize(horizontal: false, vertical: true)
-                                Text(event.node)
+                                if developerDiagnostics { Text(event.node)
                                     .font(.caption2.monospaced())
                                     .foregroundStyle(.secondary)
-                                    .fixedSize(horizontal: false, vertical: true)
+                                    .fixedSize(horizontal: false, vertical: true) }
                                 ViewThatFits(in: .horizontal) {
                                     eventTiming(event)
                                     VStack(alignment: .leading, spacing: 2) {
@@ -516,19 +559,19 @@ struct LearningWorkspace: View {
                                 }
                                 .font(.caption2.monospaced())
                                 .foregroundStyle(.secondary)
-                                if !event.detailSummary.isEmpty {
+                                if !event.detailSummary.isEmpty && (developerDiagnostics || event.errorCode == nil) {
                                     Text(event.detailSummary)
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                         .fixedSize(horizontal: false, vertical: true)
                                 }
-                                if let error = event.errorCode {
+                                if developerDiagnostics, let error = event.errorCode {
                                     Text(error)
                                         .font(.caption2.monospaced())
                                         .foregroundStyle(.orange)
                                         .fixedSize(horizontal: false, vertical: true)
                                 }
-                                if let recovery = event.recoveryAction {
+                                if developerDiagnostics, let recovery = event.recoveryAction {
                                     Text("恢复动作：\(recovery)")
                                         .font(.caption2.monospaced())
                                         .foregroundStyle(.secondary)
@@ -541,8 +584,8 @@ struct LearningWorkspace: View {
                         ForEach(sessionEvents, id: \.id) { event in
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(event.summary).font(.caption.weight(.medium))
-                                if !event.detail.isEmpty { Text(event.detail).font(.caption).foregroundStyle(.secondary) }
-                                Text([event.stage, event.model, event.durationMS.map { "\($0) ms" } ?? ""].filter { !$0.isEmpty }.joined(separator: " · "))
+                                if !event.detail.isEmpty && (developerDiagnostics || event.errorCode == nil) { Text(event.detail).font(.caption).foregroundStyle(.secondary) }
+                                Text(eventInformation(event))
                                     .font(.caption2.monospaced()).foregroundStyle(.secondary)
                             }.padding(.vertical, 2)
                         }
@@ -568,6 +611,80 @@ struct LearningWorkspace: View {
         }
     }
 
+    private func eventInformation(_ event: SessionEventRecord) -> String {
+        var values: [String] = []
+        if developerDiagnostics { values += [event.stage, event.model] }
+        if event.attempt > 1 { values.append("第 \(event.attempt) 次") }
+        if let duration = event.durationMS { values.append("\(duration) ms") }
+        return values.filter { !$0.isEmpty }.joined(separator: " · ")
+    }
+
+    private var composerControls: some View {
+        HStack(spacing: 10) {
+            Menu {
+                Button("添加文字") { focusRequest += 1 }
+                Button("粘贴公开链接") { insertion = EditorInsertion(text: NSPasteboard.general.string(forType: .string) ?? "") }
+                Button("引用已有知识卡") { showKnowledgePicker = true }
+            } label: { Image(systemName: "plus") }
+                .menuStyle(.borderlessButton).fixedSize().help("添加文字、公开链接或已有知识卡")
+            Menu {
+                Picker("学习方式", selection: Binding(get: {
+                    selectedSession?.modePreset ?? draftSettings?.agentDraftMode ?? "auto"
+                }, set: { updatePreference(mode: $0) })) {
+                    ForEach(["auto", "memory_organization", "source_learning", "topic_exploration", "problem_solving"], id: \.self) { mode in
+                        Text(Self.modeLabel(mode)).tag(mode)
+                    }
+                }
+            } label: {
+                Label(Self.modeLabel(selectedSession?.modePreset ?? draftSettings?.agentDraftMode ?? "auto"), systemImage: "arrow.triangle.branch")
+            }.menuStyle(.borderlessButton).fixedSize().help("学习方式")
+            Menu {
+                Picker("思考强度", selection: Binding(get: {
+                    selectedSession?.thinkingStrength ?? draftSettings?.agentDraftThinking ?? "smart"
+                }, set: { updatePreference(strength: $0) })) {
+                    Text("智能").tag("smart")
+                    Text("深入思考").tag("deep")
+                }
+            } label: {
+                let deep = (selectedSession?.thinkingStrength ?? draftSettings?.agentDraftThinking) == "deep"
+                Label(deep ? "深入思考" : "智能", systemImage: deep ? "sparkles" : "bolt")
+            }.menuStyle(.borderlessButton).fixedSize().help("思考强度会持续保留，直到你主动更改")
+            if let capacity = ConversationProcessor.object(selectedSession?.contextCapacityJSON),
+               let ratio = capacity["ratio"] as? Double, let budget = capacity["input_budget"] as? Int,
+               let used = capacity["input_tokens"] as? Int {
+                let knownWindow = capacity["model_window"] as? Int != nil
+                Text(knownWindow ? "上下文约 \(Int((ratio * 100).rounded()))%" : "上下文约 \(used) token")
+                    .monospacedDigit().foregroundStyle(.secondary)
+                    .help(knownWindow
+                        ? "最近一次请求约占有效输入预算的 \(Int((ratio * 100).rounded()))%。预算 \(budget) token，已预留回答空间；这是估算，不是学习进度。"
+                        : "最近一次请求约 \(used) token。尚未取得已验证的模型窗口容量，暂不显示百分比。本地请求上限为 \(budget) token，不代表模型的实际窗口。")
+                    .accessibilityLabel(knownWindow ? "最近请求上下文容量约 \(Int((ratio * 100).rounded()))%" : "最近请求上下文约 \(used) token，窗口容量未知")
+            }
+        }.font(.caption).controlSize(.small)
+    }
+
+    private func updatePreference(mode: String? = nil, strength: String? = nil) {
+        do {
+            let settings = try AgentComposerStore.settings(modelContext)
+            if let strength { settings.lastThinkingStrength = strength }
+            if let session = selectedSession {
+                guard session.status == "active" else { return }
+                if let mode { session.modePreset = mode }
+                if let strength { session.thinkingStrength = strength }
+                if let run = runs.last(where: { $0.sessionID == session.id }) {
+                    guard ConversationProcessor.queueControl(run, action: mode != nil ? "set_mode" : "set_thinking",
+                                                             mode: mode, thinkingStrength: strength, context: modelContext) else {
+                        localError = "选择尚未保存，请重试。"; return
+                    }
+                } else { try modelContext.save() }
+            } else {
+                if let mode { settings.agentDraftMode = mode }
+                if let strength { settings.agentDraftThinking = strength }
+                try modelContext.save()
+            }
+        } catch { modelContext.rollback(); localError = "选择尚未保存，请重试。" }
+    }
+
     @ViewBuilder
     private func composer(contentWidth: CGFloat) -> some View {
         if selectedSession?.status == "archived" {
@@ -590,12 +707,11 @@ struct LearningWorkspace: View {
             }
             VStack(spacing: 4) {
                 LearningTextInput(text: $draft, height: $inputHeight, focused: $inputFocused,
-                                  focusRequest: focusRequest, sessionID: selectedSessionID,
-                                  placeholder: activeActionPlaceholder, ink: NSColor(runway.ink), onSubmit: submitDraft)
+                                  focusRequest: focusRequest, sessionID: selectedSessionID ?? draftSettings?.agentDraftID,
+                                  placeholder: activeActionPlaceholder, ink: NSColor(runway.ink), insertion: insertion, onSubmit: submitDraft)
                     .frame(height: inputHeight)
                 HStack {
-                  Text("Return 发送 · Shift Return 换行")
-                      .font(.caption2).foregroundStyle(.secondary)
+                  composerControls
                   Spacer(minLength: 8)
                 Button(action: submitDraft) {
                     Image(systemName: "arrow.up")
@@ -615,7 +731,7 @@ struct LearningWorkspace: View {
             .background(runway.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(inputFocused ? runway.agent.opacity(0.65) : runway.hairline, lineWidth: inputFocused ? 1.5 : 1))
             HStack(spacing: 10) {
-                Text("草稿仅保存在当前会话 · 输入先保存在本机")
+                Text("Return 发送 · Shift Return 换行")
                 Spacer()
                 if let run = runs.last(where: { $0.sessionID == selectedSessionID }),
                    ["accepted", "running", "queued", "adjusting"].contains(run.status) {
@@ -649,7 +765,18 @@ struct LearningWorkspace: View {
 
     private func sendMessage(_ content: String, operation: [String: Any]? = nil) {
         let started = Date.now
-        let session = selectedSession ?? createSession()
+        guard let session = selectedSession else {
+            do {
+                let (session, message) = try AgentComposerStore.sendFirst(content, context: modelContext)
+                draft = ""
+                draftSessionID = session.id
+                selectedSessionID = session.id
+                sentMessageID = message.id
+                focusRequest += 1
+                ConversationSync.wake()
+            } catch { localError = "本机保存失败，草稿仍保留，请重试。" }
+            return
+        }
         guard session.status == "active" else {
             localError = "请先恢复归档的会话，再继续输入。"
             return
@@ -719,11 +846,10 @@ struct LearningWorkspace: View {
                 ForEach(runEvents.filter { $0.runID == run.id && $0.stage != "response.delta" }, id: \.id) { event in
                     VStack(alignment: .leading, spacing: 3) {
                         Text(event.summary).font(.caption.weight(.medium))
-                        if !event.detail.isEmpty { Text(event.detail).font(.caption) }
-                        Text([event.stage, event.model, "第 \(max(1, event.attempt)) 次",
-                              event.durationMS.map { "\($0) ms" } ?? ""].filter { !$0.isEmpty }.joined(separator: " · "))
+                        if !event.detail.isEmpty && (developerDiagnostics || event.errorCode == nil) { Text(event.detail).font(.caption) }
+                        Text(eventInformation(event))
                             .font(.caption2.monospaced()).foregroundStyle(.secondary)
-                        if let error = event.errorCode { Text(error).font(.caption2.monospaced()).foregroundStyle(.orange) }
+                        if developerDiagnostics, let error = event.errorCode { Text(error).font(.caption2.monospaced()).foregroundStyle(.orange) }
                     }
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -784,53 +910,13 @@ struct LearningWorkspace: View {
 
     private func saveDraft() {
         draftSave?.cancel()
-        guard let id = draftSessionID, let session = sessions.first(where: { $0.id == id }), session.composerDraft != draft else { return }
-        session.composerDraft = draft
+        if let id = draftSessionID, let session = sessions.first(where: { $0.id == id }) {
+            guard session.composerDraft != draft else { return }
+            session.composerDraft = draft
+        } else if let draftSettings { draftSettings.agentDraftText = draft }
+        else { return }
         do { try modelContext.save() }
         catch { localError = "草稿尚未保存，请保留当前窗口并重试。" }
-    }
-
-    @discardableResult
-    private func createSession(handoffFrom source: AgentSession? = nil) -> AgentSession {
-        let session = AgentSession(
-            title: source == nil ? "新学习 Session" : "从「\(source!.title)」继续",
-            sourceSessionID: source?.id
-        )
-        if let source {
-            session.summaryText = handoffSummary(from: source)
-        }
-        modelContext.insert(session)
-        try? modelContext.save()
-        selectedSessionID = session.id
-        return session
-    }
-
-    private func handoffSummary(from source: AgentSession) -> String {
-        let latestInput = messages(for: source.id)
-            .filter { $0.sessionID == source.id && $0.role == "user" }
-            .sorted { $0.createdAt < $1.createdAt }
-            .last?.content
-        let unresolved = tasks
-            .filter { $0.sessionID == source.id && !["completed", "cancelled", "terminal_failed"].contains($0.status) }
-            .map(\.userSummary)
-            .prefix(3)
-        let sources = sourceReferences
-            .filter { $0.sessionID == source.id }
-            .map(\.url)
-            .prefix(4)
-        let knowledgeIDs = knowledgeReferences
-            .filter { $0.sessionID == source.id }
-            .map { $0.knowledgeID.uuidString.lowercased() }
-            .prefix(5)
-        return [
-            "来源 Session ID：\(source.id.uuidString.lowercased())",
-            "来源目标：\(source.title)",
-            "确认决定：模式为 \(Self.modeLabel(source.modePreset))",
-            "最近输入：\(latestInput ?? "暂无")",
-            "资料引用：\(sources.isEmpty ? "暂无" : sources.joined(separator: "，"))",
-            "知识引用：\(knowledgeIDs.isEmpty ? "暂无" : knowledgeIDs.joined(separator: "，"))",
-            "未解决问题：\(unresolved.isEmpty ? "暂无" : unresolved.joined(separator: "；"))",
-        ].joined(separator: "\n")
     }
 
     private func archive(_ session: AgentSession) {
@@ -847,32 +933,13 @@ struct LearningWorkspace: View {
         selectedSessionID = session.id
     }
 
-    private func selectInitialSession() {
-        if let selectedSessionID, sessions.contains(where: { $0.id == selectedSessionID }) { return }
-        self.selectedSessionID = sessions.first(where: { $0.status == "active" })?.id ?? sessions.first?.id
-    }
-
-    private func updateSessionSummary(_ session: AgentSession) {
-        let rows = ((try? modelContext.fetch(FetchDescriptor<AgentMessage>())) ?? [])
-            .filter { $0.sessionID == session.id && $0.responseState == "complete" }
-            .sorted { $0.createdAt < $1.createdAt }
-        guard rows.count > 20 else { return }
-        let older = rows.dropLast(10).suffix(40)
-        let summary = older.map { row in
-            let role = row.role == "user" ? "用户" : "教练"
-            return "\(role)：\(row.content.prefix(240))"
-        }.joined(separator: "\n")
-        session.summaryText = String(summary.suffix(10_000))
-        session.updatedAt = .now
-        let existing = ((try? modelContext.fetch(FetchDescriptor<SessionSummaryRecord>())) ?? [])
-            .first { $0.sessionID == session.id }
-        let record = existing ?? SessionSummaryRecord(sessionID: session.id)
-        if existing == nil { modelContext.insert(record) }
-        record.version += existing == nil ? 0 : 1
-        record.goal = session.title
-        record.confirmedDecisionsJSON = "[\"模式：\(Self.modeLabel(session.modePreset))\"]"
-        record.updatedAt = .now
-        try? modelContext.save()
+    private func loadDraft() {
+        do {
+            draftSettings = selectedSessionID == nil ? try AgentComposerStore.prepare(modelContext) : try AgentComposerStore.settings(modelContext)
+            draftSessionID = selectedSessionID
+            draft = selectedSession?.composerDraft ?? draftSettings?.agentDraftText ?? ""
+            insertion = nil
+        } catch { localError = "草稿暂时无法载入，请重试。" }
     }
 
     private static func options(_ raw: String?) -> [String] {

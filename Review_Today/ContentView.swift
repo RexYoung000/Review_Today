@@ -13,7 +13,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .today: String(localized: "今天")
-        case .learning: String(localized: "学习")
+        case .learning: "Agent"
         case .library: String(localized: "知识库")
         case .inbox: String(localized: "待处理")
         }
@@ -22,7 +22,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     var systemImage: String {
         switch self {
         case .today: "sun.max"
-        case .learning: "bubble.left.and.bubble.right"
+        case .learning: "terminal"
         case .library: "books.vertical"
         case .inbox: "tray"
         }
@@ -152,6 +152,17 @@ struct AppSidebar: View {
     @State private var hoveredSessionID: UUID?
     @State private var editingSessionID: UUID?
     @State private var undoSessionID: UUID?
+    @State private var searchVisible = false
+    @State private var multiSelect = false
+    @State private var selectedIDs = Set<UUID>()
+    @State private var rangeAnchor: UUID?
+    @State private var batchError: String?
+    @State private var visibleRowIDs = Set<UUID>()
+    @State private var selectionDelays: [UUID: Double] = [:]
+    @State private var undoBatchIDs = Set<UUID>()
+    @FocusState private var sessionListFocused: Bool
+    @AppStorage("reviewToday.sessionsExpanded") private var sessionsExpanded = true
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var visibleSessions: [AgentSession] {
         sessions.filter { session in
@@ -170,11 +181,20 @@ struct AppSidebar: View {
             }
             .padding(.horizontal, 10)
 
-            if selection == .learning {
-                Divider().padding(.vertical, 12)
-                sessionNavigation
-            } else {
-                Spacer(minLength: 12)
+            Divider().padding(.vertical, 12)
+            sessionNavigation
+
+            if !undoBatchIDs.isEmpty {
+                HStack {
+                    Text("已归档 \(undoBatchIDs.count) 个会话")
+                    Spacer()
+                    Button("撤销") {
+                        undoBatchIDs = Set(undoBatchIDs.filter { id in
+                            guard let session = sessions.first(where: { $0.id == id }), session.status == "archived" else { return false }
+                            return !LearningSessionActions.restore(session, context: modelContext)
+                        })
+                    }.buttonStyle(.borderless)
+                }.font(.caption).padding(10)
             }
 
             if let undoSessionID, let session = sessions.first(where: { $0.id == undoSessionID }) {
@@ -236,24 +256,40 @@ struct AppSidebar: View {
     private var sessionNavigation: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("学习会话").font(.subheadline.weight(.semibold))
-                Spacer()
+                Button { sessionsExpanded.toggle() } label: {
+                    Label("会话", systemImage: sessionsExpanded ? "chevron.down" : "chevron.right")
+                        .font(.subheadline.weight(.medium))
+                }.buttonStyle(.plain).accessibilityValue(sessionsExpanded ? "已展开" : "已收起")
+                Spacer(minLength: 4)
+                Button { searchVisible.toggle(); if !searchVisible { searchText = "" } } label: { Image(systemName: "magnifyingglass") }
+                    .buttonStyle(.plain).help("搜索会话").accessibilityLabel("搜索会话")
+                Button { showArchived.toggle(); selectedIDs.removeAll() } label: { Image(systemName: showArchived ? "archivebox.fill" : "archivebox") }
+                    .buttonStyle(.plain).help(showArchived ? "显示进行中会话" : "显示已归档会话")
+                    .accessibilityLabel("切换归档视图").accessibilityValue(showArchived ? "已归档" : "进行中")
+                Button { multiSelect.toggle(); selectedIDs.removeAll() } label: { Image(systemName: "checklist") }
+                    .buttonStyle(.plain).help("多选会话").accessibilityLabel("多选会话")
                 Button(action: createSession) { Image(systemName: "plus") }
-                    .buttonStyle(.plain).help("新建学习会话")
+                    .buttonStyle(.plain).help("新对话").accessibilityLabel("新对话")
             }
             .padding(.horizontal, 14)
 
-            TextField("搜索会话", text: $searchText)
+            if searchVisible {
+              TextField("搜索会话", text: $searchText)
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal, 10)
-
-            Picker("会话状态", selection: $showArchived) {
-                Text("进行中").tag(false)
-                Text("已归档").tag(true)
             }
-            .pickerStyle(.segmented).labelsHidden()
-            .padding(.horizontal, 10)
-
+            if showArchived { Text("已归档").font(.caption).foregroundStyle(.secondary).padding(.horizontal, 14) }
+            if multiSelect {
+                HStack(spacing: 8) {
+                    Button(selectedIDs.count == visibleSessions.count ? "取消全选" : "全选") { selectAll() }
+                    Text("\(selectedIDs.count)").monospacedDigit()
+                    Spacer(minLength: 0)
+                    Button(showArchived ? "恢复" : "归档") { batchArchive() }.disabled(selectedIDs.isEmpty)
+                    Button { multiSelect = false; selectedIDs.removeAll() } label: { Image(systemName: "xmark") }.help("退出多选")
+                }.font(.caption).buttonStyle(.borderless).padding(.horizontal, 12)
+            }
+            if let batchError { Text(batchError).font(.caption).foregroundStyle(.orange).padding(.horizontal, 12) }
+            if sessionsExpanded {
             ScrollView {
                 LazyVStack(spacing: 4) {
                     ForEach(visibleSessions, id: \.id) { session in sessionRow(session) }
@@ -268,20 +304,41 @@ struct AppSidebar: View {
                 .padding(.horizontal, 8)
             }
             .scrollIndicators(.automatic)
+            .focusable().focusEffectDisabled().focused($sessionListFocused)
+            .onKeyPress("a", phases: .down) { press in
+                guard multiSelect && press.modifiers.contains(.command) else { return .ignored }
+                selectAll(); return .handled
+            }
+            .onKeyPress(.escape) {
+                guard multiSelect else { return .ignored }
+                multiSelect = false; selectedIDs.removeAll(); return .handled
+            }
+            } else { Spacer(minLength: 0) }
         }
         .frame(maxHeight: .infinity)
     }
 
     private func sessionRow(_ session: AgentSession) -> some View {
-        let selected = selectedSessionID == session.id
+        let selected = multiSelect ? selectedIDs.contains(session.id) : selectedSessionID == session.id && selection == .learning
         let state = sessionState(session)
         return HStack(spacing: 4) {
             Button {
-                selectedSessionID = session.id
-                selection = .learning
+                if multiSelect || NSEvent.modifierFlags.contains(.command) || NSEvent.modifierFlags.contains(.shift) {
+                    multiSelect = true
+                    sessionListFocused = true
+                    selectionDelays = [:]
+                    if NSEvent.modifierFlags.contains(.shift), let anchor = rangeAnchor,
+                       let a = visibleSessions.firstIndex(where: { $0.id == anchor }), let b = visibleSessions.firstIndex(where: { $0.id == session.id }) {
+                        selectedIDs.formUnion(visibleSessions[min(a,b)...max(a,b)].map(\.id))
+                    } else if !selectedIDs.insert(session.id).inserted { selectedIDs.remove(session.id) }
+                    rangeAnchor = session.id
+                } else { selectedSessionID = session.id; selection = .learning }
             } label: {
                 HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: state.symbol)
+                    Group {
+                      if multiSelect { SelectionDot(selected: selected, delay: selectionDelays[session.id] ?? 0) }
+                      else { Image(systemName: state.symbol) }
+                    }
                         .font(.caption).foregroundStyle(state.problem ? Color.orange : .secondary)
                         .frame(width: 13).padding(.top, 3)
                     VStack(alignment: .leading, spacing: 5) {
@@ -321,17 +378,23 @@ struct AppSidebar: View {
             if selected { Capsule().fill(runway.agent).frame(width: 3).padding(.vertical, 8) }
         }
         .onHover { hoveredSessionID = $0 ? session.id : nil }
+        .onAppear { visibleRowIDs.insert(session.id) }
+        .onDisappear { visibleRowIDs.remove(session.id) }
         .contextMenu {
             if session.status == "active" { Button("归档", systemImage: "archivebox") { archive(session) } }
             else { Button("恢复", systemImage: "arrow.uturn.backward") { restore(session) } }
             Button("编辑标签", systemImage: "tag") { editingSessionID = session.id }
+            Button(session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", systemImage: "brain") {
+                if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { batchError = "记忆设置未保存，请重试。" }
+            }
+            Button("选择此会话", systemImage: "checkmark.circle") { multiSelect = true; selectedIDs.insert(session.id) }
         }
         .accessibilityLabel("\(session.title)，\(state.label)，\(LearningWorkspace.modeLabel(session.modePreset))")
     }
 
     private func sidebarRow(_ item: SidebarItem) -> some View {
         let selected = selection == item
-        return Button { selection = item } label: {
+        return Button { if item == .learning { selectedSessionID = nil }; selection = item } label: {
             HStack {
                 Label(item.title, systemImage: item.systemImage)
                 Spacer()
@@ -350,12 +413,29 @@ struct AppSidebar: View {
     }
 
     private func createSession() {
-        let session = AgentSession()
-        modelContext.insert(session)
-        try? modelContext.save()
         showArchived = false
-        selectedSessionID = session.id
+        selectedSessionID = nil
         selection = .learning
+    }
+
+    private func selectAll() {
+        let selecting = selectedIDs.count != visibleSessions.count
+        selectionDelays = Dictionary(uniqueKeysWithValues: visibleSessions.filter { visibleRowIDs.contains($0.id) }.enumerated().map { ($0.element.id, min(Double($0.offset) * 0.012, 0.09)) })
+        selectedIDs = selecting ? Set(visibleSessions.map(\.id)) : []
+    }
+
+    private func batchArchive() {
+        var failed = Set<UUID>()
+        var archived = Set<UUID>()
+        for session in visibleSessions where selectedIDs.contains(session.id) {
+            let saved = showArchived ? LearningSessionActions.restore(session, context: modelContext) : LearningSessionActions.archive(session, context: modelContext)
+            if !saved { failed.insert(session.id) }
+            else if !showArchived { archived.insert(session.id) }
+        }
+        undoBatchIDs = archived
+        selectedIDs = failed
+        batchError = failed.isEmpty ? nil : "\(failed.count) 个会话未保存，请重试。已成功的操作不会重复执行。"
+        if failed.isEmpty { multiSelect = false }
     }
 
     private func archive(_ session: AgentSession) {
@@ -396,6 +476,9 @@ struct ContentView: View {
     @State private var selectedLearningSessionID: UUID?
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @AppStorage("reviewToday.sidebarVisible") private var sidebarVisible = true
+    @State private var automaticallyCollapsed = false
+    @AppStorage("reviewToday.sidebarWidth") private var savedSidebarWidth = 280.0
+    @State private var saveWidthTask: Task<Void, Never>?
     @State private var monitor = AgentServiceMonitor()
     @Query private var inbox: [CaptureTask]
     @Query private var knowledge: [Knowledge]
@@ -419,7 +502,15 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             AppSidebar(selection: $selection, selectedSessionID: $selectedLearningSessionID, inboxCount: inboxCount)
-                .navigationSplitViewColumnWidth(min: 220, ideal: 280, max: 340)
+                .navigationSplitViewColumnWidth(min: 220, ideal: min(340, max(220, savedSidebarWidth)), max: 340)
+                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
+                    guard (220...340).contains(width), abs(savedSidebarWidth - width) > 1 else { return }
+                    saveWidthTask?.cancel()
+                    saveWidthTask = Task {
+                        try? await Task.sleep(for: .milliseconds(250))
+                        if !Task.isCancelled { savedSidebarWidth = width }
+                    }
+                }
         } detail: {
             Group {
                 switch selection ?? .today {
@@ -456,7 +547,19 @@ struct ContentView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .frame(minWidth: 760, minHeight: 620)
-        .onChange(of: columnVisibility) { _, value in sidebarVisible = value != .detailOnly }
+        .onChange(of: columnVisibility) { _, value in
+            if value != .detailOnly { automaticallyCollapsed = false }
+            if !automaticallyCollapsed { sidebarVisible = value != .detailOnly }
+        }
+        .onGeometryChange(for: Bool.self) { $0.size.width < 900 } action: { narrow in
+            if narrow && columnVisibility != .detailOnly {
+                automaticallyCollapsed = true
+                columnVisibility = .detailOnly
+            } else if !narrow && automaticallyCollapsed {
+                automaticallyCollapsed = false
+                columnVisibility = sidebarVisible ? .all : .detailOnly
+            }
+        }
         .task {
 #if DEBUG
             if M1DebugFixture.enabled { monitor.useFixturePresentation(); return }

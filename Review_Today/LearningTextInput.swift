@@ -1,6 +1,11 @@
 import AppKit
 import SwiftUI
 
+struct EditorInsertion {
+    let id = UUID()
+    let text: String
+}
+
 /// Native text and marked text share one layout manager, inset and paragraph.
 struct LearningTextInput: NSViewRepresentable {
     @Binding var text: String
@@ -10,6 +15,7 @@ struct LearningTextInput: NSViewRepresentable {
     var sessionID: UUID?
     var placeholder: String
     var ink: NSColor
+    var insertion: EditorInsertion? = nil
     var onSubmit: () -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -66,6 +72,16 @@ struct LearningTextInput: NSViewRepresentable {
         }
         view.needsDisplay = true
         coordinator.measure()
+        if let insertion, coordinator.lastInsertion != insertion.id, !view.hasMarkedText() {
+            coordinator.lastInsertion = insertion.id
+            let identity = sessionID
+            DispatchQueue.main.async { [weak view, weak coordinator] in
+                guard let view, coordinator?.sessionID == identity else { return }
+                // Native insertion honors selection/caret and registers undo.
+                view.insertText(insertion.text, replacementRange: view.selectedRange())
+                view.window?.makeFirstResponder(view)
+            }
+        }
         if coordinator.focusRequest != focusRequest {
             coordinator.focusRequest = focusRequest
             DispatchQueue.main.async { [weak view] in
@@ -80,6 +96,7 @@ struct LearningTextInput: NSViewRepresentable {
         weak var view: LearningEditor?
         var sessionID: UUID?
         var focusRequest = -1
+        var lastInsertion: UUID?
         init(_ parent: LearningTextInput) { self.parent = parent }
         func textDidChange(_ notification: Notification) {
             guard let view else { return }

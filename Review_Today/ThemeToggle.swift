@@ -21,7 +21,7 @@ final class AppearanceController {
 
     private init() {
         if UserDefaults.standard.object(forKey: Self.defaultsKey) == nil {
-            isDark = NSApp.effectiveAppearance.isDark
+            isDark = false // first use is light; an explicit existing choice wins
         } else {
             isDark = UserDefaults.standard.bool(forKey: Self.defaultsKey)
         }
