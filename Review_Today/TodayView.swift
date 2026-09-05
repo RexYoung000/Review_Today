@@ -44,7 +44,8 @@ struct TodayView: View {
     }
 
     private var inboxCount: Int {
-        captureTasks.filter { ["needs_attention", "retryable_failed"].contains($0.status) }.count
+        captureTasks.filter { ["needs_attention", "retryable_failed"].contains($0.status) }.count +
+        learningTasks.filter { LearningDecisionInbox.includes($0, sessions: learningSessions) }.count
     }
 
     private var todayResults: [ReviewAttempt] {
@@ -86,13 +87,13 @@ struct TodayView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Runway.gap) {
                 statusBoard
-                activityHeatmap
                 if !activeLearningSessions.isEmpty {
                     recentLearningCard
                 }
                 if !todayResults.isEmpty {
                     resultsCard
                 }
+                activityHeatmap
             }
             .padding(24)
         }
@@ -431,6 +432,13 @@ struct TodayView: View {
     }
 
     private func latestStatus(for session: AgentSession) -> String {
+        if let task = learningTasks.filter({ $0.sessionID == session.id && $0.learningPlanJSON != nil }).max(by: { $0.updatedAt < $1.updatedAt }),
+           let plan = ConversationProcessor.object(task.learningPlanJSON),
+           let steps = plan["steps"] as? [[String: Any]],
+           let current = steps.first(where: { $0["id"] as? String == plan["current_step_id"] as? String }),
+           let title = current["title"] as? String {
+            return task.status == "completed" ? "查看本次学习小结" : "上次学到：" + title
+        }
         if let run = agentRuns.filter({ $0.sessionID == session.id }).max(by: { $0.updatedAt < $1.updatedAt }) {
             return run.userSummary
         }

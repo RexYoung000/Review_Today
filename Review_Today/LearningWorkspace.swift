@@ -26,6 +26,7 @@ struct LearningWorkspace: View {
     @State private var followsLatest = true
     @State private var userScrolling = false
     @State private var sentMessageID: UUID?
+    @State private var stepMessageID: UUID?
 
     private enum Layout {
         static let readingWidth: CGFloat = 820
@@ -44,6 +45,71 @@ struct LearningWorkspace: View {
     private var sessionTasks: [LearningTask] {
         guard let selectedSessionID else { return [] }
         return tasks.filter { $0.sessionID == selectedSessionID }.sorted { $0.createdAt < $1.createdAt }
+    }
+
+    @ViewBuilder
+    private var learningChecklist: some View {
+        if let session = selectedSession,
+           let task = sessionTasks.last(where: { $0.learningPlanJSON != nil }),
+           let plan = ConversationProcessor.object(task.learningPlanJSON),
+           let steps = plan["steps"] as? [[String: Any]], !steps.isEmpty {
+            let current = steps.first { $0["id"] as? String == plan["current_step_id"] as? String }
+            VStack(alignment: .leading, spacing: 8) {
+                Button {
+                    session.learningChecklistExpanded.toggle()
+                    try? modelContext.save()
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: session.learningChecklistExpanded ? "chevron.down" : "chevron.right")
+                        Text(task.status == "completed" ? "本次学习已结束" : "学习安排").fontWeight(.medium)
+                        Text(current?["title"] as? String ?? plan["goal"] as? String ?? "").foregroundStyle(.secondary).lineLimit(1)
+                        Spacer(minLength: 0)
+                    }.font(.callout).padding(.vertical, 5).contentShape(Rectangle())
+                }.buttonStyle(.plain).accessibilityValue(session.learningChecklistExpanded ? "已展开" : "已收起")
+                if session.learningChecklistExpanded {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 6) {
+                            ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
+                                let state = step["state"] as? String ?? "pending"
+                                let understanding = step["understanding"] as? String ?? "unknown"
+                                let label = understanding == "verified" ? "已验证" : understanding == "self_reported" ? "自述理解" : state == "skipped" ? "跳过检查" : state == "explained" ? "已讲解" : "待学习"
+                                Button {
+                                    if let raw = (step["message_ids"] as? [String])?.first { stepMessageID = UUID(uuidString: raw) }
+                                } label: {
+                                    HStack(alignment: .firstTextBaseline, spacing: 9) {
+                                        Text("\(index + 1)").monospacedDigit().foregroundStyle(.secondary).frame(width: 18)
+                                        Text(step["title"] as? String ?? "学习步骤").lineLimit(2)
+                                        Spacer(minLength: 8)
+                                        Text(label).font(.caption).foregroundStyle(.secondary)
+                                    }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 5).contentShape(Rectangle())
+                                }.buttonStyle(.plain)
+                                    .disabled((step["message_ids"] as? [String] ?? []).isEmpty)
+                                    .help("查看对应内容，不会改变理解状态")
+                            }
+                        }
+                    }.frame(height: min(CGFloat(steps.count) * 38, 160))
+                    Text("点击步骤回看内容；要调整安排，直接告诉我。").font(.caption2).foregroundStyle(.secondary)
+                }
+            }.padding(.horizontal, 20).padding(.bottom, 10)
+        }
+    }
+
+    @ViewBuilder
+    private func learningOutcome(_ task: LearningTask) -> some View {
+        if let outcome = ConversationProcessor.object(task.learningOutcomeJSON) {
+            let verified = outcome["verified"] as? [String] ?? []
+            let explained = outcome["explained"] as? [String] ?? []
+            VStack(alignment: .leading, spacing: 8) {
+                Text("本次学习小结").font(.headline)
+                if !verified.isEmpty { Text("已验证：" + verified.joined(separator: "、")) }
+                if !explained.isEmpty { Text("已讲解，仍可练习：" + explained.joined(separator: "、")) }
+                if verified.isEmpty && explained.isEmpty { Text(task.understanding == "verified" ? "本次理解检查已通过。" : "内容已整理交付，尚未验证理解。") }
+                Text(task.memoryCommitted || sessionTasks.contains(where: { $0.memoryCommitted && $0.draftTargetID == task.id.uuidString.lowercased() }) ? "已加入知识库" : "学习成果已保留在会话中；入库由你决定。")
+                    .font(.caption).foregroundStyle(.secondary)
+            }.font(.callout).frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 12)
+                .overlay(alignment: .top) { Rectangle().fill(runway.hairline).frame(height: 1) }
+        }
     }
 
     var body: some View {
@@ -88,6 +154,7 @@ struct LearningWorkspace: View {
         let contentWidth = max(0, min(Layout.readingWidth, width - gutter * 2))
         return VStack(spacing: 0) {
             workspaceHeader
+            learningChecklist
             Divider()
             serviceBanner
             conversation(contentWidth: contentWidth)
@@ -105,10 +172,6 @@ struct LearningWorkspace: View {
                         .foregroundStyle(runway.ink)
                         .lineLimit(2)
                         .help(selectedSession?.title ?? "新的学习 Session")
-                    Text("回答、学习路径和工作过程都保存在这里")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 if let session = selectedSession {
@@ -131,8 +194,10 @@ struct LearningWorkspace: View {
                     if session.displayTopicTags.count > 3 {
                         Text("+\(session.displayTopicTags.count - 3)").font(.caption2).foregroundStyle(.secondary)
                     }
-                    Button { editingSessionID = session.id } label: { Image(systemName: "tag") }
-                        .buttonStyle(.plain).help("编辑主题标签")
+                    if !session.displayTopicTags.isEmpty && session.status == "active" {
+                        Button { editingSessionID = session.id } label: { Image(systemName: "tag") }
+                            .buttonStyle(.plain).help("编辑主题标签")
+                    }
                 }
                 Spacer(minLength: 0)
                 if let session = selectedSession {
@@ -155,6 +220,7 @@ struct LearningWorkspace: View {
                         Text("问题攻克").tag("problem_solving")
                     }
                     .labelsHidden()
+                    .disabled(session.status != "active")
                     .frame(width: 120)
                     .help("作用于当前目标的下一步，保留已有资料与进度；Auto 自动安排同目标内的能力")
                 }
@@ -196,10 +262,15 @@ struct LearningWorkspace: View {
                             .lineLimit(2)
                             .help(monitor.launchDetail)
                     }
+                    if !monitor.technicalDetail.isEmpty {
+                        DisclosureGroup("技术详情") {
+                            Text(monitor.technicalDetail).font(.caption.monospaced()).textSelection(.enabled)
+                        }.font(.caption).foregroundStyle(.secondary)
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 if monitor.connection == .unavailable {
-                    Button("重试") { monitor.retryLaunch() }
+                    Button("重试连接") { monitor.retryLaunch() }
                         .buttonStyle(.borderless)
                         .fixedSize()
                 }
@@ -246,15 +317,18 @@ struct LearningWorkspace: View {
                                sessionMessages.last(where: { $0.role == "user" && $0.runID == runID })?.id == message.id {
                                 runFeedback(run, sessionMessages: sessionMessages, runEvents: runEvents)
                             } else if message.runID == nil && message.taskID == nil {
-                                Text(monitor.connection == .ready ? "已保存在本机，准备发送" : "已保存在本机，等待学习服务启动")
+                                Text(message.deliveryStatus == "held" ? "已停止发送，内容保留在本机" : monitor.connection == .ready ? "已保存在本机，准备发送" : "已保存在本机，等待学习服务恢复")
                                     .font(.caption).foregroundStyle(.secondary)
-                                if let error = message.lastDeliveryError {
-                                    Text("提交尚未成功，输入保留：\(error)").font(.caption).foregroundStyle(.orange)
+                                if message.lastDeliveryError != nil {
+                                    Text("暂时未能送达，输入已保留。连接恢复后会继续。").font(.caption).foregroundStyle(.orange)
                                 }
                             }
                         }
                         if message.role == "user", let task = sessionTasks.first(where: { $0.inputMessageID == message.id }) {
                             taskCard(task, run: message.runID.flatMap { id in runs.first(where: { $0.id == id }) }, runEvents: runEvents)
+                        }
+                        if let task = sessionTasks.first(where: { ConversationProcessor.object($0.learningOutcomeJSON)?["message_id"] as? String == message.id.uuidString.lowercased() }) {
+                            learningOutcome(task)
                         }
                     }
                 }
@@ -277,7 +351,10 @@ struct LearningWorkspace: View {
           }
           .onChange(of: selectedSessionID) { _, _ in proxy.scrollTo("latest", anchor: .bottom) }
           .onChange(of: sentMessageID) { _, id in
-              if let id { proxy.scrollTo(id, anchor: .bottom); followsLatest = true }
+              if id != nil { proxy.scrollTo("latest", anchor: .bottom); followsLatest = true }
+          }
+          .onChange(of: stepMessageID) { _, id in
+              if let id { followsLatest = false; proxy.scrollTo(id, anchor: .top) }
           }
           .overlay(alignment: .bottomTrailing) {
               if !followsLatest && !sessionMessages.isEmpty {
@@ -292,16 +369,14 @@ struct LearningWorkspace: View {
     }
 
     private var emptyConversation: some View {
-        RunwayCard {
-            HStack(alignment: .top, spacing: 14) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("把你真正想解决的学习问题发过来")
-                        .font(.headline)
-                    Text("可以是一个主题、一份资料、一道面试题，或完整 JD。问题攻克会先给基础答案，再带你校准、独立作答，最后由你决定是否形成记忆。")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+        VStack(alignment: .leading, spacing: 16) {
+            Text("今天，想弄懂什么？").font(.title2.weight(.semibold))
+            Text("从一个问题开始，或把资料放在这里。学习成果由你决定是否保存。")
+                .font(.callout).foregroundStyle(.secondary)
+            ForEach(["RAG 是什么？", "带我学习 RAG 的基本原理", "帮我准备 RAG 面试题"], id: \.self) { example in
+                Button { draft = example; focusRequest += 1 } label: {
+                    Label(example, systemImage: "arrow.up.left").font(.callout)
+                }.buttonStyle(.borderless)
             }
         }
         .padding(.top, 32)
@@ -320,9 +395,8 @@ struct LearningWorkspace: View {
                       .background(runway.field, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
                       .frame(maxWidth: bubbleWidth, alignment: .trailing)
               } else {
-                  Text(.init(message.content))
-                      .font(.body).foregroundStyle(runway.ink).textSelection(.enabled)
-                      .fixedSize(horizontal: false, vertical: true)
+                  LearningAnswerText(content: message.content)
+                      .foregroundStyle(runway.ink)
                       .frame(maxWidth: bubbleWidth, alignment: .leading)
               }
               if ["interrupted", "failed"].contains(message.responseState) {
@@ -367,7 +441,7 @@ struct LearningWorkspace: View {
                         .font(.caption2).foregroundStyle(.secondary)
                 }
                 Spacer()
-                if task.status == "retryable_failed" || task.status == "needs_attention" {
+                if selectedSession?.status == "active" && (task.status == "retryable_failed" || task.status == "needs_attention") {
                     Button("重试") { taskControl(task, action: "retry") }
                         .buttonStyle(.borderless)
                     Button("取消目标") { taskControl(task, action: "cancel_task") }
@@ -375,7 +449,7 @@ struct LearningWorkspace: View {
                 }
             }
 
-            if let prompt = task.requiredActionPrompt, task.pendingActionID == nil {
+            if selectedSession?.status == "active", let prompt = task.requiredActionPrompt, task.pendingActionID == nil {
                 Text(prompt)
                     .font(.callout.weight(.medium))
                     .foregroundStyle(runway.ink)
@@ -506,8 +580,8 @@ struct LearningWorkspace: View {
             .frame(width: contentWidth).padding(.vertical, 16).frame(maxWidth: .infinity)
         } else {
         VStack(alignment: .leading, spacing: 8) {
-            if let syncError = selectedSession?.syncError {
-                Text("正在恢复进度同步：\(syncError)").font(.caption).foregroundStyle(.orange)
+            if selectedSession?.syncError != nil {
+                Text("进度同步暂时中断，本机内容已保留。").font(.caption).foregroundStyle(.orange)
             }
             if let localError {
                 Label(localError, systemImage: "exclamationmark.triangle")
@@ -543,9 +617,9 @@ struct LearningWorkspace: View {
             HStack(spacing: 10) {
                 Text("草稿仅保存在当前会话 · 输入先保存在本机")
                 Spacer()
-                Toggle("排队发送", isOn: $queueInput).toggleStyle(.checkbox)
                 if let run = runs.last(where: { $0.sessionID == selectedSessionID }),
                    ["accepted", "running", "queued", "adjusting"].contains(run.status) {
+                    Toggle("排队发送", isOn: $queueInput).toggleStyle(.checkbox)
                     Button("停止回复") { ConversationProcessor.queueControl(run, action: "stop", context: modelContext) }
                         .buttonStyle(.borderless)
                 }
@@ -630,7 +704,7 @@ struct LearningWorkspace: View {
             HStack(alignment: .top) {
                 RunPhaseLine(run: run)
                 Spacer()
-                if ["interrupted", "retryable_failed", "terminal_failed"].contains(run.status) {
+                if selectedSession?.status == "active" && ["interrupted", "retryable_failed", "terminal_failed"].contains(run.status) {
                     Button(run.status == "interrupted" ? "恢复" : "重试") {
                         ConversationProcessor.queueControl(run, action: run.status == "interrupted" ? "resume" : "retry", context: modelContext)
                     }.buttonStyle(.borderless)
@@ -673,7 +747,7 @@ struct LearningWorkspace: View {
 
     @ViewBuilder
     private var pendingOperation: some View {
-        if let pending = ConversationProcessor.object(selectedSession?.pendingOperationJSON),
+        if selectedSession?.status == "active", let pending = ConversationProcessor.object(selectedSession?.pendingOperationJSON),
            let kind = pending["kind"] as? String,
            let target = pending["target_id"] as? String,
            let version = pending["version"] as? Int {
@@ -846,4 +920,22 @@ private struct SessionTranscriptData<Content: View>: View {
         self.content = content
     }
     var body: some View { content(messages, events) }
+}
+
+/// Native semantic paragraphs; unfinished Markdown remains readable without buffering.
+private struct LearningAnswerText: View {
+    let content: String
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(Array(content.components(separatedBy: "\n\n").enumerated()), id: \.offset) { _, paragraph in
+                let heading = paragraph.hasPrefix("# ") || paragraph.hasPrefix("## ") || paragraph.hasPrefix("### ")
+                let value = heading ? String(paragraph.drop(while: { $0 == "#" || $0 == " " })) : paragraph
+                Text(.init(value))
+                    .font(heading ? .headline : .body)
+                    .lineSpacing(4).textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, heading ? 5 : 0)
+            }
+        }
+    }
 }

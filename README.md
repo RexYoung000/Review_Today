@@ -22,6 +22,10 @@ Review Today 是“个人学习教练”的项目仓库。它帮助用户理解�
 
 当前执行范围以 [Agent Harness V2 主规格](docs/agent-harness-v2.md) 与 [M1 验收契约](docs/m1-acceptance.md) 为准。
 
+2026-09-05：第一批恢复/生命周期/目标完成与入库分离/来源保持/后台摘要和 ACK 修复已实施，新增固定学习清单、成果小结及 Today 续学表达。132 项隔离服务测试、Mac 构建/契约、旧磁盘模型迁移通过，四种 RAG 界面已做部分原生检查。**仍不是完整 M1**：真实模型仍被上游 403 拒绝，任意崩溃时点的增量快照合成及其余原生路径待完成。完整边界见验收 §0.10。
+
+[OneWorks 两版实际候选](brand/oneworks/README.md) 已保留原始矢量、参数及 16–1024 px 导出；Rex 选择前不替换 V8。执行回归入口：`bash agent-service/run-controlled.sh`、`bash tests/mac/run-contracts.sh`、`bash tests/mac/run-migration.sh`。所有脚本使用隔离数据，不运行真实供应商训练任务。
+
 ## 文档入口
 
 | 文档 | 作用 |

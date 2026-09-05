@@ -125,6 +125,7 @@ enum M1DebugFixture {
     }
 
     private static func seedLearningWorkspace(_ context: ModelContext) throws {
+        if mode == "learning" { seedHandbook(context); return }
         let now = Date.now
         let samples: [(String, String, [String], String)] = [
             ("RAG 面试准备", "problem_solving", ["RAG", "面试"], "RAG 是什么？它在面试中应该怎么回答？"),
@@ -158,6 +159,45 @@ enum M1DebugFixture {
                 run.completedAt = Calendar.current.date(byAdding: .day, value: -offset, to: now)
                 context.insert(run)
             }
+        }
+    }
+
+    private static func seedHandbook(_ context: ModelContext) {
+        let names = ["空状态", "讲解中", "练习中", "学习完成"]
+        for (index, name) in names.enumerated() {
+            let session = AgentSession(title: "[界面样例] RAG · " + name, modePreset: index == 0 ? "auto" : "problem_solving",
+                                       createdAt: Date.now.addingTimeInterval(Double(-index * 60)))
+            session.setAutomaticTopicTags(index == 0 ? [] : ["RAG", "面试"])
+            context.insert(session)
+            if index == 0 { continue }
+            let input = AgentMessage(sessionID: session.id, role: "user", content: "带我理解 RAG，并准备面试中的独立回答。", deliveryStatus: "sent")
+            let answer = AgentMessage(sessionID: session.id, role: "assistant", content:
+                index == 2 ? "## 试着独立回答\n\n当企业文档持续更新时，你会选择微调还是 RAG？请说明判断依据与局限。\n\n需要帮助可以先要提示；提示不会计为通过。" :
+                "## 先抓住核心\n\n**RAG 是先检索，再生成。** 它把相关资料作为上下文交给模型，而不是直接改变模型参数。\n\n## 用一个例子理解\n\n用户问报销政策时，先检索公司制度，再让模型根据制度回答，并给出出处。\n\n### 容易混淆的地方\n\n检索到资料不代表答案一定正确。还要检查召回、权限、引用和回答忠实度。", deliveryStatus: "received")
+            let run = AgentRun(id: UUID(), sessionID: session.id)
+            run.status = index == 1 ? "running" : "completed"
+            run.userSummary = index == 1 ? "正在解释检索与生成的关系" : "本轮已回应"
+            run.elapsedMS = 4600
+            run.startedAt = index == 1 ? .now : nil
+            input.runID = run.id; answer.runID = run.id
+            let task = LearningTask(sessionID: session.id, inputMessageID: input.id, mode: "problem_solving", status: index == 3 ? "completed" : "awaiting_user")
+            task.conversationManaged = true
+            task.understanding = index == 3 ? "verified" : "unknown"
+            task.userSummary = index == 1 ? "正在讲解基础概念" : "等待你的独立回答"
+            task.requiredActionType = index == 2 ? "submit_answer" : nil
+            run.taskID = task.id
+            let titles = ["基础概念与边界", "检索质量与引用", "独立作答", "迁移追问"]
+            let steps: [[String: Any]] = titles.enumerated().map { i, title in
+                ["id": "step-\(i)", "title": title, "state": index == 3 ? "verified" : i < index ? "explained" : "pending",
+                 "understanding": index == 3 ? "verified" : "unknown", "message_ids": i < index ? [answer.id.uuidString] : []]
+            }
+            task.learningPlanJSON = ConversationProcessor.json(["id": task.id.uuidString, "goal": "理解并独立解释 RAG", "version": 1,
+                                                               "current_step_id": "step-\(index == 3 ? 3 : index == 2 ? 2 : 0)", "steps": steps])
+            if index == 3 {
+                task.learningOutcomeJSON = ConversationProcessor.json(["message_id": answer.id.uuidString.lowercased(), "verified": ["解释 RAG 与微调的边界", "将检索方案迁移到企业文档场景"], "explained": [], "memory_status": "not_saved"])
+                task.userSummary = "本次学习目标已完成"
+            }
+            context.insert(input); context.insert(answer); context.insert(run); context.insert(task)
         }
     }
 }
