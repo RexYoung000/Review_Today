@@ -4,6 +4,8 @@
 
 ## 参考图角色
 
+2026-09-05 新路线已实际制作两个 OneWorks 候选；记录与导出限制见 [oneworks/README.md](oneworks/README.md)。此文件保留 V8 的原始过程，不把候选写成新正式版本。
+
 - `design-explorations/review-agent/mascot-bangs-ahoge-study-v4.png`：只锁定角色身份、比例、刘海和呆毛。
 - `design-explorations/review-agent/mascot-card-expression-study-v7.png`：只使用左侧闭口抱卡版本锁定构图、默认表情和配色关系。
 

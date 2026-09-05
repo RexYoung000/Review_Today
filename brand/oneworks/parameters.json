@@ -1,0 +1,39 @@
+{
+  "tool": "https://oneworks.cloud/avatar/",
+  "date": "2026-09-05",
+  "status": "candidates_pending_Rex_selection",
+  "note": "Actual editor parameters, not a native project file. entity=cloud is the original container preset; all cloud geometry was replaced with the two custom parts below.",
+  "common": {
+    "face":"0w0","palette":"white","bg":"solid","shape":"sphere","coat":0,
+    "coatAlgorithm":"random","coatAlgorithmSeed":"v1-1csrm9j0k6qo550uhkos9","coatSeed":"v1-1csrm9j0k6qo550uhkos9",
+    "coatDensity":72,"coatJitter":68,"coatLightPatchLength":100,"coatLightPatchOffsetY":0,"coatLightPatchWidth":100,
+    "coatLightPatchShape":"face-mask","coatThickness":92,"coatSymmetry":74,"coatContrast":88,"coatBreakup":28,
+    "seed":"v1-1csrm9j0k6qo550uhkos9","mode":"move","positionX":0,"positionY":0,
+    "camera":1,"cameraBg":"#f2f0eb","cameraFrame":"rounded","eyes":1,"eyeShape":"rounded","eyeRound":100,
+    "eyeW":22,"eyeH":46,"eyeGap":42,"eyeRot":0,"eyeLeftRot":0,"eyeRightRot":0,"eyeHighlight":0,
+    "eyeHighlightColor":"#ffffff","eyeHighlightSize":24,"eyeHighlightX":-18,"eyeHighlightY":-20,"eyeHighlightOpacity":92,
+    "nose":0,"noseShape":"inverted-triangle","noseW":10,"noseH":18,"noseY":22,"noseRot":0,
+    "mouth":0,"mouthShape":"curve","mouthCurve":45,"mouthW":52,"mouthH":12,"mouthY":52,"mouthRot":0,
+    "light":0,"lightAz":-35,"lightEl":40,"lightDist":0,"shadow":0,"shadowDir":50,"shadowDist":4,"shadowOpacity":28,"shadowSoft":0,
+    "avatarShadow":1,"avatarShadowColor":"#263e3b","avatarShadowDir":132,"avatarShadowDist":6,"avatarShadowOpacity":12,"avatarShadowSoft":18,
+    "outline":1,"outlineColor":"#354440","outlineWidth":2,"outlineOpacity":80,"pixel":0,"pixelSize":8,"pixelColors":64,
+    "pixelSample":"dominant","pixelDither":"none","frameShadow":0,"frameShadowDir":90,"frameShadowDist":12,"frameShadowOpacity":20,"frameShadowSoft":24,
+    "gridDensity":100,"entity":"cloud","size":512,"animationPanel":0
+  },
+  "candidates": {
+    "paper": {
+      "title":"纸页伙伴","yaw":-0.18,"pitch":0.1,"roll":0.04,"scale":1.35,"sidebar":1,
+      "entityParts":[
+        ["crown-center","rounded",-10,-8,-22,0.72,0.86,"#61aaa1","#61aaa1","#397e78","#303a39",0,0,-7,24,0,0,0,"错页边缘",0.16,0.82,null,null,null,null,null,null],
+        ["primary","rounded",0,0,0,0.72,0.86,"#f5f3ec","#f5f3ec","#d4d9d3","#303a39",0,0,0,24,0,0,1,"纸页主形",0.16,0.82,null,null,null,null,null,null]
+      ]
+    },
+    "memory": {
+      "title":"记忆伙伴","yaw":0.12,"pitch":0.06,"roll":-0.06,"scale":1.12,"sidebar":0,
+      "entityParts":[
+        ["crown-center","sphere",48,-72,-5,0.18,0.18,"#61aaa1","#61aaa1","#397e78","#303a39",0,0,0,24,0,0,0,"记忆点",0.18,0.82,null,null,null,null,null,null],
+        ["primary","teardrop",0,14,0,0.9,0.82,"#f5f3ec","#f5f3ec","#d4d9d3","#303a39",0,0,-24,24,0,0,1,"记忆卵石",0.64,0.82,null,null,null,null,null,null]
+      ]
+    }
+  }
+}
