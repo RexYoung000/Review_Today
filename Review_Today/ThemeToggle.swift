@@ -154,15 +154,12 @@ struct AnimatedThemeToggler: View {
             appearance.toggle(screenPoint: NSEvent.mouseLocation, reduceMotion: reduceMotion)
         } label: {
             Image(systemName: appearance.isDark ? "sun.max.fill" : "moon.fill")
-                .font(.body.weight(.semibold))
+                .font(.system(size: 14))
                 .foregroundStyle(runway.ink)
-                .frame(width: 32, height: 32)
+                .frame(width: 28, height: 28)
                 .contentTransition(.symbolEffect(.replace))
-                .background(runway.card, in: Circle())
-                .overlay(Circle().strokeBorder(runway.hairline, lineWidth: 1))
-                .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(InteractionButtonStyle(padding: 2))
         .help(appearance.isDark ? String(localized: "切换到浅色") : String(localized: "切换到深色"))
         .accessibilityLabel(appearance.isDark ? String(localized: "切换到浅色") : String(localized: "切换到深色"))
         .animation(reduceMotion ? nil : Runway.spring, value: appearance.isDark)

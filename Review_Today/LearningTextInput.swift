@@ -4,6 +4,7 @@ import SwiftUI
 struct EditorInsertion {
     let id = UUID()
     let text: String
+    var templateID: String? = nil
 }
 
 /// Native text and marked text share one layout manager, inset and paragraph.
@@ -67,25 +68,24 @@ struct LearningTextInput: NSViewRepresentable {
             view.unmarkText()
             view.undoManager?.removeAllActions()
             view.string = text
+            view.resetPrefill()
         } else if view.string != text && !view.hasMarkedText() {
             view.string = text
+            view.resetPrefill()
         }
         view.needsDisplay = true
         coordinator.measure()
-        if let insertion, coordinator.lastInsertion != insertion.id, !view.hasMarkedText() {
+        if let insertion, coordinator.lastInsertion != insertion.id {
             coordinator.lastInsertion = insertion.id
-            let identity = sessionID
-            DispatchQueue.main.async { [weak view, weak coordinator] in
-                guard let view, coordinator?.sessionID == identity else { return }
-                // Native insertion honors selection/caret and registers undo.
-                view.insertText(insertion.text, replacementRange: view.selectedRange())
-                view.window?.makeFirstResponder(view)
-            }
+            view.queueInsertion(insertion)
         }
         if coordinator.focusRequest != focusRequest {
             coordinator.focusRequest = focusRequest
+            let requested = focusRequest
+            let requestedAt = NSApp.currentEvent?.timestamp ?? 0
             DispatchQueue.main.async { [weak view] in
-                guard let view else { return }
+                guard let view, coordinator.focusRequest == requested,
+                      FocusReturnPolicy.allows(since: requestedAt, current: NSApp.currentEvent) else { return }
                 view.window?.makeFirstResponder(view)
             }
         }
@@ -122,6 +122,52 @@ final class LearningEditor: NSTextView {
     var onSubmit: (() -> Void)?
     var onFocus: ((Bool) -> Void)?
     var onLayout: (() -> Void)?
+    private var prefill = QuickStartPrefill()
+    private var applyingTemplate = false
+    private var pendingInsertion: EditorInsertion?
+    private var insertionTime: TimeInterval = 0
+
+    func resetPrefill() {
+        prefill = QuickStartPrefill()
+        pendingInsertion = nil
+    }
+
+    func queueInsertion(_ insertion: EditorInsertion) {
+        pendingInsertion = insertion
+        insertionTime = NSApp.currentEvent?.timestamp ?? 0
+        scheduleInsertion()
+    }
+
+    private func scheduleInsertion() {
+        DispatchQueue.main.async { [weak self] in self?.applyPendingInsertion() }
+    }
+
+    /// Read the latest pending operation *at application time*. A stale dispatch
+    /// cannot overwrite a newer card selection or text from a different Session.
+    func applyPendingInsertion() {
+        guard !hasMarkedText(), let insertion = pendingInsertion, !applyingTemplate else { return }
+        pendingInsertion = nil
+        if let id = insertion.templateID {
+            guard let next = prefill.apply(id: id, prompt: insertion.text, to: string) else { return }
+            applyingTemplate = true
+            insertText(next, replacementRange: NSRange(location: 0, length: (string as NSString).length))
+            applyingTemplate = false
+        } else {
+            insertText(insertion.text, replacementRange: selectedRange())
+        }
+        if FocusReturnPolicy.allows(since: insertionTime, current: NSApp.currentEvent) { window?.makeFirstResponder(self) }
+    }
+
+    override func didChangeText() {
+        if !applyingTemplate { prefill.userEdited() }
+        super.didChangeText()
+        if pendingInsertion != nil { scheduleInsertion() }
+    }
+
+    override func unmarkText() {
+        super.unmarkText()
+        if pendingInsertion != nil { scheduleInsertion() }
+    }
 
     override func keyDown(with event: NSEvent) {
         if event.keyCode == 36 || event.keyCode == 76 {

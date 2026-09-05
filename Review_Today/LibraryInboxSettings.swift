@@ -44,7 +44,7 @@ struct InboxView: View {
                                     Text(task.requiredActionPrompt ?? task.userSummary).foregroundStyle(.secondary)
                                     Label("回到会话处理", systemImage: "arrow.right").font(.caption)
                                 }.frame(maxWidth: .infinity, alignment: .leading).padding(14).contentShape(Rectangle())
-                            }.buttonStyle(.plain)
+                            }.buttonStyle(InteractionButtonStyle(padding: 0))
                         }
                         ForEach(tasks, id: \.id) { task in
                             RunwayCard {

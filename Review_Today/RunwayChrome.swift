@@ -96,8 +96,6 @@ struct RunwayCard<Content: View>: View {
     var padding: CGFloat = Runway.gap
     var tinted: Bool = false
     @ViewBuilder var content: () -> Content
-    @State private var hovering = false
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.runway) private var runway
 
     var body: some View {
@@ -109,10 +107,8 @@ struct RunwayCard<Content: View>: View {
                 RoundedRectangle(cornerRadius: Runway.cardRadius, style: .continuous)
                     .strokeBorder(runway.hairline, lineWidth: 1)
             )
-            .shadow(color: runway.liftShadow, radius: hovering ? Runway.shadowBlur : 10, y: hovering ? 6 : Runway.shadowY)
-            .offset(y: hovering && !reduceMotion ? -1 : 0)
-            .animation(reduceMotion ? nil : Runway.spring, value: hovering)
-            .onHover { hovering = $0 }
+            // A surface isn't an action. Interactive children own their feedback.
+            .shadow(color: runway.liftShadow.opacity(0.45), radius: 8, y: 2)
     }
 }
 
@@ -169,27 +165,30 @@ struct StatStrip: View {
     var body: some View {
         HStack(spacing: Runway.gap) {
             ForEach(items) { item in
-                Button(action: { item.action?() }) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(item.value)
-                            .font(.system(size: 22, weight: .semibold))
-                            .foregroundStyle(runway.ink)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                        Text(item.title)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(14)
-                    .background(runway.card, in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
-                    .shadow(color: runway.liftShadow, radius: 8, y: 2)
-                }
-                .buttonStyle(.plain)
-                .disabled(item.action == nil)
+                if let action = item.action {
+                    Button(action: action) { cell(item) }
+                        .buttonStyle(InteractionButtonStyle(padding: 0))
+                } else { cell(item) }
             }
         }
+    }
+
+    private func cell(_ item: StatCell) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(item.value)
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(runway.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            Text(item.title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(runway.card, in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
+        .shadow(color: runway.liftShadow, radius: 8, y: 2)
     }
 }
 
@@ -254,7 +253,7 @@ struct GradeChip: View {
                 .background(emphasized ? runway.field : runway.card, in: Capsule())
                 .overlay(Capsule().strokeBorder(runway.hairline, lineWidth: 1))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(InteractionButtonStyle(padding: 0))
     }
 }
 
@@ -303,7 +302,7 @@ struct FilterPill: View {
                 .background(selected ? runway.card : Color.clear, in: Capsule())
                 .shadow(color: selected ? runway.liftShadow : .clear, radius: 8, y: 2)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(InteractionButtonStyle(selected: selected, padding: 0))
     }
 }
 

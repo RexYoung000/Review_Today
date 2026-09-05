@@ -141,6 +141,8 @@ struct SessionTagEditor: View {
 struct AppSidebar: View {
     @Binding var selection: SidebarItem?
     @Binding var selectedSessionID: UUID?
+    @Binding var scrollAnchor: UUID?
+    var onCollapse: () -> Void
     var inboxCount: Int
     @Environment(\.modelContext) private var modelContext
     @Environment(\.runway) private var runway
@@ -150,6 +152,9 @@ struct AppSidebar: View {
     @State private var searchText = ""
     @State private var showArchived = false
     @State private var hoveredSessionID: UUID?
+    @State private var openMenuSessionID: UUID?
+    @State private var focusedMenuSessionID: UUID?
+    @FocusState private var focusedSessionID: UUID?
     @State private var editingSessionID: UUID?
     @State private var undoSessionID: UUID?
     @State private var searchVisible = false
@@ -216,15 +221,19 @@ struct AppSidebar: View {
                 .padding(.bottom, 6)
             }
 
-            SettingsLink {
-                Label(String(localized: "设置"), systemImage: "gearshape")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(10)
-                    .contentShape(Rectangle())
-                    .foregroundStyle(Color.secondary)
+            HStack {
+                SettingsLink {
+                    HStack(spacing: 8) {
+                        Image(systemName: "gearshape").frame(width: 27)
+                        Text("设置")
+                    }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 8)
+                        .contentShape(Rectangle()).foregroundStyle(Color.secondary)
+                }.buttonStyle(InteractionButtonStyle(padding: 0))
+                AnimatedThemeToggler()
             }
-            .buttonStyle(.plain)
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
         .background { PaperSurface() }
@@ -239,39 +248,38 @@ struct AppSidebar: View {
     }
 
     private var brand: some View {
-        HStack(spacing: 10) {
-            CoachMark(pose: .idle, size: 36)
-            VStack(alignment: .leading, spacing: 1) {
-                Text("Review\nToday").font(.headline)
-                Text(String(localized: "记忆教练")).font(.caption).foregroundStyle(.secondary)
-            }
-            Spacer(minLength: 8)
-            AnimatedThemeToggler()
+        HStack(spacing: 8) {
+            CoachMark(pose: .idle, size: 27)
+            Text("Review Today").font(.system(size: 15, weight: .semibold)).lineLimit(1)
+            Spacer(minLength: 0)
+            ChromeIconButton(title: "收起侧栏", symbol: "sidebar.left", action: onCollapse)
         }
         .padding(.horizontal, 16)
-        .padding(.top, 18)
-        .padding(.bottom, 20)
+        .padding(.top, 12)
+        .padding(.bottom, 16)
     }
 
     private var sessionNavigation: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack {
+            HStack(spacing: 0) {
                 Button { sessionsExpanded.toggle() } label: {
                     Label("会话", systemImage: sessionsExpanded ? "chevron.down" : "chevron.right")
                         .font(.subheadline.weight(.medium))
-                }.buttonStyle(.plain).accessibilityValue(sessionsExpanded ? "已展开" : "已收起")
-                Spacer(minLength: 4)
-                Button { searchVisible.toggle(); if !searchVisible { searchText = "" } } label: { Image(systemName: "magnifyingglass") }
-                    .buttonStyle(.plain).help("搜索会话").accessibilityLabel("搜索会话")
-                Button { showArchived.toggle(); selectedIDs.removeAll() } label: { Image(systemName: showArchived ? "archivebox.fill" : "archivebox") }
-                    .buttonStyle(.plain).help(showArchived ? "显示进行中会话" : "显示已归档会话")
-                    .accessibilityLabel("切换归档视图").accessibilityValue(showArchived ? "已归档" : "进行中")
-                Button { multiSelect.toggle(); selectedIDs.removeAll() } label: { Image(systemName: "checklist") }
-                    .buttonStyle(.plain).help("多选会话").accessibilityLabel("多选会话")
-                Button(action: createSession) { Image(systemName: "plus") }
-                    .buttonStyle(.plain).help("新对话").accessibilityLabel("新对话")
+                }.buttonStyle(InteractionButtonStyle(padding: 4)).accessibilityValue(sessionsExpanded ? "已展开" : "已收起")
+                Spacer(minLength: 0)
+                ChromeIconButton(title: "搜索会话", symbol: "magnifyingglass", selected: searchVisible) {
+                    searchVisible.toggle(); if !searchVisible { searchText = "" }
+                }
+                ChromeIconButton(title: showArchived ? "显示进行中会话" : "显示已归档会话", symbol: "archivebox", selected: showArchived) {
+                    showArchived.toggle(); selectedIDs.removeAll()
+                }
+                ChromeIconButton(title: "多选会话", symbol: "checklist", selected: multiSelect) {
+                    multiSelect.toggle(); selectedIDs.removeAll()
+                }
+                ChromeIconButton(title: "新对话", symbol: "plus", action: createSession)
             }
-            .padding(.horizontal, 14)
+            .padding(.horizontal, 10)
+            .environment(\.defaultMinListRowHeight, 30)
 
             if searchVisible {
               TextField("搜索会话", text: $searchText)
@@ -301,8 +309,10 @@ struct AppSidebar: View {
                         .controlSize(.small).padding(.top, 18)
                     }
                 }
+                .scrollTargetLayout()
                 .padding(.horizontal, 8)
             }
+            .scrollPosition(id: $scrollAnchor, anchor: .top)
             .scrollIndicators(.automatic)
             .focusable().focusEffectDisabled().focused($sessionListFocused)
             .onKeyPress("a", phases: .down) { press in
@@ -334,49 +344,56 @@ struct AppSidebar: View {
                     rangeAnchor = session.id
                 } else { selectedSessionID = session.id; selection = .learning }
             } label: {
-                HStack(alignment: .top, spacing: 8) {
+                HStack(spacing: 7) {
                     Group {
                       if multiSelect { SelectionDot(selected: selected, delay: selectionDelays[session.id] ?? 0) }
-                      else { Image(systemName: state.symbol) }
+                      else if state.symbol == "circle" { Circle().fill(.secondary.opacity(0.4)).frame(width: 5, height: 5) }
+                      else { Image(systemName: state.symbol).help(state.label) }
                     }
                         .font(.caption).foregroundStyle(state.problem ? Color.orange : .secondary)
-                        .frame(width: 13).padding(.top, 3)
-                    VStack(alignment: .leading, spacing: 5) {
-                        HStack(spacing: 6) {
-                            Text(session.title).font(.callout.weight(.medium)).lineLimit(1)
-                            if selected { Image(systemName: "checkmark").font(.caption2) }
-                            Spacer(minLength: 4)
-                            Text(state.label).font(.caption2).foregroundStyle(state.problem ? Color.orange : .secondary).lineLimit(1)
-                        }
-                        .foregroundStyle(runway.ink)
-                        HStack(spacing: 5) {
-                            ForEach(Array(session.displayTopicTags.prefix(2)), id: \.self) { tag in
-                                Text(tag).lineLimit(1)
-                            }
-                            if session.displayTopicTags.count > 2 { Text("+\(session.displayTopicTags.count - 2)") }
-                            if !session.displayTopicTags.isEmpty { Text("·") }
-                            Text(LearningWorkspace.modeLabel(session.modePreset))
-                        }
-                        .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                        .frame(width: 13)
+                    Text(session.title).font(.callout.weight(selected ? .semibold : .regular))
+                        .foregroundStyle(runway.ink).lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    if let tag = session.displayTopicTags.first {
+                        Text(tag).font(.caption2).foregroundStyle(runway.agent)
+                            .lineLimit(1).padding(.horizontal, 6).padding(.vertical, 3)
+                            .background(runway.agent.opacity(0.1), in: Capsule())
+                            .frame(width: min(58, (tag as NSString).size(withAttributes: [.font: NSFont.systemFont(ofSize: 10)]).width + 12))
+                            .help(session.displayTopicTags.joined(separator: " · "))
                     }
-                    Spacer(minLength: 0)
                 }
                 .padding(.horizontal, 8).padding(.vertical, 9)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
-
-            if hoveredSessionID == session.id, session.status == "active" {
-                Button { archive(session) } label: { Image(systemName: "archivebox") }
-                    .buttonStyle(.plain).help("归档")
+            .buttonStyle(InteractionButtonStyle(padding: 0))
+            .focusable().focusEffectDisabled()
+            .focused($focusedSessionID, equals: session.id)
+            .help(session.title)
+            .accessibilityAddTraits(selected ? [.isSelected] : [])
+            SingleLevelMenu(title: "会话操作：\(session.title)", symbol: "ellipsis", items: [
+                .init(id: "archive", title: session.status == "active" ? "归档" : "恢复", symbol: session.status == "active" ? "archivebox" : "arrow.uturn.backward"),
+                .init(id: "tags", title: "编辑标签", symbol: "tag"),
+                .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain"),
+                .init(id: "select", title: "选择此会话", symbol: "checkmark.circle")
+            ], onPresentationChange: { openMenuSessionID = $0 ? session.id : nil },
+               onFocusChange: { focusedMenuSessionID = $0 ? session.id : nil }) { action in
+                switch action {
+                case "archive": if session.status == "active" { archive(session) } else { restore(session) }
+                case "tags": editingSessionID = session.id
+                case "memory":
+                    if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { batchError = "记忆设置未保存，请重试。" }
+                default: multiSelect = true; selectedIDs.insert(session.id)
+                }
             }
+            .frame(width: 30)
+            .opacity(hoveredSessionID == session.id || focusedSessionID == session.id ||
+                     openMenuSessionID == session.id || focusedMenuSessionID == session.id ? 1 : 0)
         }
         .padding(.trailing, 7)
-        .background(selected ? runway.field : .clear, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .overlay(alignment: .leading) {
-            if selected { Capsule().fill(runway.agent).frame(width: 3).padding(.vertical, 8) }
-        }
+        .background(selected ? runway.field : hoveredSessionID == session.id ? runway.field.opacity(0.6) : .clear,
+                    in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .onHover { hoveredSessionID = $0 ? session.id : nil }
         .onAppear { visibleRowIDs.insert(session.id) }
         .onDisappear { visibleRowIDs.remove(session.id) }
@@ -389,27 +406,28 @@ struct AppSidebar: View {
             }
             Button("选择此会话", systemImage: "checkmark.circle") { multiSelect = true; selectedIDs.insert(session.id) }
         }
-        .accessibilityLabel("\(session.title)，\(state.label)，\(LearningWorkspace.modeLabel(session.modePreset))")
     }
 
     private func sidebarRow(_ item: SidebarItem) -> some View {
-        let selected = selection == item
+        let selected = selection == item && (item != .learning || selectedSessionID == nil)
         return Button { if item == .learning { selectedSessionID = nil }; selection = item } label: {
-            HStack {
-                Label(item.title, systemImage: item.systemImage)
+            HStack(spacing: 8) {
+                Image(systemName: item.systemImage).frame(width: 27)
+                Text(item.title)
                 Spacer()
                 if item == .inbox, inboxCount > 0 {
                     Text("\(inboxCount)").font(.caption.weight(.semibold))
                         .padding(.horizontal, 7).padding(.vertical, 2).background(runway.field, in: Capsule())
                 }
             }
-            .padding(.horizontal, 10).padding(.vertical, 9)
+            .padding(.horizontal, 6).padding(.vertical, 9)
             .frame(maxWidth: .infinity, alignment: .leading)
             .foregroundStyle(selected ? runway.ink : Color.secondary)
             .background(selected ? runway.field : .clear, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(InteractionButtonStyle(selected: selected, padding: 0))
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
 
     private func createSession() {
@@ -462,7 +480,44 @@ struct AppSidebar: View {
         if let task = tasks.first(where: { $0.sessionID == session.id }), task.status == "awaiting_user" {
             return ("bubble.left", task.requiredActionType == "submit_answer" ? "等待作答" : "可继续学习", false)
         }
-        return ("checkmark.circle", "本轮已回应", false)
+        return ("circle", "", false)
+    }
+}
+
+private struct SidebarIconRail: View {
+    @Binding var selection: SidebarItem?
+    @Binding var selectedSessionID: UUID?
+    let onExpand: () -> Void
+    let onSessions: () -> Void
+    let inboxCount: Int
+    @Environment(\.runway) private var runway
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Button(action: onExpand) { CoachMark(pose: .idle, size: 27).frame(width: 38, height: 34) }
+                .buttonStyle(InteractionButtonStyle(padding: 2))
+                .help("展开侧栏").accessibilityLabel("Review Today，展开侧栏")
+                .padding(.top, 12).padding(.bottom, 8)
+            ForEach(SidebarItem.allCases) { item in
+                ChromeIconButton(title: item == .inbox && inboxCount > 0 ? "待处理，\(inboxCount) 项" : item.title,
+                                 symbol: item.systemImage,
+                                 selected: selection == item && (item != .learning || selectedSessionID == nil)) {
+                    if item == .learning { selectedSessionID = nil }
+                    selection = item
+                }
+            }
+            Divider().padding(.vertical, 6)
+            ChromeIconButton(title: "展开会话列表", symbol: "bubble.left.and.bubble.right",
+                             selected: selection == .learning && selectedSessionID != nil, action: onSessions)
+            ChromeIconButton(title: "新对话", symbol: "plus") { selectedSessionID = nil; selection = .learning }
+            Spacer(minLength: 12)
+            SettingsLink { Image(systemName: "gearshape").font(.system(size: 14)).frame(width: 28, height: 28) }
+                .buttonStyle(InteractionButtonStyle(padding: 2)).help("设置").accessibilityLabel("设置")
+            AnimatedThemeToggler().padding(.bottom, 16)
+        }
+        .padding(.horizontal, 10).frame(width: 64)
+        .background(PaperSurface())
+        .overlay(alignment: .trailing) { Rectangle().fill(runway.hairline).frame(width: 1) }
     }
 }
 
@@ -476,7 +531,9 @@ struct ContentView: View {
     @State private var selectedLearningSessionID: UUID?
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @AppStorage("reviewToday.sidebarVisible") private var sidebarVisible = true
-    @State private var automaticallyCollapsed = false
+    @State private var sidebarPolicy = SidebarVisibilityPolicy()
+    @State private var sidebarScrollAnchor: UUID?
+    @AppStorage("reviewToday.sessionsExpanded") private var sessionsExpanded = true
     @AppStorage("reviewToday.sidebarWidth") private var savedSidebarWidth = 280.0
     @State private var saveWidthTask: Task<Void, Never>?
     @State private var monitor = AgentServiceMonitor()
@@ -501,10 +558,13 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
-            AppSidebar(selection: $selection, selectedSessionID: $selectedLearningSessionID, inboxCount: inboxCount)
+            AppSidebar(selection: $selection, selectedSessionID: $selectedLearningSessionID,
+                       scrollAnchor: $sidebarScrollAnchor, onCollapse: { setSidebar(expanded: false) }, inboxCount: inboxCount)
+                .toolbar(removing: .sidebarToggle)
                 .navigationSplitViewColumnWidth(min: 220, ideal: min(340, max(220, savedSidebarWidth)), max: 340)
                 .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
-                    guard (220...340).contains(width), abs(savedSidebarWidth - width) > 1 else { return }
+                    guard columnVisibility != .detailOnly, (220...340).contains(width),
+                          abs(savedSidebarWidth - width) > 1 else { return }
                     saveWidthTask?.cancel()
                     saveWidthTask = Task {
                         try? await Task.sleep(for: .milliseconds(250))
@@ -512,7 +572,76 @@ struct ContentView: View {
                     }
                 }
         } detail: {
-            Group {
+            HStack(spacing: 0) {
+                if columnVisibility == .detailOnly {
+                    SidebarIconRail(selection: $selection, selectedSessionID: $selectedLearningSessionID,
+                                    onExpand: { setSidebar(expanded: true) },
+                                    onSessions: { sessionsExpanded = true; setSidebar(expanded: true) }, inboxCount: inboxCount)
+                }
+                detailContent.frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .background(PaperSurface())
+        }
+        .navigationSplitViewStyle(.balanced)
+        .toolbar(removing: .sidebarToggle)
+        .frame(minWidth: 760, minHeight: 620)
+        .onGeometryChange(for: Bool.self) { $0.size.width < 900 } action: { narrow in
+            sidebarPolicy.resize(narrow: narrow)
+            columnVisibility = sidebarPolicy.expanded ? .all : .detailOnly
+        }
+        .task {
+#if DEBUG
+            if M1DebugFixture.enabled { monitor.useFixturePresentation(); return }
+#endif
+            await ConversationSync().run(context: modelContext, monitor: monitor)
+        }
+        .task {
+#if DEBUG
+            if M1DebugFixture.enabled { monitor.useFixturePresentation(); return }
+#endif
+            monitor.start()
+            ReminderNotifications.request()
+            while !Task.isCancelled {
+                await HarnessProcessor.tick(context: modelContext, monitor: monitor)
+                await CaptureProcessor.tick(context: modelContext, monitor: monitor)
+                try? await Task.sleep(for: .seconds(2))
+            }
+        }
+        .onDisappear { monitor.stop() }
+        .onAppear {
+            sidebarPolicy.preferredExpanded = sidebarVisible
+            columnVisibility = sidebarPolicy.expanded ? .all : .detailOnly
+#if DEBUG
+            if M1DebugFixture.enabled {
+                if M1DebugFixture.mode == "review" {
+                    coordinator.startPreview(knowledgeID: M1DebugFixture.knowledgeID, questionID: M1DebugFixture.questionID)
+                    openWindow(id: "review")
+                } else if M1DebugFixture.mode == "retry" {
+                    coordinator.startFormal(knowledgeIDs: [M1DebugFixture.knowledgeID])
+                    openWindow(id: "review")
+                } else {
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .milliseconds(600))
+                        dismissWindow(id: "review")
+                    }
+                }
+            }
+#endif
+            UNUserNotificationCenter.current().delegate = NotificationRelay.shared
+            NotificationRelay.shared.onStart = { startDueReview() }
+            NotificationRelay.shared.onSnooze = { minutes in handleSnooze(minutes) }
+            NotificationRelay.shared.onSkip = { skipToday() }
+        }
+    }
+
+    private func setSidebar(expanded: Bool) {
+        sidebarPolicy.choose(expanded: expanded)
+        sidebarVisible = expanded
+        columnVisibility = sidebarPolicy.expanded ? .all : .detailOnly
+    }
+
+    private var detailContent: some View {
+        Group {
                 switch selection ?? .today {
                 case .today:
                     TodayView(
@@ -543,72 +672,6 @@ struct ContentView: View {
                     InboxView(onOpenSession: { id in selectedLearningSessionID = id; selection = .learning })
                 }
             }
-            .background(PaperSurface())
-        }
-        .navigationSplitViewStyle(.balanced)
-        .frame(minWidth: 760, minHeight: 620)
-        .onChange(of: columnVisibility) { _, value in
-            if value != .detailOnly { automaticallyCollapsed = false }
-            if !automaticallyCollapsed { sidebarVisible = value != .detailOnly }
-        }
-        .onGeometryChange(for: Bool.self) { $0.size.width < 900 } action: { narrow in
-            if narrow && columnVisibility != .detailOnly {
-                automaticallyCollapsed = true
-                columnVisibility = .detailOnly
-            } else if !narrow && automaticallyCollapsed {
-                automaticallyCollapsed = false
-                columnVisibility = sidebarVisible ? .all : .detailOnly
-            }
-        }
-        .task {
-#if DEBUG
-            if M1DebugFixture.enabled { monitor.useFixturePresentation(); return }
-#endif
-            await ConversationSync().run(context: modelContext, monitor: monitor)
-        }
-        .task {
-#if DEBUG
-            if M1DebugFixture.enabled { monitor.useFixturePresentation(); return }
-#endif
-            monitor.start()
-            ReminderNotifications.request()
-            while !Task.isCancelled {
-                await HarnessProcessor.tick(context: modelContext, monitor: monitor)
-                await CaptureProcessor.tick(context: modelContext, monitor: monitor)
-                try? await Task.sleep(for: .seconds(2))
-            }
-        }
-        .onDisappear {
-            monitor.stop()
-        }
-        .onAppear {
-            columnVisibility = sidebarVisible ? .all : .detailOnly
-#if DEBUG
-            if M1DebugFixture.enabled {
-                if M1DebugFixture.mode == "review" {
-                    coordinator.startPreview(
-                        knowledgeID: M1DebugFixture.knowledgeID,
-                        questionID: M1DebugFixture.questionID
-                    )
-                    openWindow(id: "review")
-                } else if M1DebugFixture.mode == "retry" {
-                    coordinator.startFormal(knowledgeIDs: [M1DebugFixture.knowledgeID])
-                    openWindow(id: "review")
-                } else {
-                    Task { @MainActor in
-                        try? await Task.sleep(for: .milliseconds(600))
-                        dismissWindow(id: "review")
-                    }
-                }
-            }
-#endif
-            UNUserNotificationCenter.current().delegate = NotificationRelay.shared
-            NotificationRelay.shared.onStart = { startDueReview() }
-            NotificationRelay.shared.onSnooze = { minutes in
-                handleSnooze(minutes)
-            }
-            NotificationRelay.shared.onSkip = { skipToday() }
-        }
     }
 
     private var inboxCount: Int {

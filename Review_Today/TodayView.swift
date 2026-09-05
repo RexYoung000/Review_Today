@@ -210,7 +210,7 @@ struct TodayView: View {
                         }
                         .contentShape(Rectangle())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(InteractionButtonStyle(padding: 4))
                     .padding(.vertical, 5)
             }
         }
@@ -306,7 +306,7 @@ struct TodayView: View {
                         Text(item.date, style: .time).font(.caption).foregroundStyle(.secondary)
                         Image(systemName: "chevron.right").font(.caption2).foregroundStyle(.secondary)
                     }.contentShape(Rectangle())
-                }.buttonStyle(.plain)
+                }.buttonStyle(InteractionButtonStyle(padding: 4))
             }
         }
     }

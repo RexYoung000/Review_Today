@@ -41,7 +41,7 @@ struct RunDetails<Content: View>: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(InteractionButtonStyle(padding: 2))
             .accessibilityLabel(title)
             .accessibilityValue(expanded ? "已展开" : "已收起")
             .help(expanded ? "收起运行详情" : "展开运行详情")

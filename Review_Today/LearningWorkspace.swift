@@ -31,6 +31,7 @@ struct LearningWorkspace: View {
     @State private var draftSettings: AppSettings?
     @State private var insertion: EditorInsertion?
     @State private var showKnowledgePicker = false
+    @State private var quickStarts = AgentQuickStart.initial
 
     private enum Layout {
         static let readingWidth: CGFloat = 820
@@ -193,16 +194,18 @@ struct LearningWorkspace: View {
                         }
                     }.frame(maxWidth: .infinity).padding(.top, 28)
                     composer(contentWidth: contentWidth)
-                    Text("快捷开始").font(.subheadline.weight(.medium)).foregroundStyle(.secondary)
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 220), spacing: 10)], spacing: 10) {
-                        ForEach(AgentQuickStart.allCases) { start in
-                            Button { insertion = EditorInsertion(text: (draft.isEmpty ? "" : "\n") + start.prompt) } label: {
-                                Label(start.title, systemImage: start.symbol)
-                                    .font(.callout.weight(.medium)).frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(16).contentShape(Rectangle())
-                                    .background(runway.card, in: RoundedRectangle(cornerRadius: 14))
-                                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(runway.hairline))
-                            }.buttonStyle(.plain).help("填入可编辑草稿，不会自动发送")
+                    HStack {
+                        Text("快捷开始").font(.subheadline.weight(.medium)).foregroundStyle(.secondary)
+                        Spacer()
+                        ChromeIconButton(title: "换一组快捷开始", symbol: "arrow.clockwise") {
+                            quickStarts = AgentQuickStart.refreshed(after: quickStarts)
+                        }
+                    }
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 200), spacing: 12)], spacing: 12) {
+                        ForEach(quickStarts) { start in
+                            QuickStartCard(start: start) {
+                                insertion = EditorInsertion(text: start.prompt, templateID: start.id)
+                            }
                         }
                     }
                 }.frame(width: contentWidth).padding(.bottom, 24).frame(maxWidth: .infinity)
@@ -620,35 +623,49 @@ struct LearningWorkspace: View {
     }
 
     private var composerControls: some View {
-        HStack(spacing: 10) {
-            Menu {
-                Button("添加文字") { focusRequest += 1 }
-                Button("粘贴公开链接") { insertion = EditorInsertion(text: NSPasteboard.general.string(forType: .string) ?? "") }
-                Button("引用已有知识卡") { showKnowledgePicker = true }
-            } label: { Image(systemName: "plus") }
-                .menuStyle(.borderlessButton).fixedSize().help("添加文字、公开链接或已有知识卡")
-            Menu {
-                Picker("学习方式", selection: Binding(get: {
-                    selectedSession?.modePreset ?? draftSettings?.agentDraftMode ?? "auto"
-                }, set: { updatePreference(mode: $0) })) {
-                    ForEach(["auto", "memory_organization", "source_learning", "topic_exploration", "problem_solving"], id: \.self) { mode in
-                        Text(Self.modeLabel(mode)).tag(mode)
-                    }
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 4) { composerMenus; contextCapacity }
+            VStack(alignment: .leading, spacing: 2) {
+                composerMenus
+                contextCapacity
+            }
+        }.font(.callout).controlSize(.small)
+    }
+
+    private var composerMenus: some View {
+        HStack(spacing: 2) {
+            SingleLevelMenu(title: "添加材料", symbol: "plus", items: [
+                .init(id: "text", title: "添加文字", symbol: "text.alignleft"),
+                .init(id: "link", title: "粘贴公开链接", symbol: "link"),
+                .init(id: "knowledge", title: "引用已有知识卡", symbol: "books.vertical")
+            ]) { id in
+                switch id {
+                case "text": focusRequest += 1
+                case "link": insertion = EditorInsertion(text: NSPasteboard.general.string(forType: .string) ?? "")
+                default: showKnowledgePicker = true
                 }
-            } label: {
-                Label(Self.modeLabel(selectedSession?.modePreset ?? draftSettings?.agentDraftMode ?? "auto"), systemImage: "arrow.triangle.branch")
-            }.menuStyle(.borderlessButton).fixedSize().help("学习方式")
-            Menu {
-                Picker("思考强度", selection: Binding(get: {
-                    selectedSession?.thinkingStrength ?? draftSettings?.agentDraftThinking ?? "smart"
-                }, set: { updatePreference(strength: $0) })) {
-                    Text("智能").tag("smart")
-                    Text("深入思考").tag("deep")
-                }
-            } label: {
-                let deep = (selectedSession?.thinkingStrength ?? draftSettings?.agentDraftThinking) == "deep"
-                Label(deep ? "深入思考" : "智能", systemImage: deep ? "sparkles" : "bolt")
-            }.menuStyle(.borderlessButton).fixedSize().help("思考强度会持续保留，直到你主动更改")
+            }
+            SingleLevelMenu(title: "学习方式", symbol: "arrow.triangle.branch",
+                label: Self.modeLabel(selectedSession?.modePreset ?? draftSettings?.agentDraftMode ?? "auto"),
+                selectedID: selectedSession?.modePreset ?? draftSettings?.agentDraftMode ?? "auto",
+                items: [
+                    .init(id: "auto", title: "Auto", symbol: "sparkles", detail: "根据你的目标，选择合适的学习方式。"),
+                    .init(id: "memory_organization", title: "知识整理", symbol: "point.3.connected.trianglepath.dotted", detail: "梳理知识和关系，是否入库由你决定。"),
+                    .init(id: "source_learning", title: "资料学习", symbol: "doc.text", detail: "分段讲解资料，随时追问和检查理解。"),
+                    .init(id: "topic_exploration", title: "主题探索", symbol: "safari", detail: "明确方向，建立学习地图并寻找材料。"),
+                    .init(id: "problem_solving", title: "问题攻克", symbol: "bubble.left.and.text.bubble.right", detail: "先理解答案，再独立作答和追问练习。")
+                ], onPointerSelection: { focusRequest += 1 }) { updatePreference(mode: $0) }
+            let deep = (selectedSession?.thinkingStrength ?? draftSettings?.agentDraftThinking) == "deep"
+            SingleLevelMenu(title: "思考强度", symbol: deep ? "sparkles" : "bolt",
+                label: deep ? "深入思考" : "智能", selectedID: deep ? "deep" : "smart",
+                items: [
+                    .init(id: "smart", title: "智能", symbol: "bolt", detail: "适合日常问答与学习，响应更轻快。"),
+                    .init(id: "deep", title: "深入思考", symbol: "sparkles", detail: "复杂问题展开分析，可能需要更久。")
+                ], onPointerSelection: { focusRequest += 1 }) { updatePreference(strength: $0) }
+        }.fixedSize(horizontal: true, vertical: false)
+    }
+
+    @ViewBuilder private var contextCapacity: some View {
             if let capacity = ConversationProcessor.object(selectedSession?.contextCapacityJSON),
                let ratio = capacity["ratio"] as? Double, let budget = capacity["input_budget"] as? Int,
                let used = capacity["input_tokens"] as? Int {
@@ -660,7 +677,6 @@ struct LearningWorkspace: View {
                         : "最近一次请求约 \(used) token。尚未取得已验证的模型窗口容量，暂不显示百分比。本地请求上限为 \(budget) token，不代表模型的实际窗口。")
                     .accessibilityLabel(knownWindow ? "最近请求上下文容量约 \(Int((ratio * 100).rounded()))%" : "最近请求上下文约 \(used) token，窗口容量未知")
             }
-        }.font(.caption).controlSize(.small)
     }
 
     private func updatePreference(mode: String? = nil, strength: String? = nil) {

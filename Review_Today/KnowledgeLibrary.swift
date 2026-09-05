@@ -225,6 +225,7 @@ private struct SummaryChip: View {
     var title: String
     var action: () -> Void
     @State private var hovering = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.runway) private var runway
 
     var body: some View {
@@ -247,13 +248,13 @@ private struct SummaryChip: View {
             .background(runway.card, in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous)
-                    .strokeBorder(runway.hairline, lineWidth: 1)
+                    .strokeBorder(hovering ? runway.agent.opacity(0.45) : runway.hairline, lineWidth: 1)
             )
-            .shadow(color: runway.liftShadow, radius: hovering ? Runway.shadowBlur : 10, y: hovering ? 6 : Runway.shadowY)
+            .shadow(color: runway.liftShadow.opacity(0.45), radius: 8, y: 2)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(InteractionButtonStyle(padding: 0))
         .onHover { hovering = $0 }
-        .animation(Runway.spring, value: hovering)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: hovering)
     }
 }
 
@@ -629,7 +630,8 @@ private struct KnowledgeDeckOverlay: View {
                     .background(runway.card.opacity(0.94), in: Circle())
                     .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(InteractionButtonStyle(padding: 0))
+            .help("关闭知识详情").accessibilityLabel("关闭知识详情")
             .keyboardShortcut(.cancelAction)
             .padding(20)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
