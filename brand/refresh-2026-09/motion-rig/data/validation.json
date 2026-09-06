@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "errors": [],
+  "bones": 11,
+  "vertices": 193,
+  "triangles": 336,
+  "weighted": true,
+  "frames": 135,
+  "duration": 5.6,
+  "runtime": {
+    "parser": "official spine-core 4.2.120",
+    "sampledFrames": 271,
+    "minTriangleArea": 46.19000349409498,
+    "maxCoordinate": 146.9442901611328,
+    "endpointError": 0,
+    "duration": 5.599999904632568
+  }
+}

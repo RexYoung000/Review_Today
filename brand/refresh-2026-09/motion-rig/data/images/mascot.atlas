@@ -1,0 +1,27 @@
+body.png
+size: 1254,1254
+filter: Linear,Linear
+pma: false
+body
+  bounds: 0,0,1254,1254
+
+eye.png
+size: 144,80
+filter: Linear,Linear
+pma: false
+eye
+  bounds: 0,0,144,80
+
+pupil.png
+size: 48,48
+filter: Linear,Linear
+pma: false
+pupil
+  bounds: 0,0,48,48
+
+fragment.png
+size: 144,120
+filter: Linear,Linear
+pma: false
+fragment
+  bounds: 0,0,144,120

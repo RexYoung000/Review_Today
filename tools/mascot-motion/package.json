@@ -1,0 +1,20 @@
+{
+  "name": "review-today-mascot-motion",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node src/build.mjs",
+    "start": "node src/serve.mjs",
+    "mcp": "node src/mcp.mjs",
+    "test": "node --test test/*.test.mjs",
+    "call": "node src/call.mjs"
+  },
+  "dependencies": {
+    "@esotericsoftware/spine-canvas": "4.2.120",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@napi-rs/canvas": "1.0.8",
+    "sharp": "0.35.4",
+    "zod": "3.25.76"
+  }
+}

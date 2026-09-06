@@ -13,4 +13,7 @@ DerivedData/
 *.xcuserstate
 *.moved-aside
 .cursor/
+tools/mascot-motion/node_modules/
+tools/mascot-motion/.work/
+brand/refresh-2026-09/motion-rig/vendor/
 /output/

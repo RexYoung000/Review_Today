@@ -1,0 +1,18 @@
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
+import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
+import {z} from 'zod';
+import {current,author,exportProject} from './project.mjs';
+import {recipeSchema,validate} from './rig.mjs';
+import {verifyRuntime} from './runtime.mjs';
+import {renderFrame,renderClip} from './render.mjs';
+const server=new McpServer({name:'review-today-mascot-motion',version:'0.1.0'});
+const text=data=>({content:[{type:'text',text:JSON.stringify(data,null,2)}]});
+const guard=fn=>async args=>{try{return await fn(args);}catch(e){return {isError:true,content:[{type:'text',text:e.message}]};}};
+server.registerTool('rig_inspect',{description:'Inspect the current Review Today 2D rig and recipe. Scope: this one mascot, Spine 4.2. No arbitrary file or code execution.',inputSchema:{}},guard(async()=>{const p=await current();return text({revision:p.revision,recipe:p.recipe,bones:p.json.bones,validation:validate(p.json),runtime:await verifyRuntime(p.json),editorImport:'unverified'});}));
+server.registerTool('weights_bind',{description:'Recompute normalized skin weights for the three body zones. Smaller softness = more local influence. Saves a new revision and validates runtime geometry.',inputSchema:{softness:recipeSchema.shape.softness}},guard(async args=>text(await author(args))));
+server.registerTool('motion_author',{description:'Author weighted local deformation, gaze/blink, bone motion and fragment separation/reassembly. Parameters are bounded. Creates a revision; leaves baseline untouched.',inputSchema:recipeSchema.partial().shape},guard(async args=>text(await author(args))));
+server.registerTool('preview_frame',{description:'Render an actual frame through official Spine runtime. Returns an image for AI visual inspection, not merely a URL.',inputSchema:{time:z.number().min(0).max(9),size:z.number().int().min(240).max(960).default(640),dark:z.boolean().default(false)}},guard(async({time,size,dark})=>{const p=await current();if(time>p.recipe.duration)throw Error('Time exceeds animation duration');const png=await renderFrame(p.json,time,size,dark);return {content:[{type:'image',mimeType:'image/png',data:png.toString('base64')}]};}));
+server.registerTool('preview_clip',{description:'Render this animation to a local MP4 using official Spine runtime and installed ffmpeg. Does not open microphones or upload data.',inputSchema:{}},guard(async()=>text(await renderClip((await current()).json))));
+server.registerTool('preview_status',{description:'Return the local preview URL and current revision. Start npm start separately; this tool does not claim the server is running.',inputSchema:{}},guard(async()=>{const url=`http://127.0.0.1:${process.env.MASCOT_PORT??8769}/`;let reachable=false;try{reachable=(await fetch(url+'api/status',{signal:AbortSignal.timeout(800)})).ok;}catch{}return text({url,reachable,revision:(await current()).revision});}));
+server.registerTool('motion_export',{description:'Export a validated editable Spine 4.2 JSON, atlas, images and recipe into an isolated new export directory. No .spine editor project is claimed.',inputSchema:{name:z.string().regex(/^[a-z0-9][a-z0-9_-]{0,47}$/).default('recall')}},guard(async({name})=>text(await exportProject(name))));
+await server.connect(new StdioServerTransport());
