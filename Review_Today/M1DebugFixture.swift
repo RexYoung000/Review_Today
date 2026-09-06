@@ -13,7 +13,7 @@ enum M1DebugFixture {
 
     static var enabled: Bool {
         guard let mode else { return false }
-        return ["1", "invalid", "review"].contains(mode)
+        return ["1", "invalid", "review", "retry"].contains(mode)
     }
 
     static func makeContainer() throws -> ModelContainer {
@@ -88,6 +88,27 @@ enum M1DebugFixture {
         context.insert(question)
         context.insert(task)
         context.insert(FsrsState(knowledgeId: item.id, dueAt: item.dueAt))
+        if mode == "retry" {
+            let previousSession = ReviewSession(
+                mode: "formal",
+                snapshotJSON: item.id.uuidString
+            )
+            let previousAttempt = ReviewAttempt(
+                sessionId: previousSession.id,
+                knowledgeId: item.id,
+                knowledgeVersion: item.version,
+                questionId: question.id,
+                mode: "formal"
+            )
+            previousAttempt.answerText = "植物借助光能，用二氧化碳和水合成有机物，同时释放氧气。"
+            previousAttempt.agentGrade = "good"
+            previousAttempt.pendingGrade = "good"
+            previousAttempt.reviewState = "retryable_failed"
+            previousAttempt.reviewErrorCode = "RT.REVIEW.ACK_FAILED"
+            previousAttempt.reviewUserStatus = "还没有计入复习，可以重试"
+            context.insert(previousSession)
+            context.insert(previousAttempt)
+        }
         context.insert(AppSettings())
         try context.save()
     }

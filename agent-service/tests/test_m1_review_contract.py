@@ -122,6 +122,10 @@ class M1ReviewHTTPContractTests(unittest.TestCase):
                 f"/v1/review/attempts/{request['attempt_id']}/ack",
                 json={"attempt_id": request["attempt_id"]},
             )
+            duplicate_ack = self.client.post(
+                f"/v1/review/attempts/{request['attempt_id']}/ack",
+                json={"attempt_id": request["attempt_id"]},
+            )
             after_ack = self.client.post("/v1/review/grade", json=request)
 
         self.assertEqual(grade.call_count, 1)
@@ -129,6 +133,7 @@ class M1ReviewHTTPContractTests(unittest.TestCase):
         self.assertEqual(first.json(), after_ack.json())
         self.assertEqual(first.json()["attempt_id"], request["attempt_id"])
         self.assertEqual(ack.json(), {"attempt_id": request["attempt_id"], "status": "acked"})
+        self.assertEqual(duplicate_ack.json(), ack.json())
 
     def test_ack_rejects_mismatch_and_attempt_without_a_valid_grade(self) -> None:
         attempt_id = self.correct["attempt_id"]

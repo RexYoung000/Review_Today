@@ -118,7 +118,25 @@ M1.4 Mac 客户端可以直接依赖以下服务字段：
 - 答题页在 `grading` 期间锁住提交入口；评分失败保留当前题、原始回答和同一个 `attemptId`，允许修改原回答后重试，不推进下一题，也不写入 `agentGrade` 或 `effectiveGrade`。
 - 评分成功只展示 `again`、`hard`、`good`；客户端不得把服务契约之外的等级当作有效结果。
 - 采用判断或用户改判后，正式复习才更新对应 `FsrsState`；`preview` 只记录预览尝试和结果，不更新 FSRS、不进入今天正式复习结果。
-- 同一题的重复点击不能在等待期间创建第二个 `ReviewAttempt`；评分失败重试复用原尝试记录。正式复习 ACK 失败后的保持、补偿和恢复由 #15 继续收口。
+- 同一题的重复点击不能在等待期间创建第二个 `ReviewAttempt`；评分失败重试复用原尝试记录。正式复习 ACK 失败后的保持、补偿和恢复已由 #15 收口。
+
+### 3.6 M1 评分失败安全与重试契约
+
+正式复习的完成顺序固定为：
+
+1. 用户选择 `again`、`hard` 或 `good`，本地保存 `pendingGrade` 和 `ack_pending` 状态；
+2. 服务 ACK 成功；
+3. 本地更新 `FsrsState`、`effectiveGrade`、`acked` 和完成状态，并成功保存；
+4. 保存成功后才进入下一题或总结页。
+
+失败状态必须满足：
+
+- 评分、网络或结构错误：`agentGrade` 与 `effectiveGrade` 为空或保持未完成，原始 `answerText` 和同一个 `attemptId` 可继续重试；
+- ACK 失败：当前题停在可恢复状态，`pendingGrade` 保留，`effectiveGrade` 不写入，FSRS 不变化，不进入下一题；
+- 本地保存失败：不显示已掌握或已计入，保留当前题和可重试的本地状态；
+- 服务端错误码或本地归因码写入 `ReviewAttempt.reviewErrorCode`，用户看到的是“还没有计入复习”，不能误解为回答错误；
+- ACK 重试使用同一个 `attemptId`，服务端重复 ACK 保持幂等，不重复产生业务结果。
+
 
 ## 4. 允许变化与失败边界
 

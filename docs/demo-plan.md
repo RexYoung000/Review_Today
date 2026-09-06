@@ -135,7 +135,7 @@ REVIEW_TODAY_M1_UI_FIXTURE=1 \
   /tmp/ReviewTodayM1/Build/Products/Debug/Review_Today.app/Contents/MacOS/Review_Today
 ```
 
-App 会直接打开固定光合作用知识卡，用于检查标题、详解、主问题、四个判断关键点、常见误解、来源证据和“试一题”入口。将环境变量值改为 `invalid`，可检查评分规格缺失时的禁用按钮与明确原因；改为 `review`，会使用固定 knowledge ID 与主问题 ID 打开真实试题窗口。该入口只在 Debug 编译中存在，不能替代真实采集和 Rex 最终体验验收。
+App 会直接打开固定光合作用知识卡，用于检查标题、详解、主问题、四个判断关键点、常见误解、来源证据和“试一题”入口。将环境变量值改为 `invalid`，可检查评分规格缺失时的禁用按钮与明确原因；改为 `review`，会使用固定 knowledge ID 与主问题 ID 打开真实试题窗口；改为 `retry`，会恢复一条预置的正式复习 ACK 失败尝试，检查原回答、Agent 判断和“重试计入复习”入口。该入口只在 Debug 编译中存在，不能替代真实采集和 Rex 最终体验验收。
 
 ## 4. 后续里程碑建议
 
