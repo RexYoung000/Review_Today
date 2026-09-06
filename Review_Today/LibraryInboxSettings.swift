@@ -1,19 +1,33 @@
 import SwiftData
 import SwiftUI
 
+enum LearningDecisionInbox {
+    static func includes(_ task: LearningTask, sessions: [AgentSession]) -> Bool {
+        sessions.contains { $0.id == task.sessionID && $0.status == "active" } &&
+        (task.status == "needs_attention" || ["choose_sources", "choose_question", "confirm_memory"].contains(task.requiredActionType ?? ""))
+    }
+}
+
 struct InboxView: View {
+    var onOpenSession: (UUID) -> Void = { _ in }
     @Environment(\.modelContext) private var modelContext
     @Query(
         filter: #Predicate<CaptureTask> { $0.status == "needs_attention" || $0.status == "retryable_failed" },
         sort: \CaptureTask.updatedAt
     )
     private var tasks: [CaptureTask]
+    @Query private var learningTasks: [LearningTask]
+    @Query private var sessions: [AgentSession]
     @State private var pasteText = ""
     @State private var urlText = ""
 
+    private var decisions: [LearningTask] {
+        learningTasks.filter { LearningDecisionInbox.includes($0, sessions: sessions) }.sorted { $0.updatedAt > $1.updatedAt }
+    }
+
     var body: some View {
         Group {
-            if tasks.isEmpty {
+            if tasks.isEmpty && decisions.isEmpty {
                 VStack(spacing: 14) {
                     CoachMark(pose: .idle, size: 64)
                     Text(String(localized: "没有需要处理的内容。"))
@@ -23,6 +37,15 @@ struct InboxView: View {
             } else {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 16) {
+                        ForEach(decisions, id: \.id) { task in
+                            Button { onOpenSession(task.sessionID) } label: {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text(sessions.first { $0.id == task.sessionID }?.title ?? "学习会话").font(.headline)
+                                    Text(task.requiredActionPrompt ?? task.userSummary).foregroundStyle(.secondary)
+                                    Label("回到会话处理", systemImage: "arrow.right").font(.caption)
+                                }.frame(maxWidth: .infinity, alignment: .leading).padding(14).contentShape(Rectangle())
+                            }.buttonStyle(InteractionButtonStyle(padding: 0))
+                        }
                         ForEach(tasks, id: \.id) { task in
                             RunwayCard {
                                 inboxRow(task)
@@ -48,8 +71,6 @@ struct InboxView: View {
             Text(task.source?.rawText.prefix(160) ?? "")
                 .foregroundStyle(.secondary)
             if let code = task.errorCode, ["RT.CAPTURE.CONFLICT", "RT.CAPTURE.VERIFY_INSUFFICIENT"].contains(code) {
-                Text(code)
-                    .font(.caption)
                 actionRow {
                     Button(String(localized: "采用限定版本")) { Task { await act(task, "adopt_limited") } }
                     Button(String(localized: "改为来源观点")) { Task { await act(task, "as_source_view") } }
@@ -93,7 +114,7 @@ struct InboxView: View {
                     deleteButton(task)
                 }
             } else {
-                Text(task.errorCode ?? task.userStatus)
+                Text("输入和已有进度已保留，可以重试这次整理。")
                     .foregroundStyle(.secondary)
                 actionRow {
                     Button(String(localized: "重新整理")) { Task { await act(task, "reprocess") } }

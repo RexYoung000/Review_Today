@@ -236,7 +236,7 @@ enum CaptureProcessor {
     }
 
     @MainActor
-    private static func insertKnowledge(
+    static func insertKnowledge(
         _ payload: AgentAPI.ExtractPayload,
         into source: Source,
         context: ModelContext

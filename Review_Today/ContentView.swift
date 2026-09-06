@@ -4,6 +4,7 @@ import UserNotifications
 
 enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case today
+    case learning
     case library
     case inbox
 
@@ -12,6 +13,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .today: String(localized: "今天")
+        case .learning: "Agent"
         case .library: String(localized: "知识库")
         case .inbox: String(localized: "待处理")
         }
@@ -20,85 +22,501 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     var systemImage: String {
         switch self {
         case .today: "sun.max"
+        case .learning: "terminal"
         case .library: "books.vertical"
         case .inbox: "tray"
         }
     }
 }
 
+@MainActor
+enum LearningSessionActions {
+    @discardableResult
+    static func archive(_ session: AgentSession, context: ModelContext) -> Bool {
+        let sid = session.id
+        let runs = (try? context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }))) ?? []
+        for run in runs where ["running", "accepted", "queued", "adjusting", "stopping"].contains(run.status) {
+            if let started = run.startedAt { run.elapsedMS = max(0, Int(Date.now.timeIntervalSince(started) * 1000)) }
+            run.startedAt = nil
+            run.status = "interrupted"
+            run.revision += 1
+            run.userSummary = "已停止；会话已归档"
+        }
+        let messages = (try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == sid }))) ?? []
+        for message in messages {
+            if message.responseState == "streaming" { message.responseState = "interrupted" }
+            if message.deliveryStatus == "local" { message.deliveryStatus = "held" }
+        }
+        for control in (try? context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { $0.sessionID == sid && !$0.sent }))) ?? [] {
+            control.sent = true // superseded by the atomic Session lifecycle action
+            control.lastError = "RT.SESSION.ARCHIVED"
+        }
+        session.runPaused = true
+        session.pendingOperationJSON = nil
+        appendLifecycle("archive", session: session)
+        session.status = "archived"
+        session.archivedAt = .now
+        session.updatedAt = .now
+        do { try context.save(); ConversationSync.wake(); return true }
+        catch { context.rollback(); return false }
+    }
+
+    @discardableResult
+    static func restore(_ session: AgentSession, context: ModelContext) -> Bool {
+        appendLifecycle("restore", session: session)
+        session.status = "active"
+        session.runPaused = true
+        session.archivedAt = nil
+        session.updatedAt = .now
+        do { try context.save(); ConversationSync.wake(); return true }
+        catch { context.rollback(); return false }
+    }
+
+    private static func appendLifecycle(_ action: String, session: AgentSession) {
+        session.lifecycleRevision += 1
+        var actions = (session.lifecycleActionsJSON.data(using: .utf8).flatMap { try? JSONSerialization.jsonObject(with: $0) } as? [[String: Any]]) ?? []
+        actions.append(["action_id": UUID().uuidString.lowercased(), "action": action, "lifecycle_revision": session.lifecycleRevision])
+        session.lifecycleActionsJSON = ConversationProcessor.json(actions)
+    }
+}
+
+struct SessionTagEditor: View {
+    @Bindable var session: AgentSession
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @Query private var references: [KnowledgeReference]
+    @Query private var knowledge: [Knowledge]
+    @State private var tagsText: String
+
+    init(session: AgentSession) {
+        self.session = session
+        _tagsText = State(initialValue: session.displayTopicTags.joined(separator: "，"))
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("编辑会话标签").font(.headline)
+            TextField("用逗号分隔，最多 5 个", text: $tagsText)
+                .textFieldStyle(.roundedBorder)
+            Text("人工标签会覆盖自动标签；Agent 不会静默改回。")
+                .font(.caption).foregroundStyle(.secondary)
+            if !knowledgeTags.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("关联知识标签 · 只读").font(.caption.weight(.semibold))
+                    Text(knowledgeTags.joined(separator: " · "))
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            HStack {
+                Button("恢复自动标签") {
+                    session.restoreAutomaticTopicTags()
+                    tagsText = session.automaticTopicTags.joined(separator: "，")
+                    try? modelContext.save()
+                }
+                .disabled(session.manualTopicTags == nil)
+                Spacer()
+                Button("取消") { dismiss() }
+                Button("保存") {
+                    session.setManualTopicTags(parsedTags)
+                    try? modelContext.save()
+                    dismiss()
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding(20)
+        .frame(width: 380)
+    }
+
+    private var parsedTags: [String] {
+        tagsText.components(separatedBy: CharacterSet(charactersIn: "，,\n"))
+    }
+
+    private var knowledgeTags: [String] {
+        let ids = Set(references.filter { $0.sessionID == session.id }.map(\.knowledgeID))
+        return Array(Set(knowledge.filter { ids.contains($0.id) }.map(\.theme).filter { !$0.isEmpty })).sorted()
+    }
+}
+
 struct AppSidebar: View {
     @Binding var selection: SidebarItem?
+    @Binding var selectedSessionID: UUID?
+    @Binding var scrollAnchor: UUID?
+    var onCollapse: () -> Void
     var inboxCount: Int
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.runway) private var runway
+    @Query(sort: \AgentSession.updatedAt, order: .reverse) private var sessions: [AgentSession]
+    @Query(sort: \AgentRun.updatedAt, order: .reverse) private var runs: [AgentRun]
+    @Query(sort: \LearningTask.updatedAt, order: .reverse) private var tasks: [LearningTask]
+    @State private var searchText = ""
+    @State private var showArchived = false
+    @State private var hoveredSessionID: UUID?
+    @State private var openMenuSessionID: UUID?
+    @State private var focusedMenuSessionID: UUID?
+    @FocusState private var focusedSessionID: UUID?
+    @State private var editingSessionID: UUID?
+    @State private var undoSessionID: UUID?
+    @State private var searchVisible = false
+    @State private var multiSelect = false
+    @State private var selectedIDs = Set<UUID>()
+    @State private var rangeAnchor: UUID?
+    @State private var batchError: String?
+    @State private var visibleRowIDs = Set<UUID>()
+    @State private var selectionDelays: [UUID: Double] = [:]
+    @State private var undoBatchIDs = Set<UUID>()
+    @FocusState private var sessionListFocused: Bool
+    @AppStorage("reviewToday.sessionsExpanded") private var sessionsExpanded = true
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var visibleSessions: [AgentSession] {
+        sessions.filter { session in
+            let statusMatch = showArchived ? session.status == "archived" : session.status == "active"
+            let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+            return statusMatch && (query.isEmpty || session.title.localizedCaseInsensitiveContains(query) ||
+                                   session.displayTopicTags.contains(where: { $0.localizedCaseInsensitiveContains(query) }))
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 10) {
-                CoachMark(pose: .idle, size: 36)
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("Review Today")
-                        .font(.headline)
-                    Text(String(localized: "记忆教练"))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            brand
+            VStack(spacing: 4) {
+                ForEach(SidebarItem.allCases) { item in sidebarRow(item) }
+            }
+            .padding(.horizontal, 10)
+
+            Divider().padding(.vertical, 12)
+            sessionNavigation
+
+            if !undoBatchIDs.isEmpty {
+                HStack {
+                    Text("已归档 \(undoBatchIDs.count) 个会话")
+                    Spacer()
+                    Button("撤销") {
+                        undoBatchIDs = Set(undoBatchIDs.filter { id in
+                            guard let session = sessions.first(where: { $0.id == id }), session.status == "archived" else { return false }
+                            return !LearningSessionActions.restore(session, context: modelContext)
+                        })
+                    }.buttonStyle(.borderless)
+                }.font(.caption).padding(10)
+            }
+
+            if let undoSessionID, let session = sessions.first(where: { $0.id == undoSessionID }) {
+                HStack(spacing: 8) {
+                    Text("已归档").font(.caption)
+                    Spacer()
+                    Button("撤销") {
+                        if LearningSessionActions.restore(session, context: modelContext) {
+                            showArchived = false
+                            selectedSessionID = session.id
+                            self.undoSessionID = nil
+                        }
+                    }
+                    .buttonStyle(.borderless)
                 }
-                Spacer(minLength: 8)
+                .padding(10)
+                .background(runway.field, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .padding(.horizontal, 10)
+                .padding(.bottom, 6)
+            }
+
+            HStack {
+                SettingsLink {
+                    HStack(spacing: 8) {
+                        Image(systemName: "gearshape").frame(width: 27)
+                        Text("设置")
+                    }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 8)
+                        .contentShape(Rectangle()).foregroundStyle(Color.secondary)
+                }.buttonStyle(InteractionButtonStyle(padding: 0))
                 AnimatedThemeToggler()
             }
             .padding(.horizontal, 16)
-            .padding(.top, 18)
-            .padding(.bottom, 20)
-
-            VStack(spacing: 4) {
-                ForEach(SidebarItem.allCases) { item in
-                    sidebarRow(item)
-                }
-            }
-            .padding(.horizontal, 10)
-
-            Spacer()
-
-            SettingsLink {
-                Label(String(localized: "设置"), systemImage: "gearshape")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(10)
-                    .contentShape(Rectangle())
-                    .foregroundStyle(Color.secondary)
-            }
-            .buttonStyle(.plain)
-            .padding(.horizontal, 10)
             .padding(.bottom, 16)
         }
-        .background {
-            PaperSurface()
+        .background { PaperSurface() }
+        .sheet(isPresented: Binding(
+            get: { editingSessionID != nil },
+            set: { if !$0 { editingSessionID = nil } }
+        )) {
+            if let id = editingSessionID, let session = sessions.first(where: { $0.id == id }) {
+                SessionTagEditor(session: session)
+            }
+        }
+    }
+
+    private var brand: some View {
+        HStack(spacing: 8) {
+            CoachMark(pose: .idle, size: 27)
+            Text("Review Today").font(.system(size: 15, weight: .semibold)).lineLimit(1)
+            Spacer(minLength: 0)
+            ChromeIconButton(title: "收起侧栏", symbol: "sidebar.left", action: onCollapse)
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 12)
+        .padding(.bottom, 16)
+    }
+
+    private var sessionNavigation: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 0) {
+                Button { sessionsExpanded.toggle() } label: {
+                    Label("会话", systemImage: sessionsExpanded ? "chevron.down" : "chevron.right")
+                        .font(.subheadline.weight(.medium))
+                }.buttonStyle(InteractionButtonStyle(padding: 4)).accessibilityValue(sessionsExpanded ? "已展开" : "已收起")
+                Spacer(minLength: 0)
+                ChromeIconButton(title: "搜索会话", symbol: "magnifyingglass", selected: searchVisible) {
+                    searchVisible.toggle(); if !searchVisible { searchText = "" }
+                }
+                ChromeIconButton(title: showArchived ? "显示进行中会话" : "显示已归档会话", symbol: "archivebox", selected: showArchived) {
+                    showArchived.toggle(); selectedIDs.removeAll()
+                }
+                ChromeIconButton(title: "多选会话", symbol: "checklist", selected: multiSelect) {
+                    multiSelect.toggle(); selectedIDs.removeAll()
+                }
+                ChromeIconButton(title: "新对话", symbol: "plus", action: createSession)
+            }
+            .padding(.horizontal, 10)
+            .environment(\.defaultMinListRowHeight, 30)
+
+            if searchVisible {
+              TextField("搜索会话", text: $searchText)
+                .textFieldStyle(.roundedBorder)
+                .padding(.horizontal, 10)
+            }
+            if showArchived { Text("已归档").font(.caption).foregroundStyle(.secondary).padding(.horizontal, 14) }
+            if multiSelect {
+                HStack(spacing: 8) {
+                    Button(selectedIDs.count == visibleSessions.count ? "取消全选" : "全选") { selectAll() }
+                    Text("\(selectedIDs.count)").monospacedDigit()
+                    Spacer(minLength: 0)
+                    Button(showArchived ? "恢复" : "归档") { batchArchive() }.disabled(selectedIDs.isEmpty)
+                    Button { multiSelect = false; selectedIDs.removeAll() } label: { Image(systemName: "xmark") }.help("退出多选")
+                }.font(.caption).buttonStyle(.borderless).padding(.horizontal, 12)
+            }
+            if let batchError { Text(batchError).font(.caption).foregroundStyle(.orange).padding(.horizontal, 12) }
+            if sessionsExpanded {
+            ScrollView {
+                LazyVStack(spacing: 4) {
+                    ForEach(visibleSessions, id: \.id) { session in sessionRow(session) }
+                    if visibleSessions.isEmpty {
+                        ContentUnavailableView(
+                            showArchived ? "没有归档会话" : "开始一个学习会话",
+                            systemImage: showArchived ? "archivebox" : "bubble.left.and.bubble.right"
+                        )
+                        .controlSize(.small).padding(.top, 18)
+                    }
+                }
+                .scrollTargetLayout()
+                .padding(.horizontal, 8)
+            }
+            .scrollPosition(id: $scrollAnchor, anchor: .top)
+            .scrollIndicators(.automatic)
+            .focusable().focusEffectDisabled().focused($sessionListFocused)
+            .onKeyPress("a", phases: .down) { press in
+                guard multiSelect && press.modifiers.contains(.command) else { return .ignored }
+                selectAll(); return .handled
+            }
+            .onKeyPress(.escape) {
+                guard multiSelect else { return .ignored }
+                multiSelect = false; selectedIDs.removeAll(); return .handled
+            }
+            } else { Spacer(minLength: 0) }
+        }
+        .frame(maxHeight: .infinity)
+    }
+
+    private func sessionRow(_ session: AgentSession) -> some View {
+        let selected = multiSelect ? selectedIDs.contains(session.id) : selectedSessionID == session.id && selection == .learning
+        let state = sessionState(session)
+        return HStack(spacing: 4) {
+            Button {
+                if multiSelect || NSEvent.modifierFlags.contains(.command) || NSEvent.modifierFlags.contains(.shift) {
+                    multiSelect = true
+                    sessionListFocused = true
+                    selectionDelays = [:]
+                    if NSEvent.modifierFlags.contains(.shift), let anchor = rangeAnchor,
+                       let a = visibleSessions.firstIndex(where: { $0.id == anchor }), let b = visibleSessions.firstIndex(where: { $0.id == session.id }) {
+                        selectedIDs.formUnion(visibleSessions[min(a,b)...max(a,b)].map(\.id))
+                    } else if !selectedIDs.insert(session.id).inserted { selectedIDs.remove(session.id) }
+                    rangeAnchor = session.id
+                } else { selectedSessionID = session.id; selection = .learning }
+            } label: {
+                HStack(spacing: 7) {
+                    Group {
+                      if multiSelect { SelectionDot(selected: selected, delay: selectionDelays[session.id] ?? 0) }
+                      else if state.symbol == "circle" { Circle().fill(.secondary.opacity(0.4)).frame(width: 5, height: 5) }
+                      else { Image(systemName: state.symbol).help(state.label) }
+                    }
+                        .font(.caption).foregroundStyle(state.problem ? Color.orange : .secondary)
+                        .frame(width: 13)
+                    Text(session.title).font(.callout.weight(selected ? .semibold : .regular))
+                        .foregroundStyle(runway.ink).lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    if !session.memoryUseAllowed { MemoryExcludedMark() }
+                    if let tag = session.displayTopicTags.first {
+                        Text(tag).font(.caption2).foregroundStyle(runway.agent)
+                            .lineLimit(1).padding(.horizontal, 6).padding(.vertical, 3)
+                            .background(runway.agent.opacity(0.1), in: Capsule())
+                            .frame(width: min(58, (tag as NSString).size(withAttributes: [.font: NSFont.systemFont(ofSize: 10)]).width + 12))
+                            .help(session.displayTopicTags.joined(separator: " · "))
+                    }
+                }
+                .padding(.horizontal, 8).padding(.vertical, 9)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(InteractionButtonStyle(focused: focusedSessionID == session.id, padding: 0))
+            .focusable().focusEffectDisabled()
+            .focused($focusedSessionID, equals: session.id)
+            .help(session.title)
+            .accessibilityAddTraits(selected ? [.isSelected] : [])
+            SingleLevelMenu(title: "会话操作：\(session.title)", symbol: "ellipsis", items: [
+                .init(id: "archive", title: session.status == "active" ? "归档" : "恢复", symbol: session.status == "active" ? "archivebox" : "arrow.uturn.backward"),
+                .init(id: "tags", title: "编辑标签", symbol: "tag"),
+                .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain")
+            ], onPresentationChange: { openMenuSessionID = $0 ? session.id : nil },
+               onFocusChange: { focusedMenuSessionID = $0 ? session.id : nil }) { action in
+                switch action {
+                case "archive": if session.status == "active" { archive(session) } else { restore(session) }
+                case "tags": editingSessionID = session.id
+                case "memory":
+                    if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { batchError = "记忆设置未保存，请重试。" }
+                default: break
+                }
+            }
+            .frame(width: 30)
+            .opacity(hoveredSessionID == session.id || focusedSessionID == session.id ||
+                     openMenuSessionID == session.id || focusedMenuSessionID == session.id ? 1 : 0)
+        }
+        .padding(.trailing, 7)
+        .background(selected ? runway.field : hoveredSessionID == session.id ? runway.field.opacity(0.6) : .clear,
+                    in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .onHover { hoveredSessionID = $0 ? session.id : nil }
+        .onAppear { visibleRowIDs.insert(session.id) }
+        .onDisappear { visibleRowIDs.remove(session.id) }
+        .contextMenu {
+            if session.status == "active" { Button("归档", systemImage: "archivebox") { archive(session) } }
+            else { Button("恢复", systemImage: "arrow.uturn.backward") { restore(session) } }
+            Button("编辑标签", systemImage: "tag") { editingSessionID = session.id }
+            Button(session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", systemImage: "brain") {
+                if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { batchError = "记忆设置未保存，请重试。" }
+            }
         }
     }
 
     private func sidebarRow(_ item: SidebarItem) -> some View {
-        let selected = selection == item
-        return Button {
-            selection = item
-        } label: {
-            HStack {
-                Label(item.title, systemImage: item.systemImage)
+        let selected = selection == item && (item != .learning || selectedSessionID == nil)
+        return Button { if item == .learning { selectedSessionID = nil }; selection = item } label: {
+            HStack(spacing: 8) {
+                Image(systemName: item.systemImage).frame(width: 27)
+                Text(item.title)
                 Spacer()
                 if item == .inbox, inboxCount > 0 {
-                    Text("\(inboxCount)")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(selected ? runway.ink : .secondary)
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 2)
-                        .background(runway.field, in: Capsule())
+                    Text("\(inboxCount)").font(.caption.weight(.semibold))
+                        .padding(.horizontal, 7).padding(.vertical, 2).background(runway.field, in: Capsule())
                 }
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 9)
+            .padding(.horizontal, 6).padding(.vertical, 9)
             .frame(maxWidth: .infinity, alignment: .leading)
             .foregroundStyle(selected ? runway.ink : Color.secondary)
             .background(selected ? runway.field : .clear, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(InteractionButtonStyle(selected: selected, padding: 0))
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
+    }
+
+    private func createSession() {
+        showArchived = false
+        selectedSessionID = nil
+        selection = .learning
+    }
+
+    private func selectAll() {
+        let selecting = selectedIDs.count != visibleSessions.count
+        selectionDelays = Dictionary(uniqueKeysWithValues: visibleSessions.filter { visibleRowIDs.contains($0.id) }.enumerated().map { ($0.element.id, min(Double($0.offset) * 0.012, 0.09)) })
+        selectedIDs = selecting ? Set(visibleSessions.map(\.id)) : []
+    }
+
+    private func batchArchive() {
+        var failed = Set<UUID>()
+        var archived = Set<UUID>()
+        for session in visibleSessions where selectedIDs.contains(session.id) {
+            let saved = showArchived ? LearningSessionActions.restore(session, context: modelContext) : LearningSessionActions.archive(session, context: modelContext)
+            if !saved { failed.insert(session.id) }
+            else if !showArchived { archived.insert(session.id) }
+        }
+        undoBatchIDs = archived
+        selectedIDs = failed
+        batchError = failed.isEmpty ? nil : "\(failed.count) 个会话未保存，请重试。已成功的操作不会重复执行。"
+        if failed.isEmpty { multiSelect = false }
+    }
+
+    private func archive(_ session: AgentSession) {
+        if LearningSessionActions.archive(session, context: modelContext) { undoSessionID = session.id }
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(6))
+            if undoSessionID == session.id { undoSessionID = nil }
+        }
+    }
+
+    private func restore(_ session: AgentSession) {
+        if LearningSessionActions.restore(session, context: modelContext) {
+            showArchived = false
+            selectedSessionID = session.id
+        }
+    }
+
+    private func sessionState(_ session: AgentSession) -> (symbol: String, label: String, problem: Bool) {
+        guard session.status == "active" else { return ("archivebox", "已归档", false) }
+        guard let run = runs.first(where: { $0.sessionID == session.id }) else { return ("circle", "尚未运行", false) }
+        if ["retryable_failed", "terminal_failed"].contains(run.status) { return ("exclamationmark.triangle", "运行失败", true) }
+        if ["interrupted", "cancelled"].contains(run.status) { return ("pause.circle", "已停止", false) }
+        if ["running", "accepted", "queued", "adjusting", "stopping"].contains(run.status) { return ("circle.dotted", "\(run.userSummary)", false) }
+        if let task = tasks.first(where: { $0.sessionID == session.id }), task.status == "awaiting_user" {
+            return ("bubble.left", task.requiredActionType == "submit_answer" ? "等待作答" : "可继续学习", false)
+        }
+        return ("circle", "", false)
+    }
+}
+
+private struct SidebarIconRail: View {
+    @Binding var selection: SidebarItem?
+    @Binding var selectedSessionID: UUID?
+    let onExpand: () -> Void
+    let onSessions: () -> Void
+    let inboxCount: Int
+    @Environment(\.runway) private var runway
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Button(action: onExpand) { CoachMark(pose: .idle, size: 27).frame(width: 38, height: 34) }
+                .buttonStyle(InteractionButtonStyle(padding: 2))
+                .help("展开侧栏").accessibilityLabel("Review Today，展开侧栏")
+                .padding(.top, 12).padding(.bottom, 8)
+            ForEach(SidebarItem.allCases) { item in
+                ChromeIconButton(title: item == .inbox && inboxCount > 0 ? "待处理，\(inboxCount) 项" : item.title,
+                                 symbol: item.systemImage,
+                                 selected: selection == item && (item != .learning || selectedSessionID == nil)) {
+                    if item == .learning { selectedSessionID = nil }
+                    selection = item
+                }
+            }
+            Divider().padding(.vertical, 6)
+            ChromeIconButton(title: "展开会话列表", symbol: "bubble.left.and.bubble.right",
+                             selected: selection == .learning && selectedSessionID != nil, action: onSessions)
+            ChromeIconButton(title: "新对话", symbol: "plus") { selectedSessionID = nil; selection = .learning }
+            Spacer(minLength: 12)
+            SettingsLink { Image(systemName: "gearshape").font(.system(size: 14)).frame(width: 28, height: 28) }
+                .buttonStyle(InteractionButtonStyle(padding: 2)).help("设置").accessibilityLabel("设置")
+            AnimatedThemeToggler().padding(.bottom, 16)
+        }
+        .padding(.horizontal, 10).frame(width: 64)
+        .background(PaperSurface())
+        .overlay(alignment: .trailing) { Rectangle().fill(runway.hairline).frame(width: 1) }
     }
 }
 
@@ -109,16 +527,27 @@ struct ContentView: View {
     var coordinator: ReviewCoordinator
     @State private var selection: SidebarItem?
     @State private var selectedKnowledgeID: UUID?
+    @State private var selectedLearningSessionID: UUID?
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
+    @AppStorage("reviewToday.sidebarVisible") private var sidebarVisible = true
+    @State private var sidebarPolicy = SidebarVisibilityPolicy()
+    @State private var sidebarScrollAnchor: UUID?
+    @AppStorage("reviewToday.sessionsExpanded") private var sessionsExpanded = true
+    @AppStorage("reviewToday.sidebarWidth") private var savedSidebarWidth = 280.0
+    @State private var saveWidthTask: Task<Void, Never>?
     @State private var monitor = AgentServiceMonitor()
     @Query private var inbox: [CaptureTask]
     @Query private var knowledge: [Knowledge]
     @Query private var settingsRows: [AppSettings]
+    @Query private var learningTasks: [LearningTask]
+    @Query private var learningSessions: [AgentSession]
 
     init(coordinator: ReviewCoordinator) {
         self.coordinator = coordinator
 #if DEBUG
         let fixtureEnabled = M1DebugFixture.enabled
-        _selection = State(initialValue: fixtureEnabled ? .library : .today)
+        let fixtureSelection: SidebarItem = M1DebugFixture.mode == "learning" ? .learning : M1DebugFixture.mode == "today" ? .today : .library
+        _selection = State(initialValue: fixtureEnabled ? fixtureSelection : .today)
         _selectedKnowledgeID = State(initialValue: fixtureEnabled ? M1DebugFixture.knowledgeID : nil)
 #else
         _selection = State(initialValue: .today)
@@ -127,52 +556,72 @@ struct ContentView: View {
     }
 
     var body: some View {
-        NavigationSplitView {
-            AppSidebar(selection: $selection, inboxCount: inboxCount)
-                .navigationSplitViewColumnWidth(min: 200, ideal: Runway.sidebarIdeal, max: 260)
-        } detail: {
-            Group {
-                switch selection ?? .today {
-                case .today:
-                    TodayView(
-                        monitor: monitor,
-                        coordinator: coordinator,
-                        onOpenKnowledge: { id in
-                            selectedKnowledgeID = id
-                            selection = .library
-                        },
-                        onOpenInbox: { selection = .inbox },
-                        onOpenLibrary: { selection = .library }
-                    )
-                case .library:
-                    LibraryView(selectedID: $selectedKnowledgeID, coordinator: coordinator)
-                case .inbox:
-                    InboxView()
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            AppSidebar(selection: $selection, selectedSessionID: $selectedLearningSessionID,
+                       scrollAnchor: $sidebarScrollAnchor, onCollapse: { setSidebar(expanded: false) }, inboxCount: inboxCount)
+                .toolbar(removing: .sidebarToggle)
+                .navigationSplitViewColumnWidth(min: 220, ideal: min(340, max(220, savedSidebarWidth)), max: 340)
+                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
+                    guard columnVisibility != .detailOnly, (220...340).contains(width),
+                          abs(savedSidebarWidth - width) > 1 else { return }
+                    saveWidthTask?.cancel()
+                    saveWidthTask = Task {
+                        try? await Task.sleep(for: .milliseconds(250))
+                        if !Task.isCancelled { savedSidebarWidth = width }
+                    }
                 }
+        } detail: {
+            HStack(spacing: 0) {
+                if columnVisibility == .detailOnly {
+                    SidebarIconRail(selection: $selection, selectedSessionID: $selectedLearningSessionID,
+                                    onExpand: { setSidebar(expanded: true) },
+                                    onSessions: { sessionsExpanded = true; setSidebar(expanded: true) }, inboxCount: inboxCount)
+                }
+                detailContent.frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .background(PaperSurface())
         }
         .navigationSplitViewStyle(.balanced)
-        .frame(minWidth: 1100, minHeight: 720)
+        .toolbar(removing: .sidebarToggle)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if AppRuntime.current.mode != .normal {
+                Text(AppRuntime.current.isPreview ? "界面预览 · 仅内存数据，不连接模型" : "真实模型隔离验收 · 独立数据，不写入日常知识库")
+                    .font(.caption2).foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity).padding(.vertical, 4)
+                    .background(PaperSurface())
+            }
+        }
+        .frame(minWidth: 760, minHeight: 620)
+        .onGeometryChange(for: Bool.self) { $0.size.width < 900 } action: { narrow in
+            sidebarPolicy.resize(narrow: narrow)
+            columnVisibility = sidebarPolicy.expanded ? .all : .detailOnly
+        }
         .task {
+#if DEBUG
+            if AppRuntime.current.isPreview { monitor.useFixturePresentation(); return }
+#endif
+            await ConversationSync().run(context: modelContext, monitor: monitor)
+        }
+        .task {
+#if DEBUG
+            if AppRuntime.current.isPreview { monitor.useFixturePresentation(); return }
+#endif
             monitor.start()
-            ReminderNotifications.request()
+            if AppRuntime.current.mode == .normal { ReminderNotifications.request() }
             while !Task.isCancelled {
+                await HarnessProcessor.tick(context: modelContext, monitor: monitor)
                 await CaptureProcessor.tick(context: modelContext, monitor: monitor)
                 try? await Task.sleep(for: .seconds(2))
             }
         }
-        .onDisappear {
-            monitor.stop()
-        }
+        .onDisappear { monitor.stop() }
         .onAppear {
+            sidebarPolicy.preferredExpanded = sidebarVisible
+            columnVisibility = sidebarPolicy.expanded ? .all : .detailOnly
 #if DEBUG
             if M1DebugFixture.enabled {
                 if M1DebugFixture.mode == "review" {
-                    coordinator.startPreview(
-                        knowledgeID: M1DebugFixture.knowledgeID,
-                        questionID: M1DebugFixture.questionID
-                    )
+                    coordinator.startPreview(knowledgeID: M1DebugFixture.knowledgeID, questionID: M1DebugFixture.questionID)
                     openWindow(id: "review")
                 } else if M1DebugFixture.mode == "retry" {
                     coordinator.startFormal(knowledgeIDs: [M1DebugFixture.knowledgeID])
@@ -187,15 +636,54 @@ struct ContentView: View {
 #endif
             UNUserNotificationCenter.current().delegate = NotificationRelay.shared
             NotificationRelay.shared.onStart = { startDueReview() }
-            NotificationRelay.shared.onSnooze = { minutes in
-                handleSnooze(minutes)
-            }
+            NotificationRelay.shared.onSnooze = { minutes in handleSnooze(minutes) }
             NotificationRelay.shared.onSkip = { skipToday() }
         }
     }
 
+    private func setSidebar(expanded: Bool) {
+        sidebarPolicy.choose(expanded: expanded)
+        sidebarVisible = expanded
+        columnVisibility = sidebarPolicy.expanded ? .all : .detailOnly
+    }
+
+    private var detailContent: some View {
+        Group {
+                switch selection ?? .today {
+                case .today:
+                    TodayView(
+                        coordinator: coordinator,
+                        onOpenKnowledge: { id in
+                            selectedKnowledgeID = id
+                            selection = .library
+                        },
+                        onOpenInbox: { selection = .inbox },
+                        onOpenLibrary: { selection = .library },
+                        onOpenLearning: { id in
+                            selectedLearningSessionID = id
+                            selection = .learning
+                        }
+                    )
+                case .learning:
+                    LearningWorkspace(
+                        monitor: monitor,
+                        selectedSessionID: $selectedLearningSessionID,
+                        onOpenKnowledge: { id in
+                            selectedKnowledgeID = id
+                            selection = .library
+                        }
+                    )
+                case .library:
+                    LibraryView(selectedID: $selectedKnowledgeID, coordinator: coordinator)
+                case .inbox:
+                    InboxView(onOpenSession: { id in selectedLearningSessionID = id; selection = .learning })
+                }
+            }
+    }
+
     private var inboxCount: Int {
-        inbox.filter { $0.status == "needs_attention" || $0.status == "retryable_failed" }.count
+        inbox.filter { $0.status == "needs_attention" || $0.status == "retryable_failed" }.count +
+        learningTasks.filter { LearningDecisionInbox.includes($0, sessions: learningSessions) }.count
     }
 
     private func startDueReview() {
@@ -265,6 +753,16 @@ final class NotificationRelay: NSObject, UNUserNotificationCenterDelegate {
                 FsrsState.self,
                 ReviewSession.self,
                 ReviewAttempt.self,
+                AgentSession.self,
+                AgentMessage.self,
+                LearningTask.self,
+                TaskEventRecord.self,
+                SourceReference.self,
+                KnowledgeReference.self,
+                SessionSummaryRecord.self,
+                AgentRun.self,
+                AgentRunControl.self,
+                SessionEventRecord.self,
             ],
             inMemory: true
         )

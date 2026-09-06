@@ -164,6 +164,12 @@ final class AppSettings {
     var snoozeDay: String
     var skipToday: String
     var notificationGranted: Bool
+    var agentDraftID: UUID?
+    var agentDraftMessageID: UUID?
+    var agentDraftText: String = ""
+    var agentDraftMode: String = "auto"
+    var agentDraftThinking: String = "smart"
+    var lastThinkingStrength: String = "smart"
 
     init(
         dailyReminderMinutes: Int = 21 * 60,
@@ -247,6 +253,8 @@ final class ReviewAttempt {
     var degradedPath: String
     var answerText: String
     var acked: Bool
+    var createdAt: Date = Date.now
+    var completedAt: Date?
 
     init(
         sessionId: UUID,
@@ -273,5 +281,343 @@ final class ReviewAttempt {
         self.degradedPath = "text"
         self.answerText = ""
         self.acked = false
+        self.createdAt = .now
+    }
+}
+
+// MARK: - Agent Harness V2
+
+@Model
+final class AgentSession {
+    @Attribute(.unique) var id: UUID
+    var title: String
+    var modePreset: String
+    var status: String
+    var createdAt: Date
+    var updatedAt: Date
+    var archivedAt: Date?
+    var summaryText: String
+    var sourceSessionID: UUID?
+    var lastSessionEventSeq: Int = 0
+    var lifecycleRevision: Int = 0
+    var lifecycleSyncedRevision: Int = 0
+    var lifecycleActionsJSON: String = "[]"
+    var checkpointJSON: String?
+    var learningChecklistExpanded: Bool = false
+    var runPaused: Bool = false
+    var pendingOperationJSON: String?
+    var handoffID: String?
+    var handoffJSON: String?
+    var syncError: String?
+    var composerDraft: String = ""
+    var autoTopicTagsJSON: String = "[]"
+    var manualTopicTagsJSON: String?
+    var topicTagRevision: Int = 0
+    var topicTagsUpdatedAt: Date?
+    var memoryUseAllowed: Bool = true
+    var memoryPolicyRevision: Int = 0
+    var memoryContentRevision: Int = 0
+    var memoryPolicySyncedRevision: Int = -1
+    var memoryContentSyncedRevision: Int = -1
+    var learningEvidenceJSON: String = "[]"
+    var thinkingStrength: String = "smart"
+    var contextCapacityJSON: String?
+
+    init(
+        id: UUID = UUID(),
+        title: String = "新学习 Session",
+        modePreset: String = "auto",
+        status: String = "active",
+        createdAt: Date = .now,
+        sourceSessionID: UUID? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.modePreset = modePreset
+        self.status = status
+        self.createdAt = createdAt
+        self.updatedAt = createdAt
+        self.summaryText = ""
+        self.sourceSessionID = sourceSessionID
+    }
+}
+
+extension AgentSession {
+    var automaticTopicTags: [String] { Self.decodeTags(autoTopicTagsJSON) }
+    var manualTopicTags: [String]? { manualTopicTagsJSON.map(Self.decodeTags) }
+    var displayTopicTags: [String] { manualTopicTags ?? automaticTopicTags }
+
+    func setAutomaticTopicTags(_ tags: [String]) {
+        let normalized = Self.normalizedTags(tags)
+        guard !normalized.isEmpty, normalized != automaticTopicTags else { return }
+        autoTopicTagsJSON = Self.encodeTags(normalized)
+        topicTagRevision += 1
+        topicTagsUpdatedAt = .now
+    }
+
+    func setManualTopicTags(_ tags: [String]) {
+        manualTopicTagsJSON = Self.encodeTags(Self.normalizedTags(tags))
+        topicTagRevision += 1
+        topicTagsUpdatedAt = .now
+    }
+
+    func restoreAutomaticTopicTags() {
+        manualTopicTagsJSON = nil
+        topicTagRevision += 1
+        topicTagsUpdatedAt = .now
+    }
+
+    private static func normalizedTags(_ tags: [String]) -> [String] {
+        var seen = Set<String>()
+        return tags.compactMap { raw in
+            let tag = String(raw.trimmingCharacters(in: .whitespacesAndNewlines).prefix(18))
+            guard !tag.isEmpty, seen.insert(tag.lowercased()).inserted else { return nil }
+            return tag
+        }.prefix(5).map { $0 }
+    }
+
+    private static func encodeTags(_ tags: [String]) -> String {
+        guard let data = try? JSONEncoder().encode(tags) else { return "[]" }
+        return String(decoding: data, as: UTF8.self)
+    }
+
+    private static func decodeTags(_ raw: String) -> [String] {
+        (try? JSONDecoder().decode([String].self, from: Data(raw.utf8))) ?? []
+    }
+}
+
+@Model
+final class AgentMessage {
+    @Attribute(.unique) var id: UUID
+    var clientMessageID: UUID?
+    var sessionID: UUID
+    var taskID: UUID?
+    var role: String
+    var content: String
+    var contentType: String
+    var createdAt: Date
+    var deliveryStatus: String
+    var runID: UUID?
+    var deliveryMode: String = "steer"
+    var operationJSON: String?
+    var lastDeliveryError: String?
+    var responseState: String = "complete"
+    var responseRevision: Int = 0
+    var responseChunkSeq: Int = 0
+    var firstDisplayedAt: Date?
+    var firstReceivedAt: Date?
+    var localEchoMS: Int?
+    var localSavedMS: Int?
+
+    init(
+        id: UUID = UUID(),
+        clientMessageID: UUID? = nil,
+        sessionID: UUID,
+        taskID: UUID? = nil,
+        role: String,
+        content: String,
+        contentType: String = "text",
+        createdAt: Date = .now,
+        deliveryStatus: String = "local"
+    ) {
+        self.id = id
+        self.clientMessageID = clientMessageID
+        self.sessionID = sessionID
+        self.taskID = taskID
+        self.role = role
+        self.content = content
+        self.contentType = contentType
+        self.createdAt = createdAt
+        self.deliveryStatus = deliveryStatus
+    }
+}
+
+@Model
+final class LearningTask {
+    @Attribute(.unique) var id: UUID
+    var sessionID: UUID
+    var inputMessageID: UUID
+    var mode: String
+    var status: String
+    var stage: String
+    var userSummary: String
+    var createdAt: Date
+    var updatedAt: Date
+    var retryCount: Int
+    var errorCode: String?
+    var requiredActionType: String?
+    var requiredActionPrompt: String?
+    var requiredActionOptionsJSON: String?
+    var lastEventSeq: Int
+    var lastAckedSeq: Int
+    var resultSummary: String
+    var pendingActionID: UUID?
+    var pendingActionType: String?
+    var pendingActionContent: String?
+    var sourceID: UUID?
+    var memoryCommitted: Bool
+    var conversationManaged: Bool = false
+    var understanding: String = "unknown"
+    var lifecycleRevision: Int = 0
+    var learningPlanJSON: String?
+    var learningOutcomeJSON: String?
+    var sourcesJSON: String?
+    var draftTargetID: String?
+    var memoryReferencesJSON: String = "[]"
+
+    init(
+        id: UUID = UUID(),
+        sessionID: UUID,
+        inputMessageID: UUID,
+        mode: String = "auto",
+        status: String = "accepted",
+        stage: String = "accepted",
+        userSummary: String = "已保存，准备处理",
+        createdAt: Date = .now,
+        sourceID: UUID? = nil
+    ) {
+        self.id = id
+        self.sessionID = sessionID
+        self.inputMessageID = inputMessageID
+        self.mode = mode
+        self.status = status
+        self.stage = stage
+        self.userSummary = userSummary
+        self.createdAt = createdAt
+        self.updatedAt = createdAt
+        self.retryCount = 0
+        self.lastEventSeq = 0
+        self.lastAckedSeq = 0
+        self.resultSummary = ""
+        self.sourceID = sourceID
+        self.memoryCommitted = false
+    }
+}
+
+@Model
+final class TaskEventRecord {
+    @Attribute(.unique) var eventID: UUID
+    var sessionID: UUID
+    var taskID: UUID
+    var seq: Int
+    var occurredAt: Date
+    var stage: String
+    var state: String
+    var node: String
+    var userSummary: String
+    var detailSummary: String
+    var attempt: Int
+    var durationMS: Int?
+    var errorCode: String?
+    var recoveryAction: String?
+    var requiredActionJSON: String?
+    var messageID: UUID?
+
+    init(
+        eventID: UUID,
+        sessionID: UUID,
+        taskID: UUID,
+        seq: Int,
+        occurredAt: Date,
+        stage: String,
+        state: String,
+        node: String,
+        userSummary: String,
+        detailSummary: String,
+        attempt: Int,
+        durationMS: Int? = nil,
+        errorCode: String? = nil,
+        recoveryAction: String? = nil,
+        requiredActionJSON: String? = nil,
+        messageID: UUID? = nil
+    ) {
+        self.eventID = eventID
+        self.sessionID = sessionID
+        self.taskID = taskID
+        self.seq = seq
+        self.occurredAt = occurredAt
+        self.stage = stage
+        self.state = state
+        self.node = node
+        self.userSummary = userSummary
+        self.detailSummary = detailSummary
+        self.attempt = attempt
+        self.durationMS = durationMS
+        self.errorCode = errorCode
+        self.recoveryAction = recoveryAction
+        self.requiredActionJSON = requiredActionJSON
+        self.messageID = messageID
+    }
+}
+
+@Model
+final class SourceReference {
+    @Attribute(.unique) var id: UUID
+    var sessionID: UUID
+    var taskID: UUID?
+    var url: String
+    var title: String
+    var evidenceState: String
+    var locator: String
+    var createdAt: Date
+    var sourceType: String = "public_source"
+    var sourceVersion: Int = 1
+    var fetchedAt: Date?
+    var contentSnapshot: String = ""
+    var versionHistoryJSON: String = "[]"
+
+    init(sessionID: UUID, taskID: UUID? = nil, url: String, title: String, evidenceState: String = "unverified", locator: String = "") {
+        self.id = UUID()
+        self.sessionID = sessionID
+        self.taskID = taskID
+        self.url = url
+        self.title = title
+        self.evidenceState = evidenceState
+        self.locator = locator
+        self.createdAt = .now
+    }
+}
+
+@Model
+final class KnowledgeReference {
+    @Attribute(.unique) var id: UUID
+    var sessionID: UUID
+    var taskID: UUID?
+    var knowledgeID: UUID
+    var relation: String
+    var createdAt: Date
+
+    init(sessionID: UUID, taskID: UUID? = nil, knowledgeID: UUID, relation: String = "related") {
+        self.id = UUID()
+        self.sessionID = sessionID
+        self.taskID = taskID
+        self.knowledgeID = knowledgeID
+        self.relation = relation
+        self.createdAt = .now
+    }
+}
+
+@Model
+final class SessionSummaryRecord {
+    @Attribute(.unique) var id: UUID
+    var sessionID: UUID
+    var version: Int
+    var goal: String
+    var confirmedDecisionsJSON: String
+    var sourceRefsJSON: String
+    var knowledgeRefsJSON: String
+    var openQuestionsJSON: String
+    var updatedAt: Date
+
+    init(sessionID: UUID, version: Int = 1, goal: String = "") {
+        self.id = UUID()
+        self.sessionID = sessionID
+        self.version = version
+        self.goal = goal
+        self.confirmedDecisionsJSON = "[]"
+        self.sourceRefsJSON = "[]"
+        self.knowledgeRefsJSON = "[]"
+        self.openQuestionsJSON = "[]"
+        self.updatedAt = .now
     }
 }
