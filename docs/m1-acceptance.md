@@ -1,10 +1,19 @@
 # M1 Agent Harness V2 验收契约
 
-> 最新启动修复见 §0.18，容量/悬停见 §0.17；顶部/运行入口及先前原生真实模型发送、流式、重启证据见 §0.15；DeepSeek 接入证据见 §0.13。旧章节保留历史；前批 HTTP 403 属于旧供应商，不是当前 DeepSeek 状态。分开记录代码、受控、真实模型与 Rex 验收。
+> 主线合入与本次回归见 §0.19；启动修复见 §0.18，容量/悬停见 §0.17；顶部/运行入口及先前原生真实模型发送、流式、重启证据见 §0.15；DeepSeek 接入证据见 §0.13。旧章节保留历史；前批 HTTP 403 属于旧供应商，不是当前 DeepSeek 状态。分开记录代码、受控、真实模型与 Rex 验收。
 > 对应 Issue：[#9 M1.1：冻结最小闭环验收契约与固定样本](https://github.com/RexYoung000/Review_Today/issues/9)
 > 2026-09-04：单侧栏、开放式 Agent 工作区、Session 标签和 Today 活动反馈已完成代码实施、构建与受控检查；§0.9 仍是 Rex 的真实体验验收门槛，旧 §0.6 仅保留历史证据。
 > 机器可读样本：`agent-service/tests/fixtures/m1_acceptance.json`
 > 主规格：[Agent Harness V2](agent-harness-v2.md)
+
+## 0.19 合入 main 与保留体验验收（2026-09-06）
+
+Rex 明确授权“你先帮我合入 #17 吧”后，PR [#25](https://github.com/RexYoung000/Review_Today/pull/25) 已通过普通 merge commit `903b620` 合入 main。其内容与本次复核候选 `5794114` 完全一致；`m1/issue-17` 本地及远端分支已删除，当前仅 main、1 个工作树。分支和历史保留证据见 [M1 分支核对](m1-branch-audit.md)。本授权覆盖下方历史批次“暂不合并 PR”的限制；Issue #17、父 Issue #1 仍 OPEN，M1 未最终验收，M2 不启动，不发布。
+
+- 本次无密钥服务回归 **194 项通过**，完整 Mac 契约通过（运行身份、焦点/输入、启动恢复、学习记忆、回放与 loopback SSE），旧磁盘 schema 迁移通过，macOS Debug / Release 构建通过。日志分别为 `/tmp/review-today-pr25-service.log`、`/tmp/review-today-pr25-contracts.log`、`/tmp/review-today-pr25-migration.log`、`/tmp/review-today-pr25-debug.log`、`/tmp/review-today-pr25-release.log`。
+- 上述构建仅关闭签名检查编译，没有替换日常签名 App；既有真实模型与原生证据复用源码未变的 §0.13–0.18，本次没有另发真实模型请求或重做用户界面验收。
+- GitHub Actions 候选 run `34022021651` 的任务因账户付款/消费额度限制未启动，不能报告远端 CI 通过。未改账单/保护规则，也未使用管理员绕过合并检查。
+- #17 后续重点：完整五模式与多轮教学、独立作答、确认/拒绝入库；长流程交接/记忆/中断组合；Rex 原生视觉与交互验收。VoiceOver、系统 Reduce Motion、长期模型质量及两份历史数据的安全合并仍保留原有未验证/未实施状态。PR 合入只说明工程变更进入主线。
 
 ## 0.18 开发服务启动修复（2026-09-06）
 
