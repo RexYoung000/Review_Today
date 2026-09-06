@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-import uuid
 from typing import Any, Literal, TypedDict
 from urllib.parse import quote
 
@@ -57,6 +56,17 @@ class CaptureState(TypedDict, total=False):
 
 def _has_cjk(text: str) -> bool:
     return any("\u4e00" <= ch <= "\u9fff" for ch in text)
+
+
+def _parse_capture_model(system: str, user: str, schema: type):
+    """Retry one provider-completed but empty structured response at the failed node."""
+    for attempt in range(2):
+        try:
+            return parse_model(system, user, schema)
+        except RuntimeError as exc:
+            if str(exc) != "RT.CAPTURE.MODEL_FAILED" or attempt == 1:
+                raise
+    raise RuntimeError("RT.CAPTURE.MODEL_FAILED")
 
 
 def _language_drift_issues(payload: ExtractPayload, primary_language: str) -> list[str]:
@@ -124,6 +134,19 @@ def _source_text(state: CaptureState) -> str:
     return (state.get("raw_text") or "").strip()
 
 
+def source_fidelity_issues(payload: ExtractPayload, source: str) -> list[str]:
+    """Return hard source-provenance violations that a model verdict cannot override."""
+    issues: list[str] = []
+    for item in payload.knowledge:
+        excerpt = item.evidence_excerpt
+        scoring_evidence = item.scoring_spec.evidence
+        if not excerpt.strip() or excerpt not in source:
+            issues.append(f"{item.id}: evidence_excerpt 必须是原文的非空连续子串")
+        if not scoring_evidence.strip() or scoring_evidence not in source:
+            issues.append(f"{item.id}: scoring_spec.evidence 必须是原文的非空连续子串")
+    return issues
+
+
 def ingest_node(state: CaptureState) -> dict[str, Any]:
     updates = _event(state, "node_start", "ingest")
     url = (state.get("url") or "").strip() or looks_like_url(state.get("raw_text") or "")
@@ -163,7 +186,7 @@ def classify_node(state: CaptureState) -> dict[str, Any]:
         updates.update(_event({**state, **updates}, "node_success", "classify", {"intent": "remember_content", "heuristic": True}))
         return updates
     try:
-        parsed = parse_model(
+        parsed = _parse_capture_model(
             CLASSIFY_SYSTEM,
             f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n{source}",
             IntentClass,
@@ -199,17 +222,13 @@ def extract_node(state: CaptureState) -> dict[str, Any]:
     if state.get("force_source_view"):
         extra = "\n把 attribution 设为 source_view，学习目标加上来源限定，不要写成已证实事实。"
     try:
-        parsed = parse_model(
+        parsed = _parse_capture_model(
             EXTRACT_SYSTEM + extra,
             f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n{source}",
             ExtractPayload,
         )
         payload = ExtractPayload.model_validate(parsed.model_dump())
         for item in payload.knowledge:
-            try:
-                uuid.UUID(item.id)
-            except (ValueError, TypeError):
-                item.id = str(uuid.uuid4())
             if state.get("url") and not item.evidence_locator:
                 item.evidence_locator = state["url"]
         updates.update(_event({**state, **updates}, "node_success", "extract", {"knowledge_count": len(payload.knowledge)}))
@@ -245,7 +264,7 @@ def semantic_validate_node(state: CaptureState) -> dict[str, Any]:
         return updates
     try:
         extracted = ExtractPayload.model_validate(state["extracted"])
-        verdict = parse_model(
+        verdict = _parse_capture_model(
             SEMANTIC_SYSTEM,
             f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n"
             f"{_source_text(state)}\n\n整理结果：\n{dump(extracted)}",
@@ -253,6 +272,7 @@ def semantic_validate_node(state: CaptureState) -> dict[str, Any]:
         )
         payload = SemanticVerdict.model_validate(verdict.model_dump())
         payload.issues.extend(_language_drift_issues(extracted, state.get("primary_language", "zh")))
+        payload.issues.extend(source_fidelity_issues(extracted, _source_text(state)))
         if payload.issues:
             payload.ok = False
         if payload.ok:
@@ -282,7 +302,7 @@ def repair_node(state: CaptureState) -> dict[str, Any]:
     updates = _event(state, "node_start", "repair")
     updates["repair_used"] = True
     try:
-        parsed = parse_model(
+        parsed = _parse_capture_model(
             EXTRACT_SYSTEM + "\n上一稿未通过语义校验，请只根据原文修正，不要引入新的外部事实。",
             f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n{_source_text(state)}\n\n上一稿：\n{dump(ExtractPayload.model_validate(state['extracted']))}",
             ExtractPayload,
@@ -308,7 +328,7 @@ def risk_node(state: CaptureState) -> dict[str, Any]:
     extracted = ExtractPayload.model_validate(state.get("extracted") or {})
     model_hit = extracted.risk_flagged
     try:
-        parsed = parse_model(RISK_SYSTEM, source[:6000], RiskVerdict)
+        parsed = _parse_capture_model(RISK_SYSTEM, source[:6000], RiskVerdict)
         model_hit = model_hit or RiskVerdict.model_validate(parsed.model_dump()).risk
     except Exception:  # noqa: BLE001
         pass
@@ -340,7 +360,7 @@ def verify_node(state: CaptureState) -> dict[str, Any]:
         updates["user_status"] = "需要处理"
         return updates
     try:
-        parsed = parse_model(
+        parsed = _parse_capture_model(
             VERIFY_SYSTEM,
             f"来源：\n{source[:4000]}\n\n检索：\n{search[:4000]}",
             VerifyVerdict,
@@ -424,7 +444,7 @@ def find_source_candidates(topic: str) -> list[SourceCandidate]:
     candidates: list[SourceCandidate] = []
     if search:
         try:
-            parsed = parse_model(
+            parsed = _parse_capture_model(
                 SEARCH_FALLBACK_SYSTEM,
                 f"主题：{topic}\n\n检索摘录：\n{search[:4000]}",
                 SourceList,
