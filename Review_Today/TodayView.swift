@@ -23,6 +23,7 @@ struct TodayView: View {
     @State private var recorder = VoiceRecorder()
     @State private var micAllowed = false
     @State private var notifyAllowed = false
+    @State private var localSaveError: String?
 
     private var settings: AppSettings? { settingsRows.first }
     private var developerMode: Bool { settings?.developerMode == true }
@@ -36,7 +37,7 @@ struct TodayView: View {
     }
 
     private var inboxCount: Int {
-        tasks.filter { $0.status == "needs_attention" }.count
+        tasks.filter { ["needs_attention", "retryable_failed"].contains($0.status) }.count
     }
 
     private var todayReceipts: [CaptureTask] {
@@ -45,7 +46,7 @@ struct TodayView: View {
 
     private var todayResults: [ReviewAttempt] {
         attempts.filter { row in
-            guard row.mode != "preview", !row.effectiveGrade.isEmpty else { return false }
+            guard row.mode != "preview", row.acked, !row.effectiveGrade.isEmpty else { return false }
             let started = sessions.first(where: { $0.id == row.sessionId })?.startedAt ?? .distantPast
             return Calendar.current.isDateInToday(started)
         }
@@ -59,6 +60,12 @@ struct TodayView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Runway.gap) {
                 statusBoard
+                if let localSaveError {
+                    Label(localSaveError, systemImage: "exclamationmark.triangle")
+                        .font(.callout)
+                        .foregroundStyle(Color.orange)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
                 AgentComposer(
                     draft: $draft,
                     turns: todayTurns,
@@ -69,7 +76,14 @@ struct TodayView: View {
                     onVoice: toggleVoice,
                     onOpenInbox: onOpenInbox,
                     onPreview: { id in
-                        coordinator.startPreview(knowledgeID: id)
+                        guard let item = knowledge.first(where: { $0.id == id }),
+                              let question = KnowledgeLexicon.mainQuestion(for: item),
+                              KnowledgeLexicon.previewUnavailableReason(for: item) == nil
+                        else {
+                            onOpenKnowledge(id)
+                            return
+                        }
+                        coordinator.startPreview(knowledgeID: id, questionID: question.id)
                         openWindow(id: "review")
                     },
                     onOpenKnowledge: onOpenKnowledge,
@@ -185,7 +199,7 @@ struct TodayView: View {
 
     private var coachPose: CoachPose {
         if monitor.connection != .ready { return .waitYou }
-        if forming.contains(where: { $0.status == "needs_attention" }) { return .waitYou }
+        if forming.contains(where: { ["needs_attention", "retryable_failed"].contains($0.status) }) { return .waitYou }
         if !forming.isEmpty { return .working }
         if !dueItems.isEmpty { return .whistle }
         return .idle
@@ -232,10 +246,20 @@ struct TodayView: View {
         let task = CaptureTask()
         task.source = source
         CaptureProcessor.appendStatus(task.userStatus, to: task)
+        do {
+            try saveCapture(source: source, task: task)
+            draft = ""
+            localSaveError = nil
+        } catch {
+            modelContext.rollback()
+            localSaveError = String(localized: "本机保存失败，请重试。")
+        }
+    }
+
+    private func saveCapture(source: Source, task: CaptureTask) throws {
         modelContext.insert(source)
         modelContext.insert(task)
-        try? modelContext.save()
-        draft = ""
+        try modelContext.save()
     }
 
     private func saveVoice(_ url: URL) {
@@ -243,9 +267,13 @@ struct TodayView: View {
         let task = CaptureTask()
         task.source = source
         CaptureProcessor.appendStatus(task.userStatus, to: task)
-        modelContext.insert(source)
-        modelContext.insert(task)
-        try? modelContext.save()
+        do {
+            try saveCapture(source: source, task: task)
+            localSaveError = nil
+        } catch {
+            modelContext.rollback()
+            localSaveError = String(localized: "本机保存失败，请重试。")
+        }
     }
 
     private func refreshPermissions() {

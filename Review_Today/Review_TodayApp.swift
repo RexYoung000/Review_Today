@@ -9,6 +9,12 @@ struct Review_TodayApp: App {
 
     init() {
         do {
+#if DEBUG
+            if M1DebugFixture.enabled {
+                container = try M1DebugFixture.makeContainer()
+                return
+            }
+#endif
             container = try ModelContainer(
                 for: Source.self,
                 Knowledge.self,
@@ -36,6 +42,7 @@ struct Review_TodayApp: App {
                 .modelContainer(container)
                 .runwayAppearance()
         }
+        .restorationBehavior(.disabled)
 
 #if DEBUG
         WindowGroup(String(localized: "吉祥物动画 POC"), id: "mascot-animation-poc") {
@@ -63,6 +70,7 @@ private struct MenuBarCapture: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \CaptureTask.updatedAt, order: .reverse) private var tasks: [CaptureTask]
     @State private var text = ""
+    @State private var saveError: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -79,10 +87,21 @@ private struct MenuBarCapture: View {
                 CaptureProcessor.appendStatus(task.userStatus, to: task)
                 modelContext.insert(source)
                 modelContext.insert(task)
-                try? modelContext.save()
-                text = ""
+                do {
+                    try modelContext.save()
+                    text = ""
+                    saveError = nil
+                } catch {
+                    modelContext.rollback()
+                    saveError = String(localized: "本机保存失败，请重试。")
+                }
             }
             .keyboardShortcut(.return)
+            if let saveError {
+                Text(saveError)
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
             Divider()
             if let latest = tasks.first(where: { $0.status != "cancelled" }) {
                 Text(latest.userStatus)

@@ -237,6 +237,10 @@ final class ReviewAttempt {
     var mode: String
     var agentGrade: String
     var effectiveGrade: String
+    var pendingGrade: String = ""
+    var reviewState: String = "grading"
+    var reviewErrorCode: String?
+    var reviewUserStatus: String = ""
     var hintUsed: Bool
     var transcriptRetryCount: Int
     var earlyReview: Bool
@@ -259,6 +263,10 @@ final class ReviewAttempt {
         self.mode = mode
         self.agentGrade = ""
         self.effectiveGrade = ""
+        self.pendingGrade = ""
+        self.reviewState = "grading"
+        self.reviewErrorCode = nil
+        self.reviewUserStatus = "正在判断"
         self.hintUsed = false
         self.transcriptRetryCount = 0
         self.earlyReview = false

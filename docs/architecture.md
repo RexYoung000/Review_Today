@@ -85,7 +85,7 @@ flowchart LR
 ### OpenAI 服务
 
 - Realtime 处理实时语音层；
-- Responses 处理可验证的结构化理解与评分；
+- Responses 优先处理可验证的结构化理解与评分；若兼容供应端将请求标为完成却返回空结构化结果，服务仅针对该空结果改用 Chat Completions 的同一 Pydantic schema；
 - Web Search 只在风险规则或模型分类触发时使用。
 
 ## 4. 采集整理图
@@ -233,7 +233,7 @@ Mac 是长期事实来源。Python checkpoint 只是“任务做到哪里”的�
 - `attempt_id`、`session_id`、`knowledge_id`、`knowledge_version`、`question_variant_id`
 - `mode`、`agent_grade`、`effective_grade`
 - `hint_used`、`transcript_retry_count`、`early_review`、`degraded_path`
-- `answer_text_cleaned`、`fsrs_algorithm_version`、`fsrs_parameter_version`
+- `answer_text`（保留用户原始自然语言回答）、`fsrs_algorithm_version`、`fsrs_parameter_version`
 - 提交需 Mac ACK；同一 `attempt_id` 不得第二次正式写入
 
 **FsrsState（排期）**
@@ -400,10 +400,10 @@ queued
 ### 尚未完成或尚未证明
 
 - 里程碑一尚未从真实 Mac App 入口完成端到端视觉与交互验收；
-- 没有固定评测集和自动化测试，模型质量只通过单一样本冒烟；
+- M1 已有固定样本、服务端契约测试和显式真实模型冒烟，但完整客户端自动化与更广模型质量评测尚未完成；
 - Python `TaskStore`、评分 ACK 和任务事件主要保存在内存中，不是文中目标的 SQLite checkpoint + TTL；
 - 复习评分目前是直接 API 调用，不是完整的正式复习 LangGraph；
-- 正式提交尚未严格做到“Mac ACK 成功后才进入下一题”的持久事务；
+- 正式提交已按“ACK 成功后才更新 FSRS 和 `effectiveGrade`，本地保存成功后才推进下一题”的顺序执行；
 - 没有 OpenAI Realtime、WebRTC、sideband、VAD 和语音复习闭环；
 - 运行记录不具备完整重放、内容重建和未闭合事件恢复能力；
 - 具体 OpenAI 模型冻结规则、完整错误码、性能数据和隐私审计证据仍未建立。

@@ -1,6 +1,7 @@
+import uuid
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 KnowledgeType = Literal["fact", "concept", "procedure"]
 Attribution = Literal["claim", "source_view", "personal"]
@@ -18,17 +19,24 @@ TaskStatus = Literal[
 
 
 class ScoringSpec(BaseModel):
-    learning_goal: str
+    learning_goal: str = Field(min_length=1)
     must_cover: list[str] = Field(min_length=1)
     acceptable_paraphrases: list[str] = Field(default_factory=list)
     common_misconceptions: list[str] = Field(default_factory=list)
     evidence: str = ""
     order_rules: str = ""
 
+    @field_validator("must_cover")
+    @classmethod
+    def require_nonblank_coverage(cls, value: list[str]) -> list[str]:
+        if any(not item.strip() for item in value):
+            raise ValueError("must_cover items cannot be blank")
+        return value
+
 
 class QuestionDraft(BaseModel):
     variant_index: int = Field(ge=0, le=2)
-    prompt_text: str
+    prompt_text: str = Field(min_length=1)
 
 
 class KnowledgeDraft(BaseModel):
@@ -39,19 +47,36 @@ class KnowledgeDraft(BaseModel):
     content_language: str
     question_language: str
     answer_language: str
-    evidence_excerpt: str
+    evidence_excerpt: str = Field(min_length=1)
     evidence_locator: str
     title: str = Field(min_length=1, description="卡片关键词：这条知识是什么，名词性短标题，不要写成说明/描述/概括。")
     explanation: str = Field(min_length=1, description="卡片详解：用户主语言、Markdown 式分点（1. 2. 3. 或 -），3–6 条，必须能对回 evidence_excerpt。")
     scoring_spec: ScoringSpec
     questions: list[QuestionDraft] = Field(min_length=1, max_length=3)
 
+    @field_validator("id")
+    @classmethod
+    def require_uuid(cls, value: str) -> str:
+        try:
+            return str(uuid.UUID(value))
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise ValueError("knowledge id must be a valid UUID") from exc
+
     @field_validator("questions")
     @classmethod
-    def require_main_question(cls, value: list[QuestionDraft]) -> list[QuestionDraft]:
-        if not any(item.variant_index == 0 for item in value):
-            raise ValueError("main question variant_index 0 is required")
+    def require_one_main_question(cls, value: list[QuestionDraft]) -> list[QuestionDraft]:
+        indices = [item.variant_index for item in value]
+        if indices.count(0) != 1:
+            raise ValueError("exactly one main question with variant_index 0 is required")
+        if len(indices) != len(set(indices)):
+            raise ValueError("question variant_index values must be unique")
         return value
+
+    @model_validator(mode="after")
+    def require_scoring_evidence(self) -> "KnowledgeDraft":
+        if not self.scoring_spec.evidence.strip():
+            raise ValueError("scoring_spec.evidence is required for capture knowledge")
+        return self
 
 
 class ExtractPayload(BaseModel):
@@ -61,6 +86,13 @@ class ExtractPayload(BaseModel):
     risk_flagged: bool = False
     risk_reason: str = ""
     knowledge: list[KnowledgeDraft] = Field(min_length=1, max_length=8)
+
+    @model_validator(mode="after")
+    def require_unique_knowledge_ids(self) -> "ExtractPayload":
+        ids = [item.id for item in self.knowledge]
+        if len(ids) != len(set(ids)):
+            raise ValueError("knowledge ids must be unique")
+        return self
 
 
 class SemanticVerdict(BaseModel):
@@ -158,14 +190,50 @@ class GradeRequest(BaseModel):
     hint_used: bool = False
     primary_language: str = "zh"
 
+    @field_validator("attempt_id")
+    @classmethod
+    def require_attempt_uuid(cls, value: str) -> str:
+        try:
+            return str(uuid.UUID(value))
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise ValueError("attempt_id must be a valid UUID") from exc
+
+    @field_validator("prompt_text", "answer_text", "primary_language")
+    @classmethod
+    def require_nonblank_text(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("grade request text fields cannot be blank")
+        return value
+
+    @model_validator(mode="after")
+    def require_scoring_evidence(self) -> "GradeRequest":
+        if not self.scoring_spec.evidence.strip():
+            raise ValueError("scoring_spec.evidence is required for grading")
+        return self
+
 
 class GradeResult(BaseModel):
     attempt_id: str = ""
     agent_grade: Literal["again", "hard", "good"]
-    brief_feedback: str
+    brief_feedback: str = Field(min_length=1, max_length=240)
     hint_used: bool = False
+
+    @field_validator("brief_feedback")
+    @classmethod
+    def require_nonblank_feedback(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("brief_feedback cannot be blank")
+        return value
 
 
 class GradeAckRequest(BaseModel):
     attempt_id: str
+
+    @field_validator("attempt_id")
+    @classmethod
+    def require_attempt_uuid(cls, value: str) -> str:
+        try:
+            return str(uuid.UUID(value))
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise ValueError("attempt_id must be a valid UUID") from exc
 

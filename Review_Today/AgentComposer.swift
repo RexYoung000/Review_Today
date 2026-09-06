@@ -264,7 +264,7 @@ struct AgentComposer: View {
                     .transition(.opacity.combined(with: .move(edge: .top)))
                 }
 
-                if task.status == "needs_attention" {
+                if task.status == "needs_attention" || task.status == "retryable_failed" {
                     Button(String(localized: "去处理"), action: onOpenInbox)
                         .buttonStyle(.plain)
                         .font(.caption.weight(.semibold))

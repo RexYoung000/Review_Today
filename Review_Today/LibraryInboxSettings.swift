@@ -3,7 +3,10 @@ import SwiftUI
 
 struct InboxView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(filter: #Predicate<CaptureTask> { $0.status == "needs_attention" }, sort: \CaptureTask.updatedAt)
+    @Query(
+        filter: #Predicate<CaptureTask> { $0.status == "needs_attention" || $0.status == "retryable_failed" },
+        sort: \CaptureTask.updatedAt
+    )
     private var tasks: [CaptureTask]
     @State private var pasteText = ""
     @State private var urlText = ""
@@ -39,6 +42,9 @@ struct InboxView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title(for: task.errorCode))
                 .font(.headline)
+            Text(task.userStatus)
+                .font(.subheadline)
+                .foregroundStyle(task.status == "retryable_failed" ? Color.orange : .secondary)
             Text(task.source?.rawText.prefix(160) ?? "")
                 .foregroundStyle(.secondary)
             if let code = task.errorCode, ["RT.CAPTURE.CONFLICT", "RT.CAPTURE.VERIFY_INSUFFICIENT"].contains(code) {
@@ -118,6 +124,7 @@ struct InboxView: View {
         case "RT.CAPTURE.NEED_SOURCE", "RT.CAPTURE.TOO_BROAD": String(localized: "缺少来源")
         case "RT.CAPTURE.CONFIRM_SOURCES": String(localized: "确认来源")
         case "RT.CAPTURE.TRANSCRIBE_FAILED": String(localized: "转写异常")
+        case "RT.CAPTURE.SERVICE_UNAVAILABLE", "RT.CAPTURE.MODEL_FAILED", "RT.CAPTURE.ACK_FAILED", "RT.CAPTURE.LOCAL_SAVE_FAILED", "RT.CAPTURE.STRUCTURE_INVALID", "RT.CAPTURE.REQUEST_FAILED": String(localized: "需要重试")
         default: String(localized: "校验失败")
         }
     }
@@ -156,11 +163,19 @@ struct InboxView: View {
                 task.source?.rawText = transcript
             }
             CaptureProcessor.apply(view, to: task)
-            try? modelContext.save()
+            try modelContext.save()
         } catch {
+            task.status = "retryable_failed"
+            task.errorCode = errorCode(for: error)
             task.userStatus = String(localized: "需要重试")
+            task.updatedAt = .now
+            CaptureProcessor.appendStatus(task.userStatus, to: task)
             try? modelContext.save()
         }
+    }
+
+    private func errorCode(for error: Error) -> String {
+        CaptureAPIError.code(for: error, fallback: "RT.CAPTURE.SERVICE_UNAVAILABLE")
     }
 
     private struct Candidate: Decodable { var url: String; var title: String; var snippet: String }

@@ -21,10 +21,12 @@ Statuses: processing → committing → completed
 from __future__ import annotations
 
 import base64
+import threading
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
+from pydantic import ValidationError
 
-from agent_service.capture import find_source_candidates, run_capture
+from agent_service.capture import find_source_candidates, run_capture, source_fidelity_issues
 from agent_service.capture.fetch import looks_like_url
 from agent_service.config import CA_BUNDLE, HOST, PORT, openai_key
 from agent_service.openai_client import transcribe_audio
@@ -36,12 +38,15 @@ from agent_service.schemas import (
     ExtractPayload,
     GradeAckRequest,
     GradeRequest,
+    GradeResult,
     Receipt,
 )
 from agent_service.store import TaskRecord, store
 
 app = FastAPI(title="Review Today Agent", docs_url=None, redoc_url=None)
+_grade_results: dict[str, GradeResult] = {}
 _grade_acks: set[str] = set()
+_grade_lock = threading.Lock()
 
 
 @app.get("/healthz")
@@ -71,7 +76,23 @@ def _apply_graph_result(record: TaskRecord, result: dict) -> None:
     record.user_status = result.get("user_status") or "正在整理"
     extracted = result.get("extracted")
     if extracted:
-        record.result = ExtractPayload.model_validate(extracted)
+        try:
+            payload = ExtractPayload.model_validate(extracted)
+        except ValidationError:
+            record.result = None
+            record.receipt = None
+            record.status = "retryable_failed"
+            record.error_code = "RT.CAPTURE.STRUCTURE_INVALID"
+            record.user_status = "需要重试"
+            return
+        if source_fidelity_issues(payload, record.raw_text):
+            record.result = None
+            record.receipt = None
+            record.status = "needs_attention"
+            record.error_code = "RT.CAPTURE.SEMANTIC_INVALID"
+            record.user_status = "需要处理"
+            return
+        record.result = payload
         if record.force_source_view:
             record.result.attribution = "source_view"
     if outcome == "committing" and record.result:
@@ -126,6 +147,13 @@ def _queue(record: TaskRecord, background: BackgroundTasks) -> None:
     record.status = "processing"
     record.user_status = "正在整理"
     record.error_code = None
+    record.receipt = None
+    record.result = None
+    record.intent = None
+    record.source_candidates = []
+    record.verify_reason = None
+    record.events = []
+    record.acked = False
     store.put(record)
     background.add_task(_process, record.task_id)
 
@@ -169,6 +197,8 @@ def submit_capture(body: CaptureSubmitRequest, background: BackgroundTasks) -> d
     stored, created = store.upsert_new(record)
     if created:
         background.add_task(_process, stored.task_id)
+    elif stored.status == "retryable_failed":
+        _queue(stored, background)
     return stored.view().model_dump()
 
 
@@ -284,7 +314,8 @@ def capture_action(task_id: str, body: CaptureActionRequest, background: Backgro
         return record.view().model_dump()
 
     if body.action == "reprocess":
-        _queue(record, background)
+        if record.status in {"retryable_failed", "needs_attention"}:
+            _queue(record, background)
         return record.view().model_dump()
 
     raise _http_error(400, "RT.CAPTURE.UNSUPPORTED_INPUT", "unknown action")
@@ -292,21 +323,32 @@ def capture_action(task_id: str, body: CaptureActionRequest, background: Backgro
 
 @app.post("/v1/review/grade")
 def review_grade(body: GradeRequest) -> dict:
-    if not openai_key():
-        raise _http_error(409, "RT.CAPTURE.NO_KEY", "key not configured")
-    if body.attempt_id in _grade_acks:
-        raise _http_error(409, "RT.REVIEW.DUPLICATE_ATTEMPT", "attempt already written")
-    try:
-        return grade_answer(body).model_dump()
-    except Exception:  # noqa: BLE001
-        raise _http_error(502, "RT.REVIEW.GRADE_FAILED", "grading failed") from None
+    with _grade_lock:
+        cached = _grade_results.get(body.attempt_id)
+        if cached is not None:
+            return cached.model_dump()
+        if not openai_key():
+            raise _http_error(409, "RT.CAPTURE.NO_KEY", "key not configured")
+        try:
+            result = GradeResult.model_validate(grade_answer(body).model_dump())
+            result.attempt_id = body.attempt_id
+            result.hint_used = body.hint_used
+            if result.agent_grade == "good" and body.hint_used:
+                result.agent_grade = "hard"
+        except Exception:  # noqa: BLE001
+            raise _http_error(502, "RT.REVIEW.GRADE_FAILED", "grading failed") from None
+        _grade_results[body.attempt_id] = result
+        return result.model_dump()
 
 
 @app.post("/v1/review/attempts/{attempt_id}/ack")
 def review_ack(attempt_id: str, body: GradeAckRequest) -> dict:
     if body.attempt_id != attempt_id:
         raise _http_error(409, "RT.REVIEW.ACK_MISMATCH", "attempt_id mismatch")
-    _grade_acks.add(attempt_id)
+    with _grade_lock:
+        if attempt_id not in _grade_results:
+            raise _http_error(409, "RT.REVIEW.UNKNOWN_ATTEMPT", "attempt has no valid grade result")
+        _grade_acks.add(attempt_id)
     return {"attempt_id": attempt_id, "status": "acked"}
 
 

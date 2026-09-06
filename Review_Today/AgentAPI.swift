@@ -279,7 +279,13 @@ enum AgentAPI {
         let (data, response) = try await URLSession.shared.data(for: request)
         let code = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard (200 ... 299).contains(code) else {
-            throw CaptureAPIError.http(code)
+            if let fastapi = try? JSONDecoder().decode(FastAPIError.self, from: data) {
+                throw ReviewAPIError.server(
+                    code: fastapi.detail.errorCode,
+                    message: fastapi.detail.message
+                )
+            }
+            throw ReviewAPIError.http(code)
         }
         return try JSONDecoder().decode(GradeResult.self, from: data)
     }
@@ -290,7 +296,36 @@ enum AgentAPI {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = 10
         request.httpBody = try JSONEncoder().encode(["attempt_id": attemptId.uuidString.lowercased()])
-        _ = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        let code = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard (200 ... 299).contains(code) else {
+            if let fastapi = try? JSONDecoder().decode(FastAPIError.self, from: data) {
+                throw ReviewAPIError.server(
+                    code: fastapi.detail.errorCode,
+                    message: fastapi.detail.message
+                )
+            }
+            throw ReviewAPIError.http(code)
+        }
+    }
+
+    static func reviewErrorCode(
+        for error: Error,
+        fallback: String = "RT.REVIEW.GRADE_FAILED"
+    ) -> String {
+        if let reviewError = error as? ReviewAPIError {
+            return reviewError.errorCode
+        }
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .timedOut, .cannotConnectToHost, .networkConnectionLost,
+                 .notConnectedToInternet, .dnsLookupFailed, .cannotFindHost:
+                return "RT.REVIEW.SERVICE_UNAVAILABLE"
+            default:
+                break
+            }
+        }
+        return fallback
     }
 
     static func getCapture(taskId: UUID) async throws -> CaptureView {
@@ -327,7 +362,48 @@ private struct FastAPIError: Decodable {
     var detail: AgentAPI.APIError
 }
 
+enum ReviewAPIError: Error {
+    case server(code: String, message: String)
+    case http(Int)
+
+    var errorCode: String {
+        switch self {
+        case .server(let code, _): return code
+        case .http(let status) where status == 408 || status == 429 || status >= 500:
+            return "RT.REVIEW.SERVICE_UNAVAILABLE"
+        case .http:
+            return "RT.REVIEW.REQUEST_FAILED"
+        }
+    }
+}
+
 enum CaptureAPIError: Error {
     case server(code: String, message: String)
     case http(Int)
+
+    var errorCode: String {
+        switch self {
+        case .server(let code, _): return code
+        case .http(let status) where status == 408 || status == 429 || status >= 500:
+            return "RT.CAPTURE.SERVICE_UNAVAILABLE"
+        case .http:
+            return "RT.CAPTURE.REQUEST_FAILED"
+        }
+    }
+
+    static func code(for error: Error, fallback: String = "RT.CAPTURE.MODEL_FAILED") -> String {
+        if let captureError = error as? CaptureAPIError {
+            return captureError.errorCode
+        }
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .timedOut, .cannotConnectToHost, .networkConnectionLost,
+                 .notConnectedToInternet, .dnsLookupFailed, .cannotFindHost:
+                return "RT.CAPTURE.SERVICE_UNAVAILABLE"
+            default:
+                break
+            }
+        }
+        return fallback
+    }
 }

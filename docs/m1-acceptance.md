@@ -61,6 +61,83 @@ M1 证明一条真实纵向链路可用，不证明模型已经能稳定处理�
 
 问题不要求逐字固定，但必须能通过上述评分关键点判断用户是否理解光合作用过程。
 
+### 3.1 M1 capture 稳定字段
+
+M1.4 Mac 客户端可以直接依赖以下服务字段：
+
+- 任务层：`task_id`、`status`、`user_status`、`error_code`、`receipt`、`result`；
+- 回执层：`understood_as`、`theme`、`knowledge_count`、`attribution`；
+- 知识层：`id`、`learning_goal`、`knowledge_type`、`theme`、三类语言字段、`evidence_excerpt`、`evidence_locator`、`title`、`explanation`、`scoring_spec`、`questions`；
+- 评分规格：`learning_goal`、`must_cover`、`acceptable_paraphrases`、`common_misconceptions`、`evidence`、`order_rules`；
+- 问题层：`variant_index`、`prompt_text`。
+
+服务端必须在进入 `committing` 前完成以下硬校验：
+
+- 每个知识 `id` 是有效且批次内唯一的 UUID；
+- 每张知识卡恰有一个 `variant_index = 0` 的主问题，问题序号不得重复；
+- `evidence_excerpt` 与 `scoring_spec.evidence` 都是当前来源原文中的非空连续子串；
+- 结构或来源忠实性不合格时不返回可提交结果，也不能进入 `completed`。
+
+### 3.2 任务幂等与重试语义
+
+- 同一 `task_id` 处于 `processing`、`committing` 或 `completed` 时，重复提交只返回同一任务，不生成第二份服务结果，也不重复入队；
+- 同一 `task_id` 处于 `retryable_failed` 时，重复提交允许将原任务重新置为 `processing` 并入队，但仍复用同一任务记录；
+- 用户主动 `reprocess` 同样复用原任务记录，不创建第二份知识结果；
+- 没有 Mac ACK 时任务必须保持 `committing`；仅当 ACK 中的 knowledge IDs 与服务结果完整匹配时才能进入 `completed`。
+
+### 3.3 Mac 本地提交语义
+
+#12 的 Mac 端必须先建立可持久读取的 `Source` 与 `CaptureTask`，再异步提交服务：
+
+- 本地任务使用稳定的 `task_id` 与 `source_id`，服务不可用时保留原始文字和队列记录；
+- `processing`、`committing` 和 `completed` 按任务 ID 轮询，不能把提交响应的 `processing` 当作完成；
+- 服务返回 `committing` 后，Mac 先按服务知识 ID 幂等写入 `Knowledge`、`Question`、评分规格和 `FsrsState`，本地保存成功后才发送知识 ID ACK；
+- 本地写入或 ACK 失败时保留任务和原始输入，不显示为完成；下一次轮询可继续提交，不插入重复知识；
+- `retryable_failed` 是可恢复状态，待处理入口和首页计数必须可见，并提供重新整理操作。
+
+### 3.4 M1 review 评分契约
+
+评分请求稳定包含 `attempt_id`、`prompt_text`、`scoring_spec`、`answer_text`、`hint_used` 与 `primary_language`。其中 `answer_text` 是用户原始自然语言回答：服务可以检查它是否为空，但不得先改写、提取关键点或增加独立预结构化模型调用；Mac 负责将原始回答保存在 `ReviewAttempt.answerText`。
+
+服务端必须保证：
+
+- 空白回答在调用模型前以 HTTP `422` 拒绝，不生成等级；
+- 评分模型同时获得问题、学习目标、必答点、可接受同义表达、常见误解、原文证据、顺序规则、提示状态和原始回答；
+- `agent_grade` 只能是 `again`、`hard` 或 `good`，模型输出 `easy` 或其他结构错误时必须失败，不能转换成有效等级；
+- 使用提示后，即使模型返回 `good`，服务也必须程序化降为 `hard`；
+- `brief_feedback` 必须非空、简短并使用用户主语言；
+- 同一 `attempt_id` 首次评分成功后，重复评分返回同一缓存结果，不再次调用模型；评分失败不缓存伪结果，允许用同一 ID 重试；
+- 只有已经产生有效评分结果的 `attempt_id` 可以 ACK；错误 ID 必须拒绝，重复 ACK 保持幂等；
+- 模型、网络或结构化评分失败返回 `RT.REVIEW.GRADE_FAILED`，不能产生 ACK、有效等级或“已掌握”状态。
+
+评分响应稳定包含 `attempt_id`、`agent_grade`、`brief_feedback` 与 `hint_used`。服务内评分结果与 ACK 仍是 M1 的内存状态，服务重启恢复不在本里程碑验证范围内。
+
+### 3.5 M1 文字答题客户端契约
+
+- 每道当前题先创建一个 `ReviewAttempt`，原始 `answerText` 在请求评分前写入 SwiftData；空白回答不得创建或提交有效评分。
+- 答题页在 `grading` 期间锁住提交入口；评分失败保留当前题、原始回答和同一个 `attemptId`，允许修改原回答后重试，不推进下一题，也不写入 `agentGrade` 或 `effectiveGrade`。
+- 评分成功只展示 `again`、`hard`、`good`；客户端不得把服务契约之外的等级当作有效结果。
+- 采用判断或用户改判后，正式复习才更新对应 `FsrsState`；`preview` 只记录预览尝试和结果，不更新 FSRS、不进入今天正式复习结果。
+- 同一题的重复点击不能在等待期间创建第二个 `ReviewAttempt`；评分失败重试复用原尝试记录。正式复习 ACK 失败后的保持、补偿和恢复已由 #15 收口。
+
+### 3.6 M1 评分失败安全与重试契约
+
+正式复习的完成顺序固定为：
+
+1. 用户选择 `again`、`hard` 或 `good`，本地保存 `pendingGrade` 和 `ack_pending` 状态；
+2. 服务 ACK 成功；
+3. 本地更新 `FsrsState`、`effectiveGrade`、`acked` 和完成状态，并成功保存；
+4. 保存成功后才进入下一题或总结页。
+
+失败状态必须满足：
+
+- 评分、网络或结构错误：`agentGrade` 与 `effectiveGrade` 为空或保持未完成，原始 `answerText` 和同一个 `attemptId` 可继续重试；
+- ACK 失败：当前题停在可恢复状态，`pendingGrade` 保留，`effectiveGrade` 不写入，FSRS 不变化，不进入下一题；
+- 本地保存失败：不显示已掌握或已计入，保留当前题和可重试的本地状态；
+- 服务端错误码或本地归因码写入 `ReviewAttempt.reviewErrorCode`，用户看到的是“还没有计入复习”，不能误解为回答错误；
+- ACK 重试使用同一个 `attemptId`，服务端重复 ACK 保持幂等，不重复产生业务结果。
+
+
 ## 4. 允许变化与失败边界
 
 以下差异属于生成文风，不应单独判为失败：
@@ -96,7 +173,29 @@ M1 证明一条真实纵向链路可用，不证明模型已经能稳定处理�
 - 正确回答为 `good`，明显错误回答为 `again`；
 - 结果记录模型与命令，但不得输出 API Key、Authorization 头或完整凭证。
 
+无模型契约回归命令（仓库根目录执行）：
+
+```bash
+cd agent-service
+PYTHONPATH=. .venv/bin/python -m unittest discover -s tests -p 'test_*.py' -v
+```
+
 服务级成功不能替代真实 App 验收。
+
+显式真实模型冒烟（会产生模型调用费用）使用 `agent-service/tests/m1_real_smoke.py`。先在一个终端启动本机服务：
+
+```bash
+cd agent-service
+PYTHONPATH=. .venv/bin/python -m agent_service.main
+```
+
+再在另一个终端执行：
+
+```bash
+agent-service/.venv/bin/python agent-service/tests/m1_real_smoke.py
+```
+
+脚本会使用临时 `task_id`、`source_id` 和 `attempt_id`，完成 capture 轮询与 ACK、知识卡结构/来源/主问题校验、正确与明显错误回答评分、重复评分和重复 ACK 检查。默认 `unittest discover` 不会加载该脚本，也不会调用真实模型；脚本输出只保留脱敏后的状态、ID、等级和反馈存在性，不输出 API Key 或 Authorization。
 
 ### 5.2 真实 Mac App 证据
 
@@ -112,6 +211,15 @@ M1 证明一条真实纵向链路可用，不证明模型已经能稳定处理�
 
 应保存：操作路径、关键数据 ID、运行命令与结果、必要截图、失败现象和未覆盖项。
 
+#12 本地恢复检查还应覆盖：
+
+1. 关闭本机 Agent 服务后输入固定样本，确认原文仍留在本地 `Source` 和 `CaptureTask`，首页任务链路显示等待服务恢复；
+2. 启动服务后等待任务依次经过 `processing`、`committing` 与本地写入，确认同一 `task_id` 只产生一张知识卡，问题、评分规格和 `FsrsState` 均已保存；
+3. 在 `committing` 或已完成但本地未落库的补偿路径重复 tick 或重启 App，确认先完成本地幂等写入，再发送知识 ID ACK；
+4. ACK 失败时确认任务保持 `committing`，原始输入保留，下一次确认不会产生重复知识；
+5. 重新打开 App，确认已完成任务和原始 `Source` 仍可从 SwiftData 读取。
+
+服务级契约和客户端构建命令仍以第 5 节为准；本地保存失败与 ACK 失败需要同时保留任务原文和可归因错误码。
 ### 5.3 Rex 体验验收
 
 证明最小体验可以理解和使用：
