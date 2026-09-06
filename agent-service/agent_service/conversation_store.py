@@ -138,6 +138,8 @@ class ConversationStore:
         if count:
             data["messages"] = data["messages"][count:]
             data["summarized_count"] = max(0, data.get("summarized_count", 0) - count)
+            retained = {m["message_id"] for m in data["messages"]}
+            data["summarized_message_ids"] = [mid for mid in data.get("summarized_message_ids", []) if mid in retained]
         for run in data["runs"].values():
             task = data["tasks"].get(run.get("task_id"))
             referenced = task and (task["status"] not in {"completed", "cancelled", "terminal_failed"} or

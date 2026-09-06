@@ -148,7 +148,7 @@ enum ConversationProcessor {
                 }.map(\.id))
                 let recent = try context.fetch(recentQuery).reversed().filter { message in
                     message.runID.map { !invalidRuns.contains($0) } ?? true
-                }.map { ["role": $0.role == "assistant" ? "coach" : $0.role, "content": String($0.content.prefix(3000))] }
+                }.map { ["role": $0.role == "assistant" ? "coach" : $0.role, "content": $0.content] }
                 let relatedKnowledge = HarnessProcessor.relevantKnowledgeSummaries(for: message.content, candidates: knowledge.filter { $0.lifecycle == "active" })
                 let memoryCandidates = try LearningMemory.candidates(for: message.content, excluding: sid, context: context)
                 var body: [String: Any] = [

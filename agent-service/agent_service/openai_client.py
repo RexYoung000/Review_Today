@@ -76,6 +76,7 @@ def parse_model(
     model: str | None = None,
     timeout: float = MODEL_TIMEOUT_SECONDS,
     reasoning_effort: str | None = None,
+    max_output_tokens: int | None = None,
     on_partial: Callable[[dict], None] | None = None,
     on_transport: Callable[[str], None] | None = None,
     on_cancel_handle: Callable[[Callable[[], None]], None] | None = None,
@@ -85,10 +86,10 @@ def parse_model(
             if on_partial is not None:
                 result = _stream_model(system, user, text_format, model=model, timeout=timeout,
                                      on_partial=on_partial, on_transport=on_transport, on_cancel_handle=on_cancel_handle,
-                                     reasoning_effort=reasoning_effort)
+                                     reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens)
             else:
                 result = _parse_model(system, user, text_format, model=model, timeout=timeout, on_cancel_handle=on_cancel_handle,
-                                reasoning_effort=reasoning_effort)
+                                reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens)
             budget.remaining()
             return result
     except ModelCallError:
@@ -115,7 +116,7 @@ class ModelCallError(RuntimeError):
         super().__init__(self.code)
 
 
-def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_transport, on_cancel_handle=None, reasoning_effort=None):
+def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_transport, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None):
     """Only output_text reaches the projection callback; reasoning is never read.
 
     A projection is a preview, not a validated model result. Once any preview has
@@ -134,7 +135,7 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
         # before response.created, which the SDK's snapshot aggregator rejects.
         with client.responses.create(model=selected, input=_input(system, user),
            text={"format": _text_format(text_format)}, stream=True,
-           timeout=current_budget.get().take(), **_reasoning(reasoning_effort)) as stream:
+           timeout=current_budget.get().take(), **({"max_output_tokens": max_output_tokens} if max_output_tokens else {}), **_reasoning(reasoning_effort)) as stream:
             for event in stream:
                 current_budget.get().remaining()
                 if event.type == "response.refusal.delta":
@@ -183,7 +184,7 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
     if on_transport:
         on_transport("buffered")
     return _parse_model(system, user, text_format, model=model, timeout=current_budget.get().remaining(),
-                        on_cancel_handle=on_cancel_handle, reasoning_effort=reasoning_effort)
+                        on_cancel_handle=on_cancel_handle, reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens)
 
 
 def model_stream_capability(model: str, *, reasoning_effort: str | None = None) -> dict:
@@ -201,13 +202,13 @@ def model_stream_capability(model: str, *, reasoning_effort: str | None = None) 
     return {"ready": result.ready, "streaming": "ready" if distinct and "buffered" not in transports else "buffered"}
 
 
-def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=None, reasoning_effort=None):
+def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None):
     client = _client(timeout=timeout)
     if on_cancel_handle:
         on_cancel_handle(client.close)
     selected_model = model or MODEL
     params = dict(model=selected_model, input=_input(system, user),
-                  timeout=current_budget.get().take(), **_reasoning(reasoning_effort))
+                  timeout=current_budget.get().take(), **({"max_output_tokens": max_output_tokens} if max_output_tokens else {}), **_reasoning(reasoning_effort))
     if PROVIDER == "deepseek":
         response = client.responses.create(**params, text={"format": _text_format(text_format)})
     else:
@@ -237,6 +238,7 @@ def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=
         response_format=text_format,
         timeout=current_budget.get().take(),
         **({"reasoning_effort": reasoning_effort} if reasoning_effort else {}),
+        **({"max_completion_tokens": max_output_tokens} if max_output_tokens else {}),
     )
     if not completion.choices:
         raise ModelCallError("EMPTY")

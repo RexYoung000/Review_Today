@@ -114,6 +114,9 @@ class ClosureRepairTests(unittest.TestCase):
     def test_summary_failure_does_not_fail_success(self):
         for i in range(12):
             self.send(f"你好 {i}")
+        with self.store.transaction(self.sid) as data:
+            for m in data["messages"]:
+                if m["role"] == "user": m["content"] = "a" * 42000
         with patch("agent_service.conversation.parse_model", side_effect=RuntimeError("secret failure")):
             self.harness.maintain_summary(self.sid)
         self.assertTrue(all(r["status"] == "completed" for r in self.state()["runs"].values()))

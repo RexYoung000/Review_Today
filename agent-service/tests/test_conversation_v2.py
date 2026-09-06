@@ -617,6 +617,9 @@ class ConversationTests(unittest.TestCase):
     def test_summary_keeps_raw_transcript_and_is_session_scoped(self):
         for i in range(13):
             self.send(f"你好 {i}")
+        with self.store.transaction(self.sid) as data:
+            for m in data["messages"]:
+                if m["role"] == "user": m["content"] = "a" * 36000
         self.harness.maintain_summary(self.sid)
         data = self.state()
         self.assertEqual(len([m for m in data["messages"] if m["role"] == "user"]), 13)
@@ -664,7 +667,7 @@ class ConversationTests(unittest.TestCase):
             data["last_acked_seq"] = last
             self.store.compact_acknowledged(data)
         self.assertLessEqual(len(self.state()["events"]), 64)
-        self.assertLessEqual(len(self.state()["messages"]), 32)
+        self.assertEqual(len(self.state()["messages"]), 42, "short conversations must not compact merely because of message count")
         duplicate = self.harness.accept(self.sid, original)
         self.assertEqual(duplicate.run_id, accepted.run_id)
         self.send("之后的新消息")
@@ -691,6 +694,9 @@ class ConversationTests(unittest.TestCase):
 
     def test_summary_failure_retry_does_not_repeat_an_already_published_answer(self):
         for i in range(11): self.send(f"你好 {i}")
+        with self.store.transaction(self.sid) as data:
+            for m in data["messages"]:
+                if m["role"] == "user": m["content"] = "a" * 42000
         normal = self.model
         def fail_summary(*args, **kwargs):
             if args[2] is ConversationSummary: raise RuntimeError("RT.MODEL.TIMEOUT")

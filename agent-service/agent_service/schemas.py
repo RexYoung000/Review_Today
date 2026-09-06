@@ -271,7 +271,7 @@ EvidenceState = Literal["unverified", "supported", "conflicting", "insufficient"
 
 class ContextMessage(BaseModel):
     role: Literal["user", "coach", "system_summary"]
-    content: str = Field(min_length=1, max_length=12_000)
+    content: str = Field(min_length=1, max_length=512_000)
 
 
 class TurnContext(BaseModel):
@@ -285,7 +285,7 @@ class TurnContext(BaseModel):
 
 class SessionTurnRequest(BaseModel):
     client_message_id: str
-    content: str = Field(min_length=1, max_length=40_000)
+    content: str = Field(min_length=1, max_length=512_000)
     content_type: Literal["text", "url"] = "text"
     mode_preset: SessionMode = "auto"
     primary_language: str = "zh"

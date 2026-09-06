@@ -39,13 +39,13 @@ class ExecutionPolicyTests(unittest.TestCase):
     def test_context_removes_narrative_not_current_constraints_or_consent(self):
         import json
         protected = {"current_inputs": ["不要保存"], "pending": {"id": "p", "version": 3}, "task": {"state": "waiting"}}
-        prompt, info = prepare("规则", json.dumps({"context": dict(protected, recent_messages=["长历史" * 1000])}), local_limit=300)
+        prompt, info = prepare("规则", json.dumps({"context": dict(protected, related_knowledge=["长检索" * 1000])}), local_limit=300)
         context = json.loads(prompt)["context"]
         for key, value in protected.items(): self.assertEqual(context[key], value)
         self.assertTrue(info["estimated"])
         self.assertLessEqual(info["ratio"], 1)
         self.assertIsNone(info["model_window"])
-        self.assertIn("recent_messages", info["omitted_narrative"])
+        self.assertIn("related_knowledge", info["omitted_narrative"])
 
     def test_oversize_current_input_fails_without_silent_truncation(self):
         import json
@@ -62,7 +62,7 @@ class ExecutionPolicyTests(unittest.TestCase):
                 self.assertEqual(configured_window("deepseek-v4-pro"), 1_000_000)
                 self.assertIsNone(configured_window("unknown"))
                 _, info = prepare("rules", "prompt", window=configured_window("deepseek-v4-flash"))
-                self.assertEqual(info["input_budget"], 24000)
+                self.assertEqual(info["input_budget"], 256000)
                 self.assertEqual(info["output_reserve"], 4096)
             with patch("agent_service.config.PROVIDER", "openai_compatible"):
                 self.assertEqual(configured_window("any"), 128000)

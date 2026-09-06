@@ -1,10 +1,25 @@
 # M1 Agent Harness V2 验收契约
 
-> 当前顶部/运行入口及原生真实模型发送、流式、重启证据见 §0.15；DeepSeek 接入证据见 §0.13。旧章节保留历史；前批 HTTP 403 属于旧供应商，不是当前 DeepSeek 状态。分开记录代码、受控、真实模型与 Rex 验收。
+> 最新容量/悬停与日常启动状态见 §0.17；顶部/运行入口及先前原生真实模型发送、流式、重启证据见 §0.15；DeepSeek 接入证据见 §0.13。旧章节保留历史；前批 HTTP 403 属于旧供应商，不是当前 DeepSeek 状态。分开记录代码、受控、真实模型与 Rex 验收。
 > 对应 Issue：[#9 M1.1：冻结最小闭环验收契约与固定样本](https://github.com/RexYoung000/Review_Today/issues/9)
 > 2026-09-04：单侧栏、开放式 Agent 工作区、Session 标签和 Today 活动反馈已完成代码实施、构建与受控检查；§0.9 仍是 Rex 的真实体验验收门槛，旧 §0.6 仅保留历史证据。
 > 机器可读样本：`agent-service/tests/fixtures/m1_acceptance.json`
 > 主规格：[Agent Harness V2](agent-harness-v2.md)
+
+## 0.17 256K 活动上下文与即时悬停预览（2026-09-06）
+
+Rex 确认 256K / 约 220K 整理 / 整理后 128–160K 方向后，先修订 Harness §24 与 DESIGN，再实施。随后 Rex 反馈系统 tooltip 没出现 AirJelly 式预览，改为原生 `onHover` 驱动的即时黑底白字短浮层；保留键盘预览及点击详情，不再依赖系统 tooltip。
+
+- 服务默认活动输入上限 256,000、整理触发 220,000、目标 144,000；较小模型扣除 4,096 回答预留并同比缩放。计量继续明确为估算。API 输出预留参数贯穿 Responses、流式及兼容 fallback；模型替换和结构修复重新核算。
+- 服务不再先取最近 16 条或截取每条 3,000 字符。较早已完成问答整组整理，最近完整一组与未完成输入保留；摘要覆盖的消息 ID、版本和引用依赖原子保存，ACK 不删尚未整理的原文。当前输入/任务/确认等保护字段不因达到整理目标而强行裁剪。传入长材料及 Mac 恢复上下文不再受原先 3,000 字符截断；单条请求文本结构限额提高为 512,000 字符，实际模型预算仍单独校验。
+- **194 项无密钥服务测试通过**（19.950 秒，`/tmp/review-today-256k-tests.log`）：覆盖长消息末尾、超过 16 条历史、按 token 触发、整组处理、下一轮不重复整理、摘要失败/空/过长、并发补充/归档/停止取消、记忆失效、重启与 checkpoint/ACK、旧摘要兼容、小窗口分批、硬上限不静默删历史及输出参数。
+- **Mac 构建与完整契约通过**：`/tmp/review-today-256k-build.log`、`/tmp/review-today-256k-mac.log`。包含真实 SSE/稳定重放/输入/记忆/容量口径；新增 hover 后定向契约再次通过：`/tmp/review-today-256k-hover-test.log`。当前 Xcode 构建 `/tmp/review-today-256k-build/Build/Products/Debug/Review_Today.app`。
+- **真实模型合成长历史探针通过**：隔离 `/tmp/review-today-256k-live/checkpoint.sqlite3`，48 条合成历史触发一次摘要；随后问最早一节的纠正代号，正确答 MAPLE-7284（排除旧 PINE-1111），耗时 9.63 秒；回问最新一节答 EXAMPLE-23，耗时 5.84 秒。实际请求估算分别 135,831 / 136,040，均以 256,000 为活动上限；摘要版本一直为 1，原文加两轮问答后 52 条。完整探针与结果在 `/tmp/review-today-256k-live.py`、`/tmp/review-today-256k-live/result.json`。这是合成材料的链路与有限回问验证，不是长教材质量基准或最优窗口证明。
+- **原生真实发送通过**：独立 `com.rexyoung.ReviewToday.NativeQA`、端口 18744、目录 `/tmp/review-today-256k-native`。CUA 发送「你好」完成 1.3 秒，收到 4,721 / 256,000 及 220,000 整理阈值；再从菜单选深入思考并发送合成解释问题，11.0 秒完成。独立结果 `result.json`，4 条消息；原生重启保留回答及容量，未重复生成。
+- **短浮层原生可见**：重建后检查浅深色、指针进入后「约 2.1K / 256K」黑底白字圆角浮层、移开后消失、点击打开详情及 Escape 关闭。CUA 用坐标点击/右键使指针进入控件并截图确认（未以右键绑定浮层）；工具没有独立 mousemove，普通纯悬停手感仍待 Rex。未覆盖本轮 VoiceOver、系统 Reduce Motion 开关及所有窗口边界。
+- **日常构建当前受启动环境阻塞**：已退出 QA 和旧日常 App，打开上述新 normal 构建，恢复「你好」及旧问答；没有向日常会话发送测试输入。旧请求仍如实显示其历史 24K 活动预算，新请求才使用 256K。日常后台 Python 再次卡在 `Py_InitializeFromConfig → getpath_readlines → fopen → open`，尚未进入业务代码；30 秒看门狗重试后仍不可用，采样 `/tmp/review-today-256k-normal-startup.sample`。没有修改系统权限、重置 TCC 或启动另一权限身份的常驻服务绕过；询问 Rex 是否看到系统访问提示。在线备份服务检查点 `/tmp/review-today-before-256k.sqlite3`。不能把这次日常重启报告为已恢复。
+
+功能代码、受控与上述真实模型/界面检查已完成；正常服务恢复及 Rex 悬停/长资料体验验收仍未完成，不关闭 #17、不合并 PR、不放行 M1/M2。
 
 ## 0.16 会话图标、记忆状态与上下文圆环（2026-09-06）
 
