@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Review Today · 吉祥物动效预览</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><div class="brand">Review Today <span>/ MOTION STUDY</span></div><div class="options"><label><input id="reduced" type="checkbox"> 减少动态效果</label><button id="theme" aria-pressed="false">深色</button></div></header>
+<main>
+<div class="intro"><p class="eyebrow">吉祥物 × 现有动效</p><h1>让等待有一点性格。</h1><p>分出一个念头，或坐在声音上。开始、停止、切换，都无需等待一圈结束。</p></div>
+<div class="studies">
+<section class="study" aria-labelledby="thinkingTitle">
+<div class="heading"><span class="number">01</span><div><h2 id="thinkingTitle">分离 · 绕行 · 重组</h2><p>主体保留眼神，一小块身体沿环形轨迹游走。</p></div></div>
+<div class="stage"><canvas id="thinkingHero" role="img" aria-label="静止的吉祥物，思考动画放大预览"></canvas><span class="scale-note">放大观察</span></div>
+<div class="status"><i aria-hidden="true"></i><span id="thinkingStatus" role="status">准备好了</span></div>
+<div class="controls" role="group" aria-label="思考动效控制"><button class="primary" data-panel="thinking" data-mode="thinking" aria-pressed="false">开始思考</button><button data-panel="thinking" data-mode="idle" aria-pressed="true">重组 / 停止</button><button data-panel="thinking" data-mode="error" aria-pressed="false">模拟异常</button></div>
+<div class="sizes"><div class="sizes-title">实际占位对照<span>包含小块的运动范围</span></div><div class="size-grid"><div><canvas id="size18" role="img" aria-label="18 像素占位的思考动画"></canvas><span>18 px <em>现有</em></span></div><div><canvas id="size24" role="img" aria-label="24 像素占位的思考动画"></canvas><span>24 px</span></div><div><canvas id="size32" role="img" aria-label="32 像素占位的思考动画"></canvas><span>32 px</span></div></div></div>
+<p class="note">停止时从当前位置聚回；异常时聚回并停住，状态文字立即更新。</p>
+</section>
+<section class="study" aria-labelledby="voiceTitle">
+<div class="heading"><span class="number">02</span><div><h2 id="voiceTitle">声音上的小生物</h2><p>沿波浪上方点的运动方式，加入倾斜与弹性形变。</p></div></div>
+<div class="stage"><canvas id="voiceHero" role="img" aria-label="静止的吉祥物，波浪动效放大预览"></canvas><span class="scale-note">模拟波浪 · 未开启麦克风</span></div>
+<div class="status"><i aria-hidden="true"></i><span id="voiceStatus" role="status">准备好了</span></div>
+<div class="controls" role="group" aria-label="语音动效控制"><button class="primary" data-panel="voice" data-mode="listening" aria-pressed="false">聆听</button><button data-panel="voice" data-mode="thinking" aria-pressed="false">思考</button><button data-panel="voice" data-mode="speaking" aria-pressed="false">回应</button><button data-panel="voice" data-mode="idle" aria-pressed="true">停止</button></div>
+<div class="voice-options"><div class="range-label"><label for="volume">模拟声量</label><output for="volume" id="volumeValue">55%</output></div><input type="range" id="volume" min="0" max="100" value="55" aria-label="模拟声量"><div class="voice-context"><canvas id="voiceSmall" role="img" aria-label="紧凑语音控制区中的角色和波浪"></canvas><span>紧凑控制区示意</span></div></div>
+<p class="note">可以连续点击「聆听 → 思考 → 回应 → 停止」，观察同一角色如何衔接。</p>
+</section>
+</div>
+<footer><span id="assetStatus" role="status">正在载入角色…</span><span>交互概念预览 · 非 Spine 成品或原生 App · 所有状态均为模拟</span></footer>
+</main><script src="motion.js"></script>
+</body></html>
