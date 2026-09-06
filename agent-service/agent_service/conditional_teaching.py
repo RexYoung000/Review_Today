@@ -99,7 +99,7 @@ class ConditionalTeaching:
         return {"status": "accepted"}
 
     def _search_state(self, sid, rid, rev, state, *, evidence=None, sources=None, detail=""):
-        labels = {"not_called": "本轮复用已有资料", "failed": "网页核验暂未完成", "no_results": "未找到合适的公开资料",
+        labels = {"not_called": "本轮未调用网页检索", "failed": "网页核验暂未完成", "no_results": "未找到合适的公开资料",
                   "insufficient": "部分内容尚待核实", "verified": "公开资料核对完成", "conflicting": "资料存在分歧，正在保留适用范围"}
         with self.store.transaction(sid, rid, rev) as current:
             run = current["runs"][rid]
@@ -126,6 +126,7 @@ class ConditionalTeaching:
             return run["teaching_evidence"], run.get("teaching_sources", [])
         if not (force or decision.scope in {"learning", "continue_goal"} or set(decision.intents) & {"question", "goal", "material", "followup", "example", "hint", "correction", "continue", "skip_check"}):
             return {"state": "unverified", "summary": "", "sources": []}, list(prior.get("sources", []))
+        preparation_failed = False
         try:
             prep = self._call(sid, rid, rev, "teaching_preparation", PREPARE,
                               json.dumps(dict(topic=(task or {}).get("content") or context.get("session_goal") or decision.target_description,
@@ -134,6 +135,7 @@ class ConditionalTeaching:
                                               current_step=next((s for s in prior.get("learning_plan", {}).get("steps", []) if s["id"] == prior.get("learning_plan", {}).get("current_step_id")), None),
                                               previous_concepts=prior.get("taught_concepts", []), prior_queries=prior.get("verified_queries", [])), ensure_ascii=False), TeachingPreparation, ROUTER_MODEL)
         except ModelCallError:
+            preparation_failed = True
             # Planning failure must not discard a safe query already produced by
             # intent recognition or turn an optional local association into a gate.
             prep = TeachingPreparation(concepts=prior.get("taught_concepts", [])[-6:],
@@ -151,6 +153,8 @@ class ConditionalTeaching:
             needs_search = False
         if not needs_search:
             evidence = prior.get("evidence") or {"state": "unverified", "summary": "", "sources": []}
+            if preparation_failed and not prior.get("evidence"):
+                evidence = {"state": "insufficient", "summary": "网页核验暂未完成，先讲基础内容；需要查证的部分仍待核实。", "sources": []}
             self._search_state(sid, rid, rev, "not_called", evidence=evidence, sources=sources)
             return evidence, sources
         evidence = {"state": "insufficient", "summary": "网页核验暂未完成，先讲基础内容；涉及变化或争议的部分仍需核实。", "sources": []}

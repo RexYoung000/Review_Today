@@ -85,6 +85,20 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertEqual(run["search_state"], "failed")
         self.assertEqual(run["teaching_evidence"]["state"], "insufficient")
 
+    def test_failed_preparation_without_safe_query_does_not_claim_reuse_or_verification(self):
+        base = self.model
+        def fail_preparation(system, prompt, schema, **kw):
+            if schema is TeachingPreparation: raise ModelCallError("SCHEMA", "json_invalid")
+            return base(system, prompt, schema, **kw)
+        self.decision = intent("question", public_search_query="")
+        with patch("agent_service.conversation.parse_model", side_effect=fail_preparation), patch("agent_service.conversation.web_search_text") as search:
+            accepted = self.send("解释一下我的私人资料")
+        search.assert_not_called()
+        run = self.state()["runs"][accepted.run_id]
+        self.assertEqual(run["status"], "completed")
+        self.assertEqual(run["search_state"], "not_called")
+        self.assertIn("网页核验暂未完成", self.state()["messages"][-1]["content"])
+
     def test_uncertain_empty_question_cannot_execute_save(self):
         self.decision = intent("goal").model_copy(update={"relation": "uncertain"})
         with patch("agent_service.conversation.web_search_text") as search:
