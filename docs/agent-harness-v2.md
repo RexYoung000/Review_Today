@@ -710,6 +710,8 @@ v1 capture 与 review API 在 V2 真实体验验收通过前保留。
 
 ### 11.1 自动化
 
+2026-09-06：按 Rex 的选择，当前开发 Mac POC 不使用 GitHub Actions 云端自动测试，移除 push / PR 工作流。本地自动化继续保留：按改动影响执行 `bash agent-service/run-controlled.sh`、`bash tests/mac/run-contracts.sh`、`bash tests/mac/run-migration.sh` 及必要的 Debug / Release 构建，明确记录未运行项。测试场景和真实 Mac 验收门槛不变；未来重新启用云端执行须先明确需求。
+
 - Session 隔离、归档、恢复和结构化交接；
 - 单侧栏导航、Session 搜索／滚动／准确选择、标签覆盖与运行中直接归档；
 - 活动类型写入、ReviewAttempt 完成时间、按日聚合、热力强度、连续天数和幂等去重；

@@ -4,6 +4,8 @@ Review Today 是“个人学习教练”的项目仓库。它帮助用户理解�
 
 ## 当前阶段
 
+当前采用**本地自动化测试与真实 Mac 验收**。按 Rex 的选择停用 GitHub Actions 云端测试，不再在 push / PR 时启动云端任务。服务回归、Mac 契约、旧库迁移与构建检查仍按改动范围在本机执行，测试入口见下方；GitHub 继续承载代码、PR 和 Issue。
+
 **已合入 main，分支清理完成**：issue 10–16 的 PR 与 `m1/issue-17` 对应 PR #25 均已合入，本地和远端仅剩 main，只有 1 个工作树。#25 合入前重新通过 194 项服务测试、全部 Mac 契约、旧数据迁移及 Debug / Release 构建。Issue #17 与父 Issue #1 保持打开，用于完整体验验收；M1 未最终验收，M2 不启动。结果与外部 CI 限制见 [验收 §0.19](docs/m1-acceptance.md#019-合入-main-与保留体验验收2026-09-06) 和 [分支核对](docs/m1-branch-audit.md)。下方各批记录按日期保留，历史“暂不合并 PR”限制已被本次明确合入授权覆盖。
 
 最新修复为开发服务启动保护：Debug 使用 Rex 在 Xcode 选择的稳定开发签名，冷启动等待 90 秒，已就绪服务连续不可达 10 秒再恢复，并区分初始化阶段。**签名构建与原生验证通过，日常 App 已恢复**：三次完整重启分别 1.92 / 1.91 / 2.11 秒连通，短暂中断不重启、进程退出自动恢复，原会话保留。编译、Mac 契约与启动冒烟证据见 [验收 §0.18](docs/m1-acceptance.md#018-开发服务启动修复2026-09-06)。
@@ -36,7 +38,7 @@ Review Today 是“个人学习教练”的项目仓库。它帮助用户理解�
 
 开发运行入口：默认 Debug App 正常使用，不设置 `REVIEW_TODAY_M1_UI_FIXTURE` 或 `REVIEW_TODAY_NATIVE_TEST_DIR`。`REVIEW_TODAY_M1_UI_FIXTURE=learning` 仅供界面预览（内存、不可发送）；真实模型隔离验收需独立 `.NativeQA` bundle、`REVIEW_TODAY_NATIVE_TEST_DIR` 指定临时 `review-today-` 目录，端口用 `REVIEW_TODAY_NATIVE_TEST_PORT`（默认 18742，不可使用日常 8742）。不能把预览构建留作日常 App；Release 忽略测试模式。参数和可复跑证据见验收 §0.15。
 
-Debug 日常构建使用工程配置的 Apple Development 签名，需本机相应开发证书；其他开发者在 Xcode 选择自己的 Team。不要用 `CODE_SIGN_IDENTITY=-` 替代后当作日常构建，临时签名无法稳定继承系统文件访问身份。CI 的 `CODE_SIGNING_ALLOWED=NO` 只验证编译。首次启动预算 90 秒，已就绪服务连续不可达 10 秒再恢复；无需默认开启完整磁盘访问，也不自动修改系统权限。
+Debug 日常构建使用工程配置的 Apple Development 签名，需本机相应开发证书；其他开发者在 Xcode 选择自己的 Team。不要用 `CODE_SIGN_IDENTITY=-` 替代后当作日常构建，临时签名无法稳定继承系统文件访问身份。独立构建检查可用 `CODE_SIGNING_ALLOWED=NO` 只验证编译。首次启动预算 90 秒，已就绪服务连续不可达 10 秒再恢复；无需默认开启完整磁盘访问，也不自动修改系统权限。
 
 历史数据注意：本机当前无沙盒开发库与旧沙盒库分开，旧库的 8 张知识卡/3 条复习记录尚未合入当前开发库。本轮没有删除或迁移；详见验收 §0.15，后续需确认安全合并方案，不能把 schema 迁移测试当作用户数据已合并。
 
