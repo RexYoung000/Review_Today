@@ -4,19 +4,21 @@ import SwiftUI
 /// Shared feedback, without changing the geometry of navigation or text rows.
 struct InteractionButtonStyle: ButtonStyle {
     var selected = false
+    // Owned by the control, not inherited from a focusable list/container.
+    var focused = false
     var padding: CGFloat = 6
 
     func makeBody(configuration: Configuration) -> some View {
-        Feedback(configuration: configuration, selected: selected, padding: padding)
+        Feedback(configuration: configuration, selected: selected, focused: focused, padding: padding)
     }
 
     private struct Feedback: View {
         let configuration: ButtonStyle.Configuration
         let selected: Bool
+        let focused: Bool
         let padding: CGFloat
         @State private var hovering = false
         @Environment(\.isEnabled) private var enabled
-        @Environment(\.isFocused) private var focused
         @Environment(\.accessibilityReduceMotion) private var reduced
         @Environment(\.runway) private var runway
 
@@ -97,7 +99,7 @@ struct SingleLevelMenu: View {
                 if !label.isEmpty { Text(label).lineLimit(1) }
             }.frame(minHeight: 26)
         }
-        .buttonStyle(InteractionButtonStyle(selected: presented))
+        .buttonStyle(InteractionButtonStyle(selected: presented, focused: triggerFocused))
         .focusable().focusEffectDisabled()
         .focused($triggerFocused)
         .help(title).accessibilityLabel(label.isEmpty ? title : "\(title)：\(label)")
@@ -164,7 +166,7 @@ private struct ChoiceMenuContent: View {
                             .opacity(selectedID == item.id ? 1 : 0).frame(width: 14)
                     }.padding(9).contentShape(Rectangle())
                 }
-                .buttonStyle(InteractionButtonStyle(selected: selectedID == item.id, padding: 0))
+                .buttonStyle(InteractionButtonStyle(selected: selectedID == item.id, focused: focus == item.id, padding: 0))
                 .focusable().focusEffectDisabled()
                 .focused($focus, equals: item.id)
                 .accessibilityAddTraits(selectedID == item.id ? [.isSelected] : [])

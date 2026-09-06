@@ -367,7 +367,7 @@ struct AppSidebar: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(InteractionButtonStyle(padding: 0))
+            .buttonStyle(InteractionButtonStyle(focused: focusedSessionID == session.id, padding: 0))
             .focusable().focusEffectDisabled()
             .focused($focusedSessionID, equals: session.id)
             .help(session.title)
