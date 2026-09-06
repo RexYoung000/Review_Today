@@ -17,6 +17,17 @@ Rex 授权修复后，先修订 Harness §7.1 / §8 对应启动契约再实施�
 - 最后补齐 validation 失败投影后，全部 Swift 源码重新编译并通过定向启动契约：`/tmp/review-today-startup-final-contract.log`。从当前 Swift 提取实际 bootstrap 命令，使用空凭证、18749 与临时检查点启动 Python，0.95 秒取得 health ok / key_configured=false，两个阶段标记顺序正确，退出清理自己启动的进程；目录 `/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-startup-smoke-0wycmb49`。这仅证明启动命令与服务导入，不代替 App 权限身份下的验证。
 - 当前保留旧 `/tmp/review-today-256k-build/Build/Products/Debug/Review_Today.app`，原生检查「你好」问答及 1.3 秒完成记录完整、无服务错误横幅，8742 DeepSeek 三角色及流式 ready；未向日常会话发送测试输入。新版未替换日常 App，最终签名与真实收发/连续重启仍待授权后完成。
 
+### 续验：签名授权完成与日常启动恢复（2026-09-06）
+
+本段覆盖上方“新版待签名/未交付”的历史状态。Rex 在 Xcode 选择自己的开发团队（`7NDKLL3UJK`），随后完成本机钥匙串授权；保留该工程修改，不回退之前自动选取的团队。
+
+- Debug 正常与独立 NativeQA 均使用工程里的 Apple Development 签名构建成功；`codesign --verify --deep --strict` 通过，designated requirement 为 bundle identifier + Apple 证书身份，不再绑定单次代码 cdhash。日志 `/tmp/review-today-startup-fix-build.log`、`/tmp/review-today-startup-qa-build.log`。只作开发构建，不是正式分发或发布。
+- 退出旧 ad-hoc App 后，确认旧服务一起结束，新版自行启动 Python 子进程。随后正常 App 三次完整退出/重新启动，每次先确认 8742 无监听，health ok 用时 **1.92 / 1.91 / 2.11 秒**，每次为新的 App / Python 父子进程；结果 `/tmp/review-today-startup-restarts.jsonl`，复跑脚本 `/tmp/review-today-check-restart.py`。这三次未复现前次初始化阻塞，不代表覆盖所有系统权限/首次安装环境。
+- 原生真实收发使用独立 bundle `com.rexyoung.ReviewToday.NativeQA`、18746、`/tmp/review-today-startup-native-validation`。通过原生输入区发送主动回忆解释问题，**3.2 秒**完成；App 展示实际 1,891 / 256,000、220,000 整理阈值。测试库不写入日常会话。
+- 测试服务空闲时暂停 3 秒再继续，原 PID 不变、连接恢复；主动结束该测试子进程后，App **3.01 秒**自动启动新 PID 并恢复 health。2 条消息 / 1 个 Run 数量保持，未重生成。证据 `recovery.json` 与 `/tmp/review-today-startup-recovery.py`。恢复后继续原会话提问，**3.9 秒**完成，最终 **4 条消息 / 2 个 Run**，`result.json`；圆环显示 2,215 / 256,000。
+- 已退出 QA 及其托管服务，保留 `/tmp/review-today-startup-fix-build/Build/Products/Debug/Review_Today.app` 日常构建与 8742 服务。原「你好」问答、1.3 秒记录及当前未发送草稿保留，发送按钮可用；未向日常会话投递测试输入。旧记录仍如实显示当时的 24K 上限，新请求才取得 256K。不重新迁移历史库、不关闭 #17/M1。
+- 本轮复用上方源码无变化的 Mac 契约/无密钥冒烟结果，新增签名、原生启动/短暂中断/退出恢复/真实收发证据。代理未修改 TCC、钥匙串 ACL 或完整磁盘权限；本机钥匙串授权由 Rex 完成。
+
 ## 0.17 256K 活动上下文与即时悬停预览（2026-09-06）
 
 Rex 确认 256K / 约 220K 整理 / 整理后 128–160K 方向后，先修订 Harness §24 与 DESIGN，再实施。随后 Rex 反馈系统 tooltip 没出现 AirJelly 式预览，改为原生 `onHover` 驱动的即时黑底白字短浮层；保留键盘预览及点击详情，不再依赖系统 tooltip。
