@@ -105,13 +105,26 @@ struct AppSidebar: View {
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
     var coordinator: ReviewCoordinator
-    @State private var selection: SidebarItem? = .today
+    @State private var selection: SidebarItem?
     @State private var selectedKnowledgeID: UUID?
     @State private var monitor = AgentServiceMonitor()
     @Query private var inbox: [CaptureTask]
     @Query private var knowledge: [Knowledge]
     @Query private var settingsRows: [AppSettings]
+
+    init(coordinator: ReviewCoordinator) {
+        self.coordinator = coordinator
+#if DEBUG
+        let fixtureEnabled = M1DebugFixture.enabled
+        _selection = State(initialValue: fixtureEnabled ? .library : .today)
+        _selectedKnowledgeID = State(initialValue: fixtureEnabled ? M1DebugFixture.knowledgeID : nil)
+#else
+        _selection = State(initialValue: .today)
+        _selectedKnowledgeID = State(initialValue: nil)
+#endif
+    }
 
     var body: some View {
         NavigationSplitView {
@@ -153,6 +166,22 @@ struct ContentView: View {
             monitor.stop()
         }
         .onAppear {
+#if DEBUG
+            if M1DebugFixture.enabled {
+                if M1DebugFixture.mode == "review" {
+                    coordinator.startPreview(
+                        knowledgeID: M1DebugFixture.knowledgeID,
+                        questionID: M1DebugFixture.questionID
+                    )
+                    openWindow(id: "review")
+                } else {
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .milliseconds(600))
+                        dismissWindow(id: "review")
+                    }
+                }
+            }
+#endif
             UNUserNotificationCenter.current().delegate = NotificationRelay.shared
             NotificationRelay.shared.onStart = { startDueReview() }
             NotificationRelay.shared.onSnooze = { minutes in

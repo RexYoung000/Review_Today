@@ -73,12 +73,11 @@ struct LibraryView: View {
                 )
             }
         }
-        .onChange(of: selectedID) { _, newValue in
-            guard !showDeck else { return }
-            guard let newValue, let match = allItems.first(where: { $0.id == newValue }) else { return }
-            filter = match.lifecycle
-            theme = "all"
-            openDeck(match)
+        .onChange(of: selectedID) { _, _ in
+            openSelectedKnowledgeIfNeeded()
+        }
+        .onChange(of: allItems.map(\.id), initial: true) { _, _ in
+            openSelectedKnowledgeIfNeeded()
         }
         .onChange(of: browsingIndex) { _, newValue in
             if visibleItems.indices.contains(newValue) {
@@ -187,6 +186,16 @@ struct LibraryView: View {
         case "soft_deleted": String(localized: "没有已软删除的知识。")
         default: String(localized: "还没有知识点。在今天记录想记住的内容。")
         }
+    }
+
+    private func openSelectedKnowledgeIfNeeded() {
+        guard !showDeck,
+              let selectedID,
+              let match = allItems.first(where: { $0.id == selectedID })
+        else { return }
+        filter = match.lifecycle
+        theme = "all"
+        openDeck(match)
     }
 
     private func openDeck(_ item: Knowledge) {
@@ -299,11 +308,38 @@ enum KnowledgeLexicon {
         return parse(item.learningGoal)
     }
 
+    static func mainQuestion(for item: Knowledge) -> Question? {
+        item.questions.first {
+            $0.variantIndex == 0
+                && !$0.promptText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        }
+    }
+
     static func scoring(for item: Knowledge) -> AgentAPI.ScoringSpec? {
-        guard let json = item.questions.sorted(by: { $0.variantIndex < $1.variantIndex }).first?.scoringSpecJSON,
+        guard let json = mainQuestion(for: item)?.scoringSpecJSON,
               let data = json.data(using: .utf8)
         else { return nil }
         return try? JSONDecoder().decode(AgentAPI.ScoringSpec.self, from: data)
+    }
+
+    static func previewUnavailableReason(for item: Knowledge) -> String? {
+        guard mainQuestion(for: item) != nil else {
+            return String(localized: "缺少主问题，暂时不能试一题。")
+        }
+        guard let spec = scoring(for: item) else {
+            return String(localized: "评分规格无法读取，暂时不能试一题。")
+        }
+        guard !spec.learningGoal.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              spec.mustCover.contains(where: { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty })
+        else {
+            return String(localized: "评分关键点不完整，暂时不能试一题。")
+        }
+        guard !item.evidenceExcerpt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !spec.evidence.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        else {
+            return String(localized: "缺少来源证据，暂时不能试一题。")
+        }
+        return nil
     }
 
     private static func strongTitle(for item: Knowledge) -> String {
@@ -569,7 +605,13 @@ private struct KnowledgeDeckOverlay: View {
                     item: wrapper.item,
                     siblings: items,
                     onPreview: {
-                        coordinator.startPreview(knowledgeID: wrapper.item.id)
+                        guard let question = KnowledgeLexicon.mainQuestion(for: wrapper.item),
+                              KnowledgeLexicon.previewUnavailableReason(for: wrapper.item) == nil
+                        else { return }
+                        coordinator.startPreview(
+                            knowledgeID: wrapper.item.id,
+                            questionID: question.id
+                        )
                         openWindow(id: "review")
                         onClose()
                     },
@@ -640,7 +682,9 @@ private struct KnowledgeDepthCard: View {
     var onDelete: () -> Void
     @Environment(\.runway) private var runway
 
+    private var mainQuestion: Question? { KnowledgeLexicon.mainQuestion(for: item) }
     private var spec: AgentAPI.ScoringSpec? { KnowledgeLexicon.scoring(for: item) }
+    private var previewUnavailableReason: String? { KnowledgeLexicon.previewUnavailableReason(for: item) }
     private var cover: [String] {
         spec?.mustCover.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty } ?? []
     }
@@ -671,7 +715,9 @@ private struct KnowledgeDepthCard: View {
             ScrollView(.vertical, showsIndicators: true) {
                 VStack(alignment: .leading, spacing: Runway.section) {
                     detailBlock
+                    questionBlock
                     memoryBlock
+                    sourceBlock
                 }
                 .padding(.horizontal, Runway.gap)
                 .padding(.bottom, Runway.gap)
@@ -680,27 +726,39 @@ private struct KnowledgeDepthCard: View {
             .scrollIndicators(.visible)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            HStack(alignment: .center, spacing: Runway.space) {
-                Text("下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Menu {
-                    if item.lifecycle == "active" {
-                        Button(String(localized: "暂停")) { item.lifecycle = "paused" }
-                        Button(String(localized: "软删除"), role: .destructive) { item.lifecycle = "soft_deleted" }
-                    } else {
-                        Button(String(localized: "恢复")) { item.lifecycle = "active" }
-                    }
-                    Button(String(localized: "永久删除"), role: .destructive, action: onDelete)
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.body.weight(.medium))
-                        .foregroundStyle(.secondary)
-                        .frame(width: 28, height: 28)
+            VStack(alignment: .leading, spacing: Runway.space) {
+                if let previewUnavailableReason {
+                    Label(previewUnavailableReason, systemImage: "exclamationmark.triangle")
+                        .font(.caption)
+                        .foregroundStyle(Color.orange)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .menuStyle(.borderlessButton)
-                RunwayPrimaryButton(title: String(localized: "试一题"), action: onPreview)
+                HStack(alignment: .center, spacing: Runway.space) {
+                    Text("下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Menu {
+                        if item.lifecycle == "active" {
+                            Button(String(localized: "暂停")) { item.lifecycle = "paused" }
+                            Button(String(localized: "软删除"), role: .destructive) { item.lifecycle = "soft_deleted" }
+                        } else {
+                            Button(String(localized: "恢复")) { item.lifecycle = "active" }
+                        }
+                        Button(String(localized: "永久删除"), role: .destructive, action: onDelete)
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .frame(width: 28, height: 28)
+                    }
+                    .menuStyle(.borderlessButton)
+                    RunwayPrimaryButton(
+                        title: String(localized: "试一题"),
+                        enabled: previewUnavailableReason == nil,
+                        action: onPreview
+                    )
+                }
             }
             .padding(.horizontal, Runway.gap)
             .padding(.top, 12)
@@ -723,9 +781,28 @@ private struct KnowledgeDepthCard: View {
         }
     }
 
+    private var questionBlock: some View {
+        VStack(alignment: .leading, spacing: Runway.gap) {
+            Text(String(localized: "主问题"))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            if let mainQuestion {
+                Text(mainQuestion.promptText)
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(runway.ink)
+                    .lineSpacing(4)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                Text(String(localized: "这张卡还没有可用的主问题。"))
+                    .font(.callout)
+                    .foregroundStyle(Color.orange)
+            }
+        }
+    }
+
     private var memoryBlock: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(String(localized: "怎么记"))
+            Text(String(localized: "判断关键点"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             if !orderHint.isEmpty {
@@ -746,6 +823,50 @@ private struct KnowledgeDepthCard: View {
                 memoryRow(line, ok: false)
             }
         }
+    }
+
+    private var sourceBlock: some View {
+        VStack(alignment: .leading, spacing: Runway.gap) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(String(localized: "来源证据"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: Runway.space)
+                if let locator = sourceLocator {
+                    Link(String(localized: "打开来源"), destination: locator)
+                        .font(.caption)
+                } else {
+                    Text(String(localized: "来自你提交的原文"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            let evidence = item.evidenceExcerpt.trimmingCharacters(in: .whitespacesAndNewlines)
+            if evidence.isEmpty {
+                Text(String(localized: "没有可核对的原文证据。"))
+                    .font(.callout)
+                    .foregroundStyle(Color.orange)
+            } else {
+                Text("“\(evidence)”")
+                    .font(.callout)
+                    .foregroundStyle(runway.copy)
+                    .lineSpacing(4)
+                    .textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(Runway.gap)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(runway.field, in: RoundedRectangle(cornerRadius: Runway.innerRadius, style: .continuous))
+            }
+        }
+    }
+
+    private var sourceLocator: URL? {
+        let locator = item.evidenceLocator.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let url = URL(string: locator),
+              let scheme = url.scheme?.lowercased(),
+              ["http", "https"].contains(scheme)
+        else { return nil }
+        return url
     }
 
     @ViewBuilder

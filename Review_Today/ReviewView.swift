@@ -38,7 +38,12 @@ struct ReviewView: View {
     }
 
     private var question: Question? {
-        current?.questions.sorted(by: { $0.variantIndex < $1.variantIndex }).first
+        guard let current else { return nil }
+        if isPreview, let questionID = coordinator.previewQuestionID {
+            return current.questions.first(where: { $0.id == questionID })
+        }
+        return current.questions.first(where: { $0.variantIndex == 0 })
+            ?? current.questions.sorted(by: { $0.variantIndex < $1.variantIndex }).first
     }
 
     var body: some View {
