@@ -46,7 +46,7 @@ Debug 日常构建使用工程配置的 Apple Development 签名，需本机相�
 
 前批在独立文档检查点 `2a69931` 推送后实现：四入口/Agent 起始页、常驻会话区、首发原子建会话、双控制、原生环点/选择动效，以及类型化学习记忆、排除门禁、连续恢复、稳定步骤、来源版本和有限执行预算。构建、受控回归及旧库迁移证据见验收 §0.12。当时因锁屏未验新增原生交互，旧供应商后续返回 HTTP 403；这不是当前阻塞，后续 DeepSeek 接入及原生续验以 §0.13–0.15 为准。听写/语音聊天仍只是后续方向。
 
-[OneWorks 两版实际候选](brand/oneworks/README.md) 已保留原始矢量、参数及 16–1024 px 导出；Rex 选择前不替换 V8。执行回归入口：`bash agent-service/run-controlled.sh`、`bash tests/mac/run-contracts.sh`、`bash tests/mac/run-migration.sh`。所有脚本使用隔离数据，不运行真实供应商训练任务。
+品牌已按 Rex 选定原始 A 接入新 AppIcon、侧栏、Agent 标题及菜单栏资源；[接入与验证记录](brand/refresh-2026-09/production.md) 包含原生浅深色检查与最新吉祥物提案。旧角色/语音 POC 保留；[OneWorks 两版候选](brand/oneworks/README.md) 为探索历史。执行回归入口：`bash agent-service/run-controlled.sh`、`bash tests/mac/run-contracts.sh`、`bash tests/mac/run-migration.sh`。所有脚本使用隔离数据，不运行真实供应商训练任务。
 
 当前实施已获授权：先同步全局协作规则（本机备份、不随项目提交）及项目文档，再按 Harness §19 完成安全恢复、学习记忆、内部可靠性、Agent 起始页/双控制/动效。首次发送才建会话、快捷开始仅编辑草稿。全局规则不扩大危险操作、发布或品牌采用权限。OpenAI Docs Skill 仅记录审查建议，不在此修改。
 
@@ -93,4 +93,4 @@ Debug 日常构建使用工程配置的 Apple Development 签名，需本机相�
 - 改配置后重启本地服务；Debug App 在无外部实例时自动托管。`GET /healthz` 的 `provider`、`model_roles` 和 `strengths` 为脱敏检查依据。失败的历史回复仍需手动重试，配置切换不自动恢复停止/归档。
 - 无密钥回归：`bash agent-service/run-controlled.sh`（脚本主动清空两种凭证、使用隔离库）。真实模型检查：在 `agent-service` 运行 `.venv/bin/python -m tests.stream_real_smoke`，或加 `--case rag_answer --deep`；使用合成输入和临时数据库，会产生真实 API 用量。
 
-当前目标主规格为 [Harness §19 / §18](docs/agent-harness-v2.md)，新门槛与旧实施证据分别见 [验收 §0.12 / §0.11 / §0.10](docs/m1-acceptance.md)。旧「已有」只说明基础存在，不保证新目标完成。先独立文档 commit/push，后续实现按契约分批验证与提交；本轮文档检查点推送成功后连续实施，不在文档完成处停止；各批实际证据另记。新图标候选按 [品牌记录](brand/README.md) 交 Rex 选择，正式 V8 保留至明确接受。
+当前目标主规格为 [Harness §19 / §18](docs/agent-harness-v2.md)，新门槛与旧实施证据分别见 [验收 §0.12 / §0.11 / §0.10](docs/m1-acceptance.md)。旧「已有」只说明基础存在，不保证新目标完成。先独立文档 commit/push，后续实现按契约分批验证与提交；本轮文档检查点推送成功后连续实施，不在文档完成处停止；各批实际证据另记。品牌当前状态以 [品牌记录](brand/README.md) 为准：原始 A 图标已接入，吉祥物仍在造型探索。

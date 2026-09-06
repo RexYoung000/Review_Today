@@ -74,7 +74,7 @@ struct Review_TodayApp: App {
         }
         .modelContainer(container)
 
-        MenuBarExtra(String(localized: "Review Today"), systemImage: "sun.max") {
+        MenuBarExtra(String(localized: "Review Today"), image: "BrandMenuMark") {
             MenuBarCapture()
                 .modelContainer(container)
                 .runwayAppearance()

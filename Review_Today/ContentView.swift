@@ -259,7 +259,7 @@ struct AppSidebar: View {
 
     private var brand: some View {
         HStack(spacing: 8) {
-            CoachMark(pose: .idle, size: 27)
+            BrandMark(size: 27)
             Text("Review Today").font(.system(size: 15, weight: .semibold)).lineLimit(1)
             Spacer(minLength: 0)
             ChromeIconButton(title: "收起侧栏", symbol: "sidebar.left", action: onCollapse)
@@ -518,7 +518,7 @@ private struct SidebarIconRail: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            Button(action: onExpand) { CoachMark(pose: .idle, size: 27).frame(width: 38, height: 34) }
+            Button(action: onExpand) { BrandMark(size: 27).frame(width: 38, height: 34) }
                 .buttonStyle(InteractionButtonStyle(padding: 2))
                 .help("展开侧栏").accessibilityLabel("Review Today，展开侧栏")
                 .padding(.top, 12).padding(.bottom, 8)

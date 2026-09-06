@@ -200,7 +200,7 @@ struct LearningWorkspace: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     HStack(spacing: 16) {
-                        CoachMark(pose: .idle, size: 58)
+                        BrandMark(size: 58)
                         VStack(alignment: .leading, spacing: 6) {
                             Text("Review Today").font(.system(size: 30, weight: .semibold))
                             Text("从一个问题开始，把理解留住。").font(.callout).foregroundStyle(.secondary)
