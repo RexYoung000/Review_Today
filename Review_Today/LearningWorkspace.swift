@@ -380,7 +380,7 @@ struct LearningWorkspace: View {
                             }
                         }
                         if message.role == "user", let task = sessionTasks.first(where: { $0.inputMessageID == message.id }) {
-                            taskCard(task, run: message.runID.flatMap { id in runs.first(where: { $0.id == id }) }, runEvents: runEvents)
+                            taskCard(task, run: message.runID.flatMap { id in runs.first(where: { $0.id == id }) }, runEvents: runEvents, sessionMessages: sessionMessages)
                         }
                         if let task = sessionTasks.first(where: { ConversationProcessor.object($0.learningOutcomeJSON)?["message_id"] as? String == message.id.uuidString.lowercased() }) {
                             learningOutcome(task)
@@ -459,7 +459,7 @@ struct LearningWorkspace: View {
                       .background(runway.field, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
                       .frame(maxWidth: bubbleWidth, alignment: .trailing)
               } else {
-                  LearningAnswerText(content: message.content)
+                  LearningAnswerText(content: message.content, availableWidth: bubbleWidth)
                       .foregroundStyle(runway.ink)
                       .frame(maxWidth: bubbleWidth, alignment: .leading)
               }
@@ -480,9 +480,12 @@ struct LearningWorkspace: View {
         }
     }
 
-    private func taskCard(_ task: LearningTask, run: AgentRun?, runEvents: [SessionEventRecord]) -> some View {
+    private func taskCard(_ task: LearningTask, run: AgentRun?, runEvents: [SessionEventRecord], sessionMessages: [AgentMessage]) -> some View {
         let taskEvents = events.filter { $0.taskID == task.id }.sorted { $0.seq < $1.seq }
         let options = Self.options(task.requiredActionOptionsJSON)
+        let taskAnswers = sessionMessages.filter { message in
+            message.role != "user" && (message.taskID == task.id || runs.contains { $0.id == message.runID && $0.taskID == task.id })
+        }
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 8) {
                 if let run, run.status != "completed" {
@@ -514,10 +517,12 @@ struct LearningWorkspace: View {
             }
 
             if selectedSession?.status == "active", let prompt = task.requiredActionPrompt, task.pendingActionID == nil {
-                Text(prompt)
-                    .font(.callout.weight(.medium))
-                    .foregroundStyle(runway.ink)
-                    .fixedSize(horizontal: false, vertical: true)
+                if !taskAnswers.contains(where: { AnswerDocument.containsQuestion(prompt, in: $0.content) }) {
+                    Text(prompt)
+                        .font(.callout.weight(.medium))
+                        .foregroundStyle(runway.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 if !options.isEmpty && !task.conversationManaged {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(options, id: \.self) { option in
@@ -775,11 +780,10 @@ struct LearningWorkspace: View {
     }
 
     private var activeActionPlaceholder: String {
-        guard let task = sessionTasks.last(where: { $0.status == "awaiting_user" }),
-              let prompt = task.requiredActionPrompt else {
+        guard sessionTasks.contains(where: { $0.status == "awaiting_user" && $0.requiredActionPrompt != nil }) else {
             return "输入问题、资料、链接或 JD……"
         }
-        return prompt
+        return "输入回答或继续提问……"
     }
 
     private func submitDraft() {
@@ -1013,22 +1017,4 @@ private struct SessionTranscriptData<Content: View>: View {
         self.content = content
     }
     var body: some View { content(messages, events) }
-}
-
-/// Native semantic paragraphs; unfinished Markdown remains readable without buffering.
-private struct LearningAnswerText: View {
-    let content: String
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ForEach(Array(content.components(separatedBy: "\n\n").enumerated()), id: \.offset) { _, paragraph in
-                let heading = paragraph.hasPrefix("# ") || paragraph.hasPrefix("## ") || paragraph.hasPrefix("### ")
-                let value = heading ? String(paragraph.drop(while: { $0 == "#" || $0 == " " })) : paragraph
-                Text(.init(value))
-                    .font(heading ? .headline : .body)
-                    .lineSpacing(4).textSelection(.enabled)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, heading ? 5 : 0)
-            }
-        }
-    }
 }

@@ -57,7 +57,7 @@ class StreamingHarnessTests(unittest.TestCase):
         for event in acked["events"]:
             if event["stage"] == "response.delta":
                 self.assertEqual(event["payload"]["response"]["text"], "")
-        self.assertEqual([m["content"] for m in acked["messages"] if m["role"] == "coach"], ["这是本轮真实回答。\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。"])
+        self.assertEqual([m["content"] for m in acked["messages"] if m["role"] == "coach"], ["这是本轮真实回答。"])
 
     def test_stop_fences_late_chunks_and_preserves_incomplete_history(self):
         accepted = self.f.send("RAG 是什么", drain=False)
@@ -107,7 +107,7 @@ class StreamingHarnessTests(unittest.TestCase):
             worker.join(2)
         self.assertFalse(worker.is_alive())
         replies = [message["content"] for message in self.f.state()["messages"] if message["role"] == "coach"]
-        self.assertEqual(replies, ["adjusted\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。"])
+        self.assertEqual(replies, ["adjusted"])
         self.assertEqual(self.f.state()["runs"][accepted.run_id]["status"], "completed")
 
     def test_failure_then_retry_reuses_validated_intent_not_partial_answer(self):

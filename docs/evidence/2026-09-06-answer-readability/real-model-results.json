@@ -1,0 +1,309 @@
+{
+  "date": "2026-09-06",
+  "environment": {
+    "platform": "macOS",
+    "version": "26.7"
+  },
+  "note": "Synthetic inputs only. Native component renders and generation-component calls are not full M1 acceptance. Generation chunks count callback invocations, not App SSE events.",
+  "native_component": {
+    "widths_pt": [
+      340,
+      580,
+      780
+    ],
+    "appearances": [
+      "light",
+      "dark"
+    ],
+    "copy": "Full Markdown/table/flow/question copied and pasted through native UI",
+    "semantics": "Heading, column labels, node order and links inspected through AX; VoiceOver not exercised",
+    "stream": "Finite fixture only; draft focus retained. No real-model timing claim."
+  },
+  "initial_harness_round": [
+    {
+      "case": "rag_answer",
+      "turn": 0,
+      "status": "completed",
+      "strength": "smart",
+      "local_accept_ms": 3,
+      "first_public_event_ms": 2664,
+      "total_ms": 2674,
+      "response_chunks": 0,
+      "steps": [
+        {
+          "node": "intent",
+          "model": "deepseek-v4-flash",
+          "ms": 2644,
+          "error": null,
+          "diagnostic": ""
+        }
+      ],
+      "task_state": null,
+      "task_stage": null,
+      "pending": null,
+      "response": "你希望继续刚才的内容，还是开始一个新的学习问题？",
+      "error": null
+    },
+    {
+      "case": "rag_answer",
+      "turn": 1,
+      "status": "completed",
+      "strength": "smart",
+      "local_accept_ms": 3,
+      "first_public_event_ms": 55898,
+      "total_ms": 60476,
+      "response_chunks": 43,
+      "steps": [
+        {
+          "node": "intent",
+          "model": "deepseek-v4-flash",
+          "ms": 2189,
+          "error": null,
+          "diagnostic": ""
+        },
+        {
+          "node": "teaching_preparation",
+          "model": "deepseek-v4-flash",
+          "ms": 1642,
+          "error": null,
+          "diagnostic": ""
+        },
+        {
+          "node": "public_search",
+          "model": "deepseek-v4-flash",
+          "ms": 41440,
+          "error": null,
+          "diagnostic": ""
+        },
+        {
+          "node": "source_candidates",
+          "model": "deepseek-v4-flash",
+          "ms": 3107,
+          "error": null,
+          "diagnostic": ""
+        },
+        {
+          "node": "evidence_assessment",
+          "model": "deepseek-v4-flash",
+          "ms": 4013,
+          "error": null,
+          "diagnostic": ""
+        },
+        {
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "ms": 5704,
+          "error": null,
+          "diagnostic": ""
+        }
+      ],
+      "task_state": null,
+      "task_stage": null,
+      "pending": null,
+      "response": "RAG 是 **Retrieval-Augmented Generation（检索增强生成）** 的缩写。它给大语言模型增加了一个“外部资料库”，回答前先检索相关资料放进上下文，再生成答案。\n\n下面用表格对比**RAG**和**只靠模型已有知识回答**（也就是只依赖参数化知识）两种方式：\n\n| 对比维度 | 只靠模型已有知识回答 | RAG（检索增强生成） |\n| --- | --- | --- |\n| 知识来源 | 训练时学到的参数化知识 | 外部资料库（如向量数据库）+ 模型知识 |\n| 更新难度 | 需要重新训练或微调，较慢 | 直接更新资料库，较容易 |\n| 遗忘能力 | 很难“忘记”旧知识 | 删除资料库条目即可，较易控制 |\n| 答案依据 | 难以引用具体来源 | 可以引用检索到的资料来源 |\n| 无法回答时 | 可能编造内容 | 可说“我不知道”，减小幻觉风险 |\n| 对具体事实的检索 | 较弱 | 较强，直接从上下文中提取 |\n\nRAG 的基本流程可以用下面的图来表示：\n\n```mermaid\nflowchart LR\n    A[\"用户查询\"] --> B[\"语义检索相关文档\"]\n    B --> C[\"将检索内容加入提示词\"]\n    C --> D[\"语言模型生成回答\"]\n```\n\n这个过程大致是：先根据你的问题在资料库里找出最相关的几段内容，把它们和原问题一起放进提示词（上下文窗口），再让语言模型基于这些内容生成回答。这样模型既利用了外部最新资料，也能标出信息来源。\n\n这次的解释基于我读到的两篇资料，覆盖了 RAG 的基本概念和流程；不过它们对 RAG 内部更细节的实现讲得不多。如果你想继续深入了解某个部分（比如检索具体怎么做、跟微调的区别等），欢迎说一声。\n\n### 参考资料\n\n[https://raw.githubusercontent.com/nhsengland/ds_251_RAG/main/WP3_Advanced_RAG_discussion.md](https://raw.githubusercontent.com/nhsengland/ds_251_RAG/main/WP3_Advanced_RAG_discussion.md)、[NeurIPS 2020 : Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://neurips.cc/virtual/2020/public/poster_6b493230205f780e1bc26945df7481e5.html)",
+      "error": null
+    },
+    {
+      "case": "rag_answer",
+      "turn": 2,
+      "status": "retryable_failed",
+      "strength": "smart",
+      "local_accept_ms": 10,
+      "first_public_event_ms": 60339,
+      "total_ms": 62833,
+      "response_chunks": 9,
+      "steps": [
+        {
+          "node": "intent",
+          "model": "deepseek-v4-flash",
+          "ms": 2141,
+          "error": null,
+          "diagnostic": ""
+        },
+        {
+          "node": "teaching_preparation",
+          "model": "deepseek-v4-flash",
+          "ms": 1139,
+          "error": null,
+          "diagnostic": ""
+        },
+        {
+          "node": "public_search",
+          "model": "deepseek-v4-flash",
+          "ms": 48803,
+          "error": null,
+          "diagnostic": ""
+        },
+        {
+          "node": "source_candidates",
+          "model": "deepseek-v4-flash",
+          "ms": 3353,
+          "error": null,
+          "diagnostic": ""
+        },
+        {
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "ms": 7132,
+          "error": "RT.MODEL.SCHEMA",
+          "diagnostic": "[{\"field\": [], \"type\": \"json_invalid\"}]"
+        }
+      ],
+      "task_state": null,
+      "task_stage": null,
+      "pending": null,
+      "response": "",
+      "error": "RT.MODEL.SCHEMA"
+    }
+  ],
+  "generation_round_1": [
+    {
+      "case": "lesson",
+      "attempt": 1,
+      "kind": "generation_component",
+      "ms": 9294,
+      "first_ms": 1108,
+      "chunks": 803,
+      "response": "我们先从一个根本问题说起：**模型的知识是有边界的**。一个训练好的大语言模型，它的知识停在训练数据截止的那一刻，之后发生的事它不知道；企业内部文档、最新产品手册这类私有资料，也很少出现在它的训练数据里。所以当你直接问模型“我们公司最新的退款政策是什么”，它大概率只能凭印象编，甚至明确告诉你不知道。\n\n**RAG（检索增强生成）解决的就是这个“不知道”的问题。**它的思路很直接：在让模型开口回答之前，先从一个外部知识库里检索出和问题相关的资料，把“问题 + 检索到的资料”一起作为上下文交给模型，让模型基于这些资料来组织回答。\n\n为了帮你记住关键点，可以这样理解：\n\n- **不引入 RAG 时**：模型只能依赖“记忆”里的训练知识，私有资料没见过、最新变动不知道，容易答错或答非所问。\n- **引入 RAG 后**：模型从“只靠记忆”变成“先查资料再回答”，多了一条获取新信息的渠道，能覆盖训练知识截止时间之后、以及企业内部的资料。\n- **一个代价**：知识库是会变的，比如政策更新、文档修订，所以**知识库更新后，要同步更新受影响的索引**，否则检索到的还是旧内容。\n\n\n### 一个贴近面试的例子\n\n> 假设某公司 2024 年改版了会员积分规则，而模型训练数据截止到 2023 年。直接问模型“今年积分怎么算”，它只能凭 2023 年的老规则猜。使用 RAG 时，系统先从公司最新的规则文档里检索出“2024 版积分细则”，把这段内容连同问题交给模型，模型就能照着新规则回答。\n\n\n### 必须讲清的限制（面试常追问）\n\nRAG 不是万能药，它有明确的风险：\n\n- **检索可能找错资料**：召回阶段选的资料可能和问题不相关，模型基于错资料回答，结果自然错。\n- **资料可能过期**：知识库没及时更新，索引里还是旧版本文档。\n- **模型可能误读资料**：即使检索到正确资料，模型在生成时仍可能曲解或编造原文没有的内容。\n\n因此面试时若能补充“**RAG 不能从根上消除模型幻觉**”，会显得理解更深。\n\n\n### 一个容易被混淆的考点\n\n**删除知识库中的某条记录，不等于删除模型已经学到的知识。** 模型训练阶段形成的参数记忆，不会因为你在知识库里删一条记录就消失。所以评估 RAG 系统时，通常要**分别评估两件事**：\n\n1. **检索召回**是否真的找到了相关资料。\n2. **回答忠实度**——模型是否忠实于检索到的资料，而不是自己发挥。\n\n这两个维度独立，检索好不代表回答一定忠实，回答忠实也不代表检索到了正确答案。\n\n现在你已经了解了“为什么需要 RAG”的核心逻辑：知识有边界 → 引入外部检索补充 → 但要注意更新和风险。下一小步我们可以看：**RAG 中索引具体是怎么回事**，或者你想先深入某个环节？",
+      "question": "假设你在面试中回答“为什么要用 RAG”，请用自己的话讲出至少两个必须提到的理由。"
+    },
+    {
+      "case": "comparison",
+      "attempt": 1,
+      "error": "RT.MODEL.SCHEMA",
+      "kind": "generation_component"
+    },
+    {
+      "case": "comparison",
+      "attempt": 2,
+      "error": "RT.MODEL.SCHEMA",
+      "kind": "generation_component"
+    },
+    {
+      "case": "flow",
+      "attempt": 1,
+      "kind": "generation_component",
+      "ms": 5213,
+      "first_ms": 425,
+      "chunks": 538,
+      "response": "刚才介绍了为什么需要 RAG：模型知识有边界，所以先检索外部资料再回答。现在用一个流程图把**从查询到生成回答**的完整过程串起来，帮你建立整体框架。\n\n~~~mermaid\nflowchart LR\nA[\"用户提出问题\"] --> B[\"检索外部知识库\"]\nB --> C[\"得到相关资料\"]\nC --> D[\"把问题与资料作为上下文\"]\nD --> E[\"模型基于上下文生成回答\"]\n~~~\n\n### 各环节对应的关键点\n\n1. **用户提出问题**——这就是模型不知道答案、或担心知识过时的场景，比如问公司最新政策。\n2. **检索外部知识库**——系统根据问题在文档库/索引里找相关资料。这里对应\"知识库更新后要更新索引\"，否则找出来的是旧内容。\n3. **得到相关资料**——可能找对，也可能找错；资料本身也可能过期。对应限制中的\"检索召回\"质量问题。\n4. **把问题与资料作为上下文**——模型不是自己凭空想，而是\"带着材料\"去回答，这弥补了训练知识的截止时间与私有资料缺失。\n5. **模型基于上下文生成回答**——这里仍然可能误读材料或自行发挥，所以要单独评估\"回答忠实度\"。\n\n### 两个容易混淆的地方\n\n- 流程第 2 到第 4 步解决的是\"模型没学过/不知道\"的问题，属于**检索与供给**；第 5 步解决的是\"模型是否照着材料说\"，属于**忠实度**。两者独立：材料对了不代表答得忠实，答得忠实也不代表材料找对了。\n- **删除知识库里的条目，不等于删除模型训练时学到的记忆**——那条记录若在训练数据里，参数里仍残留。删除只影响后续检索时不再取出该资料，无法抹掉已固化的训练知识。\n\n这个流程就是 RAG 的骨架。如果你想，下一步可以拆开看\"检索\"这一步内部——索引倒排、向量化大概是怎么回事。",
+      "question": "根据流程图，\"删除知识库中的一条旧政策记录\" 会影响流程中哪一步？模型的训练记忆会不会因此消失？"
+    },
+    {
+      "case": "organize",
+      "attempt": 1,
+      "kind": "generation_component",
+      "ms": 4589,
+      "first_ms": 937,
+      "chunks": 503,
+      "response": "这是把给定材料整理成并列知识点的结果。材料本身是陈述性要点，我按主题归并为六条，每条都保留原意并标出关键限定。\n\n## 1. RAG 的基本机制\n- RAG 在回答前从外部知识库检索资料，并把检索到的资料与问题一起作为上下文交给模型。\n- 因此回答不是模型凭空生成，而是“带着外部材料”进行。\n\n## 2. 为什么需要 RAG\n- 模型训练知识有截止时间，无法覆盖之后的新信息。\n- 模型可能缺少企业内部材料（如最新政策、内部数据）。\n- RAG 通过外部检索弥补这两类缺口。\n\n## 3. 知识库更新需要同步维护索引\n- 知识库内容更新后，应更新受影响的索引，否则检索可能取到过期资料。\n- 这提醒“更新资料”与“更新索引”是两件事，后者容易被遗漏。\n\n## 4. RAG 不保证正确，错误可能出现在三处\n- 检索可能找错资料（召回不准）。\n- 资料本身可能过期（内容陈旧）。\n- 生成可能误读材料（忠实度不足）。\n- 所以 RAG 的答案仍需要谨慎对待，不能当作必然准确的结论。\n\n## 5. 删除知识库条目不等于删除模型训练知识\n- 删除只影响后续检索时不再取出该资料。\n- 若该内容曾出现在训练数据中，模型参数里的记忆仍可能残留。\n- 因此“删除条目”无法抹除已固化的训练知识。\n\n## 6. 评估 RAG 需分别看两个维度\n- 检索召回：能否找到正确且相关的资料。\n- 回答忠实度：模型是否忠实依据材料回答，而非自行发挥。\n\n以上为并列的知识点整理，不包含引申或推断。若需要，下一步可以围绕某一条深入讲解，例如“检索召回”具体怎么评估。",
+      "question": ""
+    },
+    {
+      "case": "followup",
+      "attempt": 1,
+      "error": "RT.MODEL.SCHEMA",
+      "kind": "generation_component"
+    },
+    {
+      "case": "followup",
+      "attempt": 2,
+      "kind": "generation_component",
+      "ms": 7044,
+      "first_ms": 4772,
+      "chunks": 266,
+      "response": "刚才介绍了资料在 RAG 里的作用，接着看一个关键问题：**检索到资料，不等于答案一定正确**。\n\nRAG 的完整链路是“检索 → 交给模型 → 模型生成回答”，三个环节都可能出错：\n1. **检索找错资料**——即使知识库里有正确内容，检索也可能召回不相关或部分相关的材料，模型拿到的“依据”本身就是偏的。\n2. **资料本身过期**——知识库内容陈旧，即使检索准确，依据也已过时。\n3. **模型误读或发挥**——模型可能没有忠实依据材料回答，而是自行联想，或理解偏差。\n\n所以“检索到资料”只是必要条件，不是充分条件。它降低了模型凭训练知识瞎猜的风险，但**不保证正确**。这也是为什么评估 RAG 要分别看两件事：检索召回（找没找对）和回答忠实度（答没答准）。\n\n一句话总结：**检索是提高回答质量的手段，不是正确性担保**。",
+      "question": ""
+    },
+    {
+      "case": "evaluation",
+      "kind": "generation_component",
+      "ms": 2670,
+      "response": "很好。你已经准确抓住RAG的关键局限：检索资料不是答案的充分条件。你回答中提到的'相关、过期、误读'正好覆盖了RAG失效的三个主要环节：检索召回（资料是否相关）、资料时效（是否过期）和生成忠实度（模型是否误读）。",
+      "question": "如果知识库条目删除了，但模型仍然能答出相关内容，这个现象说明了什么？你会如何区分这是检索成功还是模型自身的训练知识？",
+      "passed": true
+    }
+  ],
+  "generation_round_2": [
+    {
+      "case": "lesson",
+      "attempt": 1,
+      "kind": "generation_component",
+      "ms": 5609,
+      "first_ms": 1431,
+      "chunks": 503,
+      "response": "刚才介绍了 RAG 的基本工作方式——先**从外部知识库检索资料，再把资料和问题一起交给模型**回答。它解决的核心问题有两个：\n\n1. 模型训练知识有**截止时间**，训练完就停在那个时间点，之后的新信息它并不天然知道。\n2. 模型也可能**缺少企业内部材料**，比如内部政策、私有文档，这些内容根本不会出现在公开训练数据里。\n\n所以即使模型本身很强，面对“最新数据”或“企业内部问题”时也会答不上来或答错。RAG 通过检索把**更新、更专门的资料**带进回答过程，弥补模型静态知识的缺口。\n\n但要看清一个**关键限制**：RAG 并不保证正确。它有三个风险点：\n- 检索可能**找错资料**，召回的内容本身就不相关；\n- 资料可能**过期**，知识库里的信息已经变了；\n- 生成阶段模型也可能**误读**找到的资料，答非所问。\n\n另外有一条容易混淆的边界要强调：**删除知识库条目不等于删除模型训练知识**。知识库是外部索引，模型的参数里仍保留着训练时学过的内容，两者必须分开看待。\n\n因此工程上要**分别评估两件事**：一是**检索召回**是否找到足够相关的资料，二是**回答忠实度**——生成的内容是否真正基于检索到的资料，而不是凭空发挥。这两个指标反映的是不同环节的质量，不能混为一谈。\n\n一个面试常见的例子：你问“公司最新的报销政策”，如果只靠模型训练知识，它可能还停留在旧版本；RAG 会先从公司知识库检索到最新政策文档，再让模型基于这份文档回答。但如果检索器把旧文档召回了，或模型忽略文档凭记忆作答，回答仍可能出错——这正是需要分别评估召回和忠实度的原因。",
+      "question": "为什么说“删除知识库条目不等于删除模型训练知识”？请用一句话解释这两者的区别。"
+    },
+    {
+      "case": "comparison",
+      "attempt": 1,
+      "kind": "generation_component",
+      "ms": 4306,
+      "first_ms": 555,
+      "chunks": 493,
+      "response": "用一张表对比**依靠训练知识回答**和 **RAG**，同时保留关键限制。三列：维度、训练知识、RAG。\n\n| 维度 | 依靠训练知识回答 | RAG |\n| --- | --- | --- |\n| 信息来源 | 模型参数里固化的公开训练数据 | 回答前先从外部知识库检索资料，再作为上下文交给模型 |\n| 时效性 | 受训练截止时间限制，之后的新信息不知道 | 可通过更新知识库和索引引入较新信息，但资料可能过期，不等于实时准确 |\n| 内部/私有内容 | 通常缺少，不进入公开训练数据 | 可纳入企业私有文档、内部政策等 |\n| 是否保证正确 | 不保证 | **不保证**，检索可能找错、资料过期、生成误读 |\n| 知识删除 | 删除不能抹去参数里已有的知识 | 删除知识库条目不等于删除模型训练知识，两者必须分开看待 |\n| 主要评估点 | 模型自身能力与知识覆盖 | 分别评估**检索召回**（找到足够相关资料）和**回答忠实度**（是否真实基于资料而非凭记忆） |\n\n几个要压住的关键点：\n\n- RAG 的收益是**有条件的**——只有检索到相关且不过期的资料，模型又忠实基于它作答，结果才可靠。任何一个环节出问题，回答仍可能错。\n- 不要把 RAG 描述成“保证最新、保证正确”，它只是**补知识缺口的机制**，不是万能的。\n- 训练知识那条也不是“完全过时”，对稳定常识和历史事实仍有效力，只是有截止点和覆盖盲区。\n\n表格里刻意保持“不保证”“可能”这类限定，就是避免把能力写成必然。面试时能说出这些边界，比只说“RAG 能查最新资料”更显扎实。",
+      "question": ""
+    },
+    {
+      "case": "flow",
+      "attempt": 1,
+      "error": "RT.MODEL.SCHEMA",
+      "diagnostic": "[{\"field\": [], \"type\": \"json_invalid\"}]",
+      "kind": "generation_component"
+    },
+    {
+      "case": "flow",
+      "attempt": 2,
+      "kind": "generation_component",
+      "ms": 9658,
+      "first_ms": 5795,
+      "chunks": 443,
+      "response": "用一张线性流程图把 RAG 实际作答的过程串起来，之后再用文字标注每一步的风险点。\n\n~~~mermaid\nflowchart LR\nA[\"用户提问\"] --> B[\"从知识库检索资料\"]\nB --> C[\"把资料+问题作为上下文\"]\nC --> D[\"模型生成回答\"]\n~~~\n\n- **检索资料**：模型并不会直接凭记忆作答，而是先从外部知识库按问题找相关内容。这一步的关键不是“找到多少”，而是**是否找到了相关且不过期的资料**——找错或找到旧资料，后面再努力也白费。\n- **拼接上下文**：把检索到的资料和原始问题一起放进提示词，作为模型的输入。这里要留意：**回答是否真的基于给到的资料**，还是模型悄悄用训练记忆填补，这一步决定了能不能算“忠实引用”。\n- **生成回答**：模型基于拼接后的上下文产出答案。即便资料本身正确，模型仍可能在组织语言时把事实理解偏、合并错，因此这一步也有独立风险。\n\n需要强调的边界：**整条链路不保证正确**。三步中任一处出错——检索召回不足、资料过期、或生成时误读——都可能让最终回答出错。RAG 只是给模型补上外部知识的通路，不是“正确性保险”。它也不等于让模型实时感知世界，知识库不更新，回答依旧可能滞后。\n\n所以评估时要把两个环节分开看：**检索召回**衡量的是“系统有没有把足够多、足够相关的资料找出来”，**回答忠实度**衡量的是“生成内容是否确实源给到的资料、而非凭记忆编造”。流程图画清了动作顺序，这两类指标分别卡住第二、第三步的产出质量。",
+      "question": ""
+    },
+    {
+      "case": "organize",
+      "attempt": 1,
+      "error": "RT.MODEL.SCHEMA",
+      "diagnostic": "[{\"field\": [], \"type\": \"json_invalid\"}]",
+      "kind": "generation_component"
+    },
+    {
+      "case": "organize",
+      "attempt": 2,
+      "kind": "generation_component",
+      "ms": 5534,
+      "first_ms": 2960,
+      "chunks": 372,
+      "response": "把给定材料整理成有明确标记的并列知识点如下。\n\n### 1. RAG 的基本流程\n- **检索**：回答前先从外部知识库检索资料。\n- **拼接上下文**：把检索到的资料和原始问题一起交给模型作为上下文。\n- **生成**：模型基于上下文做出回答。\n\n### 2. RAG 的动机与局限\n- 模型训练知识有**截止时间**，可能缺少**企业内部材料**等最新或私有信息。\n- 知识库**更新后应更新受影响的索引**，否则检索可能拿到旧资料。\n\n### 3. RAG 不保证正确\n- 可能**检索找错资料**。\n- 资料可能**过期**。\n- 生成时可能**误读**资料。\n\n### 4. 删除不等于遗忘\n- 删除知识库条目**不等于**删除模型训练知识，两者是独立的两件事。\n\n### 5. 评估的两个维度\n- **检索召回**：衡量系统是否找出了足够多、足够相关的资料。\n- **回答忠实度**：衡量生成内容是否真正基于所给资料，而非凭训练记忆编造。\n\n以上每一条都来自你给的材料，整理时没有添加材料之外的新结论。需要的话，可以接着就其中某条——比如“删除知识库条目”和“删除模型训练知识”的区别——再展开讲讲。",
+      "question": "RAG 系统的回答忠实度，主要衡量的是哪一件事？"
+    },
+    {
+      "case": "followup",
+      "attempt": 1,
+      "kind": "generation_component",
+      "ms": 2670,
+      "first_ms": 780,
+      "chunks": 229,
+      "response": "不一定。检索到资料只是**第一步**，后面还有两层风险：\n\n1. **检索可能找错**——系统可能没抓到最相关的那份资料，抓到的反而是不相关或过时的内容。\n2. **生成可能误读**——即使资料是对的，模型在组织回答时也可能理解偏了或表述走样。\n\n所以\"检索到资料\"和\"答案正确\"之间隔着两道独立的关卡。正是这个原因，材料里才强调要用**两个维度**分别评估：\n- **检索召回**：看系统有没有把足够相关的资料找出来。\n- **回答忠实度**：看生成的内容是不是真建立在所给资料上，而不是凭训练记忆编造。\n\n简单说：检索是必要条件，不是充分条件。资料找对了还要生成读得准，两环都过才算答对。",
+      "question": ""
+    }
+  ],
+  "evaluation_retry": [
+    {
+      "case": "evaluation",
+      "kind": "generation_component",
+      "attempt": 1,
+      "ms": 4293,
+      "response": "回答方向正确，抓住了 RAG 不确定性的关键。需要补一个容易忽略的点：除了单条资料本身可能有问题，检索环节还可能整体召回不全——**即使拿到的每条资料都好，漏掉关键资料也会答错**。另外记住：**从知识库删除条目，不会让模型忘掉它在训练中学过的东西**，因此要分别看'有没有查对资料'和'有没有照着资料说'两个环节。",
+      "question": "假设你在企业内部知识库中删除了某份过时合同，之后用户询问该合同条款，模型仍按旧条款作答。这说明了 RAG 的哪个局限？如果要排查责任，应该先检查检索环节还是回答环节？",
+      "passed": true
+    }
+  ],
+  "known_failures": [
+    "Initial harness turn asked an unnecessary clarification; its later turn failed RT.MODEL.SCHEMA.",
+    "Generation round 1 comparison failed twice; followup needed a second attempt.",
+    "Generation round 2 flow and organization needed a second attempt; evaluation failed before the separately recorded successful retry."
+  ]
+}

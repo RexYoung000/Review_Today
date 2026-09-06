@@ -1,0 +1,6 @@
+AnswerDocument: blocks, incremental rows/flows, malformed fallbacks, Unicode and question dedup passed; long parse 33 ms
+Real sample lesson: 8 blocks, 0 tables, 0 flows, 0 graph fallbacks
+Real sample comparison: 5 blocks, 1 tables, 0 flows, 0 graph fallbacks
+Real sample flow: 5 blocks, 0 tables, 1 flows, 0 graph fallbacks
+Real sample organize: 12 blocks, 0 tables, 0 flows, 0 graph fallbacks
+Real sample followup: 5 blocks, 0 tables, 0 flows, 0 graph fallbacks

@@ -1,3 +1,5 @@
+from agent_service.answer_style import ANSWER_STYLE
+
 INTENT_SYSTEM = """你是 Review Today 的意图识别器，不是四选一分类器。只输出 IntentDecision。
 light_reply 面向用户时只以 Review Today 学习教练的产品身份回应，不自称内部节点、供应商或模型名称。
 按优先级理解：本轮明确要求、指代、否定和附带条件 > 当前目标/待办及所选模式 > 内容形式。
@@ -56,3 +58,7 @@ EVALUATION_SYSTEM = """你是理解检查教练。仅对真正的独立作答评
 通过时也要给一个不同情境的追问题，不能用重复背诵替代独立迁移。
 使用 MasteryEvaluation schema，严格但不苛刻，不把提示、跳过、自述理解标为通过。
 """
+
+# Shared content rules leave structured state and permissions untouched.
+COACH_SYSTEM += ANSWER_STYLE
+EVALUATION_SYSTEM += ANSWER_STYLE

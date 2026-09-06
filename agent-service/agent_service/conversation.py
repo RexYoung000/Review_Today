@@ -18,6 +18,7 @@ from pydantic import ValidationError
 from agent_service.capture import RISK_RULE, find_source_candidates, run_capture
 from agent_service.capture.fetch import fetch_public_url, looks_like_url
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL
+from agent_service.answer_style import render_jd, render_sources, with_question
 from agent_service.conversation_prompts import COACH_SYSTEM, EVALUATION_SYSTEM, INTENT_SYSTEM
 from agent_service.conditional_teaching import ConditionalTeaching
 from agent_service.conversation_store import ConversationStore, Superseded, conversation_store
@@ -1492,7 +1493,7 @@ class ConversationHarness(ConditionalTeaching):
             text += "\n\n" + (evidence["summary"] or "部分内容尚待核实。")
         cited = [source for source in sources if source.get("url") in evidence.get("sources", []) and source["url"] not in text]
         if cited:
-            text += "\n\n参考资料：" + "、".join(f"[{source['title']}]({source['url']})" for source in cited)
+            text += render_sources(cited)
         with self.store.transaction(sid, rid, rev) as data:
             task = self._task(data, data["runs"][rid])
             if teaching:
@@ -1516,7 +1517,8 @@ class ConversationHarness(ConditionalTeaching):
                     task["context"]["sources"] = sources
             self.store.event(data, data["runs"][rid], "sources", "来源类型已记录", payload={"sources": sources, "source_type": source_type})
         required = {"type": "submit_answer", "prompt": output.check_question, "options": []} if output.check_question else None
-        text += "\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。"
+        if teaching:
+            text = with_question(text, output.check_question)
         self._publish(sid, rid, rev, text, stage="teaching" if teaching else "organized" if draft and task else None,
                       task_status="completed" if draft and task and task["mode"] == "memory_organization" and not task["context"].get("requires_mastery") else "awaiting_user",
                       required=required, draft=draft, source_type=source_type)
@@ -1528,9 +1530,7 @@ class ConversationHarness(ConditionalTeaching):
             raise ValueError("RT.TASK.UNKNOWN")
         if decision.is_jd:
             output = self._call(sid, rid, rev, "jd_analysis", JD_SYSTEM, task["content"], JDAnalysis)
-            text = f"岗位目标\n{output.role_goal}\n\n能力地图\n" + "\n".join("- " + x for x in output.competency_map)
-            text += "\n\n风险点\n" + "\n".join("- " + x for x in output.risk_points)
-            text += "\n\n优先问题\n" + "\n".join(f"{i}. {x}" for i, x in enumerate(output.prioritized_questions, 1))
+            text = render_jd(output.model_dump())
             with self.store.transaction(sid, rid, rev) as data:
                 data["pending"] = dict(kind="select_question", target_id=task["task_id"], version=1, options=output.prioritized_questions)
                 self.store.event(data, data["runs"][rid], "question_choice", "请选择一道题", payload={"pending": data["pending"]})
@@ -1548,7 +1548,7 @@ class ConversationHarness(ConditionalTeaching):
                                     evidence=evidence, calibration_question=output.analysis.calibration_question)
             set_plan(task, output.learning_plan.steps + ["独立作答", "迁移追问"], output.learning_plan.success_check,
                      (output.learning_plan.step_ids or [""] * len(output.learning_plan.steps)) + ["", ""])
-        text = _render_problem(output)
+        text = with_question(_render_problem(output, compact=True), output.analysis.calibration_question, "先确认一点")
         if evidence["state"] != "unverified":
             text += "\n\n" + evidence["summary"]
         self._publish(sid, rid, rev, text, stage="calibration",
@@ -1602,7 +1602,7 @@ class ConversationHarness(ConditionalTeaching):
             self._publish(sid, rid, rev, result.feedback + "\n\n这一节的理解检查已通过。你可以继续下一节，也可以继续追问。",
                           stage="lesson_checked", required={"type": "respond", "prompt": "继续下一节或追问", "options": []})
         else:
-            self._publish(sid, rid, rev, result.feedback + "\n\n请独立回答追问：" + ctx["check_question"], stage="transfer" if result.passed else "practice",
+            self._publish(sid, rid, rev, with_question(result.feedback, ctx["check_question"], "独立回答"), stage="transfer" if result.passed else "practice",
                           required={"type": "submit_answer", "prompt": ctx["check_question"], "options": []})
 
     def _sources(self, sid, rid, rev, goal):

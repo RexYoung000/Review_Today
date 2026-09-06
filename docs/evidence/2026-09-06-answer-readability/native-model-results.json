@@ -1,0 +1,61 @@
+{
+  "environment": "Readability NativeQA; isolated synthetic data; real DeepSeek; 18842",
+  "runs": [
+    {
+      "run_id": "3a50e8ab-c01a-487f-8463-02c9c1b54a44",
+      "status": "completed",
+      "elapsed_ms": 69137,
+      "first_text_ms": 62008,
+      "error_code": null,
+      "messages": [
+        {
+          "message_id": "fdf267d2-42ef-47a5-a3cd-1f6ee1819855",
+          "role": "user",
+          "content": "用表格比较依靠训练知识回答与 RAG，再用流程图解释查询资料到生成回答的过程。",
+          "created_at": "2026-09-06T13:21:07.973618+00:00"
+        },
+        {
+          "message_id": "bf915998-6711-4cd3-b575-79fe5f453aa2",
+          "role": "coach",
+          "content": "我们先绕过术语，用两句话建立核心区分：训练知识是模型“背下来”的东西；RAG是“现场翻书”。这一步的目标是让你能看明白对比表，为后面的流程图打底。\n\n## 两种答案从哪来\n\n- **依靠训练知识回答**：模型把语言规律和事实压缩进参数里。回答时它只凭内部记忆生成，不查任何外部资料。用 IBM 的比方，像**闭卷考试**——凭记忆作答。\n- **RAG（检索增强生成）**：回答前先去外部资料库（企业文档、网页、政策等）检索相关内容，把查到的片段和你的问题拼在一起，再交给模型生成。像**开卷考试**——边翻书边作答。\n\n原始论文把这种设计称作“参数化记忆 + 非参数化记忆”：模型本身是参数化记忆，外部向量索引是它可随时查阅的非参数化记忆。\n\n## 一张对比表\n\n| 对比维度 | 仅靠训练知识 | RAG |\n| --- | --- | --- |\n| 信息来源 | 训练时固化在参数里 | 每次实时检索外部资料 |\n| 时效性 | 静态，停留在训练截止时 | 可随资料更新，无需重训模型 |\n| 事实风险 | 容易编造（幻觉） | 有外部依据，可溯源、减少幻觉 |\n| 重要假设 | 知识密度高但会过时 | 前提是检索质量够好，能找回相关内容 |\n\n**限制说明**：表格第三行写的是“有依据”，不等于“绝不犯错”。RAG 能降低幻觉风险，但若检索到的资料本身不准或相关度低，依然可能答错。论文只表示它能减少参数化模型的局限，并未保证绝对可靠。\n\n## 先看其中一步\n\n刚才提到 RAG 有“检索”和“生成”两个阶段，我们下一段会把从查询到回答的完整链路画成流程图，并逐环节解释。在此之前，先确认你对基本区别是否清楚。\n\n### 参考资料\n\n- [\\[2005.11401\\] Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401)\n- [What is retrieval-augmented generation (RAG)? - IBM Research](https://research.ibm.com/blog/retrieval-augmented-generation-RAG)\n- [Prompt-Engineering-Guide/pages/techniques/rag.en.mdx at 8edb887019148994eb6c7318e59e60353394d071 · dair-ai/Prompt-Engineering-Guide · GitHub](https://github.com/dair-ai/Prompt-Engineering-Guide/blob/8edb8870/pages/techniques/rag.en.mdx)\n\n---\n\n### 想一想\n\n请你用自己的话说明：一个聊天机器人在回答“公司今年新增的休假政策”时，为什么更适合用 RAG 而不是只靠训练知识？至少给出一个理由。",
+          "created_at": "2026-09-06T13:22:16.969389+00:00"
+        }
+      ]
+    },
+    {
+      "run_id": "2cc74744-87e1-4ba5-bdef-558dabc7d089",
+      "status": "completed",
+      "elapsed_ms": 46650,
+      "first_text_ms": 42218,
+      "error_code": null,
+      "messages": [
+        {
+          "message_id": "5006e388-8932-426f-822a-01d25522858b",
+          "role": "user",
+          "content": "请直接解释完整流程，并使用流程图；再用 1、2、3 标出步骤，用圆点列出注意事项。这轮不用检查理解。",
+          "created_at": "2026-09-06T13:30:58.084441+00:00"
+        },
+        {
+          "message_id": "5a6a9b0e-61e3-44e6-a10a-051e84df0073",
+          "role": "coach",
+          "content": "刚才介绍了训练知识与 RAG 的基本区别，现在接着看从查询到回答的完整流程。为了能实时检索，知识库里的文档需要先被切块并转换成向量（embedding）存进索引，这一步通常叫“数据管道”或“索引构建”。之后用户提问时，链路大致如下：\n\n~~~mermaid\nflowchart LR\nA[\"用户提问\"] --> B[\"将问题编码为查询向量\"]\nB --> C[\"在知识库检索最相似的分块\"]\nC --> D[\"将命中的分块与问题拼成提示词\"]\nD --> E[\"大模型基于上下文生成回答\"]\n~~~\n\n具体步骤：\n1. **用户提问**：例如问“公司今年新增的休假政策”。\n2. **查询向量化**：用同一个嵌入模型把问题转换成向量，问题与文档就处于同一空间可比。\n3. **检索相似分块**：在知识库里找出与查询向量最接近的若干个分块，返回最相关的 top N（微软文档称 top N）。\n4. **拼装上下文**：把这些分块和用户问题一起打包进提示词，发给大模型。\n5. **生成回答**：大模型依据提供的上下文和问题组织答案，必要时可附引用。\n\n注意事项：\n- 检索质量直接决定生成质量：若找回的资料不相关或漏掉关键内容，模型仍可能答错或不完整。\n- 长文档要分块，因为整篇超出上下文窗口，且未必整篇都相关；分块策略影响检索效果。\n- 提示词里要留出足够空间给系统提示和答案，检索回的内容不能无限多，否则会占用令牌限额。\n- 检索到的分块最好带来源信息，便于溯源和引用。\n\n### 参考资料\n\n- [Design and Develop a RAG Solution on Azure - Azure Architecture Center | Microsoft Learn](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide)\n- [Implement Retrieval Patterns for RAG Pipelines - Training | Microsoft Learn](https://learn.microsoft.com/en-us/training/modules/implement-vector-search-azure-database-postgresql/6-implement-retrieval-patterns-rag-pipelines)\n- [RAG and Generative AI - Azure AI Search | Microsoft Learn](https://learn.microsoft.com/en-us/azure/search/retrieval-augmented-generation-overview)",
+          "created_at": "2026-09-06T13:31:44.717402+00:00"
+        }
+      ]
+    }
+  ],
+  "observations": [
+    "Native numbered steps, bullet points, table, links and five-node flow rendered.",
+    "During second generation, scrolled to top; remained at top and input retained focus until completion.",
+    "First reply deferred requested flow to next turn; second reply delivered it."
+  ],
+  "restart": {
+    "run_count": 2,
+    "message_count": 4,
+    "run_ids": [
+      "3a50e8ab-c01a-487f-8463-02c9c1b54a44",
+      "2cc74744-87e1-4ba5-bdef-558dabc7d089"
+    ],
+    "observed": "Reopened same QA data after UI fix: original table and flow restored; old question appears once in answer, no task duplicate; placeholder is a short input hint. No new generation."
+  }
+}

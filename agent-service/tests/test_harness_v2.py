@@ -552,7 +552,7 @@ class ControlledWorkflowTests(unittest.TestCase):
             for item in result.events
             if item.get("node") == "problem_answer" and item.get("message")
         )
-        self.assertIn("先给你一版可直接使用的答案", answer)
+        self.assertTrue(answer.startswith("RAG 先检索相关资料，再基于资料生成答案。"))
         self.assertNotEqual(result.status, "completed")
 
     def test_jd_is_split_before_entering_a_question(self) -> None:

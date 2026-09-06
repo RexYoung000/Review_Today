@@ -335,7 +335,7 @@ class ConversationTests(unittest.TestCase):
         self.assertEqual(self.state()["mode"], "source_learning")
         replies = [m["content"] for m in self.state()["messages"] if m["role"] == "coach"]
         self.assertIn("已选择资料学习", replies[-2])
-        self.assertEqual(replies[-1], "这是本轮真实回答。\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。")
+        self.assertEqual(replies[-1], "这是本轮真实回答。")
 
     def test_save_and_followup_retry_does_not_repeat_commit(self):
         self.decision = intent("material", workflow="memory_organization", scope="organize")
@@ -527,7 +527,7 @@ class ConversationTests(unittest.TestCase):
         self.send("我理解了，请保存")
         task = self.state()["tasks"][self.state()["active_task_id"]]
         self.assertEqual(task["status"], "committing")
-        self.assertEqual(self.capture.call_args.args[1], "这是本轮真实回答。\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。")
+        self.assertEqual(self.capture.call_args.args[1], "这是本轮真实回答。")
         self.assertEqual(self.capture.call_count, 1)
         self.assertIsNone(self.state()["pending"])
 
