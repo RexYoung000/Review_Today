@@ -13,6 +13,24 @@
     "minTriangleArea": 34.16212293105673,
     "maxCoordinate": 126.78331756591797,
     "endpointError": 0,
-    "duration": 5.599999904632568
+    "duration": 5.599999904632568,
+    "voices": {
+      "listening": {
+        "parser": "official spine-core 4.2.120",
+        "sampledFrames": 193,
+        "minTriangleArea": 33.871826999842625,
+        "maxCoordinate": 121.8453598022461,
+        "endpointError": 0,
+        "duration": 4
+      },
+      "speaking": {
+        "parser": "official spine-core 4.2.120",
+        "sampledFrames": 193,
+        "minTriangleArea": 32.988253200493205,
+        "maxCoordinate": 124.48722839355469,
+        "endpointError": 0,
+        "duration": 4
+      }
+    }
   }
 }

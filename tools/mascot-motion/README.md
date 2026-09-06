@@ -30,10 +30,12 @@ node src/call.mjs weights_bind '{"softness":85}'
 node src/call.mjs motion_author '{"bend":10,"wave":5,"gaze":0.85}'
 node src/call.mjs preview_frame '{"time":1.25,"size":640}'
 node src/call.mjs preview_clip
+node src/call.mjs preview_frame '{"animation":"speaking","time":2.8}'
+node src/call.mjs preview_clip '{"animation":"speaking"}'
 node src/call.mjs motion_export '{"name":"recall-v1"}'
 ```
 
-适配器通过 SDK 建立 stdio 连接、协商协议并调用工具；并非绕过 MCP 直接运行内部函数。图片响应保存到 `.work/renders/` 并返回路径，AI 可看图后再次修改；浏览器每 2.5 秒检查版本，在可见状态加载新版本。
+适配器通过 SDK 建立 stdio 连接、协商协议并调用工具；并非绕过 MCP 直接运行内部函数。图片响应保存到 `.work/renders/` 并返回路径，AI 可看图后再次修改；思考页每 2.5 秒检查版本，在可见状态加载新版本；语音页打开/刷新时读取当前版本。
 
 | 工具 | 范围 |
 | --- | --- |
@@ -51,7 +53,7 @@ node src/call.mjs motion_export '{"name":"recall-v1"}'
 
 ## 验证与边界
 
-- `npm test`：官方解析/加权形变实际生效、眼睛领先身体、权重与关键帧损坏检测、网格翻折拒绝；真实 stdio MCP 握手/工具清单/修改/绑定/图片返回/导出/失败后保留上一版；HTTP 同源/目录边界/错误请求检查，以及两个 MCP 进程同时修改时不丢失参数。9 项测试通过（含前后遮挡与投影裁剪回归）。
+- `npm test`：官方解析/加权形变实际生效、眼睛领先身体、权重与关键帧损坏检测、网格翻折拒绝；真实 stdio MCP 握手/工具清单/修改/绑定/图片返回/导出/失败后保留上一版；HTTP 同源/目录边界/错误请求检查，以及两个 MCP 进程同时修改时不丢失参数。11 项测试通过（含前后遮挡、投影裁剪及语音局部形变/零声量/快速切换回归）。
 - 人工通过 Codex 浏览器检查：465 px 与 1280 px 布局、播放/暂停、时间轴、分离中收拢、网格/权重、浅深主题、减少动态效果、参数生成与 MCP 版本同步。
 - 已通过 MCP 实际生成 PNG、5.6 秒 MP4 和独立导出目录。仓库预览 `evidence/` 保存最终样例；MP4 是离线运行时渲染，不是原生 App 或 UI 操作录屏。
 - 当前身体网格 193 顶点、336 三角形，另有随体加权裁剪轮廓 48 顶点，14 根骨骼，135 个采样关键帧。24 fps 视频为 135 帧、实际 5.625 秒（动画标称时长 5.6 秒）。完整默认动画检查 271 个时间点，未发现翻折，首尾误差为 0。
@@ -70,3 +72,9 @@ node src/call.mjs motion_export '{"name":"recall-v1"}'
 ### 环绕深度修订
 
 2026-09-07：主体缩至 86%，主色保留。浅青绿球走倾斜扁椭圆，Spine 绘制顺序随近/远半圈切换。新增三层投影附件，表面投影由加权 clipping 限定，FFD 与身体轮廓同步。浏览器和离线渲染器均支持本小样的 clipping 与独立区域绘制；半透明阴影不使用重叠三角形绘制，避免中间产生斜线。区域绘制适配器仅支持本工具生成的整页、未裁切 atlas，不宣称通用 Spine 播放器。Editor 导入仍待实机验证。
+
+### 语音点修订
+
+新增 [语音预览](http://127.0.0.1:8769/voice.html)，共用 14 骨骼与纹理，无额外依赖。`listening` / `speaking` 各为 4 秒、97 关键帧的可编辑循环（默认 24 fps），每条检查 193 个时间点，循环端点误差为 0。`motion_author` 同时重建三条动画，原 recall 数据保持一致。
+
+`preview_frame` 与 `preview_clip` 增加可选 `animation: recall | listening | speaking`，默认 recall 保持兼容；语音截图时间允许 0–8 秒，视频固定生成 8 秒、85% 模拟声量。语音渲染使用与浏览器相同的 `voice-scene.mjs`，包括声量包络、局部形变混合、波浪和投影；JSON 本身只包含骨骼/FFD 循环及附件，真实声量、状态与 Canvas 波浪仍由宿主驱动。已实际调用作者、语音 PNG、语音 MP4 和完整导出；没有改全局 MCP 配置或调用麦克风。

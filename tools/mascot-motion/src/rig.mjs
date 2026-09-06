@@ -1,5 +1,6 @@
 // Deterministic authoring for one Review Today rig. No third-party animation code copied.
 import { z } from 'zod';
+import {voiceAnimations} from './voice.mjs';
 export const recipeSchema = z.object({
   duration:z.number().min(4).max(9), strength:z.number().min(0).max(1.5),
   gaze:z.number().min(0).max(1), softness:z.number().min(35).max(140),
@@ -119,7 +120,7 @@ export function compile(contour,input=defaults){
     animation.attachments.default.shadow_clip.clip.deform.push({time,vertices:offsets.slice(0,contour.length*6)});
   }
   const json={skeleton:{spine:'4.2.00',images:'./images/',x:-200,y:-150,width:400,height:300,fps:p.fps},
-    bones,slots,skins:[{name:'default',attachments}],animations:{recall:animation,rest:{}}};
+    bones,slots,skins:[{name:'default',attachments}],animations:{recall:animation,rest:{},...voiceAnimations(mesh,contour.length,p)}};
   return {json,mesh,recipe:p};
 }
 export function validate(json){
@@ -135,7 +136,10 @@ export function validate(json){
   if(n!==count)fail('Vertex count mismatch');
   if(att.triangles.some(i=>!Number.isInteger(i)||i<0||i>=count))fail('Invalid triangle index');
   if(att.uvs.some(x=>!Number.isFinite(x)||x<0||x>1))fail('Invalid UV');
-  const anim=json.animations.recall;const tracks=[...Object.values(anim.bones).flatMap(x=>Object.values(x)),...Object.values(anim.slots).flatMap(x=>Object.values(x)),anim.attachments.default.body.body.deform];
+  let recallTracks;
+  for(const [animationName,anim] of Object.entries(json.animations)){
+  if(animationName==='rest')continue;
+  const tracks=[...Object.values(anim.bones).flatMap(x=>Object.values(x)),...Object.values(anim.slots??{}).flatMap(x=>Object.values(x)),anim.attachments.default.body.body.deform];
   for(const track of tracks){
     for(let i=0;i<track.length;i++){
       const frame=track[i];if(!Number.isFinite(frame.time)||frame.time<0||(i&&frame.time<=track[i-1].time))fail('Unsorted time');
@@ -153,7 +157,11 @@ export function validate(json){
       if(frame.time!==bodyFrame.time||frame.vertices.length!==clip.vertexCount*6||frame.vertices.some((v,k)=>v!==bodyFrame.vertices[k]))fail('Clip must follow body deformation');
     }
   }
+  if(animationName==='recall'){recallTracks=tracks;
   if(!anim.drawOrder?.length)fail('Missing depth ordering');
   else for(const frame of anim.drawOrder)for(const offset of frame.offsets??[]){const i=json.slots.findIndex(s=>s.name===offset.slot);if(i<0||!Number.isInteger(offset.offset)||i+offset.offset<0||i+offset.offset>=json.slots.length)fail('Invalid depth order');}
+  }
+  }
+  const tracks=recallTracks;
   return {ok:errors.length===0,errors:[...new Set(errors)],bones:json.bones.length,vertices:count,triangles:att.triangles.length/3,weighted:true,frames:tracks.at(-1).length,duration:tracks.at(-1).at(-1).time};
 }
