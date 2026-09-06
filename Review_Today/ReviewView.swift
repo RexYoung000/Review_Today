@@ -71,6 +71,7 @@ struct ReviewView: View {
             index = 0
             finished = []
             endNote = ""
+            session = nil
             resetCard()
             startSession()
         }
@@ -125,7 +126,7 @@ struct ReviewView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
-            if phase == .answering || phase == .asking {
+            if phase == .answering || phase == .asking || phase == .failed {
                 if hintUsed {
                     Text(String(localized: "提示：先覆盖学习目标中的关键限定，再说出核心含义。"))
                         .foregroundStyle(.secondary)
@@ -136,6 +137,9 @@ struct ReviewView: View {
                         .font(.title3)
                         .lineLimit(4 ... 10)
                 }
+            }
+
+            if phase == .answering || phase == .asking {
                 HStack {
                     if !hintUsed {
                         Button(String(localized: "给我提示")) { giveHint() }
@@ -145,7 +149,7 @@ struct ReviewView: View {
                     Spacer()
                     RunwayPrimaryButton(
                         title: String(localized: "我答完了"),
-                        enabled: !answer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && phase != .grading,
+                        enabled: !answer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
                         action: { Task { await submit(item, question) } }
                     )
                     .keyboardShortcut(.return, modifiers: [.command])
@@ -167,6 +171,7 @@ struct ReviewView: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(runway.action)
+                .disabled(answer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
 
             if phase == .feedback {
@@ -194,10 +199,6 @@ struct ReviewView: View {
                             }
                         }
                     }
-                    Button(String(localized: "太简单了")) { finish(grade: "easy", item: item) }
-                        .buttonStyle(.plain)
-                        .foregroundStyle(.secondary)
-                        .font(.caption)
                 }
             }
         }
@@ -257,6 +258,7 @@ struct ReviewView: View {
     }
 
     private func startSession() {
+        guard session == nil else { return }
         windowStarted = .now
         phase = .answering
         let snapshot = coordinator.knowledgeIDs.map(\.uuidString).joined(separator: ",")
@@ -287,53 +289,85 @@ struct ReviewView: View {
     }
 
     private func submit(_ item: Knowledge, _ question: Question) async {
-        guard let session else { return }
+        guard let session,
+              phase == .answering || phase == .failed,
+              !answer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         speaker.stop()
         phase = .grading
-        let spec = (try? JSONDecoder().decode(AgentAPI.ScoringSpec.self, from: Data(question.scoringSpecJSON.utf8)))
-            ?? AgentAPI.ScoringSpec(
-                learningGoal: item.learningGoal,
-                mustCover: [item.learningGoal],
-                acceptableParaphrases: [],
-                commonMisconceptions: [],
-                evidence: item.evidenceExcerpt,
-                orderRules: ""
+        let answerSnapshot = answer
+        let hintSnapshot = hintUsed
+        guard let spec = try? JSONDecoder().decode(
+            AgentAPI.ScoringSpec.self,
+            from: Data(question.scoringSpecJSON.utf8)
+        ) else {
+            feedback = String(localized: "本题评分规格不可用，暂时无法判断。请回到知识卡检查后再试。")
+            agentGrade = ""
+            phase = .failed
+            return
+        }
+        let isNewAttempt = attempt == nil
+        let row: ReviewAttempt
+        if let existing = attempt {
+            row = existing
+        } else {
+            row = ReviewAttempt(
+                sessionId: session.id,
+                knowledgeId: item.id,
+                knowledgeVersion: item.version,
+                questionId: question.id,
+                mode: coordinator.mode
             )
-        let row = ReviewAttempt(
-            sessionId: session.id,
-            knowledgeId: item.id,
-            knowledgeVersion: item.version,
-            questionId: question.id,
-            mode: coordinator.mode
-        )
-        row.hintUsed = hintUsed
-        row.answerText = answer
-        row.degradedPath = "text"
-        attempt = row
-        modelContext.insert(row)
+            attempt = row
+            modelContext.insert(row)
+        }
+        row.hintUsed = hintSnapshot
+        row.answerText = answerSnapshot
+        row.agentGrade = ""
+        row.effectiveGrade = ""
+        do {
+            try modelContext.save()
+        } catch {
+            modelContext.rollback()
+            if isNewAttempt {
+                attempt = nil
+            }
+            feedback = String(localized: "本题回答暂未保存。可以重试，不能把这次当作已掌握。")
+            phase = .failed
+            return
+        }
         do {
             let graded = try await AgentAPI.grade(
                 attemptId: row.attemptId,
                 promptText: question.promptText,
                 scoringSpec: spec,
-                answerText: answer,
-                hintUsed: hintUsed,
+                answerText: answerSnapshot,
+                hintUsed: hintSnapshot,
                 primaryLanguage: UserLanguage.primaryCode
             )
+            guard graded.attemptId.lowercased() == row.attemptId.uuidString.lowercased(),
+                  ["again", "hard", "good"].contains(graded.agentGrade),
+                  !graded.briefFeedback.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                throw ReviewAnswerError.invalidResult
+            }
             agentGrade = graded.agentGrade
             feedback = graded.briefFeedback
             row.agentGrade = graded.agentGrade
             try modelContext.save()
             phase = .feedback
         } catch {
-            feedback = String(localized: "本题尚未计入复习。可以再试一次，不要把这次当作已掌握。")
+            modelContext.rollback()
+            row.agentGrade = ""
             agentGrade = ""
+            feedback = String(localized: "本题尚未计入复习。可以修改回答后重试，不要把这次当作已掌握。")
             phase = .failed
         }
     }
 
     private func finish(grade: String, item: Knowledge) {
-        guard let attempt, let session else { return }
+        guard phase == .feedback,
+              ["again", "hard", "good"].contains(grade),
+              let attempt,
+              let session else { return }
         if isPreview {
             attempt.effectiveGrade = grade
             attempt.acked = true
@@ -411,6 +445,10 @@ private struct FinishedItem: Identifiable {
 
 private enum Phase {
     case asking, answering, grading, feedback, failed, summary
+}
+
+private enum ReviewAnswerError: Error {
+    case invalidResult
 }
 
 private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
