@@ -10,6 +10,10 @@ struct Review_TodayApp: App {
     init() {
         do {
 #if DEBUG
+            if let directory = AppRuntime.current.validationDirectory {
+                container = try M1DebugFixture.makeValidationContainer(directory)
+                return
+            }
             if M1DebugFixture.enabled {
                 container = try M1DebugFixture.makeContainer()
                 return

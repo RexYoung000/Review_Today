@@ -8,6 +8,7 @@ struct LearningWorkspace: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.runway) private var runway
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \AgentSession.updatedAt, order: .reverse) private var sessions: [AgentSession]
     @Query(sort: \LearningTask.createdAt) private var tasks: [LearningTask]
     @Query(sort: \TaskEventRecord.seq) private var events: [TaskEventRecord]
@@ -32,6 +33,9 @@ struct LearningWorkspace: View {
     @State private var insertion: EditorInsertion?
     @State private var showKnowledgePicker = false
     @State private var quickStarts = AgentQuickStart.initial
+    @State private var showSessionTags = false
+    @State private var previewMotion = false
+    private let runtime = AppRuntime.current
 
     private enum Layout {
         static let readingWidth: CGFloat = 820
@@ -97,7 +101,7 @@ struct LearningWorkspace: View {
                     }.frame(height: min(CGFloat(steps.count) * 38, 160))
                     Text("点击步骤回看内容；要调整安排，直接告诉我。").font(.caption2).foregroundStyle(.secondary)
                 }
-            }.padding(.horizontal, 20).padding(.bottom, 10)
+            }.padding(.bottom, 10)
         }
     }
 
@@ -125,7 +129,8 @@ struct LearningWorkspace: View {
                 .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .background(PaperSurface())
-        .navigationTitle("Agent")
+        .navigationTitle((selectedSession?.title ?? "Agent") + runtime.windowSuffix)
+        .toolbar(removing: .title)
         .onAppear(perform: loadDraft)
         .onChange(of: selectedSessionID) { _, _ in
             saveDraft()
@@ -133,6 +138,8 @@ struct LearningWorkspace: View {
             queueInput = false
             localError = nil
             followsLatest = true
+            showSessionTags = false
+            previewMotion = false
         }
         .onChange(of: draft) { _, _ in
             draftSave?.cancel()
@@ -182,6 +189,7 @@ struct LearningWorkspace: View {
         let gutter = Layout.gutter(for: width)
         let contentWidth = max(0, min(Layout.readingWidth, width - gutter * 2))
         return VStack(spacing: 0) {
+          workspaceHeader(contentWidth: contentWidth)
           if selectedSession == nil {
             serviceBanner
             ScrollView {
@@ -211,8 +219,8 @@ struct LearningWorkspace: View {
                 }.frame(width: contentWidth).padding(.bottom, 24).frame(maxWidth: .infinity)
             }
           } else {
-            workspaceHeader
             learningChecklist
+                .frame(width: contentWidth).frame(maxWidth: .infinity)
             Divider()
             serviceBanner
             conversation(contentWidth: contentWidth)
@@ -222,68 +230,67 @@ struct LearningWorkspace: View {
         .background(runway.canvas)
     }
 
-    private var workspaceHeader: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(selectedSession?.title ?? "新的学习 Session")
-                        .font(.title2.bold())
-                        .foregroundStyle(runway.ink)
-                        .lineLimit(2)
-                        .help(selectedSession?.title ?? "新的学习 Session")
-                }
+    private func workspaceHeader(contentWidth: CGFloat) -> some View {
+        HStack(spacing: 8) {
+            Text(selectedSession?.title ?? "Agent")
+                .font(.system(size: 18, weight: .semibold)).foregroundStyle(runway.ink)
+                .lineLimit(1).truncationMode(.tail)
+                .help(selectedSession?.title ?? "Agent")
                 .frame(maxWidth: .infinity, alignment: .leading)
-                if let session = selectedSession {
-                    Button {
-                        if session.status == "active" { archive(session) }
-                        else { restore(session) }
-                    } label: {
-                        Label(session.status == "active" ? "归档" : "恢复", systemImage: session.status == "active" ? "archivebox" : "arrow.uturn.backward")
+            if let session = selectedSession {
+                ChromeIconButton(title: "会话标签", symbol: "tag", selected: showSessionTags) { showSessionTags.toggle() }
+                    .popover(isPresented: $showSessionTags, arrowEdge: .top) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("会话标签").font(.headline)
+                            Text(session.displayTopicTags.isEmpty ? "尚无主题标签" : session.displayTopicTags.joined(separator: " · "))
+                                .font(.callout).fixedSize(horizontal: false, vertical: true)
+                            if session.status == "active" {
+                                Button("编辑标签") { showSessionTags = false; editingSessionID = session.id }
+                            }
+                        }.padding(16).frame(width: 260).environment(\.runway, runway)
                     }
-                    .buttonStyle(.borderless)
-                    sessionMenu(session)
-                }
+                Button {
+                    if session.status == "active" { archive(session) } else { restore(session) }
+                } label: {
+                    Label(session.status == "active" ? "归档" : "恢复", systemImage: session.status == "active" ? "archivebox" : "arrow.uturn.backward")
+                        .font(.callout).frame(height: 28).padding(.horizontal, 3)
+                }.buttonStyle(InteractionButtonStyle(padding: 2)).fixedSize()
+                sessionMenu(session).fixedSize()
             }
-
-            HStack(spacing: 12) {
-                if let session = selectedSession {
-                    ForEach(Array(session.displayTopicTags.prefix(3)), id: \.self) { tag in
-                        MetaTag(title: tag)
-                    }
-                    if session.displayTopicTags.count > 3 {
-                        Text("+\(session.displayTopicTags.count - 3)").font(.caption2).foregroundStyle(.secondary)
-                    }
-                    if !session.displayTopicTags.isEmpty && session.status == "active" {
-                        Button { editingSessionID = session.id } label: { Image(systemName: "tag") }
-                            .buttonStyle(.plain).help("编辑主题标签")
-                    }
-                }
-                Spacer(minLength: 0)
-            }
-            .controlSize(.small)
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 14)
+        .frame(width: contentWidth).padding(.vertical, 12).frame(maxWidth: .infinity)
     }
 
     private func sessionMenu(_ session: AgentSession) -> some View {
-        Menu {
-            Button("新对话") { selectedSessionID = nil }
-            Button("编辑主题标签") { editingSessionID = session.id }
-            Button(session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆") {
+        SingleLevelMenu(title: "会话操作", symbol: "ellipsis", arrowEdge: .top, items:
+            [.init(id: "new", title: "新对话", symbol: "plus")] +
+            (session.status == "active" ? [.init(id: "tags", title: "编辑主题标签", symbol: "tag"),
+             .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain")] : [])
+        ) { action in
+            switch action {
+            case "new": selectedSessionID = nil
+            case "tags": editingSessionID = session.id
+            default:
                 if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { localError = "记忆设置未保存，请重试。" }
             }
-        } label: {
-            Image(systemName: "ellipsis.circle")
         }
-        .menuStyle(.borderlessButton)
-        .frame(width: 28, height: 26)
-        .accessibilityLabel("Session 操作")
     }
 
     @ViewBuilder
     private var serviceBanner: some View {
-        if monitor.connection != .ready || !monitor.keyConfigured {
+        if runtime.isPreview {
+            HStack(spacing: 10) {
+                if previewMotion { DotsRing(color: runway.agent, reduced: reduceMotion).frame(width: 18, height: 18) }
+                Text("界面预览 · 不可发送；输入仅在内存中，不保存到日常数据库。")
+                Spacer(minLength: 4)
+                Button(previewMotion ? "停止预览" : "预览动效（8 秒）") { previewMotion.toggle() }
+            }.font(.caption).foregroundStyle(.secondary).padding(.horizontal, 24).padding(.vertical, 8)
+                .task(id: previewMotion) {
+                    guard previewMotion else { return }
+                    try? await Task.sleep(for: .seconds(8))
+                    if !Task.isCancelled { previewMotion = false }
+                }
+        } else if monitor.connection != .ready || !monitor.keyConfigured {
             HStack(alignment: .top, spacing: 10) {
                 Image(systemName: monitor.connection == .unavailable ? "exclamationmark.triangle" : "clock.arrow.circlepath")
                     .foregroundStyle(monitor.connection == .unavailable ? Color.orange : runway.agent)
@@ -354,10 +361,14 @@ struct LearningWorkspace: View {
                                sessionMessages.last(where: { $0.role == "user" && $0.runID == runID })?.id == message.id {
                                 runFeedback(run, sessionMessages: sessionMessages, runEvents: runEvents)
                             } else if message.runID == nil && message.taskID == nil {
-                                Text(message.deliveryStatus == "held" ? "已停止发送，内容保留在本机" : monitor.connection == .ready ? "已保存在本机，准备发送" : "已保存在本机，等待学习服务恢复")
-                                    .font(.caption).foregroundStyle(.secondary)
-                                if message.lastDeliveryError != nil {
-                                    Text("暂时未能送达，输入已保留。连接恢复后会继续。").font(.caption).foregroundStyle(.orange)
+                                Text(MessageDeliveryPresentation.summary(message, session: selectedSession, monitor: monitor, runtime: runtime))
+                                    .font(.caption).foregroundStyle(message.lastDeliveryError == nil ? runway.ink.opacity(0.6) : .orange)
+                                if MessageDeliveryPresentation.canRetry(message, session: selectedSession, runtime: runtime) {
+                                    Button("重试发送") {
+                                        message.lastDeliveryError = nil
+                                        do { try modelContext.save(); ConversationSync.wake() }
+                                        catch { modelContext.rollback(); localError = "重试操作未保存，请再试。" }
+                                    }.font(.caption)
                                 }
                             }
                         }
@@ -737,8 +748,8 @@ struct LearningWorkspace: View {
                         .background(runway.action, in: Circle())
                 }
                 .buttonStyle(.plain)
-                .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                .help("发送（Return 或 ⌘ Return）")
+                .disabled(!runtime.allowsSending || draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .help(runtime.isPreview ? "界面预览不可发送" : "发送（Return 或 ⌘ Return）")
                 .accessibilityLabel("发送")
                 }
                 .padding(.horizontal, 8)
@@ -747,9 +758,9 @@ struct LearningWorkspace: View {
             .background(runway.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(inputFocused ? runway.agent.opacity(0.65) : runway.hairline, lineWidth: inputFocused ? 1.5 : 1))
             HStack(spacing: 10) {
-                Text("Return 发送 · Shift Return 换行")
+                Text(runtime.isPreview ? "仅供排版检查 · 不发送、不持久保存" : "Return 发送 · Shift Return 换行")
                 Spacer()
-                if let run = runs.last(where: { $0.sessionID == selectedSessionID }),
+                if runtime.allowsSending, let run = runs.last(where: { $0.sessionID == selectedSessionID }),
                    ["accepted", "running", "queued", "adjusting"].contains(run.status) {
                     Toggle("排队发送", isOn: $queueInput).toggleStyle(.checkbox)
                     Button("停止回复") { ConversationProcessor.queueControl(run, action: "stop", context: modelContext) }
@@ -780,6 +791,7 @@ struct LearningWorkspace: View {
     }
 
     private func sendMessage(_ content: String, operation: [String: Any]? = nil) {
+        guard runtime.allowsSending else { localError = "界面预览不发送消息，输入仅用于排版检查。"; return }
         let started = Date.now
         guard let session = selectedSession else {
             do {

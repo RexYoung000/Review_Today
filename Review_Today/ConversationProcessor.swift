@@ -3,6 +3,7 @@ import SwiftData
 
 extension AgentAPI {
     static func conversationRequest(_ path: String, body: [String: Any]? = nil) async throws -> [String: Any] {
+        try AppRuntime.current.requireSending()
         var request = URLRequest(url: base.appending(path: path.components(separatedBy: "?")[0]))
         if let query = path.components(separatedBy: "?").dropFirst().first {
             var components = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)!
@@ -30,6 +31,40 @@ extension AgentAPI {
 }
 
 enum ConversationProcessor {
+    static func acceptedRunID(_ response: [String: Any]) throws -> UUID {
+        guard let raw = response["run_id"] as? String, let id = UUID(uuidString: raw) else {
+            throw HarnessAPIError.server(code: "RT.RUN.INVALID_ACCEPTANCE", message: "服务未返回有效的运行标识，输入已保留，可重试发送。")
+        }
+        return id
+    }
+
+    @MainActor static func recordAcceptance(_ response: [String: Any], message: AgentMessage, context: ModelContext, save: (() throws -> Void)? = nil) throws {
+        let id = try acceptedRunID(response)
+        let sid = message.sessionID
+        let latestRuns = try context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }))
+        let run = latestRuns.first(where: { $0.id == id }) ?? AgentRun(id: id, sessionID: sid)
+        let existingRun = latestRuns.contains(where: { $0.id == id })
+        let priorMessage = (message.runID, message.lastDeliveryError, message.deliveryStatus)
+        let priorRun = (run.revision, run.status)
+        message.runID = id
+        message.lastDeliveryError = nil
+        message.deliveryStatus = response["status"] as? String ?? "accepted"
+        if !existingRun { context.insert(run); run.status = message.deliveryStatus }
+        run.revision = max(run.revision, response["revision"] as? Int ?? 1)
+        if run.status == "adjusting" { run.status = message.deliveryStatus }
+        do { if let save { try save() } else { try context.save() } }
+        catch {
+            context.rollback()
+            // SwiftData rollback can leave an already-observed model's optional
+            // fields cached. Restore the outbox object as well as the transaction.
+            message.runID = priorMessage.0
+            message.lastDeliveryError = priorMessage.1
+            message.deliveryStatus = priorMessage.2
+            if existingRun { run.revision = priorRun.0; run.status = priorRun.1 }
+            throw error
+        }
+        ConversationSync.wake()
+    }
     @MainActor
     static func tick(context: ModelContext, monitor: AgentServiceMonitor, pollEvents: Bool = true, onlySession: UUID? = nil, controlsOnly: Bool = false, skipControls: Bool = false) async {
         guard monitor.serviceReachable && monitor.conversationSupported else { return }
@@ -87,6 +122,7 @@ enum ConversationProcessor {
         if controlsOnly { return }
         let messages = (try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.role == "user" && $0.deliveryStatus == "local" }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
         for message in messages where message.role == "user" && message.deliveryStatus == "local" {
+            guard message.lastDeliveryError != "RT.RUN.INVALID_ACCEPTANCE" else { continue }
             guard let session = sessions.first(where: { $0.id == message.sessionID }), session.status == "active" else { continue }
             // Durable acceptance is not a model invocation. Bound confirmations
             // and stop/recovery must not wait for an unrelated routing-role probe.
@@ -98,6 +134,8 @@ enum ConversationProcessor {
             // processor. All newly-created UI input has no Task before recognition.
             if message.taskID != nil && message.runID == nil && message.operationJSON == nil { continue }
             do {
+                monitor.beginDelivery(message.id)
+                defer { monitor.endDelivery(message.id) }
                 let sid = session.id
                 let lifecycle = session.lifecycleRevision
                 let before = message.createdAt
@@ -146,17 +184,7 @@ enum ConversationProcessor {
                     try context.save()
                     continue
                 }
-                guard let rawID = response["run_id"] as? String, let id = UUID(uuidString: rawID) else { continue }
-                message.runID = id
-                message.lastDeliveryError = nil
-                message.deliveryStatus = response["status"] as? String ?? "accepted"
-                let latestRuns = (try? context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }))) ?? []
-                let run = latestRuns.first(where: { $0.id == id }) ?? AgentRun(id: id, sessionID: session.id)
-                if !latestRuns.contains(where: { $0.id == id }) { context.insert(run); run.status = message.deliveryStatus }
-                run.revision = max(run.revision, response["revision"] as? Int ?? 1)
-                if run.status == "adjusting" { run.status = message.deliveryStatus }
-                ConversationSync.wake()
-                try context.save()
+                try recordAcceptance(response, message: message, context: context)
             } catch {
                 // Keep the exact same message ID in the local outbox for recovery.
                 message.lastDeliveryError = HarnessAPIError.code(for: error)

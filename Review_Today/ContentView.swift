@@ -584,6 +584,14 @@ struct ContentView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .toolbar(removing: .sidebarToggle)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if AppRuntime.current.mode != .normal {
+                Text(AppRuntime.current.isPreview ? "界面预览 · 仅内存数据，不连接模型" : "真实模型隔离验收 · 独立数据，不写入日常知识库")
+                    .font(.caption2).foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity).padding(.vertical, 4)
+                    .background(PaperSurface())
+            }
+        }
         .frame(minWidth: 760, minHeight: 620)
         .onGeometryChange(for: Bool.self) { $0.size.width < 900 } action: { narrow in
             sidebarPolicy.resize(narrow: narrow)
@@ -591,16 +599,16 @@ struct ContentView: View {
         }
         .task {
 #if DEBUG
-            if M1DebugFixture.enabled { monitor.useFixturePresentation(); return }
+            if AppRuntime.current.isPreview { monitor.useFixturePresentation(); return }
 #endif
             await ConversationSync().run(context: modelContext, monitor: monitor)
         }
         .task {
 #if DEBUG
-            if M1DebugFixture.enabled { monitor.useFixturePresentation(); return }
+            if AppRuntime.current.isPreview { monitor.useFixturePresentation(); return }
 #endif
             monitor.start()
-            ReminderNotifications.request()
+            if AppRuntime.current.mode == .normal { ReminderNotifications.request() }
             while !Task.isCancelled {
                 await HarnessProcessor.tick(context: modelContext, monitor: monitor)
                 await CaptureProcessor.tick(context: modelContext, monitor: monitor)

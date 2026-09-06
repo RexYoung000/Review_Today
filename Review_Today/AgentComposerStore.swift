@@ -123,7 +123,8 @@ enum AgentComposerStore {
 
     /// One local transaction owns first message, Session and outbox. The unsent
     /// landing draft never appears as an empty Session in navigation or memory.
-    static func sendFirst(_ text: String, context: ModelContext, save: (() throws -> Void)? = nil) throws -> (AgentSession, AgentMessage) {
+    static func sendFirst(_ text: String, context: ModelContext, runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> (AgentSession, AgentMessage) {
+        try (runtime ?? .current).requireSending()
         let content = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !content.isEmpty else { throw Failure.blankInput }
         let row = try prepare(context)

@@ -1,7 +1,7 @@
 import Foundation
 
 enum AgentAPI {
-    static let base = URL(string: "http://127.0.0.1:8742")!
+    static let base = AppRuntime.current.serviceURL
 
     struct CaptureView: Decodable {
         var taskId: String
@@ -450,6 +450,7 @@ enum AgentAPI {
             "primary_language": primaryLanguage,
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        try AppRuntime.current.requireSending()
         let (data, response) = try await URLSession.shared.data(for: request)
         let code = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard (200 ... 299).contains(code) else {
@@ -470,6 +471,7 @@ enum AgentAPI {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = 10
         request.httpBody = try JSONEncoder().encode(["attempt_id": attemptId.uuidString.lowercased()])
+        try AppRuntime.current.requireSending()
         let (data, response) = try await URLSession.shared.data(for: request)
         let code = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard (200 ... 299).contains(code) else {
@@ -592,6 +594,7 @@ enum AgentAPI {
     }
 
     private static func sendHarness<T: Decodable>(_ request: URLRequest, as type: T.Type) async throws -> T {
+        try AppRuntime.current.requireSending()
         let (data, response) = try await URLSession.shared.data(for: request)
         let code = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard (200 ... 299).contains(code) else {
@@ -604,6 +607,7 @@ enum AgentAPI {
     }
 
     private static func send(_ request: URLRequest) async throws -> CaptureView {
+        try AppRuntime.current.requireSending()
         let (data, response) = try await URLSession.shared.data(for: request)
         let http = response as? HTTPURLResponse
         let code = http?.statusCode ?? 0

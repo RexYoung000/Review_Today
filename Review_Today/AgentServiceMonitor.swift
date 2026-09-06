@@ -42,7 +42,7 @@ struct AgentCapabilityPresentation: Equatable {
 
 @Observable
 final class AgentServiceMonitor {
-    private static let healthURL = URL(string: "http://127.0.0.1:8742/healthz")!
+    private static let healthURL = AgentAPI.base.appendingPathComponent("healthz")
     private static let pollInterval: Duration = .seconds(2)
     private static let requestTimeout: TimeInterval = 1.5
     private static let maxLaunchAttempts = 4
@@ -58,6 +58,10 @@ final class AgentServiceMonitor {
     private(set) var capabilityNotice = ""
     private(set) var canSubmitMessages = false
     private(set) var technicalDetail = ""
+    private(set) var deliveringMessageIDs = Set<UUID>()
+
+    func beginDelivery(_ id: UUID) { deliveringMessageIDs.insert(id) }
+    func endDelivery(_ id: UUID) { deliveringMessageIDs.remove(id) }
 
     @ObservationIgnored private var pollTask: Task<Void, Never>?
     @ObservationIgnored private var managedProcess: Process?
@@ -68,6 +72,9 @@ final class AgentServiceMonitor {
     @ObservationIgnored private var terminationObserver: NSObjectProtocol?
 
     func start() {
+#if DEBUG
+        if AppRuntime.current.isPreview { useFixturePresentation(); return }
+#endif
         guard pollTask == nil else { return }
         connection = .connecting
         launchStatus = "正在连接本地学习服务"
@@ -96,14 +103,18 @@ final class AgentServiceMonitor {
 #if DEBUG
     func useFixturePresentation() {
         stop()
-        connection = .ready
-        keyConfigured = true
+        connection = .unavailable
+        keyConfigured = false
         serviceReachable = false
-        capabilityNotice = "界面演示数据 · 未调用真实模型，不代表 Harness 验收通过"
+        conversationSupported = false
+        canSubmitMessages = false
+        launchStatus = "界面预览，不连接学习服务"
+        capabilityNotice = "输入仅用于排版检查，不发送、不保存到日常数据库。"
     }
 #endif
 
     func retryLaunch() {
+        guard !AppRuntime.current.isPreview else { return }
         launchAttempts = 0
         nextLaunchAt = .distantPast
         connection = .connecting
@@ -117,7 +128,7 @@ final class AgentServiceMonitor {
     }
 
     private func requestCapabilityProbe() async {
-        var request = URLRequest(url: URL(string: "http://127.0.0.1:8742/v2/capabilities/probe")!)
+        var request = URLRequest(url: AgentAPI.base.appendingPathComponent("v2/capabilities/probe"))
         request.httpMethod = "POST"
         request.timeoutInterval = Self.requestTimeout
         do {
@@ -128,6 +139,12 @@ final class AgentServiceMonitor {
     }
 
     private func ping() async {
+        // Isolated validation may only use its own service; never borrow an
+        // unrelated listener or a normal user's checkpoint on the test port.
+        if AppRuntime.current.mode == .modelValidation && managedProcess?.isRunning != true {
+            ensureServiceRunning()
+            return
+        }
         var request = URLRequest(url: Self.healthURL)
         request.timeoutInterval = Self.requestTimeout
         request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -276,6 +293,10 @@ final class AgentServiceMonitor {
         ]
         for key in ["USER", "LOGNAME", "SSL_CERT_FILE", "REQUESTS_CA_BUNDLE"] {
             if let value = inherited[key] { environment[key] = value }
+        }
+        if let directory = AppRuntime.current.validationDirectory {
+            environment["REVIEW_TODAY_HARNESS_DB"] = directory.appendingPathComponent("checkpoint.sqlite3").path
+            environment["REVIEW_TODAY_SERVICE_PORT"] = String(AppRuntime.current.port)
         }
         process.environment = environment
         process.standardOutput = pipe

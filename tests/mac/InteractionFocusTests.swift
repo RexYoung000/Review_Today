@@ -10,6 +10,11 @@ struct InteractionFocusTests {
         let source = try String(contentsOf: root.appendingPathComponent("Review_Today/InteractionChrome.swift"), encoding: .utf8)
         precondition(!source.contains("@Environment(\\.isFocused)"),
                      "shared feedback must not broadcast an ancestor's focus to every row")
+        let workspace = try String(contentsOf: root.appendingPathComponent("Review_Today/LearningWorkspace.swift"), encoding: .utf8)
+        precondition(workspace.contains(".toolbar(removing: .title)") && !workspace.contains(".toolbar(.hidden, for: .windowToolbar)"),
+                     "remove duplicate title, not native window controls")
+        precondition(workspace.contains(".popover(isPresented: $showSessionTags, arrowEdge: .top)") && workspace.contains("symbol: \"ellipsis\", arrowEdge: .top"),
+                     "header popovers must open into the workspace, not above the window")
         _ = NSApplication.shared
         for palette in [RunwayPalette.light, .dark] {
             precondition(focusRows(palette: palette, focusedRow: nil) == [],

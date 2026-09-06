@@ -76,6 +76,7 @@ struct SingleLevelMenu: View {
     let symbol: String
     var label = ""
     var selectedID: String? = nil
+    var arrowEdge: Edge = .bottom
     let items: [ChoiceMenuItem]
     var onPointerSelection: () -> Void = {}
     var onPresentationChange: (Bool) -> Void = { _ in }
@@ -106,7 +107,7 @@ struct SingleLevelMenu: View {
         .accessibilityValue(presented ? "已展开" : "已收起")
         .onChange(of: triggerFocused) { _, value in onFocusChange(value) }
         .onChange(of: presented) { _, value in onPresentationChange(value) }
-        .popover(isPresented: $presented, arrowEdge: .bottom) {
+        .popover(isPresented: $presented, arrowEdge: arrowEdge) {
             ChoiceMenuContent(items: items, selectedID: selectedID, onSelect: { id in
                 selectionTime = NSApp.currentEvent?.timestamp ?? 0
                 closeReason = NSApp.currentEvent?.type == .keyDown ? .keyboard : .pointerSelection

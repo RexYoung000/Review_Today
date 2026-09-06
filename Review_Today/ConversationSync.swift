@@ -17,6 +17,7 @@ final class ConversationSync {
     private var snapshotters: [UUID: Task<Void, Never>] = [:]
 
     func run(context: ModelContext, monitor: AgentServiceMonitor) async {
+        guard AppRuntime.current.allowsSending else { return }
         for session in (try? context.fetch(FetchDescriptor<AgentSession>())) ?? [] {
             session.memoryPolicySyncedRevision = -1
             session.memoryContentSyncedRevision = -1
@@ -132,6 +133,7 @@ final class ConversationSync {
 extension AgentAPI {
     @MainActor
     static func consumeSessionEvents(_ id: UUID, after: Int, recoveryVersion: Int = 0, endpoint: URL? = nil, receive: @MainActor ([String: Any]) async throws -> Void) async throws {
+        try AppRuntime.current.requireSending()
         let url = URL(string: (endpoint ?? base).absoluteString.trimmingCharacters(in: CharacterSet(charactersIn: "/")) + "/v2/sessions/\(id.uuidString.lowercased())/events/stream?after_seq=\(after)&recovery_version=\(recoveryVersion)")!
         var request = URLRequest(url: url)
         request.timeoutInterval = 30 // reset by SSE keepalives while generation is active

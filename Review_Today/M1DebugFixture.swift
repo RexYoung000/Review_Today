@@ -16,8 +16,8 @@ enum M1DebugFixture {
         return ["1", "invalid", "review", "retry", "learning", "today"].contains(mode)
     }
 
-    static func makeContainer() throws -> ModelContainer {
-        let schema = Schema([
+    static var schema: Schema {
+        Schema([
             Source.self,
             Knowledge.self,
             Question.self,
@@ -37,13 +37,21 @@ enum M1DebugFixture {
             AgentRunControl.self,
             SessionEventRecord.self,
         ])
+    }
+
+    static func makeValidationContainer(_ directory: URL) throws -> ModelContainer {
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        return try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: directory.appendingPathComponent("app.store")))
+    }
+
+    static func makeContainer(mode: String? = Self.mode) throws -> ModelContainer {
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: schema, configurations: [configuration])
-        try seed(container.mainContext)
+        try seed(container.mainContext, mode: mode)
         return container
     }
 
-    private static func seed(_ context: ModelContext) throws {
+    private static func seed(_ context: ModelContext, mode: String?) throws {
         let sourceText = "光合作用是植物利用光能，把二氧化碳和水转化为有机物，并释放氧气的过程。"
         let source = Source(
             id: UUID(uuidString: "22222222-2222-4222-8222-222222222222")!,
@@ -120,11 +128,11 @@ enum M1DebugFixture {
             context.insert(previousAttempt)
         }
         context.insert(AppSettings())
-        try seedLearningWorkspace(context)
+        try seedLearningWorkspace(context, mode: mode)
         try context.save()
     }
 
-    private static func seedLearningWorkspace(_ context: ModelContext) throws {
+    private static func seedLearningWorkspace(_ context: ModelContext, mode: String?) throws {
         if mode == "learning" { seedHandbook(context); return }
         let now = Date.now
         let samples: [(String, String, [String], String)] = [
@@ -163,7 +171,7 @@ enum M1DebugFixture {
     }
 
     private static func seedHandbook(_ context: ModelContext) {
-        let names = ["空状态", "讲解中", "练习中", "学习完成"]
+        let names = ["空状态：检索增强生成的学习路径、证据边界与面试表达", "讲解中", "练习中", "学习完成"]
         for (index, name) in names.enumerated() {
             let session = AgentSession(title: "[界面样例] RAG · " + name, modePreset: index == 0 ? "auto" : "problem_solving",
                                        createdAt: Date.now.addingTimeInterval(Double(-index * 60)))
@@ -175,10 +183,10 @@ enum M1DebugFixture {
                 index == 2 ? "## 试着独立回答\n\n当企业文档持续更新时，你会选择微调还是 RAG？请说明判断依据与局限。\n\n需要帮助可以先要提示；提示不会计为通过。" :
                 "## 先抓住核心\n\n**RAG 是先检索，再生成。** 它把相关资料作为上下文交给模型，而不是直接改变模型参数。\n\n## 用一个例子理解\n\n用户问报销政策时，先检索公司制度，再让模型根据制度回答，并给出出处。\n\n### 容易混淆的地方\n\n检索到资料不代表答案一定正确。还要检查召回、权限、引用和回答忠实度。", deliveryStatus: "received")
             let run = AgentRun(id: UUID(), sessionID: session.id)
-            run.status = index == 1 ? "running" : "completed"
-            run.userSummary = index == 1 ? "正在解释检索与生成的关系" : "本轮已回应"
+            run.status = "completed"
+            run.userSummary = index == 1 ? "讲解阶段预览（固定样例）" : "本轮已回应"
             run.elapsedMS = 4600
-            run.startedAt = index == 1 ? .now : nil
+            run.startedAt = nil
             input.runID = run.id; answer.runID = run.id
             let task = LearningTask(sessionID: session.id, inputMessageID: input.id, mode: "problem_solving", status: index == 3 ? "completed" : "awaiting_user")
             task.conversationManaged = true

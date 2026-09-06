@@ -16,7 +16,9 @@ if PROVIDER == "deepseek":
 CA_BUNDLE = install_trust_store()
 
 HOST = "127.0.0.1"
-PORT = 8742
+PORT = int(os.getenv("REVIEW_TODAY_SERVICE_PORT", "8742"))
+if not 1024 <= PORT <= 65535:
+    raise RuntimeError("RT.CONFIG.INVALID_LOCAL_PORT")
 if PROVIDER == "deepseek":
     MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash").strip() or "deepseek-v4-flash"
     ROUTER_MODEL = os.getenv("DEEPSEEK_ROUTER_MODEL", "deepseek-v4-flash").strip() or "deepseek-v4-flash"

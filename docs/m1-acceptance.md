@@ -1,6 +1,6 @@
 # M1 Agent Harness V2 验收契约
 
-> 当前 DeepSeek 接入证据见 §0.13；前批增量代码证据见 §0.12，旧 §0.10 保留历史。前批模型先成功后 HTTP 403 属于旧供应商，不是 DeepSeek 实测。分开记录代码、受控、真实模型与 Rex 验收。
+> 当前顶部/运行入口及原生真实模型发送、流式、重启证据见 §0.15；DeepSeek 接入证据见 §0.13。旧章节保留历史；前批 HTTP 403 属于旧供应商，不是当前 DeepSeek 状态。分开记录代码、受控、真实模型与 Rex 验收。
 > 对应 Issue：[#9 M1.1：冻结最小闭环验收契约与固定样本](https://github.com/RexYoung000/Review_Today/issues/9)
 > 2026-09-04：单侧栏、开放式 Agent 工作区、Session 标签和 Today 活动反馈已完成代码实施、构建与受控检查；§0.9 仍是 Rex 的真实体验验收门槛，旧 §0.6 仅保留历史证据。
 > 机器可读样本：`agent-service/tests/fixtures/m1_acceptance.json`
@@ -8,7 +8,7 @@
 
 ## 0.15 紧凑顶部与真实运行入口（2026-09-06）
 
-状态：本轮先冻结文档，代码尚未实施。前一版 FocusFixQA 为内存 fixture，明确关闭消息同步却仍可发送；「你好」只进入内存 outbox，假 running 样例持续计时。本次不需要删除真实数据库，不将该问题归因于 DeepSeek 403。
+状态：独立文档检查点 `b9e0f77` 已先提交并推送，随后实施紧凑顶部、运行身份与投递反馈修复。前一版 FocusFixQA 为内存 fixture，关闭消息同步却仍可发送；「你好」只进入内存 outbox，假 running 样例持续计时。这不是 DeepSeek 403；本次未清空真实数据库。
 
 计划阶段隔离 Harness 实测：现有 Flash 寒暄完成 1.717 s；RAG 首公开内容 2.066 s、完成 5.464 s、38 个正文片段，无错误。仅验证合成输入的 Harness，不是原生 App 发送/SSE/重启证据，也不表示本轮已经修复。
 
@@ -20,7 +20,42 @@
 4. 顶部无重复标题/空标签行；无标签、多标签、长标题、清单展开、浅深色和 760×620/默认/宽窗均可操作；保留焦点/滚动。
 5. 交付前正常 App 的已有会话/知识/复习数据保留，无界面样例或演示横幅。旧测试输入「你好」仅保留为未发送草稿，先保存再退出旧预览；不自动提交模型。
 
-文档 checkpoint、失败测试、构建、受控结果、原生窗口与模型调用证据在完成后回写。真实供应商、原生交互及 Rex 验收分别报告，不关闭 #17/M1 或推进 M2。
+### 本轮实施与验证记录
+
+- 先取得红灯：新增 `AppRuntimeContractTests` 在旧实现断言「预览不得报告 ready」失败，`/tmp/review-today-runtime-red.log`。修复后另捕获投递保存失败时观察对象 Run ID 残留，补充回滚后的对象状态恢复。无效/缺失 Run ID 不再静默丢弃响应，也不自动重复提交。
+- 本轮源码入口：`AppRuntime`、`MessageDeliveryPresentation`、`ConversationProcessor.recordAcceptance`、`LearningWorkspace.workspaceHeader`。没有新增 SwiftData 字段、生产数据迁移、业务 API、供应商或模型档位。
+- 全量无密钥服务回归 179 项通过，`bash agent-service/run-controlled.sh`；日志 `/tmp/review-today-runtime-service.log`。Mac 契约覆盖预览发送拦截、真实隔离磁盘、首发/投递保存失败、稳定 ID 与重复响应、归档/held 不可重试、投递文案、静态样例以及原有焦点/输入/草稿/事件/记忆回归；入口 `bash tests/mac/run-contracts.sh`，日志 `/tmp/review-today-runtime-contracts.log`。中间重编曾因正在编辑源码而退出，不计为测试通过，以最终完整运行记录为准。
+- `bash tests/mac/run-migration.sh` 通过（`/tmp/review-today-runtime-migration.log`），是既有磁盘 schema 的隔离回归，并非把用户两份历史数据库合并。Debug 正常/NativeQA 和 Release 构建通过，日志分别为 `/tmp/review-today-runtime-product-build.log`、`/tmp/review-today-runtime-build.log`、`/tmp/review-today-runtime-release.log`。初轮 Release 因调用仅 Debug 存在的方法编译失败，已补条件编译后重建；Release 不启动预览，不代表签名分发或发布。
+
+### 原生真实模型链路（不是脚本替代）
+
+在 `com.rexyoung.ReviewToday.NativeQA` 中，通过 Computer Use 点击 Agent、原生输入框粘贴并按 Return。使用 `/tmp/review-today-native-LjL9wq/app.store` 和同目录 `checkpoint.sqlite3`、本机 18742 服务；窗口底部明确显示「真实模型隔离验收」，无样例种子。App 自动托管现有 DeepSeek，health 显示结构化/正文流式可用。
+
+| 实际输入 | Run 结果与模型计时 | App 持久化/呈现观测 |
+|---|---|---|
+| 你好 | completed，1.325 s；不创建学习目标 | 本地回显记录 52 ms；回答首段从收到到显示约 58.5 ms |
+| RAG 是什么？解释检索与生成、公司报销例子和两个易混点 | completed；首正文 2.483 s，总计 9.496 s | 本地回显记录 50 ms；保存 1 ms；首段从收到到显示约 43.2 ms；77 个真实正文片段 |
+
+连续 AX 观测到「等待发送→正在理解本轮意图→正在准备回答」、未闭合答案的「正在输出 · 尚未完成校验」，随后同一条回答收敛为「已完成 · 9.5 秒」。编辑器保持焦点，没有等待全文后模拟打字。以上 App 计时是已有埋点，不是外部摄影测得的显示器端到端 SLA；复杂回答与计划阶段短提示不能直接作性能前后对照。
+
+退出再启动同一隔离库，通过侧栏重新打开会话，两个 Run ID 保持 `9f08ffef-5995-4866-a2db-4031ee206b20`、`f5ef5f07-8f39-4ceb-b018-78f3309323fa`；仍为 4 条消息、2 个完成 Run，耗时不重计。Mac 消费位置 95，服务 ACK 95；正常重启会重新检查模型能力，但没有重新生成历史答案。该隔离库中 Knowledge/ReviewAttempt 均为 0。
+
+### 原生界面与预览
+
+- 确认单条会话标题、无空标签行，无标签弹层与 4 个标签编辑/重开。顶部只移除工具栏标题，系统关闭/最小化/缩放仍在；初轮发现隐藏整条 toolbar 会移除窗口控件，已修正并复验。
+- 实际缩放宽窗/约 1100 宽默认窗/760×620 最小内容区（含系统标题栏的截图约 760×650），长标题截断并有全文帮助，按钮保留；侧栏窄窗变图标栏。浅深色均检查。顶部标签/更多改向下展开，输入区选择仍向上；方向键与 Escape 不误执行新会话/标签/记忆操作。
+- `REVIEW_TODAY_M1_UI_FIXTURE=learning` 新预览窗口：输入「预览输入，不应创建消息」，Return/⌘Return 均未新建消息或 Session，文本保留，发送按钮禁用；列表仍只有四个内存样例。预览运行不启动本地服务。最后构建切到知识库，底部仍显示「界面预览 · 仅内存数据，不连接模型」，不因离开 Agent 页面丢失测试身份。
+- 讲解样例固定 4.6 秒；显式启动 8 秒动效后自动恢复「预览动效（8 秒）」按钮，计时不增长。学习安排展开/收起、步骤文字和固定输入区可见；这些样例只证明布局，不证明学习闭环。
+
+### 正常窗口交付与数据注意事项
+
+正常 bundle `Rex.Review-Today` 从 `/tmp/review-today-runtime-product-build/Build/Products/Debug/Review_Today.app` 启动，未设置任何测试环境变量；health 8742 返回 DeepSeek ready/流式 ready。起始页无预览横幅/样例，新草稿原本为空，已把 Rex 的「你好」保存进去，**没有发送**。只在确认正常 `AppSettings` 草稿落盘后退出旧 FocusFixQA，让内存样例自然释放；没有执行数据删除。
+
+最终正常构建再次退出/启动，默认回到今天；点击 Agent 仍恢复「你好」草稿。数据库保持 9 个 Session/35 条消息，未因草稿恢复新增会话或回答；样例 Session 数为 0。最终完整 Mac 契约退出码 0，受控 SSE 最大接收延迟约 26 ms；正常 App 留在前台供 Rex 验收。
+
+只读核对发现一个**既有历史数据分流**：当前无沙盒开发构建使用 `~/Library/Application Support/default.store`（9 个历史 Session、35 条消息，无样例）；旧沙盒库 `~/Library/Containers/Rex.Review-Today/Data/Library/Application Support/default.store` 仍有 8 张知识卡、3 条 ReviewAttempt。两份库均未删除/合并，本轮未改默认存储路径。旧卡在当前开发版并不可见；不能将「文件保留」写成「历史卡已迁移展示」。需要单独确认去重/目标库与备份恢复方案后迁移，未擅自实施。
+
+未覆盖：系统级 Reduce Motion/VoiceOver、全部输入法真实候选选词、每一种网络断点及完整五模式人工验收。本轮受控输入测试包含组合文本保护，但不冒充实际中文候选操作；截图/AX 连续观测不是完整录屏。模型答案措辞质量也不由一次链路成功担保。当前可报告本轮代码、受控回归和上述原生链路通过，最终视觉/动效舒适度仍待 Rex；不关闭 #17/M1，不推进 M2。
 
 ## 0.14 Agent 交互精修（2026-09-05）
 

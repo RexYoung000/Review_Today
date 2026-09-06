@@ -80,7 +80,7 @@ struct RunPhaseLine: View {
 }
 
 /// An execution indicator, never a percentage or an invented stream of thought.
-private struct DotsRing: View {
+struct DotsRing: View {
     let color: Color
     let reduced: Bool
     var body: some View {
