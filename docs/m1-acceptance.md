@@ -85,6 +85,23 @@ M1.4 Mac 客户端可以直接依赖以下服务字段：
 - 用户主动 `reprocess` 同样复用原任务记录，不创建第二份知识结果；
 - 没有 Mac ACK 时任务必须保持 `committing`；仅当 ACK 中的 knowledge IDs 与服务结果完整匹配时才能进入 `completed`。
 
+### 3.3 M1 review 评分契约
+
+评分请求稳定包含 `attempt_id`、`prompt_text`、`scoring_spec`、`answer_text`、`hint_used` 与 `primary_language`。其中 `answer_text` 是用户原始自然语言回答：服务可以检查它是否为空，但不得先改写、提取关键点或增加独立预结构化模型调用；Mac 负责将原始回答保存在 `ReviewAttempt.answerText`。
+
+服务端必须保证：
+
+- 空白回答在调用模型前以 HTTP `422` 拒绝，不生成等级；
+- 评分模型同时获得问题、学习目标、必答点、可接受同义表达、常见误解、原文证据、顺序规则、提示状态和原始回答；
+- `agent_grade` 只能是 `again`、`hard` 或 `good`，模型输出 `easy` 或其他结构错误时必须失败，不能转换成有效等级；
+- 使用提示后，即使模型返回 `good`，服务也必须程序化降为 `hard`；
+- `brief_feedback` 必须非空、简短并使用用户主语言；
+- 同一 `attempt_id` 首次评分成功后，重复评分返回同一缓存结果，不再次调用模型；评分失败不缓存伪结果，允许用同一 ID 重试；
+- 只有已经产生有效评分结果的 `attempt_id` 可以 ACK；错误 ID 必须拒绝，重复 ACK 保持幂等；
+- 模型、网络或结构化评分失败返回 `RT.REVIEW.GRADE_FAILED`，不能产生 ACK、有效等级或“已掌握”状态。
+
+评分响应稳定包含 `attempt_id`、`agent_grade`、`brief_feedback` 与 `hint_used`。服务内评分结果与 ACK 仍是 M1 的内存状态，服务重启恢复不在本里程碑验证范围内。
+
 ## 4. 允许变化与失败边界
 
 以下差异属于生成文风，不应单独判为失败：
