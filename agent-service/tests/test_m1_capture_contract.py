@@ -197,6 +197,38 @@ class M1CaptureHTTPContractTests(unittest.TestCase):
         self.assertEqual(id(store.get(self.request["task_id"])), record_identity)
         self.assertEqual(store.get(self.request["task_id"]).status, "committing")
 
+    def test_reprocess_action_reuses_task_record(self) -> None:
+        retryable_failure = {
+            "events": [],
+            "intent": "remember_content",
+            "outcome": "retryable_failed",
+            "error_code": "RT.CAPTURE.MODEL_FAILED",
+            "user_status": "需要重试",
+        }
+        with (
+            patch("agent_service.main.openai_key", return_value="test-key"),
+            patch(
+                "agent_service.main.run_capture",
+                side_effect=[retryable_failure, committing_result(self.source)],
+            ) as run_capture,
+        ):
+            self.client.post("/v1/capture/tasks", json=self.request)
+            record_identity = id(store.get(self.request["task_id"]))
+            retry = self.client.post(
+                f"/v1/capture/tasks/{self.request['task_id']}/actions",
+                json={"action": "reprocess"},
+            )
+            duplicate = self.client.post(
+                f"/v1/capture/tasks/{self.request['task_id']}/actions",
+                json={"action": "reprocess"},
+            )
+
+        self.assertEqual(retry.status_code, 200)
+        self.assertEqual(duplicate.status_code, 200)
+        self.assertEqual(run_capture.call_count, 2)
+        self.assertEqual(id(store.get(self.request["task_id"])), record_identity)
+        self.assertEqual(store.get(self.request["task_id"]).status, "committing")
+
     def test_non_source_evidence_fails_closed(self) -> None:
         for field in ("evidence_excerpt", "scoring_spec.evidence"):
             with self.subTest(field=field):

@@ -35,6 +35,8 @@ enum CaptureProcessor {
             await poll(task, context: context)
         case "committing":
             await commitAndAck(task, context: context)
+        case "completed" where !task.localCommitDone:
+            await commitAndAck(task, context: context)
         default:
             break
         }
@@ -61,10 +63,13 @@ enum CaptureProcessor {
             )
             apply(view, to: task)
             try context.save()
+            if task.status == "committing" || (task.status == "completed" && !task.localCommitDone) {
+                await commitAndAck(task, context: context)
+            }
         } catch {
             task.status = "retryable_failed"
             task.retryCount += 1
-            task.errorCode = "RT.CAPTURE.MODEL_FAILED"
+            task.errorCode = Self.errorCode(for: error)
             task.userStatus = String(localized: "需要重试")
             task.updatedAt = .now
             appendStatus(task.userStatus, to: task)
@@ -78,7 +83,7 @@ enum CaptureProcessor {
             let view = try await AgentAPI.getCapture(taskId: task.id)
             apply(view, to: task)
             try context.save()
-            if task.status == "committing" {
+            if task.status == "committing" || (task.status == "completed" && !task.localCommitDone) {
                 await commitAndAck(task, context: context)
             }
         } catch {
@@ -98,6 +103,7 @@ enum CaptureProcessor {
             }
             task.status = "retryable_failed"
             task.retryCount += 1
+            task.errorCode = Self.errorCode(for: error)
             task.userStatus = String(localized: "需要重试")
             task.updatedAt = .now
             try? context.save()
@@ -109,24 +115,79 @@ enum CaptureProcessor {
         do {
             let view = try await AgentAPI.getCapture(taskId: task.id)
             apply(view, to: task)
-            guard let result = view.result, let source = task.source else { return }
-            if !task.localCommitDone {
-                source.attribution = result.attribution
+            guard let result = view.result, let source = task.source else {
+                task.status = "retryable_failed"
+                task.errorCode = "RT.CAPTURE.STRUCTURE_INVALID"
+                task.userStatus = String(localized: "需要重试")
+                task.updatedAt = .now
+                appendStatus(task.userStatus, to: task)
+                try? context.save()
+                return
+            }
+
+            let ids = result.knowledge.compactMap { UUID(uuidString: $0.id) }
+            guard ids.count == result.knowledge.count, Set(ids).count == ids.count else {
+                task.status = "retryable_failed"
+                task.errorCode = "RT.CAPTURE.STRUCTURE_INVALID"
+                task.userStatus = String(localized: "需要重试")
+                task.updatedAt = .now
+                appendStatus(task.userStatus, to: task)
+                try? context.save()
+                return
+            }
+
+            do {
                 try insertKnowledge(result, into: source, context: context)
                 task.localCommitDone = true
+                task.errorCode = nil
+                task.updatedAt = .now
                 try context.save()
+            } catch {
+                context.rollback()
+                task.status = "committing"
+                task.errorCode = "RT.CAPTURE.LOCAL_SAVE_FAILED"
+                task.userStatus = String(localized: "本机保存失败，稍后重试")
+                task.updatedAt = .now
+                appendStatus(task.userStatus, to: task)
+                try? context.save()
+                return
             }
-            let ids = source.knowledgeItems.map(\.id)
-            let acked = try await AgentAPI.ackCapture(taskId: task.id, knowledgeIds: ids)
-            apply(acked, to: task)
-            if acked.status == "completed", let path = source.audioPath {
-                try? FileManager.default.removeItem(atPath: path)
-                source.audioPath = nil
+
+            let localIDs = Set((try? context.fetch(FetchDescriptor<Knowledge>()))?
+                .filter { $0.source?.id == source.id }
+                .map(\.id) ?? [])
+            guard ids.allSatisfy(localIDs.contains) else {
+                task.status = "committing"
+                task.errorCode = "RT.CAPTURE.LOCAL_SAVE_FAILED"
+                task.userStatus = String(localized: "本机保存失败，稍后重试")
+                task.updatedAt = .now
+                appendStatus(task.userStatus, to: task)
+                try? context.save()
+                return
             }
-            try context.save()
+
+            do {
+                let acked = try await AgentAPI.ackCapture(taskId: task.id, knowledgeIds: ids)
+                apply(acked, to: task)
+                if acked.status == "completed", let path = source.audioPath {
+                    try? FileManager.default.removeItem(atPath: path)
+                    source.audioPath = nil
+                }
+                try context.save()
+            } catch {
+                task.status = "committing"
+                task.errorCode = Self.errorCode(for: error, fallback: "RT.CAPTURE.ACK_FAILED")
+                task.userStatus = String(localized: "已保存，等待确认")
+                task.updatedAt = .now
+                appendStatus(task.userStatus, to: task)
+                try? context.save()
+            }
         } catch {
-            task.userStatus = String(localized: "正在写入")
+            task.status = "committing"
+            task.errorCode = Self.errorCode(for: error, fallback: "RT.CAPTURE.SERVICE_UNAVAILABLE")
+            task.userStatus = String(localized: "等待服务确认")
             task.updatedAt = .now
+            appendStatus(task.userStatus, to: task)
             try? context.save()
         }
     }
@@ -180,43 +241,91 @@ enum CaptureProcessor {
         into source: Source,
         context: ModelContext
     ) throws {
+        guard !payload.knowledge.isEmpty else { throw CaptureProcessorError.invalidPayload }
         let encoder = JSONEncoder()
+        var seenIDs = Set<UUID>()
+
         for draft in payload.knowledge {
-            guard let id = UUID(uuidString: draft.id) else { continue }
-            let item = Knowledge(
-                id: id,
-                learningGoal: draft.learningGoal,
-                knowledgeType: draft.knowledgeType,
-                theme: draft.theme,
-                contentLanguage: draft.contentLanguage,
-                questionLanguage: draft.questionLanguage,
-                answerLanguage: draft.answerLanguage,
-                evidenceExcerpt: draft.evidenceExcerpt,
-                evidenceLocator: draft.evidenceLocator,
-                title: draft.title,
-                explanation: draft.explanation
-            )
-            item.source = source
-            context.insert(FsrsState(knowledgeId: item.id, dueAt: item.dueAt))
+            guard let id = UUID(uuidString: draft.id), seenIDs.insert(id).inserted else {
+                throw CaptureProcessorError.invalidPayload
+            }
             let specData = try encoder.encode(draft.scoringSpec)
             let specJSON = String(data: specData, encoding: .utf8) ?? "{}"
-            for question in draft.questions {
-                let model = Question(
-                    variantIndex: question.variantIndex,
-                    promptText: question.promptText,
-                    scoringSpecJSON: specJSON
+            let item: Knowledge
+            if let existing = source.knowledgeItems.first(where: { $0.id == id }) {
+                item = existing
+            } else if let existing = try context.fetch(FetchDescriptor<Knowledge>()).first(where: { $0.id == id }) {
+                item = existing
+            } else {
+                item = Knowledge(
+                    id: id,
+                    learningGoal: draft.learningGoal,
+                    knowledgeType: draft.knowledgeType,
+                    theme: draft.theme,
+                    contentLanguage: draft.contentLanguage,
+                    questionLanguage: draft.questionLanguage,
+                    answerLanguage: draft.answerLanguage,
+                    evidenceExcerpt: draft.evidenceExcerpt,
+                    evidenceLocator: draft.evidenceLocator,
+                    title: draft.title,
+                    explanation: draft.explanation
                 )
-                model.knowledge = item
-                context.insert(model)
+                context.insert(item)
             }
-            context.insert(item)
+
+            item.learningGoal = draft.learningGoal
+            item.knowledgeType = draft.knowledgeType
+            item.theme = draft.theme
+            item.contentLanguage = draft.contentLanguage
+            item.questionLanguage = draft.questionLanguage
+            item.answerLanguage = draft.answerLanguage
+            item.evidenceExcerpt = draft.evidenceExcerpt
+            item.evidenceLocator = draft.evidenceLocator
+            item.title = draft.title
+            item.explanation = draft.explanation
+            item.source = source
+
+            if let fsrs = try context.fetch(FetchDescriptor<FsrsState>()).first(where: { $0.knowledgeId == id }) {
+                _ = fsrs
+            } else {
+                context.insert(FsrsState(knowledgeId: id, dueAt: item.dueAt))
+            }
+
+            for questionDraft in draft.questions {
+                if let question = item.questions.first(where: { $0.variantIndex == questionDraft.variantIndex }) {
+                    question.knowledgeVersion = item.version
+                    question.promptText = questionDraft.promptText
+                    question.scoringSpecJSON = specJSON
+                } else {
+                    let question = Question(
+                        knowledgeVersion: item.version,
+                        variantIndex: questionDraft.variantIndex,
+                        promptText: questionDraft.promptText,
+                        scoringSpecJSON: specJSON
+                    )
+                    question.knowledge = item
+                    context.insert(question)
+                }
+            }
         }
+        source.attribution = payload.attribution
+    }
+
+    private static func errorCode(for error: Error, fallback: String = "RT.CAPTURE.MODEL_FAILED") -> String {
+        if error is CaptureProcessorError {
+            return "RT.CAPTURE.STRUCTURE_INVALID"
+        }
+        return CaptureAPIError.code(for: error, fallback: fallback)
     }
 
     private static func audioBase64(from source: Source) -> String? {
         guard let path = source.audioPath else { return nil }
         return try? Data(contentsOf: URL(fileURLWithPath: path)).base64EncodedString()
     }
+}
+
+private enum CaptureProcessorError: Error {
+    case invalidPayload
 }
 
 private struct ReceiptStore: Codable {
