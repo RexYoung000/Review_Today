@@ -6,6 +6,20 @@
 > 机器可读样本：`agent-service/tests/fixtures/m1_acceptance.json`
 > 主规格：[Agent Harness V2](agent-harness-v2.md)
 
+## 0.16 会话图标、记忆状态与上下文圆环（2026-09-06）
+
+按 Rex 本轮截图修订 DESIGN 与 Harness §23 后实施：顶部归档/恢复改共用图标按钮；输入区显示容量圆环及原生悬停帮助/可点击详情；会话列表和顶部增加记忆关闭标识；移除行菜单/右键菜单重复多选入口。保留既有多选栏、记忆策略版本、归档守卫、数据 schema 及本地 24K 输入限额。DeepSeek 官方 Flash/Pro 已补 1M 窗口元数据，旧供应商的窗口环境变量不串入 DeepSeek。
+
+- Debug 构建通过：`/tmp/review-today-capacity-build.log`。
+- 服务无密钥回归 180 项通过：`/tmp/review-today-capacity-service.log`。新增 provider/model 窗口隔离、未知型号与本地预算不扩大的断言。
+- 完整 Mac 契约通过：`/tmp/review-today-capacity-contracts.log`，含容量分母/空态/未知/非法数值、既有记忆关闭/重新开启/引用失效、原生输入和 SSE 回归。最终悬停实现采用系统 help，定向 UI 契约复核通过（`/tmp/review-today-capacity-final-ui-test.log`）。
+- 原生隔离预览 bundle `com.rexyoung.ReviewToday.CapacityQA`：观察归档图标无常驻文字，点击上下文详情显示约 5.5K / 1.0M 及 24K 输入预算；浅深色、窗口缩放均检查。顶部关闭记忆后列表和标题立即出现斜杠脑形，右键菜单变为允许跨会话记忆；重新开启后两个标识消失，右键菜单仅保留归档、标签、记忆操作。
+- 预览所有数据仅在内存，发送禁用；这些圆环值为明确样例，不是真实模型用量。真实服务容量来源通过服务回归验证，本轮没有付费模型发送。旧会话缺 model_window 时显示上限未知；下次正常请求收到新元数据后更新，不回填推测值。
+- 已关闭隔离预览，打开 `/tmp/review-today-capacity-build/Build/Products/Debug/Review_Today.app` 正常构建并恢复「你好」会话；原有问答与 1.3 秒完成状态保留，没有发送新消息。当前历史记录显示约 4.7K / 上限未知，符合旧记录降级契约。随后正常服务启动遇到下述外部阻塞，不能报告日常运行交付完成。
+- 新开发构建正常启动服务失败：health 8742 未响应；Python 采样卡在初始化读取环境路径文件的 open，尚未进入服务业务代码，`/tmp/review-today-service-startup.sample`。系统 TCC 日志同期出现该构建的文件访问预检（AllFiles preflight=0），不足以断言具体哪一项权限必须扩大；未修改系统权限或另起有更高权限的服务绕过。已停止失败的新构建并尝试恢复原构建，服务恢复结果待后续记录。
+- 当前不声称完整体验验收：系统悬停 tooltip 的指针停留、键盘全路径、系统 Reduce Motion/VoiceOver、精确最小窗口尺寸与长会话压力未完成本轮端到端验证；现有证据为连续 AX/截图而非录屏。最终视觉与交互待 Rex。
+- 分支核对与分类见 [M1 分支清单](m1-branch-audit.md)：1 个工作树、9 条本地分支，8 个 issue PR 均未合并，本次无可按完成条件直接删除的分支；不关闭 #17/M1。
+
 ## 0.15 紧凑顶部与真实运行入口（2026-09-06）
 
 状态：独立文档检查点 `b9e0f77` 已先提交并推送，随后实施紧凑顶部、运行身份与投递反馈修复。前一版 FocusFixQA 为内存 fixture，关闭消息同步却仍可发送；「你好」只进入内存 outbox，假 running 样例持续计时。这不是 DeepSeek 403；本次未清空真实数据库。

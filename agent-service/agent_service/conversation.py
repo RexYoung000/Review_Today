@@ -559,7 +559,7 @@ class ConversationHarness:
     def _call(self, session_id, run_id, revision, node, system, prompt, schema, model=COACH_MODEL):
         data, run = self._snapshot(session_id, run_id, revision)
         strength = run.get("thinking_strength", data.get("thinking_strength", "smart"))
-        prompt, capacity = prepare_context(system, prompt, window=configured_window(), schema=schema.model_json_schema())
+        prompt, capacity = prepare_context(system, prompt, window=configured_window(model), schema=schema.model_json_schema())
         key = hashlib.sha256((node + system + prompt + model + strength).encode()).hexdigest()
         if key in run["steps"]:
             return schema.model_validate(run["steps"][key])
@@ -639,7 +639,7 @@ class ConversationHarness:
                             repaired = True
                             choices[index + 1:] = [selected_model]
                             prompt += "\n输出结构校验失败。仅重新生成严格符合已给定结构的结果；不补造授权、证据、来源或已掌握状态。"
-                            prompt, repaired_capacity = prepare_context(system, prompt, window=configured_window(), schema=schema.model_json_schema())
+                            prompt, repaired_capacity = prepare_context(system, prompt, window=configured_window(model), schema=schema.model_json_schema())
                             with self.store.transaction(session_id, run_id, revision) as current:
                                 current["runs"][run_id]["context_capacity"] = repaired_capacity
                             continue

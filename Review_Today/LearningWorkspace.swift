@@ -249,12 +249,11 @@ struct LearningWorkspace: View {
                             }
                         }.padding(16).frame(width: 260).environment(\.runway, runway)
                     }
-                Button {
+                if !session.memoryUseAllowed { MemoryExcludedMark() }
+                ChromeIconButton(title: session.status == "active" ? "归档" : "恢复",
+                                 symbol: session.status == "active" ? "archivebox" : "arrow.uturn.backward") {
                     if session.status == "active" { archive(session) } else { restore(session) }
-                } label: {
-                    Label(session.status == "active" ? "归档" : "恢复", systemImage: session.status == "active" ? "archivebox" : "arrow.uturn.backward")
-                        .font(.callout).frame(height: 28).padding(.horizontal, 3)
-                }.buttonStyle(InteractionButtonStyle(padding: 2)).fixedSize()
+                }
                 sessionMenu(session).fixedSize()
             }
         }
@@ -676,18 +675,9 @@ struct LearningWorkspace: View {
         }.fixedSize(horizontal: true, vertical: false)
     }
 
-    @ViewBuilder private var contextCapacity: some View {
-            if let capacity = ConversationProcessor.object(selectedSession?.contextCapacityJSON),
-               let ratio = capacity["ratio"] as? Double, let budget = capacity["input_budget"] as? Int,
-               let used = capacity["input_tokens"] as? Int {
-                let knownWindow = capacity["model_window"] as? Int != nil
-                Text(knownWindow ? "上下文约 \(Int((ratio * 100).rounded()))%" : "上下文约 \(used) token")
-                    .monospacedDigit().foregroundStyle(.secondary)
-                    .help(knownWindow
-                        ? "最近一次请求约占有效输入预算的 \(Int((ratio * 100).rounded()))%。预算 \(budget) token，已预留回答空间；这是估算，不是学习进度。"
-                        : "最近一次请求约 \(used) token。尚未取得已验证的模型窗口容量，暂不显示百分比。本地请求上限为 \(budget) token，不代表模型的实际窗口。")
-                    .accessibilityLabel(knownWindow ? "最近请求上下文容量约 \(Int((ratio * 100).rounded()))%" : "最近请求上下文约 \(used) token，窗口容量未知")
-            }
+    private var contextCapacity: some View {
+        ContextCapacityIndicator(capacity: ContextCapacityPresentation(json: selectedSession?.contextCapacityJSON))
+            .id(selectedSession?.id)
     }
 
     private func updatePreference(mode: String? = nil, strength: String? = nil) {

@@ -355,6 +355,7 @@ struct AppSidebar: View {
                     Text(session.title).font(.callout.weight(selected ? .semibold : .regular))
                         .foregroundStyle(runway.ink).lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                    if !session.memoryUseAllowed { MemoryExcludedMark() }
                     if let tag = session.displayTopicTags.first {
                         Text(tag).font(.caption2).foregroundStyle(runway.agent)
                             .lineLimit(1).padding(.horizontal, 6).padding(.vertical, 3)
@@ -375,8 +376,7 @@ struct AppSidebar: View {
             SingleLevelMenu(title: "会话操作：\(session.title)", symbol: "ellipsis", items: [
                 .init(id: "archive", title: session.status == "active" ? "归档" : "恢复", symbol: session.status == "active" ? "archivebox" : "arrow.uturn.backward"),
                 .init(id: "tags", title: "编辑标签", symbol: "tag"),
-                .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain"),
-                .init(id: "select", title: "选择此会话", symbol: "checkmark.circle")
+                .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain")
             ], onPresentationChange: { openMenuSessionID = $0 ? session.id : nil },
                onFocusChange: { focusedMenuSessionID = $0 ? session.id : nil }) { action in
                 switch action {
@@ -384,7 +384,7 @@ struct AppSidebar: View {
                 case "tags": editingSessionID = session.id
                 case "memory":
                     if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { batchError = "记忆设置未保存，请重试。" }
-                default: multiSelect = true; selectedIDs.insert(session.id)
+                default: break
                 }
             }
             .frame(width: 30)
@@ -404,7 +404,6 @@ struct AppSidebar: View {
             Button(session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", systemImage: "brain") {
                 if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { batchError = "记忆设置未保存，请重试。" }
             }
-            Button("选择此会话", systemImage: "checkmark.circle") { multiSelect = true; selectedIDs.insert(session.id) }
         }
     }
 

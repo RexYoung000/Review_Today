@@ -176,6 +176,12 @@ enum M1DebugFixture {
             let session = AgentSession(title: "[界面样例] RAG · " + name, modePreset: index == 0 ? "auto" : "problem_solving",
                                        createdAt: Date.now.addingTimeInterval(Double(-index * 60)))
             session.setAutomaticTopicTags(index == 0 ? [] : ["RAG", "面试"])
+            if index > 0 {
+                session.contextCapacityJSON = ConversationProcessor.json([
+                    "input_tokens": index == 1 ? 5500 : 18000, "input_budget": 24000,
+                    "model_window": 1000000, "output_reserve": 4096, "estimated": true
+                ])
+            }
             context.insert(session)
             if index == 0 { continue }
             let input = AgentMessage(sessionID: session.id, role: "user", content: "带我理解 RAG，并准备面试中的独立回答。", deliveryStatus: "sent")

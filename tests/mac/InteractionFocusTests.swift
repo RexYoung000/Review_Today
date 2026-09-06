@@ -15,6 +15,15 @@ struct InteractionFocusTests {
                      "remove duplicate title, not native window controls")
         precondition(workspace.contains(".popover(isPresented: $showSessionTags, arrowEdge: .top)") && workspace.contains("symbol: \"ellipsis\", arrowEdge: .top"),
                      "header popovers must open into the workspace, not above the window")
+        let empty = ContextCapacityPresentation(json: nil)
+        precondition(empty.fraction == nil && empty.used == nil)
+        let unknown = ContextCapacityPresentation(json: "{\"input_tokens\":4721,\"input_budget\":24000}")
+        precondition(unknown.fraction == nil && unknown.headline.contains("上限未知"))
+        let known = ContextCapacityPresentation(json: "{\"input_tokens\":55000,\"input_budget\":24000,\"model_window\":1000000}")
+        precondition(known.fraction == 0.055 && known.headline == "约 55.0K / 1.0M", "ring uses model window, never the local input budget")
+        let full = ContextCapacityPresentation(json: "{\"input_tokens\":200,\"model_window\":100}")
+        precondition(full.fraction == 1 && full.used == 200, "clamp drawing without hiding actual usage")
+        precondition(ContextCapacityPresentation(json: "{\"input_tokens\":-1,\"model_window\":0}").fraction == nil)
         _ = NSApplication.shared
         for palette in [RunwayPalette.light, .dark] {
             precondition(focusRows(palette: palette, focusedRow: nil) == [],

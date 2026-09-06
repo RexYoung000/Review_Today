@@ -47,6 +47,14 @@ def prepare(system, prompt, *, window=None, reserve=4096, local_limit=24000, sch
                          omitted_narrative=removed)
 
 
-def configured_window():
-    raw = os.getenv("OPENAI_CONTEXT_WINDOW", "")
-    return int(raw) if raw.isdigit() and int(raw) > 4096 else None
+def configured_window(model=None):
+    from agent_service.config import PROVIDER, MODEL
+    name = "DEEPSEEK_CONTEXT_WINDOW" if PROVIDER == "deepseek" else "OPENAI_CONTEXT_WINDOW"
+    raw = os.getenv(name, "")
+    if raw:
+        return int(raw) if raw.isdigit() and int(raw) > 4096 else None
+    # Official model table checked 2026-09-06. Unknown names stay unknown.
+    # https://api-docs.deepseek.com/quick_start/pricing/
+    if PROVIDER == "deepseek" and (model or MODEL) in {"deepseek-v4-flash", "deepseek-v4-pro"}:
+        return 1_000_000
+    return None

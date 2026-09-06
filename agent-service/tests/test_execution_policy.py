@@ -53,3 +53,20 @@ class ExecutionPolicyTests(unittest.TestCase):
             prepare("rules", json.dumps({"current_inputs": ["约束" * 1000]}, ensure_ascii=False), local_limit=50)
         _, info = prepare("r", "u", window=5000, reserve=4096)
         self.assertEqual(info["input_budget"], 904)
+
+    def test_window_is_scoped_to_provider_and_actual_model(self):
+        from agent_service.context_budget import configured_window
+        with patch.dict("os.environ", {"OPENAI_CONTEXT_WINDOW": "128000"}, clear=True):
+            with patch("agent_service.config.PROVIDER", "deepseek"):
+                self.assertEqual(configured_window("deepseek-v4-flash"), 1_000_000)
+                self.assertEqual(configured_window("deepseek-v4-pro"), 1_000_000)
+                self.assertIsNone(configured_window("unknown"))
+                _, info = prepare("rules", "prompt", window=configured_window("deepseek-v4-flash"))
+                self.assertEqual(info["input_budget"], 24000)
+                self.assertEqual(info["output_reserve"], 4096)
+            with patch("agent_service.config.PROVIDER", "openai_compatible"):
+                self.assertEqual(configured_window("any"), 128000)
+        with patch.dict("os.environ", {"DEEPSEEK_CONTEXT_WINDOW": "64000"}, clear=True), patch("agent_service.config.PROVIDER", "deepseek"):
+            self.assertEqual(configured_window("deepseek-v4-flash"), 64000)
+        with patch.dict("os.environ", {}, clear=True), patch("agent_service.config.PROVIDER", "openai_compatible"):
+            self.assertIsNone(configured_window("deepseek-v4-flash"))
