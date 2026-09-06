@@ -41,3 +41,23 @@ test('MCP handshake, tools, versioned edits, image response, export and rejectio
   const state=JSON.parse((await client.callTool({name:'rig_inspect',arguments:{}})).content[0].text);assert.equal(state.recipe.strength,1);assert.equal(state.recipe.gaze,.65);
  }finally{await client.close();}
 });
+
+test('near pass overlaps the body in front; far pass is behind; shadows and clipping follow the same pose',async()=>{
+ const {json}=compile(contour,defaults),rig=await loadRig(json);
+ const s=sample(rig,2.48),frontIndex=s.drawOrder.findIndex(x=>x.data.name==='fragment'),bodyIndex=s.drawOrder.findIndex(x=>x.data.name==='body');
+ assert.ok(frontIndex>bodyIndex);assert.ok(Math.abs(s.findBone('fragment').worldX)<15);assert.ok(s.findBone('fragment').worldY<0);
+ const nearScale=s.findBone('fragment').scaleX;assert.ok(s.findSlot('body_shadow').color.a>.6);
+ sample(rig,3.17);assert.ok(s.drawOrder.findIndex(x=>x.data.name==='fragment')<s.drawOrder.findIndex(x=>x.data.name==='body'));assert.ok(s.findBone('fragment').scaleX<nearScale);assert.equal(s.findSlot('body_shadow').color.a,0);
+ for(const time of [0,1.4,2.48,3.17,4.4]){sample(rig,time);const clip=verticesOf(s,'shadow_clip'),body=verticesOf(s);assert.ok(clip.every((v,i)=>Math.abs(v-body[i])<.0001));}
+ sample(rig,0);assert.equal(s.findBone('body').scaleX,.86);assert.ok(s.findSlot('ground_shadow').color.a>0);assert.equal(s.findSlot('ball_ground_shadow').color.a,0);
+});
+
+test('interrupting the near pass keeps the ball in front until it fades to rest',async()=>{
+ const spine=await import('@esotericsoftware/spine-core');
+ const {createReturnState}=await import('../../../brand/refresh-2026-09/motion-rig/return-state.mjs');
+ const rig=await loadRig(compile(contour,defaults).json);sample(rig,2.48);
+ const state=createReturnState(spine,rig,2.48);state.update(.08);rig.skeleton.setToSetupPose();state.apply(rig.skeleton);
+ assert.ok(rig.skeleton.findSlot('fragment').color.a>0);
+ assert.ok(rig.skeleton.drawOrder.findIndex(s=>s.data.name==='fragment')>rig.skeleton.drawOrder.findIndex(s=>s.data.name==='body'));
+ state.update(.2);rig.skeleton.setToSetupPose();state.apply(rig.skeleton);assert.equal(rig.skeleton.findSlot('fragment').color.a,0);
+});

@@ -1,4 +1,5 @@
 import {seamlessRenderer} from './mesh-renderer.mjs';
+import {createReturnState} from './return-state.mjs';
 const MeshRenderer=seamlessRenderer(spine.SkeletonRenderer);
 const $=id=>document.getElementById(id),motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
 let rig,atlas,debug,recipe,revision='baseline',duration=5.6,time=0,playing=false,returning=false,returnState,returnElapsed=0,raf=0,last=0,assetReady=false;
@@ -23,7 +24,7 @@ function draw(canvas,small=0){const box=canvas.getBoundingClientRect(),d=Math.mi
     if($('mesh').checked)for(const b of rig.skeleton.bones.slice(2,5)){ctx.beginPath();ctx.arc(b.worldX,b.worldY,3.5/scale,0,Math.PI*2);ctx.fillStyle='#fffefa';ctx.fill();ctx.beginPath();ctx.moveTo(b.worldX,b.worldY);ctx.lineTo(b.worldX+b.a*19,b.worldY+b.c*19);ctx.strokeStyle='#e4b57c';ctx.lineWidth=2/scale;ctx.stroke();}
   }ctx.restore();
 }
-function phase(){if(reduced)return '减少动态效果 · 静止';if(returning)return '正在收拢';if(time===0)return '准备好了';const u=time/duration;return u<.14?'眼睛先瞟动':u<.29?'身体跟随 · 局部弯曲':u<.75?'分出一个念头':u<.9?'收拢 · 回弹':'回到原处';}
+function phase(){if(reduced)return '减少动态效果 · 静止';if(returning)return '正在收拢';if(time===0)return '准备好了';const u=time/duration;if(u>=.33&&u<=.68){const order=rig.skeleton.drawOrder;return order.indexOf(rig.skeleton.findSlot('fragment'))>order.indexOf(rig.skeleton.findSlot('body'))?'从身前掠过':'绕到身后';}return u<.14?'眼睛先瞟动':u<.29?'身体跟随 · 局部弯曲':u<.75?'分出一个念头':u<.9?'收拢 · 回弹':'回到原处';}
 function paint(){if(!assetReady)return;pose();draw($('hero'));for(const size of [18,24,32])draw($('size'+size),size);$('timeline').value=time;$('time').textContent=`${time.toFixed(2)} / ${duration.toFixed(2)} s`;$('phase').textContent=phase();$('hero').setAttribute('aria-label',phase()+'，吉祥物动画放大预览');$('play').textContent=playing?'暂停':'播放小样';}
 function frame(now){raf=0;if(document.hidden)return;const dt=Math.min(.05,(now-(last||now))/1000);last=now;
   if(returning){returnElapsed+=dt;returnState.update(dt);if(returnElapsed>=.24){returning=false;time=0;}}
@@ -32,7 +33,7 @@ function frame(now){raf=0;if(document.hidden)return;const dt=Math.min(.05,(now-(
 }
 function wake(){if(!raf&&!document.hidden){last=0;raf=requestAnimationFrame(frame);}}
 $('play').addEventListener('click',()=>{if(reduced){status('减少动态效果已开启，角色保持静止。');return;}if(returning){returning=false;time=0;}if(time>=duration)time=0;playing=!playing;wake();});
-$('return').addEventListener('click',()=>{playing=false;if(reduced||time===0||returning){returning=false;time=0;wake();return;}const data=new spine.AnimationStateData(rig.data);data.defaultMix=.22;returnState=new spine.AnimationState(data);const old=returnState.setAnimation(0,'recall',false);old.trackTime=time;old.timeScale=0;returnState.apply(rig.skeleton);returnState.setAnimation(0,'rest',false);returnElapsed=0;returning=true;wake();});
+$('return').addEventListener('click',()=>{playing=false;if(reduced||time===0||returning){returning=false;time=0;wake();return;}returnState=createReturnState(spine,rig,time);returnElapsed=0;returning=true;wake();});
 $('timeline').addEventListener('input',e=>{playing=false;returning=false;time=Number(e.target.value);wake();});
 for(const key of ['mesh','weights','speed','loop'])$(key).addEventListener('change',wake);
 function setReduced(value){reduced=value;$('reduce').checked=value;if(value){playing=false;returning=false;time=0;}$('timeline').disabled=value||!assetReady;wake();}
@@ -48,6 +49,6 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnim
   await Promise.all(atlas.pages.map(async page=>{const image=new Image();image.src='data/images/'+page.name;await image.decode();page.setTexture(new spine.CanvasTexture(image));}));
   const [json,meta,debugData]=await Promise.all([getJSON('data/mascot.json'),getJSON('recipe.json'),getJSON('data/rig-debug.json')]);debug=debugData;setData(json,{recipe:meta});
   let connected=false;try{await reloadProject();connected=true;}catch{}assetReady=true;$('play').disabled=false;$('return').disabled=false;$('timeline').disabled=reduced;$('apply').disabled=!connected;
-  $('health').textContent='11 根骨骼 · 193 个顶点 · 独立眼神 · 加权形变';status(connected?'调整后生成可编辑动画；原版保留。':'静态预览模式；启动本地制作服务可调整。');wake();
+  $('health').textContent='14 根骨骼 · 193 个顶点 · 前后环绕 · 动态投影';status(connected?'调整后生成可编辑动画；原版保留。':'静态预览模式；启动本地制作服务可调整。');wake();
   if(connected)setInterval(async()=>{if(document.hidden)return;try{const s=await getJSON('/api/status');if(s.revision!==revision){await reloadProject();returning=false;status('已载入新的 MCP 制作版本。');}}catch{}},2500);
 }catch(e){$('health').textContent='加载失败：'+e.message;$('phase').textContent='加载失败';}})();

@@ -44,20 +44,31 @@ function poseAt(u,p){
 }
 export function compile(contour,input=defaults){
   const p=recipeSchema.parse(input);const mesh=createMesh(contour,p.softness);
-  const bones=[{name:'root'},{name:'body',parent:'root'},...controls.map(c=>({...c,parent:'body'})),
+  const bones=[{name:'root'},{name:'body',parent:'root',scaleX:.86,scaleY:.86},...controls.map(c=>({...c,parent:'body'})),
     {name:'face',parent:'body',x:-15,y:23},{name:'eye_left',parent:'face',x:-26},
     {name:'eye_right',parent:'face',x:26},{name:'pupil_left',parent:'eye_left',x:8},
-    {name:'pupil_right',parent:'eye_right',x:8},{name:'fragment',parent:'root',x:110,y:34}];
-  const slots=[{name:'fragment',bone:'fragment',attachment:'fragment',color:'ffffff00'},
+    {name:'pupil_right',parent:'eye_right',x:8},{name:'fragment',parent:'root',x:105,y:25},
+    {name:'ground_shadow',parent:'root',y:-116},{name:'ball_ground_shadow',parent:'root',x:105,y:-116},
+    {name:'body_shadow',parent:'root',x:114,y:10}];
+  const slots=[{name:'ground_shadow',bone:'ground_shadow',attachment:'shadow',color:'ffffffb3'},
+    {name:'ball_ground_shadow',bone:'ball_ground_shadow',attachment:'shadow',color:'ffffff00'},
+    {name:'fragment',bone:'fragment',attachment:'fragment',color:'ffffff00'},
     {name:'body',bone:'body',attachment:'body'},
+    {name:'shadow_clip',bone:'body',attachment:'clip'},
+    {name:'body_shadow',bone:'body_shadow',attachment:'shadow',color:'ffffff00'},
     ...['left','right'].flatMap(side=>[{name:'eye_'+side,bone:'eye_'+side,attachment:'eye'},
       {name:'pupil_'+side,bone:'pupil_'+side,attachment:'pupil'}])];
-  const attachments={body:{body:mesh.attachment},fragment:{fragment:{type:'region',path:'fragment',width:35,height:30}}};
+  const attachments={body:{body:mesh.attachment},fragment:{fragment:{type:'region',path:'fragment',width:35,height:35}},
+    ground_shadow:{shadow:{type:'region',path:'shadow',width:226,height:38}},
+    ball_ground_shadow:{shadow:{type:'region',path:'shadow',width:42,height:15}},
+    body_shadow:{shadow:{type:'region',path:'shadow',width:55,height:28}},
+    shadow_clip:{clip:{type:'clipping',end:'body_shadow',vertexCount:contour.length,vertices:mesh.attachment.vertices.slice(0,contour.length*13)}}};
   for(const side of ['left','right']){
     attachments['eye_'+side]={eye:{type:'region',path:'eye',width:36,height:20}};
     attachments['pupil_'+side]={pupil:{type:'region',path:'pupil',width:10.8,height:10.8}};
   }
-  const animation={bones:{},slots:{fragment:{alpha:[]}},attachments:{default:{body:{body:{deform:[]}}}}};
+  const animation={bones:{},slots:{fragment:{alpha:[]},ground_shadow:{alpha:[]},ball_ground_shadow:{alpha:[]},body_shadow:{alpha:[]}},drawOrder:[],attachments:{default:{body:{body:{deform:[]}},shadow_clip:{clip:{deform:[]}}}}};
+  let lastFront;
   function add(name,prop,frame){((animation.bones[name]??={})[prop]??=[]).push(frame);}
   const frames=Math.round(p.duration*p.fps);
   for(let f=0;f<=frames;f++){
@@ -71,15 +82,30 @@ export function compile(contour,input=defaults){
     });
     add('face','translate',{time,x:round(5*s.lag*k),y:round(2*s.lag*k)});
     for(const side of ['left','right']){
-      add('pupil_'+side,'translate',{time,x:round(-14*s.glance*p.gaze+2*s.split*Math.cos(s.orbit)*p.gaze),y:round(3*s.glance*p.gaze+1.4*s.split*Math.sin(s.orbit)*p.gaze)});
+      add('pupil_'+side,'translate',{time,x:round((-14*s.glance*(1-s.split)+(-8+7*Math.cos(s.orbit))*s.split)*p.gaze),y:round((3*s.glance*(1-s.split)-2*Math.sin(s.orbit)*s.split)*p.gaze)});
       add('eye_'+side,'scale',{time,x:round(1-.03*s.blink),y:round(1-.94*Math.min(1,s.blink))});
     }
-    const theta=.3+s.orbit;
-    const tx=174*Math.cos(theta),ty=128*Math.sin(theta);
-    add('fragment','translate',{time,x:round((tx-110)*s.split),y:round((ty-34)*s.split)});
-    add('fragment','scale',{time,x:round(.01+.99*s.split),y:round((.01+.99*s.split)*(1+.16*Math.sin(s.orbit*2)))});
-    add('fragment','rotate',{time,value:round(25*Math.sin(s.orbit)*s.split)});
+    // A tilted ellipse in perspective. Positive depth is the near half, below the face.
+    const depth=Math.sin(s.orbit),tx=154*Math.cos(s.orbit),ty=18+30*Math.cos(s.orbit)-44*depth;
+    const ballX=105+(tx-105)*s.split,ballY=25+(ty-25)*s.split;
+    const front=depth>1e-6&&s.split>0;
+    if(front!==lastFront||f===frames){animation.drawOrder.push(front?{time,offsets:[{slot:'fragment',offset:slots.length-3}]}:{time});lastFront=front;}
+    add('fragment','translate',{time,x:round(ballX-105),y:round(ballY-25)});
+    const perspective=1+.22*depth;
+    add('fragment','scale',{time,x:round((.01+.99*s.split)*perspective),y:round((.01+.99*s.split)*perspective)});
+    // Keep the upper-left lighting direction stable while the ball travels.
+    add('fragment','rotate',{time,value:0});
     animation.slots.fragment.alpha.push({time,value:round(s.split)});
+    const lift=3*movement*Math.sin(u*Math.PI*2);
+    add('ground_shadow','translate',{time,x:round(2*s.lag*k),y:0});
+    add('ground_shadow','scale',{time,x:round(1+lift*.012),y:round(1+lift*.02)});
+    animation.slots.ground_shadow.alpha.push({time,value:round(.7-lift*.02)});
+    add('ball_ground_shadow','translate',{time,x:round(ballX-105),y:round(-depth*12*s.split)});
+    add('ball_ground_shadow','scale',{time,x:round(.5+.5*s.split+.15*depth*s.split),y:round(.65+.35*s.split)});
+    animation.slots.ball_ground_shadow.alpha.push({time,value:round(.6*s.split)});
+    add('body_shadow','translate',{time,x:round(ballX-105),y:round(ballY-25)});
+    add('body_shadow','scale',{time,x:round(1+.35*Math.max(0,depth)*s.split),y:round(1+.2*Math.max(0,depth)*s.split)});
+    animation.slots.body_shadow.alpha.push({time,value:round(.75*s.split*Math.max(0,depth))});
     const offsets=[];
     for(const v of mesh.points){
       const upper=Math.max(0,(v.y+80)/190),right=Math.exp(-((v.x-100)**2+(v.y-30)**2)/1800);
@@ -90,6 +116,7 @@ export function compile(contour,input=defaults){
       for(let i=0;i<3;i++)offsets.push(round(dx),round(dy));
     }
     animation.attachments.default.body.body.deform.push({time,vertices:offsets});
+    animation.attachments.default.shadow_clip.clip.deform.push({time,vertices:offsets.slice(0,contour.length*6)});
   }
   const json={skeleton:{spine:'4.2.00',images:'./images/',x:-200,y:-150,width:400,height:300,fps:p.fps},
     bones,slots,skins:[{name:'default',attachments}],animations:{recall:animation,rest:{}}};
@@ -117,5 +144,16 @@ export function validate(json){
     const strip=f=>JSON.stringify(Object.fromEntries(Object.entries(f).filter(([k])=>k!=='time')));
     if(strip(track[0])!==strip(track.at(-1)))fail('Loop endpoints differ');
   }
+  const clip=json.skins[0].attachments.shadow_clip?.clip;
+  if(clip){
+    const frames=anim.attachments.default.shadow_clip?.clip?.deform;
+    if(!frames||frames.length!==anim.attachments.default.body.body.deform.length)fail('Missing clip deformation');
+    else for(const [i,frame] of frames.entries()){
+      const bodyFrame=anim.attachments.default.body.body.deform[i];
+      if(frame.time!==bodyFrame.time||frame.vertices.length!==clip.vertexCount*6||frame.vertices.some((v,k)=>v!==bodyFrame.vertices[k]))fail('Clip must follow body deformation');
+    }
+  }
+  if(!anim.drawOrder?.length)fail('Missing depth ordering');
+  else for(const frame of anim.drawOrder)for(const offset of frame.offsets??[]){const i=json.slots.findIndex(s=>s.name===offset.slot);if(i<0||!Number.isInteger(offset.offset)||i+offset.offset<0||i+offset.offset>=json.slots.length)fail('Invalid depth order');}
   return {ok:errors.length===0,errors:[...new Set(errors)],bones:json.bones.length,vertices:count,triangles:att.triangles.length/3,weighted:true,frames:tracks.at(-1).length,duration:tracks.at(-1).at(-1).time};
 }

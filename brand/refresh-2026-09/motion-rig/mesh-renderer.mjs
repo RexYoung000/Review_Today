@@ -3,13 +3,30 @@
 // UV mapping stays on the original triangle, so the texture itself is not stretched.
 export function seamlessRenderer(Base){return class extends Base{
   draw(skeleton){
+    let clip;
     for(const slot of skeleton.drawOrder){
       this.ctx.save();const attachment=slot.getAttachment();
+      if(attachment?.endSlot){
+        const v=new Float32Array(attachment.worldVerticesLength);attachment.computeWorldVertices(slot,0,v.length,v,0,2);
+        clip={vertices:v,end:attachment.endSlot.name};this.ctx.restore();continue;
+      }
+      if(clip){this.ctx.beginPath();for(let i=0;i<clip.vertices.length;i+=2)i?this.ctx.lineTo(clip.vertices[i],clip.vertices[i+1]):this.ctx.moveTo(clip.vertices[i],clip.vertices[i+1]);this.ctx.closePath();this.ctx.clip();}
       if(attachment?.triangles&&attachment.hullLength){
         const v=new Float32Array(attachment.worldVerticesLength);attachment.computeWorldVertices(slot,0,v.length,v,0,2);
         this.ctx.beginPath();for(let i=0;i<attachment.hullLength;i+=2)i?this.ctx.lineTo(v[i],v[i+1]):this.ctx.moveTo(v[i],v[i+1]);this.ctx.closePath();this.ctx.clip();
       }
-      super.draw({color:skeleton.color,drawOrder:[slot]});this.ctx.restore();
+      if(attachment?.region&&!attachment.triangles){
+        // One draw for an untrimmed region: overlapping triangles would darken a
+        // translucent shadow along its diagonal. Our atlas uses whole-image pages.
+        const image=attachment.region.texture.getImage(),b=slot.bone;
+        this.ctx.globalAlpha=skeleton.color.a*slot.color.a*attachment.color.a;
+        this.ctx.transform(b.a,b.c,b.b,b.d,b.worldX,b.worldY);
+        this.ctx.translate(attachment.x,attachment.y);this.ctx.rotate(attachment.rotation*Math.PI/180);
+        this.ctx.scale(attachment.width*attachment.scaleX/image.width,-attachment.height*attachment.scaleY/image.height);
+        this.ctx.drawImage(image,-image.width/2,-image.height/2);
+      }else super.draw({color:skeleton.color,drawOrder:[slot]});
+      this.ctx.restore();
+      if(clip?.end===slot.data.name)clip=null;
     }
   }
 

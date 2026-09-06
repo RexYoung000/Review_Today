@@ -20,8 +20,15 @@ pupil
   bounds: 0,0,48,48
 
 fragment.png
-size: 144,120
+size: 144,144
 filter: Linear,Linear
 pma: false
 fragment
-  bounds: 0,0,144,120
+  bounds: 0,0,144,144
+
+shadow.png
+size: 256,128
+filter: Linear,Linear
+pma: false
+shadow
+  bounds: 0,0,256,128

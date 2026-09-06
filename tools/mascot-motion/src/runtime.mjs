@@ -16,7 +16,7 @@ export function sample(rig,time){
 export function verticesOf(skeleton,slotName='body'){
   const slot=skeleton.findSlot(slotName),a=slot.getAttachment();
   const vertices=new Float32Array(a.worldVerticesLength??8);
-  if(a instanceof MeshAttachment)a.computeWorldVertices(slot,0,vertices.length,vertices,0,2);
+  if(a.worldVerticesLength!=null)a.computeWorldVertices(slot,0,vertices.length,vertices,0,2);
   else a.computeWorldVertices(slot,vertices,0,2);
   return vertices;
 }

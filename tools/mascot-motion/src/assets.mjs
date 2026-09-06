@@ -21,12 +21,13 @@ export async function prepareAssets(){
   const entries=[
     ['eye',svg('<rect x="2" y="2" width="140" height="76" rx="38" fill="#fffefa"/>',144,80)],
     ['pupil',svg('<circle cx="24" cy="24" r="22" fill="#116360"/>',48,48)],
-    ['fragment',svg('<ellipse cx="72" cy="60" rx="68" ry="56" fill="#146d69"/>',144,120)]
+    ['fragment',svg('<defs><radialGradient id="ball" cx="32%" cy="25%" r="80%"><stop offset="0" stop-color="#d3eee4"/><stop offset=".46" stop-color="#9fd2c4"/><stop offset="1" stop-color="#70ad9f"/></radialGradient></defs><circle cx="72" cy="72" r="66" fill="url(#ball)"/>',144,144)],
+    ['shadow',svg('<defs><radialGradient id="shade"><stop offset="0" stop-color="#020908" stop-opacity=".42"/><stop offset=".4" stop-color="#020908" stop-opacity=".22"/><stop offset="1" stop-color="#020908" stop-opacity="0"/></radialGradient></defs><ellipse cx="128" cy="64" rx="126" ry="62" fill="url(#shade)"/>',256,128)]
   ];
   for(const [name,input] of entries){await writeFile(resolve(previewRoot,`assets/${name}.svg`),input);await sharp(input).png().toFile(resolve(previewRoot,`data/images/${name}.png`));}
   // A multi-page atlas keeps editable source layers separate and avoids repacking them.
   let atlas='';
-  for(const [name,w,h] of [['body',1254,1254],['eye',144,80],['pupil',48,48],['fragment',144,120]])
+  for(const [name,w,h] of [['body',1254,1254],['eye',144,80],['pupil',48,48],['fragment',144,144],['shadow',256,128]])
     atlas+=`${name}.png\nsize: ${w},${h}\nfilter: Linear,Linear\npma: false\n${name}\n  bounds: 0,0,${w},${h}\n\n`;
   await writeFile(resolve(previewRoot,'data/images/mascot.atlas'),atlas.trimEnd()+'\n');
   await writeFile(resolve(previewRoot,'assets/contour.json'),JSON.stringify(contour));
