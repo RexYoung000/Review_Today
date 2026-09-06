@@ -115,7 +115,7 @@ def _require_uuid(value: str, *, code: str) -> str:
 
 class SessionLifecycleAction(BaseModel):
     action_id: uuid.UUID
-    action: Literal["archive", "restore", "memory_policy"]
+    action: Literal["archive", "restore", "delete", "memory_policy"]
     lifecycle_revision: int = Field(default=0, ge=0)
     allowed: bool = True
     policy_version: int = Field(default=0, ge=0)
@@ -131,6 +131,18 @@ def session_lifecycle_action(session_id: str, body: SessionLifecycleAction) -> d
         return conversation_harness.session_action(sid, str(body.action_id), body.action, body.lifecycle_revision)
     except ValueError as exc:
         raise _http_error(409, str(exc), "Session lifecycle version conflicts") from None
+
+
+from agent_service.schemas import MemoryResultsRequest
+
+
+@app.post("/v2/runs/{run_id}/memory-results")
+def memory_results(run_id: str, body: MemoryResultsRequest) -> dict:
+    rid = _require_uuid(run_id, code="RT.RUN.INVALID_ID")
+    try:
+        return conversation_harness.memory_results(rid, body)
+    except ValueError as exc:
+        raise _http_error(409, str(exc), "Learning lookup result conflicts with current run") from None
 
 
 @app.get("/v2/sessions/{session_id}/snapshot")

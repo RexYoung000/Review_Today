@@ -19,6 +19,7 @@ from agent_service.capture import RISK_RULE, find_source_candidates, run_capture
 from agent_service.capture.fetch import fetch_public_url, looks_like_url
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL
 from agent_service.conversation_prompts import COACH_SYSTEM, EVALUATION_SYSTEM, INTENT_SYSTEM
+from agent_service.conditional_teaching import ConditionalTeaching
 from agent_service.conversation_store import ConversationStore, Superseded, conversation_store
 from agent_service.harness import JD_SYSTEM, PROBLEM_SYSTEM, _render_problem
 from agent_service.harness_store import HarnessTaskRecord, now_iso
@@ -49,7 +50,7 @@ def _new_run(session_id: str, message_id: str, status: str) -> dict:
                 activity_candidate=None, activity_kind=None, completed_at=None)
 
 
-class ConversationHarness:
+class ConversationHarness(ConditionalTeaching):
     def __init__(self, store: ConversationStore = conversation_store):
         self.store = store
         self._workers: set[str] = set()
@@ -208,6 +209,23 @@ class ConversationHarness:
         return result
 
     def session_action(self, sid, action_id, action, lifecycle_revision):
+        if action == "delete":
+            result = self.store.delete(sid, action_id, lifecycle_revision)
+            with self._worker_lock:
+                handles = [h for key, h in self._cancel_handles.items() if key[0] == sid]
+            for handle in handles:
+                handle()
+            # Remove dependent recall/checkpoints in surviving Sessions too.
+            for owner in self.store.sessions():
+                with self.store.transaction(owner) as data:
+                    self._invalidate_memory(data)
+                    for run in data["runs"].values():
+                        if run.get("memory_invalidated"):
+                            run["steps"] = {}
+                            run.pop("memory_lookup", None)
+                            if run["status"] in {"running", "accepted", "queued"}:
+                                self._stop(data, run)
+            return result
         if action not in {"archive", "restore"} or lifecycle_revision < 1:
             raise ValueError("RT.SESSION.INVALID_ACTION")
         cancelled = []
@@ -416,6 +434,8 @@ class ConversationHarness:
     def drain(self, session_id: str):
         """Synchronous worker entry for deterministic tests; one worker per Session."""
         while True:
+            if self.store.deleted(session_id):
+                return
             with self.store.transaction(session_id) as data:
                 if data.get("status", "active") != "active":
                     return
@@ -470,6 +490,8 @@ class ConversationHarness:
                     self.store.event(data, run, "completed", "本轮已回应")
                     data["foreground"] = None
             except Superseded:
+                if self.store.deleted(session_id):
+                    return
                 with self.store.transaction(session_id) as data:
                     obsolete = data["runs"].get(run_id)
                     if obsolete and obsolete["revision"] == revision and obsolete["status"] == "running" and not self._memory_run_valid(obsolete):
@@ -493,6 +515,10 @@ class ConversationHarness:
                         if code.startswith("RT.CONTEXT."):
                             summary = ("上下文整理暂未完成，当前内容超过容量；可重试，输入与历史已保留"
                                        if data.get("summary_error") else "当前内容超过可处理的上下文容量，请缩小本次范围；输入已保留")
+                        elif code == "RT.MODEL.SCHEMA":
+                            summary = "回答格式暂时有问题，可重试；输入和学习进度已保留"
+                        elif code in {"RT.MODEL.CONNECTION", "RT.MODEL.TIMEOUT"}:
+                            summary = "回答连接中断或等待超时，可重试；输入和学习进度已保留"
                         else:
                             summary = "这一步暂时无法完成，可重试；输入和进度已保留"
                         self.store.event(data, run, "failed", summary,
@@ -703,6 +729,7 @@ class ConversationHarness:
                               "problem_answer": "正在组织基础答案与学习路径", "jd_analysis": "正在拆解岗位要求",
                               "evidence_assessment": "正在核验回答依据", "session_summary": "正在整理会话摘要"}.get(node, "正在处理当前步骤"), model=model,
                              payload={"context_capacity": capacity})
+        intent_context = json.loads(prompt) if schema is IntentDecision else None
         started = time.monotonic()
         last_emit = 0.0
         latest = ""
@@ -753,7 +780,7 @@ class ConversationHarness:
         try:
             streamable = node in {"answer", "lesson", "organize", "problem_answer", "evaluate", "jd_analysis"}
             with budget_scope() as budget:
-                choices = ([model] + alternatives(model, strength, streamable))[:2]
+                choices = ([model] + (alternatives(model, strength, streamable) or [model]))[:2]
                 repaired = False
                 for index, selected_model in enumerate(choices):
                     try:
@@ -775,9 +802,18 @@ class ConversationHarness:
                                 self.store.event(current, current["runs"][run_id], "context_capacity", "上下文容量已更新",
                                                  payload={"context_capacity": actual_capacity})
                         capacity = actual_capacity
+                        with self.store.transaction(session_id, run_id, revision) as current:
+                            attempt_event = self.store.event(current, current["runs"][run_id], "model_attempt", "正在处理当前步骤", model=selected_model, payload={"step": node, "step_attempt": index + 1})
+                            attempt_event["attempt"] = index + 1
                         parsed = parse_model(system, prompt, schema, model=selected_model, on_cancel_handle=register_cancel,
                                              timeout=budget.remaining(), max_output_tokens=OUTPUT_RESERVE, reasoning_effort="high" if strength == "deep" else None,
                                              **({"on_partial": emit, "on_transport": transport} if streamable else {}))
+                        if schema is IntentDecision and "answer" in parsed.intents:
+                            checked_context = intent_context
+                            user_inputs = checked_context.get("current_inputs", [])
+                            task_context = (checked_context.get("task") or {}).get("context", {})
+                            if task_context.get("check_question") and (not parsed.answer_evidence.strip() or not user_inputs or parsed.answer_evidence not in user_inputs[-1]):
+                                raise ModelCallError("SCHEMA", "field=answer_evidence; must quote the current user answer, not an option or previous message")
                         model = selected_model
                         break
                     except ModelCallError as error:
@@ -786,7 +822,7 @@ class ConversationHarness:
                         if error.code == "RT.MODEL.SCHEMA" and not latest and not repaired and budget.attempts < budget.limit:
                             repaired = True
                             choices[index + 1:] = [selected_model]
-                            prompt += "\n输出结构校验失败。仅重新生成严格符合已给定结构的结果；不补造授权、证据、来源或已掌握状态。"
+                            prompt += "\n输出结构校验失败：" + error.diagnostic + "\n仅修复标出的字段，严格使用 schema 的枚举；工作流放 workflow，直接教学放 direct_teaching 布尔字段。不得补造授权、证据、来源或已掌握状态。"
                             prompt, repaired_capacity = prepare_context(system, prompt, window=configured_window(model), schema=schema.model_json_schema())
                             with self.store.transaction(session_id, run_id, revision) as current:
                                 current["runs"][run_id]["context_capacity"] = repaired_capacity
@@ -907,6 +943,9 @@ class ConversationHarness:
         task_context = None
         if task:
             task_context = {k: task[k] for k in ("task_id", "mode", "stage", "status", "content", "required_action", "context")}
+            # Web passages are supplied once in the explicit sources input. Keep
+            # their durable originals/checkpoints without duplicating them here.
+            task_context["context"] = {k: v for k, v in task["context"].items() if k not in {"sources", "source_history", "source_pack"}}
             if task["context"].get("memory_invalidated"):
                 task_context = dict(task_id=task["task_id"], mode=task["mode"], content=task["content"],
                                     status=task["status"], stage="memory_updated", context={"memory_invalidated": True})
@@ -982,6 +1021,14 @@ class ConversationHarness:
                                       target_task_id=task["task_id"] if task else "", relation="continuation",
                                       workflow=task["mode"] if task and task["mode"] != "auto" else None,
                                       scope="continue_goal", rationale="用户点击了绑定对象与内容版本的操作；由程序检查执行条件。")
+        elif last["content"].strip().rstrip("。！？!?") in {"直接教我", "请直接教我", "直接讲解", "继续讲解"} and (task or data.get("focus_goal") or data.get("goal_clarification")):
+            # Exact, whole-message teaching controls have no grading/write meaning.
+            # Quoted text, pasted material and longer requests still use the model.
+            decision = IntentDecision(intents=["continue"], target_task_id=task["task_id"] if task else "",
+                                      target_description=task["content"] if task else data.get("focus_goal") or data["goal_clarification"]["goal"],
+                                      relation="continuation", workflow=task["mode"] if task else "source_learning",
+                                      scope="continue_goal", direct_teaching=True, learning_goal_ready=True,
+                                      rationale="用户明确要求继续教学，不是独立作答或保存授权。")
         elif run.get("intent") and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"]:
             decision = IntentDecision.model_validate(run["intent"])
         else:
@@ -1058,6 +1105,14 @@ class ConversationHarness:
                     previous["status"] = "accepted"
                     self.store.event(data, run, "resuming", "已收到继续指令，将续接停止的步骤", message="好的，继续刚才未完成的步骤。")
                     return
+        if decision.direct_teaching and decision.relation != "uncertain" and (data.get("active_task_id") or data.get("goal_clarification") or decision.target_description):
+            decision = decision.model_copy(update={"clarification": "", "learning_goal_ready": True})
+        if decision.clarification or decision.relation == "uncertain":
+            if decision.scope in {"learning", "continue_goal"} or "goal" in decision.intents:
+                with self.store.transaction(sid, rid, rev) as current:
+                    current["goal_clarification"] = {"goal": decision.target_description or last["content"], "question": decision.clarification}
+            self._publish(sid, rid, rev, decision.clarification or "你希望继续刚才的内容，还是开始一个新的学习问题？", required={"type": "respond", "prompt": "明确本轮问题", "options": []})
+            return
         operation_key = hashlib.sha256(json.dumps([run["input_ids"], decision.model_dump(), last.get("operation")], sort_keys=True).encode()).hexdigest()
         # An action and an explanatory follow-up may share a turn. Checkpoint the
         # action separately, so retrying its answer never repeats the confirmed write.
@@ -1210,7 +1265,7 @@ class ConversationHarness:
             with self.store.transaction(sid, rid, rev) as data:
                 run = data["runs"][rid]
                 task = asdict(HarnessTaskRecord(task_id=str(uuid.uuid4()), session_id=sid,
-                              client_message_id=last["message_id"], content=last["content"], content_type=last.get("content_type", "text"),
+                              client_message_id=last["message_id"], content=decision.target_description or last["content"], content_type=last.get("content_type", "text"),
                               primary_language="zh", mode_preset=data["mode"], mode=workflow,
                               context={"conversation_managed": True, "understanding": "unknown",
                                        "requires_mastery": workflow == "problem_solving", "origin_run_id": rid}))
@@ -1226,8 +1281,11 @@ class ConversationHarness:
         elif full_goal and workflow == "problem_solving":
             self._problem(sid, rid, rev, decision)
         elif full_goal and workflow == "topic_exploration" and not decision.direct_teaching:
-            self._publish(sid, rid, rev, "你最希望学完后能够做什么？例如理解基本原理、在项目中使用，或回答面试题。",
-                          stage="clarify_goal", required={"type": "respond", "prompt": "明确一个学习目标", "options": []})
+            if decision.learning_goal_ready or data.get("goal_clarification") and decision.relation != "uncertain":
+                self._sources(sid, rid, rev, decision.target_description or last["content"])
+            else:
+                self._publish(sid, rid, rev, "你最希望学完后能够做什么？例如理解基本原理、在项目中使用，或回答面试题。",
+                              stage="clarify_goal", required={"type": "respond", "prompt": "明确一个学习目标", "options": []})
         elif full_goal and workflow in {"source_learning", "topic_exploration"}:
             self._respond(sid, rid, rev, decision, "按目标分段教学，先给学习地图和第一段讲解；检查可选。", node="lesson", teaching=True,
                           generated=decision.direct_teaching or "material" not in intents)
@@ -1368,25 +1426,8 @@ class ConversationHarness:
         return False
 
     def _evidence(self, sid, rid, rev, decision, text):
-        if not decision.needs_verification and not RISK_RULE.search(text):
-            return {"state": "unverified", "summary": "稳定基础知识直接回答，未作实时查证", "sources": []}
-        with self.store.transaction(sid, rid, rev) as data:
-            self.store.event(data, data["runs"][rid], "evidence_check", "正在查证风险或时效信息", model=RISK_MODEL)
-        query = self._public_query(decision.public_search_query)
-        if not query:
-            return {"state": "insufficient", "summary": "尚未形成不含私人资料的公开核验主题，当前内容未核验", "sources": []}
-        evidence = self._search(sid, rid, rev, "核验并附可定位来源：" + query, RISK_MODEL)
-        self._snapshot(sid, rid, rev)
-        if not evidence:
-            return {"state": "insufficient", "summary": "未取得可核验证据，不能认定已核验", "sources": []}
-        result = self._call(sid, rid, rev, "evidence_assessment",
-                            "核对检索证据是否支持用户问题；证据冲突/不足必须诚实标记。不能把生成讲义视为外部证据。",
-                            json.dumps({"question": text, "evidence": evidence}, ensure_ascii=False), EvidenceAssessmentV2, RISK_MODEL)
-        result.sources = [source for source in result.sources if source in evidence and looks_like_url(source)]
-        if result.state == "supported" and not result.sources:
-            result.state = "insufficient"
-            result.summary = "检索未提供可定位的支持来源，尚不能认定核验通过"
-        return result.model_dump()
+        evidence, _ = self._prepare_teaching(sid, rid, rev, decision, force=decision.needs_verification or bool(RISK_RULE.search(text)))
+        return evidence
 
     def _respond(self, sid, rid, rev, decision, instruction, *, node, teaching=False, draft=False, generated=False):
         data, run = self._snapshot(sid, rid, rev)
@@ -1403,28 +1444,25 @@ class ConversationHarness:
             data, run = self._snapshot(sid, rid, rev)
             context, last = self._context(data, run)
             task = self._task(data, run)
+        evidence, sources = self._prepare_teaching(sid, rid, rev, decision, force=bool(RISK_RULE.search(last["content"])), instruction=instruction)
+        data, run = self._snapshot(sid, rid, rev)
+        context, last = self._context(data, run)
+        task = self._task(data, run)
         prior = task["context"] if task else {}
-        sources = list(prior.get("sources", []))
-        source_cache = run.get("source_cache", {})
-        urls = (task["context"].get("selected_sources", []) if task else [])
-        if "material" in decision.intents and looks_like_url(last["content"]):
-            urls = [looks_like_url(last["content"])]
+        urls = [looks_like_url(last["content"])] if "material" in decision.intents and looks_like_url(last["content"]) else prior.get("selected_sources", [])
         for url in urls[:4]:
             previous = next((s for s in sources if s.get("url") == url and s.get("content")), None)
             if previous and not decision.refresh_sources:
                 continue
-            saved = source_cache.get(url)
+            saved = run.get("source_cache", {}).get(url)
             if saved is None:
                 title, body = fetch_public_url(url)
-                saved = dict(source_id=str(uuid.uuid5(uuid.UUID(sid), url)), version=(previous or {}).get("version", 0) + 1,
-                             fetched_at=now_iso(), type="public_source", url=url, title=title, content=body[:10000])
+                saved = dict(source_id=str(uuid.uuid5(uuid.UUID(sid), url)), version=(previous or {}).get("version", 0) + 1, type="public_source", url=url, title=title, content=body[:10000], fetched_at=now_iso())
                 with self.store.transaction(sid, rid, rev) as current:
                     current["runs"][rid].setdefault("source_cache", {})[url] = saved
                     if previous and task:
                         self._task(current, current["runs"][rid])["context"].setdefault("source_history", []).append(previous)
             sources = [s for s in sources if s.get("url") != url] + [saved]
-            self._snapshot(sid, rid, rev)
-        evidence = self._evidence(sid, rid, rev, decision, last["content"])
         source_type = "agent_generated" if generated else prior.get("source_type") or ("public_source" if sources else "user_material")
         new_user_material = "material" in decision.intents and not looks_like_url(last["content"])
         if new_user_material:
@@ -1445,17 +1483,16 @@ class ConversationHarness:
                                             source_type=source_type, evidence=evidence), ensure_ascii=False), ConversationOutput)
         with self.store.transaction(sid, rid, rev) as current:
             current["runs"][rid]["learning_concepts"] = output.learning_concepts
-        if output.evidence_state in {"insufficient", "conflicting", "outdated"} and not decision.needs_verification:
-            evidence = self._evidence(sid, rid, rev, decision.model_copy(update={"needs_verification": True}), last["content"])
         text = output.message
         for source in sources:
             if source.get("type") == "agent_generated" and not source.get("content"):
                 source["content"] = text
                 source["locator"] = f"task:{task['task_id']}" if task else f"run:{rid}"
-        if "agent_generated" in types and "Agent 生成讲义" not in text:
-            text = "来源：Agent 生成讲义（不作为独立外部证据）\n\n" + text
-        if decision.needs_verification or evidence["state"] != "unverified":
-            text += "\n\n证据状态：" + evidence["state"] + "；" + evidence["summary"]
+        if evidence["state"] in {"insufficient", "conflicting", "outdated"}:
+            text += "\n\n" + (evidence["summary"] or "部分内容尚待核实。")
+        cited = [source for source in sources if source.get("url") in evidence.get("sources", []) and source["url"] not in text]
+        if cited:
+            text += "\n\n参考资料：" + "、".join(f"[{source['title']}]({source['url']})" for source in cited)
         with self.store.transaction(sid, rid, rev) as data:
             task = self._task(data, data["runs"][rid])
             if teaching:
@@ -1479,8 +1516,7 @@ class ConversationHarness:
                     task["context"]["sources"] = sources
             self.store.event(data, data["runs"][rid], "sources", "来源类型已记录", payload={"sources": sources, "source_type": source_type})
         required = {"type": "submit_answer", "prompt": output.check_question, "options": []} if output.check_question else None
-        if teaching:
-            text += "\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。"
+        text += "\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。"
         self._publish(sid, rid, rev, text, stage="teaching" if teaching else "organized" if draft and task else None,
                       task_status="completed" if draft and task and task["mode"] == "memory_organization" and not task["context"].get("requires_mastery") else "awaiting_user",
                       required=required, draft=draft, source_type=source_type)
@@ -1514,7 +1550,7 @@ class ConversationHarness:
                      (output.learning_plan.step_ids or [""] * len(output.learning_plan.steps)) + ["", ""])
         text = _render_problem(output)
         if evidence["state"] != "unverified":
-            text += "\n\n证据状态：" + evidence["state"] + "；" + evidence["summary"]
+            text += "\n\n" + evidence["summary"]
         self._publish(sid, rid, rev, text, stage="calibration",
                       required={"type": "respond", "prompt": output.analysis.calibration_question, "options": []})
 
@@ -1571,27 +1607,12 @@ class ConversationHarness:
 
     def _sources(self, sid, rid, rev, goal):
         with self.store.transaction(sid, rid, rev) as data:
-            self.store.event(data, data["runs"][rid], "source_search", "正在建立学习地图和互补资料包", model=COACH_MODEL)
-        _, run = self._snapshot(sid, rid, rev)
-        query = self._public_query((run.get("intent") or {}).get("public_search_query", ""))
-        candidates = find_source_candidates(query, model=COACH_MODEL,
-            model_runner=lambda system, prompt, schema, model=None: self._call(sid, rid, rev, "source_pack", system, prompt, schema, model or COACH_MODEL),
-            search_runner=lambda text, model=None: self._search(sid, rid, rev, text, model or COACH_MODEL)) if query else []
-        self._snapshot(sid, rid, rev)
-        candidates = [c for c in candidates if looks_like_url(c.url)][:4]
-        if len(candidates) < 2:
-            self._publish(sid, rid, rev, "目前没有取得至少两个可定位的互补来源。你可以提供资料，或明确说“直接教我”，我会用标注来源的生成讲义。",
-                          stage="awaiting_material", required={"type": "respond", "prompt": "提供资料或直接教学", "options": []})
-            return
-        with self.store.transaction(sid, rid, rev) as data:
             task = self._task(data, data["runs"][rid])
             task["context"]["learning_goal"] = goal
-            task["context"]["source_pack"] = [c.model_dump() for c in candidates]
-            data["pending"] = dict(kind="select_sources", target_id=task["task_id"], version=len(task["events"]) + 1, options=[c.url for c in candidates])
-            self.store.event(data, data["runs"][rid], "source_choice", "资料包等你确认", payload={"pending": data["pending"],
-                             "sources": [dict(type="public_source_candidate", url=c.url, title=c.title, content=c.snippet) for c in candidates]})
-        text = "建议先建立基础概念，再看应用与局限。以下资料供确认后学习：\n\n" + "\n\n".join(f"{c.title}\n{c.url}\n{c.snippet}\n证据状态：待阅读核验；日期未知" for c in candidates)
-        self._publish(sid, rid, rev, text, stage="source_confirmation", required={"type": "choose_sources", "prompt": "是否使用这些资料？", "options": []})
+            data["pending"] = None
+        _, run = self._snapshot(sid, rid, rev)
+        decision = IntentDecision.model_validate(run["intent"])
+        self._respond(sid, rid, rev, decision, "结合当前主题及用户补充的用途，自动核对公开资料并开始第一段教学。", node="lesson", teaching=True, generated=True)
 
     @staticmethod
     def _public_query(value):
@@ -1618,8 +1639,19 @@ class ConversationHarness:
         started = time.monotonic()
         try:
             require_model(model)
-            result = web_search_text(query, model=model, reasoning_effort="high" if strength == "deep" else None,
-                                     on_cancel_handle=register)
+            with budget_scope() as budget:
+                for attempt in range(1, 3):
+                    try:
+                        with self.store.transaction(sid, rid, rev) as current:
+                            event = self.store.event(current, current["runs"][rid], "search_attempt", "正在查找公开资料", payload={"step_attempt": attempt}, model=model)
+                            event["attempt"] = attempt
+                        result = web_search_text(query, model=model, reasoning_effort="high" if strength == "deep" else None,
+                                                 on_cancel_handle=register)
+                        break
+                    except ModelCallError as error:
+                        if attempt == 2 or budget.attempts >= budget.limit or not diagnose(error)["retryable"]:
+                            raise
+                        self._snapshot(sid, rid, rev)
             with self.store.transaction(sid, rid, rev) as current:
                 current["runs"][rid].setdefault("search_results", {})[key] = result
                 self.store.event(current, current["runs"][rid], "public_search", "公开资料检索已返回", model=model,

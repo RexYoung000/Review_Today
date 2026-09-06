@@ -216,7 +216,12 @@ enum HarnessProcessor {
             context.insert(source)
         }
 
+        let priorIDs = Set(try context.fetch(FetchDescriptor<Knowledge>()).map(\.id))
         try CaptureProcessor.insertKnowledge(payload, into: source, context: context)
+        for card in try context.fetch(FetchDescriptor<Knowledge>()) where ids.contains(card.id) && !priorIDs.contains(card.id) {
+            card.originSessionID = task.sessionID
+            card.originTaskID = task.id
+        }
         task.memoryCommitted = true
         task.errorCode = nil
         for id in ids where !fetchKnowledgeReferences(context).contains(where: {

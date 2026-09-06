@@ -4,6 +4,10 @@
 
 ## 0. 当前 M1 架构
 
+2026-09-06 增量契约见 Harness §25：`ConditionalTeaching` 统一教学准备、真实搜索、网页读取、证据判断和可选本地关联，成功步骤沿用 Run checkpoint。Mac 收到绑定请求 ID / Run revision / lifecycle revision 的 `memory_lookup` 事件后，通过 `POST /v2/runs/{run_id}/memory-results` 回传最多 12 条候选；10 秒无结果跳过，模型可选零条。旧候选字段兼容，未发送草稿不进入公开查询或候选。
+
+归档永久删除使用现有 Session actions 的 `delete` 动作。Mac 在同一 SwiftData 事务写入 AppSettings 的无正文删除标记、清理队列并移除会话实体；服务在 SQLite 事务中保存 tombstone 并删除旧/新检查点。离线 archive 先幂等回放，再清理服务；snapshot 恢复、导入、补索引和迟到结果不能复活会话。Knowledge 增加可空创建归属，只有证明独有的卡片才可随会话删除，其他卡片与排期独立保留。历史库工具仅导入来源、卡片、题目、排期和已有练习，不导入会话或任务 outbox。
+
 本轮 UI 精修按 Harness §21 实施：根导航共用展开侧栏/图标栏状态与准确 Session ID；快捷开始元数据和预填来源只留 Mac 本地，原生编辑器执行安全追加/替换与撤销。单层菜单复用原偏好更新入口，不新建服务协议或更换 provider；新增测试复用 tests/mac 契约入口，真实窗口另验。此段为文档检查点目标，实施证据见验收 §0.14。
 
 2026-09-05 供应商修订已实施：Rex 明确授权接入 DeepSeek 官方，契约见 Harness §20。独立 provider 选择隔离凭证与模型配置：Flash 承担路由/摘要与教学，Pro 承担风险判断；旧 Luna/Terra/Sol 映射保留为可恢复历史配置，不作为自动备用。Responses 使用 system、等价内联 schema 引用和明确 JSON 约束，智能非思考、深入 high；最终仍经原类型和权限校验。启动按唯一模型去重探测，再分别记录 smart/deep 能力；deep 不可用不得被 smart 成功掩盖，也不阻塞已验证 smart。health 增加 provider/strengths，原 Mac 解码兼容；实际自托管服务已 ready。接入证据见验收 §0.13，下段 HTTP 403 为前批旧供应商记录。

@@ -279,6 +279,7 @@ class TurnContext(BaseModel):
     recent_messages: list[ContextMessage] = Field(default_factory=list, max_length=20)
     knowledge_summaries: list[str] = Field(default_factory=list, max_length=5)
     handoff: dict | None = None
+    memory_lookup_available: bool = False
     memory_candidates: list[dict[str, Any]] = Field(default_factory=list, max_length=12)
     invalid_memory_run_ids: list[str] = Field(default_factory=list, max_length=1000)
 
@@ -568,6 +569,8 @@ class IntentDecision(BaseModel):
     clarification: str = ""
     rationale: str = Field(min_length=1)
     understanding: Literal["unknown", "self_reported"] = "unknown"
+    answer_evidence: str = Field(default="", description="For answer intent, copy the exact text of the current user answer; never copy options or a prior message.")
+    learning_goal_ready: bool = False
     direct_teaching: bool = False
     answer_only: bool = False
     is_jd: bool = False
@@ -642,3 +645,20 @@ class ConversationSummary(BaseModel):
     confirmed_decisions: list[str]
     open_questions: list[str]
     summary: str
+
+
+class TeachingPreparation(BaseModel):
+    concepts: list[str] = Field(default_factory=list, max_length=6)
+    public_query: str = Field(default="", max_length=180)
+    new_knowledge: bool = True
+
+
+class MemoryChoice(BaseModel):
+    selections: list[MemorySelection] = Field(default_factory=list, max_length=2)
+
+
+class MemoryResultsRequest(BaseModel):
+    request_id: uuid.UUID
+    revision: int = Field(ge=1)
+    lifecycle_revision: int = Field(ge=0)
+    candidates: list[dict[str, Any]] = Field(default_factory=list, max_length=12)

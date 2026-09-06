@@ -18,6 +18,7 @@ struct LearningWorkspace: View {
     @State private var queueInput = false
     @State private var draft = ""
     @State private var localError: String?
+    @State private var deletionImpact: SessionDeletionImpact?
     @State private var editingSessionID: UUID?
     @State private var inputHeight: CGFloat = 64
     @State private var inputFocused = false
@@ -151,6 +152,9 @@ struct LearningWorkspace: View {
         }
         .onDisappear { saveDraft() }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in saveDraft() }
+        .sheet(item: $deletionImpact) { impact in
+            SessionDeletionSheet(impact: impact) { _ in selectedSessionID = nil }
+        }
         .sheet(isPresented: $showKnowledgePicker) {
             ComposerKnowledgePicker { card in
                 insertion = EditorInsertion(text: "[\(card.title.isEmpty ? card.learningGoal : card.title)](reviewtoday://knowledge/\(card.id.uuidString.lowercased()))")
@@ -165,6 +169,7 @@ struct LearningWorkspace: View {
                let ref = runs.filter({ $0.sessionID == selectedSessionID }).flatMap({ LearningMemory.array($0.memoryReferencesJSON) }).first(where: { $0["id"] as? String == key }) {
                 if let id = (ref["knowledge_id"] as? String).flatMap(UUID.init(uuidString:)) { onOpenKnowledge(id) }
                 else if let id = (ref["session_id"] as? String).flatMap(UUID.init(uuidString:)) {
+                    guard sessions.contains(where: { $0.id == id }) else { localError = "原会话已删除"; return .handled }
                     if let messageID = (ref["message_id"] as? String).flatMap(UUID.init(uuidString:)) {
                         memoryDestination = (id, messageID)
                     }
@@ -264,11 +269,14 @@ struct LearningWorkspace: View {
         SingleLevelMenu(title: "会话操作", symbol: "ellipsis", arrowEdge: .top, items:
             [.init(id: "new", title: "新对话", symbol: "plus")] +
             (session.status == "active" ? [.init(id: "tags", title: "编辑主题标签", symbol: "tag"),
-             .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain")] : [])
+             .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain")] : [.init(id: "delete", title: "永久删除", symbol: "trash", destructive: true)])
         ) { action in
             switch action {
             case "new": selectedSessionID = nil
             case "tags": editingSessionID = session.id
+            case "delete":
+                do { deletionImpact = try SessionDeletion.impact([session.id], context: modelContext) }
+                catch { localError = "无法确认删除范围，请重试。" }
             default:
                 if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { localError = "记忆设置未保存，请重试。" }
             }

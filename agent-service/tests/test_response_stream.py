@@ -57,13 +57,13 @@ class StreamingHarnessTests(unittest.TestCase):
         for event in acked["events"]:
             if event["stage"] == "response.delta":
                 self.assertEqual(event["payload"]["response"]["text"], "")
-        self.assertEqual([m["content"] for m in acked["messages"] if m["role"] == "coach"], ["这是本轮真实回答。"])
+        self.assertEqual([m["content"] for m in acked["messages"] if m["role"] == "coach"], ["这是本轮真实回答。\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。"])
 
     def test_stop_fences_late_chunks_and_preserves_incomplete_history(self):
         accepted = self.f.send("RAG 是什么", drain=False)
 
         def model(system, user, schema, **kw):
-            if schema is IntentDecision: return self.f.decision
+            if schema is not ConversationOutput: return self.f.model(system, user, schema, **kw)
             kw["on_partial"]({"message": "先检索"})
             before = time.monotonic()
             self.f.control(accepted.run_id, "stop")
@@ -87,7 +87,7 @@ class StreamingHarnessTests(unittest.TestCase):
 
         def model(system, user, schema, **kw):
             nonlocal answer_calls
-            if schema is IntentDecision: return self.f.decision
+            if schema is not ConversationOutput: return self.f.model(system, user, schema, **kw)
             answer_calls += 1
             if answer_calls == 1:
                 kw["on_cancel_handle"](closed.set)
@@ -107,12 +107,12 @@ class StreamingHarnessTests(unittest.TestCase):
             worker.join(2)
         self.assertFalse(worker.is_alive())
         replies = [message["content"] for message in self.f.state()["messages"] if message["role"] == "coach"]
-        self.assertEqual(replies, ["adjusted"])
+        self.assertEqual(replies, ["adjusted\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。"])
         self.assertEqual(self.f.state()["runs"][accepted.run_id]["status"], "completed")
 
     def test_failure_then_retry_reuses_validated_intent_not_partial_answer(self):
         def failing(system, user, schema, **kw):
-            if schema is IntentDecision: return self.f.decision
+            if schema is not ConversationOutput: return self.f.model(system, user, schema, **kw)
             kw["on_partial"]({"message": "未完成预览"})
             raise ModelCallError("SCHEMA")
         with patch("agent_service.conversation.parse_model", side_effect=failing):

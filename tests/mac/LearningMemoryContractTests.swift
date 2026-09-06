@@ -11,6 +11,8 @@ struct LearningMemoryContractTests {
         let origin = AgentSession(title: "旧索引课程"), target = AgentSession(title: "RAG")
         let evidenceID = UUID().uuidString.lowercased()
         context.insert(origin); context.insert(target)
+        let emptyLibrary = try LearningMemory.candidates(for: "检索", excluding: target.id, context: context)
+        precondition(emptyLibrary.isEmpty, "a new library has no prerequisite memory")
         origin.composerDraft = "秘密未发送草稿"
         origin.pendingOperationJSON = "{\"kind\":\"save\"}"
         LearningMemory.store(["id": evidenceID, "session_id": origin.id.uuidString, "concept": "索引",
@@ -19,6 +21,8 @@ struct LearningMemoryContractTests {
         try context.save()
         var refs = try LearningMemory.candidates(for: "RAG 检索", excluding: target.id, context: context)
         precondition(refs.count == 1 && refs[0]["kind"] as? String == "explained")
+        let irrelevant = try LearningMemory.candidates(for: "photosynthesis", excluding: target.id, context: context)
+        precondition(irrelevant.isEmpty, "irrelevant existing records are not forced into teaching")
         precondition(!ConversationProcessor.json(refs).contains("秘密") && !ConversationProcessor.json(refs).contains("save"))
         origin.status = "archived"
         try context.save()
@@ -48,6 +52,23 @@ struct LearningMemoryContractTests {
         precondition(corrected.isEmpty)
         let reviews = try context.fetch(FetchDescriptor<ReviewAttempt>())
         precondition(reviews.isEmpty)
+        let card = Knowledge(learningGoal: "向量检索", knowledgeType: "concept", theme: "RAG", contentLanguage: "zh", questionLanguage: "zh", answerLanguage: "zh", evidenceExcerpt: "相似度检索", evidenceLocator: "1")
+        context.insert(card)
+        let preview = ReviewAttempt(sessionId: UUID(), knowledgeId: card.id, knowledgeVersion: 1, questionId: UUID(), mode: "preview")
+        preview.acked = true; preview.completedAt = .now; preview.effectiveGrade = "good"
+        context.insert(preview)
+        try context.save()
+        refs = try LearningMemory.candidates(for: "RAG", excluding: target.id, context: context)
+        precondition(refs.count == 1 && refs[0]["kind"] as? String == "knowledge_card" && refs[0]["review"] == nil,
+                     "cards work without session history; preview never becomes formal evidence")
+        preview.mode = "formal"; preview.effectiveGrade = "invalid"
+        try context.save()
+        let invalidReview = try LearningMemory.candidates(for: "RAG", excluding: target.id, context: context)
+        precondition(invalidReview[0]["review"] == nil)
+        preview.effectiveGrade = "good"
+        try context.save()
+        let validReview = try LearningMemory.candidates(for: "RAG", excluding: target.id, context: context)
+        precondition(validReview[0]["review"] != nil)
         print("PASS: typed local recall, no drafts/consent, archive vs exclusion, policy/content versions, late-run fence, no formal review writes")
     }
 }

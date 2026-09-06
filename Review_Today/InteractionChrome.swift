@@ -68,6 +68,7 @@ struct ChoiceMenuItem: Identifiable {
     let title: String
     let symbol: String
     var detail = ""
+    var destructive = false
 }
 
 /// A native, single-level popover. No nested Menu/Picker and no hidden option layer.
@@ -152,12 +153,12 @@ private struct ChoiceMenuContent: View {
     var body: some View {
         VStack(spacing: 3) {
             ForEach(items) { item in
-                Button { onSelect(item.id) } label: {
+                Button(role: item.destructive ? .destructive : nil) { onSelect(item.id) } label: {
                     HStack(spacing: 12) {
                         Image(systemName: item.symbol).font(.system(size: 17))
                             .foregroundStyle(.secondary).frame(width: 22)
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(item.title).font(.callout.weight(.medium))
+                            Text(item.title).font(.callout.weight(.medium)).foregroundStyle(item.destructive ? Color.red : runway.ink)
                             if !item.detail.isEmpty {
                                 Text(item.detail).font(.caption).foregroundStyle(.secondary)
                                     .fixedSize(horizontal: false, vertical: true)

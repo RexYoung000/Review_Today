@@ -10,6 +10,8 @@ final class ConversationSync {
 
     private var streams: [UUID: Task<Void, Never>] = [:]
     private var synced = Set<UUID>()
+    private var deletionCleaner: Task<Void, Never>?
+    private var lookups: [UUID: Task<Void, Never>] = [:]
     private var senders: [UUID: Task<Void, Never>] = [:]
     private var controllers: [UUID: Task<Void, Never>] = [:]
     private var ackTargets: [UUID: Int] = [:]
@@ -18,6 +20,7 @@ final class ConversationSync {
 
     func run(context: ModelContext, monitor: AgentServiceMonitor) async {
         guard AppRuntime.current.allowsSending else { return }
+        try? LearningMemory.backfill(context: context)
         for session in (try? context.fetch(FetchDescriptor<AgentSession>())) ?? [] {
             session.memoryPolicySyncedRevision = -1
             session.memoryContentSyncedRevision = -1
@@ -40,7 +43,16 @@ final class ConversationSync {
         for await _ in signals {
             if Task.isCancelled { return }
             guard monitor.serviceReachable && monitor.conversationSupported else { continue }
+            if deletionCleaner == nil {
+                deletionCleaner = Task {
+                    defer { self.deletionCleaner = nil }
+                    await SessionDeletion.cleanPending(context: context)
+                }
+            }
             let sessions = (try? context.fetch(FetchDescriptor<AgentSession>())) ?? []
+            let existingIDs = Set(sessions.map(\.id))
+            for id in streams.keys where !existingIDs.contains(id) { streams[id]?.cancel(); streams[id] = nil; ackTargets[id] = nil }
+            respondToLookups(context: context)
             for session in sessions {
                 if controllers[session.id] == nil {
                     controllers[session.id] = Task {
@@ -89,6 +101,7 @@ final class ConversationSync {
     }
 
     private func consume(_ page: [String: Any], session: AgentSession, context: ModelContext) async throws {
+        guard try !SessionDeletion.contains(session.id, context: context) else { return }
         // No suspension until all content, revisions and cursor are durable.
         do {
             try ConversationProcessor.persist(page, session: session, context: context)
@@ -98,6 +111,7 @@ final class ConversationSync {
             context.rollback()
             throw error
         }
+        respondToLookups(context: context)
         ackTargets[session.id] = max(ackTargets[session.id] ?? 0, session.lastSessionEventSeq)
         scheduleACK(session.id)
         let active = (page["runs"] as? [[String: Any]] ?? []).contains { ["running", "accepted"].contains($0["status"] as? String ?? "") }
@@ -106,12 +120,37 @@ final class ConversationSync {
                 defer { self.snapshotters[session.id] = nil }
                 let lifecycle = session.lifecycleRevision
                 guard let snapshot = try? await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/snapshot") else { return }
-                guard session.lifecycleRevision == lifecycle,
+                guard (try? SessionDeletion.contains(session.id, context: context)) == false, session.lifecycleRevision == lifecycle,
                       let checkpoint = snapshot["checkpoint"] as? [String: Any],
                       (checkpoint["event_base_seq"] as? Int ?? 0) + (checkpoint["events"] as? [Any] ?? []).count >= session.lastSessionEventSeq,
                       (checkpoint["lifecycle_revision"] as? Int ?? 0) == lifecycle else { return }
                 session.checkpointJSON = ConversationProcessor.json(snapshot)
                 try? context.save()
+            }
+        }
+    }
+
+    private func respondToLookups(context: ModelContext) {
+        for run in (try? context.fetch(FetchDescriptor<AgentRun>())) ?? [] {
+            guard run.status == "running", lookups[run.id] == nil,
+                  let lookup = ConversationProcessor.object(run.memoryLookupJSON), lookup["state"] as? String == "pending",
+                  let query = lookup["query"] as? String, let requestID = lookup["request_id"] as? String else { continue }
+            lookups[run.id] = Task {
+                defer { self.lookups[run.id] = nil }
+                do {
+                    guard try !SessionDeletion.contains(run.sessionID, context: context) else { return }
+                    let candidates = try LearningMemory.candidates(for: query, excluding: run.sessionID, context: context)
+                    _ = try await AgentAPI.conversationRequest("/v2/runs/\(run.id.uuidString.lowercased())/memory-results", body: [
+                        "request_id": requestID, "revision": lookup["revision"] ?? run.revision,
+                        "lifecycle_revision": lookup["lifecycle_revision"] ?? 0, "candidates": candidates])
+                    guard try !SessionDeletion.contains(run.sessionID, context: context) else { return }
+                    if ConversationProcessor.object(run.memoryLookupJSON)?["request_id"] as? String == requestID {
+                        run.memoryLookupJSON = nil
+                        try context.save()
+                    }
+                } catch {
+                    if HarnessAPIError.code(for: error) == "RT.MEMORY.STALE_RESULT" { run.memoryLookupJSON = nil; try? context.save() }
+                }
             }
         }
     }

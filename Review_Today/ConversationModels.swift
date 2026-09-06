@@ -23,6 +23,7 @@ final class AgentRun {
     var activityKind: String?
     var completedAt: Date?
     var memoryReferencesJSON: String = "[]"
+    var memoryLookupJSON: String?
     var memoryInvalidationRevision: Int = -1
     var thinkingStrength: String = "smart"
 

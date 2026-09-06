@@ -17,7 +17,7 @@ enum LearningMemory {
                 return knowledge.contains { $0.id == kid && $0.lifecycle == "active" && $0.version == ref["content_version"] as? Int }
             }
             guard let sid = (ref["session_id"] as? String).flatMap(UUID.init(uuidString:)),
-                  let session = sessions.first(where: { $0.id == sid }), session.memoryUseAllowed,
+                  let session = sessions.first(where: { $0.id == sid }), session.memoryUseAllowed, session.status != "deleted",
                   session.memoryPolicyRevision == ref["policy_version"] as? Int,
                   session.memoryContentRevision == ref["content_version"] as? Int,
                   let evidence = array(session.learningEvidenceJSON).first(where: { $0["id"] as? String == ref["id"] as? String }) else { return false }
@@ -30,7 +30,7 @@ enum LearningMemory {
         let knowledge = try context.fetch(FetchDescriptor<Knowledge>())
         let attempts = try context.fetch(FetchDescriptor<ReviewAttempt>())
         var candidates: [[String: Any]] = []
-        for session in sessions where session.id != sid && session.memoryUseAllowed {
+        for session in sessions where session.id != sid && session.memoryUseAllowed && session.status != "deleted" {
             for var evidence in array(session.learningEvidenceJSON) where evidence["content_version"] as? Int == session.memoryContentRevision {
                 evidence["policy_version"] = session.memoryPolicyRevision
                 guard valid([evidence], sessions: sessions, knowledge: knowledge) else { continue }
@@ -43,7 +43,7 @@ enum LearningMemory {
                 "excerpt": String((card.explanation.isEmpty ? card.evidenceExcerpt : card.explanation).prefix(1600)),
                 "kind": "knowledge_card", "content_version": card.version,
                 "due_at": card.dueAt.ISO8601Format(), "occurred_at": card.createdAt.ISO8601Format()]
-            if let attempt = attempts.filter({ $0.knowledgeId == card.id && $0.knowledgeVersion == card.version && $0.acked && $0.completedAt != nil && $0.mode != "preview" })
+            if let attempt = attempts.filter({ $0.knowledgeId == card.id && $0.knowledgeVersion == card.version && $0.acked && $0.completedAt != nil && $0.mode == "formal" && ["again", "hard", "good", "easy"].contains($0.effectiveGrade) })
                 .max(by: { $0.completedAt! < $1.completedAt! }) {
                 ref["review"] = ["grade": attempt.effectiveGrade, "hint_used": attempt.hintUsed,
                                  "at": attempt.completedAt!.ISO8601Format()]
@@ -62,10 +62,29 @@ enum LearningMemory {
             return (value, overlap)
         }.sorted { $0.1 == $1.1 ? ($0.0["occurred_at"] as? String ?? "") > ($1.0["occurred_at"] as? String ?? "") : $0.1 > $1.1 }
         var seen = Set<String>()
-        // Include a small recent shortlist when lexical overlap is weak; semantic
-        // relationship selection remains Luna's job, never a claim of mastery.
-        return ranked.filter { seen.insert(($0.0["session_id"] as? String ?? "card") + ":" + ($0.0["concept"] as? String ?? "")).inserted }
+        // No related local evidence is a normal empty result.
+        return ranked.filter { $0.1 > 0 }.filter { seen.insert(($0.0["session_id"] as? String ?? "card") + ":" + ($0.0["concept"] as? String ?? "")).inserted }
             .prefix(12).map { $0.0 }
+    }
+
+    static func backfill(context: ModelContext) throws {
+        let sessions = try context.fetch(FetchDescriptor<AgentSession>())
+        let messages = try context.fetch(FetchDescriptor<AgentMessage>())
+        let runs = try context.fetch(FetchDescriptor<AgentRun>())
+        for session in sessions where session.memoryContentRevision == 0 && session.status != "deleted" {
+            guard try !SessionDeletion.contains(session.id, context: context) else { continue }
+            let known = Set(array(session.learningEvidenceJSON).compactMap { $0["id"] as? String })
+            for run in runs where run.sessionID == session.id && run.status == "completed" && ["knowledge_answer", "lesson_step"].contains(run.activityKind ?? "") {
+                guard let message = messages.last(where: { $0.runID == run.id && ["coach", "assistant"].contains($0.role) && $0.responseState == "complete" }),
+                      !known.contains(message.id.uuidString.lowercased()), !message.content.isEmpty else { continue }
+                store(["id": message.id.uuidString.lowercased(), "message_id": message.id.uuidString.lowercased(),
+                       "session_id": session.id.uuidString.lowercased(), "run_id": run.id.uuidString.lowercased(),
+                       "concept": session.title, "concepts": session.displayTopicTags, "kind": "explained",
+                       "excerpt": String(message.content.prefix(1600)), "occurred_at": message.createdAt.ISO8601Format(),
+                       "dependencies": array(run.memoryReferencesJSON)], session: session)
+            }
+        }
+        try context.save()
     }
 
     private static func tokens(_ text: String) -> Set<String> {

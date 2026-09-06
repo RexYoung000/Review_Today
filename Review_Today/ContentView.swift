@@ -161,6 +161,8 @@ struct AppSidebar: View {
     @State private var multiSelect = false
     @State private var selectedIDs = Set<UUID>()
     @State private var rangeAnchor: UUID?
+    @State private var deletionImpact: SessionDeletionImpact?
+    @Query private var deletionSettings: [AppSettings]
     @State private var batchError: String?
     @State private var visibleRowIDs = Set<UUID>()
     @State private var selectionDelays: [UUID: Double] = [:]
@@ -237,6 +239,14 @@ struct AppSidebar: View {
             .padding(.bottom, 16)
         }
         .background { PaperSurface() }
+        .sheet(item: $deletionImpact) { impact in
+            SessionDeletionSheet(impact: impact) { ids in
+                if selectedSessionID.map(ids.contains) == true { selectedSessionID = nil }
+                selectedIDs.subtract(ids)
+                undoBatchIDs.subtract(ids)
+                undoSessionID = nil
+            }
+        }
         .sheet(isPresented: Binding(
             get: { editingSessionID != nil },
             set: { if !$0 { editingSessionID = nil } }
@@ -292,9 +302,15 @@ struct AppSidebar: View {
                     Button(selectedIDs.count == visibleSessions.count ? "取消全选" : "全选") { selectAll() }
                     Text("\(selectedIDs.count)").monospacedDigit()
                     Spacer(minLength: 0)
+                    if showArchived {
+                        Button("永久删除", role: .destructive) { prepareDeletion(selectedIDs) }.disabled(selectedIDs.isEmpty)
+                    }
                     Button(showArchived ? "恢复" : "归档") { batchArchive() }.disabled(selectedIDs.isEmpty)
                     Button { multiSelect = false; selectedIDs.removeAll() } label: { Image(systemName: "xmark") }.help("退出多选")
                 }.font(.caption).buttonStyle(.borderless).padding(.horizontal, 12)
+            }
+            if deletionSettings.contains(where: { SessionDeletion.pendingCount($0.sessionDeletionsJSON) > 0 }) {
+                Text("会话已从本机删除，后台清理待完成").font(.caption).foregroundStyle(.secondary).padding(.horizontal, 12)
             }
             if let batchError { Text(batchError).font(.caption).foregroundStyle(.orange).padding(.horizontal, 12) }
             if sessionsExpanded {
@@ -326,6 +342,11 @@ struct AppSidebar: View {
             } else { Spacer(minLength: 0) }
         }
         .frame(maxHeight: .infinity)
+    }
+
+    private func prepareDeletion(_ ids: Set<UUID>) {
+        do { deletionImpact = try SessionDeletion.impact(ids, context: modelContext) }
+        catch { batchError = "无法确认删除范围，请重试。" }
     }
 
     private func sessionRow(_ session: AgentSession) -> some View {
@@ -377,10 +398,11 @@ struct AppSidebar: View {
                 .init(id: "archive", title: session.status == "active" ? "归档" : "恢复", symbol: session.status == "active" ? "archivebox" : "arrow.uturn.backward"),
                 .init(id: "tags", title: "编辑标签", symbol: "tag"),
                 .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain")
-            ], onPresentationChange: { openMenuSessionID = $0 ? session.id : nil },
+            ] + (session.status == "archived" ? [.init(id: "delete", title: "永久删除", symbol: "trash", destructive: true)] : []), onPresentationChange: { openMenuSessionID = $0 ? session.id : nil },
                onFocusChange: { focusedMenuSessionID = $0 ? session.id : nil }) { action in
                 switch action {
                 case "archive": if session.status == "active" { archive(session) } else { restore(session) }
+                case "delete": prepareDeletion([session.id])
                 case "tags": editingSessionID = session.id
                 case "memory":
                     if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { batchError = "记忆设置未保存，请重试。" }
@@ -400,6 +422,9 @@ struct AppSidebar: View {
         .contextMenu {
             if session.status == "active" { Button("归档", systemImage: "archivebox") { archive(session) } }
             else { Button("恢复", systemImage: "arrow.uturn.backward") { restore(session) } }
+            if session.status == "archived" {
+                Button("永久删除", systemImage: "trash", role: .destructive) { prepareDeletion([session.id]) }
+            }
             Button("编辑标签", systemImage: "tag") { editingSessionID = session.id }
             Button(session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", systemImage: "brain") {
                 if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { batchError = "记忆设置未保存，请重试。" }

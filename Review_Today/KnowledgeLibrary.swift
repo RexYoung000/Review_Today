@@ -682,6 +682,7 @@ private struct KnowledgeDepthCard: View {
     var siblings: [Knowledge]
     var onPreview: () -> Void
     var onDelete: () -> Void
+    @Environment(\.modelContext) private var deletionContext
     @Environment(\.runway) private var runway
 
     private var mainQuestion: Question? { KnowledgeLexicon.mainQuestion(for: item) }
@@ -830,9 +831,10 @@ private struct KnowledgeDepthCard: View {
     private var sourceBlock: some View {
         VStack(alignment: .leading, spacing: Runway.gap) {
             HStack(alignment: .firstTextBaseline) {
-                Text(String(localized: "来源证据"))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Text(String(localized: "来源证据")).font(.caption).foregroundStyle(.secondary)
+                if let origin = item.originSessionID, (try? SessionDeletion.contains(origin, context: deletionContext)) == true {
+                    Text("原会话已删除").font(.caption).foregroundStyle(.secondary)
+                }
                 Spacer(minLength: Runway.space)
                 if let locator = sourceLocator {
                     Link(String(localized: "打开来源"), destination: locator)

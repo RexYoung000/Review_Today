@@ -41,6 +41,7 @@ enum ConversationProcessor {
     @MainActor static func recordAcceptance(_ response: [String: Any], message: AgentMessage, context: ModelContext, save: (() throws -> Void)? = nil) throws {
         let id = try acceptedRunID(response)
         let sid = message.sessionID
+        guard try !SessionDeletion.contains(sid, context: context) else { return }
         let latestRuns = try context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }))
         let run = latestRuns.first(where: { $0.id == id }) ?? AgentRun(id: id, sessionID: sid)
         let existingRun = latestRuns.contains(where: { $0.id == id })
@@ -160,7 +161,7 @@ enum ConversationProcessor {
                     "expected_event_seq": session.lastSessionEventSeq, "lifecycle_revision": session.lifecycleRevision,
                     "context": ["summary": invalidRuns.isEmpty ? String(session.summaryText.prefix(12000)) : "", "recent_messages": Array(recent),
                                 "knowledge_summaries": memoryCandidates.isEmpty ? Array(relatedKnowledge.prefix(5)) : [],
-                                "memory_candidates": memoryCandidates,
+                                "memory_candidates": memoryCandidates, "memory_lookup_available": knowledge.contains(where: { $0.lifecycle == "active" }) || allSessions.contains(where: { $0.id != sid && $0.memoryUseAllowed && !LearningMemory.array($0.learningEvidenceJSON).isEmpty }),
                                 "invalid_memory_run_ids": invalidRuns.map { $0.uuidString.lowercased() }],
                 ]
                 if let operation = object(message.operationJSON), !operation.isEmpty { body["operation"] = operation }
@@ -218,6 +219,7 @@ enum ConversationProcessor {
 
     @MainActor
     static func restoreCheckpoint(_ session: AgentSession, context: ModelContext) async throws {
+        guard try !SessionDeletion.contains(session.id, context: context) else { return }
         guard var snapshot = object(session.checkpointJSON), var checkpoint = snapshot["checkpoint"] as? [String: Any] else {
             throw HarnessAPIError.server(code: "RT.SESSION.NO_LOCAL_CHECKPOINT", message: "历史仍在本机，执行检查点需要恢复")
         }
@@ -284,6 +286,7 @@ enum ConversationProcessor {
 
     @MainActor
     static func persist(_ page: [String: Any], session: AgentSession, context: ModelContext) throws {
+        guard try !SessionDeletion.contains(session.id, context: context) else { return }
         let sid = session.id
         guard uuid(page["session_id"]) == sid else { throw HarnessAPIError.http(409) }
         var messages = try context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == sid }))
@@ -383,6 +386,9 @@ enum ConversationProcessor {
             if !blocked, payload["invalidate_memory"] as? Bool == true {
                 session.memoryContentRevision += 1
                 try LearningMemory.fenceInvalidReferences(context: context)
+            }
+            if !blocked, let lookup = payload["memory_lookup"] as? [String: Any], let run = runs.first(where: { $0.id == runID }) {
+                run.memoryLookupJSON = json(lookup)
             }
             if !blocked, let evidence = payload["learning_evidence"] as? [String: Any] { LearningMemory.store(evidence, session: session) }
             if !blocked, revision >= currentRevision,

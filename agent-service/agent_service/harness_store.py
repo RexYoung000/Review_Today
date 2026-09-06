@@ -101,6 +101,7 @@ class HarnessStore:
 
     def _init_db(self) -> None:
         with self._connection() as connection:
+            connection.execute("CREATE TABLE IF NOT EXISTS agent_session_deletions (session_id TEXT PRIMARY KEY, action_id TEXT NOT NULL, lifecycle_revision INTEGER NOT NULL, deleted_at TEXT NOT NULL)")
             connection.execute(
                 """
                 CREATE TABLE IF NOT EXISTS harness_tasks (
@@ -117,6 +118,8 @@ class HarnessStore:
     def _save_unlocked(self, record: HarnessTaskRecord) -> None:
         epoch = execution_epoch.get()
         with self._connection() as connection:
+            if connection.execute("SELECT 1 FROM agent_session_deletions WHERE session_id=?", (record.session_id,)).fetchone():
+                raise ValueError("RT.SESSION.DELETED")
             table = connection.execute("SELECT name FROM sqlite_master WHERE name='agent_sessions_v2'").fetchone()
             row = connection.execute("SELECT payload FROM agent_sessions_v2 WHERE session_id=?", (record.session_id,)).fetchone() if table else None
         if epoch and row:

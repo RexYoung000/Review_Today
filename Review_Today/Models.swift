@@ -48,6 +48,8 @@ final class Knowledge {
     var answerLanguage: String
     var evidenceExcerpt: String
     var evidenceLocator: String
+    var originSessionID: UUID?
+    var originTaskID: UUID?
     var title: String = ""
     var explanation: String = ""
     var lifecycle: String
@@ -170,6 +172,7 @@ final class AppSettings {
     var agentDraftMode: String = "auto"
     var agentDraftThinking: String = "smart"
     var lastThinkingStrength: String = "smart"
+    var sessionDeletionsJSON: String = "[]"
 
     init(
         dailyReminderMinutes: Int = 21 * 60,

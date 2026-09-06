@@ -104,14 +104,27 @@ def parse_model(
         raise ModelCallError("CONNECTION", type(exc).__name__) from None
     except APIStatusError as exc:
         raise ModelCallError("PROVIDER", f"HTTP {exc.status_code}", request_id=getattr(exc, "request_id", None)) from None
-    except (ValidationError, json.JSONDecodeError) as exc:
-        raise ModelCallError("SCHEMA", type(exc).__name__) from None
+    except ValidationError as exc:
+        raise ModelCallError("SCHEMA", schema_diagnostic(exc)) from None
+    except json.JSONDecodeError:
+        raise ModelCallError("SCHEMA", "JSONDecodeError") from None
+
+
+def schema_diagnostic(error):
+    # Never include input, invalid literal, arbitrary validator messages or URLs.
+    details = []
+    for item in error.errors(include_input=False, include_url=False)[:8]:
+        detail = {"field": list(item["loc"]), "type": item["type"]}
+        if item["type"] == "literal_error":
+            detail["allowed"] = item.get("ctx", {}).get("expected", "")
+        details.append(detail)
+    return json.dumps(details, ensure_ascii=False)
 
 
 class ModelCallError(RuntimeError):
     def __init__(self, kind: str, diagnostic: str = "", request_id: str | None = None):
         self.code = f"RT.MODEL.{kind}"
-        self.diagnostic = diagnostic  # class/status only, never provider body or credentials
+        self.diagnostic = diagnostic  # allowlisted class/status/schema fields; never raw input, provider body or credentials
         self.request_id = request_id
         super().__init__(self.code)
 

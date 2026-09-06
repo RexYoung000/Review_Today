@@ -26,12 +26,38 @@ class ConversationStore:
             db.execute("CREATE TABLE IF NOT EXISTS agent_sessions_v2 (session_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
             db.execute("CREATE TABLE IF NOT EXISTS agent_memory_policy_v2 (session_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
 
+    def deleted(self, sid):
+        with self._lock, self.tasks._connection() as db:
+            return db.execute("SELECT lifecycle_revision FROM agent_session_deletions WHERE session_id=?", (sid,)).fetchone()
+
+    def delete(self, sid, action_id, revision):
+        if revision < 1:
+            raise ValueError("RT.SESSION.INVALID_ACTION")
+        with self._lock, self.tasks._connection() as db:
+            old = db.execute("SELECT lifecycle_revision FROM agent_session_deletions WHERE session_id=?", (sid,)).fetchone()
+            if old:
+                return dict(status="deleted", lifecycle_revision=old[0])
+            data = self.get(sid)
+            # The client may delete offline before its archive action reaches us.
+            # A strictly newer lifecycle revision is the destructive-action fence.
+            if data and data.get("status") != "archived":
+                raise ValueError("RT.SESSION.NOT_ARCHIVED")
+            if data and revision <= data.get("lifecycle_revision", 0):
+                raise ValueError("RT.SESSION.VERSION_CONFLICT")
+            db.execute("INSERT INTO agent_session_deletions VALUES (?, ?, ?, ?)", (sid, action_id, revision, now_iso()))
+            db.execute("DELETE FROM harness_tasks WHERE session_id=?", (sid,))
+            db.execute("DELETE FROM agent_sessions_v2 WHERE session_id=?", (sid,))
+            db.execute("DELETE FROM agent_memory_policy_v2 WHERE session_id=?", (sid,))
+        return dict(status="deleted", lifecycle_revision=revision)
+
     def memory_policy(self, sid):
         with self._lock, self.tasks._connection() as db:
             row = db.execute("SELECT payload FROM agent_memory_policy_v2 WHERE session_id=?", (sid,)).fetchone()
             return json.loads(row[0]) if row else None
 
     def set_memory_policy(self, sid, value):
+        if self.deleted(sid):
+            raise ValueError("RT.SESSION.DELETED")
         with self._lock, self.tasks._connection() as db:
             row = db.execute("SELECT payload FROM agent_memory_policy_v2 WHERE session_id=?", (sid,)).fetchone()
             old = json.loads(row[0]) if row else None
@@ -46,6 +72,8 @@ class ConversationStore:
         if depth > 6:
             return False
         for ref in refs:
+            if ref.get("session_id") and self.deleted(ref["session_id"]):
+                return False
             if ref.get("knowledge_id"):
                 continue  # Mac owns the final formal-card version check.
             policy = self.memory_policy(ref.get("session_id"))
@@ -75,6 +103,10 @@ class ConversationStore:
     @contextmanager
     def transaction(self, session_id: str, run_id: str | None = None, revision: int | None = None):
         with self._lock:
+            if self.deleted(session_id):
+                if run_id is not None:
+                    raise Superseded()
+                raise ValueError("RT.SESSION.DELETED")
             data = self.get(session_id)
             if data is None:
                 data = self.empty(session_id)

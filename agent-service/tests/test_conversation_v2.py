@@ -49,8 +49,18 @@ class ConversationTests(unittest.TestCase):
 
     def model(self, system, user, schema, **kwargs):
         self.calls.append((schema, json.loads(user) if user.startswith("{") else user))
+        from agent_service.schemas import TeachingPreparation, MemoryChoice, SourceList, EvidenceAssessmentV2
+        if schema is TeachingPreparation:
+            return TeachingPreparation(concepts=["RAG"] if self.decision.public_search_query else [], public_query=self.decision.public_search_query)
+        if schema is MemoryChoice:
+            return MemoryChoice()
+        if schema is SourceList:
+            return SourceList()
+        if schema is EvidenceAssessmentV2:
+            return EvidenceAssessmentV2(state="insufficient", summary="部分内容尚待核实。")
         if schema is IntentDecision:
-            return self.decision
+            current = json.loads(user).get("current_inputs", []) if user.startswith("{") else []
+            return self.decision.model_copy(update={"answer_evidence": current[-1] if current and "answer" in self.decision.intents else ""})
         if schema is ProblemCoachBundle:
             return bundle()
         if schema is MasteryEvaluation:
@@ -325,7 +335,7 @@ class ConversationTests(unittest.TestCase):
         self.assertEqual(self.state()["mode"], "source_learning")
         replies = [m["content"] for m in self.state()["messages"] if m["role"] == "coach"]
         self.assertIn("已选择资料学习", replies[-2])
-        self.assertEqual(replies[-1], "这是本轮真实回答。")
+        self.assertEqual(replies[-1], "这是本轮真实回答。\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。")
 
     def test_save_and_followup_retry_does_not_repeat_commit(self):
         self.decision = intent("material", workflow="memory_organization", scope="organize")
@@ -517,7 +527,7 @@ class ConversationTests(unittest.TestCase):
         self.send("我理解了，请保存")
         task = self.state()["tasks"][self.state()["active_task_id"]]
         self.assertEqual(task["status"], "committing")
-        self.assertEqual(self.capture.call_args.args[1], "这是本轮真实回答。")
+        self.assertEqual(self.capture.call_args.args[1], "这是本轮真实回答。\n\n你可以继续追问、尝试回答，或说“先跳过检查”；跳过不会标记为已掌握。")
         self.assertEqual(self.capture.call_count, 1)
         self.assertIsNone(self.state()["pending"])
 
@@ -577,25 +587,18 @@ class ConversationTests(unittest.TestCase):
         self.send("先别考我，继续")
         task = self.state()["tasks"][self.state()["active_task_id"]]
         self.assertEqual(task["context"]["understanding"], "unknown")
-        self.assertTrue(any("Agent 生成讲义" in m["content"] for m in self.state()["messages"]))
+        self.assertTrue(any(s["type"] == "agent_generated" for s in task["context"]["sources"]))
         self.assertFalse(any(schema is MasteryEvaluation for schema, _ in self.calls))
 
-    def test_source_pack_needs_confirmation_before_public_fetch(self):
+    def test_goal_clarifying_answer_starts_teaching_without_source_confirmation(self):
         self.decision = intent("goal", workflow="topic_exploration", scope="learning")
         self.send("我想了解 RAG")
-        self.decision = intent("answer", workflow="topic_exploration", scope="continue_goal", public_search_query="RAG 检索增强生成 入门与应用")
-        candidates = [SourceCandidate(url=f"https://example.com/{i}", title=f"资料{i}", snippet="互补内容") for i in range(2)]
-        # A goal-clarifying answer should enter source selection, not mastery grading.
-        self.decision = intent("answer", workflow="topic_exploration", scope="continue_goal", public_search_query="RAG 检索增强生成 入门与应用")
-        with patch("agent_service.conversation.find_source_candidates", return_value=candidates), patch("agent_service.conversation.fetch_public_url") as fetch:
-            self.send("用于面试，先找资料")
-            self.assertEqual(self.state()["pending"]["kind"], "select_sources")
-            fetch.assert_not_called()
-            pending = self.state()["pending"]
-            self.decision = intent("confirm", workflow="source_learning", scope="continue_goal")
-            fetch.return_value = ("资料", "相关内容")
-            self.send("使用这些资料", operation={k:pending[k] for k in ("kind","target_id","version")})
-            self.assertEqual(fetch.call_count, 2)
+        self.decision = intent("answer", workflow="topic_exploration", scope="continue_goal")
+        self.send("用于面试")
+        self.assertIsNone(self.state()["pending"])
+        task = self.state()["tasks"][self.state()["active_task_id"]]
+        self.assertEqual(task["stage"], "teaching")
+        self.assertFalse(any(schema is MasteryEvaluation for schema, _ in self.calls))
 
     def test_jd_emits_map_then_one_selected_question(self):
         self.decision = intent("goal", workflow="problem_solving", scope="learning", is_jd=True)
@@ -612,7 +615,7 @@ class ConversationTests(unittest.TestCase):
         with patch("agent_service.conversation.web_search_text", return_value="") as search:
             self.send("当前贷款利率如何")
             search.assert_called_once()
-        self.assertIn("insufficient", [m["content"] for m in self.state()["messages"] if m["role"] == "coach"][-1])
+        self.assertEqual(self.state()["teaching_context"]["evidence"]["state"], "insufficient")
 
     def test_summary_keeps_raw_transcript_and_is_session_scoped(self):
         for i in range(13):
