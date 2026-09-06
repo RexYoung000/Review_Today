@@ -20,6 +20,17 @@
 - 当前不声称完整体验验收：系统悬停 tooltip 的指针停留、键盘全路径、系统 Reduce Motion/VoiceOver、精确最小窗口尺寸与长会话压力未完成本轮端到端验证；现有证据为连续 AX/截图而非录屏。最终视觉与交互待 Rex。
 - 分支核对与分类见 [M1 分支清单](m1-branch-audit.md)：1 个工作树、9 条本地分支，8 个 issue PR 均未合并，本次无可按完成条件直接删除的分支；不关闭 #17/M1。
 
+### 续验：正常运行恢复与真实容量（2026-09-06）
+
+本记录覆盖上方“日常构建交付未完成”的历史状态，保留原排查过程。本次未改服务启动代码、系统权限或模型配置。
+
+- 12:34 左右重新启动 `/tmp/review-today-capacity-build/Build/Products/Debug/Review_Today.app` 正常构建后，App 自行托管 8742 服务；health 为 ok / deepseek，router/coach/risk 的 smart/deep 均 ready，coach 流式 ready。正常会话「你好」原问答与 1.3 秒耗时保留，无预览标识、无测试消息。前台现为新版，不再回退旧构建。
+- 在本轮代理开始前后，系统日志新增 12:32:36 的 Review_Today DesktopFolder 授权记录，随后读取项目及服务启动恢复。只能确认环境授权状态发生变化、重启后恢复，不能把上一轮 AllFiles 预检为 0 当作必须开放完全磁盘权限的证据；代理未切换权限、重置 TCC 或将服务移到更高权限进程。
+- 新建独立原生验证目录 `/tmp/review-today-capacity-native-validation`，bundle `com.rexyoung.ReviewToday.NativeQA`、服务 18743，沿用 App 的 validation 模式。通过 CUA 在原生编辑器发送合成输入「你好」，实际回答完成 1.2 秒。收到并落盘 input_tokens=4721、model_window=1000000、input_budget=24000、output_reserve=4096；圆环按 0.4721% 绘制，不把服务的输入预算 ratio≈19.67% 当作模型窗口占比。
+- 原生关闭跨会话记忆后，列表和标题显示斜杠脑形；退出并重新启动同一隔离库，标识及 1.2 秒完成状态仍在。右键菜单只含归档、编辑标签、允许跨会话记忆；重新允许后持久化为 allowed=1、policy_revision=2。全程保持 2 条消息、1 个 Run，重启未重复生成。独立结果见 `/tmp/review-today-capacity-native-validation/result.json`。
+- 已退出隔离测试窗口与其托管服务，保留正常构建和正常 8742 服务；正常旧记录继续显示“上限未知”，新请求已证实能取得 1.0M 上限，不对历史记录猜测回填。
+- 本次复用无源码变化的构建与上一轮 180 项受控/Mac 契约结果，新增上述真实模型、磁盘重启和日常运行证据。系统鼠标悬停 tooltip 已提供 `.help`，点击详情已原生验证；指针停留的视觉结果单独等待 Rex 确认。VoiceOver/系统 Reduce Motion 与完整 M1 验收仍未覆盖。
+
 ## 0.15 紧凑顶部与真实运行入口（2026-09-06）
 
 状态：独立文档检查点 `b9e0f77` 已先提交并推送，随后实施紧凑顶部、运行身份与投递反馈修复。前一版 FocusFixQA 为内存 fixture，关闭消息同步却仍可发送；「你好」只进入内存 outbox，假 running 样例持续计时。这不是 DeepSeek 403；本次未清空真实数据库。
