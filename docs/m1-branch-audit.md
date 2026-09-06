@@ -1,29 +1,38 @@
 # M1 分支与工作树核对（2026-09-06）
 
-本次已 fetch --prune，核对本地/远端提交图及 GitHub issue/PR。只有 **1 个工作树**（当前项目路径），共 **9 条本地分支**（main + issue 10–17）。多的是分支引用，不是复制了 8 份工作区。
+Rex 明确授权“复核并合并 issue 10–16，清理对应本地和远端分支；保留 main 和 issue-17”后，已完成合并与清理。本地和远端均只剩 **2 条分支**，项目仍只有 **1 个工作树**。此前 9 条分支的分类记录已被本次结果更新。
 
-## 分类与处理
+## 当前保留
 
-| 分类 | 分支 | 当前事实 | 处理 |
-|---|---|---|---|
-| 已合入 main、可直接清理 | 无 | #10–17 和对应 PR 均 OPEN、未合并 | 本次无符合条件的删除项 |
-| 前置代码已包含在当前分支，待审/待收口 | m1/issue-10–16 | 各分支 tip 均为 issue-17 的祖先；仍有打开的 PR，部分也是后续 PR 的基线 | 保留远端依赖和本地引用，不当作已验收完成 |
-| 当前开发与验收 | m1/issue-17 | 包含 10–16 及后续 UI/Harness 修复；#17 尚未获得完整 Rex 验收 | 继续当前分支，不额外创建工作树/分支 |
-| 主分支及独立本地记录 | main | 本地比 origin/main 多 2f8533f：Opal 研究归档；该提交不在 issue-17 | 保留，不覆盖或删除 |
-
-## 待审 PR 依赖
-
-| Issue 分支 | PR | PR 基线 |
+| 分支 | 状态 | 用途 |
 |---|---|---|
-| 10 | [#18](https://github.com/RexYoung000/Review_Today/pull/18) | main |
-| 11 | [#19](https://github.com/RexYoung000/Review_Today/pull/19) | m1/issue-10 |
-| 12 | [#21](https://github.com/RexYoung000/Review_Today/pull/21) | m1/issue-10 |
-| 13 | [#20](https://github.com/RexYoung000/Review_Today/pull/20) | m1/issue-10 |
-| 14 | [#22](https://github.com/RexYoung000/Review_Today/pull/22) | m1/issue-12 |
-| 15 | [#23](https://github.com/RexYoung000/Review_Today/pull/23) | m1/issue-14 |
-| 16 | [#24](https://github.com/RexYoung000/Review_Today/pull/24) | m1/issue-15 |
-| 17 | [#25](https://github.com/RexYoung000/Review_Today/pull/25) | m1/issue-16 |
+| `main` | 与 `origin/main` 一致，`5a859b6` | issue 10–16 的知识卡、评分与失败恢复基线；同时保留原本仅在本地的 Opal 研究归档 `2f8533f` |
+| `m1/issue-17` | 当前工作分支，已同步 main 并推送 | 保留后续 Harness、学习记忆、UI、256K 与启动修复；PR #25 改为基于 main，仍未合并 |
 
-11/13 曾通过本地 merge 提交汇入后续分支，但 GitHub PR 仍打开；这不是合入 main。另有一个引用差异：本地 issue-15 指向 9d316ba（与 issue-16 相同），远端 issue-15 停在 9d81b3e，本地 ahead 1。该提交已在远端 issue-16/17 保存；本次不重置或擅自推送 issue-15 来改 PR 范围。
+## 已合并并清理
 
-当前没有依据把全部前置问题都认定为验收通过。建议后续先独立审查各 PR 与对应 issue 的完成证据，再经 Rex 授权处理 PR 合并/收口，合入主线且不再被未合并 PR 引用后删除相应本地和远端分支。普通 commit/push 授权不包括合并 PR 或关闭验收。本次不修改 issue 状态、不合并 PR、不删未合并分支。
+全部使用保留历史的 merge commit 合入 main；完成后逐个确认本地/远端分支 tip 都是 main 的祖先、没有打开的 PR 继续以它们为 head/base，再删除分支。
+
+| Issue | PR | 结果 |
+|---|---|---|
+| #10 | [#18](https://github.com/RexYoung000/Review_Today/pull/18) | MERGED；本地和远端 `m1/issue-10` 已删除 |
+| #11 | [#19](https://github.com/RexYoung000/Review_Today/pull/19) | MERGED；本地和远端 `m1/issue-11` 已删除 |
+| #12 | [#21](https://github.com/RexYoung000/Review_Today/pull/21) | MERGED；本地和远端 `m1/issue-12` 已删除 |
+| #13 | [#20](https://github.com/RexYoung000/Review_Today/pull/20) | MERGED；本地和远端 `m1/issue-13` 已删除 |
+| #14 | [#22](https://github.com/RexYoung000/Review_Today/pull/22) | MERGED；本地和远端 `m1/issue-14` 已删除 |
+| #15 | [#23](https://github.com/RexYoung000/Review_Today/pull/23) | MERGED；本地和远端 `m1/issue-15` 已删除 |
+| #16 | [#24](https://github.com/RexYoung000/Review_Today/pull/24) | MERGED；本地和远端 `m1/issue-16` 已删除 |
+
+对应 issue 10–16 随 PR 合入默认分支关闭。issue #17 与父 issue #1 仍 OPEN，不代表完整 M1 已通过 Rex 体验验收，也不进入 M2。
+
+## 复核与保留证据
+
+- 审查了本批结构/来源校验、评分与 ACK、客户端保存和失败恢复的关键改动，以及各 PR 既有真实模型和原生证据；保留完整体验验收在 #17。
+- 对实际拟合入的基线树 `587e82b232557cc33756942eefbdd6f10b4a9600`（issue-16 + 原本地 main 的研究记录）在 `/tmp/review-today-premerge-10-16` 独立导出验证，未创建额外 Git 工作树：**20 项无密钥服务测试通过，macOS Debug / Release 构建通过**。日志 `/tmp/review-today-premerge-service.log`、`/tmp/review-today-premerge-debug.log`、`/tmp/review-today-premerge-release.log`。
+- PR #21 仅 `docs/m1-acceptance.md` 有追加记录冲突；用此前 `96109f9` 中已经整合的版本保留评分与本地提交两份记录。新提交 `39e40ed` 是普通 merge，没有重写分支历史。其余自动合并内容与该历史整合树一致。
+- 7 个 PR 合并后的树与原 issue-16 完全一致；保留研究记录后的 main 树与上述已验证树完全一致。本地 issue-15 原本多出的 `9d316ba` 已完整进入 main，没有丢弃提交。
+- `2f8533f` 原始研究提交及附件已保留在 main / origin/main，也同步进当前 issue-17。同步后与修复交付点 `3e63aae` 比较，`Review_Today`、`agent-service`、Xcode 工程没有代码差异，当前日常 App 无需回退或重建。
+- 分支删除前引用备份 `/tmp/review-today-precleanup-refs.txt`；合并提交对应表 `/tmp/review-today-merged-pr-results.jsonl`。最终核对 PR #18–24 为 MERGED，唯一剩余打开的 M1 PR #25 的 base 为 main。
+- issue-17 远端 Actions 在此前提交上的失败原因是账户付款/消费额度限制，任务未启动；没有将其报告为远端测试通过，也未修改账单、保护规则或绕过检查。上述本次合并基线的验证为本机独立运行结果。
+
+后续前置分支在 PR 合并、提交已进入主线且无未合并 PR 依赖后及时清理；尚未完成的工作保持在明确的活动分支中。
