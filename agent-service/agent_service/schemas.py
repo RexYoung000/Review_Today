@@ -19,12 +19,19 @@ TaskStatus = Literal[
 
 
 class ScoringSpec(BaseModel):
-    learning_goal: str
+    learning_goal: str = Field(min_length=1)
     must_cover: list[str] = Field(min_length=1)
     acceptable_paraphrases: list[str] = Field(default_factory=list)
     common_misconceptions: list[str] = Field(default_factory=list)
     evidence: str = ""
     order_rules: str = ""
+
+    @field_validator("must_cover")
+    @classmethod
+    def require_nonblank_coverage(cls, value: list[str]) -> list[str]:
+        if any(not item.strip() for item in value):
+            raise ValueError("must_cover items cannot be blank")
+        return value
 
 
 class QuestionDraft(BaseModel):
@@ -183,14 +190,50 @@ class GradeRequest(BaseModel):
     hint_used: bool = False
     primary_language: str = "zh"
 
+    @field_validator("attempt_id")
+    @classmethod
+    def require_attempt_uuid(cls, value: str) -> str:
+        try:
+            return str(uuid.UUID(value))
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise ValueError("attempt_id must be a valid UUID") from exc
+
+    @field_validator("prompt_text", "answer_text", "primary_language")
+    @classmethod
+    def require_nonblank_text(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("grade request text fields cannot be blank")
+        return value
+
+    @model_validator(mode="after")
+    def require_scoring_evidence(self) -> "GradeRequest":
+        if not self.scoring_spec.evidence.strip():
+            raise ValueError("scoring_spec.evidence is required for grading")
+        return self
+
 
 class GradeResult(BaseModel):
     attempt_id: str = ""
     agent_grade: Literal["again", "hard", "good"]
-    brief_feedback: str
+    brief_feedback: str = Field(min_length=1, max_length=240)
     hint_used: bool = False
+
+    @field_validator("brief_feedback")
+    @classmethod
+    def require_nonblank_feedback(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("brief_feedback cannot be blank")
+        return value
 
 
 class GradeAckRequest(BaseModel):
     attempt_id: str
+
+    @field_validator("attempt_id")
+    @classmethod
+    def require_attempt_uuid(cls, value: str) -> str:
+        try:
+            return str(uuid.UUID(value))
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise ValueError("attempt_id must be a valid UUID") from exc
 
