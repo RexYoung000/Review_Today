@@ -40,6 +40,40 @@ struct AgentCapabilityPresentation: Equatable {
     let notice: String
 }
 
+struct AgentServiceStartup {
+    enum Stage: String { case interpreter, imports, server, ready }
+    let startedAt: Date
+    var lastHealthyAt: Date?
+    var stage: Stage = .interpreter
+    var terminationRequested = false
+
+    func shouldTerminate(at now: Date) -> Bool {
+        guard !terminationRequested else { return false }
+        if let lastHealthyAt { return now.timeIntervalSince(lastHealthyAt) >= 10 }
+        return now.timeIntervalSince(startedAt) >= 90
+    }
+
+    mutating func observeOutput(_ output: String) {
+        guard stage != .ready else { return }
+        if output.contains("RT.STARTUP.SERVICE_IMPORTED") { stage = .server }
+        else if output.contains("RT.STARTUP.INTERPRETER_READY"), stage == .interpreter { stage = .imports }
+    }
+
+    mutating func healthy(at now: Date) {
+        lastHealthyAt = now
+        stage = .ready
+    }
+
+    var failureDetail: String {
+        switch stage {
+        case .interpreter: "本地运行环境尚未完成初始化；请检查系统的项目文件夹访问提示和开发环境后重试"
+        case .imports: "学习服务组件未能完成加载；请检查开发环境依赖后重试"
+        case .server: "学习服务未能建立本机连接；请检查端口占用后重试"
+        case .ready: "本地学习服务连接中断，正在尝试恢复；输入仍保存在本机"
+        }
+    }
+}
+
 @Observable
 final class AgentServiceMonitor {
     private static let healthURL = AgentAPI.base.appendingPathComponent("healthz")
@@ -67,7 +101,7 @@ final class AgentServiceMonitor {
     @ObservationIgnored private var managedProcess: Process?
     @ObservationIgnored private var launchAttempts = 0
     @ObservationIgnored private var nextLaunchAt = Date.distantPast
-    @ObservationIgnored private var launchedAt = Date.distantPast
+    @ObservationIgnored private var startup: AgentServiceStartup?
     @ObservationIgnored private var outputTail = ""
     @ObservationIgnored private var terminationObserver: NSObjectProtocol?
 
@@ -142,7 +176,7 @@ final class AgentServiceMonitor {
         // Isolated validation may only use its own service; never borrow an
         // unrelated listener or a normal user's checkpoint on the test port.
         if AppRuntime.current.mode == .modelValidation && managedProcess?.isRunning != true {
-            ensureServiceRunning()
+            markUnavailable()
             return
         }
         var request = URLRequest(url: Self.healthURL)
@@ -161,6 +195,7 @@ final class AgentServiceMonitor {
                 return
             }
             serviceReachable = true
+            startup?.healthy(at: .now)
             conversationSupported = health.conversationProtocol == 1
             responseStreamSupported = health.responseStreamProtocol == 1
             if !responseStreamSupported {
@@ -233,8 +268,10 @@ final class AgentServiceMonitor {
         serviceReachable = false
         conversationSupported = false
         capabilityNotice = ""
-        if managedProcess?.isRunning == true && Date.now.timeIntervalSince(launchedAt) > 30 {
-            launchDetail = "服务启动超时，正在重试；输入仍保存在本机"
+        if managedProcess?.isRunning == true, startup?.shouldTerminate(at: .now) == true {
+            launchDetail = startup?.failureDetail ?? "本地学习服务连接失败，正在重试"
+            technicalDetail = "RT.STARTUP.TIMEOUT · \(startup?.stage.rawValue ?? "unknown")"
+            startup?.terminationRequested = true
             managedProcess?.terminate()
         }
         keyConfigured = false
@@ -245,9 +282,7 @@ final class AgentServiceMonitor {
         } else if launchAttempts >= Self.maxLaunchAttempts {
             connection = .unavailable
             launchStatus = "本地学习服务未能启动；你的输入仍保存在本机"
-            launchDetail = outputTail.isEmpty
-                ? "请检查系统的文件夹访问提示及 agent-service/.venv；允许访问项目目录后重试"
-                : outputTail
+            if let startup { launchDetail = startup.failureDetail }
         } else {
             connection = .connecting
             launchStatus = "正在启动本地学习服务；你的输入仍会先保存"
@@ -277,11 +312,20 @@ final class AgentServiceMonitor {
         }
 
         launchAttempts += 1
+        outputTail = ""
+        startup = AgentServiceStartup(startedAt: .now)
         let process = Process()
         let pipe = Pipe()
         process.executableURL = python
         process.currentDirectoryURL = serviceRoot
-        process.arguments = ["-m", "agent_service.main"]
+        // Mark interpreter initialization separately from dependency loading.
+        // No credentials, source contents or model diagnostics go to these markers.
+        process.arguments = ["-u", "-c", """
+        print("RT.STARTUP.INTERPRETER_READY", flush=True)
+        from agent_service.main import run
+        print("RT.STARTUP.SERVICE_IMPORTED", flush=True)
+        run()
+        """]
         let inherited = ProcessInfo.processInfo.environment
         var environment: [String: String] = [
             "PATH": inherited["PATH"] ?? "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
@@ -301,28 +345,27 @@ final class AgentServiceMonitor {
         process.environment = environment
         process.standardOutput = pipe
         process.standardError = pipe
-        pipe.fileHandleForReading.readabilityHandler = { [weak self] handle in
+        pipe.fileHandleForReading.readabilityHandler = { [weak self, weak process] handle in
             let data = handle.availableData
             guard !data.isEmpty, let value = String(data: data, encoding: .utf8) else { return }
-            Task { @MainActor [weak self] in
-                guard let self else { return }
+            Task { @MainActor [weak self, weak process] in
+                guard let self, let process, self.managedProcess === process else { return }
                 self.outputTail = String((self.outputTail + value).suffix(1200))
+                self.startup?.observeOutput(self.outputTail)
             }
         }
         process.terminationHandler = { [weak self] finished in
             pipe.fileHandleForReading.readabilityHandler = nil
             Task { @MainActor [weak self] in
-                guard let self else { return }
-                if self.managedProcess === finished { self.managedProcess = nil }
+                guard let self, self.managedProcess === finished else { return }
+                self.managedProcess = nil
                 self.nextLaunchAt = .now.addingTimeInterval(Double(1 << min(self.launchAttempts, 3)))
-                self.launchDetail = self.outputTail.isEmpty
-                    ? "服务已退出（\(finished.terminationStatus)），准备重试"
-                    : self.outputTail
+                self.launchDetail = self.startup?.failureDetail ?? "本地学习服务已退出，准备重试"
+                self.technicalDetail = "RT.STARTUP.EXIT · \(finished.terminationStatus) · \(self.startup?.stage.rawValue ?? "unknown")"
             }
         }
         do {
             try process.run()
-            launchedAt = .now
             managedProcess = process
             launchDetail = "第 \(launchAttempts) 次启动"
         } catch {

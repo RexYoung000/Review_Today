@@ -1,10 +1,21 @@
 # M1 Agent Harness V2 验收契约
 
-> 最新容量/悬停与日常启动状态见 §0.17；顶部/运行入口及先前原生真实模型发送、流式、重启证据见 §0.15；DeepSeek 接入证据见 §0.13。旧章节保留历史；前批 HTTP 403 属于旧供应商，不是当前 DeepSeek 状态。分开记录代码、受控、真实模型与 Rex 验收。
+> 最新启动修复见 §0.18，容量/悬停见 §0.17；顶部/运行入口及先前原生真实模型发送、流式、重启证据见 §0.15；DeepSeek 接入证据见 §0.13。旧章节保留历史；前批 HTTP 403 属于旧供应商，不是当前 DeepSeek 状态。分开记录代码、受控、真实模型与 Rex 验收。
 > 对应 Issue：[#9 M1.1：冻结最小闭环验收契约与固定样本](https://github.com/RexYoung000/Review_Today/issues/9)
 > 2026-09-04：单侧栏、开放式 Agent 工作区、Session 标签和 Today 活动反馈已完成代码实施、构建与受控检查；§0.9 仍是 Rex 的真实体验验收门槛，旧 §0.6 仅保留历史证据。
 > 机器可读样本：`agent-service/tests/fixtures/m1_acceptance.json`
 > 主规格：[Agent Harness V2](agent-harness-v2.md)
+
+## 0.18 开发服务启动修复（2026-09-06）
+
+Rex 授权修复后，先修订 Harness §7.1 / §8 对应启动契约再实施。本批保持既有项目 `.venv`、模型配置和数据目录，不另起常驻代理、不扩大系统权限。
+
+- 旧构建本次首次启动约 30 秒内恢复，采样已在导入组件；这证明故障存在间歇性，不证明前次权限读取阻塞不存在。前次 `getpath_readlines → open` 栈和 TCC AllFiles 预检不足以断言具体文件被拒绝。
+- Debug 工程使用 Apple Development 与固定 Team，替代随代码变化的 ad-hoc cdhash 身份；CI 可显式关闭签名验证编译。冷启动预算改 90 秒；已就绪服务连续 10 秒不可达才恢复。解释器 / 组件 / 服务监听阶段分别记录，故障不直接展示原始进程输出；旧进程回调不能覆盖新启动。validation 同样呈现有限重试失败。
+- 编译和完整 Mac 契约初轮通过：`/tmp/review-today-startup-unsigned-build.log`、`/tmp/review-today-startup-fix-contracts.log`。覆盖冷启动超过 30 秒不被杀、90 秒有界、健康短暂抖动与恢复重置、阶段不倒退、单次终止及既有输入/记忆/回放/SSE。最终签名构建与原生连续重启验证待完成。
+- 首次证书签名被系统钥匙串阻塞：`errSecInternalComponent`，securityd 明确记录 codesign 的私钥使用未获允许 / `CSSMERR_CSP_USER_CANCELED`，证据 `/tmp/review-today-startup-signing.log`。已请 Rex 本机完成授权；不修改钥匙串 ACL、不获取密码、不用临时签名替代日常交付。
+- 最后补齐 validation 失败投影后，全部 Swift 源码重新编译并通过定向启动契约：`/tmp/review-today-startup-final-contract.log`。从当前 Swift 提取实际 bootstrap 命令，使用空凭证、18749 与临时检查点启动 Python，0.95 秒取得 health ok / key_configured=false，两个阶段标记顺序正确，退出清理自己启动的进程；目录 `/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-startup-smoke-0wycmb49`。这仅证明启动命令与服务导入，不代替 App 权限身份下的验证。
+- 当前保留旧 `/tmp/review-today-256k-build/Build/Products/Debug/Review_Today.app`，原生检查「你好」问答及 1.3 秒完成记录完整、无服务错误横幅，8742 DeepSeek 三角色及流式 ready；未向日常会话发送测试输入。新版未替换日常 App，最终签名与真实收发/连续重启仍待授权后完成。
 
 ## 0.17 256K 活动上下文与即时悬停预览（2026-09-06）
 
