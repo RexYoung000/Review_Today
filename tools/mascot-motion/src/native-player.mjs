@@ -17,8 +17,7 @@ function paint(dt){
  const {width,height}=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);
  if(canvas.width!==Math.round(width*d)||canvas.height!==Math.round(height*d)){canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);}
  ctx.setTransform(d,0,0,d,0,0);
- const material=config.material==='graphite'&&(config.surface==='voice'||width<=96)?'graphite-small':config.material;
- renderer.materialImages=materials?.(material,config.dark,config.surface==='recall'&&(config.mode==='thinking'||!!returnState),config.palette);
+ renderer.materialImages=materials?.(config.material,config.dark,config.surface==='recall'&&(config.mode==='thinking'||!!returnState),config.palette);
  if(config.surface==='voice'){
    advanceVoice(voice,dt,config.mode,config.level,config.reduced);applyVoice(spine,rig,voice);
    drawVoiceScene(ctx,renderer,rig,voice,width,height,{dark:config.dark,compact:width<300,material:config.material,palette:config.palette});
