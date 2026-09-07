@@ -14,6 +14,7 @@ struct CoachMark: View {
     var size: CGFloat = 56
 
     @Environment(\.brandReduceMotion) private var reduceMotion
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.runway) private var runway
     @State private var headTilt = 0.02
     @State private var headAmp = 0.03
@@ -86,7 +87,7 @@ struct CoachMark: View {
 
     private func drawBody(_ context: inout GraphicsContext, w: CGFloat, h: CGFloat) {
         let body = Path(roundedRect: CGRect(x: -w * 0.30, y: h * 0.00, width: w * 0.60, height: h * 0.46), cornerRadius: w * 0.18)
-        context.fill(body, with: .color(runway.monochrome ? Color(white: 0.12) : runway.agent))
+        context.fill(body, with: .color(runway.monochrome ? Color(white: colorScheme == .dark ? 0.90 : 0.12) : runway.agent))
         var shine = Path()
         shine.addEllipse(in: CGRect(x: -w * 0.18, y: h * 0.04, width: w * 0.22, height: h * 0.10))
         context.fill(shine, with: .color(Color.white.opacity(0.14)))
@@ -102,26 +103,26 @@ struct CoachMark: View {
         ctx.rotate(by: .radians(tilt))
 
         let headRect = CGRect(x: -w * 0.23, y: -w * 0.23, width: w * 0.46, height: w * 0.46)
-        ctx.fill(Path(ellipseIn: headRect), with: .color(runway.monochrome ? Color(white: 0.18) : Runway.cream))
+        ctx.fill(Path(ellipseIn: headRect), with: .color(runway.monochrome ? Color(white: colorScheme == .dark ? 0.94 : 0.18) : Runway.cream))
         ctx.fill(
             Path(ellipseIn: CGRect(x: -w * 0.14, y: -w * 0.18, width: w * 0.18, height: w * 0.10)),
             with: .color(Color.white.opacity(0.35))
         )
 
         let visor = Path(roundedRect: CGRect(x: -w * 0.26, y: -w * 0.08, width: w * 0.52, height: w * 0.11), cornerRadius: w * 0.055)
-        ctx.fill(visor, with: .color(runway.monochrome ? Color(white: 0.12) : runway.agent))
+        ctx.fill(visor, with: .color(runway.monochrome ? Color(white: colorScheme == .dark ? 0.90 : 0.12) : runway.agent))
         ctx.fill(
             Path(roundedRect: CGRect(x: -w * 0.20, y: -w * 0.075, width: w * 0.16, height: w * 0.035), cornerRadius: 2),
             with: .color(Color.white.opacity(0.18))
         )
 
         let eyeH = w * 0.046 * blink
-        ctx.fill(Path(ellipseIn: CGRect(x: -w * 0.09, y: -w * 0.01 - eyeH / 2, width: w * 0.046, height: eyeH)), with: .color(runway.monochrome ? Color.white : Runway.mascotInk))
-        ctx.fill(Path(ellipseIn: CGRect(x: w * 0.044, y: -w * 0.01 - eyeH / 2, width: w * 0.046, height: eyeH)), with: .color(runway.monochrome ? Color.white : Runway.mascotInk))
+        ctx.fill(Path(ellipseIn: CGRect(x: -w * 0.09, y: -w * 0.01 - eyeH / 2, width: w * 0.046, height: eyeH)), with: .color(runway.monochrome ? (colorScheme == .dark ? Color.black : Color.white) : Runway.mascotInk))
+        ctx.fill(Path(ellipseIn: CGRect(x: w * 0.044, y: -w * 0.01 - eyeH / 2, width: w * 0.046, height: eyeH)), with: .color(runway.monochrome ? (colorScheme == .dark ? Color.black : Color.white) : Runway.mascotInk))
 
         var smile = Path()
         smile.addArc(center: CGPoint(x: 0, y: w * 0.05), radius: w * 0.07, startAngle: .degrees(18), endAngle: .degrees(162), clockwise: false)
-        ctx.stroke(smile, with: .color((runway.monochrome ? Color.white : Runway.mascotInk).opacity(0.72)), style: StrokeStyle(lineWidth: max(1.1, w * 0.018), lineCap: .round))
+        ctx.stroke(smile, with: .color((runway.monochrome ? (colorScheme == .dark ? Color.black : Color.white) : Runway.mascotInk).opacity(0.72)), style: StrokeStyle(lineWidth: max(1.1, w * 0.018), lineCap: .round))
     }
 
     private func drawCord(_ context: inout GraphicsContext, w: CGFloat, h: CGFloat, swing: Double, lift: Double) {
@@ -130,7 +131,7 @@ struct CoachMark: View {
         let end = CGPoint(x: sin(swing) * w * 0.18, y: h * (0.26 - lift))
         cord.move(to: start)
         cord.addQuadCurve(to: end, control: CGPoint(x: end.x * 0.35, y: h * 0.12))
-        context.stroke(cord, with: .color((runway.monochrome ? Color.white : Runway.mascotInk).opacity(0.55)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+        context.stroke(cord, with: .color((runway.monochrome ? (colorScheme == .dark ? Color.black : Color.white) : Runway.mascotInk).opacity(0.55)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
     }
 
     private func drawWhistle(_ context: inout GraphicsContext, w: CGFloat, h: CGFloat, swing: Double, lift: Double) {

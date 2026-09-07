@@ -128,7 +128,7 @@ struct LearningWorkspace: View {
 
     var body: some View {
         GeometryReader { geometry in
-            workspace(width: geometry.size.width)
+            workspace(width: geometry.size.width, height: geometry.size.height)
                 .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .background(PaperSurface())
@@ -196,9 +196,9 @@ struct LearningWorkspace: View {
         }
     }
 
-    private func workspace(width: CGFloat) -> some View {
+    private func workspace(width: CGFloat, height: CGFloat) -> some View {
         let gutter = Layout.gutter(for: width)
-        let contentWidth = max(0, min(Layout.readingWidth, width - gutter * 2))
+        let contentWidth = max(0, min(selectedSession == nil ? 820 : Layout.readingWidth, width - gutter * 2))
         return VStack(spacing: 0) {
           if selectedSession != nil { workspaceHeader(contentWidth: contentWidth) }
           if selectedSession == nil {
@@ -210,7 +210,7 @@ struct LearningWorkspace: View {
                             Text("Review Today").font(.system(size: 30, weight: .semibold)).foregroundStyle(runway.ink)
                             Text("从一个问题开始，把理解留住。").font(.callout).foregroundStyle(.secondary)
                         }
-                    }.frame(maxWidth: .infinity).padding(.top, 28)
+                    }.frame(maxWidth: .infinity).padding(.top, 24)
                     composer(contentWidth: contentWidth)
                     HStack {
                         Text("快捷开始").font(.subheadline.weight(.medium)).foregroundStyle(.secondary)
@@ -226,7 +226,7 @@ struct LearningWorkspace: View {
                             }
                         }
                     }
-                }.frame(width: contentWidth).padding(.bottom, 24).frame(maxWidth: .infinity)
+                }.frame(width: contentWidth).padding(.bottom, 24).frame(minHeight: height, alignment: .center).frame(maxWidth: .infinity)
             }
           } else {
             learningChecklist
@@ -771,7 +771,7 @@ struct LearningWorkspace: View {
             .background(runway.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(inputFocused ? (runway.monochrome ? runway.agent : runway.agent.opacity(0.65)) : runway.controlBorder, lineWidth: inputFocused ? 1.5 : 1))
             HStack(spacing: 10) {
-                Text(runtime.isPreview ? "仅供排版检查 · 不发送、不持久保存" : "Return 发送 · Shift Return 换行")
+                if runtime.isPreview { Text("仅供排版检查 · 不发送、不持久保存") }
                 Spacer()
                 if runtime.allowsSending, let run = runs.last(where: { $0.sessionID == selectedSessionID }),
                    ["accepted", "running", "queued", "adjusting"].contains(run.status) {

@@ -25,11 +25,6 @@ export function seamlessRenderer(Base){return class extends Base{
         this.ctx.scale(attachment.width*attachment.scaleX/image.width,-attachment.height*attachment.scaleY/image.height);
         this.ctx.drawImage(image,-image.width/2,-image.height/2);
       }else super.draw({color:skeleton.color,drawOrder:[slot]});
-      if(this.materialImages&&slot.data.name==='body'&&attachment?.hullLength){
-        const v=new Float32Array(attachment.worldVerticesLength);attachment.computeWorldVertices(slot,0,v.length,v,0,2);
-        const tr=this.ctx.getTransform();this.ctx.beginPath();for(let i=0;i<attachment.hullLength;i+=2)i?this.ctx.lineTo(v[i],v[i+1]):this.ctx.moveTo(v[i],v[i+1]);this.ctx.closePath();
-        this.ctx.lineWidth=2/Math.max(.01,Math.hypot(tr.a,tr.b));this.ctx.strokeStyle='#777777';this.ctx.stroke();
-      }
       this.ctx.restore();
       if(clip?.end===slot.data.name)clip=null;
     }

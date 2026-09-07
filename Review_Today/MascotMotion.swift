@@ -42,7 +42,7 @@ struct MascotMotion: View {
     @State private var ready = false
     var body: some View {
         ZStack {
-            if !ready { Circle().fill(materialTrial ? Color(white: 0.18) : Color(red: 0.08, green: 0.39, blue: 0.37)).frame(width: 10, height: 10) }
+            if !ready { Circle().fill(materialTrial ? Color(white: colorScheme == .dark ? 0.88 : 0.18) : Color(red: 0.08, green: 0.39, blue: 0.37)).frame(width: 10, height: 10) }
             MascotWebSurface(configuration: .init(surface: surface, mode: phase, level: level,
                                                  reduced: reduced || systemReduced, dark: colorScheme == .dark, rate: rate, ambient: ambient,
                                                  material: materialTrial ? "graphite" : "current",

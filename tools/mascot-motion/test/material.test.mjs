@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createCanvas,loadImage} from '@napi-rs/canvas';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-import {createMaterials,materialPalette,waveColor} from '../../../brand/refresh-2026-09/motion-rig/material.mjs';
+import {createMaterials,materialPalette,materialPixel,waveColor} from '../../../brand/refresh-2026-09/motion-rig/material.mjs';
 import {renderFrame} from '../src/render.mjs';
 const dir=new URL('../../../brand/refresh-2026-09/motion-rig/',import.meta.url);
 test('graphite texture keeps alpha, dimensions and shading without mutating source or geometry',async()=>{
@@ -37,4 +37,15 @@ test('native source and saved original assets are not changed by offline materia
  const json=JSON.parse(await readFile(new URL('data/mascot.json',dir))),file=new URL('assets/body-source.png',dir),before=createHash('sha256').update(await readFile(file)).digest('hex');
  const legacy=await renderFrame(json,1,256,false,'recall'),graphite=await renderFrame(json,1,256,false,'recall','graphite');assert.notDeepEqual(legacy,graphite);
  assert.equal(createHash('sha256').update(await readFile(file)).digest('hex'),before);
+});
+
+test('dark theme reverses body and eyes while preserving material shading and neutral fragments',()=>{
+ const light=materialPalette(false),dark=materialPalette(true);
+ for(const y of [.2,.5,.8]){
+  const a=materialPixel('body.png',50,80,65,false,light,.5,y),b=materialPixel('body.png',50,80,65,false,dark,.5,y);
+  assert.ok(a[0]<80);assert.ok(b[0]>200);assert.equal(new Set(b).size,1);
+ }
+ assert.deepEqual(materialPixel('eye.png',0,0,0,false,dark),[35,35,35]);
+ assert.deepEqual(materialPixel('pupil.png',0,0,0,false,dark),[247,247,247]);
+ assert.ok(materialPixel('fragment.png',200,200,200,false,dark)[0]>=100);
 });

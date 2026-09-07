@@ -84,6 +84,7 @@ struct TodayView: View {
     }
 
     var body: some View {
+        GeometryReader { geometry in
         ScrollView {
             VStack(alignment: .leading, spacing: Runway.gap) {
                 statusBoard
@@ -95,7 +96,11 @@ struct TodayView: View {
                 }
                 activityHeatmap
             }
+            .frame(maxWidth: 960)
             .padding(24)
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: geometry.size.height, alignment: .center)
+        }
         }
         .background(PaperSurface())
         .navigationTitle(String(localized: "今天"))
@@ -117,9 +122,6 @@ struct TodayView: View {
                     Text(dueItems.isEmpty ? "今天的学习状态" : tonightTitle)
                         .font(.system(size: 28, weight: .bold))
                         .foregroundStyle(runway.ink)
-                    Text(boardSubtitle)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 8)
                 if !dueItems.isEmpty {

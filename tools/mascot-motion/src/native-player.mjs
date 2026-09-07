@@ -39,6 +39,7 @@ window.mascotMotion={
    if(rig&&config.surface==='recall'&&previous.mode==='thinking'&&config.mode!=='thinking'&&!config.reduced){returnState=createReturnState(spine,rig,time);returnElapsed=0;}
    if(config.mode==='thinking'&&previous.mode!=='thinking'&&returnState){returnState=null;time=0;}
    if(!config.visible){cancelAnimationFrame(raf);raf=0;last=0;if(rig)paint(0);return;}
+   if(config.reduced){cancelAnimationFrame(raf);raf=0;last=0;if(rig)paint(0);return;}
    if(previous.visible!==config.visible||previous.reduced!==config.reduced||previous.surface!==config.surface)last=0;
    wake();
  },
