@@ -90,3 +90,12 @@ REVIEW_TODAY_M1_UI_FIXTURE=today REVIEW_TODAY_UI_POLISH_FIXTURE=empty /tmp/revie
 实际检查：日常原生 App 在约 1030×690 和 760×654 窗口中分别查看浅深主题，小窗口展开侧栏后仍居中，气泡、角色与设置栏不重叠；看到书本展开及左右视线姿态。点击气泡进入 Agent，AX 确认焦点落在学习输入，发送仍禁用，未生成消息。已恢复原窗口大小和深色主题。Debug/Release 重新构建通过，日常 Debug App 更新并通过 deep/strict 签名校验。
 
 这是局部视觉修改，没有新增测试，也未重跑上一节 31 项动效回归。可访问名称仍为「开始学习」；完整 VoiceOver、真实输入法及整窗录像缺口仍按上文保留，最终体验验收开放。
+
+
+## 荆南麦圆接入
+
+2026-09-07，Rex 从真实字体样张中选择荆南麦圆。仅会话空态气泡使用原始 `KNMaiyuan-Regular`：「开始」13 pt、「学习」22 pt，均 1 pt 字距，无合成粗体；其他页面系统字体、气泡位置、阴影和动作调度不变。字体由 App 资源进程内注册，不安装到用户系统。
+
+来源：[官方字体文件](https://github.com/maoken-fonts/KNMaiyuan/blob/main/fonts/TTF/KNMaiyuan-Regular.ttf)，[OFL 1.1](https://github.com/maoken-fonts/KNMaiyuan/blob/main/OFL.txt)。完整未修改字体及许可分别保存为 `Review_Today/Fonts/KNMaiyuan-Regular.ttf` 和 `KNMaiyuan-OFL.txt`；未做子集化或更改保留名称。字体 SHA-256：`94ea78c51086b1ea58c1744784b2335dea2c5ef1c5193b80e02c7d46b8e0283f`。
+
+本次验证：Debug/Release 构建通过；检查构建资源含字体和许可；日常 Debug 更新后 strict/deep 签名通过。原生浅深色正常尺寸下四字呈现麦圆手写字形，无截断；点击气泡进入 Agent 并聚焦学习输入，未发送消息。尝试缩到 760 pt 后窗口被用户恢复，未取得本次最小窗口展开侧栏的新证据，不标为通过。本轮仅字体局部修改，未重跑动效和听写回归，前述完整读屏等缺口仍保留。最终视觉体验待 Rex 验收。

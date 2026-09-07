@@ -819,9 +819,9 @@ private struct SessionWelcome: View {
         VStack(spacing: 0) {
             Button(action: action) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("开始").font(.system(size: 11, weight: .regular)).tracking(3)
+                    Text("开始").font(BrandTypography.welcome(size: 13)).tracking(1)
                         .foregroundStyle(runway.copy).padding(.leading, 1)
-                    Text("学习").font(.system(size: 20, weight: .medium, design: .rounded)).tracking(2)
+                    Text("学习").font(BrandTypography.welcome(size: 22)).tracking(1)
                         .foregroundStyle(runway.ink)
                 }
                 .padding(.horizontal, 24).padding(.vertical, 12)
