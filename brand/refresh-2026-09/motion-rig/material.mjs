@@ -8,8 +8,8 @@ export function materialPalette(dark=false,override){
 export function materialPixel(name,r,g,b,active=false,palette=materialPalette(),x=.5,y=.5){
  const luminance=.2126*r+.7152*g+.0722*b;
  if(name==='body.png'){const v=Math.round(Math.max(0,Math.min(255,37-24*clamp((y-.18)/.62)-4*Math.pow((x-.5)/.42,2)+(luminance-70)*.35)));return palette.dark?[210+Math.round(v*.85),210+Math.round(v*.85),210+Math.round(v*.85)]:[v,v,v];}
- if(name==='eye.png')return palette.dark?[35,35,35]:[247,247,247];
- if(name==='pupil.png')return palette.dark?[247,247,247]:[35,35,35];
+ if(name==='eye.png')return [247,247,247];
+ if(name==='pupil.png')return [35,35,35];
  if(name==='shadow.png'){const v=Math.round(luminance);return [v,v,v];}
  if(name==='fragment.png'){
   const v=Math.round((palette.dark?100:156)+(palette.dark?56:88)*clamp((luminance-150)/85));return [v,v,v];

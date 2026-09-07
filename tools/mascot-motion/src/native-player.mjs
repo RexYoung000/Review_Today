@@ -1,23 +1,24 @@
+import {createIdlePlayer,idleNames} from '@review-motion/idle-player.mjs';
 import {createMaterials} from '@review-motion/material.mjs';
 import {seamlessRenderer} from '@review-motion/mesh-renderer.mjs';
 import {createReturnState} from '@review-motion/return-state.mjs';
 import {createVoiceState,advanceVoice,applyVoice,drawVoiceScene,contactGeometry,contactMoving} from '@review-motion/voice-scene.mjs';
 const canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d'),Renderer=seamlessRenderer(spine.SkeletonRenderer),renderer=new Renderer(ctx);
 renderer.triangleRendering=true;
-let config={surface:'recall',mode:'idle',level:0,reduced:false,dark:false,visible:true,rate:1,material:'current'},rig,materials,voice,configured=false,raf=0,last=0,time=0,returnState,returnElapsed=0,frames=0;
+let config={surface:'recall',mode:'idle',level:0,reduced:false,dark:false,visible:true,rate:1,material:'current'},rig,materials,voice,configured=false,raf=0,last=0,time=0,returnState,returnElapsed=0,frames=0,idle=createIdlePlayer();
 const send=(type,detail='')=>window.webkit?.messageHandlers.mascot?.postMessage({type,detail});
 function poseRecall(dt){
  const s=rig.skeleton;s.setToSetupPose();
  if(config.reduced){time=0;returnState=null;}
  else if(returnState){returnState.update(dt);returnState.apply(s);returnElapsed+=dt;if(returnElapsed>=.24){returnState=null;time=0;s.setToSetupPose();}}
- else if(config.ambient&&config.mode==='idle'){time+=dt;const body=s.findBone('body'),breath=Math.sin(time*Math.PI/2);body.scaleY*=1+breath*.018;body.scaleX*=1-breath*.009;}
+ else if(config.ambient&&config.mode==='idle'){time+=dt;idle.advance(dt);idle.apply(spine,rig);}
  else if(config.mode==='thinking'){time=(time+dt)%rig.data.findAnimation('recall').duration;rig.data.findAnimation('recall').apply(s,0,time,false,[],1,spine.MixBlend.replace,spine.MixDirection.mixIn);}
  s.updateWorldTransform(spine.Physics.none);
 }
 function paint(dt){
  const {width,height}=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);
  if(canvas.width!==Math.round(width*d)||canvas.height!==Math.round(height*d)){canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);}
- ctx.setTransform(d,0,0,d,0,0);
+ ctx.setTransform(d,0,0,d,0,0);renderer.pixelRatio=d;renderer.eyeOutline=config.material==='graphite'&&config.dark;
  renderer.materialImages=materials?.(config.material,config.dark,config.surface==='recall'&&(config.mode==='thinking'||!!returnState),config.palette);
  if(config.surface==='voice'){
    advanceVoice(voice,dt,config.mode,config.level,config.reduced);applyVoice(spine,rig,voice);
@@ -27,14 +28,15 @@ function paint(dt){
  }
  frames++;
 }
-function moving(){return config.surface==='recall'?(config.mode==='thinking'||config.ambient||!!returnState):(config.mode==='thinking'||(['listening','speaking'].includes(config.mode)&&config.level>0)||contactMoving(voice.contact));}
+function moving(){return config.surface==='recall'?(config.mode==='thinking'||(config.ambient&&idle.inspect().phase!=='done')||!!returnState):(config.mode==='thinking'||(['listening','speaking'].includes(config.mode)&&config.level>0)||contactMoving(voice.contact));}
 function frame(now){raf=0;if(!rig)return;const dt=Math.min(.05,(now-(last||now))/1000)*config.rate;last=now;paint(config.visible?dt:0);if(config.visible&&!config.reduced&&moving())raf=requestAnimationFrame(frame);else last=0;}
 function wake(){if(!raf&&rig&&configured)raf=requestAnimationFrame(frame);}
 window.mascotMotion={
  setState(next){
    configured=true;
    const previous=config;
-   config={surface:next.surface==='voice'?'voice':'recall',mode:['listening','thinking','speaking','idle'].includes(next.mode)?next.mode:'idle',level:Math.max(0,Math.min(1,Number(next.level)||0)),ambient:!!next.ambient,reduced:!!next.reduced,dark:!!next.dark,visible:!!next.visible,rate:next.rate===.5?.5:1,material:next.material==='graphite'?'graphite':'current',palette:next.palette};
+   config={surface:next.surface==='voice'?'voice':'recall',mode:['listening','thinking','speaking','idle'].includes(next.mode)?next.mode:'idle',level:Math.max(0,Math.min(1,Number(next.level)||0)),ambient:!!next.ambient,idleClip:idleNames.includes(next.idleClip)?next.idleClip:'random',restartToken:Number(next.restartToken)||0,reduced:!!next.reduced,dark:!!next.dark,visible:!!next.visible,rate:next.rate===.5?.5:1,material:next.material==='graphite'?'graphite':'current',palette:next.palette};
+   if(previous.ambient!==config.ambient||previous.idleClip!==config.idleClip||previous.restartToken!==config.restartToken||config.reduced){idle=createIdlePlayer(Math.random,config.idleClip);}
    if(rig&&previous.surface!==config.surface){returnState=null;time=0;voice=createVoiceState(contactGeometry(spine,rig));}
    if(rig&&config.surface==='recall'&&previous.mode==='thinking'&&config.mode!=='thinking'&&!config.reduced){returnState=createReturnState(spine,rig,time);returnElapsed=0;}
    if(config.mode==='thinking'&&previous.mode!=='thinking'&&returnState){returnState=null;time=0;}
@@ -43,7 +45,7 @@ window.mascotMotion={
    if(previous.visible!==config.visible||previous.reduced!==config.reduced||previous.surface!==config.surface)last=0;
    wake();
  },
- inspect(){return {ready:!!rig,frames,animating:!!raf,config,time,voice:voice?{elapsed:voice.time,quiet:voice.contact.quiet,barResidual:Math.max(...voice.contact.bars.map((h,i)=>Math.max(Math.abs(h-10),Math.abs(voice.contact.velocities[i])))),height:voice.contact.height,phase:voice.contact.phase,area:voice.contact.soft.areaRatio,contacts:voice.contact.soft.contacts.length}:null};}
+ inspect(){return {ready:!!rig,frames,animating:!!raf,config,time,idle:{...idle.inspect(),bookVisible:rig?.skeleton.findSlot('idle_book')?.color.a??0},voice:voice?{elapsed:voice.time,quiet:voice.contact.quiet,barResidual:Math.max(...voice.contact.bars.map((h,i)=>Math.max(Math.abs(h-10),Math.abs(voice.contact.velocities[i])))),height:voice.contact.height,phase:voice.contact.phase,area:voice.contact.soft.areaRatio,contacts:voice.contact.soft.contacts.length}:null};}
 };
 new ResizeObserver(wake).observe(canvas);
 try{

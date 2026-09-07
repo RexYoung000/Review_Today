@@ -13,7 +13,7 @@ import {workRoot} from './paths.mjs';
 export const conversationMode=time=>time<3?'listening':time<6.8?'thinking':time<10.8?'speaking':'idle';
 export async function renderer(json,size=640,dark=false,animation='recall',material='current'){
   const rig=await loadRig(json,loadImage);const canvas=createCanvas(size,size*.75),ctx=canvas.getContext('2d');
-  const renderer=new MeshRenderer(ctx);renderer.triangleRendering=true;
+  const renderer=new MeshRenderer(ctx);renderer.triangleRendering=true;renderer.eyeOutline=material==='graphite'&&dark;
   const images=new Map();for(const skin of rig.data.skins)for(const entry of skin.getAttachments()){const region=entry.attachment?.region;if(region)images.set(region.page.name,region.texture.getImage());}
   const materials=createMaterials(images,createCanvas);renderer.materialImages=materials(material,dark,animation==='recall');
   const voice=createVoiceState(contactGeometry(spine,rig));let previous=0;

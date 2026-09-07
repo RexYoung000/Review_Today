@@ -19,6 +19,8 @@ export async function prepareAssets(){
   await copyFile(image,resolve(previewRoot,'data/images/body.png'));
   const svg=(inner,w,h)=>Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${inner}</svg>`);
   const entries=[
+    ['book',svg('<path d="M4 10 Q60 0 126 16 Q190 0 248 10 L248 132 Q190 120 126 136 Q60 120 4 132Z" fill="#474747"/><path d="M12 16 Q65 8 122 22 L122 125 Q65 111 12 121Z" fill="#ededed"/><path d="M130 22 Q190 8 240 16 L240 121 Q190 111 130 125Z" fill="#fafafa"/><path d="M126 22V130" stroke="#8b8b8b" stroke-width="3"/>',252,144)],
+    ['page',svg('<path d="M1 9 Q58 -1 111 8 L111 117 Q58 108 1 122Z" fill="#f3f3f3" stroke="#aaaaaa" stroke-width="1.5"/>',112,124)],
     ['eye',svg('<rect x="2" y="2" width="140" height="76" rx="38" fill="#fffefa"/>',144,80)],
     ['pupil',svg('<circle cx="24" cy="24" r="22" fill="#116360"/>',48,48)],
     ['fragment',svg('<defs><radialGradient id="ball" cx="32%" cy="25%" r="80%"><stop offset="0" stop-color="#d3eee4"/><stop offset=".46" stop-color="#9fd2c4"/><stop offset="1" stop-color="#70ad9f"/></radialGradient></defs><circle cx="72" cy="72" r="66" fill="url(#ball)"/>',144,144)],
@@ -27,7 +29,7 @@ export async function prepareAssets(){
   for(const [name,input] of entries){await writeFile(resolve(previewRoot,`assets/${name}.svg`),input);await sharp(input).png().toFile(resolve(previewRoot,`data/images/${name}.png`));}
   // A multi-page atlas keeps editable source layers separate and avoids repacking them.
   let atlas='';
-  for(const [name,w,h] of [['body',1254,1254],['eye',144,80],['pupil',48,48],['fragment',144,144],['shadow',256,128]])
+  for(const [name,w,h] of [['body',1254,1254],['eye',144,80],['pupil',48,48],['fragment',144,144],['shadow',256,128],['book',252,144],['page',112,124]])
     atlas+=`${name}.png\nsize: ${w},${h}\nfilter: Linear,Linear\npma: false\n${name}\n  bounds: 0,0,${w},${h}\n\n`;
   await writeFile(resolve(previewRoot,'data/images/mascot.atlas'),atlas.trimEnd()+'\n');
   await writeFile(resolve(previewRoot,'assets/contour.json'),JSON.stringify(contour));

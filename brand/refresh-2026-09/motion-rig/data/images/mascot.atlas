@@ -32,3 +32,17 @@ filter: Linear,Linear
 pma: false
 shadow
   bounds: 0,0,256,128
+
+book.png
+size: 252,144
+filter: Linear,Linear
+pma: false
+book
+  bounds: 0,0,252,144
+
+page.png
+size: 112,124
+filter: Linear,Linear
+pma: false
+page
+  bounds: 0,0,112,124

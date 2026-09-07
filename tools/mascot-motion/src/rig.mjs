@@ -1,5 +1,6 @@
 // Deterministic authoring for one Review Today rig. No third-party animation code copied.
 import { z } from 'zod';
+import {addIdleRig} from './idle-rig.mjs';
 import {voiceAnimations} from './voice.mjs';
 export const recipeSchema = z.object({
   duration:z.number().min(4).max(9), strength:z.number().min(0).max(1.5),
@@ -121,6 +122,7 @@ export function compile(contour,input=defaults){
   }
   const json={skeleton:{spine:'4.2.00',images:'./images/',x:-200,y:-150,width:400,height:300,fps:p.fps},
     bones,slots,skins:[{name:'default',attachments}],animations:{recall:animation,rest:{},...voiceAnimations(mesh,contour.length,p)}};
+  addIdleRig(json);
   return {json,mesh,recipe:p};
 }
 export function validate(json){
@@ -139,7 +141,7 @@ export function validate(json){
   let recallTracks;
   for(const [animationName,anim] of Object.entries(json.animations)){
   if(animationName==='rest')continue;
-  const tracks=[...Object.values(anim.bones).flatMap(x=>Object.values(x)),...Object.values(anim.slots??{}).flatMap(x=>Object.values(x)),anim.attachments.default.body.body.deform];
+  const tracks=[...Object.values(anim.bones).flatMap(x=>Object.values(x)),...Object.values(anim.slots??{}).flatMap(x=>Object.values(x)),...(anim.attachments?.default?.body?.body?.deform?[anim.attachments.default.body.body.deform]:[])];
   for(const track of tracks){
     for(let i=0;i<track.length;i++){
       const frame=track[i];if(!Number.isFinite(frame.time)||frame.time<0||(i&&frame.time<=track[i-1].time))fail('Unsorted time');
@@ -149,7 +151,7 @@ export function validate(json){
     if(strip(track[0])!==strip(track.at(-1)))fail('Loop endpoints differ');
   }
   const clip=json.skins[0].attachments.shadow_clip?.clip;
-  if(clip){
+  if(clip&&anim.attachments){
     const frames=anim.attachments.default.shadow_clip?.clip?.deform;
     if(!frames||frames.length!==anim.attachments.default.body.body.deform.length)fail('Missing clip deformation');
     else for(const [i,frame] of frames.entries()){

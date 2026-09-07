@@ -39,13 +39,13 @@ test('native source and saved original assets are not changed by offline materia
  assert.equal(createHash('sha256').update(await readFile(file)).digest('hex'),before);
 });
 
-test('dark theme reverses body and eyes while preserving material shading and neutral fragments',()=>{
+test('dark theme lightens body and keeps white eyes with dark pupils while preserving material shading and neutral fragments',()=>{
  const light=materialPalette(false),dark=materialPalette(true);
  for(const y of [.2,.5,.8]){
   const a=materialPixel('body.png',50,80,65,false,light,.5,y),b=materialPixel('body.png',50,80,65,false,dark,.5,y);
   assert.ok(a[0]<80);assert.ok(b[0]>200);assert.equal(new Set(b).size,1);
  }
- assert.deepEqual(materialPixel('eye.png',0,0,0,false,dark),[35,35,35]);
- assert.deepEqual(materialPixel('pupil.png',0,0,0,false,dark),[247,247,247]);
+ assert.deepEqual(materialPixel('eye.png',0,0,0,false,dark),[247,247,247]);
+ assert.deepEqual(materialPixel('pupil.png',0,0,0,false,dark),[35,35,35]);
  assert.ok(materialPixel('fragment.png',200,200,200,false,dark)[0]>=100);
 });

@@ -23,6 +23,13 @@ export function seamlessRenderer(Base){return class extends Base{
         this.ctx.transform(b.a,b.c,b.b,b.d,b.worldX,b.worldY);
         this.ctx.translate(attachment.x,attachment.y);this.ctx.rotate(attachment.rotation*Math.PI/180);
         this.ctx.scale(attachment.width*attachment.scaleX/image.width,-attachment.height*attachment.scaleY/image.height);
+        if(this.eyeOutline&&slot.data.name.startsWith('eye_')){
+          const tr=this.ctx.getTransform(),pixelRatio=this.pixelRatio??1;
+          this.ctx.beginPath();this.ctx.roundRect(-70,-38,140,76,38);
+          // Horizontal scale sets stroke width; vertical blink also compresses the outline.
+          this.ctx.lineWidth=2*pixelRatio/Math.max(.001,Math.hypot(tr.a,tr.b));
+          this.ctx.strokeStyle='#666666';this.ctx.stroke();
+        }
         this.ctx.drawImage(image,-image.width/2,-image.height/2);
       }else super.draw({color:skeleton.color,drawOrder:[slot]});
       this.ctx.restore();

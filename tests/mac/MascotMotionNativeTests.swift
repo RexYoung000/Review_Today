@@ -103,6 +103,15 @@ struct MascotMotionNativeTests {
         coordinator.configuration.reduced = false; coordinator.send(); coordinator.setVisible(false)
         try await Task.sleep(for: .milliseconds(100)); state = try await inspect()
         try expect(state["animating"] as? Bool == false, "Hidden ambient idle runs")
+        coordinator.setVisible(true)
+        coordinator.configuration.reduced = false; coordinator.send()
+        _ = try await web.evaluateJavaScript("window.mascotMotion.setState({...window.mascotMotion.inspect().config,idleClip:'idle_book',restartToken:1})")
+        try await Task.sleep(for: .seconds(2.2)); state = try await inspect()
+        let bookState = state["idle"] as? [String: Any]
+        try expect(bookState?["clip"] as? String == "idle_book" && (bookState?["bookVisible"] as? Double ?? 0) > 0.9, "Native notebook clip did not open")
+        coordinator.configuration.reduced = true; coordinator.send()
+        try await Task.sleep(for: .milliseconds(100)); state = try await inspect()
+        try expect((state["idle"] as? [String: Any])?["bookVisible"] as? Double == 0 && state["animating"] as? Bool == false, "Reduced motion leaves notebook visible")
         try expect(web.acceptsFirstResponder == false && web.hitTest(.zero) == nil, "Decorative surface steals input")
         web.configuration.userContentController.removeScriptMessageHandler(forName: "mascot"); web.dispose()
     }
