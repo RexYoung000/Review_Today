@@ -1,8 +1,8 @@
 import {seamlessRenderer} from './mesh-renderer.mjs';
 import {createVoiceState,advanceVoice,applyVoice,drawVoiceScene,contactMoving} from './voice-scene.mjs';
 const $=id=>document.getElementById(id),pref=matchMedia('(prefers-reduced-motion: reduce)'),MeshRenderer=seamlessRenderer(spine.SkeletonRenderer);
-let mode='thinking',rig,raf=0,last=0,reduced=pref.matches,downloadURL;
-const state=createVoiceState(),labels={listening:'正在聆听',thinking:'正在思考',speaking:'正在回答',idle:'已停止'};
+let mode='listening',rig,raf=0,last=0,reduced=pref.matches,downloadURL;
+const state=createVoiceState(),labels={listening:'正在聆听 · 波动向内汇聚',thinking:'正在思考',speaking:'正在回答 · 波动向外传出',idle:'已停止'};
 $('reduce').checked=reduced;
 function draw(canvas,compact=false){const box=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2),w=Math.round(box.width*d),h=Math.round(box.height*d);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}const ctx=canvas.getContext('2d');ctx.setTransform(d,0,0,d,0,0);const renderer=new MeshRenderer(ctx);renderer.triangleRendering=true;drawVoiceScene(ctx,renderer,rig,state,box.width,box.height,{compact,reduced,dark:document.body.classList.contains('dark')});}
 function status(){const announcement=labels[mode]+(reduced?' · 减少动态效果':'');if($('modeStatus').textContent!==announcement)$('modeStatus').textContent=announcement;const label=(mode==='thinking'?({charge:'压低波面 · 准备起跳',flight:'腾空 · 看向落点',land:'落地挤压 · 波浪回弹'}[state.contact.phase]??'正在思考'):mode==='idle'&&contactMoving(state.contact)?'已停止 · 落稳并收住余波':labels[mode])+(reduced?' · 减少动态效果':Number($('volume').value)===0&&['listening','speaking'].includes(mode)?' · 等待声音':'');$('phase').textContent=label;$('hero').setAttribute('aria-label',label+'，语音角色与波浪预览');}
@@ -19,5 +19,5 @@ async function json(url){const r=await fetch(url);if(!r.ok)throw Error(`${url}: 
 (async()=>{try{const atlas=new spine.TextureAtlas(await(await fetch('data/images/mascot.atlas')).text());await Promise.all(atlas.pages.map(async page=>{const image=new Image();image.src='data/images/'+page.name;await image.decode();page.setTexture(new spine.CanvasTexture(image));}));
   let source=await json('data/mascot.json');try{const p=await json('/api/project');if(p.json.animations.speaking)source=p.json;}catch{}
   const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(source);rig={data,skeleton:new spine.Skeleton(data)};downloadURL=URL.createObjectURL(new Blob([JSON.stringify(source)],{type:'application/json'}));$('download').href=downloadURL;
-  for(const b of document.querySelectorAll('[data-mode]'))b.disabled=false;$('health').textContent='本轮试作：思考跳跃 → 落地 → 停止';wake();
+  for(const b of document.querySelectorAll('[data-mode]'))b.disabled=false;$('health').textContent='聆听向内 · 思考跳跃 · 回答向外 · 停止收尾';wake();
 }catch(e){$('health').textContent='加载失败：'+e.message;}})();

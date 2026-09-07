@@ -24,7 +24,7 @@ test('stopping at every part of a hop keeps position continuous and all residual
     const c=createContact();for(let t=0;t<stopTime;t+=1/120)advanceContact(c,1/120,true);
     const x=c.x,h=c.height;advanceContact(c,0,false);assert.equal(c.x,x);assert.equal(c.height,h);
     for(let i=0;i<600;i++){advanceContact(c,1/120,false);assert.equal(c.x,x);assert.ok(Number.isFinite(c.height)&&c.height>=0);}
-    assert.equal(c.height,0);assert.equal(c.squish,0);assert.equal(contactMoving(c),false);assert.deepEqual(c.bars,Array(15).fill(10));
+    assert.equal(c.height,0);assert.equal(c.squish,0);assert.equal(contactMoving(c),false);assert.deepEqual(c.bars,Array(19).fill(10));
     advanceContact(c,.01,true);assert.equal(c.running,true);advanceContact(c,.01,true,true);assert.equal(c.height,0);assert.equal(contactMoving(c),false);
   }
 });

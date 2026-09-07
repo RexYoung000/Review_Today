@@ -26,3 +26,19 @@ test('voice reacts on next frame; silence, stop and reduced motion settle to sta
   for(let i=0;i<180;i++)advanceVoice(s,1/60,'idle',1);applyVoice(spine,rig,s);assert.deepEqual(verticesOf(rig.skeleton),silent);assert.equal(rig.skeleton.findSlot('fragment').color.a,0);
   advanceVoice(s,.02,'speaking',1,true);applyVoice(spine,rig,s,true);assert.deepEqual(verticesOf(rig.skeleton),silent);
 });
+
+test('incoming and outgoing crests travel oppositely; voice keeps one shadow-free silhouette',async()=>{
+  const {audioPulse,surfaceLayout,contactMoving}=await import('../../../brand/refresh-2026-09/motion-rig/wave-contact.mjs');
+  const peak=(time,direction)=>Array.from({length:901},(_,i)=>({d:i/100,h:audioPulse(i/100,time,direction)})).reduce((a,b)=>a.h>b.h?a:b).d;
+  assert.ok(peak(.6,'in')<peak(.4,'in'));assert.ok(peak(.6,'out')>peak(.4,'out'));
+  assert.equal(surfaceLayout(890).indices.length,19);assert.equal(surfaceLayout(425).indices.length,15);assert.equal(surfaceLayout(240,true).indices.length,15);assert.equal(surfaceLayout(890).pitch,surfaceLayout(425).pitch);
+  const rig=await loadRig(json),s=createVoiceState();
+  for(const mode of ['listening','thinking','speaking']){
+    for(let i=0;i<120;i++){advanceVoice(s,1/60,mode,.9);applyVoice(spine,rig,s);
+      for(const slot of ['ground_shadow','ball_ground_shadow','body_shadow'])assert.equal(rig.skeleton.findSlot(slot).color.a,0);
+    }
+  }
+  const x=s.contact.x;advanceVoice(s,0,'idle',0);assert.equal(s.contact.x,x);assert.equal(s.contact.finish,true);
+  let finishMotion=0;for(let i=0;i<240;i++){advanceVoice(s,1/60,'idle',0);finishMotion=Math.max(finishMotion,Math.abs(s.contact.squish));}
+  assert.ok(finishMotion>.02);assert.equal(contactMoving(s.contact),false);assert.equal(s.contact.look,0);assert.equal(s.contact.height,0);
+});

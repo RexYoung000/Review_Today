@@ -84,3 +84,7 @@ node src/call.mjs motion_export '{"name":"recall-v1"}'
 `preview_frame` / `preview_clip` 新增 `animation: thinking`。示例：`node src/call.mjs preview_clip '{"animation":"thinking"}'`。使用与语音页相同的 `wave-contact.mjs`，生成 8 秒「跳跃 → 4.8 秒请求停止 → 余波平息」视频。固定步长弹簧表面、接触位置和程序式骨骼/加权 FFD 共用一个状态；目前没有把这一段烘焙到 `motion_export` 的 JSON 中，导出的 recall/listening/speaking 时间轴保持原样。页面明确标注下载范围。
 
 当前共 13 项测试通过，新增跳跃过程网格不翻折、裁剪同步、停止时位置连续、余波最终静止与重新起跳检查。新思考是本轮试作，聆听/回答仍为前版，原生/真实语音与编辑器导入未验证。
+
+### 四态整合，无投影
+
+语音预览现在统一使用程序式接触层：incoming 向内汇聚、outgoing 向外传出、思考跳跃和停止收势。宽画布 19 条，窄窗 15 条。`preview_frame` / `preview_clip` 新增 `animation: conversation`；视频为 14 秒四态连播，帧时间允许 0–14 秒。其余选项的时长范围不变。示例：`node src/call.mjs preview_clip '{"animation":"conversation"}'`。已通过实际 MCP 调用生成视频，当前 14 项测试通过；这一层仍未烘焙进 `motion_export`，旧版 JSON 中的语音循环不能代表当前交互预览。
