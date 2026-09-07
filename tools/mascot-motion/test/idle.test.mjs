@@ -99,3 +99,16 @@ test('all visible motion stays inside the App and preview canvases, below the ey
   }
  }
 });
+
+
+test('sidebar cycles book and gaze only, with short rests and no terminal static state',()=>{
+ const player=createIdlePlayer(()=>0.99,'sidebar_loop');
+ player.advance(0.99);assert.equal(player.inspect().phase,'wait');player.advance(0.01);
+ for(let cycle=0;cycle<20;cycle++)for(const name of ['idle_book','idle_look']){
+  assert.equal(player.inspect().phase,'play');assert.equal(player.inspect().clip,name);
+  player.advance(idleDurations[name]);assert.equal(player.inspect().phase,'wait');assert.equal(player.inspect().remaining,0.8);
+  const paused=player.inspect();player.advance(0);assert.deepEqual(player.inspect(),paused);
+  player.advance(0.8);
+ }
+ assert.equal(player.inspect().clip,'idle_book');
+});

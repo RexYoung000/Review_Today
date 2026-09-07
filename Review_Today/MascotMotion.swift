@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 import WebKit
 
-enum MascotIdleClip: String, Codable { case random, book = "idle_book" }
+enum MascotIdleClip: String, Codable { case random, book = "idle_book", readingAndLooking = "sidebar_loop" }
 
 enum MascotSurface: String, Codable { case recall, voice }
 enum MascotPhase: String, Codable, CaseIterable {

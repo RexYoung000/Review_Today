@@ -4,6 +4,7 @@ import SwiftUI
 enum InteractionOutline: Equatable {
     case rounded(CGFloat)
     case capsule
+    case speechBubble
     var shape: InteractionGeometry { InteractionGeometry(outline: self) }
 }
 
@@ -12,8 +13,31 @@ struct InteractionGeometry: InsettableShape {
     var amount: CGFloat = 0
     func path(in rect: CGRect) -> Path {
         switch outline {
+        case .speechBubble:
+            bubblePath(in: rect.insetBy(dx: amount, dy: amount))
         case .capsule: Capsule().inset(by: amount).path(in: rect)
         case .rounded(let radius): RoundedRectangle(cornerRadius: radius, style: .continuous).inset(by: amount).path(in: rect)
+        }
+    }
+    private func bubblePath(in rect: CGRect) -> Path {
+        let bottom = rect.maxY - 10
+        let r = min(14, max(0, (rect.height - 10) / 2), rect.width / 2)
+        return Path { p in
+            p.move(to: CGPoint(x: rect.minX + r, y: rect.minY))
+            p.addLine(to: CGPoint(x: rect.maxX - r, y: rect.minY))
+            p.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.minY + r), control: CGPoint(x: rect.maxX, y: rect.minY))
+            p.addLine(to: CGPoint(x: rect.maxX, y: bottom - r))
+            p.addQuadCurve(to: CGPoint(x: rect.maxX - r, y: bottom), control: CGPoint(x: rect.maxX, y: bottom))
+            p.addLine(to: CGPoint(x: rect.midX + 9, y: bottom))
+            p.addQuadCurve(to: CGPoint(x: rect.midX + 5, y: bottom + 3), control: CGPoint(x: rect.midX + 6, y: bottom))
+            p.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
+            p.addLine(to: CGPoint(x: rect.midX - 5, y: bottom + 3))
+            p.addQuadCurve(to: CGPoint(x: rect.midX - 9, y: bottom), control: CGPoint(x: rect.midX - 6, y: bottom))
+            p.addLine(to: CGPoint(x: rect.minX + r, y: bottom))
+            p.addQuadCurve(to: CGPoint(x: rect.minX, y: bottom - r), control: CGPoint(x: rect.minX, y: bottom))
+            p.addLine(to: CGPoint(x: rect.minX, y: rect.minY + r))
+            p.addQuadCurve(to: CGPoint(x: rect.minX + r, y: rect.minY), control: CGPoint(x: rect.minX, y: rect.minY))
+            p.closeSubpath()
         }
     }
     func inset(by amount: CGFloat) -> InteractionGeometry {

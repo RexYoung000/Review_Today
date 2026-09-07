@@ -36,7 +36,7 @@ window.mascotMotion={
  setState(next){
    configured=true;
    const previous=config;
-   config={surface:next.surface==='voice'?'voice':'recall',mode:['listening','thinking','speaking','idle'].includes(next.mode)?next.mode:'idle',level:Math.max(0,Math.min(1,Number(next.level)||0)),ambient:!!next.ambient,idleClip:idleNames.includes(next.idleClip)?next.idleClip:'random',restartToken:Number(next.restartToken)||0,reduced:!!next.reduced,dark:!!next.dark,visible:!!next.visible,rate:next.rate===.5?.5:1,material:next.material==='graphite'?'graphite':'current',palette:next.palette};
+   config={surface:next.surface==='voice'?'voice':'recall',mode:['listening','thinking','speaking','idle'].includes(next.mode)?next.mode:'idle',level:Math.max(0,Math.min(1,Number(next.level)||0)),ambient:!!next.ambient,idleClip:(idleNames.includes(next.idleClip)||next.idleClip==='sidebar_loop')?next.idleClip:'random',restartToken:Number(next.restartToken)||0,reduced:!!next.reduced,dark:!!next.dark,visible:!!next.visible,rate:next.rate===.5?.5:1,material:next.material==='graphite'?'graphite':'current',palette:next.palette};
    if(previous.ambient!==config.ambient||previous.idleClip!==config.idleClip||previous.restartToken!==config.restartToken||config.reduced){idle=createIdlePlayer(Math.random,config.idleClip);}
    if(rig&&previous.surface!==config.surface){returnState=null;time=0;voice=createVoiceState(contactGeometry(spine,rig));}
    if(rig&&config.surface==='recall'&&previous.mode==='thinking'&&config.mode!=='thinking'&&!config.reduced){returnState=createReturnState(spine,rig,time);returnElapsed=0;}

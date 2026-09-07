@@ -126,19 +126,33 @@ struct MascotMotionNativeTests {
         coordinator.configuration.reduced = true; coordinator.send()
         try await Task.sleep(for: .milliseconds(100)); state = try await inspect()
         try expect((state["idle"] as? [String: Any])?["bookVisible"] as? Double == 0 && state["animating"] as? Bool == false, "Reduced motion leaves notebook visible")
+        coordinator.configuration.reduced = false
+        coordinator.configuration.idleClip = .readingAndLooking; coordinator.send()
+        var played: [String] = []
+        let cycleDeadline = ProcessInfo.processInfo.systemUptime + 20
+        while played.count < 3 && ProcessInfo.processInfo.systemUptime < cycleDeadline {
+            try await Task.sleep(for: .milliseconds(150))
+            let current = (try await inspect())["idle"] as! [String: Any]
+            if let clip = current["clip"] as? String, clip != played.last { played.append(clip) }
+        }
+        try expect(played == ["idle_book", "idle_look", "idle_book"], "Sidebar must keep alternating book and gaze")
+        coordinator.configuration.reduced = true; coordinator.send()
+        try await Task.sleep(for: .milliseconds(100)); state = try await inspect()
+        try expect(state["animating"] as? Bool == false, "Sidebar loop ignores reduced motion")
         try expect(web.acceptsFirstResponder == false && web.hitTest(.zero) == nil, "Decorative surface steals input")
         if CommandLine.arguments.contains("--record-idle") { try await recordIdle(web, window: window) }
         if CommandLine.arguments.contains("--record-ui-book") { try await recordIdle(web, window: window, sidebar: true) }
+        if CommandLine.arguments.contains("--record-sidebar-loop") { try await recordIdle(web, window: window, sidebar: true, loop: true) }
         web.configuration.userContentController.removeScriptMessageHandler(forName: "mascot"); web.dispose()
     }
 
     // Native WKWebView snapshots sampled against the actual playback clock.
     // This records the isolated native surface, not the daily App window.
-    @MainActor static func recordIdle(_ web: WKWebView, window: NSWindow, sidebar: Bool = false) async throws {
+    @MainActor static func recordIdle(_ web: WKWebView, window: NSWindow, sidebar: Bool = false, loop: Bool = false) async throws {
         let width = sidebar ? 300 : 640, height = sidebar ? 340 : 480
         window.setContentSize(sidebar ? NSSize(width: 150, height: 170) : NSSize(width: 640, height: 480))
         let folder = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("brand/refresh-2026-09/idle-motion/evidence")
-        let url = sidebar ? URL(fileURLWithPath: "/tmp/review-ui-sidebar-book.mp4") : folder.appendingPathComponent("native-idle-v2.mp4")
+        let url = sidebar ? URL(fileURLWithPath: loop ? "/tmp/review-ui-sidebar-loop.mp4" : "/tmp/review-ui-sidebar-book.mp4") : folder.appendingPathComponent("native-idle-v2.mp4")
         if FileManager.default.fileExists(atPath: url.path) { try FileManager.default.removeItem(at: url) }
         let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
         let input = AVAssetWriterInput(mediaType: .video, outputSettings: [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: width, AVVideoHeightKey: height])
@@ -149,7 +163,7 @@ struct MascotMotionNativeTests {
         writer.startSession(atSourceTime: .zero)
         let start = ProcessInfo.processInfo.systemUptime
         var token = 20
-        let clips: [(String, Double, Bool, Bool)] = sidebar ? [("idle_book", 9.8, false, false), ("idle_book", 1.2, true, true)] : [("idle_book", 9.3, true, false), ("idle_stretch", 4.9, false, false), ("idle_hop", 4.5, false, false), ("idle_look", 5.3, true, false), ("random", 12.0, true, false), ("idle_book", 1.2, true, true)]
+        let clips: [(String, Double, Bool, Bool)] = sidebar ? (loop ? [("sidebar_loop", 21.0, true, false), ("sidebar_loop", 1.2, true, true)] : [("idle_book", 9.8, false, false), ("idle_book", 1.2, true, true)]) : [("idle_book", 9.3, true, false), ("idle_stretch", 4.9, false, false), ("idle_hop", 4.5, false, false), ("idle_look", 5.3, true, false), ("random", 12.0, true, false), ("idle_book", 1.2, true, true)]
         for (clip, duration, dark, reduced) in clips {
             token += 1
             _ = try await web.evaluateJavaScript("window.mascotMotion.setState({...window.mascotMotion.inspect().config,idleClip:'\(clip)',restartToken:\(token),visible:true,ambient:true,reduced:\(reduced),dark:\(dark),rate:1})")

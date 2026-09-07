@@ -1,6 +1,8 @@
 import {idleDurations,idleNames} from './idle-definition.mjs';
 export {idleDurations,idleNames} from './idle-definition.mjs';
 export function createIdlePlayer(random=Math.random,selected='random'){
+ const sequence=selected==='sidebar_loop'?['idle_book','idle_look']:null;
+ let sequenceIndex=0;
  let phase='wait',clip=null,previous=null,elapsed=0,wait=1;
  const choose=()=>{const choices=idleNames.filter(n=>n!==previous);return choices[Math.min(choices.length-1,Math.floor(random()*choices.length))];};
  return {
@@ -10,8 +12,8 @@ export function createIdlePlayer(random=Math.random,selected='random'){
     const duration=phase==='wait'?wait:idleDurations[clip],step=Math.min(remaining,duration-elapsed);elapsed+=step;remaining-=step;
     if(elapsed+1e-8<duration)break;
     elapsed=0;
-    if(phase==='wait'){clip=idleNames.includes(selected)?selected:choose();phase='play';}
-    else {previous=clip;clip=null;phase=selected==='random'?'wait':'done';wait=1.5+random()*1.5;}
+    if(phase==='wait'){clip=sequence?sequence[sequenceIndex++%sequence.length]:idleNames.includes(selected)?selected:choose();phase='play';}
+    else {previous=clip;clip=null;phase=selected==='random'||sequence?'wait':'done';wait=sequence ? 0.8 : 1.5+random()*1.5;}
    }
   },
   inspect(){return {phase,clip,previous,elapsed,remaining:phase==='wait'?Math.max(0,wait-elapsed):phase==='play'?Math.max(0,idleDurations[clip]-elapsed):0};},

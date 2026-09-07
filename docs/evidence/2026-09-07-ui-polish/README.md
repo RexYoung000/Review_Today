@@ -70,3 +70,14 @@ REVIEW_TODAY_M1_UI_FIXTURE=today REVIEW_TODAY_UI_POLISH_FIXTURE=empty /tmp/revie
 ```
 
 将 `empty` 改为 `populated` 可看长标题、有内容会话和复习入口。先退出上一隔离进程再切换数据集。小样不会写日常库。
+
+
+## 会话气泡与循环补验
+
+2026-09-07 后续反馈覆盖此前单次阅读约定：按钮改为「开始学习」，尾巴与气泡使用同一个连续路径，填充、描边和交互反馈共用轮廓；尾巴中心朝向角色头顶，间距缩短。
+
+侧栏专用 `sidebar_loop` 在首次等待 1 秒后，循环播放既有 `idle_book`（8 秒）和 `idle_look`（4 秒），每段之间停留 0.8 秒轻呼吸。单个动作预览及待处理默认随机播放不变，不增加新骨架或形变动作；后台/隐藏暂停，恢复不追赶，减少动态静止。
+
+验证：31 项 JS 回归通过，包括连续 20 轮顺序与短暂停顿；原生实际时钟确认「看书 → 左右观察 → 再看书」，原生减少动态、隐藏暂停与回退检查通过。UI 契约、Debug/Release 和严格签名通过。已经在日常 App 查看新文案、连续气泡尾巴和角色动作；原有数据保留，未发送消息。
+
+[native-sidebar-loop.mp4](native-sidebar-loop.mp4) 为隔离原生 WKWebView 正常时钟下的约 22 秒录像，包含看书、观察、第二次看书和最后的减少动态静态帧。该录像覆盖本次循环，不代替上一批仍缺少的整窗录像和完整 VoiceOver 验收。复跑：`bash tests/mac/run-mascot-native.sh --record-sidebar-loop`，输出 `/tmp/review-ui-sidebar-loop.mp4`。

@@ -812,17 +812,15 @@ private struct SessionWelcome: View {
     var body: some View {
         VStack(spacing: 0) {
             Button(action: action) {
-                Text("开始学习会话").font(.callout.weight(.regular))
-                    .foregroundStyle(runway.ink).padding(.horizontal, 14).padding(.vertical, 10)
-                    .background(runway.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(runway.hairline))
+                Text("开始学习").font(.callout.weight(.regular))
+                    .foregroundStyle(runway.ink).padding(.horizontal, 14).padding(.vertical, 10).padding(.bottom, 10)
+                    .background(runway.card, in: InteractionOutline.speechBubble.shape)
+                    .overlay(InteractionOutline.speechBubble.shape.strokeBorder(runway.hairline))
             }
-            .buttonStyle(InteractionButtonStyle(focused: focused, padding: 0, outline: .rounded(14)))
+            .buttonStyle(InteractionButtonStyle(focused: focused, padding: 0, outline: .speechBubble))
             .focusable().focusEffectDisabled().focused($focused)
             .help("进入 Agent 继续编辑草稿，不会自动发送")
-            Image(systemName: "arrowtriangle.down.fill").font(.system(size: 8))
-                .foregroundStyle(runway.card).offset(y: -1).accessibilityHidden(true)
-            MascotMotion(phase: .idle, ambient: true, idleClip: .book).frame(width: 150, height: 170).padding(.top, -30)
+            MascotMotion(phase: .idle, ambient: true, idleClip: .readingAndLooking).frame(width: 150, height: 170).padding(.top, -42)
         }.frame(maxWidth: .infinity)
     }
 }

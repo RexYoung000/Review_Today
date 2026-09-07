@@ -57,9 +57,9 @@ struct UIPolishContractTests {
         }
         let legacy = card("", "说明 RAG 的检索与生成阶段分别做什么。")
         precondition(KnowledgeLexicon.chipTitle(for: legacy, among: [legacy], theme: "检索增强生成（RAG）") == "检索与生成阶段分别做什么。")
-        let config = MascotMotionConfiguration(ambient: true, idleClip: .book)
+        let config = MascotMotionConfiguration(ambient: true, idleClip: .readingAndLooking)
         let json = try JSONSerialization.jsonObject(with: JSONEncoder().encode(config)) as! [String: Any]
-        precondition(json["idleClip"] as? String == "idle_book")
+        precondition(json["idleClip"] as? String == "sidebar_loop")
         precondition(MascotMotionConfiguration().idleClip == .random, "existing ambient entry keeps its scheduler")
         let rect = CGRect(x: 0, y: 0, width: 100, height: 34)
         let pill = InteractionOutline.capsule.shape.path(in: rect)
