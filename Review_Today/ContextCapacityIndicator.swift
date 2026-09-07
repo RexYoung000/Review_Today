@@ -59,7 +59,7 @@ struct ContextCapacityIndicator: View {
                 Circle().strokeBorder(.secondary.opacity(0.18), lineWidth: 2.5)
                 if let fraction = capacity.fraction, fraction > 0 {
                     Circle().trim(from: 0, to: fraction)
-                        .stroke(runway.agent, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
+                        .stroke(runway.decorativeAccent, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
                         .padding(1.25).rotationEffect(.degrees(-90))
                 } else if capacity.used != nil && capacity.limit == nil {
                     Text("?").font(.system(size: 10, weight: .medium)).foregroundStyle(.secondary)

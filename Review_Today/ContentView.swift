@@ -97,7 +97,7 @@ struct SessionTagEditor: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("编辑会话标签").font(.headline)
             TextField("用逗号分隔，最多 5 个", text: $tagsText)
-                .textFieldStyle(.roundedBorder)
+                .textFieldStyle(BrandMaterialTextFieldStyle())
             Text("人工标签会覆盖自动标签；Agent 不会静默改回。")
                 .font(.caption).foregroundStyle(.secondary)
             if !knowledgeTags.isEmpty {
@@ -293,7 +293,7 @@ struct AppSidebar: View {
 
             if searchVisible {
               TextField("搜索会话", text: $searchText)
-                .textFieldStyle(.roundedBorder)
+                .textFieldStyle(BrandMaterialTextFieldStyle())
                 .padding(.horizontal, 10)
             }
             if showArchived { Text("已归档").font(.caption).foregroundStyle(.secondary).padding(.horizontal, 14) }
@@ -378,9 +378,9 @@ struct AppSidebar: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     if !session.memoryUseAllowed { MemoryExcludedMark() }
                     if let tag = session.displayTopicTags.first {
-                        Text(tag).font(.caption2).foregroundStyle(runway.agent)
+                        Text(tag).font(.caption2).foregroundStyle(runway.information)
                             .lineLimit(1).padding(.horizontal, 6).padding(.vertical, 3)
-                            .background(runway.agent.opacity(0.1), in: Capsule())
+                            .background(runway.decorativeAccent.opacity(0.1), in: Capsule())
                             .frame(width: min(58, (tag as NSString).size(withAttributes: [.font: NSFont.systemFont(ofSize: 10)]).width + 12))
                             .help(session.displayTopicTags.joined(separator: " · "))
                     }
@@ -546,6 +546,7 @@ private struct SidebarIconRail: View {
 }
 
 struct ContentView: View {
+    @Environment(\.brandMaterialPreview) private var materialPreview
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
@@ -584,6 +585,7 @@ struct ContentView: View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             AppSidebar(selection: $selection, selectedSessionID: $selectedLearningSessionID,
                        scrollAnchor: $sidebarScrollAnchor, onCollapse: { setSidebar(expanded: false) }, inboxCount: inboxCount)
+                .frame(minWidth: materialPreview ? 240 : nil)
                 .toolbar(removing: .sidebarToggle)
                 .navigationSplitViewColumnWidth(min: 220, ideal: min(340, max(220, savedSidebarWidth)), max: 340)
                 .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in

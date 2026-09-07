@@ -233,7 +233,7 @@ private struct SummaryChip: View {
             IconLeadRow(iconWidth: 22, spacing: 12) {
                 Image(systemName: "plus")
                     .font(.caption.weight(.bold))
-                    .foregroundStyle(runway.plus)
+                    .foregroundStyle(runway.addition)
                     .frame(height: 20, alignment: .center)
             } content: {
                 Text(title)
@@ -248,7 +248,7 @@ private struct SummaryChip: View {
             .background(runway.card, in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous)
-                    .strokeBorder(hovering ? runway.agent.opacity(0.45) : runway.hairline, lineWidth: 1)
+                    .strokeBorder(hovering ? runway.decorativeAccent.opacity(0.45) : runway.hairline, lineWidth: 1)
             )
             .shadow(color: runway.liftShadow.opacity(0.45), radius: 8, y: 2)
         }
@@ -916,7 +916,7 @@ private struct KnowledgeDepthCard: View {
         IconLeadRow {
             Image(systemName: ok ? "checkmark" : "xmark")
                 .font(.callout.weight(.bold))
-                .foregroundStyle(ok ? runway.plus : Color.orange)
+                .foregroundStyle(ok ? runway.information : Color.orange)
                 .frame(height: 20, alignment: .center)
         } content: {
             Text(text)

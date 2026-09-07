@@ -146,7 +146,7 @@ private enum ThemeReveal {
 
 struct AnimatedThemeToggler: View {
     @Environment(AppearanceController.self) private var appearance
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.brandReduceMotion) private var reduceMotion
     @Environment(\.runway) private var runway
 
     var body: some View {

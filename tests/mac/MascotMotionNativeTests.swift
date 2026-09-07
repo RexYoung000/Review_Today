@@ -24,6 +24,8 @@ struct MascotMotionNativeTests {
         window.makeKeyAndOrderFront(nil); app.activate(ignoringOtherApps: true); app.run()
     }
     @MainActor static func checks(_ window: NSWindow) async throws {
+        window.level = .floating
+        window.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true)
         func expect(_ value: Bool, _ reason: String) throws { if !value { throw CheckFailure(description: reason) } }
         for status in ["queued", "accepted", "completed", "failed", "cancelled", "stopped"] {
             try expect(MascotMotionConfiguration.phase(runStatus: status, started: true) == .idle, "False thinking state: \(status)")
@@ -65,8 +67,32 @@ struct MascotMotionNativeTests {
             try expect(abs((voice["area"] as? Double ?? 0)-1) <= 0.1, "Native body lost area")
         }
         coordinator.configuration.mode = .idle; coordinator.configuration.level = 0; coordinator.send()
-        try await Task.sleep(for: .seconds(3)); state = try await inspect()
-        try expect(state["animating"] as? Bool == false, "Voice did not stop")
+        for _ in 0..<100 {
+            try await Task.sleep(for: .milliseconds(100)); state = try await inspect()
+            if state["animating"] as? Bool == false { break }
+        }
+        try expect(state["animating"] as? Bool == false, "Voice did not stop within bounded wait: \(state)")
+        func coloredPixels() async throws -> Int {
+            try await web.evaluateJavaScript("(()=>{const c=document.querySelector('canvas'),d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let n=0;for(let i=0;i<d.length;i+=4)if(d[i+3]>128&&Math.max(d[i],d[i+1],d[i+2])-Math.min(d[i],d[i+1],d[i+2])>3)n++;return n})()") as! Int
+        }
+        for dark in [false, true] {
+            coordinator.configuration.material = "graphite"; coordinator.configuration.palette = .theme(dark: dark); coordinator.configuration.dark = dark
+            coordinator.configuration.surface = .recall; coordinator.configuration.mode = .thinking; coordinator.configuration.reduced = false; coordinator.send()
+            try await Task.sleep(for: .seconds(2.6)); state = try await inspect()
+            try expect((state["config"] as? [String: Any])?["material"] as? String == "graphite", "Material bridge was ignored")
+            try expect(try await coloredPixels() == 0, "Active recall contains a color accent")
+            coordinator.configuration.mode = .idle; coordinator.send(); try await Task.sleep(for: .milliseconds(450))
+            try expect(try await coloredPixels() == 0, "Stopped graphite recall leaves a colored texture")
+            coordinator.configuration.surface = .voice; coordinator.configuration.mode = .speaking; coordinator.configuration.level = 0.9; coordinator.send()
+            try await Task.sleep(for: .milliseconds(900)); try expect(try await coloredPixels() == 0, "Voice activity contains a color accent")
+            coordinator.configuration.level = 0; coordinator.send(); try await Task.sleep(for: .seconds(3))
+            try expect(try await coloredPixels() == 0, "Silent graphite voice stays colored")
+            coordinator.configuration.mode = .thinking; coordinator.configuration.reduced = true; coordinator.send(); try await Task.sleep(for: .milliseconds(150)); state = try await inspect()
+            try expect(state["animating"] as? Bool == false, "Graphite reduced motion is not stable")
+            coordinator.setVisible(false); try await Task.sleep(for: .milliseconds(150)); state = try await inspect()
+            try expect(state["animating"] as? Bool == false, "Graphite hidden view is animating")
+            coordinator.setVisible(true)
+        }
         try expect(web.acceptsFirstResponder == false && web.hitTest(.zero) == nil, "Decorative surface steals input")
         web.configuration.userContentController.removeScriptMessageHandler(forName: "mascot"); web.dispose()
     }

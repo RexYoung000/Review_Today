@@ -20,6 +20,8 @@ struct MascotMotionConfiguration: Codable, Equatable {
     var dark = false
     var visible = true
     var rate: Double = 1
+    var material = "current"
+    var palette: MascotMaterialPalette? = nil
 
     static func phase(runStatus: String, started: Bool) -> MascotPhase {
         started && ["running", "adjusting"].contains(runStatus) ? .thinking : .idle
@@ -33,12 +35,16 @@ struct MascotMotion: View {
     var reduced = false
     var rate: Double = 1
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.brandMaterialTrial) private var materialTrial
+    @Environment(\.brandReduceMotion) private var systemReduced
     @State private var ready = false
     var body: some View {
         ZStack {
-            if !ready { Circle().fill(Color(red: 0.08, green: 0.39, blue: 0.37)).frame(width: 10, height: 10) }
+            if !ready { Circle().fill(materialTrial ? Color(white: 0.18) : Color(red: 0.08, green: 0.39, blue: 0.37)).frame(width: 10, height: 10) }
             MascotWebSurface(configuration: .init(surface: surface, mode: phase, level: level,
-                                                 reduced: reduced, dark: colorScheme == .dark, rate: rate)) { ready = $0 }
+                                                 reduced: reduced || systemReduced, dark: colorScheme == .dark, rate: rate,
+                                                 material: materialTrial ? "graphite" : "current",
+                                                 palette: .theme(dark: colorScheme == .dark))) { ready = $0 }
                 .opacity(ready ? 1 : 0)
         }
         .allowsHitTesting(false)

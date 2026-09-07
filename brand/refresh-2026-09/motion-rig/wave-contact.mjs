@@ -1,3 +1,4 @@
+import {waveColor} from './material.mjs';
 import {BODY_SCALE,CAPSULE_RADIUS,contactGeometry,createElastic,solveElastic,resetElastic,supportHeight} from './elastic-body.mjs';
 export {contactGeometry};
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
@@ -118,11 +119,11 @@ export function applyContact(runtime,rig,c){
 }
 export function bodyBounds(s){const slot=s.findSlot('body'),a=slot.getAttachment(),v=new Float32Array(a.worldVerticesLength);a.computeWorldVertices(slot,0,v.length,v,0,2);let bottom=Infinity;for(let i=1;i<v.length;i+=2)bottom=Math.min(bottom,v[i]);return {bottom};}
 export function surfaceLayout(width,compact=false){const wide=!compact&&width>=520,pitch=Math.min(compact?11:20,(width-56)/(wide?20:16));return {pitch,indices:Array.from({length:wide?19:15},(_,i)=>i+(wide?0:2))};}
-export function drawContact(ctx,renderer,rig,c,width,height,{dark=false,compact=false,debug=false}={}){
+export function drawContact(ctx,renderer,rig,c,width,height,{dark=false,compact=false,debug=false,material="current",palette}={}){
   ctx.clearRect(0,0,width,height);const {pitch,indices}=surfaceLayout(width,compact),unit=pitch/20,base=height*(compact?.8:.77),left=width/2-7*pitch;
   ctx.lineCap='round';const radius=CAPSULE_RADIUS*unit;
-  for(const i of indices){const barX=i-2,near=bell(barX-c.x,2.3)*(c.mound*.65+c.impact*.35)+audioHeight(c,barX)/34,t=clamp(near),start=dark?[71,95,86]:[187,207,196],end=dark?[145,210,186]:[49,123,102];
-    ctx.strokeStyle=`rgb(${start.map((v,k)=>Math.round(v+(end[k]-v)*t)).join(',')})`;ctx.lineWidth=radius*2;ctx.beginPath();ctx.moveTo(left+barX*pitch,base);ctx.lineTo(left+barX*pitch,base-c.bars[i]*unit);ctx.stroke();}
+  for(const i of indices){const barX=i-2,near=bell(barX-c.x,2.3)*(c.mound*.65+c.impact*.35)+audioHeight(c,barX)/34,t=clamp(near);
+    ctx.strokeStyle=`rgb(${waveColor(t,{material,dark,palette}).join(',')})`;ctx.lineWidth=radius*2;ctx.beginPath();ctx.moveTo(left+barX*pitch,base);ctx.lineTo(left+barX*pitch,base-c.bars[i]*unit);ctx.stroke();}
   const scale=unit*BODY_SCALE;ctx.save();ctx.translate(left+c.x*pitch,base-c.rootY*unit+(c.soft?.geometry.bottom??0)*scale);ctx.scale(scale,-scale);renderer.draw(rig.skeleton);ctx.restore();
   if(debug&&c.soft){ctx.save();ctx.strokeStyle='#e87936';ctx.lineWidth=.8;for(const i of indices){ctx.beginPath();ctx.roundRect(left+(i-2)*pitch-radius,base-c.bars[i]*unit-radius,radius*2,c.bars[i]*unit+radius*2,radius);ctx.stroke();}
     ctx.beginPath();for(let i=0;i<c.soft.geometry.hull;i++){const x=left+(c.x*20+c.soft.points[2*i])*unit,y=base-(c.rootY+c.soft.points[2*i+1])*unit;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.stroke();ctx.fillStyle='#dc3d70';for(const k of c.soft.contacts){ctx.beginPath();ctx.arc(left+(c.x*20+k.x)*unit,base-k.capY*unit,2.5,0,Math.PI*2);ctx.fill();}ctx.restore();}

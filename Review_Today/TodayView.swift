@@ -333,7 +333,7 @@ struct TodayView: View {
                         Spacer()
                         Text(MasteryCopy.label(row.effectiveGrade))
                             .font(.caption.weight(.medium))
-                            .foregroundStyle(runway.agent)
+                            .foregroundStyle(runway.information)
                     }
                 }
             }
@@ -394,10 +394,10 @@ struct TodayView: View {
     private func activityColor(level: Int) -> Color {
         switch level {
         case 0: return runway.field.opacity(0.72)
-        case 1: return runway.agent.opacity(0.22)
-        case 2: return runway.agent.opacity(0.42)
-        case 3: return runway.agent.opacity(0.68)
-        default: return runway.agent
+        case 1: return runway.history.opacity(0.22)
+        case 2: return runway.history.opacity(0.42)
+        case 3: return runway.history.opacity(0.68)
+        default: return runway.history
         }
     }
 

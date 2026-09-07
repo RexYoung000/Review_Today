@@ -15,6 +15,7 @@ struct RunwayPalette: Equatable {
     var copy: Color
     var scrim: Color
     var cardHighlight: Color
+    var monochrome = false
 
     static let light = RunwayPalette(
         canvas: Color(red: 0.965, green: 0.965, blue: 0.968),
@@ -128,7 +129,7 @@ struct RunwayPrimaryButton: View {
     var enabled: Bool = true
     var action: () -> Void
     @State private var pressed = false
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.brandReduceMotion) private var reduceMotion
     @Environment(\.runway) private var runway
 
     var body: some View {
