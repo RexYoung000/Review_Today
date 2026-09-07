@@ -260,7 +260,7 @@ struct AppSidebar: View {
     private var brand: some View {
         HStack(spacing: 8) {
             BrandMark(size: 27)
-            Text("Review Today").font(.system(size: 15, weight: .semibold)).lineLimit(1)
+            Text("Review Today").font(.system(size: 15, weight: .semibold)).foregroundStyle(runway.ink).lineLimit(1)
             Spacer(minLength: 0)
             ChromeIconButton(title: "收起侧栏", symbol: "sidebar.left", action: onCollapse)
         }

@@ -1,0 +1,155 @@
+{
+  "renderer": "/Applications/Xcode.app/Contents/Applications/Icon Composer.app/Contents/Executables/ictool",
+  "renderer_version": {
+    "bundle-version": "99.1",
+    "short-bundle-version": "1.6"
+  },
+  "master_sha256": "a54ff24e99bf6837dadb857b7f779fc3ebf8e8c08e090b3191f1c42135d27861",
+  "imported_master_identical": true,
+  "document_sha256": "88d5b04f967dfcc847268d2d10b401b114791e20c8cfe3cc57fd4a5c2533b601",
+  "asset_sha256": {
+    "glass-shell.svg": "630276540e7798a255432bd5ac0b511ef9533fff7958d238eb8755b2843a7038",
+    "mark-alpha.png": "a54ff24e99bf6837dadb857b7f779fc3ebf8e8c08e090b3191f1c42135d27861"
+  },
+  "exports": [
+    {
+      "file": "default-16.png",
+      "size": 16,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-32.png",
+      "size": 32,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-64.png",
+      "size": 64,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-128.png",
+      "size": 128,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-256.png",
+      "size": 256,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-512.png",
+      "size": 512,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-1024.png",
+      "size": 1024,
+      "rendition": "Default"
+    },
+    {
+      "file": "dark-16.png",
+      "size": 16,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-32.png",
+      "size": 32,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-64.png",
+      "size": 64,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-128.png",
+      "size": 128,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-256.png",
+      "size": 256,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-512.png",
+      "size": 512,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-1024.png",
+      "size": 1024,
+      "rendition": "Dark"
+    },
+    {
+      "file": "mono-16.png",
+      "size": 16,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-32.png",
+      "size": 32,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-64.png",
+      "size": 64,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-128.png",
+      "size": 128,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-256.png",
+      "size": 256,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-512.png",
+      "size": 512,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-1024.png",
+      "size": 1024,
+      "rendition": "Mono"
+    }
+  ],
+  "light_checks": [
+    {
+      "file": "default-light--90.png",
+      "light_angle": -90,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-light-0.png",
+      "light_angle": 0,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-light-45.png",
+      "light_angle": 45,
+      "rendition": "Default"
+    },
+    {
+      "file": "dark-light--90.png",
+      "light_angle": -90,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-light-0.png",
+      "light_angle": 0,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-light-45.png",
+      "light_angle": 45,
+      "rendition": "Dark"
+    }
+  ],
+  "platform": "macOS",
+  "note": "Native icon rendering, not Dock or macOS 27 integration acceptance."
+}

@@ -1,0 +1,78 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "extended-srgb:0.20000,0.20000,0.20000,1.00000",
+      "extended-srgb:0.10000,0.10000,0.10000,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "extended-srgb:0.96000,0.96000,0.96000,1.00000",
+              "extended-srgb:0.76000,0.76000,0.76000,1.00000"
+            ]
+          },
+          "glass" : false,
+          "image-name" : "mark-alpha.png",
+          "name" : "同轮廓缎面 · 柔化亮边",
+          "opacity" : 0.88,
+          "position" : {
+            "scale" : 0.58,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "name" : "02 · 缎面覆层",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0
+      },
+      "specular" : false,
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0
+      }
+    },
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "extended-srgb:0.96000,0.96000,0.96000,1.00000",
+              "extended-srgb:0.76000,0.76000,0.76000,1.00000"
+            ]
+          },
+          "glass" : true,
+          "image-name" : "mark-alpha.png",
+          "name" : "原始 R · 柔和金属渐变",
+          "position" : {
+            "scale" : 0.58,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "name" : "01 · 银白缎面金属 R",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.12
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}

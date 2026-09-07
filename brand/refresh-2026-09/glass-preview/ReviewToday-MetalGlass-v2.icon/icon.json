@@ -1,0 +1,107 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "extended-srgb:0.98000,0.98000,0.98000,1.00000",
+      "extended-srgb:0.84000,0.85000,0.86000,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "extended-srgb:1.00000,1.00000,1.00000,0.06000"
+          },
+          "glass" : true,
+          "image-name" : "glass-shell.svg",
+          "name" : "整面清透 · 边缘折射",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "name" : "03 · 透明玻璃外壳",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.12
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.9
+      }
+    },
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "extended-srgb:0.31000,0.58000,0.53000,1.00000",
+              "extended-srgb:0.10000,0.30000,0.28000,1.00000"
+            ]
+          },
+          "glass" : false,
+          "image-name" : "mark-alpha.png",
+          "name" : "同轮廓缎面 · 柔化亮边",
+          "opacity" : 0.65,
+          "position" : {
+            "scale" : 0.68,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "name" : "02 · 缎面覆层",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0
+      },
+      "specular" : false,
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0
+      }
+    },
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "extended-srgb:0.31000,0.58000,0.53000,1.00000",
+              "extended-srgb:0.10000,0.30000,0.28000,1.00000"
+            ]
+          },
+          "glass" : true,
+          "image-name" : "mark-alpha.png",
+          "name" : "原始 R · 柔和金属渐变",
+          "position" : {
+            "scale" : 0.68,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "name" : "01 · 青绿缎面金属 R",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.22
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}

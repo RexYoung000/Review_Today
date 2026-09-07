@@ -1,0 +1,119 @@
+{
+  "renderer": "/Applications/Xcode.app/Contents/Applications/Icon Composer.app/Contents/Executables/ictool",
+  "renderer_version": {
+    "bundle-version": "99.1",
+    "short-bundle-version": "1.6"
+  },
+  "master_sha256": "a54ff24e99bf6837dadb857b7f779fc3ebf8e8c08e090b3191f1c42135d27861",
+  "imported_master_identical": true,
+  "document_sha256": "17ca7214c49dc2c25168cfdb8d1ff45e63b4d085c89ba730811151add22a5651",
+  "exports": [
+    {
+      "file": "default-16.png",
+      "size": 16,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-32.png",
+      "size": 32,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-64.png",
+      "size": 64,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-128.png",
+      "size": 128,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-256.png",
+      "size": 256,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-512.png",
+      "size": 512,
+      "rendition": "Default"
+    },
+    {
+      "file": "default-1024.png",
+      "size": 1024,
+      "rendition": "Default"
+    },
+    {
+      "file": "dark-16.png",
+      "size": 16,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-32.png",
+      "size": 32,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-64.png",
+      "size": 64,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-128.png",
+      "size": 128,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-256.png",
+      "size": 256,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-512.png",
+      "size": 512,
+      "rendition": "Dark"
+    },
+    {
+      "file": "dark-1024.png",
+      "size": 1024,
+      "rendition": "Dark"
+    },
+    {
+      "file": "mono-16.png",
+      "size": 16,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-32.png",
+      "size": 32,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-64.png",
+      "size": 64,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-128.png",
+      "size": 128,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-256.png",
+      "size": 256,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-512.png",
+      "size": 512,
+      "rendition": "Mono"
+    },
+    {
+      "file": "mono-1024.png",
+      "size": 1024,
+      "rendition": "Mono"
+    }
+  ],
+  "platform": "macOS",
+  "note": "Native icon rendering, not Dock or macOS 27 integration acceptance."
+}

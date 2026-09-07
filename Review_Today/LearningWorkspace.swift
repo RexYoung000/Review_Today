@@ -202,7 +202,7 @@ struct LearningWorkspace: View {
                     HStack(spacing: 16) {
                         BrandMark(size: 58)
                         VStack(alignment: .leading, spacing: 6) {
-                            Text("Review Today").font(.system(size: 30, weight: .semibold))
+                            Text("Review Today").font(.system(size: 30, weight: .semibold)).foregroundStyle(runway.ink)
                             Text("从一个问题开始，把理解留住。").font(.callout).foregroundStyle(.secondary)
                         }
                     }.frame(maxWidth: .infinity).padding(.top, 28)

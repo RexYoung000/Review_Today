@@ -73,7 +73,7 @@ struct RunPhaseLine: View {
             }
         }
         .font(.caption)
-        .foregroundStyle(run.errorCode == nil ? runway.agent : .orange)
+        .foregroundStyle(run.errorCode == nil ? runway.ink : .orange)
     }
 }
 

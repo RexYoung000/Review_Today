@@ -1,0 +1,34 @@
+{
+  "source": "brand/refresh-2026-09/monochrome-preview/ReviewToday-Confirmed-BlackWhite.icon",
+  "source_sha256": "b4e1aaba0bca4ba521851805bad35c20143bd9d1cb5a7125d6a99f2a8d3f7950",
+  "exports": [
+    {
+      "size": 16,
+      "sha256": "ea4aa217d8ed66b7e41a31b1ba11dddfc05147f48094a21676d2cbf139cd3ada"
+    },
+    {
+      "size": 32,
+      "sha256": "9c617589b5549d15b0ad38464a869cab14eb8672fdb5e93ca3da33e8ee21c24d"
+    },
+    {
+      "size": 64,
+      "sha256": "06704492b143f77eabe6462ec21700d1e0827744cfd4799ce746645e5dacb9a1"
+    },
+    {
+      "size": 128,
+      "sha256": "e54464f7f9c9da9d9a5231f150456b6594655bd1bcca81a57b63157adf84525b"
+    },
+    {
+      "size": 256,
+      "sha256": "0a4d975fb8feae5acfe1a501ca74614e54decdcb1a060ade2dc074874be92910"
+    },
+    {
+      "size": 512,
+      "sha256": "64126af2884112d02b6823c68c58c1516953cf50136f91914b3313b3d636d64f"
+    },
+    {
+      "size": 1024,
+      "sha256": "c981063a4ff0c7816aac26039feef669e31f47f19b47df578e279393a17fd208"
+    }
+  ]
+}

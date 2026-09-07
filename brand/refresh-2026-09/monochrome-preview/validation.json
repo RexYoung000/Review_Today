@@ -1,0 +1,195 @@
+{
+  "renderer": "/Applications/Xcode.app/Contents/Applications/Icon Composer.app/Contents/Executables/ictool",
+  "variants": [
+    {
+      "kind": "Original",
+      "document_sha256": "fe8b1f1faaae9f5faefa2caf999affc20d08d8d852fccea608c1a6d8fd6944d1",
+      "master_sha256": "a54ff24e99bf6837dadb857b7f779fc3ebf8e8c08e090b3191f1c42135d27861",
+      "neutral_color_parameters": true,
+      "exports": [
+        {
+          "file": "original/default-16.png",
+          "sha256": "c905b14778c36c20bcb733b204db8eaa58a79fb069d25492a2a94a48f08e2e54"
+        },
+        {
+          "file": "original/default-32.png",
+          "sha256": "e4729a019dcde6040a36dd8a813c2499c947a4115a316db4402eb73d9e3c6317"
+        },
+        {
+          "file": "original/default-64.png",
+          "sha256": "3e3ac332ab55655809e67b26b680915ee5ba05026c2183d177c22d2339ce224e"
+        },
+        {
+          "file": "original/default-128.png",
+          "sha256": "3c2ecf102e367d43c31ad5563c52e7292d86e3e34c3d3e857fc113be6536a6f5"
+        },
+        {
+          "file": "original/default-256.png",
+          "sha256": "83c3432640260875fa402139d9d3db43886ecc964cfd1bcb04cfe1939375c4e7"
+        },
+        {
+          "file": "original/default-512.png",
+          "sha256": "ca2df8acd731cbee67c8984845f21c69535ea0cfaedb44e0929a440c0a3e09ae"
+        },
+        {
+          "file": "original/default-1024.png",
+          "sha256": "517d3918b1e66049b827a5cc03c5751a2f48c38273cfa0000c18c47cea67714d"
+        },
+        {
+          "file": "original/dark-16.png",
+          "sha256": "0509e58bf154d93d5dfc2ec0f10a549a7d0a164b6146a4d4f8085395246a1778"
+        },
+        {
+          "file": "original/dark-32.png",
+          "sha256": "f1d325822134d472a35dc0fdb80de7fa0967a88c95e738ab879ac5a587e93f7b"
+        },
+        {
+          "file": "original/dark-64.png",
+          "sha256": "79e1621703cdb29bab428f517ce1be47aaad3df2212286568004d744639a3eec"
+        },
+        {
+          "file": "original/dark-128.png",
+          "sha256": "fad83a6e6f89c86329da3946e2ad2f672f11ab9c0475ddbceeb86c86c190612b"
+        },
+        {
+          "file": "original/dark-256.png",
+          "sha256": "6693a3268595cd59e6dbdca38f39cef470d39a63cf5859540ce39cba927169aa"
+        },
+        {
+          "file": "original/dark-512.png",
+          "sha256": "3a339a6b567e38c7da674f638cb35315886379f361ea15f6a9c9470b215485a4"
+        },
+        {
+          "file": "original/dark-1024.png",
+          "sha256": "3dc483ec432faf3f802055c477c52e91e3f11cdb90a13c321e4c6672cd5d5326"
+        },
+        {
+          "file": "original/mono-16.png",
+          "sha256": "16e24433b4847c736537e32e2a45ea8e1d3b81c11fad95f7e77df99f1b743c56"
+        },
+        {
+          "file": "original/mono-32.png",
+          "sha256": "0845f013c986498b07cc18ecdf8c92729217be9ea484f617a628cb51e8a7e6d8"
+        },
+        {
+          "file": "original/mono-64.png",
+          "sha256": "790476c86a5aa58ee5ab8960c91c972bb947b1662c347752eeb3093cd961a1fe"
+        },
+        {
+          "file": "original/mono-128.png",
+          "sha256": "1b97496f3c350e127b0a8a29462df78e6c32ed6737084e9ce61c769204aad7a5"
+        },
+        {
+          "file": "original/mono-256.png",
+          "sha256": "4c20de819222fe9beb32ecf876e15ec2659eea3e6bda160d33f7ead22d1a47e1"
+        },
+        {
+          "file": "original/mono-512.png",
+          "sha256": "88542c124443d1c69d6f70a303bd08f4d07f9b247df0bb14f26d493e1c061f42"
+        },
+        {
+          "file": "original/mono-1024.png",
+          "sha256": "c81010ab87088c8476bad1d71398c752d38da7520c3353bfd414ac663faa03e4"
+        }
+      ]
+    },
+    {
+      "kind": "Glass",
+      "document_sha256": "b4e1aaba0bca4ba521851805bad35c20143bd9d1cb5a7125d6a99f2a8d3f7950",
+      "master_sha256": "a54ff24e99bf6837dadb857b7f779fc3ebf8e8c08e090b3191f1c42135d27861",
+      "neutral_color_parameters": true,
+      "exports": [
+        {
+          "file": "glass/default-16.png",
+          "sha256": "ea4aa217d8ed66b7e41a31b1ba11dddfc05147f48094a21676d2cbf139cd3ada"
+        },
+        {
+          "file": "glass/default-32.png",
+          "sha256": "9c617589b5549d15b0ad38464a869cab14eb8672fdb5e93ca3da33e8ee21c24d"
+        },
+        {
+          "file": "glass/default-64.png",
+          "sha256": "06704492b143f77eabe6462ec21700d1e0827744cfd4799ce746645e5dacb9a1"
+        },
+        {
+          "file": "glass/default-128.png",
+          "sha256": "e54464f7f9c9da9d9a5231f150456b6594655bd1bcca81a57b63157adf84525b"
+        },
+        {
+          "file": "glass/default-256.png",
+          "sha256": "0a4d975fb8feae5acfe1a501ca74614e54decdcb1a060ade2dc074874be92910"
+        },
+        {
+          "file": "glass/default-512.png",
+          "sha256": "64126af2884112d02b6823c68c58c1516953cf50136f91914b3313b3d636d64f"
+        },
+        {
+          "file": "glass/default-1024.png",
+          "sha256": "c981063a4ff0c7816aac26039feef669e31f47f19b47df578e279393a17fd208"
+        },
+        {
+          "file": "glass/dark-16.png",
+          "sha256": "76ad21068f0564a20e4ca58d0dccd452ab44d6548bfae43f7d9b88c2043be4c9"
+        },
+        {
+          "file": "glass/dark-32.png",
+          "sha256": "745face3de56a84f4a87a8cf4d1936800ee2b33dea996013cf37b3360e108e4b"
+        },
+        {
+          "file": "glass/dark-64.png",
+          "sha256": "d32cf18074a7a5bc267dacf4d9c71709c52e2a527ccfe2a074c89ab2e056265b"
+        },
+        {
+          "file": "glass/dark-128.png",
+          "sha256": "44adc63ceffdfc8677708b48c276f1c469914b8ef15bd5e9127898d178dc9e32"
+        },
+        {
+          "file": "glass/dark-256.png",
+          "sha256": "d5ef58764379b26347739483add238dc9365e4a9bad3ed332b7ff791ed5e381a"
+        },
+        {
+          "file": "glass/dark-512.png",
+          "sha256": "1ccba604875d25999582ad47f4ba59b6f20bf46f8ebdceb6388a4d47cb2a36b3"
+        },
+        {
+          "file": "glass/dark-1024.png",
+          "sha256": "d098d26f1f3301b1203e70d8dacfdb2edb371e052932eeca81ca1c1ef4a57fad"
+        },
+        {
+          "file": "glass/mono-16.png",
+          "sha256": "7893e0145c77b43b5b8ba532385ab71380e0d1bd5cbc6a65c2426676682a1fdc"
+        },
+        {
+          "file": "glass/mono-32.png",
+          "sha256": "a1473159c93a6739a7e40e576eaa316446ae08860e2d02a27d10d2002ea6c665"
+        },
+        {
+          "file": "glass/mono-64.png",
+          "sha256": "a1a5a31e89ebd58444655d8b1aa589a6baa952180b1f0c35fcbdbdd62198a607"
+        },
+        {
+          "file": "glass/mono-128.png",
+          "sha256": "bc309171a80715a4835aac0ad89106004f50c745053ecdc29c600d121f1ec5d2"
+        },
+        {
+          "file": "glass/mono-256.png",
+          "sha256": "9ce75b913ba949cd5f6fe81a43df1eaa7438468344c67876f0ba8b695f58e2ea"
+        },
+        {
+          "file": "glass/mono-512.png",
+          "sha256": "3024c07a331d28735dfc910cc94058bd808be23d24761d35a8bbaf4ace986077"
+        },
+        {
+          "file": "glass/mono-1024.png",
+          "sha256": "0e70d89636ae7728b28a5f29defb77bb37c5bde469343ebb80c856e56423e6ad"
+        }
+      ]
+    }
+  ],
+  "preserved": {
+    "accepted-a-reference.png": "9755019a820719e62d14af1651ea63f1df9751fdd7397b52c12f50393ac03556",
+    "mark-alpha.png": "a54ff24e99bf6837dadb857b7f779fc3ebf8e8c08e090b3191f1c42135d27861",
+    "user-original.png": "e905fcd887afe4201ad92cb75df5a71ee93a02e37edbeefff11079373736d525",
+    "current-app-icon-1024.png": "763fad3389952e50a2c1a8e7346178436a2ce3241f4bf1959ee5ddbd3914ad3a"
+  }
+}
