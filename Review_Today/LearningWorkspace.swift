@@ -470,9 +470,9 @@ struct LearningWorkspace: View {
                       .frame(maxWidth: bubbleWidth, alignment: .leading)
               }
               if ["interrupted", "failed"].contains(message.responseState) {
-                  Text("未完成 · 内容保留，不作为正式结果").font(.caption2).foregroundStyle(.secondary)
+                  Text(message.responseState == "interrupted" ? "回复已中断" : "回复未完成").font(.caption2).foregroundStyle(.secondary)
               } else if message.responseState == "streaming" {
-                  Text("正在输出 · 尚未完成校验").font(.caption2).foregroundStyle(.secondary)
+                  Text("正在回复").font(.caption2).foregroundStyle(.secondary)
               }
             }
         }
@@ -557,13 +557,11 @@ struct LearningWorkspace: View {
                 }
             }
 
-            RunDetails(title: run?.status == "completed" && (run?.elapsedMS ?? 0) > 0
-                       ? String(format: "已完成 · %.1f 秒 · 运行详情", Double(run!.elapsedMS) / 1000)
-                       : "运行详情") {
+            RunDetails() {
                 VStack(alignment: .leading, spacing: 8) {
                     let sessionEvents = run.map { item in runEvents.filter { $0.runID == item.id } } ?? []
                     if taskEvents.isEmpty && sessionEvents.isEmpty {
-                        Text("等待第一个运行事件")
+                        Text("暂无运行记录")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -581,6 +579,7 @@ struct LearningWorkspace: View {
                                     .font(.caption2.monospaced())
                                     .foregroundStyle(.secondary)
                                     .fixedSize(horizontal: false, vertical: true) }
+                                if developerDiagnostics {
                                 ViewThatFits(in: .horizontal) {
                                     eventTiming(event)
                                     VStack(alignment: .leading, spacing: 2) {
@@ -591,6 +590,7 @@ struct LearningWorkspace: View {
                                 }
                                 .font(.caption2.monospaced())
                                 .foregroundStyle(.secondary)
+                                }
                                 if !event.detailSummary.isEmpty && (developerDiagnostics || event.errorCode == nil) {
                                     Text(event.detailSummary)
                                         .font(.caption)
@@ -647,7 +647,7 @@ struct LearningWorkspace: View {
         var values: [String] = []
         if developerDiagnostics { values += [event.stage, event.model] }
         if event.attempt > 1 { values.append("第 \(event.attempt) 次") }
-        if let duration = event.durationMS { values.append("\(duration) ms") }
+        if developerDiagnostics, let duration = event.durationMS { values.append("\(duration) ms") }
         return values.filter { !$0.isEmpty }.joined(separator: " · ")
     }
 
@@ -924,7 +924,7 @@ struct LearningWorkspace: View {
                 }
             }
           }
-            RunDetails(title: run.status == "completed" ? (run.elapsedMS > 0 ? String(format: "已完成 · %.1f 秒 · 运行详情", Double(run.elapsedMS) / 1000) : "已完成 · 运行详情") : "运行详情") {
+            RunDetails() {
                 ForEach(runEvents.filter { $0.runID == run.id && $0.stage != "response.delta" }, id: \.id) { event in
                     VStack(alignment: .leading, spacing: 3) {
                         Text(event.summary).font(.caption.weight(.medium))
@@ -937,11 +937,11 @@ struct LearningWorkspace: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.vertical, 3)
                 }
-                if let first = run.firstTextMS {
+                if developerDiagnostics, let first = run.firstTextMS {
                     Text("首段生成：\(first) ms · 历次执行耗时：\(run.attemptDurationsJSON) ms")
                         .font(.caption2.monospaced()).foregroundStyle(.secondary)
                 }
-                if let response = sessionMessages.first(where: { $0.runID == run.id && $0.role != "user" }),
+                if developerDiagnostics, let response = sessionMessages.first(where: { $0.runID == run.id && $0.role != "user" }),
                    let received = response.firstReceivedAt, let displayed = response.firstDisplayedAt {
                     Text("首段收到至呈现：\(max(0, Int(displayed.timeIntervalSince(received) * 1000))) ms")
                         .font(.caption2.monospaced()).foregroundStyle(.secondary)

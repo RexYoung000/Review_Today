@@ -1019,3 +1019,11 @@ agent-service/.venv/bin/python agent-service/tests/m1_real_smoke.py
 - 额外在副本注入保存前失败，确认零内容落盘；同 ID 冲突在写入前拒绝。证明见 `/tmp/review-today-library-failure/verification.json`。导入工具和使用边界见 `tools/README.md`。
 
 本轮剩余体验验收：Rex 用自己的学习目标检查澄清是否合适、讲解是否有用，以及删除确认是否易懂。VoiceOver 全路径、所有窗口尺寸/主题组合与大规模长历史数据的性能未在本轮完整覆盖；既有完整 M1 验收仍保留。
+
+## 日常提示收敛（2026-09-07）
+
+已移除侧栏后台清理提示和标签编辑承诺，缩短引用知识说明、发送/回复/中断提示及流式能力提示。完成运行只保留默认折叠的运行详情，事件精确时间、毫秒耗时和首段指标仅在开发模式显示。异常恢复、理解验证状态、删除后果与后台清理机制不变；产品规则已同步 DESIGN.md。
+
+验证：Apple Development 签名 Debug 构建及严格签名校验通过（`/tmp/review-today-copy-cleanup-build.log`）；LearningInputContractTests、SessionDeletionContractTests、AgentServiceMonitorContractTests 全部通过（`/tmp/review-today-copy-contracts.log`）。覆盖输入/草稿/保存失败重试、删除事务回滚/范围复核/共享卡保护/离线清理队列与防复活、启动超时/断连恢复/能力检查状态。编译仍有既有 NSSpeechSynthesizer 弃用警告。
+
+已更新并打开 `output/default-brand-build/Build/Products/Debug/Review_Today.app`。通过原生 AX 与截图确认待处理页＋归档空态不再显示后台清理提示；实际打开 Agent → 添加材料 → 引用已有知识卡，确认显示「选择知识卡，插入草稿」，随后关闭弹窗，未发送测试消息或改动知识内容。当前没有可用历史会话供检查标签弹窗/运行详情；本轮未重新触发真实模型的生成、中断、断线提示，也未运行 VoiceOver、深色及缩窗专项验收。下次日常对话可核对「正在回复」、完成后的折叠详情与开发模式指标；最终体验验收仍由 Rex 确认。

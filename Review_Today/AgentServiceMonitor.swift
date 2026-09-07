@@ -199,11 +199,11 @@ final class AgentServiceMonitor {
             conversationSupported = health.conversationProtocol == 1
             responseStreamSupported = health.responseStreamProtocol == 1
             if !responseStreamSupported {
-                streamNotice = "当前服务不支持实时输出，请重启开发 App 与本地服务。"
+                streamNotice = "当前无法逐字显示回复，请重启应用后重试。"
             } else if let coach = health.modelRoles["coach"], coach.streaming == "buffered" {
-                streamNotice = "当前模型服务只能整段返回；仍可使用，但尚未通过流式验收。"
+                streamNotice = "回复将一次性显示。"
             } else if health.modelRoles["coach"]?.streaming == "unavailable" {
-                streamNotice = "实时输出能力检查未通过；可重试检查，不会静默更换模型。"
+                streamNotice = "暂时无法实时显示回复，请稍后重试。"
             } else if health.modelRoles["coach"]?.streaming == "checking" {
                 streamNotice = ""
             } else { streamNotice = "" }

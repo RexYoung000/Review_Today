@@ -98,8 +98,6 @@ struct SessionTagEditor: View {
             Text("编辑会话标签").font(.headline)
             TextField("用逗号分隔，最多 5 个", text: $tagsText)
                 .textFieldStyle(BrandMaterialTextFieldStyle())
-            Text("人工标签会覆盖自动标签；Agent 不会静默改回。")
-                .font(.caption).foregroundStyle(.secondary)
             if !knowledgeTags.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("关联知识标签 · 只读").font(.caption.weight(.semibold))
@@ -164,7 +162,6 @@ struct AppSidebar: View {
     @State private var selectedIDs = Set<UUID>()
     @State private var rangeAnchor: UUID?
     @State private var deletionImpact: SessionDeletionImpact?
-    @Query private var deletionSettings: [AppSettings]
     @State private var batchError: String?
     @State private var visibleRowIDs = Set<UUID>()
     @State private var selectionDelays: [UUID: Double] = [:]
@@ -307,9 +304,6 @@ struct AppSidebar: View {
                     Button(showArchived ? "恢复" : "归档") { batchArchive() }.disabled(selectedIDs.isEmpty)
                     Button { multiSelect = false; selectedIDs.removeAll() } label: { Image(systemName: "xmark") }.help("退出多选")
                 }.font(.caption).buttonStyle(.borderless).padding(.horizontal, 12)
-            }
-            if deletionSettings.contains(where: { SessionDeletion.pendingCount($0.sessionDeletionsJSON) > 0 }) {
-                Text("会话已从本机删除，后台清理待完成").font(.caption).foregroundStyle(.secondary).padding(.horizontal, 12)
             }
             if let batchError { Text(batchError).font(.caption).foregroundStyle(.orange).padding(.horizontal, 12) }
             ScrollView {
