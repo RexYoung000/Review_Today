@@ -320,13 +320,16 @@ struct AppSidebar: View {
                             Text("没有匹配的会话").font(.callout).foregroundStyle(.secondary).padding(.top, 24)
                         } else if showArchived {
                             Text("没有归档会话").font(.callout).foregroundStyle(.secondary).padding(.top, 24)
-                        } else {
-                            SessionWelcome(action: createSession).padding(.top, 20)
                         }
                     }
                 }
                 .scrollTargetLayout()
                 .padding(.horizontal, 8)
+            }
+            .overlay {
+                if visibleSessions.isEmpty && !showArchived && searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    SessionWelcome(action: createSession)
+                }
             }
             .scrollPosition(id: $scrollAnchor, anchor: .top)
             .scrollIndicators(.automatic)
@@ -809,18 +812,36 @@ private struct SessionWelcome: View {
     var action: () -> Void
     @FocusState private var focused: Bool
     @Environment(\.runway) private var runway
+    @Environment(\.colorScheme) private var colorScheme
+    private var bubbleFill: Color { colorScheme == .dark ? runway.field : runway.card }
+
     var body: some View {
         VStack(spacing: 0) {
             Button(action: action) {
-                Text("开始学习").font(.callout.weight(.regular))
-                    .foregroundStyle(runway.ink).padding(.horizontal, 14).padding(.vertical, 10).padding(.bottom, 10)
-                    .background(runway.card, in: InteractionOutline.speechBubble.shape)
-                    .overlay(InteractionOutline.speechBubble.shape.strokeBorder(runway.hairline))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("开始").font(.system(size: 11, weight: .regular)).tracking(3)
+                        .foregroundStyle(runway.copy).padding(.leading, 1)
+                    Text("学习").font(.system(size: 20, weight: .medium, design: .rounded)).tracking(2)
+                        .foregroundStyle(runway.ink)
+                }
+                .padding(.horizontal, 24).padding(.vertical, 12)
+                .background(bubbleFill, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
             }
-            .buttonStyle(InteractionButtonStyle(focused: focused, padding: 0, outline: .speechBubble))
+            .buttonStyle(InteractionButtonStyle(focused: focused, padding: 0, outline: .rounded(24)))
             .focusable().focusEffectDisabled().focused($focused)
+            .accessibilityLabel("开始学习")
             .help("进入 Agent 继续编辑草稿，不会自动发送")
-            MascotMotion(phase: .idle, ambient: true, idleClip: .readingAndLooking).frame(width: 150, height: 170).padding(.top, -42)
+            .shadow(color: runway.liftShadow.opacity(0.45), radius: 6, x: 0, y: 2)
+            .rotationEffect(.degrees(-3)).offset(x: 14)
+            VStack(spacing: 3) {
+                Circle().fill(bubbleFill).frame(width: 8, height: 8).offset(x: 6)
+                Circle().fill(bubbleFill).frame(width: 4, height: 4)
+            }
+            .padding(.top, 4).accessibilityHidden(true).allowsHitTesting(false)
+            MascotMotion(phase: .idle, ambient: true, idleClip: .readingAndLooking)
+                .frame(width: 150, height: 170).padding(.top, -48)
+                // Keep the animation canvas intact, excluding transparent footroom from centering.
+                .padding(.bottom, -38)
         }.frame(maxWidth: .infinity)
     }
 }
