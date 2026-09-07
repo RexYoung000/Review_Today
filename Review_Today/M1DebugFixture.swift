@@ -52,6 +52,9 @@ enum M1DebugFixture {
     }
 
     private static func seed(_ context: ModelContext, mode: String?) throws {
+        if mode == "today", ProcessInfo.processInfo.environment["REVIEW_TODAY_UI_POLISH_FIXTURE"] == "empty" {
+            context.insert(AppSettings()); try context.save(); return
+        }
         let sourceText = "光合作用是植物利用光能，把二氧化碳和水转化为有机物，并释放氧气的过程。"
         let source = Source(
             id: UUID(uuidString: "22222222-2222-4222-8222-222222222222")!,
@@ -126,6 +129,15 @@ enum M1DebugFixture {
             previousAttempt.reviewUserStatus = "还没有计入复习，可以重试"
             context.insert(previousSession)
             context.insert(previousAttempt)
+        }
+        if mode == "today", ProcessInfo.processInfo.environment["REVIEW_TODAY_UI_POLISH_FIXTURE"] == "populated" {
+            item.forceDue = true; item.skipTwoHourWait = true
+            item.createdAt = Date.now.addingTimeInterval(-86400); item.dueAt = Date.now.addingTimeInterval(-3600)
+            for (index, goal) in ["记住 RAG 工作流程的三个主要阶段。", "说明 RAG 的检索与生成阶段分别做什么。", "解释 Embedding model v2.1 与 top-k 检索的区别，保留完整的中英文术语和版本。", "描述检索评估方法", "说明已暂停的知识"].enumerated() {
+                let sample = Knowledge(learningGoal: goal, knowledgeType: "concept", theme: index == 4 ? "暂停主题" : index == 3 ? "具有较长名称的检索评估与结果质量分析主题" : "检索增强生成（RAG）", contentLanguage: "zh", questionLanguage: "zh", answerLanguage: "zh", evidenceExcerpt: "隔离 UI 样例", evidenceLocator: "")
+                sample.lifecycle = index == 4 ? "paused" : "active"
+                context.insert(sample)
+            }
         }
         context.insert(AppSettings())
         try seedLearningWorkspace(context, mode: mode)

@@ -143,6 +143,7 @@ struct AppSidebar: View {
     @Binding var selectedSessionID: UUID?
     @Binding var scrollAnchor: UUID?
     var onCollapse: () -> Void
+    var onStartLearning: () -> Void
     var inboxCount: Int
     @Environment(\.modelContext) private var modelContext
     @Environment(\.runway) private var runway
@@ -154,6 +155,7 @@ struct AppSidebar: View {
     @State private var hoveredSessionID: UUID?
     @State private var openMenuSessionID: UUID?
     @State private var focusedMenuSessionID: UUID?
+    @FocusState private var focusedNavigation: SidebarItem?
     @FocusState private var focusedSessionID: UUID?
     @State private var editingSessionID: UUID?
     @State private var undoSessionID: UUID?
@@ -168,7 +170,6 @@ struct AppSidebar: View {
     @State private var selectionDelays: [UUID: Double] = [:]
     @State private var undoBatchIDs = Set<UUID>()
     @FocusState private var sessionListFocused: Bool
-    @AppStorage("reviewToday.sessionsExpanded") private var sessionsExpanded = true
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var visibleSessions: [AgentSession] {
@@ -273,10 +274,7 @@ struct AppSidebar: View {
     private var sessionNavigation: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 0) {
-                Button { sessionsExpanded.toggle() } label: {
-                    Label("会话", systemImage: sessionsExpanded ? "chevron.down" : "chevron.right")
-                        .font(.subheadline.weight(.medium))
-                }.buttonStyle(InteractionButtonStyle(padding: 4)).accessibilityValue(sessionsExpanded ? "已展开" : "已收起")
+                Text("会话").font(.subheadline.weight(.medium)).padding(4)
                 Spacer(minLength: 0)
                 ChromeIconButton(title: "搜索会话", symbol: "magnifyingglass", selected: searchVisible) {
                     searchVisible.toggle(); if !searchVisible { searchText = "" }
@@ -314,16 +312,17 @@ struct AppSidebar: View {
                 Text("会话已从本机删除，后台清理待完成").font(.caption).foregroundStyle(.secondary).padding(.horizontal, 12)
             }
             if let batchError { Text(batchError).font(.caption).foregroundStyle(.orange).padding(.horizontal, 12) }
-            if sessionsExpanded {
             ScrollView {
                 LazyVStack(spacing: 4) {
                     ForEach(visibleSessions, id: \.id) { session in sessionRow(session) }
                     if visibleSessions.isEmpty {
-                        ContentUnavailableView(
-                            showArchived ? "没有归档会话" : "开始一个学习会话",
-                            systemImage: showArchived ? "archivebox" : "bubble.left.and.bubble.right"
-                        )
-                        .controlSize(.small).padding(.top, 18)
+                        if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            Text("没有匹配的会话").font(.callout).foregroundStyle(.secondary).padding(.top, 24)
+                        } else if showArchived {
+                            Text("没有归档会话").font(.callout).foregroundStyle(.secondary).padding(.top, 24)
+                        } else {
+                            SessionWelcome(action: createSession).padding(.top, 20)
+                        }
                     }
                 }
                 .scrollTargetLayout()
@@ -340,7 +339,6 @@ struct AppSidebar: View {
                 guard multiSelect else { return .ignored }
                 multiSelect = false; selectedIDs.removeAll(); return .handled
             }
-            } else { Spacer(minLength: 0) }
         }
         .frame(maxHeight: .infinity)
     }
@@ -353,8 +351,7 @@ struct AppSidebar: View {
     private func sessionRow(_ session: AgentSession) -> some View {
         let selected = multiSelect ? selectedIDs.contains(session.id) : selectedSessionID == session.id && selection == .learning
         let state = sessionState(session)
-        return HStack(spacing: 4) {
-            Button {
+        return Button {
                 if multiSelect || NSEvent.modifierFlags.contains(.command) || NSEvent.modifierFlags.contains(.shift) {
                     multiSelect = true
                     sessionListFocused = true
@@ -387,14 +384,16 @@ struct AppSidebar: View {
                     }
                 }
                 .padding(.horizontal, 8).padding(.vertical, 9)
+                .padding(.trailing, 41)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(InteractionButtonStyle(focused: focusedSessionID == session.id, padding: 0))
+            .buttonStyle(InteractionButtonStyle(selected: selected, focused: focusedSessionID == session.id, padding: 0, outline: .rounded(10)))
             .focusable().focusEffectDisabled()
             .focused($focusedSessionID, equals: session.id)
             .help(session.title)
             .accessibilityAddTraits(selected ? [.isSelected] : [])
+            .overlay(alignment: .trailing) {
             SingleLevelMenu(title: "会话操作：\(session.title)", symbol: "ellipsis", items: [
                 .init(id: "archive", title: session.status == "active" ? "归档" : "恢复", symbol: session.status == "active" ? "archivebox" : "arrow.uturn.backward"),
                 .init(id: "tags", title: "编辑标签", symbol: "tag"),
@@ -410,13 +409,10 @@ struct AppSidebar: View {
                 default: break
                 }
             }
-            .frame(width: 30)
+            .frame(width: 30).padding(.trailing, 7)
             .opacity(hoveredSessionID == session.id || focusedSessionID == session.id ||
                      openMenuSessionID == session.id || focusedMenuSessionID == session.id ? 1 : 0)
         }
-        .padding(.trailing, 7)
-        .background(selected ? runway.field : hoveredSessionID == session.id ? runway.field.opacity(0.6) : .clear,
-                    in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .onHover { hoveredSessionID = $0 ? session.id : nil }
         .onAppear { visibleRowIDs.insert(session.id) }
         .onDisappear { visibleRowIDs.remove(session.id) }
@@ -451,14 +447,14 @@ struct AppSidebar: View {
             .background(selected ? runway.field : .clear, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .contentShape(Rectangle())
         }
-        .buttonStyle(InteractionButtonStyle(selected: selected, padding: 0))
+        .buttonStyle(InteractionButtonStyle(focused: focusedNavigation == item, padding: 0, outline: .rounded(10)))
+        .focusable().focusEffectDisabled().focused($focusedNavigation, equals: item)
         .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
 
     private func createSession() {
         showArchived = false
-        selectedSessionID = nil
-        selection = .learning
+        onStartLearning()
     }
 
     private func selectAll() {
@@ -554,13 +550,13 @@ struct ContentView: View {
     @Environment(\.dismissWindow) private var dismissWindow
     var coordinator: ReviewCoordinator
     @State private var selection: SidebarItem?
+    @State private var learningFocusRequest = 0
     @State private var selectedKnowledgeID: UUID?
     @State private var selectedLearningSessionID: UUID?
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @AppStorage("reviewToday.sidebarVisible") private var sidebarVisible = true
     @State private var sidebarPolicy = SidebarVisibilityPolicy()
     @State private var sidebarScrollAnchor: UUID?
-    @AppStorage("reviewToday.sessionsExpanded") private var sessionsExpanded = true
     @AppStorage("reviewToday.sidebarWidth") private var savedSidebarWidth = 280.0
     @State private var sidebarResizeStart: Double?
     @State private var monitor = AgentServiceMonitor()
@@ -587,7 +583,7 @@ struct ContentView: View {
         HStack(spacing: 0) {
             if columnVisibility != .detailOnly {
                 AppSidebar(selection: $selection, selectedSessionID: $selectedLearningSessionID,
-                           scrollAnchor: $sidebarScrollAnchor, onCollapse: { setSidebar(expanded: false) }, inboxCount: inboxCount)
+                           scrollAnchor: $sidebarScrollAnchor, onCollapse: { setSidebar(expanded: false) }, onStartLearning: startLearning, inboxCount: inboxCount)
                     .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
                     .padding(8)
                     .frame(width: min(340, max(250, savedSidebarWidth)))
@@ -607,7 +603,7 @@ struct ContentView: View {
             } else {
                 SidebarIconRail(selection: $selection, selectedSessionID: $selectedLearningSessionID,
                                 onExpand: { setSidebar(expanded: true) },
-                                onSessions: { sessionsExpanded = true; setSidebar(expanded: true) }, inboxCount: inboxCount)
+                                onSessions: { setSidebar(expanded: true) }, inboxCount: inboxCount)
                     .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)).padding(8)
             }
             detailContent.padding(.top, 20).frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -674,6 +670,12 @@ struct ContentView: View {
         }
     }
 
+    private func startLearning() {
+        selectedLearningSessionID = nil
+        selection = .learning
+        learningFocusRequest += 1
+    }
+
     private func setSidebar(expanded: Bool) {
         sidebarPolicy.choose(expanded: expanded)
         sidebarVisible = expanded
@@ -701,13 +703,15 @@ struct ContentView: View {
                     LearningWorkspace(
                         monitor: monitor,
                         selectedSessionID: $selectedLearningSessionID,
+                        entryFocusRequest: learningFocusRequest,
+                        onEntryFocusConsumed: { learningFocusRequest = 0 },
                         onOpenKnowledge: { id in
                             selectedKnowledgeID = id
                             selection = .library
                         }
                     )
                 case .library:
-                    LibraryView(selectedID: $selectedKnowledgeID, coordinator: coordinator)
+                    LibraryView(selectedID: $selectedKnowledgeID, coordinator: coordinator, onStartLearning: startLearning)
                 case .inbox:
                     InboxView(onOpenSession: { id in selectedLearningSessionID = id; selection = .learning })
                 }
@@ -799,4 +803,26 @@ final class NotificationRelay: NSObject, UNUserNotificationCenterDelegate {
             ],
             inMemory: true
         )
+}
+
+private struct SessionWelcome: View {
+    var action: () -> Void
+    @FocusState private var focused: Bool
+    @Environment(\.runway) private var runway
+    var body: some View {
+        VStack(spacing: 0) {
+            Button(action: action) {
+                Text("开始学习会话").font(.callout.weight(.regular))
+                    .foregroundStyle(runway.ink).padding(.horizontal, 14).padding(.vertical, 10)
+                    .background(runway.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(runway.hairline))
+            }
+            .buttonStyle(InteractionButtonStyle(focused: focused, padding: 0, outline: .rounded(14)))
+            .focusable().focusEffectDisabled().focused($focused)
+            .help("进入 Agent 继续编辑草稿，不会自动发送")
+            Image(systemName: "arrowtriangle.down.fill").font(.system(size: 8))
+                .foregroundStyle(runway.card).offset(y: -1).accessibilityHidden(true)
+            MascotMotion(phase: .idle, ambient: true, idleClip: .book).frame(width: 150, height: 170).padding(.top, -30)
+        }.frame(maxWidth: .infinity)
+    }
 }

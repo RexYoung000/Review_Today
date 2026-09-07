@@ -168,7 +168,7 @@ struct StatStrip: View {
             ForEach(items) { item in
                 if let action = item.action {
                     Button(action: action) { cell(item) }
-                        .buttonStyle(InteractionButtonStyle(padding: 0))
+                        .buttonStyle(InteractionButtonStyle(padding: 0, outline: .rounded(Runway.chipRadius)))
                 } else { cell(item) }
             }
         }
@@ -254,7 +254,7 @@ struct GradeChip: View {
                 .background(emphasized ? runway.field : runway.card, in: Capsule())
                 .overlay(Capsule().strokeBorder(runway.hairline, lineWidth: 1))
         }
-        .buttonStyle(InteractionButtonStyle(padding: 0))
+        .buttonStyle(InteractionButtonStyle(padding: 0, outline: .capsule))
     }
 }
 
@@ -290,6 +290,7 @@ struct FilterPill: View {
     var title: String
     var selected: Bool
     var action: () -> Void
+    @FocusState private var focused: Bool
     @Environment(\.runway) private var runway
 
     var body: some View {
@@ -303,7 +304,9 @@ struct FilterPill: View {
                 .background(selected ? runway.card : Color.clear, in: Capsule())
                 .shadow(color: selected ? runway.liftShadow : .clear, radius: 8, y: 2)
         }
-        .buttonStyle(InteractionButtonStyle(selected: selected, padding: 0))
+        .buttonStyle(InteractionButtonStyle(focused: focused, padding: 0, outline: .capsule))
+        .focusable().focusEffectDisabled().focused($focused)
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
 }
 

@@ -84,8 +84,14 @@ struct TodayView: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-        ScrollView {
+        VStack(spacing: 0) {
+            statusHeader
+                .frame(maxWidth: 960)
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                .padding(.bottom, 16)
+                .frame(maxWidth: .infinity)
+            ScrollView {
             VStack(alignment: .leading, spacing: Runway.gap) {
                 statusBoard
                 if !activeLearningSessions.isEmpty {
@@ -97,9 +103,9 @@ struct TodayView: View {
                 activityHeatmap
             }
             .frame(maxWidth: 960)
-            .padding(24)
+            .padding(.horizontal, 24)
+            .padding(.bottom, 24)
             .frame(maxWidth: .infinity)
-            .frame(minHeight: geometry.size.height, alignment: .center)
         }
         }
         .background(PaperSurface())
@@ -115,8 +121,7 @@ struct TodayView: View {
         }
     }
 
-    private var statusBoard: some View {
-        VStack(alignment: .leading, spacing: Runway.gap) {
+    private var statusHeader: some View {
             HStack(alignment: .center, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(dueItems.isEmpty ? "今天的学习状态" : tonightTitle)
@@ -133,6 +138,9 @@ struct TodayView: View {
                     RunwayPrimaryButton(title: activeLearning.isEmpty ? "开始学习" : "继续学习") { onOpenLearning(nil) }
                 }
             }
+    }
+
+    private var statusBoard: some View {
             StatStrip(items: [
                 StatCell(
                     id: "due",
@@ -162,7 +170,6 @@ struct TodayView: View {
                     action: onOpenLibrary
                 )
             ])
-        }
     }
 
     private var recentLearningCard: some View {
@@ -219,8 +226,8 @@ struct TodayView: View {
     }
 
     private var activityHeatmap: some View {
-        RunwayCard {
-            VStack(alignment: .leading, spacing: 16) {
+        RunwayCard(padding: activityItems.isEmpty ? 12 : Runway.gap) {
+            VStack(alignment: .leading, spacing: activityItems.isEmpty ? 10 : 16) {
                 HStack(spacing: 44) {
                     activityStat(value: activeDayCount, title: "活跃天数")
                     activityStat(value: currentStreak, title: "当前连续天数")
@@ -231,6 +238,8 @@ struct TodayView: View {
                 ViewThatFits(in: .horizontal) {
                     heatmapGrid(cell: 16, spacing: 5)
                     heatmapGrid(cell: 12, spacing: 4)
+                    ScrollView(.horizontal) { heatmapGrid(cell: 12, spacing: 4) }
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 HStack(spacing: 5) {
                     Text("较少")
@@ -256,6 +265,18 @@ struct TodayView: View {
     }
 
     private func heatmapGrid(cell: CGFloat, spacing: CGFloat) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: spacing) {
+                ForEach(0 ..< 26, id: \.self) { week in
+                    Color.clear.frame(width: cell, height: 14)
+                        .overlay(alignment: .leading) {
+                            if let label = heatmapMonth(week: week) {
+                                Text(label).font(.caption2).foregroundStyle(.secondary)
+                                    .fixedSize().accessibilityHidden(true)
+                            }
+                        }
+                }
+            }.padding(.leading, 20)
         HStack(alignment: .top, spacing: 8) {
             VStack(spacing: spacing) {
                 ForEach(Self.weekdayLabels, id: \.self) { Text($0).frame(width: 12, height: cell) }
@@ -270,6 +291,16 @@ struct TodayView: View {
                 }
             }
         }
+    }
+
+    }
+
+    private func heatmapMonth(week: Int) -> String? {
+        let calendar = Calendar.current
+        let date = calendar.date(byAdding: .day, value: week * 7, to: heatmapStart)!
+        let previous = calendar.date(byAdding: .day, value: -7, to: date)!
+        guard week == 0 || calendar.component(.month, from: date) != calendar.component(.month, from: previous) else { return nil }
+        return date.formatted(.dateTime.month(.abbreviated))
     }
 
     private func heatmapCell(date: Date, size: CGFloat) -> some View {

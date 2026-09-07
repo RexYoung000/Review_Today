@@ -2,6 +2,8 @@ import AppKit
 import SwiftUI
 import WebKit
 
+enum MascotIdleClip: String, Codable { case random, book = "idle_book" }
+
 enum MascotSurface: String, Codable { case recall, voice }
 enum MascotPhase: String, Codable, CaseIterable {
     case listening, thinking, speaking, idle
@@ -21,6 +23,7 @@ struct MascotMotionConfiguration: Codable, Equatable {
     var visible = true
     var rate: Double = 1
     var ambient = false
+    var idleClip: MascotIdleClip = .random
     var material = "current"
     var palette: MascotMaterialPalette? = nil
 
@@ -33,6 +36,7 @@ struct MascotMotion: View {
     var surface: MascotSurface = .recall
     var phase: MascotPhase
     var ambient = false
+    var idleClip: MascotIdleClip = .random
     var level: Double = 0
     var reduced = false
     var rate: Double = 1
@@ -44,7 +48,7 @@ struct MascotMotion: View {
         ZStack {
             if !ready { Circle().fill(materialTrial ? Color(white: colorScheme == .dark ? 0.88 : 0.18) : Color(red: 0.08, green: 0.39, blue: 0.37)).frame(width: 10, height: 10) }
             MascotWebSurface(configuration: .init(surface: surface, mode: phase, level: level,
-                                                 reduced: reduced || systemReduced, dark: colorScheme == .dark, rate: rate, ambient: ambient,
+                                                 reduced: reduced || systemReduced, dark: colorScheme == .dark, rate: rate, ambient: ambient, idleClip: idleClip,
                                                  material: materialTrial ? "graphite" : "current",
                                                  palette: .theme(dark: colorScheme == .dark))) { ready = $0 }
                 .opacity(ready ? 1 : 0)

@@ -1,15 +1,36 @@
 import AppKit
 import SwiftUI
 
+enum InteractionOutline: Equatable {
+    case rounded(CGFloat)
+    case capsule
+    var shape: InteractionGeometry { InteractionGeometry(outline: self) }
+}
+
+struct InteractionGeometry: InsettableShape {
+    var outline: InteractionOutline
+    var amount: CGFloat = 0
+    func path(in rect: CGRect) -> Path {
+        switch outline {
+        case .capsule: Capsule().inset(by: amount).path(in: rect)
+        case .rounded(let radius): RoundedRectangle(cornerRadius: radius, style: .continuous).inset(by: amount).path(in: rect)
+        }
+    }
+    func inset(by amount: CGFloat) -> InteractionGeometry {
+        var copy = self; copy.amount += amount; return copy
+    }
+}
+
 /// Shared feedback, without changing the geometry of navigation or text rows.
 struct InteractionButtonStyle: ButtonStyle {
     var selected = false
     // Owned by the control, not inherited from a focusable list/container.
     var focused = false
     var padding: CGFloat = 6
+    var outline: InteractionOutline = .rounded(9)
 
     func makeBody(configuration: Configuration) -> some View {
-        Feedback(configuration: configuration, selected: selected, focused: focused, padding: padding)
+        Feedback(configuration: configuration, selected: selected, focused: focused, padding: padding, outline: outline)
     }
 
     private struct Feedback: View {
@@ -17,21 +38,23 @@ struct InteractionButtonStyle: ButtonStyle {
         let selected: Bool
         let focused: Bool
         let padding: CGFloat
+        let outline: InteractionOutline
         @State private var hovering = false
         @Environment(\.isEnabled) private var enabled
+        @Environment(\.controlActiveState) private var controlState
         @Environment(\.brandReduceMotion) private var reduced
         @Environment(\.runway) private var runway
 
         var body: some View {
             configuration.label
                 .padding(padding)
-                .background(background, in: RoundedRectangle(cornerRadius: 9))
-                .overlay(RoundedRectangle(cornerRadius: 9)
+                .background(background, in: outline.shape)
+                .overlay(outline.shape
                     .fill(hovering && enabled ? runway.hoverWash.opacity(0.035) : .clear)
                     .allowsHitTesting(false))
-                .overlay(RoundedRectangle(cornerRadius: 9)
-                    .strokeBorder(focused && enabled ? runway.agent : .clear, lineWidth: 1.5))
-                .contentShape(RoundedRectangle(cornerRadius: 9))
+                .overlay(outline.shape
+                    .strokeBorder(focused && enabled && controlState == .key ? runway.agent : .clear, lineWidth: 1.5))
+                .contentShape(outline.shape)
                 .opacity(enabled ? (configuration.isPressed ? 0.78 : 1) : 0.4)
                 .onHover { hovering = $0 }
                 .animation(reduced ? nil : .easeOut(duration: 0.12), value: hovering)
@@ -51,13 +74,15 @@ struct ChromeIconButton: View {
     let symbol: String
     var selected = false
     let action: () -> Void
+    @FocusState private var focused: Bool
 
     var body: some View {
         Button(action: action) {
             Image(systemName: symbol).font(.system(size: 14))
                 .frame(width: 28, height: 28)
         }
-        .buttonStyle(InteractionButtonStyle(selected: selected, padding: 2))
+        .buttonStyle(InteractionButtonStyle(selected: selected, focused: focused, padding: 2))
+        .focusable().focusEffectDisabled().focused($focused)
         .help(title).accessibilityLabel(title)
         .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
@@ -196,6 +221,7 @@ struct QuickStartCard: View {
     let start: AgentQuickStart
     let action: () -> Void
     @State private var hovering = false
+    @FocusState private var focused: Bool
     @Environment(\.brandReduceMotion) private var reduced
     @Environment(\.runway) private var runway
 
@@ -213,7 +239,8 @@ struct QuickStartCard: View {
                 .strokeBorder(hovering ? runway.decorativeAccent.opacity(0.45) : runway.hairline, lineWidth: 1))
             .contentShape(RoundedRectangle(cornerRadius: 16))
         }
-        .buttonStyle(InteractionButtonStyle(padding: 0))
+        .buttonStyle(InteractionButtonStyle(focused: focused, padding: 0, outline: .rounded(16)))
+        .focusable().focusEffectDisabled().focused($focused)
         .scaleEffect(hovering && !reduced ? 1.012 : 1)
         .onHover { hovering = $0 }
         .animation(reduced ? nil : .easeOut(duration: 0.16), value: hovering)

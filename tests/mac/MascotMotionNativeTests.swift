@@ -108,7 +108,7 @@ struct MascotMotionNativeTests {
         try expect(state["animating"] as? Bool == false, "Hidden ambient idle runs")
         coordinator.setVisible(true)
         coordinator.configuration.reduced = false; coordinator.send()
-        _ = try await web.evaluateJavaScript("window.mascotMotion.setState({...window.mascotMotion.inspect().config,idleClip:'idle_book',restartToken:1})")
+        coordinator.configuration.idleClip = .book; coordinator.send()
         try await Task.sleep(for: .seconds(2.2)); state = try await inspect()
         let bookState = state["idle"] as? [String: Any]
         try expect(bookState?["clip"] as? String == "idle_book" && (bookState?["bookVisible"] as? Double ?? 0) > 0.9, "Native notebook clip did not open")
@@ -128,26 +128,29 @@ struct MascotMotionNativeTests {
         try expect((state["idle"] as? [String: Any])?["bookVisible"] as? Double == 0 && state["animating"] as? Bool == false, "Reduced motion leaves notebook visible")
         try expect(web.acceptsFirstResponder == false && web.hitTest(.zero) == nil, "Decorative surface steals input")
         if CommandLine.arguments.contains("--record-idle") { try await recordIdle(web, window: window) }
+        if CommandLine.arguments.contains("--record-ui-book") { try await recordIdle(web, window: window, sidebar: true) }
         web.configuration.userContentController.removeScriptMessageHandler(forName: "mascot"); web.dispose()
     }
 
     // Native WKWebView snapshots sampled against the actual playback clock.
     // This records the isolated native surface, not the daily App window.
-    @MainActor static func recordIdle(_ web: WKWebView, window: NSWindow) async throws {
-        window.setContentSize(NSSize(width: 640, height: 480))
+    @MainActor static func recordIdle(_ web: WKWebView, window: NSWindow, sidebar: Bool = false) async throws {
+        let width = sidebar ? 300 : 640, height = sidebar ? 340 : 480
+        window.setContentSize(sidebar ? NSSize(width: 150, height: 170) : NSSize(width: 640, height: 480))
         let folder = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("brand/refresh-2026-09/idle-motion/evidence")
-        let url = folder.appendingPathComponent("native-idle-v2.mp4")
+        let url = sidebar ? URL(fileURLWithPath: "/tmp/review-ui-sidebar-book.mp4") : folder.appendingPathComponent("native-idle-v2.mp4")
         if FileManager.default.fileExists(atPath: url.path) { try FileManager.default.removeItem(at: url) }
         let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
-        let input = AVAssetWriterInput(mediaType: .video, outputSettings: [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: 640, AVVideoHeightKey: 480])
+        let input = AVAssetWriterInput(mediaType: .video, outputSettings: [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: width, AVVideoHeightKey: height])
         input.expectsMediaDataInRealTime = true
-        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA, kCVPixelBufferWidthKey as String: 640, kCVPixelBufferHeightKey as String: 480])
+        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA, kCVPixelBufferWidthKey as String: width, kCVPixelBufferHeightKey as String: height])
         writer.add(input)
         guard writer.startWriting() else { throw CheckFailure(description: "Native recording could not start") }
         writer.startSession(atSourceTime: .zero)
         let start = ProcessInfo.processInfo.systemUptime
         var token = 20
-        for (clip, duration, dark, reduced) in [("idle_book", 9.3, true, false), ("idle_stretch", 4.9, false, false), ("idle_hop", 4.5, false, false), ("idle_look", 5.3, true, false), ("random", 12.0, true, false), ("idle_book", 1.2, true, true)] {
+        let clips: [(String, Double, Bool, Bool)] = sidebar ? [("idle_book", 9.8, false, false), ("idle_book", 1.2, true, true)] : [("idle_book", 9.3, true, false), ("idle_stretch", 4.9, false, false), ("idle_hop", 4.5, false, false), ("idle_look", 5.3, true, false), ("random", 12.0, true, false), ("idle_book", 1.2, true, true)]
+        for (clip, duration, dark, reduced) in clips {
             token += 1
             _ = try await web.evaluateJavaScript("window.mascotMotion.setState({...window.mascotMotion.inspect().config,idleClip:'\(clip)',restartToken:\(token),visible:true,ambient:true,reduced:\(reduced),dark:\(dark),rate:1})")
             let clipStart = ProcessInfo.processInfo.systemUptime
@@ -158,11 +161,11 @@ struct MascotMotionNativeTests {
                     let status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, adaptor.pixelBufferPool!, &pixel)
                     guard status == kCVReturnSuccess, let pixel else { throw CheckFailure(description: "Recording buffer unavailable") }
                     CVPixelBufferLockBaseAddress(pixel, [])
-                    let context = CGContext(data: CVPixelBufferGetBaseAddress(pixel), width: 640, height: 480, bitsPerComponent: 8, bytesPerRow: CVPixelBufferGetBytesPerRow(pixel), space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)!
+                    let context = CGContext(data: CVPixelBufferGetBaseAddress(pixel), width: width, height: height, bitsPerComponent: 8, bytesPerRow: CVPixelBufferGetBytesPerRow(pixel), space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)!
                     let gray = dark ? 0.075 : 0.965
-                    context.setFillColor(CGColor(gray: gray, alpha: 1)); context.fill(CGRect(x: 0, y: 0, width: 640, height: 480))
+                    context.setFillColor(CGColor(gray: gray, alpha: 1)); context.fill(CGRect(x: 0, y: 0, width: width, height: height))
                     NSGraphicsContext.saveGraphicsState(); NSGraphicsContext.current = NSGraphicsContext(cgContext: context, flipped: false)
-                    shot.draw(in: NSRect(x: 0, y: 0, width: 640, height: 480))
+                    shot.draw(in: NSRect(x: 0, y: 0, width: width, height: height))
                     NSGraphicsContext.restoreGraphicsState(); CVPixelBufferUnlockBaseAddress(pixel, [])
                     let time = CMTime(seconds: ProcessInfo.processInfo.systemUptime-start, preferredTimescale: 600)
                     guard adaptor.append(pixel, withPresentationTime: time) else { throw CheckFailure(description: "Native frame append failed") }

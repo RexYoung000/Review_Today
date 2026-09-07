@@ -4,6 +4,7 @@ import SwiftUI
 struct LibraryView: View {
     @Binding var selectedID: UUID?
     var coordinator: ReviewCoordinator
+    var onStartLearning: () -> Void = {}
 
     @Query(sort: \Knowledge.theme) private var allItems: [Knowledge]
     @Environment(\.runway) private var runway
@@ -73,6 +74,9 @@ struct LibraryView: View {
                 )
             }
         }
+        .onChange(of: themes) { _, names in
+            if theme != "all" && !names.contains(theme) { theme = "all" }
+        }
         .onChange(of: selectedID) { _, _ in
             openSelectedKnowledgeIfNeeded()
         }
@@ -87,45 +91,45 @@ struct LibraryView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: Runway.gap) {
-            HStack(alignment: .firstTextBaseline) {
-                Spacer(minLength: 12)
-                if !visibleItems.isEmpty {
-                    Text("\(visibleItems.count)")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: Runway.gap) {
+                statusFilters.fixedSize()
+                if !themes.isEmpty { themeFilters.frame(minWidth: 240) }
+                Spacer(minLength: 0)
+                resultCount
             }
-
-            HStack(spacing: Runway.gap) {
-                filterTrack {
-                    FilterPill(title: String(localized: "在用"), selected: filter == "active") {
-                        filter = "active"
-                    }
-                    FilterPill(title: String(localized: "已暂停"), selected: filter == "paused") {
-                        filter = "paused"
-                    }
-                    FilterPill(title: String(localized: "已删除"), selected: filter == "soft_deleted") {
-                        filter = "soft_deleted"
-                    }
-                }
-
-                if !themes.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        filterTrack {
-                            FilterPill(title: String(localized: "全部"), selected: theme == "all") { theme = "all" }
-                            ForEach(themes, id: \.self) { name in
-                                FilterPill(title: name, selected: theme == name) { theme = name }
-                            }
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 12) { statusFilters; Spacer(minLength: 8); resultCount }
+                if !themes.isEmpty { themeFilters }
             }
         }
         .padding(.horizontal, Runway.section)
         .padding(.top, Runway.gap)
         .padding(.bottom, Runway.space)
+    }
+
+    private var resultCount: some View {
+        Text("总数 \(visibleItems.count)").font(.subheadline).foregroundStyle(.secondary)
+            .monospacedDigit().fixedSize().accessibilityLabel("当前筛选总数 \(visibleItems.count)")
+    }
+
+    private var statusFilters: some View {
+        filterTrack {
+            FilterPill(title: String(localized: "在用"), selected: filter == "active") { filter = "active" }
+            FilterPill(title: String(localized: "已暂停"), selected: filter == "paused") { filter = "paused" }
+            FilterPill(title: String(localized: "已删除"), selected: filter == "soft_deleted") { filter = "soft_deleted" }
+        }
+    }
+
+    private var themeFilters: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            filterTrack {
+                FilterPill(title: String(localized: "全部"), selected: theme == "all") { theme = "all" }
+                ForEach(themes, id: \.self) { name in
+                    FilterPill(title: name, selected: theme == name) { theme = name }
+                }
+            }
+        }.fixedSize(horizontal: false, vertical: true)
     }
 
     private func filterTrack<Content: View>(@ViewBuilder content: () -> Content) -> some View {
@@ -150,7 +154,8 @@ struct LibraryView: View {
             LazyVGrid(columns: columns, alignment: .leading, spacing: Runway.gap) {
                 ForEach(group.items, id: \.id) { item in
                     SummaryChip(
-                        title: KnowledgeLexicon.chipTitle(for: item, among: group.items, theme: group.theme)
+                        title: KnowledgeLexicon.chipTitle(for: item, among: group.items, theme: group.theme),
+                        fullTitle: KnowledgeLexicon.keyword(for: item, among: group.items)
                     ) {
                         openDeck(item)
                     }
@@ -170,18 +175,24 @@ struct LibraryView: View {
 
     private var emptyState: some View {
         VStack(spacing: 12) {
-            CoachMark(pose: .waitYou, size: 64)
-            Text(emptyCopy)
+            MascotMotion(phase: .idle).frame(width: 100, height: 90)
+            Text(emptyCopy).multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
+            if filter == "active" && items.isEmpty {
+                RunwayPrimaryButton(title: "开始学习", action: onStartLearning)
+            } else if !items.isEmpty && theme != "all" {
+                Button("显示全部主题") { theme = "all" }.buttonStyle(.borderless)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var emptyCopy: String {
-        switch filter {
+        if !items.isEmpty && theme != "all" { return "没有符合当前筛选的知识，请调整筛选。" }
+        return switch filter {
         case "paused": String(localized: "没有已暂停的知识。")
         case "soft_deleted": String(localized: "没有已软删除的知识。")
-        default: String(localized: "还没有知识点。在今天记录想记住的内容。")
+        default: String(localized: "还没有知识点。前往 Agent 开始学习，确认后保存到知识库。")
         }
     }
 
@@ -220,24 +231,24 @@ struct LibraryView: View {
 
 private struct SummaryChip: View {
     var title: String
+    var fullTitle: String
     var action: () -> Void
     @State private var hovering = false
+    @FocusState private var focused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.runway) private var runway
 
     var body: some View {
         Button(action: action) {
-            IconLeadRow(iconWidth: 22, spacing: 12) {
-                Image(systemName: "plus")
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(runway.addition)
-                    .frame(height: 20, alignment: .center)
-            } content: {
+            HStack(spacing: 12) {
                 Text(title)
                     .font(.body.weight(.medium))
                     .foregroundStyle(runway.ink)
                     .multilineTextAlignment(.leading)
-                    .lineLimit(2)
+                    .lineLimit(2).truncationMode(.tail)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "chevron.right").font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary).accessibilityHidden(true)
             }
             .padding(.horizontal, Runway.gap)
             .padding(.vertical, 14)
@@ -249,7 +260,9 @@ private struct SummaryChip: View {
             )
             .shadow(color: runway.liftShadow.opacity(0.45), radius: 8, y: 2)
         }
-        .buttonStyle(InteractionButtonStyle(padding: 0))
+        .buttonStyle(InteractionButtonStyle(focused: focused, padding: 0, outline: .rounded(Runway.chipRadius)))
+        .focusable().focusEffectDisabled().focused($focused)
+        .help(fullTitle).accessibilityLabel(fullTitle)
         .onHover { hovering = $0 }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: hovering)
     }
@@ -340,16 +353,25 @@ enum KnowledgeLexicon {
         return nil
     }
 
+    static func needsLegacyTitleFallback(title: String, goal: String) -> Bool {
+        let source = stripCommandLead(goal).trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !title.isEmpty, source.count > title.count, source.hasPrefix(title) else { return false }
+        // Evidence-backed legacy cuts: an unfinished quantity or a cut word.
+        // A complete short title such as “RAG” or “矩阵的阶” remains unchanged.
+        let unfinishedQuantity = title.range(of: "[一二三四五六七八九十0-9]+个$", options: .regularExpression) != nil
+        let cutStage = title.hasSuffix("阶") && source.dropFirst(title.count).hasPrefix("段")
+        return unfinishedQuantity || cutStage
+    }
+
     private static func strongTitle(for item: Knowledge) -> String {
-        let fromField = finishPhrase(item.title)
-        if !isWeak(fromField) { return fromField }
-        let fromGoal = finishPhrase(nounPhrase(from: item.learningGoal))
-        if !isWeak(fromGoal) { return fromGoal }
-        let stripped = stripLeadingAcronym(fromGoal.isEmpty ? item.learningGoal : fromGoal, theme: item.theme)
-        if !isWeak(stripped) { return stripped }
-        let fromTheme = finishPhrase(item.theme)
-        if !isWeak(fromTheme) { return fromTheme }
-        return fromGoal.isEmpty ? String(localized: "知识点") : fromGoal
+        let title = item.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let goal = item.learningGoal.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !isWeak(title) && !needsLegacyTitleFallback(title: title, goal: goal) { return title }
+        // Legacy imported cards have no title. Use the full existing goal rather
+        // than heuristically cutting a noun phrase, an English term or a word.
+        if !goal.isEmpty { return stripCommandLead(goal) }
+        let theme = item.theme.trimmingCharacters(in: .whitespacesAndNewlines)
+        return theme.isEmpty ? String(localized: "知识点") : theme
     }
 
     private static func stripRepeatedTheme(_ text: String, theme: String) -> String {
@@ -359,8 +381,9 @@ enum KnowledgeLexicon {
             .sorted { $0.count > $1.count }
         for alias in aliases {
             guard value != alias, value.hasPrefix(alias) else { continue }
-            let rest = String(value.dropFirst(alias.count))
+            var rest = String(value.dropFirst(alias.count))
                 .trimmingCharacters(in: CharacterSet(charactersIn: " ·・-—：:（）()"))
+            if rest.hasPrefix("的") { rest = String(rest.dropFirst()).trimmingCharacters(in: .whitespaces) }
             if rest.count >= 2 { value = rest }
         }
         return value
@@ -430,7 +453,7 @@ enum KnowledgeLexicon {
         }
         rest = rest.trimmingCharacters(in: CharacterSet(charactersIn: " 的：:，,。"))
         rest = stripLeadingAcronym(rest, theme: item.theme)
-        rest = finishPhrase(String(rest.prefix(14)))
+        rest = finishPhrase(rest)
         if rest.count >= 2, rest != base, !isWeak(rest) { return rest }
         return nil
     }
@@ -627,7 +650,7 @@ private struct KnowledgeDeckOverlay: View {
                     .background(runway.card.opacity(0.94), in: Circle())
                     .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
             }
-            .buttonStyle(InteractionButtonStyle(padding: 0))
+            .buttonStyle(InteractionButtonStyle(padding: 0, outline: .capsule))
             .help("关闭知识详情").accessibilityLabel("关闭知识详情")
             .keyboardShortcut(.cancelAction)
             .padding(20)

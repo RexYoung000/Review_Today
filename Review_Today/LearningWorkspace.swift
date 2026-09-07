@@ -4,6 +4,8 @@ import SwiftUI
 struct LearningWorkspace: View {
     var monitor: AgentServiceMonitor
     @Binding var selectedSessionID: UUID?
+    var entryFocusRequest = 0
+    var onEntryFocusConsumed: () -> Void = {}
     var onOpenKnowledge: (UUID) -> Void
 
     @Environment(\.modelContext) private var modelContext
@@ -135,6 +137,9 @@ struct LearningWorkspace: View {
         .navigationTitle((selectedSession?.title ?? "Agent") + runtime.windowSuffix)
         .toolbar(removing: .title)
         .onAppear(perform: loadDraft)
+        .onChange(of: entryFocusRequest, initial: true) { _, value in
+            if value > 0 { focusRequest += 1; onEntryFocusConsumed() }
+        }
         .onChange(of: selectedSessionID) { _, _ in
             dictation.leave()
             saveDraft()
@@ -206,11 +211,11 @@ struct LearningWorkspace: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     HStack(spacing: 16) {
-                        VStack(alignment: .leading, spacing: 6) {
+                        VStack(alignment: .center, spacing: 6) {
                             Text("Review Today").font(.system(size: 30, weight: .semibold)).foregroundStyle(runway.ink)
                             Text("从一个问题开始，把理解留住。").font(.callout).foregroundStyle(.secondary)
                         }
-                    }.frame(maxWidth: .infinity).padding(.top, 24)
+                    }.multilineTextAlignment(.center).frame(maxWidth: .infinity).padding(.top, 24)
                     composer(contentWidth: contentWidth)
                     HStack {
                         Text("快捷开始").font(.subheadline.weight(.medium)).foregroundStyle(.secondary)

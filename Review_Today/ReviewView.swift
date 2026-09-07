@@ -84,7 +84,7 @@ struct ReviewView: View {
 
     private var header: some View {
         HStack(spacing: 12) {
-            CoachMark(pose: reviewPose, size: 44)
+            MascotMotion(phase: phase == .grading ? .thinking : .idle).frame(width: 62, height: 52)
             VStack(alignment: .leading, spacing: 2) {
                 Text(isPreview ? String(localized: "试一题 · 不计入排期") : String(localized: "今日复习"))
                     .font(.headline)
@@ -104,15 +104,6 @@ struct ReviewView: View {
         .padding(.horizontal, 32)
         .padding(.vertical, 16)
         .background(.clear)
-    }
-
-    private var reviewPose: CoachPose {
-        switch phase {
-        case .asking, .answering: .whistle
-        case .grading, .committing: .working
-        case .feedback: .idle
-        case .failed, .summary: .waitYou
-        }
     }
 
     private func questionBody(_ item: Knowledge, _ question: Question) -> some View {
@@ -163,8 +154,6 @@ struct ReviewView: View {
             if phase == .grading {
                 Text(String(localized: "正在判断"))
                     .foregroundStyle(.secondary)
-                ProgressView()
-                    .controlSize(.small)
             }
 
             if phase == .committing {

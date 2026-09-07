@@ -51,6 +51,7 @@ struct InteractionFocusTests {
             }
             .padding(4).background(palette.canvas)
             .environment(\.runway, palette)
+            .environment(\.controlActiveState, .key)
             .disabled(!enabled)
         )
         renderer.scale = 1

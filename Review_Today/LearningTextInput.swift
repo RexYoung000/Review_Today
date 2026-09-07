@@ -57,7 +57,7 @@ struct LearningTextInput: NSViewRepresentable {
         let coordinator = context.coordinator
         coordinator.parent = self
         view.onSubmit = onSubmit
-        view.isEditable = editable
+        view.setEditingEnabled(editable)
         view.onInsertionApplied = onInsertionApplied
         view.onFocus = { value in DispatchQueue.main.async { coordinator.parent.focused = value } }
         view.placeholder = placeholder
@@ -70,6 +70,7 @@ struct LearningTextInput: NSViewRepresentable {
         view.insertionPointColor = ink
         if coordinator.sessionID != sessionID {
             coordinator.sessionID = sessionID
+            view.releaseFocus()
             view.unmarkText()
             view.undoManager?.removeAllActions()
             view.string = text
@@ -88,21 +89,28 @@ struct LearningTextInput: NSViewRepresentable {
             coordinator.focusRequest = focusRequest
             let requested = focusRequest
             let requestedAt = NSApp.currentEvent?.timestamp ?? 0
+            let revision = view.interactionRevision
+            let owner = sessionID
             DispatchQueue.main.async { [weak view] in
-                guard let view, coordinator.focusRequest == requested,
+                guard let view, coordinator.focusRequest == requested, coordinator.sessionID == owner,
+                      revision == view.interactionRevision, view.isEditable,
                       FocusReturnPolicy.allows(since: requestedAt, current: NSApp.currentEvent) else { return }
-                view.window?.makeFirstResponder(view)
+                view.requestFocus()
             }
         }
+    }
+
+    static func dismantleNSView(_ scroll: NSScrollView, coordinator: Coordinator) {
+        (scroll.documentView as? LearningEditor)?.disposeFocusTracking()
     }
 
     final class Coordinator: NSObject, NSTextViewDelegate {
         var parent: LearningTextInput
         weak var view: LearningEditor?
         var sessionID: UUID?
-        var focusRequest = -1
+        var focusRequest: Int
         var lastInsertion: UUID?
-        init(_ parent: LearningTextInput) { self.parent = parent }
+        init(_ parent: LearningTextInput) { self.parent = parent; focusRequest = parent.focusRequest }
         func textDidChange(_ notification: Notification) {
             guard let view else { return }
             parent.text = view.string
@@ -132,15 +140,85 @@ final class LearningEditor: NSTextView {
     private var applyingTemplate = false
     private var pendingInsertion: EditorInsertion?
     private var insertionTime: TimeInterval = 0
+    private var insertionRevision = 0
+    private var focusAfterUnlock: Int?
+    private(set) var interactionRevision = 0
+    private var intentionalFocus = false
+    private var eventMonitor: Any?
+    private var focusObservers: [NSObjectProtocol] = []
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        disposeFocusTracking()
+        guard let window else { publishFocus(); return }
+        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown, .keyDown]) { [weak self] event in
+            self?.observeInteraction(event)
+            return event
+        }
+        for name in [NSWindow.didBecomeKeyNotification, NSWindow.didResignKeyNotification] {
+            focusObservers.append(NotificationCenter.default.addObserver(forName: name, object: window, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.publishFocus() }
+            })
+        }
+        publishFocus()
+    }
+
+    func disposeFocusTracking() {
+        if let eventMonitor { NSEvent.removeMonitor(eventMonitor) }
+        eventMonitor = nil
+        focusObservers.forEach(NotificationCenter.default.removeObserver)
+        focusObservers.removeAll()
+    }
+
+    private func containsPointer(_ event: NSEvent) -> Bool {
+        guard event.window === window else { return false }
+        let target: NSView = enclosingScrollView?.contentView ?? self
+        return target.bounds.contains(target.convert(event.locationInWindow, from: nil))
+    }
+
+    func observeInteraction(_ event: NSEvent) {
+        interactionRevision += 1
+        if [.leftMouseDown, .rightMouseDown].contains(event.type), event.window === window, !containsPointer(event) {
+            releaseFocus()
+        }
+    }
+
+    func requestFocus() {
+        guard isEditable else { return }
+        intentionalFocus = true
+        window?.makeFirstResponder(self)
+        intentionalFocus = false
+    }
+
+    func releaseFocus() {
+        if window?.firstResponder === self { window?.makeFirstResponder(nil) }
+        publishFocus()
+    }
+
+    func setEditingEnabled(_ enabled: Bool) {
+        isEditable = enabled
+        if !enabled { releaseFocus() }
+        else if let revision = focusAfterUnlock {
+            focusAfterUnlock = nil
+            if revision == interactionRevision { requestFocus() }
+        }
+    }
+
+    private func publishFocus() {
+        onFocus?(isEditable && window?.isKeyWindow == true && window?.firstResponder === self)
+        needsDisplay = true
+    }
 
     func resetPrefill() {
         prefill = QuickStartPrefill()
         pendingInsertion = nil
+        focusAfterUnlock = nil
     }
 
     func queueInsertion(_ insertion: EditorInsertion) {
         pendingInsertion = insertion
         insertionTime = NSApp.currentEvent?.timestamp ?? 0
+        insertionRevision = interactionRevision
         scheduleInsertion()
     }
 
@@ -169,7 +247,10 @@ final class LearningEditor: NSTextView {
         } else {
             insertText(insertion.text, replacementRange: selectedRange())
         }
-        if FocusReturnPolicy.allows(since: insertionTime, current: NSApp.currentEvent) { window?.makeFirstResponder(self) }
+        if insertionRevision == interactionRevision && FocusReturnPolicy.allows(since: insertionTime, current: NSApp.currentEvent) {
+            if isEditable { requestFocus() }
+            else { focusAfterUnlock = interactionRevision }
+        }
     }
 
     override func didChangeText() {
@@ -184,6 +265,11 @@ final class LearningEditor: NSTextView {
     }
 
     override func keyDown(with event: NSEvent) {
+        if event.keyCode == 48 && !hasMarkedText() && event.modifierFlags.intersection([.command, .control, .option]).isEmpty {
+            if event.modifierFlags.contains(.shift) { window?.selectPreviousKeyView(self) }
+            else { window?.selectNextKeyView(self) }
+            return
+        }
         if event.keyCode == 36 || event.keyCode == 76 {
             if hasMarkedText() { super.keyDown(with: event); return }
             let modifiers = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
@@ -196,9 +282,23 @@ final class LearningEditor: NSTextView {
         super.keyDown(with: event)
     }
 
+    private var permitsFocus: Bool {
+        let event = NSApp.currentEvent
+        let pointer = event.map { [.leftMouseDown, .rightMouseDown].contains($0.type) && containsPointer($0) } ?? false
+        let keyboard = event?.type == .keyDown && event?.keyCode == 48
+        return isEditable && (intentionalFocus || pointer || keyboard)
+    }
+    override var acceptsFirstResponder: Bool { permitsFocus }
+    override func setAccessibilityFocused(_ focused: Bool) {
+        intentionalFocus = focused && isEditable
+        super.setAccessibilityFocused(focused)
+        if focused { requestFocus() } else { releaseFocus() }
+        intentionalFocus = false
+    }
     override func becomeFirstResponder() -> Bool {
+        guard permitsFocus else { return false }
         let result = super.becomeFirstResponder()
-        if result { onFocus?(true) }
+        publishFocus()
         return result
     }
     override func resignFirstResponder() -> Bool {
