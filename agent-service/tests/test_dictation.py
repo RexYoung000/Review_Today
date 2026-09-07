@@ -78,3 +78,14 @@ def test_unconfigured_or_escaped_key_not_sent(monkeypatch):
             with pytest.raises(HTTPException) as e: d.transcribe(wav())
             assert e.value.detail == 'DICTATION_NOT_CONFIGURED'
             call.assert_not_called()
+
+
+@pytest.mark.parametrize('body', [
+    {'output': {'text': 'Please keep the.'}},
+    {'output': {'choices': [{'message': {'content': [{'text': 'Please keep the.'}]}}]}},
+])
+def test_actual_fun_asr_response_and_compatible_wrapper(monkeypatch, body):
+    monkeypatch.setenv('DASHSCOPE_API_KEY', 'test-secret')
+    response = d.httpx.Response(200, json=body)
+    with patch.object(d.httpx.Client, 'post', return_value=response):
+        assert d.transcribe(wav()) == 'Please keep the.'

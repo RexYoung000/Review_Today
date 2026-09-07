@@ -60,8 +60,14 @@ def transcribe(data):
             response = client.post(url, headers={'Authorization': f'Bearer {key}', 'X-DashScope-SSE': 'disable'}, json=payload)
         if response.status_code in (401, 403): fail('DICTATION_ACCESS', 502)
         if response.status_code != 200: fail('DICTATION_PROVIDER', 502)
-        content = response.json()['output']['choices'][0]['message']['content']
-        text = '\n'.join(item['text'] for item in content if isinstance(item.get('text'), str)).strip()
+        body = response.json()
+        output = body.get('output', {})
+        # Fun-ASR returns output.text; some compatible gateways wrap choices.
+        text = output.get('text')
+        if not isinstance(text, str):
+            content = output.get('choices', [{}])[0].get('message', {}).get('content', [])
+            text = '\n'.join(item['text'] for item in content if isinstance(item, dict) and isinstance(item.get('text'), str))
+        text = text.strip()
         if not text: fail('DICTATION_SILENCE')
         return text
     except httpx.TimeoutException: fail('DICTATION_TIMEOUT', 504)
