@@ -15,7 +15,7 @@ struct ComposerKnowledgePicker: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack { Text("引用已有知识卡").font(.headline); Spacer(); Button("完成") { dismiss() } }
-            TextField("搜索知识", text: $search).textFieldStyle(.roundedBorder)
+            TextField("搜索知识", text: $search).textFieldStyle(BrandMaterialTextFieldStyle())
             Text("只将引用插入草稿，不发送、不修改知识与复习记录。").font(.caption).foregroundStyle(.secondary)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 4) {

@@ -68,7 +68,7 @@ struct LearningAnswerText: View {
             answerTable(headers, rows)
         case .quote(let value):
             HStack(alignment: .top, spacing: 14) {
-                Rectangle().fill(runway.agent.opacity(0.5)).frame(width: 3).accessibilityHidden(true)
+                Rectangle().fill(runway.decorativeAccent.opacity(0.5)).frame(width: 3).accessibilityHidden(true)
                 prose(value).frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 4)
             }.fixedSize(horizontal: false, vertical: true)
         case .rule:

@@ -4,7 +4,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {root,toolRoot,previewRoot} from './paths.mjs';
 export async function nativeHTML(){
- const names=['elastic-body.mjs','wave-contact.mjs','voice-scene.mjs','mesh-renderer.mjs','return-state.mjs'],imports={};
+ const names=['material.mjs','elastic-body.mjs','wave-contact.mjs','voice-scene.mjs','mesh-renderer.mjs','return-state.mjs'],imports={};
  for(const name of names){let source=await readFile(resolve(previewRoot,name),'utf8');source=source.replace(/(['"])\.\/([\w-]+\.mjs)\1/g,(_,quote,file)=>`${quote}@review-motion/${file}${quote}`);imports['@review-motion/'+name]='data:text/javascript;base64,'+Buffer.from(source).toString('base64');}
  const json=JSON.parse(await readFile(resolve(previewRoot,'data/mascot.json'),'utf8'));
  json.animations={recall:json.animations.recall,rest:json.animations.rest};

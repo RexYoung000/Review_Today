@@ -120,7 +120,7 @@ struct ReviewView: View {
             VStack(alignment: .leading, spacing: 20) {
             Text(phaseCaption)
                 .font(.subheadline)
-                .foregroundStyle(phase == .failed ? Color.orange : runway.agent)
+                .foregroundStyle(phase == .failed ? Color.orange : runway.secondaryInformation)
 
             Text(question.promptText)
                 .font(.system(size: 26, weight: .semibold, design: .rounded))
@@ -263,7 +263,7 @@ struct ReviewView: View {
                         Text(row.goal)
                         Text(MasteryCopy.label(row.grade))
                             .font(.subheadline)
-                            .foregroundStyle(runway.agent)
+                            .foregroundStyle(runway.information)
                         if !isPreview, let due = row.dueAt {
                             Text("下次 \(due.formatted(date: .abbreviated, time: .shortened))")
                                 .font(.caption)

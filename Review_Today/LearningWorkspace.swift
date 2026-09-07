@@ -8,7 +8,7 @@ struct LearningWorkspace: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.runway) private var runway
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.brandReduceMotion) private var reduceMotion
     @Query(sort: \AgentSession.updatedAt, order: .reverse) private var sessions: [AgentSession]
     @Query(sort: \LearningTask.createdAt) private var tasks: [LearningTask]
     @Query(sort: \TaskEventRecord.seq) private var events: [TaskEventRecord]
@@ -498,7 +498,7 @@ struct LearningWorkspace: View {
                     RunPhaseLine(run: run)
                 } else {
                     Circle()
-                        .fill(Self.tone(task.status) == .problem ? Color.orange : runway.agent)
+                        .fill(Self.tone(task.status) == .problem ? Color.orange : runway.information)
                         .frame(width: 6, height: 6)
                         .padding(.top, 5)
                     Text(task.userSummary)
@@ -570,7 +570,7 @@ struct LearningWorkspace: View {
                     ForEach(taskEvents, id: \.eventID) { event in
                         HStack(alignment: .top, spacing: 8) {
                             Circle()
-                                .fill(event.errorCode == nil ? runway.agent : Color.orange)
+                                .fill(event.errorCode == nil ? runway.information : Color.orange)
                                 .frame(width: 6, height: 6)
                                 .padding(.top, 5)
                             VStack(alignment: .leading, spacing: 2) {
@@ -774,7 +774,7 @@ struct LearningWorkspace: View {
             }
             .padding(10)
             .background(runway.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(inputFocused ? runway.agent.opacity(0.65) : runway.hairline, lineWidth: inputFocused ? 1.5 : 1))
+            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(inputFocused ? (runway.monochrome ? runway.agent : runway.agent.opacity(0.65)) : runway.controlBorder, lineWidth: inputFocused ? 1.5 : 1))
             HStack(spacing: 10) {
                 Text(runtime.isPreview ? "仅供排版检查 · 不发送、不持久保存" : "Return 发送 · Shift Return 换行")
                 Spacer()

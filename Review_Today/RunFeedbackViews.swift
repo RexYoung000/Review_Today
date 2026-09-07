@@ -4,7 +4,7 @@ import SwiftUI
 struct SelectionDot: View {
     var selected: Bool
     var delay: Double
-    @Environment(\.accessibilityReduceMotion) private var reduced
+    @Environment(\.brandReduceMotion) private var reduced
     @State private var scale = 1.0
     @State private var initialized = false
     var body: some View {
@@ -55,13 +55,13 @@ struct RunPhaseLine: View {
     var run: AgentRun
     var reducedOverride: Bool? = nil // isolated native motion verification
     @Environment(\.runway) private var runway
-    @Environment(\.accessibilityReduceMotion) private var systemReduced
+    @Environment(\.brandReduceMotion) private var systemReduced
     private var reduceMotion: Bool { reducedOverride ?? systemReduced }
     private var running: Bool { MascotMotionConfiguration.phase(runStatus: run.status, started: run.startedAt != nil) == .thinking }
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 7) {
-            RunMascotIndicator(active: running, reduced: reduceMotion, color: run.errorCode == nil ? runway.agent : .orange)
+            RunMascotIndicator(active: running, reduced: reduceMotion, color: run.errorCode == nil ? (runway.monochrome && !running ? runway.copy : runway.agent) : .orange)
             StageSummary(text: run.userSummary, animate: running && !reduceMotion)
             if running {
                 TimelineView(.periodic(from: .now, by: 1)) { tick in

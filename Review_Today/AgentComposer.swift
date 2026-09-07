@@ -212,7 +212,7 @@ struct AgentComposer: View {
                 CoachMark(pose: pose, size: 32)
                 if open {
                     Capsule()
-                        .fill(runway.agent.opacity(0.35))
+                        .fill(runway.decorativeAccent.opacity(0.35))
                         .frame(width: 2)
                         .frame(maxHeight: .infinity)
                         .padding(.top, 4)

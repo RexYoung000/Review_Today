@@ -93,9 +93,7 @@ private enum ThemeReveal {
         let cover = NSView(frame: host.bounds)
         cover.autoresizingMask = [.width, .height]
         cover.wantsLayer = true
-        let old = goingDark
-            ? NSColor(srgbRed: 0.965, green: 0.965, blue: 0.968, alpha: 1)
-            : NSColor(srgbRed: 0.07, green: 0.07, blue: 0.08, alpha: 1)
+        let old = NSColor(Runway.palette(dark: !goingDark).canvas)
         cover.layer?.backgroundColor = old.cgColor
         host.addSubview(cover)
 
@@ -146,7 +144,7 @@ private enum ThemeReveal {
 
 struct AnimatedThemeToggler: View {
     @Environment(AppearanceController.self) private var appearance
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.brandReduceMotion) private var reduceMotion
     @Environment(\.runway) private var runway
 
     var body: some View {
@@ -181,6 +179,8 @@ private struct AppearanceGateBody<Content: View>: View {
             .preferredColorScheme(appearance.isDark ? .dark : .light)
             .environment(appearance)
             .environment(\.runway, appearance.colors)
+            .environment(\.brandMaterialTrial, true)
+            .tint(appearance.colors.agent)
             .onAppear { appearance.applyAppKit() }
     }
 }

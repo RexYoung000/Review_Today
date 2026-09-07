@@ -19,7 +19,7 @@ struct InteractionButtonStyle: ButtonStyle {
         let padding: CGFloat
         @State private var hovering = false
         @Environment(\.isEnabled) private var enabled
-        @Environment(\.accessibilityReduceMotion) private var reduced
+        @Environment(\.brandReduceMotion) private var reduced
         @Environment(\.runway) private var runway
 
         var body: some View {
@@ -27,7 +27,7 @@ struct InteractionButtonStyle: ButtonStyle {
                 .padding(padding)
                 .background(background, in: RoundedRectangle(cornerRadius: 9))
                 .overlay(RoundedRectangle(cornerRadius: 9)
-                    .fill(hovering && enabled ? runway.agent.opacity(0.035) : .clear)
+                    .fill(hovering && enabled ? runway.hoverWash.opacity(0.035) : .clear)
                     .allowsHitTesting(false))
                 .overlay(RoundedRectangle(cornerRadius: 9)
                     .strokeBorder(focused && enabled ? runway.agent : .clear, lineWidth: 1.5))
@@ -40,7 +40,7 @@ struct InteractionButtonStyle: ButtonStyle {
         private var background: Color {
             guard enabled else { return .clear }
             if configuration.isPressed { return runway.ink.opacity(0.12) }
-            if selected { return runway.field }
+            if selected { return runway.monochrome ? runway.agent.opacity(0.10) : runway.field }
             return hovering ? runway.field.opacity(0.7) : .clear
         }
     }
@@ -196,7 +196,7 @@ struct QuickStartCard: View {
     let start: AgentQuickStart
     let action: () -> Void
     @State private var hovering = false
-    @Environment(\.accessibilityReduceMotion) private var reduced
+    @Environment(\.brandReduceMotion) private var reduced
     @Environment(\.runway) private var runway
 
     var body: some View {
@@ -210,7 +210,7 @@ struct QuickStartCard: View {
             .padding(14)
             .background(runway.card, in: RoundedRectangle(cornerRadius: 16))
             .overlay(RoundedRectangle(cornerRadius: 16)
-                .strokeBorder(hovering ? runway.agent.opacity(0.45) : runway.hairline, lineWidth: 1))
+                .strokeBorder(hovering ? runway.decorativeAccent.opacity(0.45) : runway.hairline, lineWidth: 1))
             .contentShape(RoundedRectangle(cornerRadius: 16))
         }
         .buttonStyle(InteractionButtonStyle(padding: 0))
