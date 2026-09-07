@@ -50,6 +50,7 @@ struct Review_TodayApp: App {
                 .runwayAppearance()
         }
         .modelContainer(container)
+        .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 1280, height: 820)
         .windowResizability(.contentMinSize)
 

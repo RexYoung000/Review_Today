@@ -20,6 +20,7 @@ struct MascotMotionConfiguration: Codable, Equatable {
     var dark = false
     var visible = true
     var rate: Double = 1
+    var ambient = false
     var material = "current"
     var palette: MascotMaterialPalette? = nil
 
@@ -31,6 +32,7 @@ struct MascotMotionConfiguration: Codable, Equatable {
 struct MascotMotion: View {
     var surface: MascotSurface = .recall
     var phase: MascotPhase
+    var ambient = false
     var level: Double = 0
     var reduced = false
     var rate: Double = 1
@@ -42,7 +44,7 @@ struct MascotMotion: View {
         ZStack {
             if !ready { Circle().fill(materialTrial ? Color(white: 0.18) : Color(red: 0.08, green: 0.39, blue: 0.37)).frame(width: 10, height: 10) }
             MascotWebSurface(configuration: .init(surface: surface, mode: phase, level: level,
-                                                 reduced: reduced || systemReduced, dark: colorScheme == .dark, rate: rate,
+                                                 reduced: reduced || systemReduced, dark: colorScheme == .dark, rate: rate, ambient: ambient,
                                                  material: materialTrial ? "graphite" : "current",
                                                  palette: .theme(dark: colorScheme == .dark))) { ready = $0 }
                 .opacity(ready ? 1 : 0)

@@ -93,6 +93,16 @@ struct MascotMotionNativeTests {
             try expect(state["animating"] as? Bool == false, "Graphite hidden view is animating")
             coordinator.setVisible(true)
         }
+        coordinator.configuration.surface = .recall; coordinator.configuration.mode = .idle
+        coordinator.configuration.reduced = false; coordinator.configuration.ambient = true; coordinator.send()
+        try await Task.sleep(for: .milliseconds(400)); state = try await inspect()
+        try expect(state["animating"] as? Bool == true && (state["time"] as? Double ?? 0) > 0, "Ambient idle did not breathe")
+        coordinator.configuration.reduced = true; coordinator.send()
+        try await Task.sleep(for: .milliseconds(100)); state = try await inspect()
+        try expect(state["animating"] as? Bool == false, "Ambient idle ignores reduced motion")
+        coordinator.configuration.reduced = false; coordinator.send(); coordinator.setVisible(false)
+        try await Task.sleep(for: .milliseconds(100)); state = try await inspect()
+        try expect(state["animating"] as? Bool == false, "Hidden ambient idle runs")
         try expect(web.acceptsFirstResponder == false && web.hitTest(.zero) == nil, "Decorative surface steals input")
         web.configuration.userContentController.removeScriptMessageHandler(forName: "mascot"); web.dispose()
     }

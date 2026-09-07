@@ -200,13 +200,12 @@ struct LearningWorkspace: View {
         let gutter = Layout.gutter(for: width)
         let contentWidth = max(0, min(Layout.readingWidth, width - gutter * 2))
         return VStack(spacing: 0) {
-          workspaceHeader(contentWidth: contentWidth)
+          if selectedSession != nil { workspaceHeader(contentWidth: contentWidth) }
           if selectedSession == nil {
             serviceBanner
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     HStack(spacing: 16) {
-                        BrandMark(size: 58)
                         VStack(alignment: .leading, spacing: 6) {
                             Text("Review Today").font(.system(size: 30, weight: .semibold)).foregroundStyle(runway.ink)
                             Text("从一个问题开始，把理解留住。").font(.callout).foregroundStyle(.secondary)
@@ -243,11 +242,7 @@ struct LearningWorkspace: View {
 
     private func workspaceHeader(contentWidth: CGFloat) -> some View {
         HStack(spacing: 8) {
-            Text(selectedSession?.title ?? "Agent")
-                .font(.system(size: 18, weight: .semibold)).foregroundStyle(runway.ink)
-                .lineLimit(1).truncationMode(.tail)
-                .help(selectedSession?.title ?? "Agent")
-                .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer(minLength: 0)
             if let session = selectedSession {
                 ChromeIconButton(title: "会话标签", symbol: "tag", selected: showSessionTags) { showSessionTags.toggle() }
                     .popover(isPresented: $showSessionTags, arrowEdge: .top) {
@@ -756,8 +751,8 @@ struct LearningWorkspace: View {
                     .frame(height: inputHeight)
                 HStack {
                   composerControls.disabled(dictation.busy)
-                  if runtime.allowsSending { dictationControls }
                   Spacer(minLength: 8)
+                  if runtime.allowsSending { dictationControls }
                 Button(action: submitDraft) {
                     Image(systemName: "arrow.up")
                         .font(.system(size: 13, weight: .bold))
@@ -802,8 +797,9 @@ struct LearningWorkspace: View {
             }
             Button("取消听写") { dictation.cancel() }.buttonStyle(.borderless)
         } else {
-            Button { insertion = nil; dictationOriginal = draft; dictation.start() } label: { Image(systemName: "mic") }
-                .buttonStyle(.borderless).accessibilityLabel(dictation.pending ? "重新录制听写" : "开始听写")
+            ChromeIconButton(title: dictation.pending ? "重新录制听写" : "开始听写", symbol: "mic") {
+                insertion = nil; dictationOriginal = draft; dictation.start()
+            }
                 .help("录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟")
             if dictation.pending {
                 Button("重试听写") { insertion = nil; dictationOriginal = draft; dictation.retry() }.buttonStyle(.borderless)

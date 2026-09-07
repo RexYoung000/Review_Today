@@ -89,9 +89,6 @@ struct LibraryView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: Runway.gap) {
             HStack(alignment: .firstTextBaseline) {
-                Text(String(localized: "知识库"))
-                    .font(.system(size: 32, weight: .bold))
-                    .foregroundStyle(runway.ink)
                 Spacer(minLength: 12)
                 if !visibleItems.isEmpty {
                     Text("\(visibleItems.count)")

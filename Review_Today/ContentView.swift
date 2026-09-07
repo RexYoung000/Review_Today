@@ -182,6 +182,7 @@ struct AppSidebar: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            SidebarWindowControls().frame(height: 32).padding(.horizontal, 18).padding(.top, 8)
             brand
             VStack(spacing: 4) {
                 ForEach(SidebarItem.allCases) { item in sidebarRow(item) }
@@ -238,7 +239,7 @@ struct AppSidebar: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
-        .background { PaperSurface() }
+        .background(runway.field.opacity(0.45))
         .sheet(item: $deletionImpact) { impact in
             SessionDeletionSheet(impact: impact) { ids in
                 if selectedSessionID.map(ids.contains) == true { selectedSessionID = nil }
@@ -518,6 +519,7 @@ private struct SidebarIconRail: View {
 
     var body: some View {
         VStack(spacing: 8) {
+            SidebarWindowControls().frame(width: 60, height: 32).padding(.top, 8)
             Button(action: onExpand) { BrandMark(size: 27).frame(width: 38, height: 34) }
                 .buttonStyle(InteractionButtonStyle(padding: 2))
                 .help("展开侧栏").accessibilityLabel("Review Today，展开侧栏")
@@ -539,7 +541,7 @@ private struct SidebarIconRail: View {
                 .buttonStyle(InteractionButtonStyle(padding: 2)).help("设置").accessibilityLabel("设置")
             AnimatedThemeToggler().padding(.bottom, 16)
         }
-        .padding(.horizontal, 10).frame(width: 64)
+        .padding(.horizontal, 10).frame(width: 88)
         .background(PaperSurface())
         .overlay(alignment: .trailing) { Rectangle().fill(runway.hairline).frame(width: 1) }
     }
@@ -560,7 +562,7 @@ struct ContentView: View {
     @State private var sidebarScrollAnchor: UUID?
     @AppStorage("reviewToday.sessionsExpanded") private var sessionsExpanded = true
     @AppStorage("reviewToday.sidebarWidth") private var savedSidebarWidth = 280.0
-    @State private var saveWidthTask: Task<Void, Never>?
+    @State private var sidebarResizeStart: Double?
     @State private var monitor = AgentServiceMonitor()
     @Query private var inbox: [CaptureTask]
     @Query private var knowledge: [Knowledge]
@@ -582,33 +584,37 @@ struct ContentView: View {
     }
 
     var body: some View {
-        NavigationSplitView(columnVisibility: $columnVisibility) {
-            AppSidebar(selection: $selection, selectedSessionID: $selectedLearningSessionID,
-                       scrollAnchor: $sidebarScrollAnchor, onCollapse: { setSidebar(expanded: false) }, inboxCount: inboxCount)
-                .frame(minWidth: materialPreview ? 240 : nil)
-                .toolbar(removing: .sidebarToggle)
-                .navigationSplitViewColumnWidth(min: 220, ideal: min(340, max(220, savedSidebarWidth)), max: 340)
-                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
-                    guard columnVisibility != .detailOnly, (220...340).contains(width),
-                          abs(savedSidebarWidth - width) > 1 else { return }
-                    saveWidthTask?.cancel()
-                    saveWidthTask = Task {
-                        try? await Task.sleep(for: .milliseconds(250))
-                        if !Task.isCancelled { savedSidebarWidth = width }
+        HStack(spacing: 0) {
+            if columnVisibility != .detailOnly {
+                AppSidebar(selection: $selection, selectedSessionID: $selectedLearningSessionID,
+                           scrollAnchor: $sidebarScrollAnchor, onCollapse: { setSidebar(expanded: false) }, inboxCount: inboxCount)
+                    .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                    .padding(8)
+                    .frame(width: min(340, max(250, savedSidebarWidth)))
+                Color.clear.frame(width: 6).contentShape(Rectangle())
+                    .onHover { hovering in
+                        if hovering { NSCursor.resizeLeftRight.push() } else { NSCursor.pop() }
                     }
-                }
-        } detail: {
-            HStack(spacing: 0) {
-                if columnVisibility == .detailOnly {
-                    SidebarIconRail(selection: $selection, selectedSessionID: $selectedLearningSessionID,
-                                    onExpand: { setSidebar(expanded: true) },
-                                    onSessions: { sessionsExpanded = true; setSidebar(expanded: true) }, inboxCount: inboxCount)
-                }
-                detailContent.frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .gesture(DragGesture().onChanged { value in
+                        if sidebarResizeStart == nil { sidebarResizeStart = min(340, max(250, savedSidebarWidth)) }
+                        savedSidebarWidth = min(340, max(250, (sidebarResizeStart ?? 280) + value.translation.width))
+                    }.onEnded { _ in sidebarResizeStart = nil })
+                    .accessibilityLabel("侧栏宽度")
+                    .accessibilityValue("\(Int(min(340, max(250, savedSidebarWidth))))")
+                    .accessibilityAdjustableAction { direction in
+                        savedSidebarWidth = min(340, max(250, min(340, max(250, savedSidebarWidth)) + (direction == .increment ? 20 : -20)))
+                    }
+            } else {
+                SidebarIconRail(selection: $selection, selectedSessionID: $selectedLearningSessionID,
+                                onExpand: { setSidebar(expanded: true) },
+                                onSessions: { sessionsExpanded = true; setSidebar(expanded: true) }, inboxCount: inboxCount)
+                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)).padding(8)
             }
-            .background(PaperSurface())
+            detailContent.padding(.top, 20).frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .navigationSplitViewStyle(.balanced)
+        .background(PaperSurface())
+        .toolbar(.hidden, for: .windowToolbar)
+        .ignoresSafeArea(.container, edges: .top)
         .toolbar(removing: .sidebarToggle)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if AppRuntime.current.mode != .normal {

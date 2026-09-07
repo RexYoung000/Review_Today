@@ -10,6 +10,7 @@ function poseRecall(dt){
  const s=rig.skeleton;s.setToSetupPose();
  if(config.reduced){time=0;returnState=null;}
  else if(returnState){returnState.update(dt);returnState.apply(s);returnElapsed+=dt;if(returnElapsed>=.24){returnState=null;time=0;s.setToSetupPose();}}
+ else if(config.ambient&&config.mode==='idle'){time+=dt;const body=s.findBone('body'),breath=Math.sin(time*Math.PI/2);body.scaleY*=1+breath*.018;body.scaleX*=1-breath*.009;}
  else if(config.mode==='thinking'){time=(time+dt)%rig.data.findAnimation('recall').duration;rig.data.findAnimation('recall').apply(s,0,time,false,[],1,spine.MixBlend.replace,spine.MixDirection.mixIn);}
  s.updateWorldTransform(spine.Physics.none);
 }
@@ -26,14 +27,14 @@ function paint(dt){
  }
  frames++;
 }
-function moving(){return config.surface==='recall'?(config.mode==='thinking'||!!returnState):(config.mode==='thinking'||(['listening','speaking'].includes(config.mode)&&config.level>0)||contactMoving(voice.contact));}
+function moving(){return config.surface==='recall'?(config.mode==='thinking'||config.ambient||!!returnState):(config.mode==='thinking'||(['listening','speaking'].includes(config.mode)&&config.level>0)||contactMoving(voice.contact));}
 function frame(now){raf=0;if(!rig)return;const dt=Math.min(.05,(now-(last||now))/1000)*config.rate;last=now;paint(config.visible?dt:0);if(config.visible&&!config.reduced&&moving())raf=requestAnimationFrame(frame);else last=0;}
 function wake(){if(!raf&&rig&&configured)raf=requestAnimationFrame(frame);}
 window.mascotMotion={
  setState(next){
    configured=true;
    const previous=config;
-   config={surface:next.surface==='voice'?'voice':'recall',mode:['listening','thinking','speaking','idle'].includes(next.mode)?next.mode:'idle',level:Math.max(0,Math.min(1,Number(next.level)||0)),reduced:!!next.reduced,dark:!!next.dark,visible:!!next.visible,rate:next.rate===.5?.5:1,material:next.material==='graphite'?'graphite':'current',palette:next.palette};
+   config={surface:next.surface==='voice'?'voice':'recall',mode:['listening','thinking','speaking','idle'].includes(next.mode)?next.mode:'idle',level:Math.max(0,Math.min(1,Number(next.level)||0)),ambient:!!next.ambient,reduced:!!next.reduced,dark:!!next.dark,visible:!!next.visible,rate:next.rate===.5?.5:1,material:next.material==='graphite'?'graphite':'current',palette:next.palette};
    if(rig&&previous.surface!==config.surface){returnState=null;time=0;voice=createVoiceState(contactGeometry(spine,rig));}
    if(rig&&config.surface==='recall'&&previous.mode==='thinking'&&config.mode!=='thinking'&&!config.reduced){returnState=createReturnState(spine,rig,time);returnElapsed=0;}
    if(config.mode==='thinking'&&previous.mode!=='thinking'&&returnState){returnState=null;time=0;}
