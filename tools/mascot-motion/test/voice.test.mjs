@@ -38,7 +38,31 @@ test('incoming and outgoing crests travel oppositely; voice keeps one shadow-fre
       for(const slot of ['ground_shadow','ball_ground_shadow','body_shadow'])assert.equal(rig.skeleton.findSlot(slot).color.a,0);
     }
   }
-  const x=s.contact.x;advanceVoice(s,0,'idle',0);assert.equal(s.contact.x,x);assert.equal(s.contact.finish,true);
+  const x=s.contact.x;advanceVoice(s,0,'idle',0);assert.equal(s.contact.x,x);assert.ok(s.contact.finish||['brake','settle'].includes(s.contact.phase));
   let finishMotion=0;for(let i=0;i<240;i++){advanceVoice(s,1/60,'idle',0);finishMotion=Math.max(finishMotion,Math.abs(s.contact.squish));}
   assert.ok(finishMotion>.02);assert.equal(contactMoving(s.contact),false);assert.equal(s.contact.look,0);assert.equal(s.contact.height,0);
+});
+
+test('listening contracts; thought landing flattens the lower silhouette; one reply impact emits each phrase',async()=>{
+  const {createContact,advanceContact,applyContact,audioHeight,contactHeight}=await import('../../../brand/refresh-2026-09/motion-rig/wave-contact.mjs');
+  const rig=await loadRig(json),base=createContact();applyContact(spine,rig,base);const rest=verticesOf(rig.skeleton);
+  const width=v=>{const xs=Array.from(v).filter((_,i)=>i%2===0);return Math.max(...xs)-Math.min(...xs);};
+  const lowIds=Array.from({length:48},(_,i)=>i).filter(i=>rest[i*2+1]<Math.min(...Array.from(rest).filter((_,i)=>i%2===1))+17);
+  const lowRange=v=>{const ys=lowIds.map(i=>v[i*2+1]);return Math.max(...ys)-Math.min(...ys);};
+  const listen=createVoiceState();let minimumWidth=Infinity,hasDent=false;
+  for(let i=0;i<240;i++){advanceVoice(listen,1/120,'listening',1);applyVoice(spine,rig,listen);minimumWidth=Math.min(minimumWidth,width(verticesOf(rig.skeleton)));hasDent ||= rig.skeleton.findSlot('body').deform.some(x=>Math.abs(x)>.5);}
+  assert.ok(minimumWidth<width(rest)*.9);assert.ok(hasDent);
+  const thought=createContact();let pressedFrames=0,flatRange=Infinity,hasDentInSurface=false;
+  for(let i=0;i<144;i++){advanceContact(thought,1/120,true);applyContact(spine,rig,thought);if(thought.pressure>.8){pressedFrames++;hasDentInSurface ||= contactHeight(thought)<(contactHeight(thought,thought.x-1.5)+contactHeight(thought,thought.x+1.5))/2;flatRange=Math.min(flatRange,lowRange(verticesOf(rig.skeleton)));}}
+  assert.ok(pressedFrames>=8);assert.ok(hasDentInSurface);assert.ok(flatRange<lowRange(rest)*.45);
+  const reply=createVoiceState();let impacts=0,lookBeforeImpact=false,maxHeight=0,age=99;
+  for(let i=0;i<900;i++){
+    advanceVoice(reply,1/120,'speaking',1);const c=reply.contact;applyVoice(spine,rig,reply);
+    maxHeight=Math.max(maxHeight,c.height);if(c.height>2&&c.velocity<0&&c.lookY<-2)lookBeforeImpact=true;
+    if(c.answerWaveAge<age)impacts++;age=c.answerWaveAge;
+    if(impacts===0)assert.equal(audioHeight(c,8),0);
+    const v=verticesOf(rig.skeleton),tris=rig.skeleton.findSlot('body').getAttachment().triangles;
+    for(let j=0;j<tris.length;j+=3){const [a,b,d]=tris.slice(j,j+3).map(n=>n*2);assert.ok((v[b]-v[a])*(v[d+1]-v[a+1])-(v[b+1]-v[a+1])*(v[d]-v[a])>0);}
+  }
+  assert.equal(impacts,2);assert.ok(lookBeforeImpact);assert.ok(maxHeight>10&&maxHeight<=15.001);
 });

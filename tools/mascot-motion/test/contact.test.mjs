@@ -28,3 +28,11 @@ test('stopping at every part of a hop keeps position continuous and all residual
     advanceContact(c,.01,true);assert.equal(c.running,true);advanceContact(c,.01,true,true);assert.equal(c.height,0);assert.equal(contactMoving(c),false);
   }
 });
+
+
+test('resuming thought before the stop settles cannot get stuck in the rest pose',()=>{
+  const c=createContact();for(let i=0;i<30;i++)advanceContact(c,1/120,true);
+  for(let i=0;i<10;i++)advanceContact(c,1/120,false);
+  let fliesAgain=false;for(let i=0;i<240;i++){advanceContact(c,1/120,true);if(c.phase==='flight'&&c.height>5)fliesAgain=true;}
+  assert.ok(fliesAgain);
+});
