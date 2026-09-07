@@ -53,17 +53,15 @@ struct RunDetails<Content: View>: View {
 /// Only this small component observes the clock. Transcript layout has no timer.
 struct RunPhaseLine: View {
     var run: AgentRun
+    var reducedOverride: Bool? = nil // isolated native motion verification
     @Environment(\.runway) private var runway
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    private var running: Bool { ["running", "adjusting"].contains(run.status) && run.startedAt != nil }
+    @Environment(\.accessibilityReduceMotion) private var systemReduced
+    private var reduceMotion: Bool { reducedOverride ?? systemReduced }
+    private var running: Bool { MascotMotionConfiguration.phase(runStatus: run.status, started: run.startedAt != nil) == .thinking }
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 7) {
-            if running {
-                DotsRing(color: runway.agent, reduced: reduceMotion).frame(width: 18, height: 18)
-            } else {
-                Circle().fill(run.errorCode == nil ? runway.agent : .orange).frame(width: 6, height: 6)
-            }
+            RunMascotIndicator(active: running, reduced: reduceMotion, color: run.errorCode == nil ? runway.agent : .orange)
             StageSummary(text: run.userSummary, animate: running && !reduceMotion)
             if running {
                 TimelineView(.periodic(from: .now, by: 1)) { tick in

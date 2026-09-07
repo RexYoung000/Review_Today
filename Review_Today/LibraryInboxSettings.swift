@@ -264,6 +264,7 @@ private struct SettingsForm: View {
                     AgentRunLogView()
                 }
 #if DEBUG
+                Button("查看已确认动效（原生）") { openWindow(id: "mascot-motion-preview") }
                 Button(String(localized: "打开吉祥物动画 POC")) {
                     openWindow(id: "mascot-animation-poc")
                 }

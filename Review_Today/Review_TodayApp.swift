@@ -61,6 +61,11 @@ struct Review_TodayApp: App {
         .restorationBehavior(.disabled)
 
 #if DEBUG
+        WindowGroup("已确认动效 · 原生验证", id: "mascot-motion-preview") {
+            MascotMotionPreview().runwayAppearance()
+        }
+        .defaultSize(width: 760, height: 600)
+
         WindowGroup(String(localized: "吉祥物动画 POC"), id: "mascot-animation-poc") {
             MascotAnimationPOCView()
                 .runwayAppearance()

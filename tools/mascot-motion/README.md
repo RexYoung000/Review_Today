@@ -1,6 +1,14 @@
 # Review Today 动画制作 MCP
 
-2026-09-07。用于本次 V3 吉祥物的 Spine 4.2 形变小样；不是通用自动绑定产品。已有源码、可调用 MCP、可操作预览与可编辑 JSON，未接入日常 App，未验证 Spine 编辑器导入。
+2026-09-07。用于本次 V3 吉祥物的 Spine 4.2 形变小样；不是通用自动绑定产品。已有源码、可调用 MCP、可操作预览与可编辑 JSON，已将 recall 接入日常 App 的运行状态，语音四态提供原生组件和开发验证入口；听写/真实语音事件未接通，Spine 编辑器导入仍未验证。
+
+## App 内接入
+
+`node tools/mascot-motion/src/build-native.mjs`（仓库根目录）从已提交骨架、纹理与共享模块生成 `Review_Today/MascotMotion.html`；`--check` 检查资源是否与源一致。App 随包加载，不依赖 Node、8769、远程脚本或麦克风，页面通过 CSP 禁止网络请求。修改已确认动效后须重建该资源，再构建 App；MCP `.work` 草稿不会自动替换日常 App。
+
+SwiftUI 的 `MascotMotion` 包装本地 WebKit/官方 Spine 渲染，避免重做另一套碰撞。`RunPhaseLine` 仅在已启动的 running / adjusting 时驱动 recall，完成/停止后短促收拢。四态组件参数为 surface、phase、level、reduced、rate；语音 level 当前用于明确标识的模拟验证，不是已接通的录音输入。非活动/遮挡/移除视图暂停，组件不接收鼠标或键盘焦点。
+
+`bash tests/mac/run-mascot-native.sh` 编译隔离原生验证程序：检查本地资源载入、Run 状态映射、环绕/收拢、减少动态、隐藏暂停、四态调用及停稳。加 `--interactive` 可查看同一原生组件、实际 RunPhaseLine、浅深色和半速（每次演示最多 20 秒）。日常 Debug App 的「文件 → 新建 → 新已确认动效 · 原生验证窗口」或设置中的开发入口也可打开；旧 POC 仍保留。
 
 ## 运行
 
