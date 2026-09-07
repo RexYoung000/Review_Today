@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import SwiftUI
 
 enum InteractionOutline: Equatable {
@@ -21,6 +22,36 @@ struct InteractionGeometry: InsettableShape {
     }
 }
 
+/// Track input modality without moving first responder or consuming events.
+@MainActor
+final class InteractionInputMode: ObservableObject {
+    static let shared = InteractionInputMode()
+    @Published private(set) var keyboardNavigation = false
+    private var monitor: Any?
+
+    init() {
+        monitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .leftMouseDown, .rightMouseDown, .otherMouseDown]) { [weak self] event in
+            self?.receive(event)
+            return event
+        }
+    }
+
+    deinit { if let monitor { NSEvent.removeMonitor(monitor) } }
+
+    func receive(_ event: NSEvent) {
+        switch event.type {
+        case .leftMouseDown, .rightMouseDown, .otherMouseDown:
+            keyboardNavigation = false
+        case .keyDown:
+            // Tab, arrows and Escape are navigation; typing alone is not.
+            if [48, 53, 123, 124, 125, 126].contains(event.keyCode) {
+                keyboardNavigation = true
+            }
+        default: break
+        }
+    }
+}
+
 /// Shared feedback, without changing the geometry of navigation or text rows.
 struct InteractionButtonStyle: ButtonStyle {
     var selected = false
@@ -40,6 +71,7 @@ struct InteractionButtonStyle: ButtonStyle {
         let padding: CGFloat
         let outline: InteractionOutline
         @State private var hovering = false
+        @ObservedObject private var inputMode = InteractionInputMode.shared
         @Environment(\.isEnabled) private var enabled
         @Environment(\.controlActiveState) private var controlState
         @Environment(\.brandReduceMotion) private var reduced
@@ -53,10 +85,12 @@ struct InteractionButtonStyle: ButtonStyle {
                     .fill(hovering && enabled ? runway.hoverWash.opacity(0.035) : .clear)
                     .allowsHitTesting(false))
                 .overlay(outline.shape
-                    .strokeBorder(focused && enabled && controlState == .key ? runway.agent : .clear, lineWidth: 1.5))
+                    .strokeBorder(focused && inputMode.keyboardNavigation && enabled && controlState == .key ? runway.agent : .clear, lineWidth: 1.5))
                 .contentShape(outline.shape)
                 .opacity(enabled ? (configuration.isPressed ? 0.78 : 1) : 0.4)
                 .onHover { hovering = $0 }
+                .onChange(of: controlState) { _, state in if state != .key { hovering = false } }
+                .onDisappear { hovering = false }
                 .animation(reduced ? nil : .easeOut(duration: 0.12), value: hovering)
         }
 

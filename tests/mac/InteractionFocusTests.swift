@@ -4,6 +4,27 @@ import SwiftUI
 @main
 struct InteractionFocusTests {
     @MainActor static func main() throws {
+        _ = NSApplication.shared
+        let inputMode = InteractionInputMode()
+        func key(_ code: UInt16) -> NSEvent {
+            NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
+                            windowNumber: 0, context: nil, characters: "", charactersIgnoringModifiers: "",
+                            isARepeat: false, keyCode: code)!
+        }
+        precondition(!inputMode.keyboardNavigation)
+        inputMode.receive(key(48))
+        precondition(inputMode.keyboardNavigation, "Tab must retain a visible keyboard focus indicator")
+        let click = NSEvent.mouseEvent(with: .leftMouseDown, location: .zero, modifierFlags: [], timestamp: 1,
+                                      windowNumber: 0, context: nil, eventNumber: 1, clickCount: 1, pressure: 1)!
+        inputMode.receive(click)
+        precondition(!inputMode.keyboardNavigation, "Any pointer click, including blank space, exits keyboard feedback")
+        inputMode.receive(key(0))
+        precondition(!inputMode.keyboardNavigation, "Typing must not expose an unrelated button focus ring")
+        inputMode.receive(key(124))
+        precondition(inputMode.keyboardNavigation, "Arrow navigation restores keyboard feedback")
+        inputMode.receive(click)
+        inputMode.receive(key(53))
+        precondition(inputMode.keyboardNavigation, "Keyboard dismissal may restore focus to a menu trigger")
         // isFocused can describe a focused ancestor. A shared row style must not
         // consume that environment as if every descendant owned keyboard focus.
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
@@ -30,6 +51,7 @@ struct InteractionFocusTests {
         precondition(full.fraction == 1 && full.used == 200, "clamp drawing without hiding actual usage")
         precondition(ContextCapacityPresentation(json: "{\"input_tokens\":-1,\"model_window\":0}").fraction == nil)
         _ = NSApplication.shared
+        InteractionInputMode.shared.receive(key(48))
         for palette in [RunwayPalette.light, .dark] {
             precondition(focusRows(palette: palette, focusedRow: nil) == [],
                          "selection alone must not paint a keyboard-focus ring")

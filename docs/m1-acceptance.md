@@ -1027,3 +1027,11 @@ agent-service/.venv/bin/python agent-service/tests/m1_real_smoke.py
 验证：Apple Development 签名 Debug 构建及严格签名校验通过（`/tmp/review-today-copy-cleanup-build.log`）；LearningInputContractTests、SessionDeletionContractTests、AgentServiceMonitorContractTests 全部通过（`/tmp/review-today-copy-contracts.log`）。覆盖输入/草稿/保存失败重试、删除事务回滚/范围复核/共享卡保护/离线清理队列与防复活、启动超时/断连恢复/能力检查状态。编译仍有既有 NSSpeechSynthesizer 弃用警告。
 
 已更新并打开 `output/default-brand-build/Build/Products/Debug/Review_Today.app`。通过原生 AX 与截图确认待处理页＋归档空态不再显示后台清理提示；实际打开 Agent → 添加材料 → 引用已有知识卡，确认显示「选择知识卡，插入草稿」，随后关闭弹窗，未发送测试消息或改动知识内容。当前没有可用历史会话供检查标签弹窗/运行详情；本轮未重新触发真实模型的生成、中断、断线提示，也未运行 VoiceOver、深色及缩窗专项验收。下次日常对话可核对「正在回复」、完成后的折叠详情与开发模式指标；最终体验验收仍由 Rex 确认。
+
+## 鼠标焦点残留修复（2026-09-07）
+
+共用按钮按输入来源显示焦点：鼠标点击（含空白处）隐藏键盘描边，Tab/方向键/Escape 导航保留焦点显示，不移动 first responder、不拦截事件、不改变真实选中状态。上下文用量提示采用同一规则并清理弹窗开关、窗口失活时的悬停状态。DESIGN.md 已同步。
+
+签名 Debug 构建、严格签名验证通过（`/tmp/review-today-focus-fix-build.log`）。InteractionFocusTests 与 LearningInputContractTests 通过（`/tmp/review-today-focus-contracts.log`），包括鼠标/Tab/方向键/Escape/普通输入的来源切换、浅深色单行焦点与禁用渲染、输入/IME/撤销/草稿/保存失败与重试。首次构建补充 Combine 导入后通过；既有渲染测试补充明确键盘输入前提后通过，无跳过断言。
+
+更新并打开日常开发 App，原生鼠标复测：归档开/关后点击空白无黑框，侧栏导航无残留，已暂停筛选保留选中底色无黑框，知识详情关闭后原卡片无黑框，上下文详情外部点击关闭后无小提示残留。原生 Tab 从归档移到多选按钮，焦点框正确显示；再用鼠标操作即消退。未发送模型消息、未修改知识内容。深色覆盖为渲染检查，未进行 VoiceOver、完整所有控件/窗口尺寸及菜单键盘路径专项验收；最终体验待 Rex 确认。

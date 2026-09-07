@@ -52,6 +52,8 @@ struct ContextCapacityIndicator: View {
     @State private var expanded = false
     @State private var hovering = false
     @FocusState private var focused: Bool
+    @ObservedObject private var inputMode = InteractionInputMode.shared
+    @Environment(\.controlActiveState) private var controlState
 
     var body: some View {
         Button { expanded.toggle() } label: {
@@ -69,10 +71,12 @@ struct ContextCapacityIndicator: View {
         .buttonStyle(InteractionButtonStyle(focused: focused, padding: 2))
         .focusable().focused($focused).focusEffectDisabled()
         .onHover { hovering = $0 }
+        .onChange(of: expanded) { _, _ in hovering = false }
+        .onChange(of: controlState) { _, state in if state != .key { hovering = false } }
         .onDisappear { hovering = false; expanded = false }
         .animation(reduced ? nil : .easeOut(duration: 0.18), value: capacity.fraction)
         .overlay(alignment: .bottom) {
-            if (hovering || focused) && !expanded {
+            if controlState == .key && (hovering || (focused && inputMode.keyboardNavigation)) && !expanded {
                 Text(capacity.headline).font(.callout.monospacedDigit())
                     .foregroundStyle(.white).padding(.horizontal, 10).padding(.vertical, 7)
                     .background(Color(white: 0.14), in: RoundedRectangle(cornerRadius: 10))
