@@ -1,0 +1,20 @@
+[
+  {"id":"paragraphs","raw":"先保留原草稿然后结束录音后追加文字另外取消时不要清空草稿","expected":"先保留原草稿，然后结束录音后追加文字。\n\n另外，取消时不要清空草稿。","edits":[]},
+  {"id":"numbered","raw":"第一保留草稿第二手动发送","expected":"1. 保留草稿\n2. 手动发送","edits":[{"kind":"formatting","source":"第一","replacement":""},{"kind":"formatting","source":"第二","replacement":""}]},
+  {"id":"parallel","raw":"需要保留草稿保存录音提供取消入口","expected":"需要保留草稿、保存录音、提供取消入口。","edits":[]},
+  {"id":"steps","raw":"先录音再检查最后手动发送","expected":"1. 先录音\n2. 再检查\n3. 最后手动发送","edits":[]},
+  {"id":"hierarchy","raw":"录音部分包括开始和取消保存部分包括追加和撤销","expected":"- 录音部分包括\n  - 开始和取消\n- 保存部分包括\n  - 追加和撤销","edits":[]},
+  {"id":"spoken_break","raw":"保留草稿另起一段不要自动发送","expected":"保留草稿\n\n不要自动发送","edits":[{"kind":"formatting","source":"另起一段","replacement":""}]},
+  {"id":"quoted_command","raw":"解释“换行”这个词不要执行这个指令","expected":"解释“换行”这个词，不要执行这个指令。","edits":[]},
+  {"id":"emphasis","raw":"非常非常重要不要不要自动发送","expected":"非常非常重要，不要不要自动发送。","edits":[]},
+  {"id":"filler","raw":"嗯呃嗯呃嗯呃嗯呃嗯呃保留草稿","expected":"保留草稿","edits":[{"kind":"filler","source":"嗯呃嗯呃嗯呃嗯呃嗯呃","replacement":""}]},
+  {"id":"stutter","raw":"我我想保留草稿","expected":"我想保留草稿","edits":[{"kind":"repetition","source":"我我","replacement":"我"}]},
+  {"id":"correction","raw":"设置30秒，口误，是20秒，如果失败就保留原文","expected":"设置20秒，如果失败就保留原文。","edits":[{"kind":"correction","source":"30秒，口误，是20秒","replacement":"20秒"}]},
+  {"id":"contrast","raw":"不是30秒而是20秒不要重试","expected":"不是30秒，而是20秒，不要重试。","edits":[]},
+  {"id":"uncertainty","raw":"我不确定也许是20秒如果没成功先别删除","expected":"我不确定，也许是20秒。如果没成功，先别删除。","edits":[]},
+  {"id":"values","raw":"价格是-12.50元日期是2026-09-07版本是v1.20超时30秒比例10%","expected":"价格是-12.50元，日期是2026-09-07，版本是v1.20，超时30秒，比例10%。","edits":[]},
+  {"id":"mixed","raw":"用Spine接入SwiftUI不要改API接口I do not want auto send","expected":"用 Spine 接入 SwiftUI，不要改 API 接口。I do not want auto send.","edits":[]},
+  {"id":"knowledge","raw":"我觉得地球是平的这是我现在的答案","expected":"我觉得地球是平的，这是我现在的答案。","edits":[]},
+  {"id":"request","raw":"帮我解释这个概念然后列三个例子","expected":"帮我解释这个概念，然后列三个例子。","edits":[]},
+  {"id":"existing_list","raw":"1. 保留20秒\n2. 等待30秒","expected":"1. 保留20秒\n2. 等待30秒","edits":[]}
+]

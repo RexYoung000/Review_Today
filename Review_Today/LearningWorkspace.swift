@@ -736,9 +736,9 @@ struct LearningWorkspace: View {
                     .font(.caption)
                     .foregroundStyle(.orange)
             }
-            if runtime.allowsSending, dictation.busy || dictation.pending || dictation.settling || dictation.error != nil {
+            if runtime.allowsSending, dictation.busy || dictation.pending || dictation.settling || dictation.error != nil || dictation.notice != nil {
                 HStack(spacing: 8) {
-                    MascotMotion(surface: .voice, phase: dictation.phase == .recording ? .listening : (dictation.busy ? .thinking : .idle), level: dictation.level, reduced: reduceMotion)
+                    MascotMotion(surface: .voice, phase: dictation.mascotPhase, level: dictation.level, reduced: reduceMotion)
                         .frame(width: 120, height: 65)
                     Text(dictation.title).font(.caption).foregroundStyle(.secondary)
                     Spacer(minLength: 0)

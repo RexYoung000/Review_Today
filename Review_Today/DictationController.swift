@@ -1,5 +1,7 @@
 import AVFoundation
+import AppKit
 import Foundation
+import OSLog
 import SwiftUI
 
 extension Notification.Name { static let dictationSessionsDeleted = Notification.Name("ReviewToday.DictationSessionsDeleted") }
@@ -8,6 +10,7 @@ struct DictationResult: Codable {
     var text: String
     var raw_text: String?
     var cleaned: Bool?
+    var cleanup_reason: String? = nil
 }
 
 enum DictationFiles {
@@ -21,14 +24,21 @@ enum DictationFiles {
 @Observable @MainActor
 final class DictationController {
     enum Phase { case idle, permission, recording, transcribing, cleaning, applying }
+    enum Stage: String { case recordingStart, transcription, cleanup, draftSave }
     var phase: Phase = .idle
     var level = 0.0
     var elapsed = 0.0
     var error: String?
+    var notice: String?
     var pending = false
     var settling = false
     var insertion: EditorInsertion?
     private(set) var owner: UUID?
+    private(set) var timings: [Stage: Double] = [:]
+    private var applyingStarted: TimeInterval?
+    private var appliedRaw = false
+    private let clock: () -> TimeInterval
+    private static let logger = Logger(subsystem: "ReviewToday.Dictation", category: "timing")
     private var recorder: AVAudioRecorder?
     private var timer: Timer?
     private var work: Task<Void, Never>?
@@ -36,13 +46,21 @@ final class DictationController {
     private let permission: () async -> Bool
     private let transport: ((String, Data) async throws -> DictationResult)?
     init(permission: @escaping () async -> Bool = { await AVCaptureDevice.requestAccess(for: .audio) },
-         transport: ((String, Data) async throws -> DictationResult)? = nil) {
-        self.permission = permission; self.transport = transport
+         transport: ((String, Data) async throws -> DictationResult)? = nil,
+         clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }) {
+        self.permission = permission; self.transport = transport; self.clock = clock
     }
     var busy: Bool { phase != .idle }
+    var mascotPhase: MascotPhase {
+        switch phase {
+        case .recording: .listening
+        case .transcribing, .cleaning: .thinking
+        case .idle, .permission, .applying: .idle
+        }
+    }
     var title: String {
         switch phase {
-        case .idle: error ?? (pending ? "有未完成听写，可重试或删除" : (settling ? "已停止" : ""))
+        case .idle: error ?? (pending ? "有未完成听写，可重试或删除" : (notice ?? (settling ? "已停止" : "")))
         case .permission: "正在请求麦克风权限"
         case .recording: "正在聆听 · \(Int(elapsed)) / 300 秒"
         case .transcribing: "正在转写"
@@ -58,17 +76,19 @@ final class DictationController {
         generation = UUID(); work?.cancel(); work = nil
         recorder?.stop(); recorder = nil; timer?.invalidate(); timer = nil
         phase = .idle; level = 0; insertion = nil; settling = false
+        notice = nil; applyingStarted = nil; appliedRaw = false
         pending = owner.map(DictationFiles.exists) ?? false
     }
     func cancel() { let id = owner; leave(); if let id { DictationFiles.remove(id) }; pending = false; error = nil; settle() }
     func start() {
         guard !busy, let id = owner else { return }
-        error = nil; phase = .permission; generation = UUID(); let token = generation
+        error = nil; notice = nil; settling = false; timings = [:]; phase = .permission; generation = UUID(); let token = generation
         work = Task { [weak self] in
             guard let self else { return }
             let allowed = await self.permission()
             guard self.generation == token, !Task.isCancelled else { return }
             guard allowed else { self.phase = .idle; self.error = "麦克风权限未开启，请在系统设置中允许 Review Today 使用麦克风。"; return }
+            let startup = self.clock()
             do {
                 try FileManager.default.createDirectory(at: DictationFiles.root, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
                 DictationFiles.remove(id)
@@ -76,6 +96,7 @@ final class DictationController {
                 recording.isMeteringEnabled = true
                 guard recording.record(forDuration: 300) else { throw CocoaError(.fileWriteUnknown) }
                 self.recorder = recording; self.elapsed = 0; self.phase = .recording; self.pending = true
+                self.recordTiming(.recordingStart, since: startup)
                 self.timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
                     MainActor.assumeIsolated {
                         guard let self, let recorder = self.recorder else { return }
@@ -88,10 +109,16 @@ final class DictationController {
             } catch { self.phase = .idle; self.error = "无法开始录音，请检查麦克风和可用存储空间。" }
         }
     }
-    func finish() { guard phase == .recording else { return }; recorder?.stop(); recorder = nil; timer?.invalidate(); timer = nil; phase = .idle; retry() }
+    func finish() { guard phase == .recording else { return }; recorder?.stop(); recorder = nil; timer?.invalidate(); timer = nil; phase = .idle; beginProcessing() }
     func retry() {
         guard !busy, let id = owner else { return }
-        generation = UUID(); let token = generation; error = nil; level = 0
+        guard DictationFiles.exists(id) else { return }
+        timings = [:]
+        beginProcessing()
+    }
+    private func beginProcessing() {
+        guard !busy, let id = owner else { return }
+        generation = UUID(); let token = generation; error = nil; notice = nil; settling = false; level = 0; appliedRaw = false
         phase = .transcribing
         work = Task { [weak self] in
             guard let self else { return }
@@ -112,7 +139,9 @@ final class DictationController {
                     guard self.generation == token, !Task.isCancelled, DictationFiles.exists(id) else { return }
                     try JSONEncoder().encode(result).write(to: DictationFiles.result(id), options: .atomic)
                 }
+                self.appliedRaw = result.cleaned == false
                 self.phase = .applying
+                self.applyingStarted = self.clock()
                 self.insertion = EditorInsertion(text: result.text, appendToEnd: true)
             } catch {
                 guard self.generation == token, !Task.isCancelled else { return }
@@ -124,8 +153,28 @@ final class DictationController {
     func applied(saved: Bool) {
         guard phase == .applying, let id = owner else { return }
         insertion = nil; phase = .idle; settle()
-        if saved { DictationFiles.remove(id); pending = false }
+        if let applyingStarted { recordTiming(.draftSave, since: applyingStarted); self.applyingStarted = nil }
+        if saved {
+            DictationFiles.remove(id); pending = false
+            showNotice(appliedRaw ? "已保留原始转写，可直接编辑" : "已添加到草稿")
+        }
         else { pending = true; error = "草稿未能保存，听写结果已保留，请重试。" }
+    }
+    private func showNotice(_ text: String) {
+        notice = text
+        NSAccessibility.post(element: NSApplication.shared, notification: .announcementRequested,
+                             userInfo: [.announcement: text, .priority: NSAccessibilityPriorityLevel.medium.rawValue])
+        let token = generation
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(4))
+            guard let self, self.generation == token else { return }
+            self.notice = nil
+        }
+    }
+    private func recordTiming(_ stage: Stage, since started: TimeInterval) {
+        let duration = max(0, clock() - started)
+        timings[stage] = duration
+        Self.logger.info("stage=\(stage.rawValue, privacy: .public) elapsed_ms=\(Int(duration * 1000), privacy: .public)")
     }
     private func settle() {
         settling = true
@@ -137,6 +186,8 @@ final class DictationController {
         }
     }
     private func request(_ action: String, body: Data, audio: Bool) async throws -> DictationResult {
+        let started = clock(), token = generation
+        defer { if generation == token { recordTiming(audio ? .transcription : .cleanup, since: started) } }
         if let transport { return try await transport(action, body) }
         try AppRuntime.current.requireSending()
         var request = URLRequest(url: AgentAPI.base.appending(path: "v2/dictation/\(action)"))

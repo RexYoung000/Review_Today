@@ -47,7 +47,7 @@ def test_invalid_request_never_calls_provider():
 def test_clean_failure_retains_original_and_does_not_retranscribe():
     with patch.object(d, 'parse_model', side_effect=RuntimeError('private upstream detail')), patch.object(d, 'transcribe') as upstream:
         r = client().post('/v2/dictation/clean', json={'text': '不要改数字 30。'})
-        assert r.json() == {'raw_text': '不要改数字 30。', 'text': '不要改数字 30。', 'cleaned': False}
+        assert r.json() == {'raw_text': '不要改数字 30。', 'text': '不要改数字 30。', 'cleaned': False, 'cleanup_reason': 'model_error'}
         upstream.assert_not_called()
 
 

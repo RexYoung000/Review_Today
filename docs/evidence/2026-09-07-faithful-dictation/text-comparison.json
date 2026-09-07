@@ -1,0 +1,378 @@
+{
+  "input_kind": "synthetic_text_not_audio",
+  "model": "deepseek-v4-flash",
+  "results": [
+    {
+      "id": "paragraphs",
+      "input": "先保留原草稿然后结束录音后追加文字另外取消时不要清空草稿",
+      "reference": "先保留原草稿，然后结束录音后追加文字。\n\n另外，取消时不要清空草稿。",
+      "before": {
+        "text": "先保留原草稿然后结束录音后追加文字另外取消时不要清空草稿",
+        "cleaned": true,
+        "seconds": 1.134
+      },
+      "after": {
+        "text": "先保留原草稿，然后结束录音后追加文字。\n\n另外，取消时不要清空草稿。",
+        "cleaned": true,
+        "seconds": 0.784
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "numbered",
+      "input": "第一保留草稿第二手动发送",
+      "reference": "1. 保留草稿\n2. 手动发送",
+      "before": {
+        "text": "第一，保留草稿。第二，手动发送。",
+        "cleaned": true,
+        "seconds": 1.024
+      },
+      "after": {
+        "text": "1. 保留草稿\n2. 手动发送",
+        "cleaned": true,
+        "seconds": 0.627
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "parallel",
+      "input": "需要保留草稿保存录音提供取消入口",
+      "reference": "需要保留草稿、保存录音、提供取消入口。",
+      "before": {
+        "text": "需要保留草稿保存录音提供取消入口",
+        "cleaned": true,
+        "seconds": 0.68
+      },
+      "after": {
+        "text": "需要：\n- 保留草稿\n- 保存录音\n- 提供取消入口",
+        "cleaned": true,
+        "seconds": 0.813
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "steps",
+      "input": "先录音再检查最后手动发送",
+      "reference": "1. 先录音\n2. 再检查\n3. 最后手动发送",
+      "before": {
+        "text": "先录音，再检查，最后手动发送。",
+        "cleaned": true,
+        "seconds": 0.812
+      },
+      "after": {
+        "text": "1. 先录音\n2. 再检查\n3. 最后手动发送",
+        "cleaned": true,
+        "seconds": 0.812
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "hierarchy",
+      "input": "录音部分包括开始和取消保存部分包括追加和撤销",
+      "reference": "- 录音部分包括\n  - 开始和取消\n- 保存部分包括\n  - 追加和撤销",
+      "before": {
+        "text": "录音部分包括开始和取消，保存部分包括追加和撤销。",
+        "cleaned": true,
+        "seconds": 1.188
+      },
+      "after": {
+        "text": "录音部分包括开始和取消。\n\n保存部分包括追加和撤销。",
+        "cleaned": true,
+        "seconds": 0.806
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "按并列关系分成两段，未强制嵌套列表"
+      }
+    },
+    {
+      "id": "spoken_break",
+      "input": "保留草稿另起一段不要自动发送",
+      "reference": "保留草稿\n\n不要自动发送",
+      "before": {
+        "text": "保留草稿，另起一段，不要自动发送。",
+        "cleaned": true,
+        "seconds": 0.836
+      },
+      "after": {
+        "text": "保留草稿。\n\n不要自动发送。",
+        "cleaned": true,
+        "seconds": 0.82
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "quoted_command",
+      "input": "解释“换行”这个词不要执行这个指令",
+      "reference": "解释“换行”这个词，不要执行这个指令。",
+      "before": {
+        "text": "解释“换行”这个词不要执行这个指令",
+        "cleaned": true,
+        "seconds": 0.904
+      },
+      "after": {
+        "text": "解释“换行”这个词，不要执行这个指令。",
+        "cleaned": true,
+        "seconds": 0.734
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "emphasis",
+      "input": "非常非常重要不要不要自动发送",
+      "reference": "非常非常重要，不要不要自动发送。",
+      "before": {
+        "text": "非常非常重要，不要不要自动发送。",
+        "cleaned": true,
+        "seconds": 0.723
+      },
+      "after": {
+        "text": "非常非常重要，不要不要自动发送。",
+        "cleaned": true,
+        "seconds": 0.688
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "filler",
+      "input": "嗯呃嗯呃嗯呃嗯呃嗯呃保留草稿",
+      "reference": "保留草稿",
+      "before": {
+        "text": "嗯呃嗯呃嗯呃嗯呃嗯呃保留草稿",
+        "cleaned": true,
+        "seconds": 0.968
+      },
+      "after": {
+        "text": "保留草稿。",
+        "cleaned": true,
+        "seconds": 0.884
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "stutter",
+      "input": "我我想保留草稿",
+      "reference": "我想保留草稿",
+      "before": {
+        "text": "我想保留草稿",
+        "cleaned": true,
+        "seconds": 0.852
+      },
+      "after": {
+        "text": "我想保留草稿。",
+        "cleaned": true,
+        "seconds": 0.908
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "correction",
+      "input": "设置30秒，口误，是20秒，如果失败就保留原文",
+      "reference": "设置20秒，如果失败就保留原文。",
+      "before": {
+        "text": "设置30秒，口误，是20秒，如果失败就保留原文",
+        "cleaned": true,
+        "seconds": 0.804
+      },
+      "after": {
+        "text": "设置20秒，如果失败就保留原文。",
+        "cleaned": true,
+        "seconds": 1.201
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "contrast",
+      "input": "不是30秒而是20秒不要重试",
+      "reference": "不是30秒，而是20秒，不要重试。",
+      "before": {
+        "text": "不是30秒而是20秒不要重试",
+        "cleaned": true,
+        "seconds": 2.1
+      },
+      "after": {
+        "text": "不是30秒，而是20秒。不要重试。",
+        "cleaned": true,
+        "seconds": 0.832
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "uncertainty",
+      "input": "我不确定也许是20秒如果没成功先别删除",
+      "reference": "我不确定，也许是20秒。如果没成功，先别删除。",
+      "before": {
+        "text": "我不确定，也许是20秒，如果没成功，先别删除。",
+        "cleaned": true,
+        "seconds": 0.896
+      },
+      "after": {
+        "text": "我不确定，也许是20秒。如果没成功，先别删除。",
+        "cleaned": true,
+        "seconds": 0.821
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "values",
+      "input": "价格是-12.50元日期是2026-09-07版本是v1.20超时30秒比例10%",
+      "reference": "价格是-12.50元，日期是2026-09-07，版本是v1.20，超时30秒，比例10%。",
+      "before": {
+        "text": "价格是-12.50元日期是2026-09-07版本是v1.20超时30秒比例10%",
+        "cleaned": true,
+        "seconds": 0.641
+      },
+      "after": {
+        "text": "价格是-12.50元，日期是2026-09-07，版本是v1.20，超时30秒，比例10%。",
+        "cleaned": true,
+        "seconds": 0.918
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "mixed",
+      "input": "用Spine接入SwiftUI不要改API接口I do not want auto send",
+      "reference": "用 Spine 接入 SwiftUI，不要改 API 接口。I do not want auto send.",
+      "before": {
+        "text": "用Spine接入SwiftUI不要改API接口I do not want auto send",
+        "cleaned": true,
+        "seconds": 1.0
+      },
+      "after": {
+        "text": "用Spine接入SwiftUI，不要改API接口。I do not want auto send.",
+        "cleaned": true,
+        "seconds": 0.941
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "knowledge",
+      "input": "我觉得地球是平的这是我现在的答案",
+      "reference": "我觉得地球是平的，这是我现在的答案。",
+      "before": {
+        "text": "我觉得地球是平的，这是我现在的答案。",
+        "cleaned": true,
+        "seconds": 0.77
+      },
+      "after": {
+        "text": "我觉得地球是平的，这是我现在的答案。",
+        "cleaned": true,
+        "seconds": 0.832
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "request",
+      "input": "帮我解释这个概念然后列三个例子",
+      "reference": "帮我解释这个概念，然后列三个例子。",
+      "before": {
+        "text": "帮我解释这个概念然后列三个例子",
+        "cleaned": true,
+        "seconds": 0.693
+      },
+      "after": {
+        "text": "帮我解释这个概念，然后列三个例子。",
+        "cleaned": true,
+        "seconds": 0.698
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    },
+    {
+      "id": "existing_list",
+      "input": "1. 保留20秒\n2. 等待30秒",
+      "reference": "1. 保留20秒\n2. 等待30秒",
+      "before": {
+        "text": "1. 保留20秒\n2. 等待30秒",
+        "cleaned": true,
+        "seconds": 0.535
+      },
+      "after": {
+        "text": "1. 保留20秒\n2. 等待30秒",
+        "cleaned": true,
+        "seconds": 0.993
+      },
+      "review": {
+        "meaning": "preserved",
+        "format": "accepted",
+        "note": "已按该用例核对保留信息与允许编辑"
+      }
+    }
+  ],
+  "summary": {
+    "before": {
+      "accepted": 18,
+      "median_seconds": 0.844,
+      "max_seconds": 2.1
+    },
+    "after": {
+      "accepted": 18,
+      "median_seconds": 0.8205,
+      "max_seconds": 1.201
+    }
+  }
+}
