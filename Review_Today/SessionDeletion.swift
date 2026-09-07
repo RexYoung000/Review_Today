@@ -114,6 +114,8 @@ enum SessionDeletion {
             }
             for session in targets { context.delete(session) }
             if let save { try save() } else { try context.save() }
+            for id in approved.sessionIDs { DictationFiles.remove(id) }
+            NotificationCenter.default.post(name: .dictationSessionsDeleted, object: approved.sessionIDs)
             ConversationSync.wake()
             return nil
         } catch { context.rollback(); throw error }

@@ -17,6 +17,8 @@ struct LearningWorkspace: View {
     @Query(sort: \AgentRun.createdAt) private var runs: [AgentRun]
     @State private var queueInput = false
     @State private var draft = ""
+    @State private var dictation = DictationController()
+    @State private var dictationOriginal = ""
     @State private var localError: String?
     @State private var deletionImpact: SessionDeletionImpact?
     @State private var editingSessionID: UUID?
@@ -134,6 +136,7 @@ struct LearningWorkspace: View {
         .toolbar(removing: .title)
         .onAppear(perform: loadDraft)
         .onChange(of: selectedSessionID) { _, _ in
+            dictation.leave()
             saveDraft()
             loadDraft()
             queueInput = false
@@ -150,8 +153,11 @@ struct LearningWorkspace: View {
                 saveDraft()
             }
         }
-        .onDisappear { saveDraft() }
-        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in saveDraft() }
+        .onDisappear { dictation.leave(); saveDraft() }
+        .onReceive(NotificationCenter.default.publisher(for: .dictationSessionsDeleted)) { note in
+            if let ids = note.object as? Set<UUID>, let owner = dictation.owner, ids.contains(owner) { dictation.cancel() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in dictation.leave(); saveDraft() }
         .sheet(item: $deletionImpact) { impact in
             SessionDeletionSheet(impact: impact) { _ in selectedSessionID = nil }
         }
@@ -217,7 +223,7 @@ struct LearningWorkspace: View {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 200), spacing: 12)], spacing: 12) {
                         ForEach(quickStarts) { start in
                             QuickStartCard(start: start) {
-                                insertion = EditorInsertion(text: start.prompt, templateID: start.id)
+                                if !dictation.busy { insertion = EditorInsertion(text: start.prompt, templateID: start.id) }
                             }
                         }
                     }
@@ -438,7 +444,7 @@ struct LearningWorkspace: View {
             Text("从一个问题开始，或把资料放在这里。学习成果由你决定是否保存。")
                 .font(.callout).foregroundStyle(.secondary)
             ForEach(["RAG 是什么？", "带我学习 RAG 的基本原理", "帮我准备 RAG 面试题"], id: \.self) { example in
-                Button { draft = example; focusRequest += 1 } label: {
+                Button { guard !dictation.busy else { return }; draft = example; focusRequest += 1 } label: {
                     Label(example, systemImage: "arrow.up.left").font(.callout)
                 }.buttonStyle(.borderless)
             }
@@ -735,13 +741,22 @@ struct LearningWorkspace: View {
                     .font(.caption)
                     .foregroundStyle(.orange)
             }
+            if runtime.allowsSending, dictation.busy || dictation.pending || dictation.settling || dictation.error != nil {
+                HStack(spacing: 8) {
+                    MascotMotion(surface: .voice, phase: dictation.phase == .recording ? .listening : (dictation.busy ? .thinking : .idle), level: dictation.level, reduced: reduceMotion)
+                        .frame(width: 120, height: 65)
+                    Text(dictation.title).font(.caption).foregroundStyle(.secondary)
+                    Spacer(minLength: 0)
+                }.accessibilityElement(children: .combine)
+            }
             VStack(spacing: 4) {
                 LearningTextInput(text: $draft, height: $inputHeight, focused: $inputFocused,
                                   focusRequest: focusRequest, sessionID: selectedSessionID ?? draftSettings?.agentDraftID,
-                                  placeholder: activeActionPlaceholder, ink: NSColor(runway.ink), insertion: insertion, onSubmit: submitDraft)
+                                  placeholder: activeActionPlaceholder, ink: NSColor(runway.ink), insertion: dictation.insertion ?? insertion, editable: !dictation.busy, onInsertionApplied: acceptDictation, onSubmit: submitDraft)
                     .frame(height: inputHeight)
                 HStack {
-                  composerControls
+                  composerControls.disabled(dictation.busy)
+                  if runtime.allowsSending { dictationControls }
                   Spacer(minLength: 8)
                 Button(action: submitDraft) {
                     Image(systemName: "arrow.up")
@@ -751,7 +766,7 @@ struct LearningWorkspace: View {
                         .background(runway.action, in: Circle())
                 }
                 .buttonStyle(.plain)
-                .disabled(!runtime.allowsSending || draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .disabled(dictation.busy || !runtime.allowsSending || draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 .help(runtime.isPreview ? "界面预览不可发送" : "发送（Return 或 ⌘ Return）")
                 .accessibilityLabel("发送")
                 }
@@ -779,6 +794,40 @@ struct LearningWorkspace: View {
         }
     }
 
+    @ViewBuilder
+    private var dictationControls: some View {
+        if dictation.busy {
+            if dictation.phase == .recording {
+                Button("结束录音") { dictation.finish() }.buttonStyle(.borderless)
+            }
+            Button("取消听写") { dictation.cancel() }.buttonStyle(.borderless)
+        } else {
+            Button { insertion = nil; dictationOriginal = draft; dictation.start() } label: { Image(systemName: "mic") }
+                .buttonStyle(.borderless).accessibilityLabel(dictation.pending ? "重新录制听写" : "开始听写")
+                .help("录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟")
+            if dictation.pending {
+                Button("重试听写") { insertion = nil; dictationOriginal = draft; dictation.retry() }.buttonStyle(.borderless)
+                Button("删除录音") { dictation.cancel() }.buttonStyle(.borderless)
+            }
+        }
+    }
+
+    private func acceptDictation(_ text: String) {
+        guard dictation.owner == (selectedSessionID ?? draftSettings?.agentDraftID), dictation.phase == .applying else { return }
+        draftSave?.cancel()
+        let session = sessions.first { $0.id == draftSessionID }
+        if let session { session.composerDraft = text }
+        else { draftSettings?.agentDraftText = text }
+        do {
+            try modelContext.save()
+            draft = text; dictation.applied(saved: true)
+        } catch {
+            if let session { session.composerDraft = dictationOriginal }
+            else { draftSettings?.agentDraftText = dictationOriginal }
+            draft = dictationOriginal; dictation.applied(saved: false)
+        }
+    }
+
     private var activeActionPlaceholder: String {
         guard sessionTasks.contains(where: { $0.status == "awaiting_user" && $0.requiredActionPrompt != nil }) else {
             return "输入问题、资料、链接或 JD……"
@@ -787,12 +836,14 @@ struct LearningWorkspace: View {
     }
 
     private func submitDraft() {
+        guard !dictation.busy else { return }
         let content = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !content.isEmpty else { return }
         sendMessage(content)
     }
 
     private func sendMessage(_ content: String, operation: [String: Any]? = nil) {
+        guard !dictation.busy else { return }
         guard runtime.allowsSending else { localError = "界面预览不发送消息，输入仅用于排版检查。"; return }
         let started = Date.now
         guard let session = selectedSession else {
@@ -969,6 +1020,7 @@ struct LearningWorkspace: View {
             draftSessionID = selectedSessionID
             draft = selectedSession?.composerDraft ?? draftSettings?.agentDraftText ?? ""
             insertion = nil
+            dictation.bind(selectedSessionID ?? draftSettings?.agentDraftID)
         } catch { localError = "草稿暂时无法载入，请重试。" }
     }
 

@@ -5,6 +5,7 @@ struct EditorInsertion {
     let id = UUID()
     let text: String
     var templateID: String? = nil
+    var appendToEnd = false
 }
 
 /// Native text and marked text share one layout manager, inset and paragraph.
@@ -17,6 +18,8 @@ struct LearningTextInput: NSViewRepresentable {
     var placeholder: String
     var ink: NSColor
     var insertion: EditorInsertion? = nil
+    var editable = true
+    var onInsertionApplied: ((String) -> Void)? = nil
     var onSubmit: () -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -54,6 +57,8 @@ struct LearningTextInput: NSViewRepresentable {
         let coordinator = context.coordinator
         coordinator.parent = self
         view.onSubmit = onSubmit
+        view.isEditable = editable
+        view.onInsertionApplied = onInsertionApplied
         view.onFocus = { value in DispatchQueue.main.async { coordinator.parent.focused = value } }
         view.placeholder = placeholder
         view.font = .systemFont(ofSize: 14)
@@ -122,6 +127,7 @@ final class LearningEditor: NSTextView {
     var onSubmit: (() -> Void)?
     var onFocus: ((Bool) -> Void)?
     var onLayout: (() -> Void)?
+    var onInsertionApplied: ((String) -> Void)?
     private var prefill = QuickStartPrefill()
     private var applyingTemplate = false
     private var pendingInsertion: EditorInsertion?
@@ -147,7 +153,15 @@ final class LearningEditor: NSTextView {
     func applyPendingInsertion() {
         guard !hasMarkedText(), let insertion = pendingInsertion, !applyingTemplate else { return }
         pendingInsertion = nil
-        if let id = insertion.templateID {
+        if insertion.appendToEnd {
+            let wasEditable = isEditable
+            isEditable = true
+            breakUndoCoalescing()
+            insertText((string.isEmpty ? "" : "\n") + insertion.text, replacementRange: NSRange(location: (string as NSString).length, length: 0))
+            breakUndoCoalescing()
+            isEditable = wasEditable
+            onInsertionApplied?(string)
+        } else if let id = insertion.templateID {
             guard let next = prefill.apply(id: id, prompt: insertion.text, to: string) else { return }
             applyingTemplate = true
             insertText(next, replacementRange: NSRange(location: 0, length: (string as NSString).length))
