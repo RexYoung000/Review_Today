@@ -78,3 +78,9 @@ node src/call.mjs motion_export '{"name":"recall-v1"}'
 新增 [语音预览](http://127.0.0.1:8769/voice.html)，共用 14 骨骼与纹理，无额外依赖。`listening` / `speaking` 各为 4 秒、97 关键帧的可编辑循环（默认 24 fps），每条检查 193 个时间点，循环端点误差为 0。`motion_author` 同时重建三条动画，原 recall 数据保持一致。
 
 `preview_frame` 与 `preview_clip` 增加可选 `animation: recall | listening | speaking`，默认 recall 保持兼容；语音截图时间允许 0–8 秒，视频固定生成 8 秒、85% 模拟声量。语音渲染使用与浏览器相同的 `voice-scene.mjs`，包括声量包络、局部形变混合、波浪和投影；JSON 本身只包含骨骼/FFD 循环及附件，真实声量、状态与 Canvas 波浪仍由宿主驱动。已实际调用作者、语音 PNG、语音 MP4 和完整导出；没有改全局 MCP 配置或调用麦克风。
+
+### 弹性接触试作
+
+`preview_frame` / `preview_clip` 新增 `animation: thinking`。示例：`node src/call.mjs preview_clip '{"animation":"thinking"}'`。使用与语音页相同的 `wave-contact.mjs`，生成 8 秒「跳跃 → 4.8 秒请求停止 → 余波平息」视频。固定步长弹簧表面、接触位置和程序式骨骼/加权 FFD 共用一个状态；目前没有把这一段烘焙到 `motion_export` 的 JSON 中，导出的 recall/listening/speaking 时间轴保持原样。页面明确标注下载范围。
+
+当前共 13 项测试通过，新增跳跃过程网格不翻折、裁剪同步、停止时位置连续、余波最终静止与重新起跳检查。新思考是本轮试作，聆听/回答仍为前版，原生/真实语音与编辑器导入未验证。

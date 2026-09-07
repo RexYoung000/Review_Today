@@ -1,7 +1,11 @@
+import {createContact,advanceContact,contactMoving,applyContact,drawContact} from './wave-contact.mjs';
+export {contactMoving};
 // Shared by browser and offline evidence. One envelope drives body, wave and projection.
 export const voiceModes=['listening','thinking','speaking','idle'];
-export function createVoiceState(){return {time:0,recallTime:0,level:0,listen:0,speak:0,think:0};}
+export function createVoiceState(){return {contact:createContact(),time:0,recallTime:0,level:0,listen:0,speak:0,think:0};}
 export function advanceVoice(s,dt,mode,volume,reduced=false){
+  advanceContact(s.contact,dt,mode==='thinking',reduced);
+  if(mode==='listening'||mode==='speaking')s.contact.enabled=false;
   dt=Math.max(0,Math.min(.05,dt));
   if(reduced){s.level=s.listen=s.speak=s.think=0;return s;}
   s.time+=dt;
@@ -17,6 +21,7 @@ export function advanceVoice(s,dt,mode,volume,reduced=false){
   return s;
 }
 export function applyVoice(runtime,rig,s,reduced=false){
+  if(s.contact.enabled)return applyContact(runtime,rig,s.contact);
   const skeleton=rig.skeleton;skeleton.setToSetupPose();
   if(!reduced){
     const apply=(name,time,alpha)=>{if(alpha>0)rig.data.findAnimation(name).apply(skeleton,0,time,true,[],alpha,runtime.MixBlend.add,runtime.MixDirection.mixIn);};
@@ -32,6 +37,7 @@ export function applyVoice(runtime,rig,s,reduced=false){
   skeleton.updateWorldTransform(runtime.Physics.none);return skeleton;
 }
 export function drawVoiceScene(ctx,renderer,rig,s,width,height,{dark=false,reduced=false,compact=false}={}){
+  if(s.contact.enabled)return drawContact(ctx,renderer,rig,s.contact,width,height,{dark,compact});
   ctx.clearRect(0,0,width,height);
   const waveY=height*(compact?.76:.73),spacing=Math.min(compact?11:20,(width-64)/16);
   const amplitude=reduced?0:s.level*(compact?12:28);

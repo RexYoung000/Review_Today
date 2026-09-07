@@ -15,7 +15,7 @@ export async function renderer(json,size=640,dark=false,animation='recall'){
   const voice=createVoiceState();let previous=0;
   return time=>{
     if(animation!=='recall'){
-      for(let t=previous;t<time;t+=1/60)advanceVoice(voice,Math.min(1/60,time-t),animation,.85);previous=time;
+      for(let t=previous;t<time;t+=1/60)advanceVoice(voice,Math.min(1/60,time-t),animation==='thinking'&&t>=4.8?'idle':animation,.85);previous=time;
       applyVoice(spine,rig,voice);ctx.setTransform(1,0,0,1,0,0);drawVoiceScene(ctx,renderer,rig,voice,size,size*.75,{dark});
       ctx.globalCompositeOperation='destination-over';ctx.fillStyle=dark?'#141918':'#f7f6f2';ctx.fillRect(0,0,size,size*.75);ctx.globalCompositeOperation='source-over';return canvas.toBuffer('image/png');
     }

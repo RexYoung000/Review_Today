@@ -7,7 +7,7 @@ import {verifyRuntime} from './runtime.mjs';
 import {renderFrame,renderClip} from './render.mjs';
 const server=new McpServer({name:'review-today-mascot-motion',version:'0.1.0'});
 const text=data=>({content:[{type:'text',text:JSON.stringify(data,null,2)}]});
-const animationSchema=z.enum(['recall','listening','speaking']).default('recall');
+const animationSchema=z.enum(['recall','listening','speaking','thinking']).default('recall');
 const guard=fn=>async args=>{try{return await fn(args);}catch(e){return {isError:true,content:[{type:'text',text:e.message}]};}};
 server.registerTool('rig_inspect',{description:'Inspect the current Review Today 2D rig and recipe. Scope: this one mascot, Spine 4.2. No arbitrary file or code execution.',inputSchema:{}},guard(async()=>{const p=await current();return text({revision:p.revision,recipe:p.recipe,bones:p.json.bones,validation:validate(p.json),runtime:await verifyRuntime(p.json),editorImport:'unverified'});}));
 server.registerTool('weights_bind',{description:'Recompute normalized skin weights for the three body zones. Smaller softness = more local influence. Saves a new revision and validates runtime geometry.',inputSchema:{softness:recipeSchema.shape.softness}},guard(async args=>text(await author(args))));
