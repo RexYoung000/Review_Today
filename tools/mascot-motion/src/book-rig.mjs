@@ -23,17 +23,20 @@ export function bookPose(t){
 }
 // Perspective keeps the logo-bearing right cover facing outward at every angle;
 // only the unmarked back cover passes through an edge-on projection.
+// Negative depth recedes toward the reader and rises on screen: outer edges
+// sit above the spine, making a V rather than a roof-shaped inverted V.
+const projectY=(y,z)=>y*(1+z*.0015)-z*.30;
 function cover(side,open){
  const angle=side==='right'?-.15-.4*open:-.15-2.4*open;
- const x=60*Math.cos(angle),z=60*Math.sin(angle),depth=1+z*.0015;
- return [0,-43,x,-43*depth+z*.18,x,43*depth+z*.18,0,43];
+ const x=60*Math.cos(angle),z=60*Math.sin(angle);
+ return [0,-43,x,projectY(-43,z),x,projectY(43,z),0,43];
 }
 export function bookGeometry(p){
  const right=cover('right',p.open),left=cover('left',p.open);
  const edge=q=>[q[6],q[7],q[4],q[5],q[4],q[5]+3,q[6],q[7]+3];
- const f=p.flip,arc=Math.sin(Math.PI*f),x=55*Math.cos(Math.PI*f),top=43+arc*16,z=-12*arc;
+ const angle=-.55-2*p.flip,x=58*Math.cos(angle),z=58*Math.sin(angle);
  return {idle_book:right,idle_back:left,idle_spine:quad(-2,-44,2,44),idle_paper_right:edge(right),idle_paper_left:edge(left),
-  idle_page:[0,40,x,40+arc*2+z*.1,x,top,0,43]};
+  idle_page:[0,-40,x,projectY(-40,z),x,projectY(43,z)+2,0,45]};
 }
 export function writeBookFrame(json,a,t,add,alpha){
  const p=bookPose(t),geometry=bookGeometry(p);

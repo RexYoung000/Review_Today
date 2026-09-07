@@ -73,6 +73,11 @@ test('upright book is opaque, keeps R outward, and changes depth only clear of t
  for(const t of [.1,7.8]){const s=sample(rig,t,'idle_book');assert.ok(s.drawOrder.indexOf(s.findSlot('idle_book'))<s.drawOrder.indexOf(s.findSlot('body')));}
  const s=sample(rig,3,'idle_book');assert.ok(s.drawOrder.indexOf(s.findSlot('idle_book'))>s.drawOrder.indexOf(s.findSlot('body')));
  const cover=verticesOf(s,'idle_book');assert.ok(Math.hypot(cover[6]-cover[0],cover[7]-cover[1])>Math.hypot(cover[2]-cover[0],cover[3]-cover[1]),'Cover must be portrait');
+ for(const name of ['idle_book','idle_back']){
+  const v=verticesOf(s,name);assert.ok(v[5]>v[7]+5&&v[3]>v[1]+5,'Outer cover edges must rise from the spine into a V');
+ }
+ for(const name of ['idle_paper_left','idle_paper_right']){const v=verticesOf(s,name);assert.ok(v[5]>v[7]+5,'Paper edges must follow the cover V');}
+ for(const t of [3.7,4.5]){const v=verticesOf(sample(rig,t,'idle_book'),'idle_page');assert.ok(v[5]>v[7],'Turning page must settle toward the raised outer edge');}
 });
 
 test('all visible motion stays inside the App and preview canvases, below the eyes when reading',async()=>{
