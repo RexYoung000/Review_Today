@@ -34,15 +34,29 @@ shadow
   bounds: 0,0,256,128
 
 book.png
-size: 252,144
+size: 160,224
 filter: Linear,Linear
 pma: false
 book
-  bounds: 0,0,252,144
+  bounds: 0,0,160,224
+
+book-back.png
+size: 160,224
+filter: Linear,Linear
+pma: false
+book-back
+  bounds: 0,0,160,224
+
+book-spine.png
+size: 24,224
+filter: Linear,Linear
+pma: false
+book-spine
+  bounds: 0,0,24,224
 
 page.png
-size: 112,124
+size: 160,224
 filter: Linear,Linear
 pma: false
 page
-  bounds: 0,0,112,124
+  bounds: 0,0,160,224

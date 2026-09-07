@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import WebKit
+import AVFoundation
 
 private struct CheckFailure: Error, CustomStringConvertible { var description: String }
 @main
@@ -36,6 +37,8 @@ struct MascotMotionNativeTests {
         let coordinator = MascotWebSurface.Coordinator(onReady: { _ in })
         let settings = WKWebViewConfiguration(); settings.websiteDataStore = .nonPersistent(); settings.userContentController.add(coordinator, name: "mascot")
         let web = PassiveMascotWebView(frame: NSRect(x: 0, y: 0, width: 760, height: 600), configuration: settings)
+        web.setValue(false, forKey: "drawsBackground")
+        web.underPageBackgroundColor = .clear
         coordinator.webView = web; web.navigationDelegate = coordinator; window.contentView = web
         guard let url = Bundle.main.url(forResource: "MascotMotion", withExtension: "html") else { throw CheckFailure(description: "Bundled resource missing") }
         let html = try String(contentsOf: url, encoding: .utf8)
@@ -109,10 +112,66 @@ struct MascotMotionNativeTests {
         try await Task.sleep(for: .seconds(2.2)); state = try await inspect()
         let bookState = state["idle"] as? [String: Any]
         try expect(bookState?["clip"] as? String == "idle_book" && (bookState?["bookVisible"] as? Double ?? 0) > 0.9, "Native notebook clip did not open")
+        _ = try await web.evaluateJavaScript("window.mascotMotion.setState({...window.mascotMotion.inspect().config,visible:false})")
+        let pausedBook = (try await inspect())["idle"] as! [String: Any]
+        try expect(pausedBook["clip"] as? String == "idle_book", "Pausing must preserve the selected book clip")
+        try await Task.sleep(for: .milliseconds(350))
+        let stillBook = (try await inspect())["idle"] as! [String: Any]
+        try expect(pausedBook["elapsed"] as? Double == stillBook["elapsed"] as? Double, "Hidden book advances")
+        _ = try await web.evaluateJavaScript("window.mascotMotion.setState({...window.mascotMotion.inspect().config,visible:true})")
+        try await Task.sleep(for: .milliseconds(150))
+        let resumedBook = (try await inspect())["idle"] as! [String: Any]
+        let advance = (resumedBook["elapsed"] as? Double ?? 0) - (pausedBook["elapsed"] as? Double ?? 0)
+        try expect(advance > 0 && advance < 0.3, "Book resume catches up hidden time")
         coordinator.configuration.reduced = true; coordinator.send()
         try await Task.sleep(for: .milliseconds(100)); state = try await inspect()
         try expect((state["idle"] as? [String: Any])?["bookVisible"] as? Double == 0 && state["animating"] as? Bool == false, "Reduced motion leaves notebook visible")
         try expect(web.acceptsFirstResponder == false && web.hitTest(.zero) == nil, "Decorative surface steals input")
+        if CommandLine.arguments.contains("--record-idle") { try await recordIdle(web, window: window) }
         web.configuration.userContentController.removeScriptMessageHandler(forName: "mascot"); web.dispose()
+    }
+
+    // Native WKWebView snapshots sampled against the actual playback clock.
+    // This records the isolated native surface, not the daily App window.
+    @MainActor static func recordIdle(_ web: WKWebView, window: NSWindow) async throws {
+        window.setContentSize(NSSize(width: 640, height: 480))
+        let folder = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("brand/refresh-2026-09/idle-motion/evidence")
+        let url = folder.appendingPathComponent("native-idle-v2.mp4")
+        if FileManager.default.fileExists(atPath: url.path) { try FileManager.default.removeItem(at: url) }
+        let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
+        let input = AVAssetWriterInput(mediaType: .video, outputSettings: [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: 640, AVVideoHeightKey: 480])
+        input.expectsMediaDataInRealTime = true
+        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA, kCVPixelBufferWidthKey as String: 640, kCVPixelBufferHeightKey as String: 480])
+        writer.add(input)
+        guard writer.startWriting() else { throw CheckFailure(description: "Native recording could not start") }
+        writer.startSession(atSourceTime: .zero)
+        let start = ProcessInfo.processInfo.systemUptime
+        var token = 20
+        for (clip, duration, dark, reduced) in [("idle_book", 9.3, true, false), ("idle_stretch", 4.9, false, false), ("idle_hop", 4.5, false, false), ("idle_look", 5.3, true, false), ("random", 12.0, true, false), ("idle_book", 1.2, true, true)] {
+            token += 1
+            _ = try await web.evaluateJavaScript("window.mascotMotion.setState({...window.mascotMotion.inspect().config,idleClip:'\(clip)',restartToken:\(token),visible:true,ambient:true,reduced:\(reduced),dark:\(dark),rate:1})")
+            let clipStart = ProcessInfo.processInfo.systemUptime
+            while ProcessInfo.processInfo.systemUptime - clipStart < duration {
+                if input.isReadyForMoreMediaData {
+                    let shot = try await web.takeSnapshot(configuration: nil)
+                    var pixel: CVPixelBuffer?
+                    let status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, adaptor.pixelBufferPool!, &pixel)
+                    guard status == kCVReturnSuccess, let pixel else { throw CheckFailure(description: "Recording buffer unavailable") }
+                    CVPixelBufferLockBaseAddress(pixel, [])
+                    let context = CGContext(data: CVPixelBufferGetBaseAddress(pixel), width: 640, height: 480, bitsPerComponent: 8, bytesPerRow: CVPixelBufferGetBytesPerRow(pixel), space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)!
+                    let gray = dark ? 0.075 : 0.965
+                    context.setFillColor(CGColor(gray: gray, alpha: 1)); context.fill(CGRect(x: 0, y: 0, width: 640, height: 480))
+                    NSGraphicsContext.saveGraphicsState(); NSGraphicsContext.current = NSGraphicsContext(cgContext: context, flipped: false)
+                    shot.draw(in: NSRect(x: 0, y: 0, width: 640, height: 480))
+                    NSGraphicsContext.restoreGraphicsState(); CVPixelBufferUnlockBaseAddress(pixel, [])
+                    let time = CMTime(seconds: ProcessInfo.processInfo.systemUptime-start, preferredTimescale: 600)
+                    guard adaptor.append(pixel, withPresentationTime: time) else { throw CheckFailure(description: "Native frame append failed") }
+                }
+                try await Task.sleep(for: .milliseconds(80))
+            }
+        }
+        input.markAsFinished(); await writer.finishWriting()
+        guard writer.status == .completed else { throw CheckFailure(description: writer.error?.localizedDescription ?? "Native recording failed") }
+        print("Native WKWebView recording: \(url.path)")
     }
 }

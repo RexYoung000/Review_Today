@@ -1,5 +1,5 @@
-export const idleDurations={idle_look:4,idle_hop:3.2,idle_stretch:3.6,idle_book:6};
-export const idleNames=Object.keys(idleDurations);
+import {idleDurations,idleNames} from './idle-definition.mjs';
+export {idleDurations,idleNames} from './idle-definition.mjs';
 export function createIdlePlayer(random=Math.random,selected='random'){
  let phase='wait',clip=null,previous=null,elapsed=0,wait=1;
  const choose=()=>{const choices=idleNames.filter(n=>n!==previous);return choices[Math.min(choices.length-1,Math.floor(random()*choices.length))];};

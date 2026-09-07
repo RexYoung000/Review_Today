@@ -151,7 +151,7 @@ export function validate(json){
     if(strip(track[0])!==strip(track.at(-1)))fail('Loop endpoints differ');
   }
   const clip=json.skins[0].attachments.shadow_clip?.clip;
-  if(clip&&anim.attachments){
+  if(clip&&anim.attachments?.default?.body?.body?.deform){
     const frames=anim.attachments.default.shadow_clip?.clip?.deform;
     if(!frames||frames.length!==anim.attachments.default.body.body.deform.length)fail('Missing clip deformation');
     else for(const [i,frame] of frames.entries()){

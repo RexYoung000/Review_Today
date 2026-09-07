@@ -1,4 +1,5 @@
 import {createIdlePlayer,idleNames} from '@review-motion/idle-player.mjs';
+import {idleFraming} from '@review-motion/idle-definition.mjs';
 import {createMaterials} from '@review-motion/material.mjs';
 import {seamlessRenderer} from '@review-motion/mesh-renderer.mjs';
 import {createReturnState} from '@review-motion/return-state.mjs';
@@ -24,7 +25,7 @@ function paint(dt){
    advanceVoice(voice,dt,config.mode,config.level,config.reduced);applyVoice(spine,rig,voice);
    drawVoiceScene(ctx,renderer,rig,voice,width,height,{dark:config.dark,compact:width<300,material:config.material,palette:config.palette});
  }else{
-   poseRecall(dt);ctx.clearRect(0,0,width,height);ctx.save();ctx.translate(width/2,height*.49);const scale=Math.min(width/410,height/340);ctx.scale(scale,-scale);renderer.draw(rig.skeleton);ctx.restore();
+   poseRecall(dt);ctx.clearRect(0,0,width,height);ctx.save();const view=config.ambient?idleFraming(width,height):{x:width/2,y:height*.49,scale:Math.min(width/410,height/340)};ctx.translate(view.x,view.y);ctx.scale(view.scale,-view.scale);renderer.draw(rig.skeleton);ctx.restore();
  }
  frames++;
 }

@@ -29,7 +29,7 @@ struct InboxView: View {
         Group {
             if tasks.isEmpty && decisions.isEmpty {
                 VStack(spacing: 14) {
-                    MascotMotion(phase: .idle, ambient: true).frame(width: 150, height: 125)
+                    MascotMotion(phase: .idle, ambient: true).frame(width: 150, height: 170)
                     Text(String(localized: "没有需要处理的内容。"))
                         .foregroundStyle(.secondary)
                 }
