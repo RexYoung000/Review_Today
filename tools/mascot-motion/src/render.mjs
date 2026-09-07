@@ -3,7 +3,7 @@ import {SkeletonRenderer} from '@esotericsoftware/spine-canvas';
 import {seamlessRenderer} from '../../../brand/refresh-2026-09/motion-rig/mesh-renderer.mjs';
 const MeshRenderer=seamlessRenderer(SkeletonRenderer);
 import * as spine from '@esotericsoftware/spine-core';
-import {createVoiceState,advanceVoice,applyVoice,drawVoiceScene} from '../../../brand/refresh-2026-09/motion-rig/voice-scene.mjs';
+import {createVoiceState,advanceVoice,applyVoice,drawVoiceScene,contactGeometry} from '../../../brand/refresh-2026-09/motion-rig/voice-scene.mjs';
 import {loadRig,sample} from './runtime.mjs';
 import {mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -13,7 +13,7 @@ export const conversationMode=time=>time<3?'listening':time<6.8?'thinking':time<
 export async function renderer(json,size=640,dark=false,animation='recall'){
   const rig=await loadRig(json,loadImage);const canvas=createCanvas(size,size*.75),ctx=canvas.getContext('2d');
   const renderer=new MeshRenderer(ctx);renderer.triangleRendering=true;
-  const voice=createVoiceState();let previous=0;
+  const voice=createVoiceState(contactGeometry(spine,rig));let previous=0;
   return time=>{
     if(animation!=='recall'){
       for(let t=previous;t<time;t+=1/60)advanceVoice(voice,Math.min(1/60,time-t),animation==='conversation'?conversationMode(t):animation==='thinking'&&t>=4.8?'idle':animation,.85);previous=time;
