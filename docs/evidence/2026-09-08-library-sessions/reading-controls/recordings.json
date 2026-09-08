@@ -1,0 +1,28 @@
+[
+  {
+    "file": "selection-actions.mp4",
+    "duration_seconds": 45.038333,
+    "size": [
+      760,
+      688
+    ],
+    "average_frame_rate": "689400/27023",
+    "decode": "passed",
+    "capture": "Native current-process window recording; 30 fps target; actual presentation timestamps; 760x688; reduced=false; no audio.",
+    "original_speed": true,
+    "sha256": "2c5721d19e1d84ff1aa44a6fd69fb61705b2fe9607349e53336fbfba10a8ab51"
+  },
+  {
+    "file": "disclosure-mouse-and-keyboard.mp4",
+    "duration_seconds": 14.158333,
+    "size": [
+      760,
+      652
+    ],
+    "average_frame_rate": "4550/177",
+    "decode": "passed",
+    "capture": "Native current-process window recording; 30 fps target; actual presentation timestamps; 760x652; reduced=false; no audio.",
+    "original_speed": true,
+    "sha256": "755083f05550a926ae00791ab0428949084aa6e4ff7253be8f45b9c4398be557"
+  }
+]

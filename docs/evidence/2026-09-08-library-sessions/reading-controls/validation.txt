@@ -1,0 +1,8 @@
+PASS: initial/explicit/outside/locked/stale focus, protected text and selection, complete legacy titles and explanations without writes, exact capsule geometry, native book configuration
+PASS: reversible deck selection, following drag, rapid stale-completion rejection, wrap, snapback, flick, data reconciliation, single/empty, dimensions, native title/body/axis/key/text/wheel scope, trackpad pause, key/app loss and deferred teardown cancellation
+PASS: scoped title/tag search, search/reset boundaries, range and identity selection, current visible action targets, live scope changes, partial retry, empty-scope tools and no-results recovery
+Debug build: BUILD SUCCEEDED
+Release build: BUILD SUCCEEDED
+Debug codesign --verify --deep --strict: exit 0
+Native preview build: exit 0
+Both MP4s: full ffmpeg decode passed, original timestamps retained

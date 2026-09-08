@@ -22,6 +22,9 @@ enum KnowledgeAction: String, CaseIterable, Identifiable {
         switch self { case .pause: "暂停"; case .restore: "恢复使用"; case .trash: "移到回收站"; case .delete: "永久删除" }
     }
     var destructive: Bool { self == .trash || self == .delete }
+    var symbol: String {
+        switch self { case .pause: "pause"; case .restore: "arrow.uturn.backward"; case .trash: "trash"; case .delete: "trash.slash" }
+    }
     static func available(_ lifecycle: String) -> [Self] {
         switch lifecycle { case "active": [.pause, .trash]; case "paused": [.restore, .trash]; case "soft_deleted": [.restore, .delete]; default: [] }
     }

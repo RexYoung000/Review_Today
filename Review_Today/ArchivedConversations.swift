@@ -19,19 +19,19 @@ struct ArchivedConversations: View {
             HStack {
                 Text("已归档聊天").font(.title2.weight(.semibold)); Spacer()
                 if !controls.multiSelect && sessions.contains(where: { $0.status == "archived" }) {
-                    SessionListToolbarButton(title: "多选", secondary: true) { controls.beginSelection() }
+                    SessionListToolbarButton(title: "多选", symbol: "checklist", secondary: true) { controls.beginSelection() }
                 }
             }
             TextField("搜索已归档会话…", text: Binding(get: { controls.searchText }, set: { controls.setSearchText($0) }))
                 .textFieldStyle(BrandMaterialTextFieldStyle())
             if controls.multiSelect {
                 HStack(spacing: 8) {
-                    Text("已选 \(selected.count)").font(.caption).monospacedDigit()
-                    SessionListToolbarButton(title: controls.allVisibleSelected(in: ids) ? "取消全选" : "全选") { controls.toggleAll(visibleIDs: ids) }
+                    SelectionCountLabel(count: selected.count)
+                    SessionListToolbarButton(title: controls.allVisibleSelected(in: ids) ? "取消全选" : "全选", symbol: controls.allVisibleSelected(in: ids) ? "checkmark.square.fill" : "checkmark.square", selected: controls.allVisibleSelected(in: ids)) { controls.toggleAll(visibleIDs: ids) }
                     Spacer()
-                    SessionListToolbarButton(title: "恢复") { restore(selected) }.disabled(selected.isEmpty)
-                    SessionListToolbarButton(title: "永久删除") { prepare(selected) }.foregroundStyle(.red).disabled(selected.isEmpty)
-                    SessionListToolbarButton(title: "完成") { controls.endSelection() }
+                    SessionListToolbarButton(title: "恢复", symbol: "arrow.uturn.backward") { restore(selected) }.disabled(selected.isEmpty)
+                    SessionListToolbarButton(title: "永久删除", symbol: "trash.slash", destructive: true) { prepare(selected) }.foregroundStyle(.red).disabled(selected.isEmpty)
+                    SessionListToolbarButton(title: "完成", symbol: "checkmark") { controls.endSelection() }
                 }
             }
             if let error { Text(error).font(.caption).foregroundStyle(.red) }

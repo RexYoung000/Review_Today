@@ -74,6 +74,7 @@ struct LibraryView: View {
         .background(PaperSurface())
         .navigationTitle(String(localized: "知识库"))
         .accessibilityHidden(showDeck)
+        .disabled(showDeck)
         .overlay {
             if showDeck, !visibleItems.isEmpty {
                 KnowledgeDeckOverlay(
@@ -214,16 +215,16 @@ struct LibraryView: View {
     @ViewBuilder private func groupTools(_ name: String, selecting: Bool) -> some View {
         if selecting {
             HStack(spacing: 6) {
-                Text("已选 \(selection.ids.count)").font(.caption).monospacedDigit()
-                SessionListToolbarButton(title: selection.ids == selectableIDs ? "取消全选" : "全选") { selection.all(selectableIDs) }
+                SelectionCountLabel(count: selection.ids.count)
+                SessionListToolbarButton(title: selection.ids == selectableIDs ? "取消全选" : "全选", symbol: selection.ids == selectableIDs ? "checkmark.square.fill" : "checkmark.square", selected: selection.ids == selectableIDs) { selection.all(selectableIDs) }
                 ForEach(KnowledgeAction.available(filter)) { action in
-                    SessionListToolbarButton(title: action.title) { perform(action, ids: selection.ids.intersection(selectableIDs)) }
-                        .foregroundStyle(action.destructive ? Color.red : runway.ink).disabled(selection.ids.isEmpty)
+                    SessionListToolbarButton(title: action.title, symbol: action.symbol, destructive: action.destructive) { perform(action, ids: selection.ids.intersection(selectableIDs)) }
+                        .disabled(selection.ids.isEmpty)
                 }
-                SessionListToolbarButton(title: "完成") { selection.finish() }
+                SessionListToolbarButton(title: "完成", symbol: "checkmark") { selection.finish() }
             }.fixedSize(horizontal: true, vertical: false)
         } else {
-            SessionListToolbarButton(title: "多选", accessibilityTitle: "多选\(name)知识", secondary: true) {
+            SessionListToolbarButton(title: "多选", symbol: "checklist", accessibilityTitle: "多选\(name)知识", secondary: true) {
                 selection.begin(name); operationError = nil
             }
         }
@@ -619,6 +620,44 @@ struct ExplanationPiece: Hashable {
     }
 }
 
+private struct KnowledgeDisclosureStyle: DisclosureGroupStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Header(configuration: configuration)
+    }
+    private struct Header: View {
+        let configuration: DisclosureGroupStyleConfiguration
+        @Environment(\.runway) private var runway
+        @Environment(\.brandReduceMotion) private var reduced
+        @FocusState private var focused: Bool
+        var body: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                Button(action: toggle) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 10, weight: .semibold))
+                            .rotationEffect(.degrees(configuration.isExpanded ? 90 : 0))
+                        configuration.label
+                        Spacer(minLength: 0)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 24, alignment: .leading)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(InteractionButtonStyle(selected: configuration.isExpanded, focused: focused, padding: 8))
+                .background(runway.card.opacity(0.55), in: RoundedRectangle(cornerRadius: 9))
+                .focusable().focusEffectDisabled().focused($focused)
+                .onKeyPress(.space) { toggle(); return .handled }
+                .onKeyPress(.return) { toggle(); return .handled }
+                .accessibilityValue(Text(configuration.isExpanded ? "已展开" : "已收起"))
+                .accessibilityHint(Text("展开或收起常见误区"))
+                if configuration.isExpanded { configuration.content }
+            }
+        }
+        private func toggle() {
+            withAnimation(reduced ? nil : .easeOut(duration: 0.16)) { configuration.isExpanded.toggle() }
+        }
+    }
+}
+
 private struct KnowledgeDeckOverlay: View {
     var items: [Knowledge]
     var titles: [UUID: String]
@@ -852,13 +891,20 @@ private struct KnowledgeDepthCard: View {
                     .foregroundStyle(runway.copy)
             }
             ForEach(Array(cover.enumerated()), id: \.offset) { _, line in
-                memoryRow(line)
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                    Text("•").foregroundStyle(runway.copy).frame(width: 8).accessibilityHidden(true)
+                    memoryRow(line)
+                }
             }
             if !mixups.isEmpty {
                 DisclosureGroup(isExpanded: $misconceptionsExpanded) {
                     VStack(alignment: .leading, spacing: 12) {
-                        ForEach(Array(mixups.enumerated()), id: \.offset) { _, line in
-                            Text(line)
+                        ForEach(Array(mixups.enumerated()), id: \.offset) { index, line in
+                            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                                Text("\(index + 1).").monospacedDigit().foregroundStyle(.secondary).frame(minWidth: 18, alignment: .leading)
+                                Text(line)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                                 .font(.callout)
                                 .foregroundStyle(runway.copy)
                                 .lineSpacing(4)
@@ -868,15 +914,14 @@ private struct KnowledgeDepthCard: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, Runway.space)
                 } label: {
-                    HStack {
+                    HStack(spacing: 6) {
                         Text(String(localized: "常见误区"))
-                        Spacer()
                         Text("\(mixups.count)").monospacedDigit()
                     }
                     .font(.caption)
                     .foregroundStyle(runway.copy)
                 }
-                .tint(runway.ink)
+                .disclosureGroupStyle(KnowledgeDisclosureStyle())
                 .padding(.top, Runway.space)
             }
         }

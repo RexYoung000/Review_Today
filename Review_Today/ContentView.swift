@@ -431,9 +431,11 @@ struct AppSidebar: View {
 
 struct SessionListToolbarButton: View {
     let title: String
+    let symbol: String
     var accessibilityTitle: String? = nil
     var selected = false
     var secondary = false
+    var destructive = false
     let action: () -> Void
     @FocusState private var focused: Bool
     @State private var hovering = false
@@ -442,19 +444,30 @@ struct SessionListToolbarButton: View {
 
     var body: some View {
         Button(action: action) {
-            Text(title).lineLimit(1).fixedSize()
-                .font(secondary ? .system(size: 12) : .caption)
-                .foregroundStyle(secondary && !selected && !hovering ? runway.copy : runway.ink)
-                .frame(minWidth: secondary ? 28 : nil, minHeight: secondary ? 22 : 24)
+            Image(systemName: symbol)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(destructive ? Color.red : (secondary && !selected && !hovering ? runway.copy : runway.ink))
+                .frame(width: 28, height: 28)
         }
         .buttonStyle(InteractionButtonStyle(selected: selected, focused: focused, padding: secondary ? 2 : 3))
         .focusable().focusEffectDisabled().focused($focused)
-        .help(accessibilityTitle ?? title)
-        .accessibilityLabel(accessibilityTitle ?? title)
+        .help(Text(LocalizedStringKey(accessibilityTitle ?? title)))
+        .accessibilityLabel(Text(LocalizedStringKey(accessibilityTitle ?? title)))
         .accessibilityAddTraits(selected ? [.isSelected] : [])
         .onHover { hovering = $0 }
         .onChange(of: controlState) { _, state in if state != .key { hovering = false } }
         .onDisappear { hovering = false }
+    }
+}
+
+struct SelectionCountLabel: View {
+    let count: Int
+    var body: some View {
+        Label { Text(count.formatted()).monospacedDigit() } icon: { Image(systemName: "checkmark.circle") }
+            .font(.caption).foregroundStyle(.secondary)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("已选 \(count) 项"))
+            .help(Text("已选 \(count) 项"))
     }
 }
 
