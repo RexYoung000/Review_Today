@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-08.v1.1",
+  "version": "2026-09-08.v1.2",
   "cases": [
     {
       "id": "A01",
@@ -216,7 +216,8 @@
         "no_save",
         "stopped_no_output"
       ],
-      "setup": {}
+      "setup": {},
+      "grading": "rules_only"
     },
     {
       "id": "A07",

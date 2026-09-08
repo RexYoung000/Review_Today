@@ -100,6 +100,7 @@ SCHEMAS = {
         text("工具环境"),
         select("机器结果", LABELS.values()),
         num("通过标记"),
+        num("试验数"),
     ]
     + [num(v) for v in SCORES.values()]
     + [
@@ -463,7 +464,7 @@ def configure_dashboard(cli):
             "statistics",
             dict(
                 table_name="结果明细",
-                count_all=True,
+                series=[dict(field_name="试验数", rollup="SUM")],
                 filter=dict(
                     conjunction="and",
                     conditions=[
@@ -720,7 +721,11 @@ def sync(run_dir, config):
                 j.get("summary")
                 or r.get("execution_error")
                 or r.get("judge_error")
-                or "等待运行"
+                or (
+                    "仅规则判定：停止协议无需生成回答"
+                    if r.get("grading") == "rules_only"
+                    else "等待运行"
+                )
             )
             transcript = "\n\n".join(
                 f"轮次{t['number']} [{t.get('action','message')}]\n用户：{t['input']}\n教练：{t.get('response','')}"
@@ -746,6 +751,7 @@ def sync(run_dir, config):
                 "工具环境": manifest["environment"],
                 "机器结果": [LABELS[status]],
                 "通过标记": int(status == "passed"),
+                "试验数": 1,
                 "失败断言": ", ".join(rule_fail),
                 "机器诊断": diagnosis,
                 "修复方向": j.get("repair_direction", "先检查运行错误或人工复核"),

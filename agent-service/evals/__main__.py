@@ -184,6 +184,9 @@ def run(args):
                 build(directory)
     manifest["finished_at"] = datetime.now(timezone.utc).isoformat()
     manifest["service_hash_end"] = source_hash()
+    manifest["evaluator_hash_end"] = source_hash("evals")
+    if manifest["evaluator_hash_end"] != manifest["evaluator_hash"]:
+        manifest["invalidated"] = "evaluator changed during run"
     if manifest["service_hash_end"] != manifest["service_hash"]:
         manifest["invalidated"] = "service changed during run"
     write_json(directory / "manifest.json", manifest)

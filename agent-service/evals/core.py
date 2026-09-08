@@ -96,6 +96,13 @@ def load_dataset(directory=DATA):
             or not set(case["reference_ids"]) <= refs["packs"].keys()
         ):
             raise ValueError("missing reference pack")
+        if case.get("grading", "hybrid") not in ("hybrid", "rules_only"):
+            raise ValueError("unknown grading policy")
+        if case.get("grading") == "rules_only" and (
+            case["rules"] != ["no_save", "stopped_no_output"]
+            or not all(t.get("action") == "stop_after_accept" for t in case["turns"])
+        ):
+            raise ValueError("rules-only grading is limited to stop protocol cases")
         for turn in case["turns"]:
             if turn.get("action", "message") not in ACTIONS or (
                 not turn["text"] and turn.get("action") != "ack_current"
@@ -258,6 +265,8 @@ def classify(result):
         return "error"
     if any(not c["passed"] for c in result.get("checks", [])):
         return "failed"
+    if result.get("grading") == "rules_only":
+        return "passed" if result.get("checks") else "needs_review"
     judge = result.get("judge")
     if not judge or judge.get("needs_review") or result.get("judge_error"):
         return "needs_review"

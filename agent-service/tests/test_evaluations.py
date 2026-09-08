@@ -69,6 +69,15 @@ class DatasetTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "reference"):
                 load_dataset(directory)
 
+    def test_rules_only_cannot_skip_semantic_grading_for_normal_questions(self):
+        d, r, b = load_dataset()
+        d["cases"][1]["grading"] = "rules_only"
+        with tempfile.TemporaryDirectory() as directory:
+            for name, data in [("scenarios", d), ("references", r), ("rubric", b)]:
+                write_json(Path(directory) / (name + ".json"), data)
+            with self.assertRaisesRegex(ValueError, "stop protocol"):
+                load_dataset(directory)
+
     def test_validate_import_does_not_open_service_database(self):
         script = "import sys; from evals.core import load_dataset; load_dataset(); assert not any(n.startswith('agent_service') for n in sys.modules)"
         subprocess.run([sys.executable, "-c", script], check=True)
@@ -144,6 +153,14 @@ class RulesTests(unittest.TestCase):
         self.assertEqual(
             classify(dict(judge=verdict(), checks=[{"passed": False}])), "failed"
         )
+
+    def test_stop_protocol_needs_all_rule_checks_and_no_execution_error(self):
+        r = dict(grading="rules_only", checks=[dict(passed=True)], judge=None)
+        self.assertEqual(classify(r), "passed")
+        r["checks"][0]["passed"] = False
+        self.assertEqual(classify(r), "failed")
+        r["execution_error"] = "interrupted incorrectly"
+        self.assertEqual(classify(r), "error")
 
     def test_critical_judge_requires_exact_public_quote(self):
         j = verdict()
@@ -357,6 +374,53 @@ class SyncTests(unittest.TestCase):
         with self.assertRaisesRegex(LarkError, "schema"):
             cli.upsert("结果明细", [{"结果键": "a", "typo": "x"}])
         self.assertEqual(cli.creates, 0)
+
+
+class WorkerIntegrationTests(unittest.TestCase):
+    def test_real_store_restart_path_without_model_or_private_db(self):
+        import os
+        from agent_service import config, conversation
+        from agent_service.schemas import IntentDecision
+        from evals.worker import execute
+
+        with tempfile.TemporaryDirectory(
+            prefix="review-today-eval-integration-"
+        ) as folder:
+            args = SimpleNamespace(
+                trial_key="restart",
+                output=Path(folder) / "result.json",
+                env_file=[],
+                max_calls=5,
+                environment="fixture",
+            )
+            case = dict(
+                id="restart",
+                mode="auto",
+                setup={},
+                rules=["no_save", "no_task"],
+                turns=[{"text": "你好"}, {"text": "你好", "action": "restart"}],
+            )
+            decision = IntentDecision(
+                intents=["greeting"],
+                relation="continuation",
+                scope="conversation",
+                rationale="受控路径验证",
+                light_reply="你好",
+            )
+            with patch.dict(os.environ), patch.object(
+                config, "HARNESS_DB", str(Path(folder) / "checkpoint.sqlite3")
+            ), patch.object(config, "PROVIDER", "deepseek"), patch.object(
+                config, "openai_key", return_value="synthetic-never-sent"
+            ), patch.object(
+                conversation, "parse_model", return_value=decision
+            ), patch(
+                "evals.judge.grade", return_value=verdict()
+            ):
+                result = execute(case, {}, {}, args, folder)
+            self.assertEqual(result["status"], "passed", result)
+            self.assertEqual([t["response"] for t in result["turns"]], ["你好", "你好"])
+            self.assertEqual(result["calls"], [])
+            self.assertTrue((Path(folder) / "checkpoint.sqlite3").exists())
 
 
 if __name__ == "__main__":

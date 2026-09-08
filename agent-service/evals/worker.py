@@ -8,6 +8,7 @@ import os
 import tempfile
 import time
 import uuid
+import traceback
 from contextlib import ExitStack
 from pathlib import Path
 from unittest.mock import patch
@@ -95,6 +96,7 @@ def execute(case, references, rubric, args, directory):
         thinking="smart",
         environment=args.environment,
         synthetic=True,
+        grading=case.get("grading", "hybrid"),
         status="not_run",
         execution_error=None,
         judge_error=None,
@@ -200,7 +202,7 @@ def execute(case, references, rubric, args, directory):
                     harness = conversation.ConversationHarness(
                         ConversationStore(HarnessStore(config.HARNESS_DB))
                     )
-                    harness.recover(sid)
+                    harness.recover()
                 if action == "ack_current":
                     data = store.get(sid)
                     task = next(
@@ -264,20 +266,8 @@ def execute(case, references, rubric, args, directory):
                         )
                         turn["stopped"] = True
                     harness.drain(sid)
-                except ValueError as exc:
-                    if action != "save_stale":
-                        raise
-                    turn.update(
-                        stale_rejected=True,
-                        error=(
-                            str(exc)
-                            if str(exc).startswith("RT.")
-                            else type(exc).__name__
-                        ),
-                        state=state_view(store.get(sid)),
-                    )
-                    save()
-                    continue
+                except ValueError:
+                    raise
                 data = store.get(sid)
                 run = data["runs"][accepted.run_id]
                 events = [e for e in data["events"] if e["run_id"] == accepted.run_id]
@@ -369,11 +359,15 @@ def execute(case, references, rubric, args, directory):
                     break
         except Exception as exc:
             message = str(exc)
+            result["error_location"] = [
+                dict(file=Path(f.filename).name, line=f.lineno, function=f.name)
+                for f in traceback.extract_tb(exc.__traceback__)[-4:]
+            ]
             result["execution_error"] = (
                 message if message.startswith(("RT.", "EVAL.")) else type(exc).__name__
             )
         result["checks"] = check_rules(case, result)
-        if not result["execution_error"]:
+        if not result["execution_error"] and result["grading"] != "rules_only":
             try:
                 meter.phase = "judge"
                 result["judge"] = grade(
