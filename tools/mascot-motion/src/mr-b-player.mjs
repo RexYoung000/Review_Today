@@ -1,5 +1,5 @@
 import {createStudyPlayer} from '@review-motion/settlement-player.mjs';
-import {studyDuration} from '@review-motion/settlement-volume.mjs';
+import {studyDuration} from '@review-motion/settlement-scene.mjs';
 import {createMaterials} from '@review-motion/material.mjs';
 import {seamlessRenderer} from '@review-motion/mesh-renderer.mjs';
 import {durations,createSequence,ingestion,ease} from '@review-motion/mr-b-state.mjs';

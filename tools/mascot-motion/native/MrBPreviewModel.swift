@@ -3,7 +3,7 @@ import SwiftUI
 
 @MainActor @Observable
 final class MrBPreviewModel {
-    var scene = "行走消字短样"
+    var scene = "逐行消除短样"
     var studyRecording = false
     var studyPaused = false
     var studyTime = 0.0
@@ -11,7 +11,7 @@ final class MrBPreviewModel {
     var studySeekToken = 0
     var studyMesh = false
     var studyFailed = false
-    var studyDuration: Double { scene == "行走消字短样" ? 6.4 : 7.2 }
+    var studyDuration: Double { scene == "逐行消除短样" ? 4.6 : 4.8 }
     func replayStudy() { finished = false; studyPaused = false; studyTime = 0; studySeek = nil; token += 1 }
     func seekStudy(_ time: Double) { studyPaused = true; studySeek = min(studyDuration,max(0,time)); studyTime = studySeek!; studySeekToken += 1 }
     var dark = false

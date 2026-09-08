@@ -1,0 +1,43 @@
+{
+  "capture": "Native current-process window; original presentation timestamps, no retiming, no audio",
+  "recordings": {
+    "walk-native": {
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 820,
+            "avg_frame_rate": "24900/847",
+            "nb_frames": "166"
+          }
+        ],
+        "format": {
+          "duration": "5.618333"
+        }
+      },
+      "decode_exit": 0,
+      "decode_stderr": ""
+    },
+    "stamp-native": {
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 820,
+            "avg_frame_rate": "103200/3511",
+            "nb_frames": "172"
+          }
+        ],
+        "format": {
+          "duration": "5.851667"
+        }
+      },
+      "decode_exit": 0,
+      "decode_stderr": ""
+    }
+  }
+}

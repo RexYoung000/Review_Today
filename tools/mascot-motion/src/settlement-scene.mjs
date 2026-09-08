@@ -1,0 +1,117 @@
+import {contour} from './settlement-character.mjs';
+// Flat stage coordinates. The third coordinate is painter order, never depth:
+// no perspective scaling, cylinder, or new body lighting model.
+export const studyDuration={walk_study:4.6,stamp_study:4.8};
+export const stage={width:760,height:400};
+export const clamp=x=>Math.max(0,Math.min(1,x));
+const ease=x=>{x=clamp(x);return x*x*(3-2*x);};
+const ramp=(t,a,b)=>ease((t-a)/(b-a));
+const mix=(a,b,t)=>a+(b-a)*t;
+export const project=([x,y])=>[x,y];
+export const stepStarts=[.25,1.45,2.65];
+export const contactTime=2.12;
+const lineX=310,lineY=234,lineWidth=140,lineGap=34;
+
+export function walking(t){
+ const steps=stepStarts.map(start=>{
+  const local=t-start,erase=ramp(local,.45,.75),feed=ramp(local,.87,1.13);
+  return {local,erase,feed,contact:local>=.45&&local<=.75,
+   lift:ramp(local,0,.22)*(1-ramp(local,.25,.45)),
+   planted:ramp(local,.32,.45)*(1-ramp(local,.75,.87))};
+ });
+ const active=Math.min(2,Math.max(0,stepStarts.findLastIndex(start=>t>=start))),step=steps[active];
+ const lift=steps.reduce((sum,s)=>sum+s.lift,0),plant=steps.reduce((sum,s)=>sum+s.planted,0);
+ return {x:380,y:154-5*lift,steps,active,lift,plant,
+  contactX:mix(lineX,lineX+lineWidth,step.erase),
+  lines:steps.map((s,i)=>({erase:s.erase,y:lineY+i*lineGap-lineGap*steps.slice(0,i).reduce((n,s)=>n+s.feed,0)}))};
+}
+
+// One rigid prop follows the same behind -> clear of body -> front route as
+// the daily book. Switching painter order only happens outside the silhouette.
+export function stamping(t){
+ const out=ramp(t,.15,.7),across=ramp(t,.7,1.2),lift=ramp(t,1.35,1.8);
+ const down=ramp(t,1.9,contactTime),up=ramp(t,2.3,2.65),returnAcross=ramp(t,2.8,3.3),hide=ramp(t,3.3,3.9);
+ const x=422+153*out-235*across+235*returnAcross-153*hide;
+ const y=228-4*across-41*lift+92*down-58*up+11*returnAcross;
+ const angle=-.12*out*(1-across)-.12*returnAcross*(1-hide);
+ const puff=t>=contactTime?ramp(t,contactTime,contactTime+.16)*(1-ramp(t,contactTime+.16,contactTime+.52)):0;
+ return {bodyX:422,bodyY:175,card:{x:340,y:272,w:196,h:94},
+  stamp:{x,y,angle,layer:t<.7||t>=3.3?5:15,visible:t>=.15&&t<3.9},
+  imprinted:t>=contactTime,puff,puffTravel:ramp(t,contactTime,contactTime+.52),
+  phase:t<1.2?'从身后拿出印章':t<1.9?'到位，抬起':t<2.3?'按下，盖好':t<3.9?'抬起，收回身后':'R 印记留在卡面'};
+}
+
+function quad(id,material,x,y,w,h,layer,{angle=0,alpha=1,uvs=[0,0,1,0,1,1,0,1],anchorY=.5}={}){
+ const points=[[-w/2,-h*anchorY],[w/2,-h*anchorY],[w/2,h*(1-anchorY)],[-w/2,h*(1-anchorY)]].map(([xx,yy])=>[x+xx*Math.cos(angle)-yy*Math.sin(angle),y+xx*Math.sin(angle)+yy*Math.cos(angle),layer]);
+ return {id,material,points,uvs,triangles:[0,1,2,2,3,0],hull:4,layer,alpha};
+}
+// Four rings use the unchanged daily contour and its UV mapping. Only the
+// walking lower edge receives local lift/plant deformation; the face stays rigid.
+export function bodyMesh(kind,t){
+ const walk=kind==='walk_study',p=walk?walking(t):stamping(t),x=walk?p.x:p.bodyX,y=walk?p.y:p.bodyY;
+ const points=[],uvs=[],triangles=[],n=contour.length;
+ for(const ratio of [1,.75,.5,.25,0])for(let i=0;i<(ratio? n:1);i++){
+  const source=ratio?contour[i]:{x:0,y:0},xx=source.x*.7*ratio,yy=-source.y*.7*ratio;
+  const lower=ramp(yy,8,64),wave=walk?Math.exp(-(((x+xx-p.contactX)/34)**2)):0;
+  // The planted lobe reaches the line; it retracts before the next line feeds.
+  const delta=walk?lower*(-15*p.lift*(.55+.45*Math.cos(xx/23))+p.plant*wave*Math.max(0,242-y-yy)):0;
+  points.push([x+xx,y+yy+delta,10]);
+  uvs.push((source.x*ratio/280*999+629)/1254,(614-source.y*ratio/280*999)/1254);
+ }
+ for(let r=0;r<3;r++)for(let i=0;i<n;i++){const next=(i+1)%n,a=r*n+i,b=r*n+next,c=(r+1)*n+i,d=(r+1)*n+next;triangles.push(a,b,c,b,d,c);}
+ for(let i=0;i<n;i++)triangles.push(3*n+i,3*n+(i+1)%n,4*n);
+ return {id:'body',material:'body',points,uvs,triangles,hull:n,layer:10,alpha:1};
+}
+
+export function scene(kind,time){
+ const t=Math.max(0,Math.min(studyDuration[kind],time)),walk=kind==='walk_study',p=walk?walking(t):stamping(t),out=[];
+ const x=walk?p.x:p.bodyX,y=walk?p.y:p.bodyY;
+ if(walk){
+  out.push(quad('paper','paper',380,248,294,194,1));
+  p.lines.forEach((line,i)=>{const width=Math.max(.001,lineWidth*(1-line.erase)),cut=lineX+lineWidth*line.erase;
+   out.push(quad('line'+i,'line',cut+width/2,line.y,width,5,3,{alpha:line.erase<1?1:0}));
+  });
+ }else{
+  out.push(quad('card_shadow','shadow',p.card.x,p.card.y+43,204,20,0,{alpha:.45}));
+  out.push(quad('card','card',p.card.x,p.card.y,p.card.w,p.card.h,2));
+  out.push(quad('logo','logo',340,261,30,30,4,{alpha:p.imprinted?1:0}));
+  out.push(quad('stamp','stamp',p.stamp.x,p.stamp.y,72,90,p.stamp.layer,{angle:p.stamp.angle,anchorY:1,alpha:p.stamp.visible?1:0}));
+  for(const side of [-1,1])out.push(quad('puff'+side,'puff',340+side*(42+18*p.puffTravel),271-12*p.puffTravel,26,16,16,{alpha:p.puff*.65}));
+ }
+ out.push(quad('body_shadow','shadow',x,walk?234:254,188,17,4,{alpha:walk?.55+.2*p.plant:.65}));
+ out.push(bodyMesh(kind,t));
+ for(let i=0;i<2;i++){
+  // Daily face position (-15,23), eyes +/-26, 36x20, pupil 10.8x10.8.
+  const ex=x+(i?11:-41)*.7,ey=y-23*.7;
+  out.push(quad('eye'+i,'eye',ex,ey,25.2,14,11));
+  out.push(quad('pupil'+i,'pupil',ex+2.2,ey,7.56,7.56,12));
+ }
+ return {patches:out,time:t,kind,meta:{...p,body:[x,y],contact:walk?[p.contactX,lineY]:[340,275],
+  phase:walk?(t<.25?'准备踏步':t<3.8?`第 ${p.active+1} 次踏步 · 逐行消除`:'横线已收好，站稳'):p.phase}};
+}
+
+export function spineData(frame){
+ const slots=[],attachments={};
+ for(const p of frame.patches){slots.push({name:p.id,bone:'root',attachment:p.id});attachments[p.id]={[p.id]:{type:'mesh',path:p.material,uvs:p.uvs,triangles:p.triangles,vertices:p.points.flatMap(project),hull:p.hull,width:64,height:64}};}
+ return {skeleton:{spine:'4.2.00'},bones:[{name:'root'}],slots,skins:[{name:'default',attachments}],animations:{}};
+}
+export function applyScene(skeleton,frame){
+ const layers=new Map(),slots=skeleton.studySlots??=new Map(skeleton.slots.map(s=>[s.data.name,s]));
+ for(const p of frame.patches){const slot=slots.get(p.id);slot.color.a=p.alpha;slot.deform=p.points.flatMap(project);layers.set(p.id,p.layer);}
+ skeleton.drawOrder=[...skeleton.slots].sort((a,b)=>layers.get(a.data.name)-layers.get(b.data.name));skeleton.updateWorldTransform(0);
+}
+export function bakeStudy(kind,fps=30){
+ const first=scene(kind,0),json=spineData(first),animation={attachments:{default:{}},slots:{},drawOrder:[]};
+ const baseIndex=new Map(json.slots.map((s,i)=>[s.name,i]));
+ for(let i=0;i<=Math.ceil(studyDuration[kind]*fps);i++){
+  const time=Math.min(i/fps,studyDuration[kind]),f=scene(kind,time);
+  for(const p of f.patches){const att=json.skins[0].attachments[p.id][p.id];
+   const slot=animation.slots[p.id]??={alpha:[]};slot.alpha.push({time,value:p.alpha,curve:'stepped'});
+   const track=(animation.attachments.default[p.id]??={})[p.id]??={deform:[]};
+   track.deform.push({time,vertices:p.points.flatMap(project).map((v,j)=>Math.round((v-att.vertices[j])*1000)/1000)});
+  }
+  const order=[...f.patches].sort((a,b)=>a.layer-b.layer);
+  const offsets=order.map((p,target)=>({slot:p.id,offset:target-baseIndex.get(p.id)})).sort((a,b)=>baseIndex.get(a.slot)-baseIndex.get(b.slot));animation.drawOrder.push({time,offsets});
+ }
+ json.animations[kind]=animation;return json;
+}

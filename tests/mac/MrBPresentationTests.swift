@@ -52,7 +52,7 @@ struct MrBPresentationTests {
         c.configuration.kind="mr_ingest_short";c.configuration.token=3;c.send();let before=completions;for _ in 0..<60 {try await Task.sleep(for:.milliseconds(100));state=try await inspect();if state["done"] as? Bool == true {break}};try expect(state["done"] as? Bool == true,"Compact settlement never ends: \(state)");try expect(completions==before+1,"Completion callback not exactly once")
         c.configuration.dark=true;c.send();try await Task.sleep(for:.milliseconds(200));try expect(completions==before+1,"Theme change replays completion")
         c.configuration.kind="thinking";c.configuration.token=4;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect();try expect(state["done"] as? Bool == false,"New request stuck completed")
-        for (kind, duration) in [("walk_study",6.4),("stamp_study",7.2)] {
+        for (kind, duration) in [("walk_study",4.6),("stamp_study",4.8)] {
             c.configuration = MrBConfiguration(kind:kind,token:c.configuration.token+1)
             c.send(); try await Task.sleep(for:.milliseconds(400));state=try await inspect()
             try expect((state["runtimeError"] as? String ?? "").isEmpty,"Study runtime failed: \(state)")

@@ -16,10 +16,10 @@ struct MrBPreviewApp: App {
         .windowResizability(.contentMinSize)
         .commands {
             CommandMenu("试演") {
-                Button("录制行走消字短样") { capture.recordStudy(model:model,scene:"行走消字短样") }
-                Button("录制取卡盖章短样") { capture.recordStudy(model:model,scene:"取卡盖章短样") }
-                Button("行走消字短样") { model.enter("行走消字短样") }.keyboardShortcut("8",modifiers:[.command,.option])
-                Button("取卡盖章短样") { model.enter("取卡盖章短样") }.keyboardShortcut("9",modifiers:[.command,.option])
+                Button("录制逐行消除短样") { capture.recordStudy(model:model,scene:"逐行消除短样") }
+                Button("录制2D 盖章短样") { capture.recordStudy(model:model,scene:"2D 盖章短样") }
+                Button("逐行消除短样") { model.enter("逐行消除短样") }.keyboardShortcut("8",modifiers:[.command,.option])
+                Button("2D 盖章短样") { model.enter("2D 盖章短样") }.keyboardShortcut("9",modifiers:[.command,.option])
                 Button("重播短样") { model.replayStudy() }.keyboardShortcut("0",modifiers:[.command,.option])
                 Button("标准窗口") { capture.resize(1280,820) }.keyboardShortcut("1",modifiers:[.command,.option])
                 Button("最小窗口") { capture.resize(760,620) }.keyboardShortcut("2",modifiers:[.command,.option])
@@ -49,7 +49,7 @@ struct MrBPreviewRoot: View {
             VStack(alignment:.leading,spacing:16) {
                 Text("Mr. B").font(.title2.bold()); Text("Bread · 认真一点点").font(.caption).foregroundStyle(.secondary)
                 Divider().padding(.vertical,8)
-                ForEach(["行走消字短样","取卡盖章短样","等待","知识入库","复习结算","待机动作"],id:\.self) { scene in
+                ForEach(["逐行消除短样","2D 盖章短样","等待","知识入库","复习结算","待机动作"],id:\.self) { scene in
                     Button { model.enter(scene) } label: {
                         Text(["知识入库","复习结算"].contains(scene) ? scene+" · 旧版" : scene).frame(maxWidth:.infinity,alignment:.leading).padding(10)
                             .background(model.scene == scene ? Color.primary.opacity(0.08) : .clear,in:RoundedRectangle(cornerRadius:10))
@@ -69,7 +69,7 @@ struct MrBPreviewRoot: View {
                 Divider()
                 Group {
                     switch model.scene {
-                    case "行走消字短样", "取卡盖章短样": study
+                    case "逐行消除短样", "2D 盖章短样": study
                     case "知识入库": knowledge
                     case "复习结算": review
                     case "待机动作": idle
@@ -93,12 +93,12 @@ struct MrBPreviewRoot: View {
     }
     private var study: some View {
         VStack(alignment:.leading,spacing:16) {
-            Text(model.scene == "行走消字短样" ? "走过这一行，把内容收好。" : "放好，再认真盖一下。")
+            Text(model.scene == "逐行消除短样" ? "一步一条，把内容收好。" : "拿出来，认真盖一下。")
                 .font(.title2.bold())
-            Text("局部形变与接触短样 · 待视觉验收").font(.caption).foregroundStyle(.secondary)
+            Text("逐行踏步与 2D 取放短样 · 待视觉验收").font(.caption).foregroundStyle(.secondary)
             GeometryReader { geometry in
                 ZStack {
-                    MrBMotionView(configuration:.init(kind:model.scene == "行走消字短样" ? "walk_study" : "stamp_study",token:model.token,dark:model.dark,reduced:reduced,language:model.english ? "en" : "zh",paused:model.studyPaused,seekTime:model.studySeek,seekToken:model.studySeekToken,debugMesh:model.studyMesh,reviewRecording:model.studyRecording),onEvent:{ event in
+                    MrBMotionView(configuration:.init(kind:model.scene == "逐行消除短样" ? "walk_study" : "stamp_study",token:model.token,dark:model.dark,reduced:reduced,language:model.english ? "en" : "zh",paused:model.studyPaused,seekTime:model.studySeek,seekToken:model.studySeekToken,debugMesh:model.studyMesh,reviewRecording:model.studyRecording),onEvent:{ event in
                         if event == "failed" { model.studyFailed = true }
                         if event == "ready" { model.studyFailed = false }
                         if event == "finished" { model.finished = true; model.studyPaused = true; model.studyTime = model.studyDuration }
