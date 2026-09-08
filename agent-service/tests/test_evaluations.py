@@ -423,5 +423,62 @@ class WorkerIntegrationTests(unittest.TestCase):
             self.assertTrue((Path(folder) / "checkpoint.sqlite3").exists())
 
 
+class DashboardCohortTests(unittest.TestCase):
+    def test_critical_and_online_never_replace_full_fixture_baseline(self):
+        from evals.feishu import latest_flags
+
+        def b(id, kind, env, date, n):
+            return {
+                "批次键": id,
+                "批类型": kind,
+                "工具环境": env,
+                "开始时间": date,
+                "计划数": n,
+            }
+
+        flags = latest_flags(
+            [
+                b("old", "full", "fixture", "1", 40),
+                b("full", "full", "fixture", "2", 40),
+                b("critical", "critical", "fixture", "3", 30),
+                b("online", "full", "online", "4", 1),
+            ]
+        )
+        self.assertTrue(flags["full"]["最新批次"])
+        self.assertFalse(flags["critical"]["最新批次"])
+        self.assertFalse(flags["online"]["最新批次"])
+        self.assertTrue(flags["critical"]["最新同类批次"])
+        self.assertFalse(flags["old"]["最新同类批次"])
+
+    def test_error_codes_point_to_the_responsible_layer(self):
+        from evals.feishu import error_category
+
+        self.assertEqual(error_category("RT.INTENT.INVALID_TARGET"), "intent")
+        self.assertEqual(
+            error_category("RT.PLAN.INVALID_STEP_REFERENCE"), "learning_state"
+        )
+        self.assertEqual(error_category("RT.MODEL.SCHEMA"), "structured_output")
+        self.assertEqual(
+            error_category("EVAL.SAVE_PRECONDITION_MISSING"), "scenario_precondition"
+        )
+
+    def test_calibration_is_visible_until_full_baseline_exists(self):
+        from evals.feishu import latest_flags
+
+        self.assertTrue(
+            latest_flags(
+                [
+                    {
+                        "批次键": "cal",
+                        "批类型": "calibration",
+                        "工具环境": "fixture",
+                        "开始时间": "1",
+                        "计划数": 12,
+                    }
+                ]
+            )["cal"]["最新批次"]
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

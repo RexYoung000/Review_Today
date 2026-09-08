@@ -1,0 +1,22 @@
+{
+  "records_before": 153,
+  "records_after": 153,
+  "duplicates_added": 0,
+  "human_note_preserved": true,
+  "test_note_restored": true,
+  "chart_values": {
+    "最新通过": 25,
+    "最新失败": 6,
+    "运行错误": 8,
+    "计划场景": 40,
+    "机器待判": 1,
+    "待人工复核": 40,
+    "完整基线通过率（%）": 62.5,
+    "关键重复通过": 21,
+    "关键重复计划": 30,
+    "关键重复错误": 5,
+    "硬失败": 0
+  },
+  "ui_verified": false,
+  "ui_reason": "Codex browser requires separate Feishu web sign-in; native browser use was interrupted by user activity."
+}

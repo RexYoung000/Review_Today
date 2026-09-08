@@ -1,0 +1,901 @@
+{
+  "calibration-v1": {
+    "run_id": "20260908T085136Z-calibration-af0ba8",
+    "summary": {
+      "planned": 12,
+      "counts": {
+        "passed": 5,
+        "failed": 4,
+        "error": 3,
+        "needs_review": 0,
+        "not_run": 0
+      },
+      "modes": {
+        "auto": {
+          "passed": 1,
+          "failed": 3,
+          "error": 0,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "memory_organization": {
+          "passed": 1,
+          "failed": 1,
+          "error": 1,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "source_learning": {
+          "passed": 2,
+          "failed": 0,
+          "error": 0,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "topic_exploration": {
+          "passed": 1,
+          "failed": 0,
+          "error": 1,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "problem_solving": {
+          "passed": 0,
+          "failed": 0,
+          "error": 1,
+          "needs_review": 0,
+          "not_run": 0
+        }
+      },
+      "pass_rate": 0.4166666666666667,
+      "hard_failures": 0,
+      "complete": false,
+      "baseline_gate": false,
+      "stability_gate": false,
+      "release_gate": "not_assessed",
+      "judge_calibration": "pending_human",
+      "note": "样本通过率，不代表线上总体概率；发布还需匹配版本的基础/稳定性门槛、人工校准与原生验收。"
+    },
+    "manifest": {
+      "run_id": "20260908T085136Z-calibration-af0ba8",
+      "started_at": "2026-09-08T08:51:36.380555+00:00",
+      "suite": "calibration",
+      "environment": "fixture",
+      "git_commit": "9c543c83c98959fb50d478881c3772f036093f38",
+      "service_hash": "38ab9cbafec17e4620f711239e84873e000a671417b4fed42f56a09e649d63fe",
+      "dataset_hash": "2a65a5923e7758d373ae3dbf09f5e5ccbd68bd55b9904be8cb21b4bf330683b4",
+      "rubric_hash": "6842b60849d7c911526cfa6ed80d858f3c486769a2bb92d72f3b2a3673317593",
+      "reference_hash": "7d3b9b4144bad037b579d980c7c2c834cd32c6fb4f70683c87bff8ece595af19",
+      "plan": [
+        {
+          "case_id": "A01",
+          "mode": "auto",
+          "trial_key": "A01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A02",
+          "mode": "auto",
+          "trial_key": "A02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A03",
+          "mode": "auto",
+          "trial_key": "A03-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A04",
+          "mode": "auto",
+          "trial_key": "A04-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O01",
+          "mode": "memory_organization",
+          "trial_key": "O01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O02",
+          "mode": "memory_organization",
+          "trial_key": "O02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O04",
+          "mode": "memory_organization",
+          "trial_key": "O04-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S01",
+          "mode": "source_learning",
+          "trial_key": "S01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S02",
+          "mode": "source_learning",
+          "trial_key": "S02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T01",
+          "mode": "topic_exploration",
+          "trial_key": "T01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T02",
+          "mode": "topic_exploration",
+          "trial_key": "T02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "P01",
+          "mode": "problem_solving",
+          "trial_key": "P01-r1",
+          "repeat": 1
+        }
+      ],
+      "synthetic": true,
+      "judge_calibration": "pending_human",
+      "limits": {
+        "max_calls_per_trial": 40,
+        "max_calls_batch": 480,
+        "case_timeout": 600,
+        "concurrency": 2
+      },
+      "started_with_dirty_evaluator": true,
+      "finished_at": "2026-09-08T08:53:32.657263+00:00",
+      "service_hash_end": "38ab9cbafec17e4620f711239e84873e000a671417b4fed42f56a09e649d63fe"
+    },
+    "calls": 70
+  },
+  "baseline-v1.2": {
+    "run_id": "20260908T091722Z-full-c904c7",
+    "summary": {
+      "planned": 40,
+      "counts": {
+        "passed": 25,
+        "failed": 6,
+        "error": 8,
+        "needs_review": 1,
+        "not_run": 0
+      },
+      "modes": {
+        "auto": {
+          "passed": 6,
+          "failed": 1,
+          "error": 1,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "memory_organization": {
+          "passed": 5,
+          "failed": 0,
+          "error": 3,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "source_learning": {
+          "passed": 5,
+          "failed": 1,
+          "error": 2,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "topic_exploration": {
+          "passed": 5,
+          "failed": 2,
+          "error": 1,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "problem_solving": {
+          "passed": 4,
+          "failed": 2,
+          "error": 1,
+          "needs_review": 1,
+          "not_run": 0
+        }
+      },
+      "pass_rate": 0.625,
+      "hard_failures": 0,
+      "complete": false,
+      "baseline_gate": false,
+      "stability_gate": false,
+      "release_gate": "not_assessed",
+      "judge_calibration": "pending_human",
+      "note": "样本通过率，不代表线上总体概率；发布还需匹配版本的基础/稳定性门槛、人工校准与原生验收。"
+    },
+    "manifest": {
+      "run_id": "20260908T091722Z-full-c904c7",
+      "started_at": "2026-09-08T09:17:22.945991+00:00",
+      "suite": "full",
+      "environment": "fixture",
+      "git_commit": "ea42f3ba842d094766cd4dfbba9b41b43d9d55dd",
+      "service_hash": "38ab9cbafec17e4620f711239e84873e000a671417b4fed42f56a09e649d63fe",
+      "dataset_hash": "c662b19320d84a1a2a355a6a73f688c077fd41b081d8aff0f033c6bb239780eb",
+      "rubric_hash": "6842b60849d7c911526cfa6ed80d858f3c486769a2bb92d72f3b2a3673317593",
+      "reference_hash": "7d3b9b4144bad037b579d980c7c2c834cd32c6fb4f70683c87bff8ece595af19",
+      "evaluator_hash": "ee8bd7b2857a6c345af50847e72a74e0cacb98363588bb264e75742983913dd0",
+      "python_version": "3.13.3",
+      "plan": [
+        {
+          "case_id": "A01",
+          "mode": "auto",
+          "trial_key": "A01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A02",
+          "mode": "auto",
+          "trial_key": "A02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A03",
+          "mode": "auto",
+          "trial_key": "A03-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A04",
+          "mode": "auto",
+          "trial_key": "A04-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A05",
+          "mode": "auto",
+          "trial_key": "A05-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A06",
+          "mode": "auto",
+          "trial_key": "A06-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A07",
+          "mode": "auto",
+          "trial_key": "A07-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A08",
+          "mode": "auto",
+          "trial_key": "A08-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O01",
+          "mode": "memory_organization",
+          "trial_key": "O01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O02",
+          "mode": "memory_organization",
+          "trial_key": "O02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O03",
+          "mode": "memory_organization",
+          "trial_key": "O03-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O04",
+          "mode": "memory_organization",
+          "trial_key": "O04-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O05",
+          "mode": "memory_organization",
+          "trial_key": "O05-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O06",
+          "mode": "memory_organization",
+          "trial_key": "O06-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O07",
+          "mode": "memory_organization",
+          "trial_key": "O07-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O08",
+          "mode": "memory_organization",
+          "trial_key": "O08-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S01",
+          "mode": "source_learning",
+          "trial_key": "S01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S02",
+          "mode": "source_learning",
+          "trial_key": "S02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S03",
+          "mode": "source_learning",
+          "trial_key": "S03-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S04",
+          "mode": "source_learning",
+          "trial_key": "S04-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S05",
+          "mode": "source_learning",
+          "trial_key": "S05-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S06",
+          "mode": "source_learning",
+          "trial_key": "S06-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S07",
+          "mode": "source_learning",
+          "trial_key": "S07-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S08",
+          "mode": "source_learning",
+          "trial_key": "S08-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T01",
+          "mode": "topic_exploration",
+          "trial_key": "T01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T02",
+          "mode": "topic_exploration",
+          "trial_key": "T02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T03",
+          "mode": "topic_exploration",
+          "trial_key": "T03-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T04",
+          "mode": "topic_exploration",
+          "trial_key": "T04-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T05",
+          "mode": "topic_exploration",
+          "trial_key": "T05-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T06",
+          "mode": "topic_exploration",
+          "trial_key": "T06-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T07",
+          "mode": "topic_exploration",
+          "trial_key": "T07-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T08",
+          "mode": "topic_exploration",
+          "trial_key": "T08-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "P01",
+          "mode": "problem_solving",
+          "trial_key": "P01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "P02",
+          "mode": "problem_solving",
+          "trial_key": "P02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "P03",
+          "mode": "problem_solving",
+          "trial_key": "P03-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "P04",
+          "mode": "problem_solving",
+          "trial_key": "P04-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "P05",
+          "mode": "problem_solving",
+          "trial_key": "P05-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "P06",
+          "mode": "problem_solving",
+          "trial_key": "P06-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "P07",
+          "mode": "problem_solving",
+          "trial_key": "P07-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "P08",
+          "mode": "problem_solving",
+          "trial_key": "P08-r1",
+          "repeat": 1
+        }
+      ],
+      "synthetic": true,
+      "judge_calibration": "pending_human",
+      "limits": {
+        "max_calls_per_trial": 40,
+        "max_calls_batch": 1600,
+        "case_timeout": 600,
+        "concurrency": 2
+      },
+      "started_with_dirty_evaluator": false,
+      "finished_at": "2026-09-08T09:25:05.535948+00:00",
+      "service_hash_end": "38ab9cbafec17e4620f711239e84873e000a671417b4fed42f56a09e649d63fe",
+      "evaluator_hash_end": "ee8bd7b2857a6c345af50847e72a74e0cacb98363588bb264e75742983913dd0"
+    },
+    "calls": 281
+  },
+  "critical-v1.2": {
+    "run_id": "20260908T091724Z-critical-6c832f",
+    "summary": {
+      "planned": 30,
+      "counts": {
+        "passed": 21,
+        "failed": 4,
+        "error": 5,
+        "needs_review": 0,
+        "not_run": 0
+      },
+      "modes": {
+        "auto": {
+          "passed": 8,
+          "failed": 0,
+          "error": 1,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "memory_organization": {
+          "passed": 5,
+          "failed": 0,
+          "error": 4,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "source_learning": {
+          "passed": 5,
+          "failed": 1,
+          "error": 0,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "topic_exploration": {
+          "passed": 2,
+          "failed": 1,
+          "error": 0,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "problem_solving": {
+          "passed": 1,
+          "failed": 2,
+          "error": 0,
+          "needs_review": 0,
+          "not_run": 0
+        }
+      },
+      "pass_rate": 0.7,
+      "hard_failures": 0,
+      "complete": false,
+      "baseline_gate": false,
+      "stability_gate": false,
+      "release_gate": "not_assessed",
+      "judge_calibration": "pending_human",
+      "note": "样本通过率，不代表线上总体概率；发布还需匹配版本的基础/稳定性门槛、人工校准与原生验收。"
+    },
+    "manifest": {
+      "run_id": "20260908T091724Z-critical-6c832f",
+      "started_at": "2026-09-08T09:17:24.040566+00:00",
+      "suite": "critical",
+      "environment": "fixture",
+      "git_commit": "ea42f3ba842d094766cd4dfbba9b41b43d9d55dd",
+      "service_hash": "38ab9cbafec17e4620f711239e84873e000a671417b4fed42f56a09e649d63fe",
+      "dataset_hash": "c662b19320d84a1a2a355a6a73f688c077fd41b081d8aff0f033c6bb239780eb",
+      "rubric_hash": "6842b60849d7c911526cfa6ed80d858f3c486769a2bb92d72f3b2a3673317593",
+      "reference_hash": "7d3b9b4144bad037b579d980c7c2c834cd32c6fb4f70683c87bff8ece595af19",
+      "evaluator_hash": "ee8bd7b2857a6c345af50847e72a74e0cacb98363588bb264e75742983913dd0",
+      "python_version": "3.13.3",
+      "plan": [
+        {
+          "case_id": "A01",
+          "mode": "auto",
+          "trial_key": "A01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A01",
+          "mode": "auto",
+          "trial_key": "A01-r2",
+          "repeat": 2
+        },
+        {
+          "case_id": "A01",
+          "mode": "auto",
+          "trial_key": "A01-r3",
+          "repeat": 3
+        },
+        {
+          "case_id": "A03",
+          "mode": "auto",
+          "trial_key": "A03-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A03",
+          "mode": "auto",
+          "trial_key": "A03-r2",
+          "repeat": 2
+        },
+        {
+          "case_id": "A03",
+          "mode": "auto",
+          "trial_key": "A03-r3",
+          "repeat": 3
+        },
+        {
+          "case_id": "A06",
+          "mode": "auto",
+          "trial_key": "A06-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "A06",
+          "mode": "auto",
+          "trial_key": "A06-r2",
+          "repeat": 2
+        },
+        {
+          "case_id": "A06",
+          "mode": "auto",
+          "trial_key": "A06-r3",
+          "repeat": 3
+        },
+        {
+          "case_id": "O01",
+          "mode": "memory_organization",
+          "trial_key": "O01-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O01",
+          "mode": "memory_organization",
+          "trial_key": "O01-r2",
+          "repeat": 2
+        },
+        {
+          "case_id": "O01",
+          "mode": "memory_organization",
+          "trial_key": "O01-r3",
+          "repeat": 3
+        },
+        {
+          "case_id": "O02",
+          "mode": "memory_organization",
+          "trial_key": "O02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O02",
+          "mode": "memory_organization",
+          "trial_key": "O02-r2",
+          "repeat": 2
+        },
+        {
+          "case_id": "O02",
+          "mode": "memory_organization",
+          "trial_key": "O02-r3",
+          "repeat": 3
+        },
+        {
+          "case_id": "O04",
+          "mode": "memory_organization",
+          "trial_key": "O04-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "O04",
+          "mode": "memory_organization",
+          "trial_key": "O04-r2",
+          "repeat": 2
+        },
+        {
+          "case_id": "O04",
+          "mode": "memory_organization",
+          "trial_key": "O04-r3",
+          "repeat": 3
+        },
+        {
+          "case_id": "S02",
+          "mode": "source_learning",
+          "trial_key": "S02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S02",
+          "mode": "source_learning",
+          "trial_key": "S02-r2",
+          "repeat": 2
+        },
+        {
+          "case_id": "S02",
+          "mode": "source_learning",
+          "trial_key": "S02-r3",
+          "repeat": 3
+        },
+        {
+          "case_id": "S03",
+          "mode": "source_learning",
+          "trial_key": "S03-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "S03",
+          "mode": "source_learning",
+          "trial_key": "S03-r2",
+          "repeat": 2
+        },
+        {
+          "case_id": "S03",
+          "mode": "source_learning",
+          "trial_key": "S03-r3",
+          "repeat": 3
+        },
+        {
+          "case_id": "T07",
+          "mode": "topic_exploration",
+          "trial_key": "T07-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "T07",
+          "mode": "topic_exploration",
+          "trial_key": "T07-r2",
+          "repeat": 2
+        },
+        {
+          "case_id": "T07",
+          "mode": "topic_exploration",
+          "trial_key": "T07-r3",
+          "repeat": 3
+        },
+        {
+          "case_id": "P02",
+          "mode": "problem_solving",
+          "trial_key": "P02-r1",
+          "repeat": 1
+        },
+        {
+          "case_id": "P02",
+          "mode": "problem_solving",
+          "trial_key": "P02-r2",
+          "repeat": 2
+        },
+        {
+          "case_id": "P02",
+          "mode": "problem_solving",
+          "trial_key": "P02-r3",
+          "repeat": 3
+        }
+      ],
+      "synthetic": true,
+      "judge_calibration": "pending_human",
+      "limits": {
+        "max_calls_per_trial": 40,
+        "max_calls_batch": 1200,
+        "case_timeout": 600,
+        "concurrency": 2
+      },
+      "started_with_dirty_evaluator": false,
+      "finished_at": "2026-09-08T09:22:21.507557+00:00",
+      "service_hash_end": "38ab9cbafec17e4620f711239e84873e000a671417b4fed42f56a09e649d63fe",
+      "evaluator_hash_end": "ee8bd7b2857a6c345af50847e72a74e0cacb98363588bb264e75742983913dd0"
+    },
+    "calls": 183
+  },
+  "online-v1.2": {
+    "run_id": "20260908T091930Z-full-cc98eb",
+    "summary": {
+      "planned": 1,
+      "counts": {
+        "passed": 0,
+        "failed": 1,
+        "error": 0,
+        "needs_review": 0,
+        "not_run": 0
+      },
+      "modes": {
+        "auto": {
+          "passed": 0,
+          "failed": 0,
+          "error": 0,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "memory_organization": {
+          "passed": 0,
+          "failed": 0,
+          "error": 0,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "source_learning": {
+          "passed": 0,
+          "failed": 0,
+          "error": 0,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "topic_exploration": {
+          "passed": 0,
+          "failed": 1,
+          "error": 0,
+          "needs_review": 0,
+          "not_run": 0
+        },
+        "problem_solving": {
+          "passed": 0,
+          "failed": 0,
+          "error": 0,
+          "needs_review": 0,
+          "not_run": 0
+        }
+      },
+      "pass_rate": 0.0,
+      "hard_failures": 0,
+      "complete": true,
+      "baseline_gate": false,
+      "stability_gate": false,
+      "release_gate": "not_assessed",
+      "judge_calibration": "pending_human",
+      "note": "样本通过率，不代表线上总体概率；发布还需匹配版本的基础/稳定性门槛、人工校准与原生验收。"
+    },
+    "manifest": {
+      "run_id": "20260908T091930Z-full-cc98eb",
+      "started_at": "2026-09-08T09:19:30.187934+00:00",
+      "suite": "full",
+      "environment": "online",
+      "git_commit": "ea42f3ba842d094766cd4dfbba9b41b43d9d55dd",
+      "service_hash": "38ab9cbafec17e4620f711239e84873e000a671417b4fed42f56a09e649d63fe",
+      "dataset_hash": "c662b19320d84a1a2a355a6a73f688c077fd41b081d8aff0f033c6bb239780eb",
+      "rubric_hash": "6842b60849d7c911526cfa6ed80d858f3c486769a2bb92d72f3b2a3673317593",
+      "reference_hash": "7d3b9b4144bad037b579d980c7c2c834cd32c6fb4f70683c87bff8ece595af19",
+      "evaluator_hash": "ee8bd7b2857a6c345af50847e72a74e0cacb98363588bb264e75742983913dd0",
+      "python_version": "3.13.3",
+      "plan": [
+        {
+          "case_id": "T01",
+          "mode": "topic_exploration",
+          "trial_key": "T01-r1",
+          "repeat": 1
+        }
+      ],
+      "synthetic": true,
+      "judge_calibration": "pending_human",
+      "limits": {
+        "max_calls_per_trial": 30,
+        "max_calls_batch": 30,
+        "case_timeout": 600,
+        "concurrency": 1
+      },
+      "started_with_dirty_evaluator": false,
+      "finished_at": "2026-09-08T09:20:18.344690+00:00",
+      "service_hash_end": "38ab9cbafec17e4620f711239e84873e000a671417b4fed42f56a09e649d63fe",
+      "evaluator_hash_end": "ee8bd7b2857a6c345af50847e72a74e0cacb98363588bb264e75742983913dd0"
+    },
+    "calls": 6
+  },
+  "stability_cases": {
+    "all_three_passed": [
+      "S03",
+      "A01",
+      "O01",
+      "A06"
+    ],
+    "case_results": {
+      "S03": [
+        "passed",
+        "passed",
+        "passed"
+      ],
+      "A01": [
+        "passed",
+        "passed",
+        "passed"
+      ],
+      "S02": [
+        "failed",
+        "passed",
+        "passed"
+      ],
+      "O01": [
+        "passed",
+        "passed",
+        "passed"
+      ],
+      "O04": [
+        "error",
+        "error",
+        "error"
+      ],
+      "P02": [
+        "failed",
+        "passed",
+        "failed"
+      ],
+      "O02": [
+        "passed",
+        "passed",
+        "error"
+      ],
+      "A06": [
+        "passed",
+        "passed",
+        "passed"
+      ],
+      "A03": [
+        "passed",
+        "error",
+        "passed"
+      ],
+      "T07": [
+        "passed",
+        "passed",
+        "failed"
+      ]
+    }
+  }
+}

@@ -89,6 +89,7 @@ SCHEMAS = {
         text("人工校准"),
         text("本地报告"),
         flag("最新批次"),
+        flag("最新同类批次"),
     ],
     "结果明细": [
         text("结果键"),
@@ -119,6 +120,7 @@ SCHEMAS = {
         ),
         text("人工原因"),
         flag("最新批次"),
+        flag("最新同类批次"),
     ],
     "问题处理": [
         text("问题键"),
@@ -500,6 +502,12 @@ def configure_dashboard(cli):
             dict(
                 table_name="评测批次",
                 series=[dict(field_name="通过率", rollup="AVERAGE")],
+                filter=dict(
+                    conjunction="and",
+                    conditions=[
+                        dict(field_name="工具环境", operator="is", value="fixture")
+                    ],
+                ),
                 group_by=[
                     dict(
                         field_name="开始时间",
@@ -526,6 +534,41 @@ def configure_dashboard(cli):
             ),
         ),
     ]
+    configs.append(
+        (
+            "完整基线通过率（%）",
+            "statistics",
+            dict(
+                table_name="评测批次",
+                series=[dict(field_name="通过率", rollup="SUM")],
+                filter=latest,
+            ),
+        )
+    )
+    critical_filter = dict(
+        conjunction="and",
+        conditions=[
+            dict(field_name="最新同类批次", operator="is", value=True),
+            dict(field_name="批类型", operator="is", value="critical"),
+            dict(field_name="工具环境", operator="is", value="fixture"),
+        ],
+    )
+    for title, field in [
+        ("关键重复通过", "通过数"),
+        ("关键重复计划", "计划数"),
+        ("关键重复错误", "运行错误数"),
+    ]:
+        configs.append(
+            (
+                title,
+                "statistics",
+                dict(
+                    table_name="评测批次",
+                    series=[dict(field_name=field, rollup="SUM")],
+                    filter=critical_filter,
+                ),
+            )
+        )
     created = False
     for name, kind, data in configs:
         if name in blocks:
@@ -654,8 +697,98 @@ ENTRY = {
     "memory": "learning_memory.py + memory_policy",
     "usability": "conversation_prompts.py + answer_style.py",
     "environment": "openai_client.py + execution_policy.py",
+    "structured_output": "structured_output.py + conversation._call 的结构化格式恢复",
+    "scenario_precondition": "先检查该场景前一轮实际输出与状态，再区分产品行为和脚本前置条件",
     "uncertain": "先人工复核样本与轨迹",
     "none": "无需修复",
+}
+
+
+def latest_flags(batches):
+    """The main dashboard prefers a full fixture baseline; cohorts stay separate."""
+    if not batches:
+        return {}
+    full = [
+        b
+        for b in batches
+        if b.get("批类型") == "full"
+        and b.get("工具环境") == "fixture"
+        and b.get("计划数") == 40
+    ]
+    fixture = [b for b in batches if b.get("工具环境") == "fixture"]
+    focus = max(full or fixture or batches, key=lambda b: b["开始时间"])["批次键"]
+    cohorts = {}
+    for b in batches:
+        group = (b.get("批类型"), b.get("工具环境"))
+        if group not in cohorts or b["开始时间"] > cohorts[group]["开始时间"]:
+            cohorts[group] = b
+    return {
+        b["批次键"]: {
+            "最新批次": b["批次键"] == focus,
+            "最新同类批次": b["批次键"]
+            == cohorts[(b.get("批类型"), b.get("工具环境"))]["批次键"],
+        }
+        for b in batches
+    }
+
+
+def reconcile_latest(cli):
+    tables = cli.config["tables"]
+    batches = cli.records(tables["评测批次"])
+    flags = latest_flags(batches)
+    for table, records in [
+        ("评测批次", batches),
+        ("结果明细", cli.records(tables["结果明细"])),
+    ]:
+        changes = {}
+        for row in records:
+            key = (
+                row["批次键"]
+                if table == "评测批次"
+                else row["结果键"].rsplit("/", 1)[0]
+            )
+            expected = flags.get(key, {"最新批次": False, "最新同类批次": False})
+            if any(row.get(k) != v for k, v in expected.items()):
+                changes[row["record_id"]] = expected
+        pairs = list(changes.items())
+        for start in range(0, len(pairs), 200):
+            cli.call(
+                "record-batch-update",
+                base_token=cli.config["base_token"],
+                table_id=tables[table],
+                json={"update_records": dict(pairs[start : start + 200])},
+            )
+
+
+def error_category(error):
+    if not error:
+        return "uncertain"
+    if error.startswith("RT.INTENT."):
+        return "intent"
+    if error.startswith(("RT.PLAN.", "RT.PRACTICE.")):
+        return "learning_state"
+    if error == "RT.MODEL.SCHEMA":
+        return "structured_output"
+    if error.startswith("EVAL.") and "PRECONDITION" in error:
+        return "scenario_precondition"
+    if error.startswith("RT.MODEL."):
+        return "environment"
+    return "uncertain"
+
+
+CATEGORIES = {
+    "intent": "意图识别",
+    "content": "内容正确性",
+    "authorization": "授权与保存",
+    "learning_state": "学习状态",
+    "source": "资料来源",
+    "memory": "学习记忆",
+    "usability": "表达体验",
+    "environment": "模型运行环境",
+    "uncertain": "待进一步定位",
+    "structured_output": "结构化格式",
+    "scenario_precondition": "场景前置条件",
+    "none": "待人工复核",
 }
 
 
@@ -780,10 +913,10 @@ def sync(run_dir, config):
             )
             rows.append(row)
             if status in ("failed", "error", "needs_review"):
-                category = j.get("diagnosis") or (
-                    "environment" if r.get("execution_error") else "uncertain"
+                category = j.get("diagnosis") or error_category(
+                    r.get("execution_error") or r.get("judge_error")
                 )
-                if rule_fail:
+                if rule_fail and not r.get("execution_error"):
                     category = "rules:" + ",".join(sorted(rule_fail))
                 issues.append(
                     (
@@ -806,7 +939,10 @@ def sync(run_dir, config):
                     "样本": [{"id": samples[dataset["version"] + ":" + case_id]}],
                     "首次结果": [{"id": record_ids[key]}],
                     "最近结果": [{"id": record_ids[key]}],
-                    "问题分类": category,
+                    "问题分类": CATEGORIES.get(
+                        category,
+                        "程序断言" if category.startswith("rules:") else category,
+                    ),
                     "问题说明": diagnosis,
                     "证据": evidence,
                     "建议检查入口": entry,
@@ -822,30 +958,7 @@ def sync(run_dir, config):
             unique[row["问题键"]] = row
         if unique:
             cli.upsert("问题处理", list(unique.values()))
-        if is_latest:
-            for table in ("评测批次", "结果明细"):
-                older = [
-                    r
-                    for r in cli.records(tables[table])
-                    if r.get("最新批次")
-                    and (
-                        r.get("批次键") != manifest["run_id"]
-                        if table == "评测批次"
-                        else not r["结果键"].startswith(manifest["run_id"] + "/")
-                    )
-                ]
-                for start in range(0, len(older), 200):
-                    cli.call(
-                        "record-batch-update",
-                        base_token=base,
-                        table_id=tables[table],
-                        json={
-                            "update_records": {
-                                r["record_id"]: {"最新批次": False}
-                                for r in older[start : start + 200]
-                            }
-                        },
-                    )
+        reconcile_latest(cli)
         cloud = cli.records(tables["结果明细"])
         actual = [r for r in cloud if r["结果键"].startswith(manifest["run_id"] + "/")]
         if len(actual) != len(rows) or len({r["结果键"] for r in actual}) != len(rows):
