@@ -56,5 +56,8 @@ def build(run_dir):
                 "",
             ]
         lines.append(f"原始记录：trials/{planned['trial_key']}.json\n")
-    (run_dir / "report.md").write_text("\n".join(lines) + "\n")
+    body = "\n".join(lines)
+    (run_dir / "report.md").write_text(
+        "\n".join(line.rstrip() for line in body.splitlines()).rstrip() + "\n"
+    )
     return summary
