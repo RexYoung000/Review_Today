@@ -29,6 +29,7 @@ RULES = {
     "searched",
     "read_source",
     "reuse_source",
+    "mastery_complete",
 }
 ACTIONS = {
     "message",
@@ -64,6 +65,11 @@ def load_dataset(directory=DATA):
         read_json(directory / f"{name}.json")
         for name in ("scenarios", "references", "rubric")
     ]
+    if dataset.get("schema_version") == 2:
+        from evals.spec import validate
+
+        validate(dataset, refs, rubric)
+        return dataset, refs, rubric
     cases = dataset["cases"]
     ids, families = set(), {}
     for case in cases:
@@ -192,6 +198,17 @@ def check_rules(case, result):
                 True,
                 "停止后不发布正文",
             )
+        elif name == "mastery_complete":
+            check(
+                name,
+                any(
+                    t.get("mode") == "problem_solving"
+                    and t.get("status") == "completed"
+                    and t.get("transfer_passed")
+                    for t in states[-1]["tasks"]
+                ),
+                detail="攻克须有独立作答及迁移完成状态",
+            )
         elif name == "save_ack":
             check(
                 name,
@@ -261,6 +278,10 @@ def validate_judge(judge, turns):
 
 
 def classify(result):
+    if result.get("schema_version") == 2:
+        from evals.spec import classify as classify_v2
+
+        return classify_v2(result)
     if result.get("execution_error"):
         return "error"
     if any(not c["passed"] for c in result.get("checks", [])):
@@ -278,6 +299,10 @@ def classify(result):
 
 
 def aggregate(manifest, results):
+    if manifest.get("schema_version") == 2:
+        from evals.spec import aggregate as aggregate_v2
+
+        return aggregate_v2(manifest, results)
     by_key = {r["trial_key"]: r for r in results}
     plan_keys = [p["trial_key"] for p in manifest["plan"]]
     if (

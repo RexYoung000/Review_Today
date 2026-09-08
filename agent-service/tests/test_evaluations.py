@@ -15,12 +15,18 @@ from evals.core import (
     aggregate,
     check_rules,
     classify,
-    load_dataset,
+    load_dataset as load_current_dataset,
     validate_judge,
     write_json,
 )
 from evals.feishu import CLI, LarkError, SCHEMAS, sample_rows
 from evals.instrument import Meter
+
+
+def load_dataset(directory=None):
+    return load_current_dataset(
+        directory or Path(__file__).resolve().parents[1] / "evals/data/legacy-v1"
+    )
 
 
 def empty_state():

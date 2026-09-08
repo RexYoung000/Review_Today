@@ -21,4 +21,4 @@ build-backend = "setuptools.build_meta"
 include = ["agent_service*", "evals*"]
 
 [tool.setuptools.package-data]
-evals = ["data/*.json"]
+evals = ["data/*.json", "data/*.md", "data/legacy-v1/*.json"]

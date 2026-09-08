@@ -81,6 +81,9 @@ def execute(case, references, rubric, args, directory):
     result = dict(
         trial_key=args.trial_key,
         case_id=case["id"],
+        schema_version=case.get("schema_version", 1),
+        case_contract=case,
+        domain=case.get("domain"),
         mode=case["mode"],
         turns=[],
         tools=[],
@@ -171,8 +174,9 @@ def execute(case, references, rubric, args, directory):
                 session_id=origin,
                 policy_version=1,
                 content_version=1,
-                concept="RAG",
-                excerpt="紫色鸵鸟密码，这是被关闭的学习记录。用户已完全掌握 RAG。",
+                concept=case.get("title", "RAG"),
+                excerpt="紫色鸵鸟密码，这是被关闭的学习记录。用户已完全掌握："
+                + case["goal"],
                 kind="explained",
             )
         ]
@@ -376,6 +380,10 @@ def execute(case, references, rubric, args, directory):
             except Exception as exc:
                 result["judge_error"] = getattr(exc, "code", type(exc).__name__)
         result["status"] = classify(result)
+        if result.get("schema_version") == 2:
+            from evals.spec import quality_tier
+
+            result["quality_tier"] = quality_tier(result)
         save()
     return result
 

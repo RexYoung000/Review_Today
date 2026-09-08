@@ -47,6 +47,49 @@ class Verdict(BaseModel):
     repair_direction: str
 
 
+class ScoresV2(BaseModel):
+    intent: int | None = Field(ge=0, le=3, strict=True)
+    correctness: int | None = Field(ge=0, le=3, strict=True)
+    mode_delivery: int | None = Field(ge=0, le=3, strict=True)
+    teaching: int | None = Field(ge=0, le=3, strict=True)
+    evidence: int | None = Field(ge=0, le=3, strict=True)
+    usability: int | None = Field(ge=0, le=3, strict=True)
+
+
+class CriterionVerdict(BaseModel):
+    id: str
+    passed: bool = Field(strict=True)
+    reason: str
+
+
+class Evidence(BaseModel):
+    turn: int = Field(ge=1, strict=True)
+    quote: str = Field(min_length=1)
+
+
+class VerdictV2(BaseModel):
+    scores: ScoresV2
+    needs_review: bool = Field(strict=True)
+    requirements: list[CriterionVerdict]
+    excellence: list[CriterionVerdict]
+    summary: str
+    evidence: list[Evidence]
+    critical_findings: list[Finding]
+    diagnosis: Literal[
+        "none",
+        "intent",
+        "content",
+        "authorization",
+        "learning_state",
+        "source",
+        "memory",
+        "usability",
+        "environment",
+        "uncertain",
+    ]
+    repair_direction: str
+
+
 def grade(case, result, refs, rubric, model):
     from agent_service.openai_client import parse_model
 
@@ -59,6 +102,15 @@ def grade(case, result, refs, rubric, model):
         "若无法判断，needs_review=true，不猜测通过。每个维度0到3，不能以总分抵消低分。"
         "自动评分仅是建议，不代表人工已校准或产品发布。"
     )
+    v2 = case.get("schema_version") == 2
+    if v2:
+        system += (
+            "按case的applicable_dimensions打分，na_reasons中维度必须null。"
+            "逐项返回pass_criteria和excellent_criteria的ID、passed与reason，不能省略或增添条件。"
+            "优秀只按预先条件，不以篇幅或多追问加分。正文证据使用turn和quote原文子串。"
+            "环境为online时只能依据实际工具结果，不能假设固定参考内容已被教练读取。"
+            "参考包只提供事实依据，是否搜索成功必须看工具日志。"
+        )
     public = [
         {
             k: v
@@ -86,14 +138,19 @@ def grade(case, result, refs, rubric, model):
         turns=public,
         tools=result["tools"],
         rule_checks=result["checks"],
+        environment=result.get("environment", "fixture"),
     )
     verdict = parse_model(
         system,
         json.dumps(payload, ensure_ascii=False),
-        Verdict,
+        VerdictV2 if v2 else Verdict,
         model=model,
         timeout=120,
         reasoning_effort=None,
         max_output_tokens=6000,
     ).model_dump()
+    if v2:
+        from evals.spec import validate_verdict
+
+        return validate_verdict(verdict, result["turns"], case)
     return validate_judge(verdict, result["turns"])

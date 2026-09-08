@@ -154,6 +154,18 @@ MANUAL = {
 }
 
 
+from evals.feishu_v2 import (
+    extend_schema,
+    enrich_samples,
+    batch_fields,
+    result_fields,
+    sync_progress,
+)
+
+extend_schema(SCHEMAS, MANUAL)
+SCORES["mode_delivery"] = "模式交付"
+
+
 class LarkError(RuntimeError):
     pass
 
@@ -174,8 +186,24 @@ class CLI:
         cmd = [self.binary, "base", "+" + command, "--as", "user"]
         if "format" not in kwargs:
             kwargs["format"] = "json"
+        request_files = []
         for key, value in kwargs.items():
             option = "--" + key.replace("_", "-")
+            if key == "json" and isinstance(value, (dict, list)):
+                encoded = json.dumps(value, ensure_ascii=False)
+                if len(encoded.encode()) > 16000:
+                    with tempfile.NamedTemporaryFile(
+                        mode="w",
+                        encoding="utf-8",
+                        prefix=".eval-request-",
+                        suffix=".json",
+                        dir=self.config_path.parent,
+                        delete=False,
+                    ) as handle:
+                        handle.write(encoded)
+                        request_files.append(Path(handle.name))
+                    value = "@" + Path(handle.name).name
+
             if value is None:
                 continue
             if isinstance(value, bool):
@@ -206,6 +234,9 @@ class CLI:
             )
         except subprocess.TimeoutExpired:
             raise LarkError("CLI timeout; mutation outcome may be uncertain") from None
+        finally:
+            for request in request_files:
+                request.unlink(missing_ok=True)
         try:
             payload = json.loads(r.stdout if r.returncode == 0 else r.stderr)
         except json.JSONDecodeError:
@@ -277,6 +308,29 @@ class CLI:
             return out
 
         current = indexed()
+        for incoming in rows:
+            old = current.get(incoming[key], {})
+            if (
+                table_name == "样本"
+                and old.get("对照确认")
+                and old.get("校准人")
+                and old.get("校准时间")
+            ):
+                if incoming.get("对照指纹") and incoming["对照指纹"] != old.get(
+                    "对照指纹"
+                ):
+                    raise LarkError(
+                        "approved calibration changed; create a new dataset version"
+                    )
+                incoming["校准待审标记"] = 0
+            if (
+                table_name == "结果明细"
+                and old.get("复核等级") not in (None, [], ["未复核"])
+                and old.get("结果指纹")
+                and incoming.get("结果指纹")
+                and old["结果指纹"] != incoming["结果指纹"]
+            ):
+                raise LarkError("reviewed result changed; create a new trial")
         uncertain = self.config.setdefault("uncertain_creates", {}).get(table, [])
         if any(k not in current for k in uncertain):
             raise LarkError(
@@ -293,6 +347,15 @@ class CLI:
             for r in rows
             if r[key] in current
         }
+        if table_name == "问题处理":
+            for r in rows:
+                old = current.get(r[key], {})
+                if (
+                    old.get("处理状态") == ["已关闭"]
+                    and r.get("再次出现")
+                    and r.get("最近出现时间", "") > old.get("最近出现时间", "")
+                ):
+                    updates[old["record_id"]]["处理状态"] = ["待分析"]
         for start in range(0, len(creates), 200):
             part = creates[start : start + 200]
             self.config["uncertain_creates"][table] = [r[key] for r in part]
@@ -381,8 +444,12 @@ def provision(config):
                 found[name] = result["table"]["id"]
             cli.config.setdefault("tables", {})[name] = found[name]
             cli.save()
-            if set(f["name"] for f in schema) - set(cli.fields(found[name])):
-                raise LarkError("existing table has incomplete schema")
+            existing = cli.fields(found[name])
+            missing = [f for f in schema if f["name"] not in existing]
+            if missing:
+                cli.call(
+                    "field-create", base_token=base, table_id=found[name], json=missing
+                )
         # A dedicated Base is small; reject ambiguous paginated inventories rather than assuming completeness.
         dashboards = cli.call("dashboard-list", base_token=base, page_size=100)
         if dashboards.get("has_more"):
@@ -448,6 +515,9 @@ def configure_dashboard(cli):
         ("机器待判", "待复核数"),
         ("计划场景", "计划数"),
         ("硬失败", "硬失败数"),
+        ("优秀场景", "优秀数"),
+        ("优秀率（%）", "优秀率"),
+        ("机器通过率（%）", "机器通过率"),
     ]:
         configs.append(
             (
@@ -471,7 +541,8 @@ def configure_dashboard(cli):
                     conjunction="and",
                     conditions=[
                         dict(field_name="最新批次", operator="is", value=True),
-                        dict(field_name="人工结论", operator="is", value="待复核"),
+                        dict(field_name="复核等级", operator="is", value="未复核"),
+                        dict(field_name="需人工抽查", operator="is", value=True),
                     ],
                 ),
             ),
@@ -481,7 +552,7 @@ def configure_dashboard(cli):
             "column",
             dict(
                 table_name="结果明细",
-                series=[dict(field_name="通过标记", rollup="SUM")],
+                series=[dict(field_name="有效通过标记", rollup="SUM")],
                 group_by=[dict(field_name="模式", mode="integrated")],
                 filter=latest,
             ),
@@ -569,9 +640,59 @@ def configure_dashboard(cli):
                 ),
             )
         )
+    current_version = load_dataset()[2]["version"]
+    configs += [
+        (
+            "各领域通过情况",
+            "column",
+            dict(
+                table_name="结果明细",
+                series=[dict(field_name="有效通过标记", rollup="SUM")],
+                group_by=[dict(field_name="领域", mode="integrated")],
+                filter=latest,
+            ),
+        ),
+        (
+            "待校准代表场景",
+            "statistics",
+            dict(
+                table_name="样本",
+                series=[dict(field_name="校准待审标记", rollup="SUM")],
+                filter=dict(
+                    conjunction="and",
+                    conditions=[
+                        dict(field_name="版本", operator="is", value=current_version)
+                    ],
+                ),
+            ),
+        ),
+    ]
     created = False
     for name, kind, data in configs:
+        import copy
+
+        data = copy.deepcopy(data)
+        if kind == "text":
+            data["text"] = (
+                "## Harness 质量评测 v2\n100场景：五模式、五领域各20例；每模式至少18例合格，20个关键场景另重复3次全部通过。\n合格与优秀分开；所有计划项保留分母。\n先到「样本 → v2评分对照校准」审阅25个代表场景。对照是候选，需填写对照确认、校准人和校准时间。\n人工校准、裁判核验及匹配批次齐备前不能宣告正式通过。原生验收独立。\n旧版40例保留在历史记录；当前图表仅展示v2。"
+            )
+        elif data.get("table_name") in ("评测批次", "结果明细"):
+            data.setdefault("filter", dict(conjunction="and", conditions=[]))[
+                "conditions"
+            ].append(dict(field_name="标准版本", operator="is", value=current_version))
+            if name == "批次通过率趋势":
+                data["filter"]["conditions"] += [
+                    dict(field_name="批类型", operator="is", value="full"),
+                    dict(field_name="运行状态", operator="is", value="已结束"),
+                ]
         if name in blocks:
+            cli.call(
+                "dashboard-block-update",
+                base_token=base,
+                dashboard_id=dashboard,
+                block_id=blocks[name],
+                data_config=data,
+            )
             continue
         r = cli.call(
             "dashboard-block-create",
@@ -601,6 +722,18 @@ def configure_dashboard(cli):
         ),
         ("结果明细", "人工校准", [["人工结论", "intersects", ["待复核"]]]),
         ("问题处理", "尚未关闭", [["处理状态", "disjoint", ["已关闭"]]]),
+        ("样本", "v2完整100场景", [["版本", "==", current_version]]),
+        (
+            "样本",
+            "v2评分对照校准",
+            [["版本", "==", current_version], ["校准样本", "==", True]],
+        ),
+        (
+            "结果明细",
+            "v2抽查与争议",
+            [["标准版本", "==", current_version], ["需人工抽查", "==", True]],
+        ),
+        ("评测批次", "v2批次与进度", [["标准版本", "==", current_version]]),
     ]:
         marker = f"{table}/{name}"
         if marker in cli.config.get("views", {}):
@@ -637,7 +770,7 @@ def configure_dashboard(cli):
 
 
 def sample_rows(dataset, refs):
-    return [
+    rows = [
         dict(
             zip(
                 (
@@ -686,6 +819,7 @@ def sample_rows(dataset, refs):
         )
         for c in dataset["cases"]
     ]
+    return enrich_samples(rows, dataset)
 
 
 ENTRY = {
@@ -705,6 +839,20 @@ ENTRY = {
 
 
 def latest_flags(batches):
+    versions = {b.get("标准版本", "v1") for b in batches}
+    if len(versions) > 1:
+        return {
+            k: v
+            for version in versions
+            for k, v in latest_flags(
+                [b for b in batches if b.get("标准版本", "v1") == version]
+            ).items()
+        }
+    completed = [b for b in batches if b.get("运行状态") not in ("运行中", "无效")]
+    if not completed:
+        return {
+            b["批次键"]: {"最新批次": False, "最新同类批次": False} for b in batches
+        }
     """The main dashboard prefers a full fixture baseline; cohorts stay separate."""
     if not batches:
         return {}
@@ -713,20 +861,30 @@ def latest_flags(batches):
         for b in batches
         if b.get("批类型") == "full"
         and b.get("工具环境") == "fixture"
-        and b.get("计划数") == 40
+        and b.get("计划数") in (40, 100)
+        and b.get("运行状态") not in ("运行中", "无效")
     ]
-    fixture = [b for b in batches if b.get("工具环境") == "fixture"]
-    focus = max(full or fixture or batches, key=lambda b: b["开始时间"])["批次键"]
+    fixture = [
+        b
+        for b in batches
+        if b.get("工具环境") == "fixture"
+        and b.get("运行状态") not in ("运行中", "无效")
+    ]
+    focus = max(full or fixture or completed, key=lambda b: b["开始时间"])["批次键"]
     cohorts = {}
     for b in batches:
-        group = (b.get("批类型"), b.get("工具环境"))
+        if b not in completed:
+            continue
+        group = (b.get("批类型"), b.get("工具环境"), b.get("标准版本", "v1"))
         if group not in cohorts or b["开始时间"] > cohorts[group]["开始时间"]:
             cohorts[group] = b
     return {
         b["批次键"]: {
             "最新批次": b["批次键"] == focus,
             "最新同类批次": b["批次键"]
-            == cohorts[(b.get("批类型"), b.get("工具环境"))]["批次键"],
+            == cohorts.get(
+                (b.get("批类型"), b.get("工具环境"), b.get("标准版本", "v1")), {}
+            ).get("批次键"),
         }
         for b in batches
     }
@@ -777,6 +935,7 @@ def error_category(error):
 
 
 CATEGORIES = {
+    "judge": "独立裁判与判分格式",
     "intent": "意图识别",
     "content": "内容正确性",
     "authorization": "授权与保存",
@@ -839,9 +998,15 @@ def sync(run_dir, config):
             "本地报告": str(run_dir / "report.md"),
             "最新批次": is_latest,
         }
+        batch.update(batch_fields(manifest, summary))
+        comparison = run_dir / "comparison.json"
+        if comparison.exists():
+            batch["版本比较"] = json.dumps(read_json(comparison), ensure_ascii=False)
         batches = cli.upsert("评测批次", [batch])
         batch_id = batches[manifest["run_id"]]
         rows = []
+        audit_path = run_dir / "audit-selection.json"
+        audit = read_json(audit_path)["trial_keys"] if audit_path.exists() else []
         issues = []
         for p in manifest["plan"]:
             r = results.get(p["trial_key"], {})
@@ -911,11 +1076,14 @@ def sync(run_dir, config):
             row.update(
                 {label: j.get("scores", {}).get(dim) for dim, label in SCORES.items()}
             )
+            row.update(result_fields(p, r, manifest, summary, audit))
             rows.append(row)
             if status in ("failed", "error", "needs_review"):
                 category = j.get("diagnosis") or error_category(
                     r.get("execution_error") or r.get("judge_error")
                 )
+                if r.get("judge_error") and not r.get("execution_error"):
+                    category = "judge"
                 if rule_fail and not r.get("execution_error"):
                     category = "rules:" + ",".join(sorted(rule_fail))
                 issues.append(
@@ -957,13 +1125,32 @@ def sync(run_dir, config):
                 row["首次结果"] = unique[row["问题键"]]["首次结果"]
             unique[row["问题键"]] = row
         if unique:
-            cli.upsert("问题处理", list(unique.values()))
+            from evals.feishu_v2 import issue_update, root_candidate
+
+            previous_issues = {r["问题键"]: r for r in cli.records(tables["问题处理"])}
+            current_issues = []
+            for row in unique.values():
+                row.update(
+                    {
+                        "最近出现时间": manifest["started_at"],
+                        "再次出现批次": manifest["run_id"],
+                        "机器根因候选": root_candidate(row["问题键"].split(":", 2)[-1]),
+                    }
+                )
+                update = issue_update(row, previous_issues.get(row["问题键"], {}))
+                if update:
+                    current_issues.append(update)
+            if current_issues:
+                cli.upsert("问题处理", current_issues)
         reconcile_latest(cli)
         cloud = cli.records(tables["结果明细"])
         actual = [r for r in cloud if r["结果键"].startswith(manifest["run_id"] + "/")]
         if len(actual) != len(rows) or len({r["结果键"] for r in actual}) != len(rows):
             raise LarkError("post-sync count/uniqueness verification failed")
-        if sum(r.get("通过标记", 0) for r in actual) != summary["counts"]["passed"]:
+        if (
+            sum(r.get("有效通过标记", r.get("通过标记", 0)) for r in actual)
+            != summary["counts"]["passed"]
+        ):
             raise LarkError("post-sync pass count mismatch")
         receipt = dict(
             synced_at=datetime.now(timezone.utc).isoformat(),
@@ -988,6 +1175,10 @@ def pull_reviews(run_dir, config):
             for r in rows
             if r["结果键"].startswith(manifest["run_id"] + "/")
         ]
+        if manifest.get("schema_version") == 2:
+            from evals.feishu_v2 import review_rows
+
+            review_rows(run_dir, rows)
         write_json(
             run_dir / "human-reviews.json",
             dict(
@@ -1005,3 +1196,4 @@ def pull_reviews(run_dir, config):
                 ensure_ascii=False,
             )
         )
+    build(run_dir)

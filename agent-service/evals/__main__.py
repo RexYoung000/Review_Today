@@ -77,7 +77,7 @@ def one_trial(planned, args, directory):
 
 
 def run(args):
-    dataset, refs, rubric = load_dataset()
+    dataset, refs, rubric = load_dataset(args.data)
     if not args.live:
         raise SystemExit("真实模型运行需显式 --live；validate 不调用模型。")
     if (
@@ -86,12 +86,18 @@ def run(args):
         or not 30 <= args.case_timeout <= 1200
     ):
         raise SystemExit("invalid concurrency/call/time bounds")
-    selected = [c for c in dataset["cases"] if args.suite == "full" or c[args.suite]]
+    selected = [
+        c for c in dataset["cases"] if args.suite == "full" or c.get(args.suite, False)
+    ]
     if args.case:
         if not set(args.case) <= {c["id"] for c in selected}:
             raise SystemExit("case 不在所选 suite 中")
         selected = [c for c in selected if c["id"] in args.case]
-    repeats = 3 if args.suite == "critical" else 1
+    repeats = (
+        dataset.get("gate_policy", {}).get("repeats", 3)
+        if args.suite == "critical"
+        else 1
+    )
     run_id = (
         datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         + "-"
@@ -108,13 +114,31 @@ def run(args):
         ("rubric", rubric),
     ]:
         write_json(directory / "data" / f"{name}.json", data)
+    if dataset.get("schema_version") == 2:
+        write_json(
+            directory / "data/calibration.json",
+            read_json(Path(args.data) / "calibration.json"),
+        )
     plan = [
-        dict(case_id=c["id"], mode=c["mode"], trial_key=f"{c['id']}-r{n}", repeat=n)
+        dict(
+            case_id=c["id"],
+            mode=c["mode"],
+            domain=c.get("domain"),
+            critical=c["critical"],
+            trial_key=f"{c['id']}-r{n}",
+            repeat=n,
+        )
         for c in selected
         for n in range(1, repeats + 1)
     ]
     manifest = dict(
         run_id=run_id,
+        schema_version=dataset.get("schema_version", 1),
+        dataset_version=dataset["version"],
+        rubric_version=rubric["version"],
+        gate_policy=dataset.get("gate_policy"),
+        calibration_status="pending_human",
+        calibration_dir=str(Path(args.calibration_dir).resolve()),
         started_at=datetime.now(timezone.utc).isoformat(),
         suite=args.suite,
         environment=args.environment,
@@ -144,6 +168,10 @@ def run(args):
             )
         ),
     )
+    if dataset.get("schema_version") == 2:
+        from evals.calibration import judge_code_hash
+
+        manifest["judge_code_hash"] = judge_code_hash()
     write_json(directory / "manifest.json", manifest)
     build(directory)
     print(
@@ -182,6 +210,16 @@ def run(args):
                     flush=True,
                 )
                 build(directory)
+                if args.feishu_config:
+                    from evals.feishu import sync_progress
+
+                    try:
+                        sync_progress(directory, Path(args.feishu_config))
+                    except Exception as exc:
+                        write_json(
+                            directory / "progress-sync-error.json",
+                            {"error": type(exc).__name__},
+                        )
     manifest["finished_at"] = datetime.now(timezone.utc).isoformat()
     manifest["service_hash_end"] = source_hash()
     manifest["evaluator_hash_end"] = source_hash("evals")
@@ -189,8 +227,38 @@ def run(args):
         manifest["invalidated"] = "evaluator changed during run"
     if manifest["service_hash_end"] != manifest["service_hash"]:
         manifest["invalidated"] = "service changed during run"
+    if dataset.get("schema_version") == 2:
+        identities = {
+            digest(
+                {
+                    "provider": r.get("provider"),
+                    "judge": (r.get("model_roles") or {}).get("judge"),
+                }
+            ): {
+                "provider": r.get("provider"),
+                "judge": (r.get("model_roles") or {}).get("judge"),
+            }
+            for r in [read_json(p) for p in (directory / "trials").glob("*.json")]
+            if r.get("model_roles")
+        }
+        if len(identities) == 1:
+            manifest["model_identity"] = next(iter(identities.values()))
+        else:
+            manifest["invalidated"] = "missing or inconsistent model identity"
+        roles = {
+            digest(r["model_roles"]): r["model_roles"]
+            for r in [read_json(p) for p in (directory / "trials").glob("*.json")]
+            if r.get("model_roles")
+        }
+        if len(roles) == 1:
+            manifest["model_roles"] = next(iter(roles.values()))
+        else:
+            manifest["invalidated"] = "missing or inconsistent model roles"
     write_json(directory / "manifest.json", manifest)
     print(json.dumps(build(directory), ensure_ascii=False), flush=True)
+    from evals.assess import compare_latest
+
+    compare_latest(directory)
     if args.feishu_config:
         from evals.feishu import sync
 
@@ -211,11 +279,20 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description="Review Today Harness 质量评测")
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("validate", help="验证40场景，不调用模型")
+    vp = sub.add_parser("validate", help="验证版本化场景，不调用模型")
+    vp.add_argument("--data", type=Path, default=SERVICE / "evals/data")
     p = sub.add_parser("run")
     p.add_argument("--live", action="store_true")
     p.add_argument(
-        "--suite", choices=["calibration", "full", "critical"], default="calibration"
+        "--suite",
+        choices=["calibration", "smoke", "full", "critical"],
+        default="calibration",
+    )
+    p.add_argument("--data", type=Path, default=SERVICE / "evals/data")
+    p.add_argument(
+        "--calibration-dir",
+        type=Path,
+        default=ROOT / "output/harness-evals/calibration-v2",
     )
     p.add_argument("--case", action="append")
     p.add_argument("--environment", choices=["fixture", "online"], default="fixture")
@@ -237,9 +314,14 @@ def main():
     p = sub.add_parser("review")
     p.add_argument("run_dir")
     p.add_argument("--config", required=True)
+    p = sub.add_parser("publish-calibration", help="同步100场景及25组候选对照")
+    p.add_argument("--config", required=True)
+    p = sub.add_parser("pull-calibration", help="拉取真实人工确认，不代替人工审批")
+    p.add_argument("--config", required=True)
+    p.add_argument("--output", required=True)
     args = parser.parse_args()
     if args.command == "validate":
-        d, r, b = load_dataset()
+        d, r, b = load_dataset(args.data)
         print(
             json.dumps(
                 dict(
@@ -262,6 +344,19 @@ def main():
             provision(Path(args.config))
         elif args.command == "sync":
             sync(Path(args.run_dir), Path(args.config))
+        elif args.command == "publish-calibration":
+            from evals.feishu_v2 import calibration_rows
+
+            print(json.dumps(calibration_rows(Path(args.config)), ensure_ascii=False))
+        elif args.command == "pull-calibration":
+            from evals.feishu_v2 import pull_calibration
+
+            print(
+                json.dumps(
+                    pull_calibration(Path(args.config), Path(args.output)),
+                    ensure_ascii=False,
+                )
+            )
         else:
             pull_reviews(Path(args.run_dir), Path(args.config))
 
