@@ -1,0 +1,142 @@
+[
+  {
+    "run_id": "d8d40bdc-f60c-4cee-ab47-4958263d451b",
+    "status": "completed",
+    "elapsed_ms": 1778,
+    "error": null,
+    "mode": "auto",
+    "intent": {
+      "intents": [
+        "greeting"
+      ],
+      "target_task_id": "",
+      "target_description": "",
+      "relation": "uncertain",
+      "workflow": null,
+      "scope": "conversation",
+      "proposed_actions": [],
+      "clarification": "",
+      "rationale": "用户发来纯问候，属于自然对话，不涉及任何学习任务或操作。",
+      "understanding": "unknown",
+      "answer_evidence": "",
+      "learning_goal_ready": false,
+      "direct_teaching": false,
+      "answer_only": false,
+      "is_jd": false,
+      "needs_verification": false,
+      "requested_mode": null,
+      "refresh_sources": false,
+      "public_search_query": "",
+      "light_reply": "你好！我是 Review Today 学习教练，可以帮你整理资料、探索主题、攻克问题，或者温习已学内容。今天想学点什么？",
+      "session_tags": [],
+      "handoff_source_ids": [],
+      "handoff_step_ids": [],
+      "memory_selections": []
+    },
+    "inputs": [
+      "你好"
+    ],
+    "replies": [
+      "你好！我是 Review Today 学习教练，可以帮你整理资料、探索主题、攻克问题，或者温习已学内容。今天想学点什么？"
+    ]
+  },
+  {
+    "run_id": "5d41b7f4-cdb5-45f0-b79e-87db9c175989",
+    "status": "completed",
+    "elapsed_ms": 23579,
+    "error": null,
+    "mode": "auto",
+    "intent": {
+      "intents": [
+        "goal",
+        "material",
+        "skip_check"
+      ],
+      "target_task_id": "",
+      "target_description": "主动回忆学习：第一小节讲解与简单例子",
+      "relation": "new_topic",
+      "workflow": "source_learning",
+      "scope": "learning",
+      "proposed_actions": [],
+      "clarification": "",
+      "rationale": "用户提供明确资料并要求按资料学习方式先讲第一小节、不保存，这是新的学习目标，应启动 source_learning 工作流分段教学。资料中已包含目标（理解主动回忆概念），learning_goal_ready 为真。",
+      "understanding": "unknown",
+      "answer_evidence": "",
+      "learning_goal_ready": true,
+      "direct_teaching": false,
+      "answer_only": false,
+      "is_jd": false,
+      "needs_verification": false,
+      "requested_mode": "source_learning",
+      "refresh_sources": false,
+      "public_search_query": "",
+      "light_reply": "",
+      "session_tags": [
+        "主动回忆",
+        "学习策略"
+      ],
+      "handoff_source_ids": [],
+      "handoff_step_ids": [],
+      "memory_selections": []
+    },
+    "inputs": [
+      "请按资料学习方式，先讲第一小节，不保存。资料：主动回忆指不看原文尝试从记忆中回答问题，再对照资料检查遗漏；仅觉得熟悉不等于能独立答出。请用一个简单例子解释。"
+    ],
+    "replies": [
+      "**主题：主动回忆（Active Recall）**\n\n这是关于\"如何学习更有效\"的一个核心方法。下面先做知识整理，不判断你是否已掌握。\n\n## 知识点与关系\n\n- **主动回忆**是学习的核心动作：**不看原文**，凭记忆回答问题。\n- **测试效应**支撑它：主动回忆比单纯重读更能巩固记忆。\n- **提取练习**是主动回忆的别称，强调\"从大脑中调取信息\"这一动作。\n- 三者关系中，主动回忆是具体做法，测试效应是背后的效果，提取练习是同一过程的另一种叫法。\n\n## 一个简单例子\n\n你刚读完一段关于光合作用的文字，里面提到\"光合作用吸收二氧化碳，放出氧气\"。\n\n- **重读方式**：合上书，再翻到那一页看一遍，觉得\"嗯，我知道\"。\n- **主动回忆方式**：合上书，问自己：\"光合作用吸收什么、放出什么？\"试着先说出\"吸收二氧化碳，放出氧气\"，然后再翻书核对。\n\n这里的关键区别在于：**重读时\"熟悉感\"很容易骗人**——你看着文字觉得眼熟，但真到合上书独立回答时，可能只能说出一半。主动回忆强迫你先从记忆中调取，调取失败或遗漏的地方，恰恰是你要重点补的。\n\n刚才资料里有一句很精炼的警告：**\"仅觉得熟悉不等于能独立答出\"**——这正是主动回忆要解决的问题。\n\n## 不确定之处\n\n我方提供的资料只有这一句定义，没有展开机制细节（如为什么提取能增强记忆、间隔多久效果更好）。如需更深入讲\"测试效应\"的神经机制或实操节奏（如间隔重复），需要补充资料才能展开，目前这部分不当作已核实的事实。\n\n暂未找到可读取的合适资料，先讲基础内容；需要查证的部分会标明。"
+    ]
+  },
+  {
+    "run_id": "928c7171-f7a3-4f46-88b6-e14e7ac97e29",
+    "status": "retryable_failed",
+    "elapsed_ms": 1948,
+    "error": "RT.INTENT.INVALID_TARGET",
+    "mode": "source_learning",
+    "intent": null,
+    "inputs": [
+      "请先讲第一小节，不保存。资料：主动回忆指不看原文尝试从记忆中回答问题，再对照资料检查遗漏；仅觉得熟悉不等于能独立答出。请用一个简单例子解释。"
+    ],
+    "replies": []
+  },
+  {
+    "run_id": "6f62afd3-e2b9-401b-aee7-22e883a9b04e",
+    "status": "completed",
+    "elapsed_ms": 1762,
+    "error": null,
+    "mode": "auto",
+    "intent": {
+      "intents": [
+        "question"
+      ],
+      "target_task_id": "",
+      "target_description": "",
+      "relation": "uncertain",
+      "workflow": null,
+      "scope": "conversation",
+      "proposed_actions": [],
+      "clarification": "",
+      "rationale": "用户询问 RAG 是什么，明确表示只解释、不安排训练也不保存，属于 Auto 模式下的普通知识问题，应直接回答而不建立训练目标。",
+      "understanding": "unknown",
+      "answer_evidence": "",
+      "learning_goal_ready": false,
+      "direct_teaching": false,
+      "answer_only": true,
+      "is_jd": false,
+      "needs_verification": false,
+      "requested_mode": "auto",
+      "refresh_sources": false,
+      "public_search_query": "",
+      "light_reply": "",
+      "session_tags": [],
+      "handoff_source_ids": [],
+      "handoff_step_ids": [],
+      "memory_selections": []
+    },
+    "inputs": [
+      "RAG 是什么？这次只解释，不安排训练，也不保存。"
+    ],
+    "replies": [
+      "你希望继续刚才的内容，还是开始一个新的学习问题？"
+    ]
+  }
+]

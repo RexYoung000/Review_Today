@@ -1,0 +1,69 @@
+Review_Today/KnowledgeLibrary.swift:495:13: warning: variable 'value' was never mutated; consider changing to 'let' constant
+ 493 | 
+ 494 |     private static func stripCommandLead(_ text: String) -> String {
+ 495 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+     |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant
+ 496 |         for prefix in commandPrefixes + ["什么是"] where value.hasPrefix(prefix) {
+ 497 |             let rest = String(value.dropFirst(prefix.count))
+Review_Today/LibraryInboxSettings.swift:166:13: warning: result of 'try?' is unused [#no-usage]
+164 |             task.updatedAt = .now
+165 |             try? modelContext.save()
+166 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#no-usage]
+167 |             return
+168 |         }
+Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+620 | 
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+622 |     private var synth = NSSpeechSynthesizer()
+    |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+623 |     private var onFinish: (() -> Void)?
+624 | 
+
+Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+639 |     }
+640 | 
+641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+    |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+642 |         let done = onFinish
+643 |         onFinish = nil
+
+Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+619 | }
+620 | 
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+    |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+622 |     private var synth = NSSpeechSynthesizer()
+623 |     private var onFinish: (() -> Void)?
+
+Review_Today/ReviewView.swift:627:15: warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+625 |     override init() {
+626 |         super.init()
+627 |         synth.delegate = self
+    |               `- warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+628 |     }
+629 | 
+
+Review_Today/ReviewView.swift:633:15: warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+631 |         stop()
+632 |         self.onFinish = onFinish
+633 |         synth.startSpeaking(text)
+    |               `- warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+634 |     }
+635 | 
+
+Review_Today/ReviewView.swift:637:15: warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+635 | 
+636 |     func stop() {
+637 |         synth.stopSpeaking()
+    |               `- warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+638 |         onFinish = nil
+639 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+Controlled stop save: 0.001063958 seconds; full replay suite: 0.021735833 seconds
+SSE frames: 3, span: 0.4487549066543579, delays: [0.024626970291137695, 0.02540302276611328, 0.020444154739379883]
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+Controlled stop save: 0.001864542 seconds; full replay suite: 0.031281292 seconds
+PASS: real SSE Unicode transport, incremental delivery, max controlled receive delay 25 ms

@@ -27,6 +27,7 @@ from agent_service.harness_store import HarnessTaskRecord, now_iso
 from agent_service.openai_client import ModelCallError, parse_model, web_search_text
 from agent_service.model_capabilities import require_model
 from agent_service.service_diagnostics import diagnose
+from agent_service.structured_output import schema_repair_instruction
 from agent_service.learning_progress import set_plan, current_step, record_understanding, advance, outcome
 from agent_service.learning_memory import make_evidence, select_references, merge_references
 from agent_service.execution_policy import budget_scope, alternatives
@@ -784,6 +785,7 @@ class ConversationHarness(ConditionalTeaching):
                 choices = ([model] + (alternatives(model, strength, streamable) or [model]))[:2]
                 repaired = False
                 for index, selected_model in enumerate(choices):
+                    attempt_event = None
                     try:
                         model = selected_model
                         require_model(selected_model, thinking_strength=strength)
@@ -806,6 +808,7 @@ class ConversationHarness(ConditionalTeaching):
                         with self.store.transaction(session_id, run_id, revision) as current:
                             attempt_event = self.store.event(current, current["runs"][run_id], "model_attempt", "正在处理当前步骤", model=selected_model, payload={"step": node, "step_attempt": index + 1})
                             attempt_event["attempt"] = index + 1
+                        attempt_started = time.monotonic()
                         parsed = parse_model(system, prompt, schema, model=selected_model, on_cancel_handle=register_cancel,
                                              timeout=budget.remaining(), max_output_tokens=OUTPUT_RESERVE, reasoning_effort="high" if strength == "deep" else None,
                                              **({"on_partial": emit, "on_transport": transport} if streamable else {}))
@@ -818,12 +821,20 @@ class ConversationHarness(ConditionalTeaching):
                         model = selected_model
                         break
                     except ModelCallError as error:
+                        if attempt_event is not None:
+                            with self.store.transaction(session_id, run_id, revision) as current:
+                                event = self.store.event(current, current["runs"][run_id], "model_attempt_failed",
+                                    "本次模型输出格式未通过" if error.code == "RT.MODEL.SCHEMA" else "本次模型调用未完成",
+                                    model=selected_model, duration_ms=int((time.monotonic() - attempt_started) * 1000),
+                                    error=error.code, detail=error.diagnostic,
+                                    payload={"step": node, "step_attempt": index + 1, "diagnostic": diagnose(error)})
+                                event["attempt"] = index + 1
                         # Never splice a second generation into already shown text,
                         # retry refusals/access restrictions or exceed shared budget.
                         if error.code == "RT.MODEL.SCHEMA" and not latest and not repaired and budget.attempts < budget.limit:
                             repaired = True
                             choices[index + 1:] = [selected_model]
-                            prompt += "\n输出结构校验失败：" + error.diagnostic + "\n仅修复标出的字段，严格使用 schema 的枚举；工作流放 workflow，直接教学放 direct_teaching 布尔字段。不得补造授权、证据、来源或已掌握状态。"
+                            system += "\n" + schema_repair_instruction(error)
                             prompt, repaired_capacity = prepare_context(system, prompt, window=configured_window(model), schema=schema.model_json_schema())
                             with self.store.transaction(session_id, run_id, revision) as current:
                                 current["runs"][run_id]["context_capacity"] = repaired_capacity

@@ -1,4 +1,5 @@
 import json
+import re
 from collections.abc import Callable
 
 import jiter
@@ -10,6 +11,7 @@ from pydantic import BaseModel, ValidationError
 
 from agent_service.config import BASE_URL, MODEL, PROVIDER, MODEL_PROBE_TIMEOUT_SECONDS, MODEL_TIMEOUT_SECONDS, openai_key
 from agent_service.execution_policy import budget_scope, current_budget
+from agent_service.structured_output import schema_diagnostic
 
 
 def _client(*, timeout: float = MODEL_TIMEOUT_SECONDS) -> OpenAI:
@@ -110,23 +112,20 @@ def parse_model(
         raise ModelCallError("SCHEMA", "JSONDecodeError") from None
 
 
-def schema_diagnostic(error):
-    # Never include input, invalid literal, arbitrary validator messages or URLs.
-    details = []
-    for item in error.errors(include_input=False, include_url=False)[:8]:
-        detail = {"field": list(item["loc"]), "type": item["type"]}
-        if item["type"] == "literal_error":
-            detail["allowed"] = item.get("ctx", {}).get("expected", "")
-        details.append(detail)
-    return json.dumps(details, ensure_ascii=False)
-
-
 class ModelCallError(RuntimeError):
     def __init__(self, kind: str, diagnostic: str = "", request_id: str | None = None):
         self.code = f"RT.MODEL.{kind}"
         self.diagnostic = diagnostic  # allowlisted class/status/schema fields; never raw input, provider body or credentials
-        self.request_id = request_id
+        self.request_id = request_id if isinstance(request_id, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,160}", request_id) else None
         super().__init__(self.code)
+
+
+def _validate_output(schema, raw, response):
+    try:
+        return schema.model_validate_json(raw)
+    except ValidationError as exc:
+        raise ModelCallError("SCHEMA", schema_diagnostic(exc, raw),
+                             request_id=getattr(response, "_request_id", None)) from None
 
 
 def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_transport, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None):
@@ -186,7 +185,7 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
         if final_text or snapshot.strip():
             if on_transport:
                 on_transport("streaming" if snapshot else "buffered")
-            return text_format.model_validate_json(final_text or snapshot)
+            return _validate_output(text_format, final_text or snapshot, response)
         if published:
             raise ModelCallError("EMPTY")
     except APIStatusError as exc:
@@ -235,7 +234,7 @@ def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=
         text = "".join(getattr(part, "text", "") for output in getattr(response, "output", []) or []
                        for part in getattr(output, "content", []) or [] if getattr(part, "type", "") == "output_text")
         if text.strip():
-            return text_format.model_validate_json(text)
+            return _validate_output(text_format, text, response)
         raise ModelCallError("EMPTY")
     if response.output_parsed is not None:
         return response.output_parsed

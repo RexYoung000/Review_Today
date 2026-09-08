@@ -117,13 +117,14 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertIn('"intents", 0', diagnostic)
         calls = []
         def invalid(system, prompt, schema, **kw):
-            calls.append(prompt)
+            calls.append((system, prompt))
             if len(calls) == 1: raise ModelCallError("SCHEMA", diagnostic)
             return intent("greeting", light_reply="你好")
         with patch("agent_service.conversation.parse_model", side_effect=invalid):
             accepted = self.send()
         self.assertEqual(len(calls), 2)
-        self.assertIn("literal_error", calls[-1])
+        self.assertIn("literal_error", calls[-1][0])
+        self.assertEqual(calls[0][1], calls[1][1])
         self.assertEqual(self.state()["runs"][accepted.run_id]["status"], "completed")
         attempts = [e["attempt"] for e in self.state()["events"] if e["stage"] == "model_attempt"]
         self.assertEqual(attempts, [1, 2])
@@ -222,7 +223,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         prompts = []
         def fabricated_answer(system, prompt, schema, **kw):
             if schema is IntentDecision:
-                prompts.append(prompt)
+                prompts.append((system, prompt))
                 if len(prompts) == 1:
                     return intent("answer", scope="continue_goal").model_copy(update={"answer_evidence": "B"})
                 return intent("followup", scope="continue_goal")
@@ -230,7 +231,8 @@ class ConditionalTeachingTests(unittest.TestCase):
         with patch("agent_service.conversation.parse_model", side_effect=fabricated_answer), patch("agent_service.conversation.web_search_text", side_effect=ModelCallError("UNSUPPORTED")):
             accepted = self.send("我还想听一个例子")
         self.assertEqual(len(prompts), 2)
-        self.assertIn("answer_evidence", prompts[-1])
+        self.assertIn("answer_evidence", prompts[-1][0])
+        self.assertEqual(prompts[0][1], prompts[-1][1])
         self.assertEqual(self.state()["runs"][accepted.run_id]["intent"]["intents"], ["followup"])
         self.assertEqual(self.state()["runs"][accepted.run_id]["status"], "completed")
 
