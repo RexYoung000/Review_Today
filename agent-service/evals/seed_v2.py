@@ -288,7 +288,7 @@ def write(name, value):
 
 def build():
     refs = {
-        "version": "2026-09-08.v2.0",
+        "version": "2026-09-08.v2.1",
         "note": "原创合成教学材料与来源摘要；不是实时抓取、专家签认或真实用户数据。",
         "packs": {},
     }
@@ -489,9 +489,26 @@ def build():
                     turns = [dict(text=first), dict(text=follow)]
                     rules += ["no_verified"]
                 if mode == "problem_solving" and (k == 3 or (k == 0 and di == 0)):
+                    exercise = {
+                        "photo": "说明光合作用里光与二氧化碳、水分别起什么作用，以及总反应式是否代表一步反应。",
+                        "median": "按题设数据求中位数，并说明它与平均数对极端值的反应有何不同。",
+                        "asyncio": "解释async并发与CPU多核并行的区别，同步阻塞为何不会因函数加async就消失。",
+                        "chronology": "按题设列出创设、迁址、扩建的事件时间，并区分校刊形成时间；先后顺序是否证明因果。",
+                        "email": "写出一封保留题设对象、动作、截止时间和理由的礼貌邮件，不虚构审批或处罚。",
+                        "experiment": "解释题设A/B数据能支持什么结论，以及为什么不能只凭比例确定稳定提升或因果。",
+                    }[key]
+                    first = (
+                        context
+                        + " 本轮只练这一题："
+                        + exercise
+                        + " 请先给基础解答和思路，再仅围绕这道题用一个问题校准，等我独立作答；不要换成其他题、提高范围或保存。"
+                    )
+                    independent = answer if key == "email" else content
+                    if key == "email":
+                        independent = "你好，麻烦在周五17点前补齐报告第二部分的来源链接，方便当天汇总审核。如有困难，请提前告诉我，谢谢。"
                     turns = [
                         dict(text=first),
-                        dict(text="我先尝试独立解释：" + content),
+                        dict(text="我对约定练习题的独立作答是：" + independent),
                         dict(
                             text="请用这个变式检验迁移，先只提出问题等我回答："
                             + transfer
@@ -597,7 +614,7 @@ def build():
                 group[1]["calibration"] = True
     rubric = dict(
         schema_version=2,
-        version="2026-09-08.v2.0",
+        version="2026-09-08.v2.1",
         dimensions=dict(
             zip(
                 DIMENSIONS,
@@ -628,7 +645,7 @@ def build():
     )
     dataset = dict(
         schema_version=2,
-        version="2026-09-08.v2.0",
+        version="2026-09-08.v2.1",
         coverage=dict(
             total=100,
             per_mode=20,

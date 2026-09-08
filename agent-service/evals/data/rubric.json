@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "2026-09-08.v2.0",
+  "version": "2026-09-08.v2.1",
   "dimensions": {
     "intent": "最新真实意图与所有限定",
     "correctness": "事实、逻辑、条件和步骤",

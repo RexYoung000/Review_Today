@@ -406,3 +406,60 @@ class WorkflowTests(unittest.TestCase):
         self.assertTrue(flags["new"]["最新批次"])
         self.assertFalse(flags["running"]["最新批次"])
         self.assertFalse(flags["running"]["最新同类批次"])
+
+    def test_verified_critical_failure_blocks_even_when_judge_requests_review(self):
+        c = load_dataset()[0]["cases"][0]
+        r = make_result(c)
+        r["judge"]["needs_review"] = True
+        r["judge"]["critical_findings"] = [
+            dict(
+                kind="false_mastery",
+                turn=1,
+                quote=r["turns"][0]["response"],
+                explanation="测试已验证的原文严重违规",
+            )
+        ]
+        self.assertEqual(classify(r), "failed")
+        r["judge"]["critical_findings"][0]["quote"] = "不存在的引用"
+        self.assertEqual(classify(r), "needs_review")
+
+    def test_positive_mastery_cases_bind_the_initial_exercise(self):
+        for c in load_dataset()[0]["cases"]:
+            if "mastery_complete" in c["rules"]:
+                self.assertIn("本轮只练这一题", c["turns"][0]["text"])
+                self.assertIn("约定练习题", c["turns"][1]["text"])
+
+    def test_invalid_verdict_preserves_raw_evidence_without_accepting_it(self):
+        from evals.judge import grade, VerdictV2, VerdictValidationError
+        from unittest.mock import patch
+
+        c = load_dataset()[0]["cases"][0]
+        r = make_result(c)
+        r["tools"] = []
+        j = r["judge"]
+        j.update(summary="测试证据校验", diagnosis="none", repair_direction="")
+        j["evidence"][0]["quote"] = "不存在的引用"
+        with patch(
+            "agent_service.openai_client.parse_model",
+            return_value=VerdictV2.model_validate(j),
+        ):
+            with self.assertRaises(VerdictValidationError) as ctx:
+                grade(c, r, {}, load_dataset()[2], "test")
+        self.assertEqual(ctx.exception.verdict, j)
+        self.assertIn("exact public quote", ctx.exception.reason)
+
+    def test_scheduler_lock_prevents_any_config_or_model_access(self):
+        import fcntl, io
+        from contextlib import redirect_stdout
+        from types import SimpleNamespace
+        from evals.schedule import run
+
+        with tempfile.TemporaryDirectory() as directory:
+            with (Path(directory) / "schedule.lock").open("a") as lock:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                output = io.StringIO()
+                with redirect_stdout(output):
+                    run(
+                        SimpleNamespace(repo="/nonexistent-eval-repo", output=directory)
+                    )
+                self.assertIn("already_running", output.getvalue())

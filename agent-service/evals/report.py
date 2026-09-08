@@ -68,6 +68,7 @@ def build(run_dir):
             f"有效结论：{summary.get('effective_results',{}).get(planned['trial_key'],{})}\n",
             f"规则失败：{[c['rule'] for c in r.get('checks',[]) if not c['passed']]}\n",
             f"请求数：{len(r.get('calls',[]))}；总耗时：{r.get('total_ms')} ms\n",
+            f"裁判校验原因：{r.get('judge_error_detail', '无')}；失败原判保留在原始记录 judge_raw。\n",
         ]
         for t in r.get("turns", []):
             lines += [

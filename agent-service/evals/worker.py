@@ -379,6 +379,9 @@ def execute(case, references, rubric, args, directory):
                 )
             except Exception as exc:
                 result["judge_error"] = getattr(exc, "code", type(exc).__name__)
+                if hasattr(exc, "verdict"):
+                    result["judge_raw"] = exc.verdict
+                    result["judge_error_detail"] = exc.reason
         result["status"] = classify(result)
         if result.get("schema_version") == 2:
             from evals.spec import quality_tier

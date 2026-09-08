@@ -4,6 +4,15 @@ from pydantic import BaseModel, Field
 from evals.core import validate_judge
 
 
+class VerdictValidationError(ValueError):
+    code = "EVAL.JUDGE.INVALID_VERDICT"
+
+    def __init__(self, verdict, reason):
+        self.verdict = verdict
+        self.reason = reason
+        super().__init__(self.code)
+
+
 class Scores(BaseModel):
     intent: int = Field(ge=0, le=3, strict=True)
     correctness: int = Field(ge=0, le=3, strict=True)
@@ -152,5 +161,8 @@ def grade(case, result, refs, rubric, model):
     if v2:
         from evals.spec import validate_verdict
 
-        return validate_verdict(verdict, result["turns"], case)
+        try:
+            return validate_verdict(verdict, result["turns"], case)
+        except (ValueError, KeyError, TypeError) as exc:
+            raise VerdictValidationError(verdict, str(exc)) from exc
     return validate_judge(verdict, result["turns"])

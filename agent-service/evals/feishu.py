@@ -736,7 +736,7 @@ def configure_dashboard(cli):
         ("评测批次", "v2批次与进度", [["标准版本", "==", current_version]]),
     ]:
         marker = f"{table}/{name}"
-        if marker in cli.config.get("views", {}):
+        if cli.config.get("views", {}).get(marker) == current_version:
             continue
         existing_views = cli.call(
             "view-list",
@@ -761,7 +761,7 @@ def configure_dashboard(cli):
             view_id=name,
             json=dict(logic="and", conditions=conditions),
         )
-        cli.config.setdefault("views", {})[marker] = True
+        cli.config.setdefault("views", {})[marker] = current_version
         cli.save()
     print(
         json.dumps(dict(dashboard=cli.config["dashboard_url"]), ensure_ascii=False),
@@ -1018,6 +1018,7 @@ def sync(run_dir, config):
             diagnosis = (
                 j.get("summary")
                 or r.get("execution_error")
+                or r.get("judge_error_detail")
                 or r.get("judge_error")
                 or (
                     "仅规则判定：停止协议无需生成回答"
@@ -1059,6 +1060,7 @@ def sync(run_dir, config):
                         evidence=j.get("evidence"),
                         critical=j.get("critical_findings"),
                         rules=r.get("checks"),
+                        invalid_judge=r.get("judge_raw"),
                     ),
                     ensure_ascii=False,
                 )[:20000],

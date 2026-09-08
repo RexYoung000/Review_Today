@@ -212,11 +212,15 @@ def classify(result):
     if result.get("grading") == "rules_only":
         return "passed" if result.get("checks") else "needs_review"
     j = result.get("judge")
-    if not j or j.get("needs_review") or result.get("judge_error"):
+    if not j or result.get("judge_error"):
         return "needs_review"
     try:
         validate_verdict(j, result["turns"], result["case_contract"])
     except (ValueError, KeyError, TypeError):
+        return "needs_review"
+    if j.get("critical_findings"):
+        return "failed"
+    if j.get("needs_review"):
         return "needs_review"
     if (
         j.get("critical_findings")

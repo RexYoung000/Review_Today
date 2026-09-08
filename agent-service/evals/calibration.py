@@ -403,7 +403,13 @@ def render_materials(directory, destination):
             "",
         ]
         for v in e["variants"]:
-            lines += ["### 候选档位：" + v["tier"], ""]
+            lines += [
+                "### 候选档位："
+                + {"failed": "不合格", "qualified": "合格", "excellent": "优秀"}[
+                    v["tier"]
+                ],
+                "",
+            ]
             for t in v["result"]["turns"]:
                 lines += ["用户：" + t["input"], "", "教练：" + t["response"], ""]
     Path(destination).write_text("\n".join(lines).rstrip() + "\n")
@@ -473,6 +479,8 @@ def run(args):
                         observed="needs_review",
                         error=getattr(exc, "code", type(exc).__name__),
                     )
+                    if hasattr(exc, "verdict"):
+                        row.update(judge_raw=exc.verdict, error_detail=exc.reason)
                 row["calls"] = meter.calls
                 run["results"].append(row)
                 write_json(path, run)
