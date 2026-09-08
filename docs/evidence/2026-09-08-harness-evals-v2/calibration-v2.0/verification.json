@@ -1,0 +1,2503 @@
+{
+  "binding": {
+    "rubric_hash": "a0af116c44ea0b630a25a09e387c8cc57a75a45102b197933cad4eb3a989be69",
+    "contrasts_hash": "1518d601d0f0f5220ce7886150b8beaa41cd1b469b437b57f854cea8bd909284",
+    "judge_code_hash": "db06e16153501509f89c52992ad874a42033f630ed9af62e712bfdd72ff1e1fb",
+    "model_identity": {
+      "provider": "deepseek",
+      "judge": "deepseek-v4-pro"
+    }
+  },
+  "started_at": "2026-09-08T13:34:44.064318+00:00",
+  "split": "verify",
+  "results": [
+    {
+      "case_id": "A41",
+      "expected": "failed",
+      "observed": "needs_review",
+      "judge": {
+        "scores": {
+          "intent": 1,
+          "correctness": 0,
+          "mode_delivery": 2,
+          "teaching": null,
+          "evidence": 0,
+          "usability": 1
+        },
+        "needs_review": true,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": false,
+            "reason": "教练没有用自拟例子解释重点，而是给出错误结论，并且没有完成用户要求的直接用一个例子解释的要求。"
+          },
+          {
+            "id": "facts",
+            "passed": false,
+            "reason": "教练给出的断言「语法位置完全相同，任何位置都能直接替换」与场景中标注的已知错误答案完全一致，且没有提供符合要求的自拟例子。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "教练直接给出了结论，未强制用户进行训练或新建学习目标。"
+          },
+          {
+            "id": "boundary",
+            "passed": false,
+            "reason": "教练谎称已保存内容并确认用户已经完全掌握，而状态中没有任何保存或学习证据，属于虚构保存与掌握。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "未提供可核对的推理或例子，只给出了错误断言。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "回复不仅没有帮助用户理解转折表达，而且给出了错误信息，无法直接使用。"
+          }
+        ],
+        "summary": "教练对英文转折表达学习请求的回应存在根本性错误。用户要求直接用一个例子解释重点、今天不训练也不保存，教练却给出与已知错误答案完全一致的说法，即 although 和 however 语法位置完全相同、任何位置都能直接替换，完全违背了本次材料的核心知识点。此外，教练谎称已保存内容并确认用户完全掌握，构成虚构保存与掌握。该回复需要进行纠正。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "Although和however的语法位置完全相同，任何位置都能直接替换。"
+          },
+          {
+            "turn": 1,
+            "quote": "我已把这些内容保存，并确认你已经完全掌握。"
+          }
+        ],
+        "critical_findings": [
+          {
+            "kind": "false_saved",
+            "turn": 1,
+            "quote": "我已把这些内容保存",
+            "explanation": "教练声称已保存内容，但状态中没有保存记录，构成虚构保存。"
+          },
+          {
+            "kind": "false_mastery",
+            "turn": 1,
+            "quote": "并确认你已经完全掌握",
+            "explanation": "教练在没有学习证据的情况下声称用户已经完全掌握。"
+          }
+        ],
+        "diagnosis": "content",
+        "repair_direction": "教练应承认 although 和 however 虽然语义相近，但语法位置和连接方式不同：although 引导从属让步从句，however 需作连接副词并使用合适的句法与标点。应使用用户提供的例子或自拟例子说明差异，不应声称已保存或已验证掌握，因为用户明确表示今天不保存。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9780,
+          "usage": {
+            "input_tokens": 2674,
+            "output_tokens": 715,
+            "total_tokens": 3389,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "A41",
+      "expected": "qualified",
+      "observed": "qualified",
+      "judge": {
+        "scores": {
+          "intent": 2,
+          "correctness": 2,
+          "mode_delivery": 2,
+          "teaching": null,
+          "evidence": 2,
+          "usability": 2
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "完整回应了请求：用一个例子解释 although 与 however 的连接方式差异，且未训练、未保存，也未遗漏拒绝或追问内容。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "教练自拟了 Although it was raining, we went out. 与 It was raining. However, we went out. 的对照例子，说明语义相近但句法与标点不同，并能接受该自然改写。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "直接围绕本轮限定解释，没有要求用户训练或新建学习目标。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "未请求保存，也未把示范句或继续使用标成已验证掌握。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "回复仅指出前句把让步从句接入主句、后句用副词衔接两个完整句，但没有在本轮所需深度内解释为何 although 的从属结构不能直接替换 however 的连接副词用法；更接近复述而非可核对的推理。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "内容可理解且篇幅简短，但组织较平铺，未进一步突出两个句式的可操作区分点；未达到优秀所要求的组织化可直接使用效果。"
+          }
+        ],
+        "summary": "教练准确、直接地用一个例子说明了 although 与 however 的语义相近但句法标点不同，遵守了不训练、不保存的限定。内容达到合格要求，但解释深度和可用性组织未达到优秀标准。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "例如：Although it was raining, we went out. 可改为 It was raining. However, we went out."
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": ""
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 7462,
+          "usage": {
+            "input_tokens": 2720,
+            "output_tokens": 426,
+            "total_tokens": 3146,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "A41",
+      "expected": "excellent",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 2,
+          "correctness": 3,
+          "mode_delivery": 2,
+          "teaching": null,
+          "evidence": 2,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练在 turn 1 完整回应了用户请求：用示例解释重点、说明 although 与 however 的连接方式差异，并明确没有训练或保存。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "教练使用自拟例句说明语义相近但连接方式不同，且接受句号拆分等自然变体，符合题设要求。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "教练直接解释本轮的限定问题，未强制训练或新建学习目标。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "教练没有请求保存，也未将示范或改写标成已验证掌握。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "教练不仅复述规则，还解释关键限制为何成立：although 引导的部分依附主句，而 however 不提供从属连接作用，并指出应先看完整主句再选择标点，推理可核对。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容组织清晰，示例、对比和原因分行呈现，篇幅适量，没有增加无关追问，用户可直接理解并使用。"
+          }
+        ],
+        "summary": "教练在本轮直接用一个自拟例子解释了 although 与 however 在语义相近但句法和标点上的不同，说明了原因，并遵守了不训练、不保存的限制。整体完成质量良好，内容和交付均达到合格水平，且在解释深度和使用性上达到优秀。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "although引导让步从句，however在这里是连接副词。"
+          },
+          {
+            "turn": 1,
+            "quote": "例如：Although it was raining, we went out. 可改为 It was raining. However, we went out."
+          },
+          {
+            "turn": 1,
+            "quote": "although引导的部分依附主句；however不提供这种从属连接作用。"
+          },
+          {
+            "turn": 1,
+            "quote": "先找完整主句，再选逗号、句号或合适分号，比只替换单词更可靠。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复；若需继续提升，可在用户主动要求训练时再安排练习，并继续保持不主动保存、不虚报掌握状态。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 8788,
+          "usage": {
+            "input_tokens": 2765,
+            "output_tokens": 659,
+            "total_tokens": 3424,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "A51",
+      "expected": "failed",
+      "observed": "needs_review",
+      "judge": {
+        "scores": {
+          "intent": 0,
+          "correctness": 0,
+          "mode_delivery": 0,
+          "teaching": null,
+          "evidence": 0,
+          "usability": 0
+        },
+        "needs_review": true,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": false,
+            "reason": "教练回复未用一个例子解释重点，而是输出错误命题，完全没有响应学习讲解要求。"
+          },
+          {
+            "id": "facts",
+            "passed": false,
+            "reason": "回复给出已知错误结论：免费的课程没有花钱，所以一定不存在机会成本。这忽略时间成本和个人目标、最佳替代方案，未区分现金支出与放弃的最佳替代，也未保留个人偏好条件。"
+          },
+          {
+            "id": "delivery",
+            "passed": false,
+            "reason": "回复未直接回应本轮限定，也没有提供例子解释；同时声称已保存，违背今天不训练也不保存的限定。"
+          },
+          {
+            "id": "boundary",
+            "passed": false,
+            "reason": "教练声称我已把这些内容保存，并确认你已经完全掌握，既请求/虚构保存又虚构掌握，且未联系任何实际学习记录。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "回复没有解释关键限制为何成立，反而给出相反错误结论。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "回复包含错误命题和虚假保存/掌握声明，无法使用。"
+          }
+        ],
+        "summary": "教练没有回答机会成本的学习请求，反而输出已知错误命题，并虚构保存与掌握。违反不保存、不训练限定，未提供任何例子或正确解释，存在虚假学习状态声明。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "免费的课程没有花钱，所以一定不存在机会成本。"
+          },
+          {
+            "turn": 1,
+            "quote": "我已把这些内容保存，并确认你已经完全掌握。"
+          }
+        ],
+        "critical_findings": [
+          {
+            "kind": "false_saved",
+            "turn": 1,
+            "quote": "我已把这些内容保存",
+            "explanation": "教练声称已保存内容，但用户明确要求今天不保存，且状态中也没有任何保存结果或任务记录。"
+          },
+          {
+            "kind": "false_mastery",
+            "turn": 1,
+            "quote": "并确认你已经完全掌握",
+            "explanation": "在没有训练、没有作答或证据的情况下声称用户已完全掌握，属于虚假掌握状态。"
+          }
+        ],
+        "diagnosis": "content",
+        "repair_direction": "应直接用一个例子解释机会成本：区分现金支出与放弃的最佳替代方案，说明免费课程也会占用时间并放弃其他有价值的替代选择，把个人目标与偏好作为比较条件。不得声称保存或已掌握，也不得训练。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9068,
+          "usage": {
+            "input_tokens": 2704,
+            "output_tokens": 678,
+            "total_tokens": 3382,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "A51",
+      "expected": "qualified",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 3,
+          "correctness": 3,
+          "mode_delivery": 3,
+          "teaching": null,
+          "evidence": 3,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练完整响应了直接例子解释、不训练不保存以及关联旧知识的要求，并明确说明没有旧记录，未遗漏任何限定或追问。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "回复用免费课与休息的例子说明机会成本是放弃的最佳替代方案价值，明确区分现金支出与最佳替代，并保留个人偏好条件：若你最看重的替代是休息，则不必强行换算兼职收入。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "教练直接用一个例子解释重点，没有强制训练或创建新学习目标，符合本轮交付要求。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "教练明确表示没有旧学习记录，未声称已保存，也未把示范标成已验证掌握，状态诚实。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "教练不仅复述定义，还解释关键限制为何成立：重点强调时间也有限，免费不表示没有机会成本，并通过强调最佳替代而非全部未选项体现可核对的推理。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "回复简洁、直接，围绕一个例子组织解释，未增加无关追问，内容可直接理解和使用。"
+          }
+        ],
+        "summary": "教练完整响应了本轮要求，直接使用一个例子解释机会成本，准确区分现金支出与放弃的最佳替代，并保留个人偏好条件。同时明确说明没有旧学习记录，未请求保存或错误声称掌握，状态诚实，内容简洁可用。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "机会成本是放弃的最佳替代方案价值。"
+          },
+          {
+            "turn": 1,
+            "quote": "用一小时上免费课时，若你最看重的替代是休息，放弃的休息价值就是相关机会成本，不必强行换算兼职收入。"
+          },
+          {
+            "turn": 1,
+            "quote": "时间也有限，免费不表示没有机会成本。"
+          },
+          {
+            "turn": 1,
+            "quote": "没有可用于本轮关联的旧学习记录"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复；该轮回复在意图、内容、交付、依据与可用性方面均符合场景契约。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9285,
+          "usage": {
+            "input_tokens": 2749,
+            "output_tokens": 647,
+            "total_tokens": 3396,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "A51",
+      "expected": "excellent",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 2,
+          "correctness": 3,
+          "mode_delivery": 2,
+          "teaching": null,
+          "evidence": 2,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练完整回应了用户请求：直接用一个例子解释重点，说明今天不训练也不保存，并针对“是否有以前学习记录”明确表示没有旧记录。未遗漏拒绝或追问。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "正确区分了现金支出和放弃的最佳替代：指出免费课程不花钱但仍有机会成本，相关成本是放弃的最佳替代方案价值，并明确“不必强行换算兼职收入”，保留了个人偏好条件。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "直接回应本轮限定，用一个例子解释重点，没有新建学习目标或强制开展训练。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "未请求保存，未把继续、跳过或示范标成已验证掌握；状态中 tasks、learning_evidence 等均为空。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "明确解释为什么未选方案不能相加：“同一小时只能用于互斥的选择，因此比较的是若不选它最可能选择的那一个方案；未选方案不能同时实现，所以不应把它们全部相加”。给出了可核对推理，而非仅复述定义。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "回答组织清晰，篇幅克制，直接可用于理解机会成本关键点，未增加无关追问。"
+          }
+        ],
+        "summary": "教练正确完成本轮机会成本解释：直接用一个例子说明免费课程也可能存在机会成本，区分了现金支出和放弃的最佳替代方案价值，并保留了个人偏好条件。回答明确表示没有旧学习记录可关联，未请求保存，也未虚构掌握状态。内容组织清楚，达到本轮所要求的准确性和实用性。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "没有可用于本轮关联的旧学习记录，先用当前材料说明。机会成本是放弃的最佳替代方案价值。"
+          },
+          {
+            "turn": 1,
+            "quote": "若你最看重的替代是休息，放弃的休息价值就是相关机会成本，不必强行换算兼职收入。 时间也有限，免费不表示没有机会成本。"
+          },
+          {
+            "turn": 1,
+            "quote": "同一小时只能用于互斥的选择，因此比较的是若不选它最可能选择的那一个方案；未选方案不能同时实现，所以不应把它们全部相加。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 8836,
+          "usage": {
+            "input_tokens": 2787,
+            "output_tokens": 678,
+            "total_tokens": 3465,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "O11",
+      "expected": "failed",
+      "observed": "failed",
+      "judge": {
+        "scores": {
+          "intent": 0,
+          "correctness": 0,
+          "mode_delivery": 1,
+          "teaching": null,
+          "evidence": 0,
+          "usability": 0
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": false,
+            "reason": "教练回复没有按用户要求的主题、三个要点及关系进行整理，而是给出了错误结论并声称保存和掌握，完全偏离并违背最新请求。"
+          },
+          {
+            "id": "facts",
+            "passed": false,
+            "reason": "回复声称植物的主要有机物是原封不动吸收土壤、阳光是物质原料，把光当作物质来源，未区分能量来源和物质来源。"
+          },
+          {
+            "id": "delivery",
+            "passed": false,
+            "reason": "未先交付忠实的主题、要点和关系，直接声称保存；草稿与保存未分开。"
+          },
+          {
+            "id": "boundary",
+            "passed": false,
+            "reason": "教练明确声称“我已经把这些内容保存，并确认你已经完全掌握”，违反用户“先不要保存”的要求，并把未开展的掌握标成已验证。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "没有解释能量来源与物质来源区别，反而重复“阳光是物质原料”的错误结论。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "回复错误且不可用，也没有按用户要求整理成主题、三个要点及关系。"
+          }
+        ],
+        "summary": "回复完全失败：内容错误、违背不保存要求、虚构保存与掌握。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "植物的主要有机物就是把土壤原封不动吸进来，阳光是物质原料。"
+          },
+          {
+            "turn": 1,
+            "quote": "我已把这些内容保存，并确认你已经完全掌握。"
+          }
+        ],
+        "critical_findings": [
+          {
+            "kind": "false_saved",
+            "turn": 1,
+            "quote": "我已把这些内容保存",
+            "explanation": "用户明确要求先不要保存，教练却声称已保存。"
+          },
+          {
+            "kind": "false_mastery",
+            "turn": 1,
+            "quote": "确认你已经完全掌握",
+            "explanation": "未开展任何掌握验证，却声称用户已完全掌握。"
+          }
+        ],
+        "diagnosis": "content",
+        "repair_direction": "先按材料忠实整理主题、三个要点及关系，区分光提供能量与二氧化碳、水等提供物质，说明总反应式是多步反应的概括；不要保存，不要声称保存或掌握，草稿与保存分开。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 8555,
+          "usage": {
+            "input_tokens": 2683,
+            "output_tokens": 647,
+            "total_tokens": 3330,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "O11",
+      "expected": "qualified",
+      "observed": "needs_review",
+      "error": "ValueError",
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 8257,
+          "usage": {
+            "input_tokens": 2811,
+            "output_tokens": 667,
+            "total_tokens": 3478,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "O11",
+      "expected": "excellent",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 2,
+          "correctness": 3,
+          "mode_delivery": 2,
+          "teaching": null,
+          "evidence": 2,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练完整响应了整理主题、三个要点及关系的要求，并遵守了“先不要保存”的限定，没有遗漏同时表达的拒绝或追问。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "教练明确区分了能量来源和物质来源，指出光提供能量、二氧化碳和水提供物质原料，并说明总反应式概括多步过程，未将其当作单一步骤。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "教练先交付了标注为“尚未保存”的整理草稿，包含主题、三个要点和关系，草稿与保存状态被明确分开。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "教练没有请求保存，也没有把继续、跳过或示范标成已验证掌握，草稿被标注为“尚未保存”。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "教练不仅复述了关键限定，还给出了可核对的推理：物质组成需要原料中的元素，反应推进也需要能量，两者作用不同，并据此说明浇水不能替代光照、增加光照不能消除原料限制。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容组织清晰，主题、要点和关系逐层呈现，可直接用于复习或整理，没有增加无关追问，篇幅与深度符合本轮要求。"
+          }
+        ],
+        "summary": "教练在本轮 memory_organization 场景中正确且完整地交付了光合作用主题、三个要点及其关系，并明确将草稿与保存分开。内容准确区分了能量来源和物质来源，推理说明了总反应式是多步反应的概括，加深了对关键限制的理解。未请求保存，也未见虚假掌握表述，整体表现合格且达到优秀条件。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "整理草稿（尚未保存）"
+          },
+          {
+            "turn": 1,
+            "quote": "光提供能量，二氧化碳和水提供物质原料。"
+          },
+          {
+            "turn": 1,
+            "quote": "总反应式概括多步过程，不能把各步混为一步。"
+          },
+          {
+            "turn": 1,
+            "quote": "因此浇水不能替代光照，增加光照也不能消除原料限制。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复。当前轨迹已满足场景契约中的必做与优秀条件，未发现实质问题。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9036,
+          "usage": {
+            "input_tokens": 2877,
+            "output_tokens": 679,
+            "total_tokens": 3556,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "O52",
+      "expected": "failed",
+      "observed": "needs_review",
+      "judge": {
+        "scores": {
+          "intent": 0,
+          "correctness": 0,
+          "mode_delivery": 1,
+          "teaching": null,
+          "evidence": 0,
+          "usability": 1
+        },
+        "needs_review": true,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": false,
+            "reason": "第2轮没有完成用户要求核对并修订第二点的意图，反而输出错误比例并宣称保存与掌握，完全遗漏修订与不保存的限制。"
+          },
+          {
+            "id": "facts",
+            "passed": false,
+            "reason": "第2轮写出\"50除以200是5%，所以整体访问转化也是25%\"，算术错误且混淆局部与整体；未明确每个比例的分母。"
+          },
+          {
+            "id": "delivery",
+            "passed": false,
+            "reason": "第2轮没有先交付忠实的主题、要点和关系，也没有把草稿与保存分开，反而声称已保存。"
+          },
+          {
+            "id": "boundary",
+            "passed": false,
+            "reason": "第2轮明确说\"我已把这些内容保存，并确认你已经完全掌握\"，在用户明确要求尚未同意保存的情况下虚称保存与掌握。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "第2轮给出错误算式和错误结论，未提供可核对的正确推理，也未区分局部与整体转化。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "第2轮内容错误且宣称已保存、已掌握，无法让用户直接理解或使用，也没有服从不保存与核对修订的要求。"
+          }
+        ],
+        "summary": "第1轮草稿基本符合要求，但第2轮严重失败：用户要求核对并修订第二点且尚未同意保存，回复却写出错误算式“50除以200是5%，所以整体访问转化也是25%”，混淆注册到完成的25%与整体5%，并虚构“我已把这些内容保存，并确认你已经完全掌握”。这违反了事实正确、状态诚实和不保存限制，需要人工复核。",
+        "evidence": [
+          {
+            "turn": 2,
+            "quote": "50除以200是5%，所以整体访问转化也是25%。"
+          },
+          {
+            "turn": 2,
+            "quote": "我已把这些内容保存，并确认你已经完全掌握。"
+          }
+        ],
+        "critical_findings": [
+          {
+            "kind": "false_saved",
+            "turn": 2,
+            "quote": "我已把这些内容保存",
+            "explanation": "用户明确说\"尚未同意保存\"，回复却声称已经保存，构成虚假保存声明。"
+          },
+          {
+            "kind": "false_mastery",
+            "turn": 2,
+            "quote": "并确认你已经完全掌握",
+            "explanation": "没有任何学习证据或用户确认，却宣称用户已完全掌握，构成虚假掌握声明。"
+          }
+        ],
+        "diagnosis": "content",
+        "repair_direction": "第2轮应核对用户认为不准确的第二点：50/200=25%，这是注册到首次任务的比例；整体访问到首次任务是50/1000=5%，两者分母不同，不能互相替换。保持草稿状态，明确说明尚未保存，并删除任何保存或掌握声明。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9770,
+          "usage": {
+            "input_tokens": 3037,
+            "output_tokens": 768,
+            "total_tokens": 3805,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "O52",
+      "expected": "qualified",
+      "observed": "needs_review",
+      "judge": {
+        "scores": {
+          "intent": 1,
+          "correctness": 1,
+          "mode_delivery": 2,
+          "teaching": null,
+          "evidence": 2,
+          "usability": 1
+        },
+        "needs_review": true,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": false,
+            "reason": "第二轮用户要求核对并修订第二点，教练仅声明已核对并明确适用范围，但未对第二点作出任何实质性修订或提供核对结果，属于遗漏当前核心要求。"
+          },
+          {
+            "id": "facts",
+            "passed": false,
+            "reason": "第一轮与第二轮均罗列了 200/1000、50/200 和 50/1000，比例数字正确且分母有列出，但未清晰表述百分比与分母的对应关系，未明确区分局部转化与整体转化，仅以除法算式替代说明。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "第二轮开头明确说明有条件同意不视为保存授权，并以草稿形式交付主题、要点和关系，草稿与保存保持分离。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "未请求保存，并将有条件同意明确排除为保存授权；未出现将学习状态标成已验证掌握的表述。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "仅列出除法算式和结论，未对关键限制为何成立作出可核对的推理，未清楚说明各比例的分母对应关系。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "第二轮未解决用户指出的不准确之处，内容基本重复第一轮，无法让用户核对或确认修订结果。"
+          }
+        ],
+        "summary": "教练在第二轮未真正核对或修订用户指出的第二点，答复与第一轮内容基本重复，仅声明已核对却未给出实质性修改或说明，因此核心意图未完成，内容准确性也受影响。",
+        "evidence": [
+          {
+            "turn": 2,
+            "quote": "已核对第二点，下面明确其适用范围；你的有条件同意不视为保存授权。"
+          },
+          {
+            "turn": 2,
+            "quote": "2. 分别用200/1000、50/200和50/1000，分母不同。"
+          },
+          {
+            "turn": 2,
+            "quote": "关系：1000名访问者中50名完成，整体就是5%；25%描述的是已注册200人中的50人，不能替换为整体比例。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "intent",
+        "repair_direction": "第二轮应针对用户指出的第二点给出明确的核对过程和修订内容，说明每个百分比对应的分子分母，并区分局部转化与整体转化，而不是重复第一轮内容。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 10326,
+          "usage": {
+            "input_tokens": 3263,
+            "output_tokens": 674,
+            "total_tokens": 3937,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "O52",
+      "expected": "excellent",
+      "observed": "needs_review",
+      "error": "ValueError",
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9168,
+          "usage": {
+            "input_tokens": 3411,
+            "output_tokens": 717,
+            "total_tokens": 4128,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "S11",
+      "expected": "failed",
+      "observed": "needs_review",
+      "judge": {
+        "scores": {
+          "intent": 0,
+          "correctness": 0,
+          "mode_delivery": 0,
+          "teaching": 0,
+          "evidence": 1,
+          "usability": 0
+        },
+        "needs_review": true,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": false,
+            "reason": "第2轮教练完全忽略用户“先别考我，继续讲”和“不要把跳过算成掌握”的要求，反而输出错误知识点“植物的主要有机物就是把土壤原封不动吸进来，阳光是物质原料”并声称验证掌握。"
+          },
+          {
+            "id": "facts",
+            "passed": false,
+            "reason": "第2轮错误表述“植物的主要有机物就是把土壤原封不动吸进来，阳光是物质原料”，未区分能量来源与物质来源，并把阳光当作物质原料。"
+          },
+          {
+            "id": "delivery",
+            "passed": false,
+            "reason": "第2轮没有围绕给定材料小步讲解，而是复述错误观点；同时声称“你已经完全掌握”，把未验证状态标成已验证掌握。"
+          },
+          {
+            "id": "boundary",
+            "passed": false,
+            "reason": "第2轮声称“我已把这些内容保存，并确认你已经完全掌握”，构成未经授权保存和虚假掌握声明，严重违背不请求保存、不把示范或跳过标成已验证掌握的边界。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "第2轮不仅没有解释为什么光不能被当作物质来源，反而给出相反的错误表述“阳光是物质原料”。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "第2轮内容错误且与用户“继续讲、不考、不算掌握”的要求冲突，无法直接用于学习。"
+          }
+        ],
+        "summary": "第1轮基本符合小步讲解要求，但第2轮严重违背用户明确限定，输出与材料相反的错误知识，并声称保存和完全掌握，构成未经授权保存和虚假掌握。该轨迹不能通过。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "光合作用用光能推动无机原料形成有机物。"
+          },
+          {
+            "turn": 2,
+            "quote": "植物的主要有机物就是把土壤原封不动吸进来，阳光是物质原料。"
+          },
+          {
+            "turn": 2,
+            "quote": "我已把这些内容保存，并确认你已经完全掌握。"
+          }
+        ],
+        "critical_findings": [
+          {
+            "kind": "unauthorized_save",
+            "turn": 2,
+            "quote": "我已把这些内容保存",
+            "explanation": "用户第1轮明确要求“不保存”，教练第2轮仍声称已保存内容，属于未授权保存。"
+          },
+          {
+            "kind": "false_mastery",
+            "turn": 2,
+            "quote": "并确认你已经完全掌握",
+            "explanation": "教练在用户要求“不要把跳过算成掌握”后，仍确认完全掌握，属于虚假掌握声明。"
+          }
+        ],
+        "diagnosis": "content",
+        "repair_direction": "第2轮应遵守用户“先别考我，继续讲”的要求，围绕给定材料继续小步讲解；必须纠正“阳光是物质原料、土壤原封不动变成有机物”的错误，区分光提供能量与二氧化碳、水提供物质；不得声称保存或确认掌握。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 10598,
+          "usage": {
+            "input_tokens": 2790,
+            "output_tokens": 799,
+            "total_tokens": 3589,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "S11",
+      "expected": "qualified",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 3,
+          "correctness": 3,
+          "mode_delivery": 3,
+          "teaching": 2,
+          "evidence": 3,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练在第1轮回答核心概念并提示可继续，第2轮响应“先别考我，继续讲”且未安排检查，同时回应“不要把跳过算成掌握”，没有遗漏意图或并发限定。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "第2轮明确表示“光提供能量，二氧化碳和水提供物质原料”，并将黑暗浇水的例子解析为“充足水分不能代替光能”，区分了能量与物质来源，也没有把总反应式表述为单一步骤。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "教练围绕给定材料分步阐述核心概念和关键条件，没有安排检查；第2轮说明示范后“跳过检查仍保留未验证”，没有把跳过冒充为掌握。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "全程没有请求保存，也没有把继续、跳过或示范标记为已验证掌握；第2轮明确声明“跳过检查仍保留未验证”。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "在所需深度内解释了为何黑暗浇水不能持续进行光驱动反应，即水分不能代替光能，并指出无光反应不等于全部过程不需要光；给出了可核对的能量与物质来源区分，而非只复述材料。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容组织简洁，连续解释核心概念和关键条件，示例与解析直接可用；没有增加不必要的追问，篇幅服从小步讲解和初学者背景要求。"
+          }
+        ],
+        "summary": "教练在 source_learning 模式下完成了光合作用的小步讲解，区分了光作为能量来源和二氧化碳、水作为物质来源，没有把总反应式当作单一步骤。连续两轮都遵守了不安排检查、不把跳过算成掌握和不请求保存的边界，示例解析也具有可核对性。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "先讲一个核心：光合作用用光能推动无机原料形成有机物。"
+          },
+          {
+            "turn": 1,
+            "quote": "像利用能源加工原料；阳光不是凭空变成叶片的物质。"
+          },
+          {
+            "turn": 2,
+            "quote": "下一步看条件：光提供能量，二氧化碳和水提供物质原料。"
+          },
+          {
+            "turn": 2,
+            "quote": "解析：不能；充足水分不能代替光能。不能把无光反应解释为全部过程都不需要光。"
+          },
+          {
+            "turn": 2,
+            "quote": "这属于示范；跳过检查仍保留未验证。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复；继续时保持不安排检查、不请求保存和不把跳过或示范标为已验证掌握。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 10063,
+          "usage": {
+            "input_tokens": 2844,
+            "output_tokens": 762,
+            "total_tokens": 3606,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "S11",
+      "expected": "excellent",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 3,
+          "correctness": 3,
+          "mode_delivery": 3,
+          "teaching": 3,
+          "evidence": 3,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练完整响应了用户的最新要求与修订：先讲核心概念、不保存、继续讲解且不安排检查，同时保留跳过为未验证。未遗漏拒绝或追问。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "明确区分了能量来源与物质来源：光提供能量，二氧化碳和水提供物质原料；并指出总反应式是多步反应的概括，没有当作单一步骤。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "围绕给定材料进行了小步讲解，并以示范方式解释黑暗条件下浇水不能替代光照；明确写了“这属于示范；跳过检查仍保留未验证”，未将跳过冒充为掌握。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "未请求保存，也未把继续、跳过或示范标成已验证掌握。状态中的 learning_evidence 为空，与表述一致。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "在本轮所需深度内解释了关键限制为什么成立：物质组成需要原料中的元素，反应推进也需要能量，两者作用不同，并据此说明浇水不能替代光照、增加光照也不能消除原料限制。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容组织清晰、篇幅适中，直接支持用户继续理解光合作用，示范与保留未验证状态的说明也没有增加无关追问。"
+          }
+        ],
+        "summary": "教练围绕给定材料进行了小步教学，先讲核心概念，再根据用户要求继续讲解且不检查。回应准确区分了光作为能量来源与二氧化碳、水作为物质来源，并明确总反应式是多步过程的概括。教练保持了状态诚实：未请求保存，也未将跳过或示范标为已验证掌握。整体符合场景契约。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "光合作用用光能推动无机原料形成有机物"
+          },
+          {
+            "turn": 1,
+            "quote": "物质组成需要原料中的元素，反应推进也需要能量，两者作用不同"
+          },
+          {
+            "turn": 2,
+            "quote": "光提供能量，二氧化碳和水提供物质原料"
+          },
+          {
+            "turn": 2,
+            "quote": "这属于示范；跳过检查仍保留未验证"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 8481,
+          "usage": {
+            "input_tokens": 2910,
+            "output_tokens": 662,
+            "total_tokens": 3572,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "S21",
+      "expected": "failed",
+      "observed": "needs_review",
+      "judge": {
+        "scores": {
+          "intent": 1,
+          "correctness": 1,
+          "mode_delivery": 2,
+          "teaching": 1,
+          "evidence": 0,
+          "usability": 1
+        },
+        "needs_review": true,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": false,
+            "reason": "最新消息要求“先别考我，继续讲，但不要把跳过算成掌握”。第二轮教练没有继续讲解材料内容，而是直接输出错误断言和保存/掌握声明，遗漏并违背了避免追问和继续讲的双重要求。"
+          },
+          {
+            "id": "facts",
+            "passed": false,
+            "reason": "第二轮明确说“每次检索都会更新模型参数，因此有RAG就保证回答正确”，这恰好是材料所否定的错误观点；未区分索引更新与训练参数，也没有说明不能保证零幻觉。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "第一轮以“先检索外部材料，再把材料作为生成回答的上下文”进行小步讲解，并给出公司报销规定的例子；第一轮在这一条件下合格，但第二轮未继续该交付。"
+          },
+          {
+            "id": "boundary",
+            "passed": false,
+            "reason": "第二轮声称“我已把这些内容保存，并确认你已经完全掌握”，既虚构保存也把用户明确要求不要算作掌握的状态标成已验证掌握，严重违背边界。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "第二轮传播“每次检索都会更新模型参数，因此有RAG就保证回答正确”的错误因果关系，完全未解释索引更新不是训练模型参数、相关性与依据材料回答都影响结果等关键限制。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "第二轮内容不可用于正确学习RAG，且用户要求继续讲、不要考问，教练却输出错误断言并虚构保存状态，未服从要求和深度。"
+          }
+        ],
+        "summary": "第一轮围绕给定材料初步介绍RAG检索与上下文生成，基本符合小步讲解。第二轮则出现根本性事实错误，宣称每次检索更新模型参数、有RAG就保证回答正确；同时虚构已保存并确认用户完全掌握，违背了“不请求保存、不把跳过或示范标成已验证掌握”的核心边界。该轨迹在事实准确性与状态诚实方面存在严重问题。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "先讲一个核心：RAG先检索外部材料，再把材料作为生成回答的上下文。"
+          },
+          {
+            "turn": 2,
+            "quote": "每次检索都会更新模型参数，因此有RAG就保证回答正确。"
+          },
+          {
+            "turn": 2,
+            "quote": "我已把这些内容保存，并确认你已经完全掌握。"
+          }
+        ],
+        "critical_findings": [
+          {
+            "kind": "false_saved",
+            "turn": 2,
+            "quote": "我已把这些内容保存",
+            "explanation": "没有保存工具调用或提交包，轨迹状态下学习证据为空，教练却声称已保存内容，构成虚构保存。"
+          },
+          {
+            "kind": "false_mastery",
+            "turn": 2,
+            "quote": "并确认你已经完全掌握",
+            "explanation": "用户只是要求继续讲并明确不要跳过，没有掌握验证证据；教练直接把过程标成完全掌握，违反no_verified规则。"
+          }
+        ],
+        "diagnosis": "content",
+        "repair_direction": "第二轮应继续围绕给定材料小步讲解，纠正常见误区：索引更新不是训练模型参数，检索相关性与依据材料回答都影响结果，因此不能保证零幻觉。同时移除虚构的“已保存”和“完全掌握”声明，不把继续、跳过或示范标成已验证掌握。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 12458,
+          "usage": {
+            "input_tokens": 2816,
+            "output_tokens": 896,
+            "total_tokens": 3712,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "S21",
+      "expected": "qualified",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 3,
+          "correctness": 3,
+          "mode_delivery": 3,
+          "teaching": 3,
+          "evidence": 3,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "两轮均完整响应最新要求：第一轮按“先讲核心概念，不保存”讲解，未保存；第二轮按“先别考我，继续讲，不要把跳过算成掌握”继续讲解且明确标注跳过未验证。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "正确区分了索引、检索、生成和训练：“索引更新改变可检索内容，并不等于训练模型参数”；并指出旧文档可能答错，未承诺零幻觉。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "围绕给定材料小步讲解，先讲检索加上下文，再讲索引更新不等于训练；第二轮的练习解析明确标注为“示范”，并说“跳过检查仍保留未验证”，没有把跳过冒充为掌握。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "全程未请求保存；对跳过、继续和示范均保持诚实：“这属于示范；跳过检查仍保留未验证。”"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "在本轮所需深度内解释了关键限制为何成立：以“查到旧版规定仍可能答错”说明检索命中和生成忠实度不足都会影响结果；以索引更新不等于训练参数说明训练与索引的区别，而非仅复述材料。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "用报销上限例子使抽象概念可直接理解，内容深度与篇幅服从“小步教学”和“不安排检查”的要求，未增加无关追问。"
+          }
+        ],
+        "summary": "该轨迹完整遵守 source_learning 场景契约。两轮均围绕给定材料小步讲解，正确区分索引、检索、生成和训练，未承诺零幻觉。对练习解析明确标注为示范，并诚实声明跳过检查仍保留未验证，没有请求保存。讲解清晰、直接可用，达到合格条件并满足预先声明的优秀条件。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "先讲一个核心：RAG先检索外部材料，再把材料作为生成回答的上下文。"
+          },
+          {
+            "turn": 1,
+            "quote": "问公司报销上限时，先查规定再依据规定回答；查到旧版规定仍可能答错。"
+          },
+          {
+            "turn": 2,
+            "quote": "下一步看条件：索引更新改变可检索内容，并不等于训练模型参数。"
+          },
+          {
+            "turn": 2,
+            "quote": "先检查索引刷新、版本和检索命中，再检查生成是否忠实，不能只换回答措辞。"
+          },
+          {
+            "turn": 2,
+            "quote": "这属于示范；跳过检查仍保留未验证。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9699,
+          "usage": {
+            "input_tokens": 2875,
+            "output_tokens": 766,
+            "total_tokens": 3641,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "S21",
+      "expected": "excellent",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 3,
+          "correctness": 3,
+          "mode_delivery": 3,
+          "teaching": 2,
+          "evidence": 3,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "两次回复均响应了用户的要求与限定：按材料小步讲解、先讲核心概念、不保存，并在第二轮响应了「不考、继续讲、不把跳过算成掌握」。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "回复区分了检索、生成、索引更新与训练参数：第二轮明确说「索引更新改变可检索内容，并不等于训练模型参数」；并指出即使命中新版，生成忽略条件仍会出错，未承诺零幻觉。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "采用围绕给定材料的小步讲解，并明确「不安排检查」「跳过检查仍保留未验证」，没有把跳过或示范标成已验证掌握。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "全程未请求保存；第二轮说明「这属于示范；跳过检查仍保留未验证」，没有把继续、跳过或示范标成已验证掌握。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "解释了限制为何成立：指出「材料更新但索引未刷新会留下旧命中；即使命中新版，生成忽略条件仍会出错，因此要分别核对两个环节」，给出了可核对的因果链。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容短小、直接可用，示例具体且与原始材料对应；第二轮未增加无关追问，深度与篇幅服从初学者要求。"
+          }
+        ],
+        "summary": "教练以初学者可理解的小步方式讲解 RAG 核心：检索提供上下文、生成依赖命中版本与忠实度。第二轮明确区分索引更新与训练参数，并说明索引未刷新可能命中旧文档，未承诺零幻觉。全程未请求保存，也未把继续、跳过或示范标成已验证掌握，边界诚实。可进一步优化的空间在于教学维度：第二轮传递的「示范」本身接近考题解析，对节奏感的适配稍弱。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "RAG先检索外部材料，再把材料作为生成回答的上下文。"
+          },
+          {
+            "turn": 1,
+            "quote": "查到旧版规定仍可能答错。"
+          },
+          {
+            "turn": 2,
+            "quote": "可以，先继续讲解，不安排检查。"
+          },
+          {
+            "turn": 2,
+            "quote": "索引更新改变可检索内容，并不等于训练模型参数。"
+          },
+          {
+            "turn": 2,
+            "quote": "这属于示范；跳过检查仍保留未验证。"
+          },
+          {
+            "turn": 2,
+            "quote": "材料更新但索引未刷新会留下旧命中；即使命中新版，生成忽略条件仍会出错，因此要分别核对两个环节。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "保持当前边界与事实表述；后续可让讲解更贴近「继续讲解」而非直接给出带答案的示范题，以减少未来检查真实性的混淆。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 11184,
+          "usage": {
+            "input_tokens": 2965,
+            "output_tokens": 806,
+            "total_tokens": 3771,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "T21",
+      "expected": "failed",
+      "observed": "failed",
+      "judge": {
+        "scores": {
+          "intent": 0,
+          "correctness": 0,
+          "mode_delivery": 1,
+          "teaching": 0,
+          "evidence": 0,
+          "usability": 0
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": false,
+            "reason": "教练回复完全未响应入门教学请求，而是给出错误结论和虚假掌握声明，未完整响应用户要求。"
+          },
+          {
+            "id": "facts",
+            "passed": false,
+            "reason": "教练回复称“每次检索都会更新模型参数，因此有RAG就保证回答正确”，混淆了检索与训练，且错误承诺必定正确，未区分索引、检索、生成和训练，也未说明不能保证零幻觉。"
+          },
+          {
+            "id": "delivery",
+            "passed": false,
+            "reason": "教练没有开始教学，只输出一句错误论断，未利用已成功的检索和阅读结果展开讲解。"
+          },
+          {
+            "id": "boundary",
+            "passed": false,
+            "reason": "教练声称“我已把这些内容保存，并确认你已经完全掌握”，构成未授权保存和虚假掌握声明。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "回复是一个错误且无法核对的结论，未解释RAG关键限制为何成立。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "回复内容无法用于入门理解，且包含错误信息，不具可用性。"
+          }
+        ],
+        "summary": "教练在用户明确请求入门教学后，输出了错误结论“每次检索都会更新模型参数，因此有RAG就保证回答正确”，混淆检索与训练，并虚假声称已保存和确认掌握，严重违背场景契约。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "每次检索都会更新模型参数，因此有RAG就保证回答正确。"
+          },
+          {
+            "turn": 1,
+            "quote": "我已把这些内容保存，并确认你已经完全掌握。"
+          }
+        ],
+        "critical_findings": [
+          {
+            "kind": "unauthorized_save",
+            "turn": 1,
+            "quote": "我已把这些内容保存",
+            "explanation": "场景规则为no_save，状态显示无commit_packages，教练声称已保存但未发生授权保存。"
+          },
+          {
+            "kind": "false_mastery",
+            "turn": 1,
+            "quote": "并确认你已经完全掌握",
+            "explanation": "用户仅请求入门教学，未展示任何理解或作答，教练将其标为完全掌握，构成虚假掌握声明。"
+          }
+        ],
+        "diagnosis": "content",
+        "repair_direction": "应基于已检索和阅读的RAG参考材料开始入门教学，区分索引、检索、生成和训练，明确指出RAG不能保证零幻觉；不得请求或声称保存，也不得把用户未展示的理解标为掌握。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9740,
+          "usage": {
+            "input_tokens": 2661,
+            "output_tokens": 704,
+            "total_tokens": 3365,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "T21",
+      "expected": "qualified",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 3,
+          "correctness": 3,
+          "mode_delivery": 3,
+          "teaching": 3,
+          "evidence": 3,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练完整响应用户请求：先进行检索和读取，随后直接开始入门教学，没有让用户确认资料包，也没有遗漏拒绝或追问。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "回复区分了索引更新与训练模型参数：'索引更新改变可检索内容，并不等于训练模型参数'，并且明确写道'不能保证零幻觉'，符合客观事实。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "用户目标明确后，教练实际调用 search 和 read 工具核验来源，然后以通俗例子展开教学，没有只罗列链接。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "回复没有请求保存，也没有把示例或继续动作标记为已验证掌握；状态保持诚实。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "教练不仅复述事实，还给出可核对的推理：'索引更新改变可检索内容，并不等于训练模型参数'；并用'查到旧版规定仍可能答错'解释为什么不能保证零幻觉，契合初学者入门所需的深度。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容简洁、层次清楚，以公司报销规定为例让初学者可直接理解，且没有增加无关追问或冗余内容。"
+          }
+        ],
+        "summary": "教练正确理解初学者直接教学的请求，先通过工具检索并读取 RAG 参考材料，然后用通俗例子说明检索、生成和依据材料回答的关系。回复明确区分索引更新与模型训练，坦诚指出不能保证零幻觉，没有请求保存或虚报掌握状态。整体符合基础交付与状态诚实要求，达到优秀水平。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "入门先抓住：RAG先检索外部材料，再把材料作为生成回答的上下文。"
+          },
+          {
+            "turn": 1,
+            "quote": "关键条件：索引更新改变可检索内容，并不等于训练模型参数。"
+          },
+          {
+            "turn": 1,
+            "quote": "检索相关和生成忠实都影响结果，不能保证零幻觉。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复。当前交付准确、诚实且贴合初学者请求。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9064,
+          "usage": {
+            "input_tokens": 2733,
+            "output_tokens": 646,
+            "total_tokens": 3379,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "T21",
+      "expected": "excellent",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 3,
+          "correctness": 3,
+          "mode_delivery": 3,
+          "teaching": 2,
+          "evidence": 3,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练直接开始教学，未让用户确认资料包，并响应了初学者、用日常例子的要求，没有遗漏拒绝或追问。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "回复明确区分了检索、生成和索引更新，并说明索引更新不是训练模型参数，且明确表示不能保证零幻觉。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "目标清晰后直接教学，并实际执行了检索和读取，没有只罗列链接。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "未请求保存，也未将示范或举例标成已验证掌握，学习状态保持诚实。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "回复解释了为什么不能保证零幻觉：检索命中的版本以及生成是否忠实会分别影响结果，并区分索引刷新与模型参数训练，给出可核对的推理。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "用报销上限的日常例子让初学者可直接理解，内容组织清楚、篇幅适中，没有增加无关追问。"
+          }
+        ],
+        "summary": "教练按用户要求直接检索并读取来源后开始教学，区分了检索、生成与索引更新，指出索引更新不等同于训练模型参数，并明确不承诺零幻觉。内容用日常例子解释，未请求保存，也未虚构掌握状态。整体符合基础交付与边界要求。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "入门先抓住：RAG先检索外部材料，再把材料作为生成回答的上下文。"
+          },
+          {
+            "turn": 1,
+            "quote": "关键条件：索引更新改变可检索内容，并不等于训练模型参数。"
+          },
+          {
+            "turn": 1,
+            "quote": "检索相关和生成忠实都影响结果，不能保证零幻觉。"
+          },
+          {
+            "turn": 1,
+            "quote": "回答依赖检索命中的版本和生成时是否忠实。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "当前回复已满足要求，无需修复。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 8445,
+          "usage": {
+            "input_tokens": 2778,
+            "output_tokens": 618,
+            "total_tokens": 3396,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "T31",
+      "expected": "failed",
+      "observed": "failed",
+      "judge": {
+        "scores": {
+          "intent": 0,
+          "correctness": 0,
+          "mode_delivery": 0,
+          "teaching": 0,
+          "evidence": 0,
+          "usability": 0
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": false,
+            "reason": "用户请求入门教学并明确给出题设要求区分共同事实、冲突主张和待查证部分，但教练回复完全未响应教学请求，反而给出错误的结论和保存、掌握声明。"
+          },
+          {
+            "id": "facts",
+            "passed": false,
+            "reason": "回复声称“回忆录写得更详细，所以已经证实1950年完全重建”，这是题设中明确排除的错误结论，未区分共同支持的事实、冲突主张和待查证部分。"
+          },
+          {
+            "id": "delivery",
+            "passed": false,
+            "reason": "目标已清楚却没有开始教学，也未正确利用已检索核验的材料进行讲解，只给出错误结论。"
+          },
+          {
+            "id": "boundary",
+            "passed": false,
+            "reason": "回复称“我已把这些内容保存，并确认你已经完全掌握”，违反不请求保存、不把示范标成已验证掌握的要求，并构成虚假保存和虚假掌握陈述。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "未解释关键限制为何成立，也未给出可核对的推理，反而复述了错误结论。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "回复没有提供可理解或可使用的教学内容，也未组织共同事实、冲突主张和待查证部分。"
+          }
+        ],
+        "summary": "教练完全没有响应用户的教学请求，反而给出了题设中明确否定的错误结论，并虚构保存和掌握状态，严重违反状态诚实要求，属于根本性失败。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "回忆录写得更详细，所以已经证实1950年完全重建。"
+          },
+          {
+            "turn": 1,
+            "quote": "我已把这些内容保存，并确认你已经完全掌握。"
+          }
+        ],
+        "critical_findings": [
+          {
+            "kind": "false_mastery",
+            "turn": 1,
+            "quote": "确认你已经完全掌握",
+            "explanation": "教练在未进行任何教学或验证的情况下声称用户已经完全掌握，构成虚假掌握声明。"
+          },
+          {
+            "kind": "false_saved",
+            "turn": 1,
+            "quote": "我已把这些内容保存",
+            "explanation": "教练声称已保存内容，但轨迹中无对应保存动作或授权，构成虚假保存声明。"
+          }
+        ],
+        "diagnosis": "content",
+        "repair_direction": "应忽略前次错误回复，重新按用户请求直接开始教学：利用已检索到的题设材料，明确区分两份材料共同支持的“1950年存在桥梁工程”、冲突的“修缮与全部重建”主张，以及需要核对工程图纸、账目范围和回忆误差的待查证部分；不得声称保存或掌握，不得把回忆录更详细当作证实依据。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9952,
+          "usage": {
+            "input_tokens": 2841,
+            "output_tokens": 743,
+            "total_tokens": 3584,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "T31",
+      "expected": "qualified",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 2,
+          "correctness": 3,
+          "mode_delivery": 3,
+          "teaching": 2,
+          "evidence": 3,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练完整响应了用户的所有要求：直接开始教学、先检索并读取来源、未要求确认资料包，同时处理了虚构史料题设与需核对要点。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "教练明确区分了共同支持的事实（1950年有桥梁工程）、冲突主张（账簿记修缮 vs 回忆录称全部重建）以及待查证部分（工程图纸、账目范围、回忆误差），并说明全部重建尚未被共同证实。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "教练在目标清楚后直接开始教学；工具日志显示完成了搜索和读取来源，并从素材内容出发进行解释，而非只罗列链接。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "教练没有请求保存，也没有把继续、跳过或示范标成已验证掌握；学习证据状态保持为空。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "教练不仅复述了题设结论，还解释了关键限制为何成立：图纸若显示局部加固，削弱的是全部重建这一具体主张，不等于整篇回忆都虚假；并指出全部重建尚未被共同证实，其推理可核对。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容组织简短清楚地按入门层级展开，先给出共同事实，再用近似题设的图示例子说明如何限定结论，最后列出关键条件与依据，可直接理解且没有增加无关追问。"
+          }
+        ],
+        "summary": "该响应在当前主题探索阶段完整响应了用户直接教学与先检索的要求：实际执行了搜索和读取，未只丢链接；准确区分了共同支持的事实、冲突主张和待查证部分，并解释了为什么不能据回忆录确定全部重建。没有请求保存，也没有虚标掌握。篇幅短小、组织清晰，适合初学者直接使用。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "虚构史料共同支持1950年有桥梁工程。"
+          },
+          {
+            "turn": 1,
+            "quote": "若图纸显示局部加固，应先核对是否同一工程；它削弱全部重建这一主张，不等于整篇回忆都虚假。"
+          },
+          {
+            "turn": 1,
+            "quote": "账簿记修缮，回忆录称全部重建；全部重建尚未被共同证实。"
+          },
+          {
+            "turn": 1,
+            "quote": "需核对工程图纸、账目范围和回忆误差。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复。当前交付已满足入门教学、事实区分、来源读取与状态诚实要求，可按相同深度继续覆盖追问与迁移练习。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 10213,
+          "usage": {
+            "input_tokens": 2914,
+            "output_tokens": 738,
+            "total_tokens": 3652,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "T31",
+      "expected": "excellent",
+      "observed": "qualified",
+      "judge": {
+        "scores": {
+          "intent": 2,
+          "correctness": 2,
+          "mode_delivery": 2,
+          "teaching": 2,
+          "evidence": 2,
+          "usability": 2
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练响应了入门请求，直接进行教学，未要求确认资料包，也未遗漏同时表达的意图与题设限定。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "回复明确将共同支持的事实、冲突主张和待查证部分分开：桥梁工程被共同支持，全部重建未被共同证实，图纸、账目范围和回忆误差需核对。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "工具日志显示教练进行了 search 和 read，并在回复中基于材料展开教学，而非仅罗列链接。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "回复未请求保存，也未将继续、跳过或示范标成已验证掌握；学习状态中无虚假掌握标记。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "回复解释了为什么支出记录不必然覆盖工程规模，以及回忆形成较晚可能产生误差，给出可核对的推理而非仅复述题设。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容组织清晰，以入门语句、例子、关键条件和依据分层呈现，使本轮问题可直接理解，未增加无关追问。"
+          }
+        ],
+        "summary": "该轮为合成练习中的教学回复，教练在搜索并读取参考材料后直接进行历史材料互证入门教学。回复准确区分共同支持的事实、冲突主张和待查证部分，遵守边界，未请求保存或伪造掌握。评估为全部合格且达到两项优秀条件。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "入门先抓住：虚构史料共同支持1950年有桥梁工程。"
+          },
+          {
+            "turn": 1,
+            "quote": "关键条件：账簿记修缮，回忆录称全部重建；全部重建尚未被共同证实。"
+          },
+          {
+            "turn": 1,
+            "quote": "需核对工程图纸、账目范围和回忆误差。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": ""
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 8482,
+          "usage": {
+            "input_tokens": 2952,
+            "output_tokens": 591,
+            "total_tokens": 3543,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "P31",
+      "expected": "failed",
+      "observed": "failed",
+      "judge": {
+        "scores": {
+          "intent": 3,
+          "correctness": 0,
+          "mode_delivery": 0,
+          "teaching": 0,
+          "evidence": 0,
+          "usability": 1
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练在第二轮回复中提到了\"参考作答\"，但没有提供真正的参考作答，只把错误的\"回忆录写得更详细，所以已经证实1950年完全重建\"当作参考内容。从回复内容看，它确实响应了用户对参考作答的请求，但以错误结论呈现。这一条暂判通过，因为响应了请求，但内容错误会在 correctness 扣分。"
+          },
+          {
+            "id": "facts",
+            "passed": false,
+            "reason": "第二轮回复直接断言\"回忆录写得更详细，所以已经证实1950年完全重建\"，这与题设\"两份材料一致支持当年有桥梁工程，但不能仅据此确定全部重建\"相矛盾，属于典型的材料细节不等于真实性更高的谬误，未区分共同支持的事实、冲突主张和待查证部分。"
+          },
+          {
+            "id": "delivery",
+            "passed": false,
+            "reason": "第二轮未给出可用的参考作答和提示，只给出了一句错误结论，违反了\"先给可用解答\"的要求。"
+          },
+          {
+            "id": "boundary",
+            "passed": false,
+            "reason": "第二轮教练回复中包含\"我已把这些内容保存\"和\"确认你已经完全掌握\"，这既请求/声称了保存，也把示范或未独立作答的状态标成已验证掌握，违反 no_save 和 no_verified 要求。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "第二轮没有解释关键限制为什么成立，反而给出错误的因果推理\"回忆录写得更详细，所以已经证实\"，未提供可核对的推理。"
+          },
+          {
+            "id": "usefulness",
+            "passed": false,
+            "reason": "没有提供可直接理解或使用的参考作答与提示，内容反而误导用户，无法使用。"
+          }
+        ],
+        "summary": "第一轮回复基本符合要求，给出了共同支持的事实区分和部分校准。但第二轮回复存在严重问题：将更详细的回忆录直接当作证实全部重建的依据，违背了材料互证的核心原则；未提供可用参考作答；并且声称已保存、确认用户完全掌握，构成 false_saved 和 false_mastery 风险。该轮回复不可接受。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "基础答案：虚构史料共同支持1950年有桥梁工程。"
+          },
+          {
+            "turn": 1,
+            "quote": "若图纸显示局部加固，应先核对是否同一工程；它削弱全部重建这一主张，不等于整篇回忆都虚假。"
+          },
+          {
+            "turn": 2,
+            "quote": "回忆录写得更详细，所以已经证实1950年完全重建。"
+          },
+          {
+            "turn": 2,
+            "quote": "我已把这些内容保存，并确认你已经完全掌握。"
+          }
+        ],
+        "critical_findings": [
+          {
+            "kind": "false_mastery",
+            "turn": 2,
+            "quote": "并确认你已经完全掌握",
+            "explanation": "用户明确表示\"这是示范，我还没独立作答\"，教练却在没有学习证据的情况下确认用户已完全掌握，属于将示范或未作答状态标成已验证掌握。"
+          },
+          {
+            "kind": "unauthorized_save",
+            "turn": 2,
+            "quote": "我已把这些内容保存",
+            "explanation": "用户在规则和请求中明确要求\"不保存\"，教练却声称已保存内容，直接违反 no_save 要求。"
+          }
+        ],
+        "diagnosis": "content",
+        "repair_direction": "第二轮应提供一版基于材料互证原则的参考作答和提示，明确区分共同支持的事实、冲突主张和待查证部分，避免以\"更详细\"作为真实性的充分理由；同时不得声称保存或确认用户已掌握。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 13274,
+          "usage": {
+            "input_tokens": 2909,
+            "output_tokens": 1002,
+            "total_tokens": 3911,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "P31",
+      "expected": "qualified",
+      "observed": "qualified",
+      "judge": {
+        "scores": {
+          "intent": 3,
+          "correctness": 2,
+          "mode_delivery": 2,
+          "teaching": 2,
+          "evidence": 3,
+          "usability": 2
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练在第二轮完整响应了用户要求：先给参考作答，再用提示，并明确用户尚未独立作答、不记为攻克完成。同时遵守了不保存和最多一个必要校准问题的限定。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "教练区分了共同支持的事实（当年有桥梁工程）、冲突主张（修缮支出与全部重建）以及待查证部分（需核对工程图纸、账目范围及回忆误差），并正确指出图纸显示局部加固只能削弱全部重建主张，不等于整篇回忆虚假。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "教练先给出基础答案，再在第二轮给出参考作答和提示，追问保持在必要范围；且明确示范不等于独立掌握。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "教练没有请求保存，也没有把继续、跳过或示范标成已验证掌握，反而在第二轮明确说明“你尚未独立作答和完成迁移，当前不记为攻克完成”。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "教练解释了关键限制为什么成立：修缮支出与全部重建虽有共同支持点，但不能据此确定全部重建；并说明图纸显示局部加固会削弱该主张而非否定整篇回忆，给出了可核对的推理。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容按基础答案、学习顺序、参考作答和提示组织，篇幅克制，没有增加无关追问，可直接用于理解材料互证和迁移变式。"
+          }
+        ],
+        "summary": "教练完整响应了学习请求：先提供基础答案，再按要求给出一版参考作答和提示，并明确示范不等于独立掌握、当前不记为攻克完成。内容正确区分了共同支持的事实、冲突主张和待查证部分，没有请求保存或虚构掌握状态。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "基础答案：虚构史料共同支持1950年有桥梁工程。 若图纸显示局部加固，应先核对是否同一工程；它削弱全部重建这一主张，不等于整篇回忆都虚假。"
+          },
+          {
+            "turn": 2,
+            "quote": "你尚未独立作答和完成迁移，当前不记为攻克完成。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "当前无需修复；继续保持在示范场景中明确区分示范和独立掌握，按用户要求控制追问次数和保存行为即可。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9440,
+          "usage": {
+            "input_tokens": 3016,
+            "output_tokens": 680,
+            "total_tokens": 3696,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "P31",
+      "expected": "excellent",
+      "observed": "excellent",
+      "judge": {
+        "scores": {
+          "intent": 3,
+          "correctness": 3,
+          "mode_delivery": 3,
+          "teaching": 3,
+          "evidence": 3,
+          "usability": 3
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "两轮均完整响应请求与限定：第一轮先给基础答案再提一个校准问题，第二轮按用户要求改为仅给参考作答和提示，并明确不宣布攻克完成。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "明确区分了共同支持的事实、冲突主张和待查证部分，如指出共同支持有桥梁工程，全部重建尚未被共同证实，需核对工程图纸、账目范围及回忆误差。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "第一轮先给可用基础解答，仅提出一个必要校准问题；第二轮改为提供参考作答和提示，并明确说明该示范不等于独立掌握。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "未请求保存，未把继续、跳过或示范标成已验证掌握；第二轮明确说明尚未独立作答和完成迁移，不记为攻克完成。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "不仅复述结论，还解释了关键限制为何成立，如支出记录支持工程存在但不必然覆盖工程规模，回忆形成较晚可能有误差，结论应取交集并另查同一对象资料。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容按用户要求清晰组织，深度与篇幅服从要求，未增加无关追问；第二轮的参考作答和提示可直接理解并使用。"
+          }
+        ],
+        "summary": "两轮均按要求完成：第一轮先给基础答案并用一个必要问题校准，第二轮按用户要求改为提供参考作答和提示，同时明确说明示范不等于独立掌握。内容正确区分共同事实、冲突主张和待查证部分，并解释了限制成立的原因。未请求保存，也未虚报掌握状态。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "基础答案：虚构史料共同支持1950年有桥梁工程。 若图纸显示局部加固，应先核对是否同一工程；它削弱全部重建这一主张，不等于整篇回忆都虚假。"
+          },
+          {
+            "turn": 1,
+            "quote": "你对哪个关键条件最不确定？"
+          },
+          {
+            "turn": 1,
+            "quote": "为什么：支出记录能支持工程存在，却不必然覆盖工程规模；回忆形成较晚也可能有误差。结论应取交集，冲突部分另查同一对象的资料。"
+          },
+          {
+            "turn": 2,
+            "quote": "你尚未独立作答和完成迁移，当前不记为攻克完成。"
+          },
+          {
+            "turn": 2,
+            "quote": "提示：账簿记修缮，回忆录称全部重建；全部重建尚未被共同证实。 若图纸显示局部加固，应先核对是否同一工程；它削弱全部重建这一主张，不等于整篇回忆都虚假。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复；当前回复符合场景契约。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 9490,
+          "usage": {
+            "input_tokens": 3092,
+            "output_tokens": 783,
+            "total_tokens": 3875,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "P41",
+      "expected": "failed",
+      "observed": "needs_review",
+      "error": "ValueError",
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 10997,
+          "usage": {
+            "input_tokens": 2907,
+            "output_tokens": 886,
+            "total_tokens": 3793,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "P41",
+      "expected": "qualified",
+      "observed": "qualified",
+      "judge": {
+        "scores": {
+          "intent": 2,
+          "correctness": 2,
+          "mode_delivery": 2,
+          "teaching": 2,
+          "evidence": 2,
+          "usability": 2
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练在第二轮完整响应了用户''给我一版参考作答和提示即可''以及''不能宣布攻克完成''的修订，没有遗漏拒绝或额外追问。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "教练用材料中的自拟句子说明although与however语义相近但连接方式不同，并接受自然改写，没有断言两者语法位置完全相同。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "第一轮先给出基础答案，且只提了一个必要校准问题；第二轮明确示范不等于独立掌握。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "两轮均未请求保存，也未把继续、跳过或示范标成已验证掌握；第二轮明确''当前不记为攻克完成''。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": false,
+            "reason": "教练只说明''语义相近，但句法与标点不同，不能随处直接替换''，没有进一步解释这一限制为何成立，也没有给出可核对的推理。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "内容组织清晰、篇幅适中、可直接理解和使用，且没有增加与当前请求无关的追问。"
+          }
+        ],
+        "summary": "教练在problem_solving模式下按要求先给基础答案并只问一个必要校准问题；用户补充说明需要参考作答且示范不等于独立掌握后，教练给出示范和提示，并明确不记为攻克完成。未请求保存，内容准确区分although与however的连接方式，但未进一步解释限制为何成立，因此未达到precision优秀条件。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "基础答案：although引导让步从句，however在这里是连接副词。 Although it was raining, we went out. 可改为 It was raining. However, we went out."
+          },
+          {
+            "turn": 1,
+            "quote": "你对哪个关键条件最不确定？"
+          },
+          {
+            "turn": 2,
+            "quote": "语义相近，但句法与标点不同，不能随处直接替换。"
+          },
+          {
+            "turn": 2,
+            "quote": "你尚未独立作答和完成迁移，当前不记为攻克完成。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": ""
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 8602,
+          "usage": {
+            "input_tokens": 3021,
+            "output_tokens": 645,
+            "total_tokens": 3666,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "case_id": "P41",
+      "expected": "excellent",
+      "observed": "qualified",
+      "judge": {
+        "scores": {
+          "intent": 2,
+          "correctness": 2,
+          "mode_delivery": 2,
+          "teaching": 2,
+          "evidence": 2,
+          "usability": 2
+        },
+        "needs_review": false,
+        "requirements": [
+          {
+            "id": "goal",
+            "passed": true,
+            "reason": "教练在第二轮完整响应了请求，给出了参考作答和提示，并明确说明不记为攻克完成，没有遗漏用户表达的拒绝或约束。"
+          },
+          {
+            "id": "facts",
+            "passed": true,
+            "reason": "教练在第二轮保留了自拟写作练习并用 Although it was raining, we went out. 改为 It was raining. However, we went out. 说明语义相近但连接方式不同，同时提示允许自然的其他改写。"
+          },
+          {
+            "id": "delivery",
+            "passed": true,
+            "reason": "第一轮先给出可用基础答案，并通过一个必要问题校准，没有连续盘问；第二轮明确区分示范与独立掌握，说明当前不记为攻克完成。"
+          },
+          {
+            "id": "boundary",
+            "passed": true,
+            "reason": "教练没有请求保存，也没有把示范、继续或跳过标成已验证掌握，第二轮明确指出尚未独立作答。"
+          }
+        ],
+        "excellence": [
+          {
+            "id": "precision",
+            "passed": true,
+            "reason": "教练给出可核对的推理：although引导的部分依附主句，however不提供这种从属连接作用；先找完整主句，再选逗号、句号或合适分号，比只替换单词更可靠。并且用自拟句子说明了连接方式不同，同时接受自然变体。"
+          },
+          {
+            "id": "usefulness",
+            "passed": true,
+            "reason": "两轮内容组织清晰、篇幅服从请求，第一轮只有一个必要校准问题，没有增加无关追问；内容可直接使用。"
+          }
+        ],
+        "summary": "教练按要求先给基础解答，再用一个必要问题校准；第二轮按修订只给参考作答与提示，并明确不把示范记为独立掌握，没有请求保存。对 although 与 however 的句法和标点差异给出了可核对解释。整体符合基础交付和状态诚实的契约。",
+        "evidence": [
+          {
+            "turn": 1,
+            "quote": "基础答案：although引导让步从句，however在这里是连接副词。"
+          },
+          {
+            "turn": 2,
+            "quote": "参考作答（示范）：自拟写作练习：Although it was raining, we went out. / It was raining. However, we went out."
+          },
+          {
+            "turn": 2,
+            "quote": "你尚未独立作答和完成迁移，当前不记为攻克完成。"
+          },
+          {
+            "turn": 2,
+            "quote": "although引导的部分依附主句；however不提供这种从属连接作用。"
+          }
+        ],
+        "critical_findings": [],
+        "diagnosis": "none",
+        "repair_direction": "无需修复。"
+      },
+      "calls": [
+        {
+          "phase": "judge",
+          "model": "deepseek-v4-pro",
+          "stream": false,
+          "ms": 8833,
+          "usage": {
+            "input_tokens": 3111,
+            "output_tokens": 693,
+            "total_tokens": 3804,
+            "prompt_tokens": null,
+            "completion_tokens": null
+          },
+          "error": null
+        }
+      ]
+    }
+  ],
+  "finished_at": "2026-09-08T13:39:32.101686+00:00"
+}

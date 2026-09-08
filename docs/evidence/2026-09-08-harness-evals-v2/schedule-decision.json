@@ -1,0 +1,7 @@
+{
+  "action": "blocked",
+  "reason": "human_calibration_required",
+  "commit": "6aae0d4d8786ef33885389d2d65998fbee445d66",
+  "fingerprint": "d28a68d1a7ac08d267537a8a3eaecb2cf5f705ccb18df3a61ad4db622e1011be",
+  "calibration": "pending_human"
+}

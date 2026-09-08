@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-09-08T13:44:58.241835+00:00",
+  "tasks": [
+    {
+      "id": "review-today",
+      "name": "Review Today 评测变更检查",
+      "status": "PAUSED",
+      "frequency": "hourly"
+    },
+    {
+      "id": "review-today-2",
+      "name": "Review Today 每周完整评测",
+      "status": "PAUSED",
+      "frequency": "Monday 10:00 Asia/Shanghai"
+    }
+  ],
+  "first_scheduled_run_verified": false
+}

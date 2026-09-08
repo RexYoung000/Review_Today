@@ -1,0 +1,13 @@
+{
+  "comparable": false,
+  "reason": "标准、参考、裁判或批类型不同",
+  "mismatches": [
+    "dataset_hash",
+    "rubric_hash",
+    "reference_hash",
+    "judge_code_hash",
+    "model_identity",
+    "model_roles"
+  ],
+  "previous_run": "20260908T091722Z-full-c904c7"
+}

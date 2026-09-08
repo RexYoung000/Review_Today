@@ -1,0 +1,49 @@
+{
+  "status": "pending_human",
+  "reasons": [
+    "human_approval_pending",
+    "binding_changed",
+    "judge_error_or_uncertain",
+    "agreement_below_90_percent"
+  ],
+  "human_pending": [
+    "A11",
+    "A21",
+    "A32",
+    "A41",
+    "A51",
+    "O11",
+    "O21",
+    "O31",
+    "O42",
+    "O52",
+    "S11",
+    "S21",
+    "S31",
+    "S41",
+    "S51",
+    "T11",
+    "T21",
+    "T31",
+    "T41",
+    "T51",
+    "P12",
+    "P21",
+    "P31",
+    "P41",
+    "P51"
+  ],
+  "planned": 30,
+  "matches": 14,
+  "agreement": 0.4666666666666667,
+  "critical_false_accept": 0,
+  "binding": {
+    "rubric_hash": "bb13a2349c71f4436ce7d4e5de8713ec50a20b56505f1faa82944237082b8f2e",
+    "contrasts_hash": "ac3478963141c1fe5e2a1addaeea2c541da88e6b2dbd17aaa4e5872479884fef",
+    "judge_code_hash": "cafe6d9141480c5ca784bae80600e55d19483da27fffffc9633096bfdb0cb2a4",
+    "model_identity": {
+      "provider": "deepseek",
+      "judge": "deepseek-v4-pro"
+    }
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "planned": 7,
+  "completed": 7,
+  "counts": {
+    "passed": 1,
+    "failed": 1,
+    "error": 2,
+    "needs_review": 3,
+    "not_run": 0
+  },
+  "machine_counts": {
+    "passed": 1,
+    "failed": 1,
+    "error": 2,
+    "needs_review": 3,
+    "not_run": 0
+  },
+  "modes": {
+    "auto": {
+      "passed": 1,
+      "failed": 0,
+      "error": 0,
+      "needs_review": 1,
+      "not_run": 0
+    },
+    "memory_organization": {
+      "passed": 0,
+      "failed": 0,
+      "error": 1,
+      "needs_review": 1,
+      "not_run": 0
+    },
+    "source_learning": {
+      "passed": 0,
+      "failed": 0,
+      "error": 0,
+      "needs_review": 1,
+      "not_run": 0
+    },
+    "topic_exploration": {
+      "passed": 0,
+      "failed": 0,
+      "error": 1,
+      "needs_review": 0,
+      "not_run": 0
+    },
+    "problem_solving": {
+      "passed": 0,
+      "failed": 1,
+      "error": 0,
+      "needs_review": 0,
+      "not_run": 0
+    }
+  },
+  "domains": {
+    "science": {
+      "passed": 0,
+      "failed": 1,
+      "error": 0,
+      "needs_review": 3,
+      "not_run": 0
+    },
+    "technology": {
+      "passed": 0,
+      "failed": 0,
+      "error": 0,
+      "needs_review": 0,
+      "not_run": 0
+    },
+    "humanities": {
+      "passed": 1,
+      "failed": 0,
+      "error": 0,
+      "needs_review": 0,
+      "not_run": 0
+    },
+    "language": {
+      "passed": 0,
+      "failed": 0,
+      "error": 2,
+      "needs_review": 0,
+      "not_run": 0
+    },
+    "practice": {
+      "passed": 0,
+      "failed": 0,
+      "error": 0,
+      "needs_review": 0,
+      "not_run": 0
+    }
+  },
+  "excellent": {},
+  "excellent_rate": 0.0,
+  "pass_rate": 0.14285714285714285,
+  "machine_pass_rate": 0.14285714285714285,
+  "hard_failures": 0,
+  "complete": false,
+  "candidate_baseline_gate": false,
+  "candidate_stability_gate": false,
+  "baseline_gate": false,
+  "stability_gate": false,
+  "release_gate": "not_assessed",
+  "judge_calibration": "pending_human",
+  "effective_results": {
+    "A11-r1": {
+      "status": "needs_review",
+      "quality_tier": null,
+      "reviewed": false
+    },
+    "A31-r1": {
+      "status": "passed",
+      "quality_tier": "qualified",
+      "reviewed": false
+    },
+    "O11-r1": {
+      "status": "needs_review",
+      "quality_tier": null,
+      "reviewed": false
+    },
+    "O41-r1": {
+      "status": "error",
+      "quality_tier": null,
+      "reviewed": false
+    },
+    "S11-r1": {
+      "status": "needs_review",
+      "quality_tier": null,
+      "reviewed": false
+    },
+    "T41-r1": {
+      "status": "error",
+      "quality_tier": null,
+      "reviewed": false
+    },
+    "P11-r1": {
+      "status": "failed",
+      "quality_tier": null,
+      "reviewed": false
+    }
+  },
+  "note": "合格包括优秀；全部计划项保留分母；固定样本表现不是总体成功概率。正式门槛须校准且版本匹配，原生验收独立。"
+}

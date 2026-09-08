@@ -616,6 +616,17 @@ def configure_dashboard(cli):
             ),
         )
     )
+    configs.append(
+        (
+            "完整基线计划",
+            "statistics",
+            dict(
+                table_name="评测批次",
+                series=[dict(field_name="计划数", rollup="SUM")],
+                filter=latest,
+            ),
+        )
+    )
     critical_filter = dict(
         conjunction="and",
         conditions=[
@@ -674,15 +685,22 @@ def configure_dashboard(cli):
         data = copy.deepcopy(data)
         if kind == "text":
             data["text"] = (
-                "## Harness 质量评测 v2\n100场景：五模式、五领域各20例；每模式至少18例合格，20个关键场景另重复3次全部通过。\n合格与优秀分开；所有计划项保留分母。\n先到「样本 → v2评分对照校准」审阅25个代表场景。对照是候选，需填写对照确认、校准人和校准时间。\n人工校准、裁判核验及匹配批次齐备前不能宣告正式通过。原生验收独立。\n旧版40例保留在历史记录；当前图表仅展示v2。"
+                "## Harness 质量评测 v2\n100场景：五模式、五领域各20例；每模式至少18例合格，20个关键场景另重复3次全部通过。\n合格与优秀分开；所有计划项保留分母。完整基线计划为0表示尚无完整基线，此时通过率显示0不能解释为实际0%。少量探针只供排查。\n先到「样本 → v2评分对照校准」审阅25个代表场景。对照是候选，需填写对照确认、校准人和校准时间。\n人工校准、裁判核验及匹配批次齐备前不能宣告正式通过。原生验收独立。\n旧版40例保留在历史记录；当前图表仅展示v2。"
             )
         elif data.get("table_name") in ("评测批次", "结果明细"):
             data.setdefault("filter", dict(conjunction="and", conditions=[]))[
                 "conditions"
             ].append(dict(field_name="标准版本", operator="is", value=current_version))
-            if name == "批次通过率趋势":
+            if name in ("批次通过率趋势", "完整基线通过率（%）", "完整基线计划"):
                 data["filter"]["conditions"] += [
                     dict(field_name="批类型", operator="is", value="full"),
+                    dict(field_name="运行状态", operator="is", value="已结束"),
+                    dict(field_name="计划数", operator="is", value=100),
+                    dict(field_name="工具环境", operator="is", value="fixture"),
+                ]
+            if name.startswith("关键重复"):
+                data["filter"]["conditions"] += [
+                    dict(field_name="计划数", operator="is", value=60),
                     dict(field_name="运行状态", operator="is", value="已结束"),
                 ]
         if name in blocks:

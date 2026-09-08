@@ -1,0 +1,214 @@
+{
+  "results_before": 166,
+  "results_after": 166,
+  "no_duplicate": true,
+  "values": {
+    "最新通过": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+mAmui/h+aVsA==": {
+            "value": 2
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+mAmui/h+aVsA==",
+          "field_name": "通过数"
+        }
+      ]
+    },
+    "最新失败": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+Wksei0peaVsA==": {
+            "value": 2
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+Wksei0peaVsA==",
+          "field_name": "失败数"
+        }
+      ]
+    },
+    "运行错误": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+i/kOihjOmUmeivr+aVsA==": {
+            "value": 0
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+i/kOihjOmUmeivr+aVsA==",
+          "field_name": "运行错误数"
+        }
+      ]
+    },
+    "机器待判": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+W+heWkjeaguOaVsA==": {
+            "value": 2
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+W+heWkjeaguOaVsA==",
+          "field_name": "待复核数"
+        }
+      ]
+    },
+    "计划场景": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+iuoeWIkuaVsA==": {
+            "value": 6
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+iuoeWIkuaVsA==",
+          "field_name": "计划数"
+        }
+      ]
+    },
+    "硬失败": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+ehrOWksei0peaVsA==": {
+            "value": 1
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+ehrOWksei0peaVsA==",
+          "field_name": "硬失败数"
+        }
+      ]
+    },
+    "优秀场景": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+S8mOengOaVsA==": {
+            "value": 0
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+S8mOengOaVsA==",
+          "field_name": "优秀数"
+        }
+      ]
+    },
+    "待人工复核": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+ivlemqjOaVsA==": {
+            "value": 5
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+ivlemqjOaVsA==",
+          "field_name": "试验数"
+        }
+      ]
+    },
+    "待校准代表场景": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+agoeWHhuW+heWuoeagh+iusA==": {
+            "value": 25
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+agoeWHhuW+heWuoeagh+iusA==",
+          "field_name": "校准待审标记"
+        }
+      ]
+    },
+    "完整基线通过率（%）": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+mAmui/h+eOhw==": {
+            "value": 0
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+mAmui/h+eOhw==",
+          "field_name": "通过率"
+        }
+      ]
+    },
+    "关键重复计划": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+iuoeWIkuaVsA==": {
+            "value": 0
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+iuoeWIkuaVsA==",
+          "field_name": "计划数"
+        }
+      ]
+    },
+    "完整基线计划": {
+      "dimensions": null,
+      "main_data": [
+        {
+          "me_c3VtX+iuoeWIkuaVsA==": {
+            "value": 0
+          }
+        }
+      ],
+      "measures": [
+        {
+          "aggregation": "sum",
+          "alias": "me_c3VtX+iuoeWIkuaVsA==",
+          "field_name": "计划数"
+        }
+      ]
+    }
+  },
+  "full_baseline_excludes_partial_probes": true,
+  "full_baseline_eligible_batches": 0,
+  "zero_without_full_plan_means_not_run": true
+}

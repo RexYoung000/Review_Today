@@ -1,0 +1,64 @@
+{
+  "version": "2026-09-08.v2.1",
+  "new_samples": 100,
+  "total_samples": 320,
+  "unique_keys": 320,
+  "calibration": 25,
+  "manual_note_preserved": true,
+  "test_note_restored": true,
+  "calibration_widget": {
+    "dimensions": null,
+    "main_data": [
+      {
+        "me_c3VtX+agoeWHhuW+heWuoeagh+iusA==": {
+          "value": 25
+        }
+      }
+    ],
+    "measures": [
+      {
+        "aggregation": "sum",
+        "alias": "me_c3VtX+agoeWHhuW+heWuoeagh+iusA==",
+        "field_name": "校准待审标记"
+      }
+    ]
+  },
+  "views": {
+    "total": 3,
+    "views": [
+      {
+        "_meta": {
+          "filter": null,
+          "group": [],
+          "sort": [],
+          "visible_fields": "30 fields"
+        },
+        "id": "vew5MV1JvN",
+        "name": "表格",
+        "type": "grid"
+      },
+      {
+        "_meta": {
+          "filter": "1 condition",
+          "group": [],
+          "sort": [],
+          "visible_fields": "30 fields"
+        },
+        "id": "vewUrg06e5",
+        "name": "v2完整100场景",
+        "type": "grid"
+      },
+      {
+        "_meta": {
+          "filter": "2 conditions",
+          "group": [],
+          "sort": [],
+          "visible_fields": "30 fields"
+        },
+        "id": "vewCz7RGJA",
+        "name": "v2评分对照校准",
+        "type": "grid"
+      }
+    ]
+  }
+}
