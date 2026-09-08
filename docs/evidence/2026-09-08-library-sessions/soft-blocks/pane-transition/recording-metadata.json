@@ -1,0 +1,92 @@
+[
+  {
+    "file": "wide-light.mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 820,
+          "avg_frame_rate": "112600/3911",
+          "duration": "19.550000",
+          "nb_read_frames": "563"
+        }
+      ],
+      "format": {
+        "duration": "19.550000"
+      }
+    },
+    "exportNote": "Native current-process window recording; 30 fps target; actual presentation timestamps; 1280x820; reduced=false; no audio.",
+    "decode": "passed at source time base",
+    "sidebarSample": {
+      "rect": [
+        250,
+        500,
+        30,
+        80
+      ],
+      "meanRange": [
+        242.53333333333333,
+        242.56666666666666
+      ]
+    },
+    "adjacentPaneSample": {
+      "rect": [
+        290,
+        500,
+        40,
+        80
+      ],
+      "meanRange": [
+        174.795625,
+        237.979375
+      ]
+    }
+  },
+  {
+    "file": "minimum-dark.mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 760,
+          "height": 652,
+          "avg_frame_rate": "50400/1741",
+          "duration": "8.683333",
+          "nb_read_frames": "252"
+        }
+      ],
+      "format": {
+        "duration": "8.683333"
+      }
+    },
+    "exportNote": "Native current-process window recording; 30 fps target; actual presentation timestamps; 760x652; reduced=false; no audio.",
+    "decode": "passed at source time base",
+    "sidebarSample": {
+      "rect": [
+        250,
+        500,
+        30,
+        80
+      ],
+      "meanRange": [
+        26.466666666666665,
+        26.770833333333332
+      ]
+    },
+    "adjacentPaneSample": {
+      "rect": [
+        290,
+        500,
+        40,
+        80
+      ],
+      "meanRange": [
+        7.4675,
+        23.526875
+      ]
+    }
+  }
+]

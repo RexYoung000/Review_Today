@@ -27,12 +27,12 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
                 ForEach(Array(items.enumerated()), id: \.element.id) { itemIndex, item in
                     let depth = KnowledgeDeckNavigation<Item.ID>.wrapped(itemIndex - origin, count: items.count)
                     if depth < 3 {
-                    let position = position(for: depth, size: size)
-                    deckCard(item, size: size, depth: position.depth, interactive: depth == 0 && navigation.phase == .idle)
-                        .scaleEffect(position.scale, anchor: .top)
-                        .offset(x: position.x, y: position.y)
-                        .opacity(position.opacity)
-                        .zIndex(Double(10 - depth))
+                        let position = position(for: depth, size: size)
+                        deckCard(item, size: size, depth: position.depth, interactive: depth == 0 && navigation.phase == .idle)
+                            .scaleEffect(position.scale, anchor: .top)
+                            .offset(x: position.x, y: position.y)
+                            .opacity(position.opacity)
+                            .zIndex(Double(10 - depth))
                     }
                 }
 
@@ -43,13 +43,16 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
                     let progress = max(0, min(1, -navigation.progress))
                     deckCard(items[previous], size: size, depth: 0, interactive: false)
                         .offset(x: -(size.width + 80) * (1 - progress))
-                        .opacity(min(1, progress * 5))
+                        .opacity(movingCardOpacity(distance: 1 - progress))
                         .zIndex(20)
                 }
             }
             .frame(width: size.width, height: size.height)
             .position(x: frame.midX, y: frame.midY)
             .frame(width: geometry.size.width, height: geometry.size.height)
+            // Offset does not change layout bounds. Clip the entire moving deck,
+            // including its shadows, at the library pane rather than at a card.
+            .clipped()
             .overlayPreferenceValue(KnowledgeDeckDragRegionKey.self) { anchors in
                 GeometryReader { regions in
                     KnowledgeDeckInputSurface(
@@ -116,7 +119,8 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
         let progress = navigation.progress
         if progress >= 0 {
             if depth == 0 {
-                return CardPosition(x: -(size.width + 80) * progress, opacity: Double(1 - max(0, progress - 0.8) * 5))
+                return CardPosition(x: -(size.width + 80) * progress,
+                                    opacity: movingCardOpacity(distance: progress))
             }
             let remainingDepth = CGFloat(depth) - progress
             let placement = KnowledgeDeckMetrics.stackPlacement(depth: remainingDepth, cardHeight: size.height)
@@ -126,6 +130,13 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
         let placement = KnowledgeDeckMetrics.stackPlacement(depth: depth, cardHeight: size.height)
         return CardPosition(y: placement.y, scale: placement.scale,
                             opacity: Double(max(0, 3 - depth)), depth: depth)
+    }
+
+    private func movingCardOpacity(distance: CGFloat) -> Double {
+        // Keep a short exploratory drag solid, then fade gently throughout the
+        // departure. The returning card uses the same curve in reverse.
+        let fraction = max(0, min(1, (distance - 0.08) / 0.92))
+        return Double(1 - fraction * fraction * (3 - 2 * fraction))
     }
 
     private func locator(maxHeight: CGFloat) -> some View {
