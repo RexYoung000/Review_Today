@@ -175,7 +175,7 @@ struct LibraryView: View {
 
     private var emptyState: some View {
         VStack(spacing: 12) {
-            MascotMotion(phase: .idle).frame(width: 100, height: 90)
+            MascotMotion(phase: .idle, ambient: true).frame(width: 150, height: 170)
             Text(emptyCopy).multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
             if filter == "active" && items.isEmpty {
@@ -621,7 +621,9 @@ private struct KnowledgeDeckOverlay: View {
                 .ignoresSafeArea()
                 .onTapGesture(perform: onClose)
 
-            DepthCarousel(items: deckItems, index: $index) { wrapper in
+            DepthCarousel(items: deckItems, index: $index, title: {
+                KnowledgeLexicon.keyword(for: $0.item, among: items)
+            }) { wrapper in
                 KnowledgeDepthCard(
                     item: wrapper.item,
                     siblings: items,
@@ -639,8 +641,6 @@ private struct KnowledgeDeckOverlay: View {
                     onDelete: { confirmPermanent = true }
                 )
             }
-            .padding(.horizontal, 36)
-            .padding(.vertical, 28)
 
             Button(action: onClose) {
                 Image(systemName: "xmark")
@@ -704,6 +704,7 @@ private struct KnowledgeDepthCard: View {
     var onDelete: () -> Void
     @Environment(\.modelContext) private var deletionContext
     @Environment(\.runway) private var runway
+    @State private var sourceExpanded = false
 
     private var mainQuestion: Question? { KnowledgeLexicon.mainQuestion(for: item) }
     private var spec: AgentAPI.ScoringSpec? { KnowledgeLexicon.scoring(for: item) }
@@ -720,35 +721,75 @@ private struct KnowledgeDepthCard: View {
     private var pieces: [ExplanationPiece] { KnowledgeLexicon.explanationPieces(for: item) }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: Runway.space) {
-                Text(KnowledgeLexicon.displayTheme(for: item))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Text(KnowledgeLexicon.keyword(for: item, among: siblings))
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(runway.ink)
-                    .lineSpacing(2)
-                    .lineLimit(2)
-            }
-            .padding(.horizontal, Runway.gap)
-            .padding(.top, Runway.gap)
-            .padding(.bottom, 12)
+        GeometryReader { geometry in
+            VStack(alignment: .leading, spacing: 0) {
+                titleBlock
 
-            ScrollView(.vertical, showsIndicators: true) {
+                ScrollView(.vertical, showsIndicators: true) {
+                    readingContent(width: geometry.size.width)
+                        .padding(.horizontal, Runway.section)
+                        .padding(.bottom, Runway.section)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                }
+                .scrollIndicators(.visible)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                footer
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .background(runway.card)
+        }
+    }
+
+    private var titleBlock: some View {
+        VStack(alignment: .leading, spacing: Runway.space) {
+            Text(KnowledgeLexicon.displayTheme(for: item))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(KnowledgeLexicon.keyword(for: item, among: siblings))
+                .font(.system(size: 22, weight: .bold))
+                .foregroundStyle(runway.ink)
+                .lineSpacing(2)
+                .lineLimit(2)
+                .help(KnowledgeLexicon.keyword(for: item, among: siblings))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Runway.section)
+        .padding(.top, Runway.section)
+        .padding(.bottom, Runway.section)
+        .knowledgeDeckDragSurface()
+    }
+
+    @ViewBuilder
+    private func readingContent(width: CGFloat) -> some View {
+        if width >= 640 {
+            let columnsWidth = max(0, width - Runway.section * 3)
+            HStack(alignment: .top, spacing: Runway.section) {
                 VStack(alignment: .leading, spacing: Runway.section) {
                     detailBlock
-                    questionBlock
-                    memoryBlock
                     sourceBlock
                 }
-                .padding(.horizontal, Runway.gap)
-                .padding(.bottom, Runway.gap)
-                .frame(maxWidth: .infinity, alignment: .topLeading)
-            }
-            .scrollIndicators(.visible)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(width: columnsWidth * 0.6, alignment: .topLeading)
 
+                VStack(alignment: .leading, spacing: Runway.section) {
+                    questionBlock
+                    memoryBlock
+                }
+                .frame(width: columnsWidth * 0.4, alignment: .topLeading)
+            }
+        } else {
+            VStack(alignment: .leading, spacing: Runway.section) {
+                detailBlock
+                questionBlock
+                memoryBlock
+                sourceBlock
+            }
+        }
+    }
+
+    private var footer: some View {
+        VStack(spacing: 0) {
+            Rectangle().fill(runway.hairline).frame(height: 1)
             VStack(alignment: .leading, spacing: Runway.space) {
                 if let previewUnavailableReason {
                     Label(previewUnavailableReason, systemImage: "exclamationmark.triangle")
@@ -783,12 +824,10 @@ private struct KnowledgeDepthCard: View {
                     )
                 }
             }
-            .padding(.horizontal, Runway.gap)
+            .padding(.horizontal, Runway.section)
             .padding(.top, 12)
-            .padding(.bottom, Runway.gap)
+            .padding(.bottom, Runway.section)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(runway.card)
     }
 
     private var detailBlock: some View {
@@ -849,39 +888,48 @@ private struct KnowledgeDepthCard: View {
     }
 
     private var sourceBlock: some View {
-        VStack(alignment: .leading, spacing: Runway.gap) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(String(localized: "来源证据")).font(.caption).foregroundStyle(.secondary)
-                if let origin = item.originSessionID, (try? SessionDeletion.contains(origin, context: deletionContext)) == true {
-                    Text("原会话已删除").font(.caption).foregroundStyle(.secondary)
+        DisclosureGroup(isExpanded: $sourceExpanded) {
+            VStack(alignment: .leading, spacing: Runway.gap) {
+                HStack {
+                    if let locator = sourceLocator {
+                        Link(String(localized: "打开来源"), destination: locator)
+                            .font(.caption)
+                    } else {
+                        Text(String(localized: "来自你提交的原文"))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 0)
                 }
-                Spacer(minLength: Runway.space)
-                if let locator = sourceLocator {
-                    Link(String(localized: "打开来源"), destination: locator)
-                        .font(.caption)
+                let evidence = item.evidenceExcerpt.trimmingCharacters(in: .whitespacesAndNewlines)
+                if evidence.isEmpty {
+                    Text(String(localized: "没有可核对的原文证据。"))
+                        .font(.callout)
+                        .foregroundStyle(Color.orange)
                 } else {
-                    Text(String(localized: "来自你提交的原文"))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text("“\(evidence)”")
+                        .font(.callout)
+                        .foregroundStyle(runway.copy)
+                        .lineSpacing(4)
+                        .textSelection(.enabled)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(Runway.gap)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(runway.field, in: RoundedRectangle(cornerRadius: Runway.innerRadius, style: .continuous))
                 }
             }
-            let evidence = item.evidenceExcerpt.trimmingCharacters(in: .whitespacesAndNewlines)
-            if evidence.isEmpty {
-                Text(String(localized: "没有可核对的原文证据。"))
-                    .font(.callout)
-                    .foregroundStyle(Color.orange)
-            } else {
-                Text("“\(evidence)”")
-                    .font(.callout)
-                    .foregroundStyle(runway.copy)
-                    .lineSpacing(4)
-                    .textSelection(.enabled)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(Runway.gap)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(runway.field, in: RoundedRectangle(cornerRadius: Runway.innerRadius, style: .continuous))
+            .padding(.top, Runway.space)
+        } label: {
+            HStack(alignment: .firstTextBaseline, spacing: Runway.space) {
+                Text(String(localized: "来源证据"))
+                if let origin = item.originSessionID, (try? SessionDeletion.contains(origin, context: deletionContext)) == true {
+                    Text("原会话已删除").foregroundStyle(.secondary)
+                }
             }
+            .font(.caption)
+            .foregroundStyle(.secondary)
         }
+        .tint(runway.ink)
     }
 
     private var sourceLocator: URL? {

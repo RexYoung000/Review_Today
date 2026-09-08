@@ -148,8 +148,7 @@ struct AppSidebar: View {
     @Query(sort: \AgentSession.updatedAt, order: .reverse) private var sessions: [AgentSession]
     @Query(sort: \AgentRun.updatedAt, order: .reverse) private var runs: [AgentRun]
     @Query(sort: \LearningTask.updatedAt, order: .reverse) private var tasks: [LearningTask]
-    @State private var searchText = ""
-    @State private var showArchived = false
+    @State private var sessionList = SessionListSelection()
     @State private var hoveredSessionID: UUID?
     @State private var openMenuSessionID: UUID?
     @State private var focusedMenuSessionID: UUID?
@@ -157,10 +156,6 @@ struct AppSidebar: View {
     @FocusState private var focusedSessionID: UUID?
     @State private var editingSessionID: UUID?
     @State private var undoSessionID: UUID?
-    @State private var searchVisible = false
-    @State private var multiSelect = false
-    @State private var selectedIDs = Set<UUID>()
-    @State private var rangeAnchor: UUID?
     @State private var deletionImpact: SessionDeletionImpact?
     @State private var batchError: String?
     @State private var visibleRowIDs = Set<UUID>()
@@ -169,12 +164,15 @@ struct AppSidebar: View {
     @FocusState private var sessionListFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    private var showArchived: Bool { sessionList.showArchived }
+    private var searchText: String { sessionList.searchText }
+    private var multiSelect: Bool { sessionList.multiSelect }
+    private var visibleSessionIDs: [UUID] { visibleSessions.map(\.id) }
+    private var visibleSelectedIDs: Set<UUID> { sessionList.visibleSelectedIDs(in: visibleSessionIDs) }
+
     private var visibleSessions: [AgentSession] {
         sessions.filter { session in
-            let statusMatch = showArchived ? session.status == "archived" : session.status == "active"
-            let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-            return statusMatch && (query.isEmpty || session.title.localizedCaseInsensitiveContains(query) ||
-                                   session.displayTopicTags.contains(where: { $0.localizedCaseInsensitiveContains(query) }))
+            sessionList.matches(status: session.status, title: session.title, tags: session.displayTopicTags)
         }
     }
 
@@ -209,7 +207,7 @@ struct AppSidebar: View {
                     Spacer()
                     Button("撤销") {
                         if LearningSessionActions.restore(session, context: modelContext) {
-                            showArchived = false
+                            resetSessionList(archived: false)
                             selectedSessionID = session.id
                             self.undoSessionID = nil
                         }
@@ -238,10 +236,15 @@ struct AppSidebar: View {
             .padding(.bottom, 16)
         }
         .background(runway.field.opacity(0.45))
+        .onChange(of: visibleSessionIDs) { _, ids in
+            sessionList.reconcile(visibleIDs: ids)
+            selectionDelays = selectionDelays.filter { ids.contains($0.key) }
+        }
         .sheet(item: $deletionImpact) { impact in
             SessionDeletionSheet(impact: impact) { ids in
                 if selectedSessionID.map(ids.contains) == true { selectedSessionID = nil }
-                selectedIDs.subtract(ids)
+                sessionList.reconcile(visibleIDs: visibleSessionIDs.filter { !ids.contains($0) })
+                if visibleSelectedIDs.isEmpty { sessionList.endSelection() }
                 undoBatchIDs.subtract(ids)
                 undoSessionID = nil
             }
@@ -273,37 +276,45 @@ struct AppSidebar: View {
             HStack(spacing: 0) {
                 Text("会话").font(.subheadline.weight(.medium)).padding(4)
                 Spacer(minLength: 0)
-                ChromeIconButton(title: "搜索会话", symbol: "magnifyingglass", selected: searchVisible) {
-                    searchVisible.toggle(); if !searchVisible { searchText = "" }
-                }
                 ChromeIconButton(title: showArchived ? "显示进行中会话" : "显示已归档会话", symbol: "archivebox", selected: showArchived) {
-                    showArchived.toggle(); selectedIDs.removeAll()
+                    resetSessionList(archived: !showArchived)
                 }
-                ChromeIconButton(title: "多选会话", symbol: "checklist", selected: multiSelect) {
-                    multiSelect.toggle(); selectedIDs.removeAll()
-                }
-                ChromeIconButton(title: "新对话", symbol: "plus", action: createSession)
+                ChromeIconButton(title: "新建会话", symbol: "plus", action: createSession)
             }
             .padding(.horizontal, 10)
             .environment(\.defaultMinListRowHeight, 30)
 
-            if searchVisible {
-              TextField("搜索会话", text: $searchText)
+            Group {
+                if multiSelect {
+                    sessionBatchToolbar
+                } else {
+                    HStack(spacing: 0) {
+                        Text(sessionList.scopeTitle).font(.caption).foregroundStyle(.secondary).padding(.leading, 4)
+                        Spacer(minLength: 0)
+                        ChromeIconButton(title: sessionList.searchPrompt, symbol: "magnifyingglass", selected: sessionList.searchVisible) {
+                            sessionList.toggleSearch()
+                            selectionDelays = [:]
+                            batchError = nil
+                        }
+                        ChromeIconButton(title: "多选\(sessionList.scopeTitle)会话", symbol: "checklist") {
+                            sessionList.beginSelection()
+                            sessionListFocused = true
+                            batchError = nil
+                        }
+                    }
+                }
+            }
+            .frame(height: 32)
+            .padding(.horizontal, 10)
+
+            if sessionList.searchVisible {
+              TextField(sessionList.searchPrompt, text: Binding(get: { sessionList.searchText }, set: {
+                  sessionList.setSearchText($0)
+                  selectionDelays = [:]
+                  batchError = nil
+              }))
                 .textFieldStyle(BrandMaterialTextFieldStyle())
                 .padding(.horizontal, 10)
-            }
-            if showArchived { Text("已归档").font(.caption).foregroundStyle(.secondary).padding(.horizontal, 14) }
-            if multiSelect {
-                HStack(spacing: 8) {
-                    Button(selectedIDs.count == visibleSessions.count ? "取消全选" : "全选") { selectAll() }
-                    Text("\(selectedIDs.count)").monospacedDigit()
-                    Spacer(minLength: 0)
-                    if showArchived {
-                        Button("永久删除", role: .destructive) { prepareDeletion(selectedIDs) }.disabled(selectedIDs.isEmpty)
-                    }
-                    Button(showArchived ? "恢复" : "归档") { batchArchive() }.disabled(selectedIDs.isEmpty)
-                    Button { multiSelect = false; selectedIDs.removeAll() } label: { Image(systemName: "xmark") }.help("退出多选")
-                }.font(.caption).buttonStyle(.borderless).padding(.horizontal, 12)
             }
             if let batchError { Text(batchError).font(.caption).foregroundStyle(.orange).padding(.horizontal, 12) }
             ScrollView {
@@ -332,12 +343,32 @@ struct AppSidebar: View {
                 guard multiSelect && press.modifiers.contains(.command) else { return .ignored }
                 selectAll(); return .handled
             }
-            .onKeyPress(.escape) {
-                guard multiSelect else { return .ignored }
-                multiSelect = false; selectedIDs.removeAll(); return .handled
-            }
         }
         .frame(maxHeight: .infinity)
+        .onKeyPress(.escape) {
+            guard multiSelect else { return .ignored }
+            sessionList.endSelection(); return .handled
+        }
+    }
+
+    private var sessionBatchToolbar: some View {
+        HStack(spacing: 3) {
+            Text("\(visibleSelectedIDs.count)").monospacedDigit().lineLimit(1)
+                .accessibilityLabel("已选 \(visibleSelectedIDs.count) 个\(sessionList.scopeTitle)会话")
+                .help("已选 \(visibleSelectedIDs.count) 个\(sessionList.scopeTitle)会话")
+                .padding(.leading, 4)
+            SessionListToolbarButton(title: sessionList.allVisibleSelected(in: visibleSessionIDs) ? "取消全选" : "全选", action: selectAll)
+                .disabled(visibleSessionIDs.isEmpty)
+            Spacer(minLength: 0)
+            SessionListToolbarButton(title: showArchived ? "恢复" : "归档", action: batchArchive)
+                .disabled(visibleSelectedIDs.isEmpty)
+            if showArchived {
+                ChromeIconButton(title: "永久删除所选会话", symbol: "trash") { prepareDeletion(visibleSelectedIDs) }
+                    .foregroundStyle(.red).disabled(visibleSelectedIDs.isEmpty)
+            }
+            SessionListToolbarButton(title: "完成") { sessionList.endSelection() }
+        }
+        .font(.caption)
     }
 
     private func prepareDeletion(_ ids: Set<UUID>) {
@@ -346,18 +377,13 @@ struct AppSidebar: View {
     }
 
     private func sessionRow(_ session: AgentSession) -> some View {
-        let selected = multiSelect ? selectedIDs.contains(session.id) : selectedSessionID == session.id && selection == .learning
+        let selected = multiSelect ? visibleSelectedIDs.contains(session.id) : selectedSessionID == session.id && selection == .learning
         let state = sessionState(session)
         return Button {
                 if multiSelect || NSEvent.modifierFlags.contains(.command) || NSEvent.modifierFlags.contains(.shift) {
-                    multiSelect = true
                     sessionListFocused = true
                     selectionDelays = [:]
-                    if NSEvent.modifierFlags.contains(.shift), let anchor = rangeAnchor,
-                       let a = visibleSessions.firstIndex(where: { $0.id == anchor }), let b = visibleSessions.firstIndex(where: { $0.id == session.id }) {
-                        selectedIDs.formUnion(visibleSessions[min(a,b)...max(a,b)].map(\.id))
-                    } else if !selectedIDs.insert(session.id).inserted { selectedIDs.remove(session.id) }
-                    rangeAnchor = session.id
+                    sessionList.toggle(session.id, visibleIDs: visibleSessionIDs, extendingRange: NSEvent.modifierFlags.contains(.shift))
                 } else { selectedSessionID = session.id; selection = .learning }
             } label: {
                 HStack(spacing: 7) {
@@ -450,28 +476,34 @@ struct AppSidebar: View {
     }
 
     private func createSession() {
-        showArchived = false
+        resetSessionList(archived: false)
         onStartLearning()
     }
 
+    private func resetSessionList(archived: Bool) {
+        sessionList.reset(archived: archived)
+        selectionDelays = [:]
+        batchError = nil
+    }
+
     private func selectAll() {
-        let selecting = selectedIDs.count != visibleSessions.count
         selectionDelays = Dictionary(uniqueKeysWithValues: visibleSessions.filter { visibleRowIDs.contains($0.id) }.enumerated().map { ($0.element.id, min(Double($0.offset) * 0.012, 0.09)) })
-        selectedIDs = selecting ? Set(visibleSessions.map(\.id)) : []
+        sessionList.toggleAll(visibleIDs: visibleSessionIDs)
     }
 
     private func batchArchive() {
         var failed = Set<UUID>()
         var archived = Set<UUID>()
-        for session in visibleSessions where selectedIDs.contains(session.id) {
+        let targetIDs = visibleSelectedIDs
+        guard !targetIDs.isEmpty else { return }
+        for session in visibleSessions where targetIDs.contains(session.id) {
             let saved = showArchived ? LearningSessionActions.restore(session, context: modelContext) : LearningSessionActions.archive(session, context: modelContext)
             if !saved { failed.insert(session.id) }
             else if !showArchived { archived.insert(session.id) }
         }
         undoBatchIDs = archived
-        selectedIDs = failed
+        sessionList.finishBatch(failedIDs: failed, visibleIDs: visibleSessionIDs)
         batchError = failed.isEmpty ? nil : "\(failed.count) 个会话未保存，请重试。已成功的操作不会重复执行。"
-        if failed.isEmpty { multiSelect = false }
     }
 
     private func archive(_ session: AgentSession) {
@@ -484,7 +516,7 @@ struct AppSidebar: View {
 
     private func restore(_ session: AgentSession) {
         if LearningSessionActions.restore(session, context: modelContext) {
-            showArchived = false
+            resetSessionList(archived: false)
             selectedSessionID = session.id
         }
     }
@@ -499,6 +531,21 @@ struct AppSidebar: View {
             return ("bubble.left", task.requiredActionType == "submit_answer" ? "等待作答" : "可继续学习", false)
         }
         return ("circle", "", false)
+    }
+}
+
+private struct SessionListToolbarButton: View {
+    let title: String
+    let action: () -> Void
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        Button(action: action) {
+            Text(title).lineLimit(1).fixedSize().frame(minHeight: 24)
+        }
+        .buttonStyle(InteractionButtonStyle(focused: focused, padding: 3))
+        .focusable().focusEffectDisabled().focused($focused)
+        .help(title)
     }
 }
 

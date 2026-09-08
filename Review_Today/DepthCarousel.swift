@@ -1,265 +1,228 @@
 import AppKit
 import SwiftUI
 
-/// Native port of React Bits DepthCarousel: stacked cards on a depth rail
-/// with GSAP-like power3.out snaps, drag, wheel, and keyboard.
+/// A horizontal, reversible reading gesture over a vertically stacked deck.
 struct DepthCarousel<Item: Identifiable, Card: View>: View {
     var items: [Item]
     @Binding var index: Int
-    var cardWidth: CGFloat = 520
-    var cardHeight: CGFloat = 640
-    var radius: CGFloat = 24
-    var depth: CGFloat = 220
-    var spread: CGFloat = 34
-    var tilt: CGFloat = 8
-    var tiltDirection: CGFloat = 1
-    var perspective: CGFloat = 1400
-    var visibleCards: Int = 3
-    var falloff: CGFloat = 0.12
-    var blur: CGFloat = 2
+    var title: (Item) -> String
     @ViewBuilder var card: (Item) -> Card
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.brandReduceMotion) private var reduceMotion
     @Environment(\.runway) private var runway
-    @State private var pos: CGFloat = 0
-    @State private var dragStart: CGFloat?
-    @State private var lastDragX: CGFloat = 0
-    @State private var lastDragTime: TimeInterval = 0
-    @State private var velocity: CGFloat = 0
-    @State private var dragging = false
-    @State private var scale: CGFloat = 1
-    @State private var wheelMonitor: Any?
-    @State private var wheelSnap: DispatchWorkItem?
+    @State private var navigation = KnowledgeDeckNavigation<Item.ID>()
+
+    private var ids: [Item.ID] { items.map(\.id) }
 
     var body: some View {
-        GeometryReader { geo in
-            let peek = spread
-            let cardW = min(cardWidth, geo.size.width * 0.52)
-            let cardH = min(cardHeight, geo.size.height - 72)
+        GeometryReader { geometry in
+            let size = KnowledgeDeckMetrics.cardSize(in: geometry.size)
+            let origin = navigation.originIndex ?? KnowledgeDeckNavigation<Item.ID>.clamped(index, count: items.count)
+            let frame = CGRect(x: (geometry.size.width - size.width) / 2,
+                               y: (geometry.size.height - size.height) / 2 - 12,
+                               width: size.width, height: size.height)
 
             ZStack {
-                ForEach(Array(items.enumerated()), id: \.element.id) { i, item in
-                    let slot = slot(for: i, peek: peek)
-                    card(item)
-                        .frame(width: cardW, height: cardH)
-                        .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: radius, style: .continuous)
-                                .strokeBorder(runway.cardHighlight, lineWidth: 1)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: radius, style: .continuous)
-                                .fill(Color.black.opacity(slot.tint))
-                                .allowsHitTesting(false)
-                        )
-                        .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
-                        .blur(radius: reduceMotion ? 0 : slot.blur)
-                        .opacity(slot.opacity)
-                        .scaleEffect(slot.scale)
-                        .offset(x: slot.tx, y: 0)
-                        .rotation3DEffect(
-                            .degrees(reduceMotion ? 0 : slot.ry),
-                            axis: (x: 0, y: 1, z: 0),
-                            perspective: 0.18
-                        )
-                        .zIndex(slot.z)
-                        .allowsHitTesting(slot.opacity > 0.05)
-                        .onTapGesture {
-                            guard !dragging, abs(CGFloat(i) - pos) > 0.4 else { return }
-                            setFocus(i, animate: true)
-                        }
+                ForEach(Array(items.enumerated()), id: \.element.id) { itemIndex, item in
+                    let depth = KnowledgeDeckNavigation<Item.ID>.wrapped(itemIndex - origin, count: items.count)
+                    if depth < 3 {
+                    let position = position(for: depth, width: size.width)
+                    deckCard(item, size: size, interactive: depth == 0 && navigation.phase == .idle)
+                        .scaleEffect(position.scale, anchor: .top)
+                        .offset(x: position.x, y: position.y)
+                        .opacity(position.opacity)
+                        .zIndex(Double(10 - depth))
+                    }
                 }
 
+                // A separate returning surface keeps two-card decks reversible without
+                // moving their visible back card abruptly from below to the left edge.
                 if items.count > 1 {
-                    arrow(system: "chevron.left", edge: .leading) { navigateBy(-1) }
-                    arrow(system: "chevron.right", edge: .trailing) { navigateBy(1) }
+                    let previous = KnowledgeDeckNavigation<Item.ID>.wrapped(origin - 1, count: items.count)
+                    let progress = max(0, min(1, -navigation.progress))
+                    deckCard(items[previous], size: size, interactive: false)
+                        .offset(x: -(size.width + 80) * (1 - progress))
+                        .opacity(min(1, progress * 5))
+                        .zIndex(20)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .contentShape(Rectangle())
-            .gesture(drag)
-            .overlay(alignment: .bottom) { dots }
-            .onAppear {
-                scale = 1
-                pos = CGFloat(index)
-                startWheelMonitor()
+            .frame(width: size.width, height: size.height)
+            .position(x: frame.midX, y: frame.midY)
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .overlayPreferenceValue(KnowledgeDeckDragRegionKey.self) { anchors in
+                GeometryReader { regions in
+                    KnowledgeDeckInputSurface(
+                        cardFrame: frame,
+                        dragRegions: anchors.map { regions[$0] },
+                        canNavigate: items.count > 1,
+                        begin: beginDrag,
+                        change: { translation in updateDrag(translation, width: size.width) },
+                        end: { translation, velocity in finishDrag(translation, velocity: velocity, width: size.width) },
+                        cancel: cancelMotion,
+                        step: navigate
+                    )
+                }
+                .allowsHitTesting(false)
             }
-            .onDisappear { stopWheelMonitor() }
-            .onChange(of: index) { _, new in
-                if abs(CGFloat(new) - pos) > 0.01, !dragging {
-                    tween(to: CGFloat(new))
+            .overlay(alignment: .trailing) {
+                if !items.isEmpty {
+                    locator(maxHeight: max(80, size.height - 40))
+                        .padding(.trailing, max(4, frame.minX - 40))
                 }
             }
-            .onChange(of: items.count) { _, _ in
-                pos = CGFloat(min(index, max(items.count - 1, 0)))
-            }
+            .onChange(of: geometry.size) { _, _ in cancelMotion() }
         }
+        .onAppear { synchronize() }
+        .onChange(of: ids) { _, _ in synchronize() }
+        .onChange(of: index) { _, new in
+            guard new != navigation.selectedIndex else { return }
+            withoutAnimation { navigation.select(new, ids: ids) }
+            publishSelection()
+        }
+        .onChange(of: reduceMotion) { _, _ in cancelMotion() }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(String(localized: "知识卡片"))
     }
 
-    private var drag: some Gesture {
-        DragGesture(minimumDistance: 16)
-            .onChanged { value in
-                if dragStart == nil {
-                    guard abs(value.translation.width) > abs(value.translation.height) else { return }
-                    dragStart = pos
-                    lastDragX = value.translation.width
-                    lastDragTime = Date.now.timeIntervalSinceReferenceDate
-                    velocity = 0
-                    dragging = true
+    private func deckCard(_ item: Item, size: CGSize, interactive: Bool) -> some View {
+        card(item)
+            .frame(width: size.width, height: size.height)
+            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .strokeBorder(runway.cardHighlight, lineWidth: 1).allowsHitTesting(false))
+            .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
+            .allowsHitTesting(interactive)
+            .accessibilityHidden(!interactive)
+            .transformPreference(KnowledgeDeckDragRegionKey.self) { value in
+                if !interactive { value = [] }
+            }
+    }
+
+    private struct CardPosition {
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        var scale: CGFloat = 1
+        var opacity: Double = 1
+    }
+
+    private func position(for depth: Int, width: CGFloat) -> CardPosition {
+        let progress = navigation.progress
+        if progress >= 0 {
+            if depth == 0 {
+                return CardPosition(x: -(width + 80) * progress, opacity: Double(1 - max(0, progress - 0.8) * 5))
+            }
+            let remainingDepth = CGFloat(depth) - progress
+            let placement = KnowledgeDeckMetrics.stackPlacement(depth: remainingDepth)
+            return CardPosition(y: placement.y, scale: placement.scale)
+        }
+        let depth = CGFloat(depth) - progress
+        let placement = KnowledgeDeckMetrics.stackPlacement(depth: depth)
+        return CardPosition(y: placement.y, scale: placement.scale,
+                            opacity: Double(max(0, 3 - depth)))
+    }
+
+    private func locator(maxHeight: CGFloat) -> some View {
+        VStack(spacing: 10) {
+            ScrollViewReader { reader in
+                ScrollView(.vertical) {
+                    VStack(spacing: 2) {
+                        ForEach(Array(items.enumerated()), id: \.element.id) { i, item in
+                            Button { jump(to: i) } label: {
+                                Capsule()
+                                    .fill(i == index ? runway.ink : runway.ink.opacity(0.24))
+                                    .frame(width: 5, height: i == index ? 22 : 7)
+                                    .frame(width: 28, height: 28)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(InteractionButtonStyle(padding: 0, outline: .capsule))
+                            .help(title(item))
+                            .accessibilityLabel(title(item))
+                            .accessibilityValue("\(i + 1) / \(items.count)")
+                            .accessibilityAddTraits(i == index ? [.isSelected] : [])
+                            .id(item.id)
+                        }
+                    }
                 }
-                guard dragStart != nil else { return }
-                let now = Date.now.timeIntervalSinceReferenceDate
-                let dt = max(now - lastDragTime, 0.001)
-                let dx = value.translation.width - lastDragX
-                velocity = dx / dt
-                lastDragX = value.translation.width
-                lastDragTime = now
-                let stepPx = max(cardWidth * 0.55 * scale, 40)
-                pos = (dragStart ?? 0) - value.translation.width / stepPx
+                .scrollIndicators(.hidden)
+                .frame(width: 30, height: min(maxHeight - 32, CGFloat(items.count) * 30))
+                .onAppear { scrollLocator(reader) }
+                .onChange(of: index) { _, _ in scrollLocator(reader) }
+                .onChange(of: ids) { _, _ in scrollLocator(reader) }
             }
-            .onEnded { _ in
-                guard dragStart != nil else { return }
-                let stepPx = max(cardWidth * 0.55 * scale, 40)
-                let projected = pos - (velocity * 0.18) / stepPx
-                dragStart = nil
-                dragging = false
-                setFocus(Int(projected.rounded()), animate: true)
-            }
-    }
-
-    private var dots: some View {
-        HStack(spacing: 8) {
-            ForEach(items.indices, id: \.self) { i in
-                Capsule()
-                    .fill(i == index ? runway.ink : Color.primary.opacity(0.22))
-                    .frame(width: i == index ? 20 : 7, height: 7)
-                    .onTapGesture { setFocus(i, animate: true) }
-            }
+            Text("\(min(index + 1, items.count)) / \(items.count)")
+                .font(.system(size: 10, weight: .medium, design: .monospaced))
+                .foregroundStyle(runway.copy)
+                .fixedSize()
+                .accessibilityLabel("第 \(min(index + 1, items.count)) 张，共 \(items.count) 张")
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(runway.card.opacity(0.94), in: Capsule())
+        .padding(.vertical, 10)
+        .frame(minWidth: 38)
+        .background(runway.card.opacity(0.96), in: Capsule())
         .overlay(Capsule().strokeBorder(runway.hairline, lineWidth: 1))
-        .padding(.bottom, 4)
-        .opacity(items.count > 1 ? 1 : 0)
     }
 
-    private func arrow(system: String, edge: Alignment, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: system)
-                .font(.body.weight(.semibold))
-                .foregroundStyle(runway.ink)
-                .frame(width: 40, height: 40)
-                .background(runway.card.opacity(0.94), in: Circle())
-                .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
+    private func scrollLocator(_ reader: ScrollViewProxy) {
+        guard items.indices.contains(index) else { return }
+        reader.scrollTo(items[index].id, anchor: .center)
+    }
+
+    private func synchronize() {
+        withoutAnimation { navigation.synchronize(ids: ids, proposedIndex: index) }
+        publishSelection()
+    }
+
+    private func publishSelection() {
+        let selected = navigation.selectedIndex ?? 0
+        if index != selected { index = selected }
+    }
+
+    private func cancelMotion() {
+        withoutAnimation { navigation.cancelMotion() }
+        publishSelection()
+    }
+
+    private func beginDrag() { withoutAnimation { navigation.beginDrag() } }
+
+    private func updateDrag(_ translation: CGFloat, width: CGFloat) {
+        guard !reduceMotion else { return }
+        withoutAnimation { navigation.updateDrag(translation: translation, width: width) }
+    }
+
+    private func finishDrag(_ translation: CGFloat, velocity: CGFloat, width: CGFloat) {
+        settle {
+            navigation.endDrag(translation: translation, velocity: velocity, width: width)
         }
-        .buttonStyle(.plain)
-        .padding(.horizontal, 12)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: edge)
-        .zIndex(3000)
     }
 
-    private func startWheelMonitor() {
-        wheelMonitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { event in
-            let x = event.hasPreciseScrollingDeltas ? event.scrollingDeltaX : event.scrollingDeltaX * 24
-            let y = event.hasPreciseScrollingDeltas ? event.scrollingDeltaY : event.scrollingDeltaY * 24
-            if abs(y) >= abs(x) {
-                return event
+    private func navigate(_ direction: Int) {
+        withoutAnimation { navigation.cancelMotion() }
+        settle { navigation.navigate(direction) }
+    }
+
+    private func jump(to target: Int) {
+        withoutAnimation { navigation.select(target, ids: ids) }
+        publishSelection()
+    }
+
+    private func settle(_ change: () -> Void) {
+        if reduceMotion {
+            withoutAnimation {
+                change()
+                navigation.finish(generation: navigation.generation)
             }
-            handleWheel(x)
-            return nil
-        }
-    }
-
-    private func stopWheelMonitor() {
-        if let wheelMonitor {
-            NSEvent.removeMonitor(wheelMonitor)
-        }
-        wheelMonitor = nil
-        wheelSnap?.cancel()
-    }
-
-    private func handleWheel(_ delta: CGFloat) {
-        guard items.count > 1 else { return }
-        dragging = true
-        pos += max(min(delta / (cardWidth * 0.9), 0.6), -0.6)
-        wheelSnap?.cancel()
-        let work = DispatchWorkItem {
-            dragging = false
-            setFocus(Int(pos.rounded()), animate: true)
-        }
-        wheelSnap = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.13, execute: work)
-    }
-
-    private func navigateBy(_ step: Int) {
-        setFocus(index + step, animate: true)
-    }
-
-    private func setFocus(_ raw: Int, animate: Bool) {
-        let n = items.count
-        guard n > 0 else { return }
-        let idx = ((raw % n) + n) % n
-        var delta = CGFloat(idx) - pos
-        if n > 1 {
-            delta = delta.truncatingRemainder(dividingBy: CGFloat(n))
-            if delta > CGFloat(n) / 2 { delta -= CGFloat(n) }
-            if delta < -CGFloat(n) / 2 { delta += CGFloat(n) }
-        }
-        tween(to: pos + delta, animate: animate)
-        if idx != index { index = idx }
-    }
-
-    private func tween(to target: CGFloat, animate: Bool = true) {
-        let n = max(items.count, 1)
-        if animate && !reduceMotion {
-            withAnimation(Runway.depthEase) { pos = target }
         } else {
-            pos = target
+            withAnimation(.easeOut(duration: 0.30)) { change() }
+            let generation = navigation.generation
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.31) {
+                withoutAnimation { navigation.finish(generation: generation) }
+            }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + (animate && !reduceMotion ? 0.72 : 0)) {
-            var wrapped = pos.truncatingRemainder(dividingBy: CGFloat(n))
-            if wrapped < 0 { wrapped += CGFloat(n) }
-            pos = wrapped
-        }
+        publishSelection()
     }
 
-    private struct Slot {
-        var tx: CGFloat
-        var ty: CGFloat
-        var ry: CGFloat
-        var scale: CGFloat
-        var opacity: Double
-        var blur: CGFloat
-        var tint: Double
-        var z: Double
-    }
-
-    private func slot(for i: Int, peek: CGFloat) -> Slot {
-        let n = items.count
-        var d = CGFloat(i) - pos
-        if n > 1 {
-            d = d.truncatingRemainder(dividingBy: CGFloat(n))
-            if d < 0 { d += CGFloat(n) }
-            if d > CGFloat(n) / 2 { d -= CGFloat(n) }
-        }
-        let back = max(0, d)
-        let shown = abs(d) <= CGFloat(visibleCards) + 0.5
-        var opacity = d < 0 ? max(0, 1 + d) : 1
-        if !shown { opacity = 0 }
-        let brightnessFall = min(max(back * falloff, 0), 0.45)
-        let blurPx = blur > 0 ? min(blur, (back / max(1, CGFloat(visibleCards))) * blur) : 0
-        return Slot(
-            tx: tiltDirection * peek * d,
-            ty: 0,
-            ry: tiltDirection * tilt * min(max(d, 0), 1),
-            scale: max(0.92, 1 - back * 0.025),
-            opacity: opacity,
-            blur: blurPx,
-            tint: brightnessFall,
-            z: 2000 - d * 20
-        )
+    private func withoutAnimation(_ change: () -> Void) {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction, change)
     }
 }

@@ -1,0 +1,82 @@
+[
+  {
+    "file": "native-deck-final.mp4",
+    "decode": "passed",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1190,
+        "height": 690,
+        "nb_frames": "549"
+      }
+    ],
+    "format": {
+      "duration": "25.246667"
+    }
+  },
+  {
+    "file": "native-deck-reduced.mp4",
+    "decode": "passed",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1280,
+        "height": 820,
+        "nb_frames": "52"
+      }
+    ],
+    "format": {
+      "duration": "2.136667"
+    }
+  },
+  {
+    "file": "native-deck-standard.mp4",
+    "decode": "passed",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1280,
+        "height": 820,
+        "nb_frames": "718"
+      }
+    ],
+    "format": {
+      "duration": "25.070000"
+    }
+  },
+  {
+    "file": "native-empty-mascot.mp4",
+    "decode": "passed",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1280,
+        "height": 820,
+        "nb_frames": "1039"
+      }
+    ],
+    "format": {
+      "duration": "43.486667"
+    }
+  },
+  {
+    "file": "native-session-selection.mp4",
+    "decode": "passed",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 760,
+        "height": 652,
+        "nb_frames": "497"
+      }
+    ],
+    "format": {
+      "duration": "23.715000"
+    }
+  }
+]
