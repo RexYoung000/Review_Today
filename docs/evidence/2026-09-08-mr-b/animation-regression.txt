@@ -1,0 +1,48 @@
+
+> review-today-mascot-motion@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ moving body and complete capsule edges stay separate, retain area and deform locally (536.698042ms)
+✔ uneven middle, side and multiple supports do not enter the body, including between vertices (350.622875ms)
+✔ stopping throughout a hop preserves position and velocity then reaches exact quiet rest (82.379916ms)
+✔ resuming thought before settling starts another physical hop (5.622125ms)
+✔ landing transfers downward motion to both the body and the struck bars (2.350083ms)
+✔ local preview rejects cross-origin mutation, traversal and malformed edits without changing revision (602.224458ms)
+✔ simultaneous MCP clients preserve each other’s distinct parameter updates (762.9685ms)
+✔ idle enters after one second, finishes clips, and draws only from three other choices (2.530083ms)
+✔ single clip ends; paused clock is unchanged; seeded timelines replay consistently (0.725333ms)
+✔ all four Spine clips keep geometry valid, end in setup body pose and hide props (193.673584ms)
+✔ idle gaze keeps the whole pupil inside the rounded eye white (66.740708ms)
+✔ exaggerated stretch and jump have measurable anticipation, height and landing (4.736875ms)
+✔ upright book is opaque, keeps R outward, and changes depth only clear of the body (11.477375ms)
+✔ all visible motion stays inside the App and preview canvases, below the eyes when reading (297.686167ms)
+✔ sidebar cycles book and gaze only, with short rests and no terminal static state (0.406916ms)
+✔ graphite texture keeps alpha, dimensions and shading without mutating source or geometry (972.506041ms)
+✔ wave rests in gray, active feedback uses supplied theme accent and legacy colors remain (0.588042ms)
+✔ native source and saved original assets are not changed by offline material rendering (681.369875ms)
+✔ dark theme lightens body and keeps white eyes with dark pupils while preserving material shading and neutral fragments (0.207583ms)
+✔ new Spine timelines preserve accepted mesh and old animations; neutral endings hide the book (259.344084ms)
+✔ low-frequency new idle clips have two classic clips between them, and thinking never repeats (1.131583ms)
+✔ row transfer is progressive and compact/full use identical semantic stages (1.002834ms)
+✔ rolling body stays inside the enlarged stage without camera shrink (115.134458ms)
+✔ Rex exaggeration revision has distinct silhouettes while keeping all clips in fixed framing (253.357125ms)
+✔ official parser loads weighted deformation; all sampled triangles remain positive and loop closes (241.01025ms)
+✔ eye leads body and pupils move within independent eye coordinates (58.559584ms)
+✔ weight corruption, malformed frames and unsafe parameter budgets are rejected (91.851625ms)
+✔ zero motion remains valid; excessive combined deformation is detected before saving (182.308666ms)
+✔ MCP handshake, tools, versioned edits, image response, export and rejection work through stdio (746.331958ms)
+✔ near pass overlaps the body in front; far pass is behind; shadows and clipping follow the same pose (21.087209ms)
+✔ interrupting the near pass keeps the ball in front until it fades to rest (15.481792ms)
+✔ voice loops deform locally beyond bone motion, close exactly and reject broken voice frames (229.711375ms)
+✔ voice reacts on next frame; silence, stop and reduced motion settle to stable geometry (192.014709ms)
+✔ incoming and outgoing crests travel oppositely; voice keeps one shadow-free silhouette (111.847125ms)
+✔ listening passively separates and relands; each reply emits once after actual contact (117.653583ms)
+✔ 30, 60 and 120 fps produce the same contact and audio state across transitions (78.980084ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2127.366542

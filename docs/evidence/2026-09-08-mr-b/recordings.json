@@ -1,0 +1,66 @@
+[
+  {
+    "file": "actions-v2.mp4",
+    "decode": "passed",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 760,
+        "height": 652,
+        "avg_frame_rate": "58200/1997"
+      }
+    ],
+    "format": {
+      "duration": "29.951667"
+    }
+  },
+  {
+    "file": "reduced-motion.mp4",
+    "decode": "passed",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1280,
+        "height": 820,
+        "avg_frame_rate": "249600/8581"
+      }
+    ],
+    "format": {
+      "duration": "42.885000"
+    }
+  },
+  {
+    "file": "settlements.mp4",
+    "decode": "passed",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1280,
+        "height": 820,
+        "avg_frame_rate": "26340/901"
+      }
+    ],
+    "format": {
+      "duration": "45.050000"
+    }
+  },
+  {
+    "file": "waiting-layout.mp4",
+    "decode": "passed",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1280,
+        "height": 820,
+        "avg_frame_rate": "264000/9013"
+      }
+    ],
+    "format": {
+      "duration": "45.056667"
+    }
+  }
+]
