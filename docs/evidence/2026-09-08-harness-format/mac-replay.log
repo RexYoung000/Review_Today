@@ -1,5 +1,5 @@
 Review_Today/KnowledgeLibrary.swift:495:13: warning: variable 'value' was never mutated; consider changing to 'let' constant
- 493 | 
+ 493 |
  494 |     private static func stripCommandLead(_ text: String) -> String {
  495 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
      |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant
@@ -13,16 +13,16 @@ Review_Today/LibraryInboxSettings.swift:166:13: warning: result of 'try?' is unu
 167 |             return
 168 |         }
 Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
-620 | 
+620 |
 621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
 622 |     private var synth = NSSpeechSynthesizer()
     |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 623 |     private var onFinish: (() -> Void)?
-624 | 
+624 |
 
 Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 639 |     }
-640 | 
+640 |
 641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
     |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 642 |         let done = onFinish
@@ -30,7 +30,7 @@ Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was depreca
 
 Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 619 | }
-620 | 
+620 |
 621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
     |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 622 |     private var synth = NSSpeechSynthesizer()
@@ -42,7 +42,7 @@ Review_Today/ReviewView.swift:627:15: warning: 'delegate' was deprecated in macO
 627 |         synth.delegate = self
     |               `- warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 628 |     }
-629 | 
+629 |
 
 Review_Today/ReviewView.swift:633:15: warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 631 |         stop()
@@ -50,10 +50,10 @@ Review_Today/ReviewView.swift:633:15: warning: 'startSpeaking' was deprecated in
 633 |         synth.startSpeaking(text)
     |               `- warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 634 |     }
-635 | 
+635 |
 
 Review_Today/ReviewView.swift:637:15: warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
-635 | 
+635 |
 636 |     func stop() {
 637 |         synth.stopSpeaking()
     |               `- warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
