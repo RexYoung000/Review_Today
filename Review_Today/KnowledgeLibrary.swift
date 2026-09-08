@@ -621,11 +621,13 @@ struct ExplanationPiece: Hashable {
 }
 
 private struct KnowledgeDisclosureStyle: DisclosureGroupStyle {
+    let hint: LocalizedStringKey
     func makeBody(configuration: Configuration) -> some View {
-        Header(configuration: configuration)
+        Header(configuration: configuration, hint: hint)
     }
     private struct Header: View {
         let configuration: DisclosureGroupStyleConfiguration
+        let hint: LocalizedStringKey
         @Environment(\.runway) private var runway
         @Environment(\.brandReduceMotion) private var reduced
         @FocusState private var focused: Bool
@@ -633,22 +635,23 @@ private struct KnowledgeDisclosureStyle: DisclosureGroupStyle {
             VStack(alignment: .leading, spacing: 4) {
                 Button(action: toggle) {
                     HStack(spacing: 8) {
+                        configuration.label
+                        Spacer(minLength: 8)
                         Image(systemName: "chevron.right")
                             .font(.system(size: 10, weight: .semibold))
                             .rotationEffect(.degrees(configuration.isExpanded ? 90 : 0))
-                        configuration.label
-                        Spacer(minLength: 0)
+                            .accessibilityHidden(true)
                     }
                     .frame(maxWidth: .infinity, minHeight: 24, alignment: .leading)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(InteractionButtonStyle(selected: configuration.isExpanded, focused: focused, padding: 8))
-                .background(runway.card.opacity(0.55), in: RoundedRectangle(cornerRadius: 9))
+                .background(runway.ink.opacity(0.04), in: RoundedRectangle(cornerRadius: 9))
                 .focusable().focusEffectDisabled().focused($focused)
                 .onKeyPress(.space) { toggle(); return .handled }
                 .onKeyPress(.return) { toggle(); return .handled }
                 .accessibilityValue(Text(configuration.isExpanded ? "已展开" : "已收起"))
-                .accessibilityHint(Text("展开或收起常见误区"))
+                .accessibilityHint(Text(hint))
                 if configuration.isExpanded { configuration.content }
             }
         }
@@ -921,7 +924,7 @@ private struct KnowledgeDepthCard: View {
                     .font(.caption)
                     .foregroundStyle(runway.copy)
                 }
-                .disclosureGroupStyle(KnowledgeDisclosureStyle())
+                .disclosureGroupStyle(KnowledgeDisclosureStyle(hint: "展开或收起常见误区"))
                 .padding(.top, Runway.space)
             }
         }
@@ -970,8 +973,9 @@ private struct KnowledgeDepthCard: View {
                 }
             }
             .font(.caption)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(runway.copy)
         }
+        .disclosureGroupStyle(KnowledgeDisclosureStyle(hint: "展开或收起来源证据"))
         .tint(runway.ink)
     }
 

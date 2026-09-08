@@ -18,3 +18,12 @@ macOS 26.7 原生检查标准/最小宽度、浅深、收起/展开、四条圆�
 Debug/Release、Debug 严格签名通过；复用 `UIPolishContractTests`、`KnowledgeDeckNavigationTests`、`SessionListSelectionTests`，检查焦点/原文保留、正文/按钮与翻卡输入隔离、选择范围及失败重试状态，通过输出见 [验证摘录](validation.txt)。原生验收入口仍为 `tests/mac/run-library-session-preview.sh` 生成的独立 App，菜单“验收”可切窗口与主题；后续导出默认仍进入相邻 management 目录。
 
 日常开发入口：`output/default-brand-build/Build/Products/Debug/Review_Today.app`。打开知识库 → RAG 的主要优势 → 常见误区，检查数字间距、整行点击和要点标记；关闭卡片后检查主题右侧的多选图标。完整 VoiceOver、系统级减少动态开关及实际多语言译文尚未验收，图标化不等于已完成翻译。最终视觉与手感待 Rex 确认。
+
+
+## 增量：来源与误区展开框统一（2026-09-08）
+
+来源证据复用整行展开按钮，两个区块均为文字靠左、误区数量紧跟标题、箭头在最右侧。共用轻量浅底，来源的无障碍提示使用自己的名称；保留原文选择和来源链接。
+
+Debug/Release、隔离原生预览构建和严格签名检查通过；原生验证点击来源/误区框内中部空白可展开，来源 Space 收起、Return 展开，宽窗浅色及最小窗深色、预览减少动态效果。日常 App 已更新并打开 RAG 优势卡，两处展开正常。此次为共用组件布局修订，未新增镜像实现的单元测试；完整 VoiceOver、真实外部来源跳转未重验。
+
+[原速操作录像](disclosures-unified.mp4)、[浅色展开效果](disclosures-light.png)、[深色来源](source-dark.png)、[深色收起效果](disclosures-collapsed-dark.png)。视频保持真实时间戳，无音频，完整解码通过；最终视觉仍由 Rex 验收。
