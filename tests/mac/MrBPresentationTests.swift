@@ -35,6 +35,7 @@ struct MrBPresentationTests {
         try expect(MrBSettlementGate.reviewEligible(formal:true,saved:true,reason:"complete",count:3),"Completion missed")
         let c=MrBMotionView.Coordinator(),settings=WKWebViewConfiguration();settings.websiteDataStore = .nonPersistent();settings.userContentController.add(c,name:"mrB")
         let web=MrBPassiveWebView(frame:NSRect(x:0,y:0,width:560,height:400),configuration:settings);web.setValue(false,forKey:"drawsBackground");web.navigationDelegate=c;c.view=web;window.contentView=web
+        c.configuration.kind="walk_study"
         var completions=0;c.onEvent={if $0=="finished"{completions += 1}}
         let url=Bundle.main.url(forResource:"MrBMotion",withExtension:"html")!;let html=try String(contentsOf:url,encoding:.utf8)
         try expect(html.contains("connect-src 'none'"),"Offline restriction missing");web.loadHTMLString(html,baseURL:nil)
@@ -51,6 +52,31 @@ struct MrBPresentationTests {
         c.configuration.kind="mr_ingest_short";c.configuration.token=3;c.send();let before=completions;for _ in 0..<60 {try await Task.sleep(for:.milliseconds(100));state=try await inspect();if state["done"] as? Bool == true {break}};try expect(state["done"] as? Bool == true,"Compact settlement never ends: \(state)");try expect(completions==before+1,"Completion callback not exactly once")
         c.configuration.dark=true;c.send();try await Task.sleep(for:.milliseconds(200));try expect(completions==before+1,"Theme change replays completion")
         c.configuration.kind="thinking";c.configuration.token=4;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect();try expect(state["done"] as? Bool == false,"New request stuck completed")
+        for (kind, duration) in [("walk_study",6.4),("stamp_study",7.2)] {
+            c.configuration = MrBConfiguration(kind:kind,token:c.configuration.token+1)
+            c.send(); try await Task.sleep(for:.milliseconds(400));state=try await inspect()
+            try expect((state["runtimeError"] as? String ?? "").isEmpty,"Study runtime failed: \(state)")
+            try expect(((state["study"] as? [String:Any])?["paintedPixels"] as? Int ?? 0)>10000,"Study lacks visible mesh pixels: \(state)")
+            c.configuration.paused=true;c.send();try await Task.sleep(for:.milliseconds(100));let paused=try await inspect()
+            try await Task.sleep(for:.milliseconds(200));state=try await inspect()
+            try expect(state["frames"] as? Int == paused["frames"] as? Int,"Paused study still draws")
+            c.configuration.seekTime=duration*0.6;c.configuration.seekToken += 1;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect()
+            try expect(abs((state["clipTime"] as? Double ?? 0)-duration*0.6)<0.001,"Study seek failed")
+            c.visible=false;c.configuration.paused=false;c.configuration.reviewRecording=true;c.send();try await Task.sleep(for:.milliseconds(180));state=try await inspect()
+            try expect((state["clipTime"] as? Double ?? 0)>duration*0.6,"Explicit study capture stopped on background")
+            c.configuration.reviewRecording=false;c.send();try await Task.sleep(for:.milliseconds(100));let background=try await inspect()
+            try await Task.sleep(for:.milliseconds(150));state=try await inspect()
+            try expect(state["frames"] as? Int == background["frames"] as? Int,"Recording failed to restore background pause")
+            c.configuration.reviewRecording=true;c.configuration.visible=false;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect()
+            try expect(state["animating"] as? Bool == false,"Recording overrides removed view lifecycle")
+            c.configuration.reviewRecording=false;c.configuration.visible=true;c.visible=true;c.configuration.paused=true
+            c.configuration.reduced=true;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect()
+            try expect(state["animating"] as? Bool == false,"Reduced study animates")
+            c.configuration.reduced=false;c.configuration.paused=false;c.configuration.seekTime=duration-0.2;c.configuration.seekToken += 1
+            let countBefore=completions;c.send();for _ in 0..<30 {try await Task.sleep(for:.milliseconds(100));state=try await inspect();if state["done"] as? Bool == true {break}}
+            try expect(state["done"] as? Bool == true && completions==countBefore+1,"Study completion not delivered exactly once")
+            c.configuration.debugMesh=true;c.send();try await Task.sleep(for:.milliseconds(100));try expect(completions==countBefore+1,"Debug toggle replays completed event")
+        }
         c.visible=false;c.send();web.stopLoading();settings.userContentController.removeScriptMessageHandler(forName:"mrB")
     }
 }

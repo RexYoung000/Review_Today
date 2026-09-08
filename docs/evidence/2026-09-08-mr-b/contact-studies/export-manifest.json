@@ -1,0 +1,31 @@
+{
+  "source": "offline authoring renders, not native screenshots",
+  "fps": 30,
+  "studies": {
+    "walk_study": {
+      "slots": 3234,
+      "frames": [
+        0,
+        1.5,
+        2.6,
+        3.5,
+        4.4,
+        6.4
+      ],
+      "notes": "Spine 4.2 mesh/deform, alpha/rgb and drawOrder; original character contour/material and local walking deformation. Native renderer adds per-pixel depth, prop shading and contact shadows; editor playback is not claimed identical or manually verified."
+    },
+    "stamp_study": {
+      "slots": 4258,
+      "frames": [
+        0,
+        1.5,
+        2.3,
+        3.8,
+        4.55,
+        5.3,
+        7.2
+      ],
+      "notes": "Spine 4.2 mesh/deform, alpha/rgb and drawOrder; original character contour/material and local walking deformation. Native renderer adds per-pixel depth, prop shading and contact shadows; editor playback is not claimed identical or manually verified."
+    }
+  }
+}

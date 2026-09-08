@@ -3,7 +3,7 @@ import AVFoundation
 import ScreenCaptureKit
 import SwiftUI
 
-/// Runs the actual product views against an in-memory store. All exports are
+/// Captures the isolated motion studies with simulated presentation state. All exports are
 /// from this preview's own view, never another app or the daily database.
 @MainActor @Observable
 final class MrBPreviewCapture {
@@ -13,7 +13,7 @@ final class MrBPreviewCapture {
 
     private var folder: URL {
         URL(fileURLWithPath: Bundle.main.object(forInfoDictionaryKey: "PreviewProjectRoot") as! String)
-            .appendingPathComponent("docs/evidence/2026-09-08-mr-b")
+            .appendingPathComponent(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBContactPreview" ? "docs/evidence/2026-09-08-mr-b/contact-studies" : "docs/evidence/2026-09-08-mr-b")
     }
 
     func resize(_ width: CGFloat, _ height: CGFloat) {
@@ -50,7 +50,20 @@ final class MrBPreviewCapture {
         }
     }
 
-    private func record(_ view: NSView) async throws {
+    func recordStudy(model:MrBPreviewModel,scene:String) {
+        guard !recording && !model.reduced && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else { return }
+        model.enter(scene); model.studyRecording = true; model.studyPaused = true; model.finished = false
+        guard let view = NSApp.keyWindow?.contentView else { model.studyRecording = false; return }
+        NSApp.activate(ignoringOtherApps:true); view.window?.makeKeyAndOrderFront(nil)
+        recording = true
+        Task { @MainActor in
+            do { try await record(view,onStarted:{model.replayStudy()},shouldStop:{model.finished}) }
+            catch { message=String(describing:error);NSLog("QA export failed: %@",message) }
+            model.studyRecording = false; recording = false
+        }
+    }
+
+    private func record(_ view: NSView,onStarted:()->Void = {},shouldStop:()->Bool = {false}) async throws {
         guard let window = view.window else { throw CocoaError(.fileWriteUnknown) }
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         // SDK currentProcess explicitly restricts this inventory to content available
@@ -66,16 +79,29 @@ final class MrBPreviewCapture {
         configuration.showsCursor = true; configuration.ignoreShadowsSingleWindow = true
         let stream = SCStream(filter: SCContentFilter(desktopIndependentWindow: ownWindow), configuration: configuration, delegate: nil)
         let outputConfiguration = SCRecordingOutputConfiguration()
-        outputConfiguration.outputURL = url
+        let temporary = FileManager.default.temporaryDirectory.appendingPathComponent("mr-b-capture-\(UUID().uuidString).mp4")
+        outputConfiguration.outputURL = temporary
         outputConfiguration.videoCodecType = .h264; outputConfiguration.outputFileType = .mp4
         let delegate = PreviewRecordingDelegate()
         let output = SCRecordingOutput(configuration: outputConfiguration, delegate: delegate)
         try stream.addRecordingOutput(output)
-        try await stream.startCapture()
+        // startCapture may synchronously wait on its file-extension request.
+        // Keep that system call off the UI thread; record into our temporary
+        // directory and only move a successfully finished file into evidence.
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            DispatchQueue.global(qos: .userInitiated).async {
+                stream.startCapture { error in
+                    if let error { continuation.resume(throwing: error) }
+                    else { continuation.resume() }
+                }
+            }
+        }
+        try await Task.sleep(for:.milliseconds(350)); onStarted()
         let start = ProcessInfo.processInfo.systemUptime
-        while recording && ProcessInfo.processInfo.systemUptime - start < 45 && delegate.error == nil {
+        while recording && ProcessInfo.processInfo.systemUptime - start < 45 && delegate.error == nil && !shouldStop() {
             try await Task.sleep(for: .milliseconds(50))
         }
+        if shouldStop() { try await Task.sleep(for:.milliseconds(600)) }
         try await stream.stopCapture()
         for _ in 0..<100 {
             if delegate.finished || delegate.error != nil { break }
@@ -83,6 +109,7 @@ final class MrBPreviewCapture {
         }
         if let error = delegate.error { throw error }
         guard delegate.finished else { throw CocoaError(.fileWriteUnknown) }
+        try FileManager.default.moveItem(at: temporary, to: url)
         let record = "Native current-process window recording; 30 fps target; actual presentation timestamps; \(configuration.width)x\(configuration.height); reduced=\(reduced); no audio.\n"
         try record.write(to: url.deletingPathExtension().appendingPathExtension("txt"), atomically: true, encoding: .utf8)
         message = url.lastPathComponent

@@ -3,7 +3,17 @@ import SwiftUI
 
 @MainActor @Observable
 final class MrBPreviewModel {
-    var scene = "等待"
+    var scene = "行走消字短样"
+    var studyRecording = false
+    var studyPaused = false
+    var studyTime = 0.0
+    var studySeek: Double? = nil
+    var studySeekToken = 0
+    var studyMesh = false
+    var studyFailed = false
+    var studyDuration: Double { scene == "行走消字短样" ? 6.4 : 7.2 }
+    func replayStudy() { finished = false; studyPaused = false; studyTime = 0; studySeek = nil; token += 1 }
+    func seekStudy(_ time: Double) { studyPaused = true; studySeek = min(studyDuration,max(0,time)); studyTime = studySeek!; studySeekToken += 1 }
     var dark = false
     var reduced = false
     var english = false
@@ -70,7 +80,7 @@ final class MrBPreviewModel {
         Task { if !noMotion { try? await Task.sleep(for: .milliseconds(240)) }; guard token == current else { return }; waiting = false; settling = false }
     }
     func stop(failed: Bool = false) { waiting = false; settling = false; status = failed ? "这次处理未完成，可以重试。" : "已停止，可以继续或重新提问。" }
-    func enter(_ value: String) { modal = false; scene = value; token += 1; finished = false; if value == "等待" { restart() } }
+    func enter(_ value: String) { modal = false; scene = value; studyPaused = false; studyTime = 0; studySeek = nil; token += 1; finished = false; if value == "等待" { restart() } }
     func save(newEvent: Bool = true, saved: Bool = true, historical: Bool = false) {
         if newEvent { eventID = UUID().uuidString }
         let accepted = gate.accept(id: eventID, saved: saved, foreground: NSApp.isActive, modalBusy: modal, historical: historical)

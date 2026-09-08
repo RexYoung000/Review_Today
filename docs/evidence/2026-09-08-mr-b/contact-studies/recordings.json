@@ -1,0 +1,47 @@
+{
+  "capture": "Native current-process window, actual presentation timestamps, no retiming or audio",
+  "target_fps": 30,
+  "recording_lifecycle": "Only explicit study recording keeps its own scene clock running in background; restored afterward",
+  "videos": [
+    {
+      "file": "walk-native.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 820,
+            "avg_frame_rate": "129000/4477",
+            "nb_frames": "215"
+          }
+        ],
+        "format": {
+          "duration": "7.453333"
+        }
+      },
+      "decode": "passed with original time base",
+      "decode_stderr": ""
+    },
+    {
+      "file": "stamp-native.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 820,
+            "avg_frame_rate": "14520/497",
+            "nb_frames": "242"
+          }
+        ],
+        "format": {
+          "duration": "8.270000"
+        }
+      },
+      "decode": "passed with original time base",
+      "decode_stderr": ""
+    }
+  ]
+}

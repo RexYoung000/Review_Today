@@ -5,9 +5,9 @@ import SwiftUI
 struct MrBPreviewApp: App {
     @State private var model = MrBPreviewModel()
     @State private var capture = MrBPreviewCapture()
-    init() { precondition(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBPreview") }
+    init() { precondition(["Rex.Review-Today.MrBPreview","Rex.Review-Today.MrBContactPreview"].contains(Bundle.main.bundleIdentifier ?? "")) }
     var body: some Scene {
-        WindowGroup("Mr. B · 原生试演") {
+        WindowGroup(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBContactPreview" ? "Mr. B · 接触短样" : "Mr. B · 原生试演") {
             MrBPreviewRoot(model: model)
                 .preferredColorScheme(model.dark ? .dark : .light)
                 .onChange(of: model.reduced) { _, value in capture.reduced = value }
@@ -16,6 +16,11 @@ struct MrBPreviewApp: App {
         .windowResizability(.contentMinSize)
         .commands {
             CommandMenu("试演") {
+                Button("录制行走消字短样") { capture.recordStudy(model:model,scene:"行走消字短样") }
+                Button("录制取卡盖章短样") { capture.recordStudy(model:model,scene:"取卡盖章短样") }
+                Button("行走消字短样") { model.enter("行走消字短样") }.keyboardShortcut("8",modifiers:[.command,.option])
+                Button("取卡盖章短样") { model.enter("取卡盖章短样") }.keyboardShortcut("9",modifiers:[.command,.option])
+                Button("重播短样") { model.replayStudy() }.keyboardShortcut("0",modifiers:[.command,.option])
                 Button("标准窗口") { capture.resize(1280,820) }.keyboardShortcut("1",modifiers:[.command,.option])
                 Button("最小窗口") { capture.resize(760,620) }.keyboardShortcut("2",modifiers:[.command,.option])
                 Toggle("深色",isOn:$model.dark).keyboardShortcut("d",modifiers:[.command,.option])
@@ -44,9 +49,9 @@ struct MrBPreviewRoot: View {
             VStack(alignment:.leading,spacing:16) {
                 Text("Mr. B").font(.title2.bold()); Text("Bread · 认真一点点").font(.caption).foregroundStyle(.secondary)
                 Divider().padding(.vertical,8)
-                ForEach(["等待","知识入库","复习结算","待机动作"],id:\.self) { scene in
+                ForEach(["行走消字短样","取卡盖章短样","等待","知识入库","复习结算","待机动作"],id:\.self) { scene in
                     Button { model.enter(scene) } label: {
-                        Text(scene).frame(maxWidth:.infinity,alignment:.leading).padding(10)
+                        Text(["知识入库","复习结算"].contains(scene) ? scene+" · 旧版" : scene).frame(maxWidth:.infinity,alignment:.leading).padding(10)
                             .background(model.scene == scene ? Color.primary.opacity(0.08) : .clear,in:RoundedRectangle(cornerRadius:10))
                     }.buttonStyle(.plain)
                 }
@@ -64,6 +69,7 @@ struct MrBPreviewRoot: View {
                 Divider()
                 Group {
                     switch model.scene {
+                    case "行走消字短样", "取卡盖章短样": study
                     case "知识入库": knowledge
                     case "复习结算": review
                     case "待机动作": idle
@@ -84,6 +90,37 @@ struct MrBPreviewRoot: View {
     private func motion(_ kind: String, width:CGFloat, height:CGFloat, event:@escaping(String)->Void = {_ in}) -> some View {
         MrBDecoratedMotion(configuration:.init(kind:kind,stage:model.stage,token:model.token,dark:model.dark,reduced:reduced,lines:model.lines,count:model.count,title:model.title,language:model.english ? "en" : "zh",framing:model.scene == "待机动作" ? "ambient" : "presence"),failed:model.failedResource,onEvent:event)
             .frame(width:width,height:height)
+    }
+    private var study: some View {
+        VStack(alignment:.leading,spacing:16) {
+            Text(model.scene == "行走消字短样" ? "走过这一行，把内容收好。" : "放好，再认真盖一下。")
+                .font(.title2.bold())
+            Text("局部形变与接触短样 · 待视觉验收").font(.caption).foregroundStyle(.secondary)
+            GeometryReader { geometry in
+                ZStack {
+                    MrBMotionView(configuration:.init(kind:model.scene == "行走消字短样" ? "walk_study" : "stamp_study",token:model.token,dark:model.dark,reduced:reduced,language:model.english ? "en" : "zh",paused:model.studyPaused,seekTime:model.studySeek,seekToken:model.studySeekToken,debugMesh:model.studyMesh,reviewRecording:model.studyRecording),onEvent:{ event in
+                        if event == "failed" { model.studyFailed = true }
+                        if event == "ready" { model.studyFailed = false }
+                        if event == "finished" { model.finished = true; model.studyPaused = true; model.studyTime = model.studyDuration }
+                    },onTime:{ time in model.studyTime = time })
+                    .accessibilityHidden(true)
+                    if model.studyFailed { Text("短样加载失败，请重新打开试演。").foregroundStyle(.secondary) }
+                }.frame(width:geometry.size.width,height:geometry.size.height)
+            }.frame(minHeight:220)
+            HStack {
+                Button { model.replayStudy() } label: { Label("重播",systemImage:"arrow.counterclockwise") }
+                Button { if model.studyTime >= model.studyDuration { model.replayStudy() } else { model.studyPaused.toggle() } } label: { Label(model.studyPaused ? "播放" : "暂停",systemImage:model.studyPaused ? "play.fill" : "pause.fill") }.disabled(reduced)
+                Button { model.seekStudy(model.studyTime-1.0/30) } label: { Image(systemName:"backward.frame") }.help("前一帧").accessibilityLabel("前一帧").disabled(reduced)
+                Button { model.seekStudy(model.studyTime+1.0/30) } label: { Image(systemName:"forward.frame") }.help("后一帧").accessibilityLabel("后一帧").disabled(reduced)
+                Spacer()
+                Toggle("网格／接触",isOn:$model.studyMesh).toggleStyle(.checkbox)
+            }.font(.caption)
+            HStack {
+                Slider(value:Binding(get:{model.studyTime},set:{model.seekStudy($0)}),in:0...model.studyDuration).accessibilityLabel("短样时间位置").disabled(reduced)
+                Text(String(format:"%.2f / %.1f s",model.studyTime,model.studyDuration)).font(.caption.monospacedDigit()).frame(width:105,alignment:.trailing)
+            }
+            Text(reduced ? "减少动态：直接显示消字／盖章后的静态结果。" : "暂停后可逐帧检查；网格与橙色接触标记只用于制作检查。").font(.caption).foregroundStyle(.secondary)
+        }.padding(24)
     }
     private var conversation: some View {
         VStack(spacing:0) {
@@ -136,6 +173,7 @@ struct MrBPreviewRoot: View {
     private var knowledge: some View {
         ScrollView {
             VStack(alignment:.leading,spacing:22) {
+                Text("旧版结算：视觉未通过，仅供对照。").font(.caption).foregroundStyle(.secondary)
                 Text(model.english ? "From notes to knowledge" : "把这份资料，整理成知识").font(.title2.bold())
                 Text(model.lines.joined(separator:"\n\n")).textSelection(.enabled).frame(maxWidth:.infinity,alignment:.leading).padding(24).background(Color.primary.opacity(0.04),in:RoundedRectangle(cornerRadius:18))
                 if !model.outcome.isEmpty { Label(model.outcome,systemImage:model.outcomeSaved ? "checkmark.rectangle.stack" : "exclamationmark.triangle").font(.headline); if model.outcomeSaved { Button("查看入库结果／重播"){model.replay()} } }
@@ -163,6 +201,7 @@ struct MrBPreviewRoot: View {
     private var review: some View {
         ScrollView {
             VStack(alignment:.leading,spacing:18) {
+                Text("旧版结算：视觉未通过，仅供对照。").font(.caption).foregroundStyle(.secondary)
                 Text(model.english ? "This review session" : "今天这一轮").font(.title.bold())
                 let eligible = MrBSettlementGate.reviewEligible(formal:true,saved:model.reviewReason != "failed",reason:model.reviewReason,count:3)
                 if eligible {

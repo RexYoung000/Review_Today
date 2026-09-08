@@ -14,6 +14,11 @@ struct MrBConfiguration: Codable, Equatable {
     var title = "检索与生成的分工"
     var language = "zh"
     var framing = "presence"
+    var paused = false
+    var seekTime: Double? = nil
+    var seekToken = 0
+    var debugMesh = false
+    var reviewRecording = false
 }
 
 /// This bridge is exclusively bundled by the isolated preview runner.
@@ -22,6 +27,7 @@ struct MrBMotionView: NSViewRepresentable {
     var configuration: MrBConfiguration
     var simulateFailure = false
     var onEvent: (String) -> Void = { _ in }
+    var onTime: (Double) -> Void = { _ in }
     func makeCoordinator() -> Coordinator { Coordinator() }
     func makeNSView(context: Context) -> MrBPassiveWebView {
         let settings = WKWebViewConfiguration()
@@ -34,6 +40,7 @@ struct MrBMotionView: NSViewRepresentable {
         context.coordinator.view = view
         context.coordinator.configuration = configuration
         context.coordinator.onEvent = onEvent
+        context.coordinator.onTime = onTime
         view.visibilityChanged = { [weak c = context.coordinator] value in c?.visible = value; c?.send() }
         guard !simulateFailure, let url = Bundle.main.url(forResource: "MrBMotion", withExtension: "html"),
               let html = try? String(contentsOf: url, encoding: .utf8) else {
@@ -45,10 +52,11 @@ struct MrBMotionView: NSViewRepresentable {
     func updateNSView(_ view: MrBPassiveWebView, context: Context) {
         context.coordinator.configuration = configuration
         context.coordinator.onEvent = onEvent
+        context.coordinator.onTime = onTime
         context.coordinator.send()
     }
     static func dismantleNSView(_ view: MrBPassiveWebView, coordinator: Coordinator) {
-        coordinator.visible = false; coordinator.send()
+        coordinator.visible = false; coordinator.configuration.visible = false; coordinator.send()
         view.stopLoading(); view.configuration.userContentController.removeScriptMessageHandler(forName: "mrB")
         view.navigationDelegate = nil; view.dispose(); coordinator.view = nil
     }
@@ -56,20 +64,26 @@ struct MrBMotionView: NSViewRepresentable {
         weak var view: WKWebView?
         var configuration = MrBConfiguration()
         var onEvent: (String) -> Void = { _ in }
+        var onTime: (Double) -> Void = { _ in }
         var visible = true, ready = false
         var last: Data?
         func send() {
             guard ready else { return }
-            var next = configuration; next.visible = next.visible && visible
+            var next = configuration; next.visible = next.visible && (visible || (next.reviewRecording && ["walk_study","stamp_study"].contains(next.kind)))
             guard let data = try? JSONEncoder().encode(next), data != last, let json = String(data: data, encoding: .utf8) else { return }
             last = data
-            view?.evaluateJavaScript("window.mrB.setState(\(json))")
+            view?.evaluateJavaScript("window.mrB.setState(\(json))") { [weak self] _, error in
+                if let error { NSLog("MrB bridge failed: %@",error.localizedDescription); self?.onEvent("failed") }
+            }
         }
         func userContentController(_ controller: WKUserContentController, didReceive message: WKScriptMessage) {
             guard let body = message.body as? [String: Any], let type = body["type"] as? String else { return }
             if type == "ready" { ready = true; last = nil; send(); onEvent(type) }
             else if type == "failed" { ready = false; onEvent(type) }
-            else if body["token"] as? Int == configuration.token { onEvent(type) }
+            else if body["token"] as? Int == configuration.token {
+                if type == "studyTime", let time = body["time"] as? Double { onTime(time) }
+                else { onEvent(type) }
+            }
         }
         func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { ready = false; onEvent("failed") }
         func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) { ready = false; onEvent("failed") }
