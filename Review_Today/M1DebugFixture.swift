@@ -27,6 +27,7 @@ enum M1DebugFixture {
             ReviewSession.self,
             ReviewAttempt.self,
             AgentSession.self,
+                SessionFolder.self,
             AgentMessage.self,
             LearningTask.self,
             TaskEventRecord.self,

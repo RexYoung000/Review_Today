@@ -29,6 +29,7 @@ struct Review_TodayApp: App {
                 ReviewSession.self,
                 ReviewAttempt.self,
                 AgentSession.self,
+                SessionFolder.self,
                 AgentMessage.self,
                 LearningTask.self,
                 TaskEventRecord.self,
@@ -45,7 +46,7 @@ struct Review_TodayApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup("Review Today", id: "main") {
             ContentView(coordinator: coordinator)
                 .runwayAppearance()
         }

@@ -11,7 +11,11 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
     @Environment(\.brandReduceMotion) private var reduceMotion
     @Environment(\.runway) private var runway
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.controlActiveState) private var controlState
     @State private var navigation = KnowledgeDeckNavigation<Item.ID>()
+    @State private var locatorHover: Int?
+    @State private var scrubbing = false
+    @State private var reveal = 1.0
 
     private var ids: [Item.ID] { items.map(\.id) }
 
@@ -24,21 +28,21 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
                                width: size.width, height: size.height)
 
             ZStack {
-                ForEach(Array(items.enumerated()), id: \.element.id) { itemIndex, item in
-                    let depth = KnowledgeDeckNavigation<Item.ID>.wrapped(itemIndex - origin, count: items.count)
-                    if depth < 3 {
-                        let position = position(for: depth, size: size)
-                        deckCard(item, size: size, depth: position.depth, interactive: depth == 0 && navigation.phase == .idle)
-                            .scaleEffect(position.scale, anchor: .top)
-                            .offset(x: position.x, y: position.y)
-                            .opacity(position.opacity)
-                            .zIndex(Double(10 - depth))
-                    }
+                ForEach(0..<min(3, items.count), id: \.self) { depth in
+                    let itemIndex = KnowledgeDeckNavigation<Item.ID>.wrapped(origin + depth, count: items.count)
+                    let position = position(for: depth, size: size)
+                    deckCard(items[itemIndex], size: size, depth: position.depth,
+                             interactive: depth == 0 && navigation.phase == .idle,
+                             contentVisible: depth == 0 || navigation.progress > 0)
+                        .scaleEffect(position.scale, anchor: .top)
+                        .offset(x: position.x, y: position.y)
+                        .opacity(position.opacity * (depth == 0 ? reveal : 1))
+                        .zIndex(Double(10 - depth))
                 }
 
                 // A separate returning surface keeps two-card decks reversible without
                 // moving their visible back card abruptly from below to the left edge.
-                if items.count > 1 {
+                if items.count > 1 && navigation.progress < 0 {
                     let previous = KnowledgeDeckNavigation<Item.ID>.wrapped(origin - 1, count: items.count)
                     let progress = max(0, min(1, -navigation.progress))
                     deckCard(items[previous], size: size, depth: 0, interactive: false)
@@ -71,7 +75,7 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
             .overlay(alignment: .trailing) {
                 if !items.isEmpty {
                     locator(maxHeight: max(80, size.height - 40))
-                        .padding(.trailing, max(4, frame.minX - 40))
+                        .padding(.trailing, max(2, frame.minX - 46))
                 }
             }
             .onChange(of: geometry.size) { _, _ in cancelMotion() }
@@ -84,12 +88,20 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
             publishSelection()
         }
         .onChange(of: reduceMotion) { _, _ in cancelMotion() }
+        .onChange(of: controlState) { _, state in if state != .key { cancelMotion() } }
+        .onDisappear { cancelMotion() }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(String(localized: "知识卡片"))
     }
 
-    private func deckCard(_ item: Item, size: CGSize, depth: CGFloat, interactive: Bool) -> some View {
-        card(item)
+    private func deckCard(_ item: Item, size: CGSize, depth: CGFloat, interactive: Bool, contentVisible: Bool = true) -> some View {
+        Group {
+            if contentVisible {
+                card(item).id(item.id)
+                    .background { if interactive && DeckRenderMetrics.enabled { DeckRenderProbe(id: AnyHashable(item.id)) } }
+            }
+            else { runway.card }
+        }
             .frame(width: size.width, height: size.height)
             .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous)
@@ -140,46 +152,53 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
     }
 
     private func locator(maxHeight: CGFloat) -> some View {
-        VStack(spacing: 10) {
-            ScrollViewReader { reader in
-                ScrollView(.vertical) {
-                    VStack(spacing: 2) {
-                        ForEach(Array(items.enumerated()), id: \.element.id) { i, item in
-                            Button { jump(to: i) } label: {
-                                Capsule()
-                                    .fill(i == index ? runway.ink : runway.ink.opacity(0.24))
-                                    .frame(width: 5, height: i == index ? 22 : 7)
-                                    .frame(width: 28, height: 28)
-                                    .contentShape(Rectangle())
-                            }
-                            .buttonStyle(InteractionButtonStyle(padding: 0, outline: .capsule))
-                            .help(title(item))
-                            .accessibilityLabel(title(item))
-                            .accessibilityValue("\(i + 1) / \(items.count)")
-                            .accessibilityAddTraits(i == index ? [.isSelected] : [])
-                            .id(item.id)
-                        }
-                    }
-                }
-                .scrollIndicators(.hidden)
-                .frame(width: 30, height: min(maxHeight - 32, CGFloat(items.count) * 30))
-                .onAppear { scrollLocator(reader) }
-                .onChange(of: index) { _, _ in scrollLocator(reader) }
-                .onChange(of: ids) { _, _ in scrollLocator(reader) }
+        let trackHeight = max(44, min(440, maxHeight - 32))
+        let position = KnowledgeLocator.y(index: index, height: trackHeight - 20, count: items.count)
+        return VStack(alignment: .leading, spacing: 10) {
+            Text("\(items.count)").font(.system(size: 11, weight: .medium, design: .monospaced))
+                .foregroundStyle(runway.copy).frame(width: 44)
+                .accessibilityLabel("共 \(items.count) 张知识卡")
+            ZStack(alignment: .topLeading) {
+                Capsule().fill(runway.ink.opacity(0.18)).frame(width: 6, height: trackHeight - 12).offset(x: 7, y: 6)
+                Capsule().fill(runway.ink).frame(width: scrubbing ? 10 : 8, height: 20).offset(x: scrubbing ? 5 : 6, y: position)
+                Text("\(min(index + 1, items.count))").font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(runway.ink).frame(width: 26, height: 20).offset(x: 18, y: position)
             }
-            Text("\(min(index + 1, items.count)) / \(items.count)")
-                .font(.system(size: 10, weight: .medium, design: .monospaced))
-                .foregroundStyle(runway.copy)
-                .fixedSize()
-                .accessibilityLabel("第 \(min(index + 1, items.count)) 张，共 \(items.count) 张")
-        }
-        .padding(.vertical, 10)
-        .frame(minWidth: 38)
-    }
-
-    private func scrollLocator(_ reader: ScrollViewProxy) {
-        guard items.indices.contains(index) else { return }
-        reader.scrollTo(items[index].id, anchor: .center)
+            .frame(width: 44, height: trackHeight)
+            .contentShape(Rectangle())
+            .gesture(DragGesture(minimumDistance: 0).onChanged { value in
+                scrubbing = true
+                locatorHover = nil
+                jump(to: KnowledgeLocator.index(y: value.location.y - 10, height: trackHeight - 20, count: items.count))
+            }.onEnded { value in
+                jump(to: KnowledgeLocator.index(y: value.location.y - 10, height: trackHeight - 20, count: items.count))
+                scrubbing = false
+                if !reduceMotion && abs(value.translation.height) < 3 {
+                    reveal = 0.65
+                    withAnimation(.easeOut(duration: 0.12)) { reveal = 1 }
+                }
+            })
+            .onContinuousHover { phase in
+                switch phase {
+                case .active(let point): if !scrubbing { locatorHover = KnowledgeLocator.index(y: point.y - 10, height: trackHeight - 20, count: items.count) }
+                case .ended: locatorHover = nil
+                }
+            }
+            .overlay(alignment: .leading) {
+                if let candidate = locatorHover, items.indices.contains(candidate) {
+                    Text("\(candidate + 1) · " + title(items[candidate]))
+                        .font(.caption).foregroundStyle(runway.ink).fixedSize(horizontal: false, vertical: true)
+                        .padding(10).frame(width: 220, alignment: .leading)
+                        .background(runway.card, in: RoundedRectangle(cornerRadius: 10))
+                        .shadow(color: runway.liftShadow, radius: 10, y: 3)
+                        .offset(x: -226).allowsHitTesting(false)
+                }
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("知识卡定位")
+            .accessibilityValue("第 \(min(index + 1, items.count)) 张，共 \(items.count) 张" + (items.indices.contains(index) ? "，" + title(items[index]) : ""))
+            .accessibilityAdjustableAction { direction in jump(to: min(items.count - 1, max(0, index + (direction == .increment ? 1 : -1)))) }
+        }.frame(width: 44)
     }
 
     private func synchronize() {
@@ -193,6 +212,7 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
     }
 
     private func cancelMotion() {
+        scrubbing = false; locatorHover = nil; reveal = 1
         withoutAnimation { navigation.cancelMotion() }
         publishSelection()
     }
@@ -216,6 +236,9 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
     }
 
     private func jump(to target: Int) {
+        guard items.indices.contains(target) else { return }
+        if navigation.selectedIndex == target && navigation.phase == .idle { return }
+        DeckRenderMetrics.begin(items[target].id)
         withoutAnimation { navigation.select(target, ids: ids) }
         publishSelection()
     }

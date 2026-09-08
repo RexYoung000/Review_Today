@@ -129,6 +129,7 @@ enum AgentComposerStore {
         guard !content.isEmpty else { throw Failure.blankInput }
         let row = try prepare(context)
         let sid = row.agentDraftID!, mid = row.agentDraftMessageID!
+        let draftSnapshot = (row.agentDraftText, row.agentDraftMode, row.agentDraftThinking)
         do {
             let session = AgentSession(id: sid, title: String(content.prefix(28)), modePreset: row.agentDraftMode)
             session.thinkingStrength = row.agentDraftThinking
@@ -142,6 +143,13 @@ enum AgentComposerStore {
             row.agentDraftThinking = row.lastThinkingStrength
             if let save { try save() } else { try context.save() }
             return (session, message)
-        } catch { context.rollback(); throw error }
+        } catch {
+            context.processPendingChanges(); context.rollback()
+            // SwiftData may leave an already-observed model at its failed values.
+            // Restore the visible draft as well as rolling back the persisted graph.
+            row.agentDraftID = sid; row.agentDraftMessageID = mid
+            row.agentDraftText = draftSnapshot.0; row.agentDraftMode = draftSnapshot.1; row.agentDraftThinking = draftSnapshot.2
+            throw error
+        }
     }
 }

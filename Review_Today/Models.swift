@@ -292,6 +292,7 @@ final class ReviewAttempt {
 
 @Model
 final class AgentSession {
+    var folderID: UUID? = nil
     @Attribute(.unique) var id: UUID
     var title: String
     var modePreset: String

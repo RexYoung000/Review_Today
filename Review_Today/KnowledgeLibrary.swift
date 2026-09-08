@@ -12,6 +12,14 @@ struct LibraryView: View {
     @State private var theme = "all"
     @State private var showDeck = false
     @State private var browsingIndex = 0
+    @Environment(\.modelContext) private var modelContext
+    @State private var selection = KnowledgeSelection()
+    @State private var deletionImpact: KnowledgeDeletionImpact?
+    @State private var operationError: String?
+    @State private var undoTrash: [UUID: String] = [:]
+    private var selectableIDs: Set<UUID> {
+        Set(visibleItems.filter { KnowledgeLexicon.displayTheme(for: $0) == selection.group }.map(\.id))
+    }
 
     private var items: [Knowledge] {
         allItems.filter { $0.lifecycle == filter }
@@ -27,21 +35,22 @@ struct LibraryView: View {
 
     private var groupedItems: [(theme: String, items: [Knowledge])] {
         let visible = visibleItems
+        let titles = KnowledgeLexicon.resolvedTitles(for: visible)
         var buckets: [String: [Knowledge]] = [:]
         for item in visible {
             buckets[KnowledgeLexicon.displayTheme(for: item), default: []].append(item)
         }
         return buckets.keys.sorted().map { key in
             let group = buckets[key]!.sorted {
-                KnowledgeLexicon.keyword(for: $0, among: visible)
-                    < KnowledgeLexicon.keyword(for: $1, among: visible)
+                (titles[$0.id] ?? "") < (titles[$1.id] ?? "")
             }
             return (key, group)
         }
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        let deckTitles = KnowledgeLexicon.resolvedTitles(for: visibleItems)
+        return VStack(alignment: .leading, spacing: 0) {
             header
             if visibleItems.isEmpty {
                 emptyState
@@ -64,16 +73,41 @@ struct LibraryView: View {
         }
         .background(PaperSurface())
         .navigationTitle(String(localized: "知识库"))
+        .accessibilityHidden(showDeck)
         .overlay {
             if showDeck, !visibleItems.isEmpty {
                 KnowledgeDeckOverlay(
                     items: visibleItems,
+                    titles: deckTitles,
                     index: $browsingIndex,
                     coordinator: coordinator,
-                    onClose: closeDeck
+                    onClose: closeDeck,
+                    onAction: { action, id in perform(action, ids: [id]) }
                 )
             }
         }
+        .sheet(item: $deletionImpact) { impact in
+            KnowledgeDeletionSheet(impact: impact) { undoTrash = [:] }
+        }
+        .overlay(alignment: .bottom) {
+            if operationError != nil || !undoTrash.isEmpty {
+                HStack(spacing: 12) {
+                    if let operationError { Text(operationError).foregroundStyle(.red) }
+                    else { Text("已移到回收站 \(undoTrash.count) 条") }
+                    if !undoTrash.isEmpty {
+                        Button("撤销") {
+                            do { try KnowledgeManagement.undoTrash(undoTrash, context: modelContext); undoTrash = [:]; operationError = nil }
+                            catch { operationError = error.localizedDescription }
+                        }
+                    }
+                    Button("关闭") { undoTrash = [:]; operationError = nil }
+                }.font(.caption).padding(12).background(runway.card, in: RoundedRectangle(cornerRadius: 12)).padding(12)
+            }
+        }
+        .onChange(of: filter) { _, _ in selection.finish(); operationError = nil }
+        .onChange(of: theme) { _, _ in selection.finish(); operationError = nil }
+        .onChange(of: selectableIDs) { _, ids in selection.reconcile(ids) }
+        .onChange(of: visibleItems.map(\.id)) { _, ids in if ids.isEmpty { showDeck = false } }
         .onChange(of: themes) { _, names in
             if theme != "all" && !names.contains(theme) { theme = "all" }
         }
@@ -117,7 +151,7 @@ struct LibraryView: View {
         filterTrack {
             FilterPill(title: String(localized: "在用"), selected: filter == "active") { filter = "active" }
             FilterPill(title: String(localized: "已暂停"), selected: filter == "paused") { filter = "paused" }
-            FilterPill(title: String(localized: "已删除"), selected: filter == "soft_deleted") { filter = "soft_deleted" }
+            FilterPill(title: String(localized: "回收站"), selected: filter == "soft_deleted") { filter = "soft_deleted" }
         }
     }
 
@@ -141,29 +175,68 @@ struct LibraryView: View {
     }
 
     private func sectionBlock(_ group: (theme: String, items: [Knowledge]), columns: [GridItem]) -> some View {
-        VStack(alignment: .leading, spacing: Runway.gap) {
-            HStack(alignment: .firstTextBaseline, spacing: Runway.space) {
-                Text(group.theme)
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(runway.ink)
-                Text("\(group.items.count)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Spacer(minLength: 0)
+        let selecting = selection.group == group.theme
+        let titles = KnowledgeLexicon.resolvedTitles(for: group.items)
+        return VStack(alignment: .leading, spacing: Runway.gap) {
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: Runway.space) {
+                    groupTitle(group.theme, count: group.items.count); Spacer(minLength: 8)
+                    groupTools(group.theme, selecting: selecting)
+                }
+                VStack(alignment: .leading, spacing: 8) {
+                    groupTitle(group.theme, count: group.items.count)
+                    groupTools(group.theme, selecting: selecting)
+                }
             }
             LazyVGrid(columns: columns, alignment: .leading, spacing: Runway.gap) {
                 ForEach(group.items, id: \.id) { item in
                     SummaryChip(
-                        title: KnowledgeLexicon.chipTitle(for: item, among: group.items, theme: group.theme),
-                        fullTitle: KnowledgeLexicon.keyword(for: item, among: group.items)
+                        title: KnowledgeLexicon.chipTitle(resolved: titles[item.id] ?? item.title, theme: group.theme),
+                        fullTitle: titles[item.id] ?? item.title,
+                        selecting: selecting, selected: selection.ids.contains(item.id), lifecycle: item.lifecycle,
+                        onAction: { perform($0, ids: [item.id]) }
                     ) {
-                        openDeck(item)
+                        if selecting { selection.toggle(item.id, visible: selectableIDs) }
+                        else { selection.finish(); openDeck(item) }
                     }
-                    .contextMenu { chipMenu(item) }
+                    .contextMenu { if !selecting { chipMenu(item) } }
                 }
             }
+        }.frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func groupTitle(_ name: String, count: Int) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: Runway.space) {
+            Text(name).font(.title3.weight(.semibold)).foregroundStyle(runway.ink)
+            Text("\(count)").font(.subheadline).foregroundStyle(.secondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    @ViewBuilder private func groupTools(_ name: String, selecting: Bool) -> some View {
+        if selecting {
+            HStack(spacing: 6) {
+                Text("已选 \(selection.ids.count)").font(.caption).monospacedDigit()
+                SessionListToolbarButton(title: selection.ids == selectableIDs ? "取消全选" : "全选") { selection.all(selectableIDs) }
+                ForEach(KnowledgeAction.available(filter)) { action in
+                    SessionListToolbarButton(title: action.title) { perform(action, ids: selection.ids.intersection(selectableIDs)) }
+                        .foregroundStyle(action.destructive ? Color.red : runway.ink).disabled(selection.ids.isEmpty)
+                }
+                SessionListToolbarButton(title: "完成") { selection.finish() }
+            }.fixedSize(horizontal: true, vertical: false)
+        } else {
+            SessionListToolbarButton(title: "多选", accessibilityTitle: "多选\(name)知识", secondary: true) {
+                selection.begin(name); operationError = nil
+            }
+        }
+    }
+    private func perform(_ action: KnowledgeAction, ids: Set<UUID>) {
+        do {
+            if action == .delete { deletionImpact = try KnowledgeManagement.impact(ids, context: modelContext) }
+            else {
+                let original = try KnowledgeManagement.apply(action, ids: ids, context: modelContext)
+                undoTrash = action == .trash ? original : [:]
+            }
+            operationError = nil
+        } catch { operationError = error.localizedDescription }
     }
 
     private static func chipColumns(for width: CGFloat) -> [GridItem] {
@@ -191,7 +264,7 @@ struct LibraryView: View {
         if !items.isEmpty && theme != "all" { return "没有符合当前筛选的知识，请调整筛选。" }
         return switch filter {
         case "paused": String(localized: "没有已暂停的知识。")
-        case "soft_deleted": String(localized: "没有已软删除的知识。")
+        case "soft_deleted": String(localized: "回收站为空。")
         default: String(localized: "还没有知识点。前往 Agent 开始学习，确认后保存到知识库。")
         }
     }
@@ -220,21 +293,21 @@ struct LibraryView: View {
 
     @ViewBuilder
     private func chipMenu(_ item: Knowledge) -> some View {
-        if item.lifecycle == "active" {
-            Button(String(localized: "暂停")) { item.lifecycle = "paused" }
-            Button(String(localized: "软删除"), role: .destructive) { item.lifecycle = "soft_deleted" }
-        } else {
-            Button(String(localized: "恢复")) { item.lifecycle = "active" }
-        }
+        KnowledgeActionButtons(lifecycle: item.lifecycle) { perform($0, ids: [item.id]) }
     }
 }
 
 private struct SummaryChip: View {
     var title: String
     var fullTitle: String
+    var selecting = false
+    var selected = false
+    var lifecycle = "active"
+    var onAction: (KnowledgeAction) -> Void = { _ in }
     var action: () -> Void
     @State private var hovering = false
     @FocusState private var focused: Bool
+    @FocusState private var menuFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.runway) private var runway
 
@@ -247,8 +320,9 @@ private struct SummaryChip: View {
                     .multilineTextAlignment(.leading)
                     .lineLimit(2).truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Image(systemName: "chevron.right").font(.caption.weight(.medium))
-                    .foregroundStyle(.secondary).accessibilityHidden(true)
+                Image(systemName: selecting ? (selected ? "checkmark.circle.fill" : "circle") : "chevron.right")
+                    .font(.body.weight(.medium)).foregroundStyle(selected ? runway.ink : runway.copy)
+                    .opacity(!selecting && (hovering || focused) ? 0 : 1).accessibilityHidden(true)
             }
             .padding(.horizontal, Runway.gap)
             .padding(.vertical, 14)
@@ -260,9 +334,20 @@ private struct SummaryChip: View {
             )
             .shadow(color: runway.liftShadow.opacity(0.45), radius: 8, y: 2)
         }
-        .buttonStyle(InteractionButtonStyle(focused: focused, padding: 0, outline: .rounded(Runway.chipRadius)))
-        .focusable().focusEffectDisabled().focused($focused)
+        .buttonStyle(InteractionButtonStyle(selected: selected, focused: focused, padding: 0, outline: .rounded(Runway.chipRadius)))
         .help(fullTitle).accessibilityLabel(fullTitle)
+        .overlay(alignment: .trailing) {
+            if !selecting {
+                Menu { KnowledgeActionButtons(lifecycle: lifecycle, perform: onAction) } label: {
+                    Image(systemName: "ellipsis").frame(width: 28, height: 32)
+                }.menuStyle(.borderlessButton).fixedSize().padding(.trailing, Runway.gap - 5)
+                    .focused($menuFocused)
+                    .opacity(hovering || focused || menuFocused ? 1 : 0)
+                    .accessibilityLabel("知识操作：\(fullTitle)")
+            }
+        }
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
+        .focusable().focusEffectDisabled().focused($focused)
         .onHover { hovering = $0 }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: hovering)
     }
@@ -303,12 +388,25 @@ enum KnowledgeLexicon {
         return clipped ? clip(base) : base
     }
 
+    /// Resolve duplicate titles once for the list rather than scanning every
+    /// sibling inside every sort comparison and every rendered chip.
+    static func resolvedTitles(for items: [Knowledge]) -> [UUID: String] {
+        let bases = Dictionary(uniqueKeysWithValues: items.map { ($0.id, strongTitle(for: $0)) })
+        let counts = Dictionary(grouping: bases.values, by: { $0 }).mapValues(\.count)
+        return Dictionary(uniqueKeysWithValues: items.map { item in
+            let base = bases[item.id] ?? ""
+            if (counts[base] ?? 0) > 1, let extra = disambiguator(for: item, base: base) {
+                return (item.id, "\(base) · \(extra)")
+            }
+            return (item.id, base)
+        })
+    }
     static func chipTitle(for item: Knowledge, among siblings: [Knowledge], theme: String) -> String {
-        var text = keyword(for: item, among: siblings)
-        text = stripRepeatedTheme(text, theme: theme)
-        text = stripCommandLead(text)
-        if isWeak(text) { return keyword(for: item, among: siblings) }
-        return text
+        chipTitle(resolved: keyword(for: item, among: siblings), theme: theme)
+    }
+    static func chipTitle(resolved title: String, theme: String) -> String {
+        let text = stripCommandLead(stripRepeatedTheme(title, theme: theme))
+        return isWeak(text) ? title : text
     }
 
     static func explanationPieces(for item: Knowledge) -> [ExplanationPiece] {
@@ -334,6 +432,9 @@ enum KnowledgeLexicon {
     }
 
     static func previewUnavailableReason(for item: Knowledge) -> String? {
+        guard item.lifecycle != "soft_deleted" else {
+            return String(localized: "恢复使用后可以试一题。")
+        }
         guard mainQuestion(for: item) != nil else {
             return String(localized: "缺少主问题，暂时不能试一题。")
         }
@@ -520,16 +621,14 @@ struct ExplanationPiece: Hashable {
 
 private struct KnowledgeDeckOverlay: View {
     var items: [Knowledge]
+    var titles: [UUID: String]
     @Binding var index: Int
     var coordinator: ReviewCoordinator
     var onClose: () -> Void
+    var onAction: (KnowledgeAction, UUID) -> Void
 
     @Environment(\.openWindow) private var openWindow
     @Environment(\.runway) private var runway
-    @Query private var fsrsRows: [FsrsState]
-    @Query private var attempts: [ReviewAttempt]
-    @Environment(\.modelContext) private var modelContext
-    @State private var confirmPermanent = false
 
     var body: some View {
         ZStack {
@@ -538,11 +637,12 @@ private struct KnowledgeDeckOverlay: View {
                 .onTapGesture(perform: onClose)
 
             DepthCarousel(items: deckItems, index: $index, title: {
-                KnowledgeLexicon.keyword(for: $0.item, among: items)
+                titles[$0.id] ?? $0.item.title
             }) { wrapper in
                 KnowledgeDepthCard(
                     item: wrapper.item,
                     siblings: items,
+                    resolvedTitle: titles[wrapper.id] ?? wrapper.item.title,
                     onClose: onClose,
                     onPreview: {
                         guard let question = KnowledgeLexicon.mainQuestion(for: wrapper.item),
@@ -555,20 +655,10 @@ private struct KnowledgeDeckOverlay: View {
                         openWindow(id: "review")
                         onClose()
                     },
-                    onDelete: { confirmPermanent = true }
+                    onAction: { onAction($0, wrapper.item.id) }
                 )
             }
 
-        }
-        .alert(String(localized: "永久删除这条知识？"), isPresented: $confirmPermanent) {
-            Button(String(localized: "取消"), role: .cancel) {}
-            Button(String(localized: "永久删除"), role: .destructive) {
-                if items.indices.contains(index) {
-                    permanentlyDelete(items[index])
-                }
-            }
-        } message: {
-            Text(String(localized: "此操作不能恢复。来源若还被其他知识使用会保留。"))
         }
     }
 
@@ -576,24 +666,7 @@ private struct KnowledgeDeckOverlay: View {
         items.map { DeckItem(id: $0.id, item: $0) }
     }
 
-    private func permanentlyDelete(_ item: Knowledge) {
-        let id = item.id
-        if let state = fsrsRows.first(where: { $0.knowledgeId == id }) {
-            modelContext.delete(state)
-        }
-        for attempt in attempts where attempt.knowledgeId == id {
-            modelContext.delete(attempt)
-        }
-        let source = item.source
-        modelContext.delete(item)
-        if let source,
-           source.knowledgeItems.filter({ $0.id != id }).isEmpty,
-           source.tasks.isEmpty {
-            modelContext.delete(source)
-        }
-        try? modelContext.save()
-        onClose()
-    }
+
 }
 
 private struct DeckItem: Identifiable {
@@ -604,9 +677,10 @@ private struct DeckItem: Identifiable {
 private struct KnowledgeDepthCard: View {
     var item: Knowledge
     var siblings: [Knowledge]
+    var resolvedTitle: String
     var onClose: () -> Void
     var onPreview: () -> Void
-    var onDelete: () -> Void
+    var onAction: (KnowledgeAction) -> Void
     @Environment(\.modelContext) private var deletionContext
     @Environment(\.runway) private var runway
     @State private var sourceExpanded = false
@@ -653,12 +727,12 @@ private struct KnowledgeDepthCard: View {
                 Text(KnowledgeLexicon.displayTheme(for: item))
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Text(KnowledgeLexicon.keyword(for: item, among: siblings))
+                Text(resolvedTitle)
                     .font(.system(size: 22, weight: .bold))
                     .foregroundStyle(runway.ink)
                     .lineSpacing(2)
                     .lineLimit(2)
-                    .help(KnowledgeLexicon.keyword(for: item, among: siblings))
+                    .help(resolvedTitle)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
@@ -698,18 +772,12 @@ private struct KnowledgeDepthCard: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 HStack(alignment: .center, spacing: Runway.space) {
-                    Text("下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
+                    Text(item.lifecycle == "soft_deleted" ? "已移到回收站" : "下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer()
                     Menu {
-                        if item.lifecycle == "active" {
-                            Button(String(localized: "暂停")) { item.lifecycle = "paused" }
-                            Button(String(localized: "软删除"), role: .destructive) { item.lifecycle = "soft_deleted" }
-                        } else {
-                            Button(String(localized: "恢复")) { item.lifecycle = "active" }
-                        }
-                        Button(String(localized: "永久删除"), role: .destructive, action: onDelete)
+                        KnowledgeActionButtons(lifecycle: item.lifecycle, perform: onAction)
                     } label: {
                         Image(systemName: "ellipsis")
                             .font(.body.weight(.medium))
@@ -717,11 +785,13 @@ private struct KnowledgeDepthCard: View {
                             .frame(width: 28, height: 28)
                     }
                     .menuStyle(.borderlessButton)
-                    RunwayPrimaryButton(
-                        title: String(localized: "试一题"),
-                        enabled: previewUnavailableReason == nil,
-                        action: onPreview
-                    )
+                    if item.lifecycle != "soft_deleted" {
+                        RunwayPrimaryButton(
+                            title: String(localized: "试一题"),
+                            enabled: previewUnavailableReason == nil,
+                            action: onPreview
+                        )
+                    }
                 }
             }
             .padding(.horizontal, Runway.section)

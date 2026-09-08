@@ -257,6 +257,9 @@ private struct SettingsForm: View {
                 Text(String(localized: "用目标语言复习")).tag("target")
             }
         }
+        Section("会话管理") {
+            NavigationLink("已归档聊天") { ArchivedConversations() }
+        }
         Section(String(localized: "开发")) {
             Toggle(String(localized: "开发模式"), isOn: $settings.developerMode)
             if settings.developerMode {

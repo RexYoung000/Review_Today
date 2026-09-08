@@ -4,11 +4,15 @@ import SwiftData
 @main
 struct ModelMigrationTests {
     @MainActor static func main() throws {
-        let schema = Schema([Source.self, Knowledge.self, Question.self, CaptureTask.self, AppSettings.self,
+        var models: [any PersistentModel.Type] = [Source.self, Knowledge.self, Question.self, CaptureTask.self, AppSettings.self,
                              FsrsState.self, ReviewSession.self, ReviewAttempt.self, AgentSession.self,
                              AgentMessage.self, LearningTask.self, TaskEventRecord.self, SourceReference.self,
                              KnowledgeReference.self, SessionSummaryRecord.self, AgentRun.self,
-                             AgentRunControl.self, SessionEventRecord.self])
+                             AgentRunControl.self, SessionEventRecord.self]
+#if NEW_SCHEMA
+        models.append(SessionFolder.self)
+#endif
+        let schema = Schema(models)
         let url = URL(fileURLWithPath: CommandLine.arguments[2])
         let container = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: url))
         let context = container.mainContext
@@ -32,6 +36,7 @@ struct ModelMigrationTests {
             precondition(knowledge.count == 1 && knowledge[0].source?.rawText == "迁移测试资料：检索再生成")
             precondition(reviews.count == 1 && reviews[0].acked && reviews[0].effectiveGrade == "good")
 #if NEW_SCHEMA
+            precondition(sessions[0].folderID == nil)
             precondition(sessions[0].lifecycleRevision == 0 && sessions[0].lifecycleActionsJSON == "[]")
             precondition(sessions[0].memoryUseAllowed && sessions[0].memoryPolicyRevision == 0 && sessions[0].learningEvidenceJSON == "[]")
             precondition(sessions[0].thinkingStrength == "smart" && sessions[0].contextCapacityJSON == nil)

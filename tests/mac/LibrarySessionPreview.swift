@@ -14,7 +14,7 @@ final class LibrarySessionQA {
 
     private var folder: URL {
         URL(fileURLWithPath: Bundle.main.object(forInfoDictionaryKey: "PreviewProjectRoot") as! String)
-            .appendingPathComponent("docs/evidence/2026-09-08-library-sessions")
+            .appendingPathComponent("docs/evidence/2026-09-08-library-sessions/management")
     }
 
     func resize(_ width: CGFloat, _ height: CGFloat) {
@@ -104,6 +104,7 @@ struct LibrarySessionPreviewApp: App {
 
     init() {
         setenv("REVIEW_TODAY_M1_UI_FIXTURE", "1", 1)
+        setenv("REVIEW_TODAY_DECK_METRICS", "/tmp/review-today-deck-paint-ms.txt", 1)
         unsetenv("REVIEW_TODAY_NATIVE_TEST_DIR")
         precondition(Bundle.main.bundleIdentifier == "Rex.Review-Today.LibrarySessionPreview")
         precondition(AppRuntime.current.isPreview && !AppRuntime.current.allowsSending)
@@ -137,8 +138,23 @@ struct LibrarySessionPreviewApp: App {
         } catch { fatalError("Isolated UI fixture failed: \(error)") }
     }
 
+    @MainActor private func addStressCards() {
+        let context = container.mainContext
+        let items = (try? context.fetch(FetchDescriptor<Knowledge>())) ?? []
+        guard let original = items.first(where: { $0.explanation.count > 500 }), items.count < 100 else { return }
+        for index in items.count..<100 {
+            let card = Knowledge(learningGoal: "压力样例 \(index)", knowledgeType: original.knowledgeType, theme: original.theme, contentLanguage: "zh", questionLanguage: "zh", answerLanguage: "zh", evidenceExcerpt: original.evidenceExcerpt, evidenceLocator: "隔离性能样例", title: "压力样例 \(index)", explanation: original.explanation)
+            card.source = original.source; context.insert(card)
+            if let q = original.questions.first {
+                let question = Question(variantIndex: 0, promptText: q.promptText, scoringSpecJSON: q.scoringSpecJSON)
+                question.knowledge = card; context.insert(question)
+            }
+        }
+        try? context.save()
+    }
+
     var body: some Scene {
-        WindowGroup("知识卡与会话 · 隔离原生验收") {
+        WindowGroup("知识卡与会话 · 隔离原生验收", id: "main") {
             ContentView(coordinator: coordinator).modelContainer(container).runwayAppearance()
                 .environment(\.brandTrialStill, qa.reduced)
         }
@@ -146,6 +162,7 @@ struct LibrarySessionPreviewApp: App {
         .defaultSize(width: 1280, height: 820).windowResizability(.contentMinSize)
         .commands {
             CommandMenu("验收") {
+                Button("添加到100张知识（隔离数据）") { addStressCards() }
                 Button("标准窗口") { qa.resize(1280, 820) }.keyboardShortcut("1", modifiers: [.command, .option])
                 Button("最小窗口") { qa.resize(760, 620) }.keyboardShortcut("2", modifiers: [.command, .option])
                 Button("切换深浅主题") { let appearance = AppearanceController.shared; appearance.setDark(!appearance.isDark, screenPoint: nil, reduceMotion: true) }.keyboardShortcut("d", modifiers: [.command, .option])
@@ -154,5 +171,6 @@ struct LibrarySessionPreviewApp: App {
                 Button(qa.recording ? "停止本窗口录制" : "录制本窗口（最多45秒）") { qa.toggleRecording() }.keyboardShortcut("r", modifiers: [.command, .option])
             }
         }
+        Settings { SettingsView().modelContainer(container).runwayAppearance() }
     }
 }

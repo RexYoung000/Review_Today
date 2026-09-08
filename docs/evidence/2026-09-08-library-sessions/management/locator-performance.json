@@ -1,0 +1,101 @@
+{
+  "method": "DEBUG isolated native preview; measured locator input-handler entry to selected-card AppKit draw, not physical display scanout. Live dragging can coalesce intermediate samples. Mix of rail drags and native accessibility increments. No model/service requests.",
+  "finding": "List sort repeatedly resolved every sibling title; precompute title/disambiguation once per list/group. Rear cards also avoid idle content construction.",
+  "limits": [
+    "100-card before sample size is only 2, not a robust benchmark.",
+    "Local measurements are not a display-frame-rate guarantee or cross-device performance promise.",
+    "Nearest-rank p95; reported separately from physical responsiveness."
+  ],
+  "series": {
+    "25_before": {
+      "count": 27,
+      "median_ms": 188.93,
+      "p95_nearest_rank_ms": 240.064,
+      "max_ms": 279.26,
+      "samples_ms": [
+        193.485,
+        186.012,
+        187.48,
+        193.014,
+        190.825,
+        187.614,
+        177.405,
+        196.662,
+        193.176,
+        188.765,
+        183.224,
+        188.93,
+        179.677,
+        189.192,
+        185.302,
+        184.384,
+        184.994,
+        190.199,
+        182.697,
+        180.477,
+        186.135,
+        203.835,
+        212.18,
+        196.152,
+        279.26,
+        225.028,
+        240.064
+      ]
+    },
+    "25_after": {
+      "count": 14,
+      "median_ms": 73.015,
+      "p95_nearest_rank_ms": 77.72,
+      "max_ms": 77.72,
+      "samples_ms": [
+        62.632,
+        58.353,
+        77.72,
+        76.867,
+        72.477,
+        71.684,
+        72.483,
+        73.524,
+        72.506,
+        75.483,
+        74.995,
+        77.088,
+        74.196,
+        71.847
+      ]
+    },
+    "100_before": {
+      "count": 2,
+      "median_ms": 5381.1695,
+      "p95_nearest_rank_ms": 5519.262,
+      "max_ms": 5519.262,
+      "samples_ms": [
+        5519.262,
+        5243.077
+      ]
+    },
+    "100_after": {
+      "count": 15,
+      "median_ms": 99.781,
+      "p95_nearest_rank_ms": 112.878,
+      "max_ms": 112.878,
+      "samples_ms": [
+        112.878,
+        103.858,
+        92.805,
+        106.647,
+        103.195,
+        96.696,
+        95.639,
+        101.917,
+        100.569,
+        96.656,
+        95.778,
+        92.823,
+        95.038,
+        99.781,
+        101.172
+      ]
+    }
+  }
+}

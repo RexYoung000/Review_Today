@@ -1,0 +1,38 @@
+review-today-management-final-checks.log
+PASS: scoped knowledge selection, atomic lifecycle rollback, recycle/undo, permanent-delete revalidation, shared source retention, question/review cleanup, continuous locator and stale motion
+PASS: single visible draft and stable first-send identity, save failure, folder validation/move/rollback, archive search scope, folder retention, disk reopen and non-destructive folder deletion
+PASS: initial/explicit/outside/locked/stale focus, protected text and selection, complete legacy titles and explanations without writes, exact capsule geometry, native book configuration
+PASS: reversible deck selection, following drag, rapid stale-completion rejection, wrap, snapback, flick, data reconciliation, single/empty, dimensions, native title/body/axis/key/text/wheel scope, trackpad pause, key/app loss and deferred teardown cancellation
+PASS: scoped title/tag search, search/reset boundaries, range and identity selection, current visible action targets, live scope changes, partial retry, empty-scope tools and no-results recovery
+PASS: deletion preview, rollback, scope revalidation, shared/unknown protection, batch purge, preview removal, durable offline tombstones and no index resurrection
+
+review-today-management-window-checks.log
+PASS: single visible draft and stable first-send identity, save failure, folder validation/move/rollback, archive search scope, folder retention, disk reopen and non-destructive folder deletion
+PASS: initial/explicit/outside/locked/stale focus, protected text and selection, complete legacy titles and explanations without writes, exact capsule geometry, native book configuration
+
+review-today-folders-migration.log
+PASS: old-schema fixture saved
+PASS: prior disk schema migrated without changing conversation, source, knowledge, review or draft
+
+review-today-management-contracts5.log
+PASS: single visible draft and stable first-send identity, save failure, folder validation/move/rollback, archive search scope, folder retention, disk reopen and non-destructive folder deletion
+PASS: scoped knowledge selection, atomic lifecycle rollback, recycle/undo, permanent-delete revalidation, shared source retention, question/review cleanup, continuous locator and stale motion
+PASS: reversible deck selection, following drag, rapid stale-completion rejection, wrap, snapback, flick, data reconciliation, single/empty, dimensions, native title/body/axis/key/text/wheel scope, trackpad pause, key/app loss and deferred teardown cancellation
+PASS: deletion preview, rollback, scope revalidation, shared/unknown protection, batch purge, preview removal, durable offline tombstones and no index resurrection
+PASS: 12 scenarios, 6-card refresh, protected prefill/IME/undo, sidebar preference, native input, atomic first-send failure/retry, no empty Sessions, independent drafts/preferences, tags, partial persistence, activity
+PASS: typed local recall, no drafts/consent, archive vs exclusion, policy/content versions, late-run fence, no formal review writes
+PASS: ancestor-focus guard, rendered single-row focus independent of selection, light/dark/disabled
+PASS: initial/explicit/outside/locked/stale focus, protected text and selection, complete legacy titles and explanations without writes, exact capsule geometry, native book configuration
+
+review-today-management-verified-contracts.log
+PASS: scoped knowledge selection, atomic lifecycle rollback, recycle/undo, permanent-delete revalidation, shared source retention, question/review cleanup, continuous locator and stale motion
+PASS: single visible draft and stable first-send identity, save failure, folder validation/move/rollback, archive search scope, folder retention, disk reopen and non-destructive folder deletion
+PASS: reversible deck selection, following drag, rapid stale-completion rejection, wrap, snapback, flick, data reconciliation, single/empty, dimensions, native title/body/axis/key/text/wheel scope, trackpad pause, key/app loss and deferred teardown cancellation
+PASS: initial/explicit/outside/locked/stale focus, protected text and selection, complete legacy titles and explanations without writes, exact capsule geometry, native book configuration
+PASS: runtime/storage/network identity, preview submit guard, durable isolation, invalid acceptance and stable retry, delivery feedback, bounded static samples
+
+Debug: xcodebuild build succeeded (final window routing source).
+Release: xcodebuild CODE_SIGNING_ALLOWED=NO build succeeded (final window routing source).
+Debug codesign --verify --deep --strict: exit 0.
+Native preview: signed build succeeded.
+All 8 original-speed MP4 files: ffmpeg full decode with passthrough/demux time base, no stderr.
