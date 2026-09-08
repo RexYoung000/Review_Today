@@ -12,8 +12,17 @@ struct SessionListSelection {
     var scopeTitle: String { showArchived ? "已归档" : "进行中" }
     var searchPrompt: String { showArchived ? "搜索已归档会话" : "搜索进行中会话" }
 
+    func includes(status: String) -> Bool {
+        status == (showArchived ? "archived" : "active")
+    }
+
+    /// Use the unfiltered scope: no search results must not remove the way out.
+    func showsListActions(hasSessionsInScope: Bool) -> Bool {
+        hasSessionsInScope || searchVisible || multiSelect
+    }
+
     func matches(status: String, title: String, tags: [String]) -> Bool {
-        guard status == (showArchived ? "archived" : "active") else { return false }
+        guard includes(status: status) else { return false }
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         return query.isEmpty || title.localizedCaseInsensitiveContains(query)
             || tags.contains { $0.localizedCaseInsensitiveContains(query) }

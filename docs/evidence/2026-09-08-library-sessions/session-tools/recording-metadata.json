@@ -1,0 +1,16 @@
+{
+  "file": "native-session-tools.mp4",
+  "decode": "passed",
+  "programs": [],
+  "stream_groups": [],
+  "streams": [
+    {
+      "width": 760,
+      "height": 652,
+      "nb_frames": "1187"
+    }
+  ],
+  "format": {
+    "duration": "45.053333"
+  }
+}

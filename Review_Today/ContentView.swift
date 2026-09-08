@@ -167,6 +167,8 @@ struct AppSidebar: View {
     private var showArchived: Bool { sessionList.showArchived }
     private var searchText: String { sessionList.searchText }
     private var multiSelect: Bool { sessionList.multiSelect }
+    private var hasSessionsInScope: Bool { sessions.contains { sessionList.includes(status: $0.status) } }
+    private var showsListActions: Bool { sessionList.showsListActions(hasSessionsInScope: hasSessionsInScope) }
     private var visibleSessionIDs: [UUID] { visibleSessions.map(\.id) }
     private var visibleSelectedIDs: Set<UUID> { sessionList.visibleSelectedIDs(in: visibleSessionIDs) }
 
@@ -284,28 +286,34 @@ struct AppSidebar: View {
             .padding(.horizontal, 10)
             .environment(\.defaultMinListRowHeight, 30)
 
-            Group {
-                if multiSelect {
-                    sessionBatchToolbar
-                } else {
-                    HStack(spacing: 0) {
-                        Text(sessionList.scopeTitle).font(.caption).foregroundStyle(.secondary).padding(.leading, 4)
-                        Spacer(minLength: 0)
-                        ChromeIconButton(title: sessionList.searchPrompt, symbol: "magnifyingglass", selected: sessionList.searchVisible) {
-                            sessionList.toggleSearch()
-                            selectionDelays = [:]
-                            batchError = nil
-                        }
-                        ChromeIconButton(title: "多选\(sessionList.scopeTitle)会话", symbol: "checklist") {
-                            sessionList.beginSelection()
-                            sessionListFocused = true
-                            batchError = nil
+            if showsListActions || showArchived {
+                Group {
+                    if multiSelect {
+                        sessionBatchToolbar
+                    } else {
+                        HStack(spacing: 6) {
+                            Text(sessionList.scopeTitle).font(.caption).foregroundStyle(.secondary).padding(.leading, 4)
+                            Spacer(minLength: 0)
+                            if hasSessionsInScope || sessionList.searchVisible {
+                                SessionListToolbarButton(title: "搜索", accessibilityTitle: sessionList.searchPrompt, selected: sessionList.searchVisible, secondary: true) {
+                                    sessionList.toggleSearch()
+                                    selectionDelays = [:]
+                                    batchError = nil
+                                }
+                            }
+                            if hasSessionsInScope {
+                                SessionListToolbarButton(title: "多选", accessibilityTitle: "多选\(sessionList.scopeTitle)会话", secondary: true) {
+                                    sessionList.beginSelection()
+                                    sessionListFocused = true
+                                    batchError = nil
+                                }
+                            }
                         }
                     }
                 }
+                .frame(height: multiSelect ? 32 : (showsListActions ? 26 : nil))
+                .padding(.horizontal, 10)
             }
-            .frame(height: 32)
-            .padding(.horizontal, 10)
 
             if sessionList.searchVisible {
               TextField(sessionList.searchPrompt, text: Binding(get: { sessionList.searchText }, set: {
@@ -536,16 +544,30 @@ struct AppSidebar: View {
 
 private struct SessionListToolbarButton: View {
     let title: String
+    var accessibilityTitle: String? = nil
+    var selected = false
+    var secondary = false
     let action: () -> Void
     @FocusState private var focused: Bool
+    @State private var hovering = false
+    @Environment(\.runway) private var runway
+    @Environment(\.controlActiveState) private var controlState
 
     var body: some View {
         Button(action: action) {
-            Text(title).lineLimit(1).fixedSize().frame(minHeight: 24)
+            Text(title).lineLimit(1).fixedSize()
+                .font(secondary ? .system(size: 12) : .caption)
+                .foregroundStyle(secondary && !selected && !hovering ? runway.copy : runway.ink)
+                .frame(minWidth: secondary ? 28 : nil, minHeight: secondary ? 22 : 24)
         }
-        .buttonStyle(InteractionButtonStyle(focused: focused, padding: 3))
+        .buttonStyle(InteractionButtonStyle(selected: selected, focused: focused, padding: secondary ? 2 : 3))
         .focusable().focusEffectDisabled().focused($focused)
-        .help(title)
+        .help(accessibilityTitle ?? title)
+        .accessibilityLabel(accessibilityTitle ?? title)
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
+        .onHover { hovering = $0 }
+        .onChange(of: controlState) { _, state in if state != .key { hovering = false } }
+        .onDisappear { hovering = false }
     }
 }
 

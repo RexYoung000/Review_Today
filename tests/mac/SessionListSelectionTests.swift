@@ -76,6 +76,29 @@ struct SessionListSelectionTests {
         state.toggleSearch(); state.setSearchText("Alpha"); state.beginSelection()
         state.reset(archived: false)
         precondition(!state.showArchived && !state.searchVisible && state.searchText.isEmpty && !state.multiSelect && state.selectedIDs.isEmpty)
-        print("PASS: scoped title/tag search, search/reset boundaries, range and identity selection, current visible action targets, live scope changes and partial retry")
+
+        // A real empty scope differs from a populated scope with no search hits.
+        let lastSession = Session(title: "Last active", status: "active")
+        var controls = SessionListSelection()
+        func actionsVisible() -> Bool {
+            controls.showsListActions(hasSessionsInScope: controls.includes(status: lastSession.status))
+        }
+        precondition(actionsVisible())
+        controls.toggleSearch(); controls.setSearchText("no matching title")
+        precondition(!controls.matches(status: lastSession.status, title: lastSession.title, tags: []))
+        precondition(actionsVisible(), "zero search hits must retain search and clear controls")
+        lastSession.status = "archived"
+        precondition(actionsVisible(), "an open search must remain dismissible after the last row leaves the scope")
+        controls.toggleSearch()
+        precondition(!actionsVisible(), "an archived row must not keep tools visible in the empty active scope")
+        controls.beginSelection()
+        precondition(actionsVisible(), "an in-progress selection must retain Done even when its scope becomes empty")
+        controls.endSelection()
+        precondition(!actionsVisible())
+        controls.reset(archived: true)
+        precondition(actionsVisible() && controls.scopeTitle == "已归档")
+        lastSession.status = "active"
+        precondition(!actionsVisible() && controls.showArchived, "an empty archive keeps its scope label without list actions")
+        print("PASS: scoped title/tag search, search/reset boundaries, range and identity selection, current visible action targets, live scope changes, partial retry, empty-scope tools and no-results recovery")
     }
 }

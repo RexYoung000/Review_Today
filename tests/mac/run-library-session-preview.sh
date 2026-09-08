@@ -27,7 +27,10 @@ for resource in pathlib.Path('Review_Today').glob('*.html'):
     shutil.copy2(resource, resources / resource.name)
 fonts = pathlib.Path('Review_Today/Fonts')
 if fonts.exists():
-    shutil.copytree(fonts, resources / 'Fonts', dirs_exist_ok=True)
+    # Match Xcode's flattened resource bundle and BrandTypography's lookup.
+    for font_resource in fonts.iterdir():
+        if font_resource.is_file():
+            shutil.copy2(font_resource, resources / font_resource.name)
 for localized in pathlib.Path('Review_Today').glob('*.lproj'):
     shutil.copytree(localized, resources / localized.name, dirs_exist_ok=True)
 with (contents / 'Info.plist').open('wb') as file:
