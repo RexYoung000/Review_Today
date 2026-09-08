@@ -54,6 +54,7 @@ Debug 日常构建使用工程配置的 Apple Development 签名，需本机相�
 
 | 文档 | 作用 |
 |---|---|
+| [Harness 评测体系与飞书工作台](docs/harness-evaluation.md) | v1 40 例已实现；100 例、六维/五模式、优秀分层与持续评测已定义，待实装和人工校准 |
 | [Agent Harness V2 主规格](docs/agent-harness-v2.md) | 当前唯一跨产品、交互和技术实施基线 |
 | [M1 Agent Harness V2 验收契约](docs/m1-acceptance.md) | Session、四模式、恢复、真实 Mac 验收及旧闭环回归 |
 | [最小闭环与渐进式里程碑](docs/demo-plan.md) | 历史里程碑记录及 2026-09-02 顺序修订 |
