@@ -1,0 +1,44 @@
+[
+  {
+    "file": "native-deck.mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 820,
+          "avg_frame_rate": "190800/7159",
+          "duration": "23.856667",
+          "nb_read_frames": "636"
+        }
+      ],
+      "format": {
+        "duration": "23.856667"
+      }
+    },
+    "exportNote": "Native current-process window recording; 30 fps target; actual presentation timestamps; 1280x820; reduced=false; no audio.",
+    "decode": "passed with source time base; no frame-rate conversion"
+  },
+  {
+    "file": "native-reduced.mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 820,
+          "avg_frame_rate": "109800/3869",
+          "duration": "32.230000",
+          "nb_read_frames": "915"
+        }
+      ],
+      "format": {
+        "duration": "32.230000"
+      }
+    },
+    "exportNote": "Native current-process window recording; 30 fps target; actual presentation timestamps; 1280x820; reduced=true; no audio.",
+    "decode": "passed with source time base; no frame-rate conversion"
+  }
+]

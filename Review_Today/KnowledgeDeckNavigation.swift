@@ -86,14 +86,14 @@ struct KnowledgeDeckNavigation<ID: Hashable> {
 }
 
 enum KnowledgeDeckMetrics {
-    static func stackPlacement(depth: CGFloat) -> (y: CGFloat, scale: CGFloat) {
-        // Scale is anchored at the top. At maximum height, each 32 pt descent
-        // must exceed its 14 pt height reduction to leave 18 pt visibly exposed.
-        (y: depth * 32, scale: 1 - depth * 0.025)
+    static func stackPlacement(depth: CGFloat, cardHeight: CGFloat) -> (y: CGFloat, scale: CGFloat) {
+        // Compensate for top-anchored scaling so each rear card exposes the same
+        // 24 pt bottom edge in both short and tall windows.
+        (y: depth * (cardHeight * 0.025 + 24), scale: 1 - depth * 0.025)
     }
 
     static func cardSize(in available: CGSize) -> CGSize {
-        CGSize(width: max(1, min(880, available.width - 96)),
-               height: max(1, min(560, available.height - 112)))
+        CGSize(width: max(1, min(760, available.width - 96)),
+               height: max(1, min(680, available.height - 128)))
     }
 }

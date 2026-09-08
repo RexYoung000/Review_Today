@@ -112,6 +112,12 @@ struct LibrarySessionPreviewApp: App {
             let context = container.mainContext
             let source = Source(inputType: "text", rawText: "原生交互验收的隔离样例，不是用户学习记录。")
             context.insert(source)
+            let rag = Knowledge(learningGoal: "解释 RAG 的主要优势", knowledgeType: "concept", theme: "检索增强生成（RAG）", contentLanguage: "zh", questionLanguage: "zh", answerLanguage: "zh", evidenceExcerpt: "隔离排版样例：RAG 使用可验证的外部来源组织回答；仍需核对来源、权限和生成质量。", evidenceLocator: "隔离验收样例", title: "RAG 的主要优势", explanation: "通过 RAG 将大语言模型建立在一组可验证的外部事实之上，有助于实现以下几个有益目标：\n\n1. 准确性\n2. 成本效益\n3. 开发人员控制台\n4. 数据主权和隐私")
+            rag.source = source
+            let ragSpec = AgentAPI.ScoringSpec(learningGoal: rag.learningGoal, mustCover: ["准确性：提供可引用来源，减少错误或误导性信息", "成本效益：避免高昂重训练/微调，更新来源更方便", "开发和维护更直接：便于获取反馈、故障排除和修复应用", "数据主权和隐私：敏感数据可保留在本地并按授权级别限制检索"], acceptableParaphrases: [], commonMisconceptions: ["把优势只说成更快", "忽略准确性与可验证来源之间的关系", "认为 RAG 天然消除所有隐私风险"], evidence: rag.evidenceExcerpt, orderRules: "按原文四类优势组织，至少覆盖准确性与成本效益。")
+            let ragQuestion = Question(variantIndex: 0, promptText: "请根据原文列出的 RAG 主要优势，并分别说明这些优势是如何体现的。", scoringSpecJSON: String(decoding: try JSONEncoder().encode(ragSpec), as: UTF8.self))
+            ragQuestion.knowledge = rag
+            context.insert(rag); context.insert(ragQuestion)
             let titles = ["RAG 的检索与生成分别负责什么", "向量嵌入如何表达内容的语义", "长内容：混合检索、重排与来源校验怎样共同影响复杂问题的答案质量", "为什么检索结果还需要权限检查", "如何选择合适的文本分块", "如何区分召回率与准确率", "如何判断引用是否支持结论", "文档更新后的索引维护", "RAG 与微调的适用边界", "top-k 与重排的取舍", "知识截止日期与时效性"] + (1...12).map { "定位条滚动样例 \($0)" }
             for (index, title) in titles.enumerated() {
                 let paragraph = "检索负责找到与当前问题相关、且用户有权访问的资料；生成负责依据这些资料组织回答。两者都需要评估，检索到内容不代表结论一定正确。"

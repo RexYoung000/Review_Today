@@ -57,6 +57,18 @@ struct UIPolishContractTests {
         }
         let legacy = card("", "说明 RAG 的检索与生成阶段分别做什么。")
         precondition(KnowledgeLexicon.chipTitle(for: legacy, among: [legacy], theme: "检索增强生成（RAG）") == "检索与生成阶段分别做什么。")
+        let prose = "准确性来自可核对的来源。内容仍需判断；省略号……也是原文。"
+        precondition(KnowledgeLexicon.parse(prose) == [.paragraph(prose)], "prose, punctuation and ellipses must survive display parsing")
+        let introduction = "下面是四项优势："
+        precondition(KnowledgeLexicon.parse(introduction + "\n\n1. 准确性。\n2、成本效益。\n- 可核对来源。") == [
+            .paragraph(introduction), .numbered(1, "准确性。"), .numbered(2, "成本效益。"), .bullet("可核对来源。")
+        ], "an introduction must not acquire a duplicate list number")
+        let repeated = Array(repeating: "相同原文段落。", count: 10)
+        precondition(KnowledgeLexicon.parse(repeated.joined(separator: "\n\n")) == repeated.map(ExplanationPiece.paragraph), "long and repeated paragraphs must not be dropped")
+        for text in ["3.14 是近似值。", "模型 v2.1 和 v3.2 的差异。", "第一步：检索。第二步：生成。", "前言：1. 原文项；2. 原文项。"] {
+            precondition(KnowledgeLexicon.parse(text) == [.paragraph(text)], "inline prose must remain intact: \(text)")
+        }
+        precondition(KnowledgeLexicon.parse("7. 保留原编号。\r\n8) 保留句号。") == [.numbered(7, "保留原编号。"), .numbered(8, "保留句号。")])
         let config = MascotMotionConfiguration(ambient: true, idleClip: .readingAndLooking)
         let json = try JSONSerialization.jsonObject(with: JSONEncoder().encode(config)) as! [String: Any]
         precondition(json["idleClip"] as? String == "sidebar_loop")
@@ -69,6 +81,6 @@ struct UIPolishContractTests {
                 precondition(pill.contains(point) == Capsule().path(in: rect).contains(point), "feedback must match the capsule fill at corners")
             }
         }
-        print("PASS: initial/explicit/outside/locked/stale focus, protected text and selection, complete legacy titles without writes, exact capsule geometry, native book configuration")
+        print("PASS: initial/explicit/outside/locked/stale focus, protected text and selection, complete legacy titles and explanations without writes, exact capsule geometry, native book configuration")
     }
 }

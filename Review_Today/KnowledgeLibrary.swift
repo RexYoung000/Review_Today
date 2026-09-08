@@ -464,107 +464,24 @@ enum KnowledgeLexicon {
     }
 
     static func parse(_ text: String) -> [ExplanationPiece] {
-        let normalized = text
-            .replacingOccurrences(of: "\r\n", with: "\n")
-            .replacingOccurrences(of: "......", with: "\n")
-            .replacingOccurrences(of: "……", with: "\n")
-            .replacingOccurrences(of: "…", with: "\n")
-        let lines = normalized
+        text.replacingOccurrences(of: "\r\n", with: "\n")
             .components(separatedBy: "\n")
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
-
-        if lines.count > 1 {
-            return lines.prefix(8).enumerated().map { parseLine($0.element, fallbackIndex: $0.offset + 1) }
-        }
-
-        let steps = splitSteps(normalized)
-        if steps.count > 1 {
-            return steps.prefix(6).enumerated().map { ExplanationPiece.numbered($0.offset + 1, tidy($0.element)) }
-        }
-
-        if let numbered = splitInlineNumbers(normalized), numbered.count >= 2 {
-            return numbered
-        }
-
-        let sentences = splitSentences(normalized).map(tidy).filter { $0.count > 3 }
-        if sentences.count >= 2 {
-            return sentences.prefix(6).enumerated().map { ExplanationPiece.numbered($0.offset + 1, $0.element) }
-        }
-        if let only = sentences.first, !only.isEmpty {
-            return [.paragraph(only)]
-        }
-        return [.paragraph(normalized.trimmingCharacters(in: .whitespacesAndNewlines))]
+            .map(parseLine)
     }
 
-    private static func parseLine(_ line: String, fallbackIndex: Int) -> ExplanationPiece {
-        if let match = firstMatch(#"^(\d+)\s*[\.、．\)]\s*(.+)$"#, in: line), match.count >= 3,
-           let number = Int(match[1]) {
-            return .numbered(number, tidy(match[2]))
+    private static func parseLine(_ line: String) -> ExplanationPiece {
+        // A dot immediately followed by a digit may be a decimal or a version.
+        // Only explicit list markers become rows; prose keeps its text intact.
+        if let match = firstMatch(#"^(\d+)\s*(?:[、．\)]\s*|\.\s+)(.+)$"#, in: line),
+           match.count >= 3, let number = Int(match[1]) {
+            return .numbered(number, match[2])
         }
-        if let match = firstMatch(#"^第\s*([0-9一二三四五六七八九十]+)\s*[步点条]\s*[：:.]?\s*(.+)$"#, in: line),
-           match.count >= 3 {
-            return .numbered(fallbackIndex, tidy(match[2]))
+        if let match = firstMatch(#"^(?:[-*]\s+|[•·]\s*)(.+)$"#, in: line), match.count >= 2 {
+            return .bullet(match[1])
         }
-        if let match = firstMatch(#"^[-*•·]\s*(.+)$"#, in: line), match.count >= 2 {
-            return .bullet(tidy(match[1]))
-        }
-        return .numbered(fallbackIndex, tidy(line))
-    }
-
-    private static func splitInlineNumbers(_ text: String) -> [ExplanationPiece]? {
-        guard let regex = try? NSRegularExpression(pattern: #"\d+\s*[\.、．\)]\s*"#) else { return nil }
-        let nsText = text as NSString
-        let matches = regex.matches(in: text, range: NSRange(location: 0, length: nsText.length))
-        guard matches.count >= 2 else { return nil }
-        var pieces: [ExplanationPiece] = []
-        for (index, match) in matches.enumerated() {
-            let start = match.range.location + match.range.length
-            let end = index + 1 < matches.count ? matches[index + 1].range.location : nsText.length
-            let body = nsText.substring(with: NSRange(location: start, length: max(0, end - start)))
-            let cleaned = tidy(body)
-            if !cleaned.isEmpty { pieces.append(.numbered(index + 1, cleaned)) }
-        }
-        return pieces.count >= 2 ? pieces : nil
-    }
-
-    private static func splitSentences(_ text: String) -> [String] {
-        var sentences: [String] = []
-        var current = ""
-        for character in text {
-            current.append(character)
-            if "。！？；;".contains(character) {
-                let piece = current.trimmingCharacters(in: .whitespaces)
-                if !piece.isEmpty { sentences.append(piece) }
-                current = ""
-            }
-        }
-        let tail = current.trimmingCharacters(in: .whitespaces)
-        if !tail.isEmpty { sentences.append(tail) }
-        return sentences
-    }
-
-    private static func splitSteps(_ text: String) -> [String] {
-        guard let regex = try? NSRegularExpression(pattern: #"第\s*[0-9一二三四五六七八九十]+\s*步"#) else {
-            return [text]
-        }
-        let nsText = text as NSString
-        let matches = regex.matches(in: text, range: NSRange(location: 0, length: nsText.length))
-        guard matches.count >= 2 else { return [text] }
-        var parts: [String] = []
-        for (index, match) in matches.enumerated() {
-            let start = match.range.location
-            let end = index + 1 < matches.count ? matches[index + 1].range.location : nsText.length
-            let piece = nsText.substring(with: NSRange(location: start, length: end - start))
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            if !piece.isEmpty { parts.append(piece) }
-        }
-        return parts
-    }
-
-    private static func tidy(_ text: String) -> String {
-        text.trimmingCharacters(in: .whitespacesAndNewlines)
-            .trimmingCharacters(in: CharacterSet(charactersIn: "。；;"))
+        return .paragraph(line)
     }
 
     private static func firstMatch(_ pattern: String, in text: String) -> [String]? {
@@ -578,7 +495,7 @@ enum KnowledgeLexicon {
     }
 }
 
-struct ExplanationPiece: Identifiable, Hashable {
+struct ExplanationPiece: Hashable {
     enum Kind: Hashable {
         case numbered(Int)
         case bullet
@@ -587,7 +504,6 @@ struct ExplanationPiece: Identifiable, Hashable {
 
     var kind: Kind
     var text: String
-    var id: String { "\(kind)-\(text)" }
 
     static func numbered(_ number: Int, _ text: String) -> ExplanationPiece {
         ExplanationPiece(kind: .numbered(number), text: text)
@@ -627,6 +543,7 @@ private struct KnowledgeDeckOverlay: View {
                 KnowledgeDepthCard(
                     item: wrapper.item,
                     siblings: items,
+                    onClose: onClose,
                     onPreview: {
                         guard let question = KnowledgeLexicon.mainQuestion(for: wrapper.item),
                               KnowledgeLexicon.previewUnavailableReason(for: wrapper.item) == nil
@@ -642,19 +559,6 @@ private struct KnowledgeDeckOverlay: View {
                 )
             }
 
-            Button(action: onClose) {
-                Image(systemName: "xmark")
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(runway.ink)
-                    .frame(width: 32, height: 32)
-                    .background(runway.card.opacity(0.94), in: Circle())
-                    .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
-            }
-            .buttonStyle(InteractionButtonStyle(padding: 0, outline: .capsule))
-            .help("关闭知识详情").accessibilityLabel("关闭知识详情")
-            .keyboardShortcut(.cancelAction)
-            .padding(20)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
         }
         .alert(String(localized: "永久删除这条知识？"), isPresented: $confirmPermanent) {
             Button(String(localized: "取消"), role: .cancel) {}
@@ -700,11 +604,13 @@ private struct DeckItem: Identifiable {
 private struct KnowledgeDepthCard: View {
     var item: Knowledge
     var siblings: [Knowledge]
+    var onClose: () -> Void
     var onPreview: () -> Void
     var onDelete: () -> Void
     @Environment(\.modelContext) private var deletionContext
     @Environment(\.runway) private var runway
     @State private var sourceExpanded = false
+    @State private var misconceptionsExpanded = false
 
     private var mainQuestion: Question? { KnowledgeLexicon.mainQuestion(for: item) }
     private var spec: AgentAPI.ScoringSpec? { KnowledgeLexicon.scoring(for: item) }
@@ -721,12 +627,12 @@ private struct KnowledgeDepthCard: View {
     private var pieces: [ExplanationPiece] { KnowledgeLexicon.explanationPieces(for: item) }
 
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { _ in
             VStack(alignment: .leading, spacing: 0) {
                 titleBlock
 
                 ScrollView(.vertical, showsIndicators: true) {
-                    readingContent(width: geometry.size.width)
+                    readingContent
                         .padding(.horizontal, Runway.section)
                         .padding(.bottom, Runway.section)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -742,54 +648,48 @@ private struct KnowledgeDepthCard: View {
     }
 
     private var titleBlock: some View {
-        VStack(alignment: .leading, spacing: Runway.space) {
-            Text(KnowledgeLexicon.displayTheme(for: item))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Text(KnowledgeLexicon.keyword(for: item, among: siblings))
-                .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(runway.ink)
-                .lineSpacing(2)
-                .lineLimit(2)
-                .help(KnowledgeLexicon.keyword(for: item, among: siblings))
+        HStack(alignment: .top, spacing: Runway.gap) {
+            VStack(alignment: .leading, spacing: Runway.space) {
+                Text(KnowledgeLexicon.displayTheme(for: item))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(KnowledgeLexicon.keyword(for: item, among: siblings))
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(runway.ink)
+                    .lineSpacing(2)
+                    .lineLimit(2)
+                    .help(KnowledgeLexicon.keyword(for: item, among: siblings))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+            .knowledgeDeckDragSurface()
+            Button(action: onClose) {
+                Image(systemName: "xmark")
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 28, height: 28)
+            }
+            .buttonStyle(InteractionButtonStyle(padding: 0, outline: .capsule))
+            .help("关闭知识详情").accessibilityLabel("关闭知识详情")
+            .keyboardShortcut(.cancelAction)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, Runway.section)
         .padding(.top, Runway.section)
         .padding(.bottom, Runway.section)
-        .knowledgeDeckDragSurface()
     }
 
-    @ViewBuilder
-    private func readingContent(width: CGFloat) -> some View {
-        if width >= 640 {
-            let columnsWidth = max(0, width - Runway.section * 3)
-            HStack(alignment: .top, spacing: Runway.section) {
-                VStack(alignment: .leading, spacing: Runway.section) {
-                    detailBlock
-                    sourceBlock
-                }
-                .frame(width: columnsWidth * 0.6, alignment: .topLeading)
-
-                VStack(alignment: .leading, spacing: Runway.section) {
-                    questionBlock
-                    memoryBlock
-                }
-                .frame(width: columnsWidth * 0.4, alignment: .topLeading)
-            }
-        } else {
-            VStack(alignment: .leading, spacing: Runway.section) {
-                detailBlock
-                questionBlock
-                memoryBlock
-                sourceBlock
-            }
+    private var readingContent: some View {
+        VStack(alignment: .leading, spacing: 28) {
+            questionBlock
+            detailBlock
+            memoryBlock
+            sourceBlock
         }
     }
 
     private var footer: some View {
         VStack(spacing: 0) {
-            Rectangle().fill(runway.hairline).frame(height: 1)
             VStack(alignment: .leading, spacing: Runway.space) {
                 if let previewUnavailableReason {
                     Label(previewUnavailableReason, systemImage: "exclamationmark.triangle")
@@ -826,7 +726,7 @@ private struct KnowledgeDepthCard: View {
             }
             .padding(.horizontal, Runway.section)
             .padding(.top, 12)
-            .padding(.bottom, Runway.section)
+            .padding(.bottom, 32)
         }
     }
 
@@ -836,7 +736,7 @@ private struct KnowledgeDepthCard: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             VStack(alignment: .leading, spacing: 12) {
-                ForEach(pieces) { piece in
+                ForEach(Array(pieces.enumerated()), id: \.offset) { _, piece in
                     explanationRow(piece)
                 }
             }
@@ -860,10 +760,13 @@ private struct KnowledgeDepthCard: View {
                     .foregroundStyle(Color.orange)
             }
         }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(runway.field.opacity(0.70), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var memoryBlock: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Runway.gap) {
             Text(String(localized: "判断关键点"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -878,13 +781,38 @@ private struct KnowledgeDepthCard: View {
                     .font(.callout)
                     .foregroundStyle(runway.copy)
             }
-            ForEach(Array(cover.prefix(4).enumerated()), id: \.offset) { _, line in
-                memoryRow(line, ok: true)
+            ForEach(Array(cover.enumerated()), id: \.offset) { _, line in
+                memoryRow(line)
             }
-            ForEach(Array(mixups.prefix(3).enumerated()), id: \.offset) { _, line in
-                memoryRow(line, ok: false)
+            if !mixups.isEmpty {
+                DisclosureGroup(isExpanded: $misconceptionsExpanded) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(Array(mixups.enumerated()), id: \.offset) { _, line in
+                            Text(line)
+                                .font(.callout)
+                                .foregroundStyle(runway.copy)
+                                .lineSpacing(4)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, Runway.space)
+                } label: {
+                    HStack {
+                        Text(String(localized: "常见误区"))
+                        Spacer()
+                        Text("\(mixups.count)").monospacedDigit()
+                    }
+                    .font(.caption)
+                    .foregroundStyle(runway.copy)
+                }
+                .tint(runway.ink)
+                .padding(.top, Runway.space)
             }
         }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(runway.field.opacity(0.70), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var sourceBlock: some View {
@@ -947,10 +875,9 @@ private struct KnowledgeDepthCard: View {
         case .numbered(let number):
             IconLeadRow {
                 Text("\(number)")
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(runway.onAction)
-                    .frame(width: 22, height: 22)
-                    .background(runway.ink, in: Circle())
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .frame(width: 18, height: 20)
             } content: {
                 Text(piece.text)
                     .font(.callout)
@@ -980,18 +907,42 @@ private struct KnowledgeDepthCard: View {
         }
     }
 
-    private func memoryRow(_ text: String, ok: Bool) -> some View {
-        IconLeadRow {
-            Image(systemName: ok ? "checkmark" : "xmark")
-                .font(.callout.weight(.bold))
-                .foregroundStyle(ok ? runway.information : Color.orange)
-                .frame(height: 20, alignment: .center)
-        } content: {
+    @ViewBuilder
+    private func memoryRow(_ text: String) -> some View {
+        // Keep the stored wording intact. Only short, explicit labels get their
+        // own column; unstructured prose remains a normal wrapping paragraph.
+        if let colon = text.firstIndex(of: "："),
+           text[..<colon].count <= 16, !text[..<colon].contains("\n") {
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: Runway.gap) {
+                    Text(String(text[...colon]))
+                        .font(.callout.weight(.medium))
+                        .foregroundStyle(runway.ink)
+                        .frame(width: 126, alignment: .leading)
+                    Text(String(text[text.index(after: colon)...]))
+                        .font(.callout)
+                        .foregroundStyle(runway.copy)
+                        .lineSpacing(4)
+                        .frame(minWidth: 180, maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(String(text[...colon]))
+                        .font(.callout.weight(.medium))
+                        .foregroundStyle(runway.ink)
+                    Text(String(text[text.index(after: colon)...]))
+                        .font(.callout)
+                        .foregroundStyle(runway.copy)
+                        .lineSpacing(4)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        } else {
             Text(text)
                 .font(.callout)
-                .foregroundStyle(ok ? runway.copy : .secondary)
+                .foregroundStyle(runway.copy)
+                .lineSpacing(4)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .accessibilityLabel((ok ? String(localized: "要覆盖") : String(localized: "别搞混")) + " " + text)
     }
 }

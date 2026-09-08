@@ -55,14 +55,14 @@ struct KnowledgeDeckNavigationTests {
         deck.beginDrag(); deck.updateDrag(translation: -400, width: 800)
         deck.endDrag(translation: -400, velocity: -1000, width: 800); deck.navigate(-1)
         precondition(deck.selectedID == "only" && deck.progress == 0 && deck.phase == .idle, "single-card input cannot move or animate")
-        precondition(KnowledgeDeckMetrics.cardSize(in: CGSize(width: 1100, height: 800)) == CGSize(width: 880, height: 560))
-        precondition(KnowledgeDeckMetrics.cardSize(in: CGSize(width: 680, height: 520)) == CGSize(width: 584, height: 408))
-        for height: CGFloat in [408, 560] {
+        precondition(KnowledgeDeckMetrics.cardSize(in: CGSize(width: 1100, height: 820)) == CGSize(width: 760, height: 680))
+        precondition(KnowledgeDeckMetrics.cardSize(in: CGSize(width: 680, height: 520)) == CGSize(width: 584, height: 392))
+        for height: CGFloat in [392, 560, 680] {
             func bottom(_ depth: CGFloat) -> CGFloat {
-                let placement = KnowledgeDeckMetrics.stackPlacement(depth: depth)
+                let placement = KnowledgeDeckMetrics.stackPlacement(depth: depth, cardHeight: height)
                 return placement.y + height * placement.scale
             }
-            precondition(bottom(1) - bottom(0) >= 17.9 && bottom(2) - bottom(1) >= 17.9,
+            precondition(abs(bottom(1) - bottom(0) - 24) < 0.01 && abs(bottom(2) - bottom(1) - 24) < 0.01,
                          "both rear cards must expose a visible bottom edge after top-anchored scaling")
             precondition(bottom(0.5) > bottom(0) && bottom(0.5) < bottom(1),
                          "the next card rises continuously as the top card moves away")

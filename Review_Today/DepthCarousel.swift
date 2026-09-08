@@ -10,6 +10,7 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
 
     @Environment(\.brandReduceMotion) private var reduceMotion
     @Environment(\.runway) private var runway
+    @Environment(\.colorScheme) private var colorScheme
     @State private var navigation = KnowledgeDeckNavigation<Item.ID>()
 
     private var ids: [Item.ID] { items.map(\.id) }
@@ -19,15 +20,15 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
             let size = KnowledgeDeckMetrics.cardSize(in: geometry.size)
             let origin = navigation.originIndex ?? KnowledgeDeckNavigation<Item.ID>.clamped(index, count: items.count)
             let frame = CGRect(x: (geometry.size.width - size.width) / 2,
-                               y: (geometry.size.height - size.height) / 2 - 12,
+                               y: (geometry.size.height - size.height) / 2 - 18,
                                width: size.width, height: size.height)
 
             ZStack {
                 ForEach(Array(items.enumerated()), id: \.element.id) { itemIndex, item in
                     let depth = KnowledgeDeckNavigation<Item.ID>.wrapped(itemIndex - origin, count: items.count)
                     if depth < 3 {
-                    let position = position(for: depth, width: size.width)
-                    deckCard(item, size: size, interactive: depth == 0 && navigation.phase == .idle)
+                    let position = position(for: depth, size: size)
+                    deckCard(item, size: size, depth: position.depth, interactive: depth == 0 && navigation.phase == .idle)
                         .scaleEffect(position.scale, anchor: .top)
                         .offset(x: position.x, y: position.y)
                         .opacity(position.opacity)
@@ -40,7 +41,7 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
                 if items.count > 1 {
                     let previous = KnowledgeDeckNavigation<Item.ID>.wrapped(origin - 1, count: items.count)
                     let progress = max(0, min(1, -navigation.progress))
-                    deckCard(items[previous], size: size, interactive: false)
+                    deckCard(items[previous], size: size, depth: 0, interactive: false)
                         .offset(x: -(size.width + 80) * (1 - progress))
                         .opacity(min(1, progress * 5))
                         .zIndex(20)
@@ -84,12 +85,17 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
         .accessibilityLabel(String(localized: "知识卡片"))
     }
 
-    private func deckCard(_ item: Item, size: CGSize, interactive: Bool) -> some View {
+    private func deckCard(_ item: Item, size: CGSize, depth: CGFloat, interactive: Bool) -> some View {
         card(item)
             .frame(width: size.width, height: size.height)
             .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .strokeBorder(runway.cardHighlight, lineWidth: 1).allowsHitTesting(false))
+                .fill(Color.black.opacity(Double(depth) * (colorScheme == .dark ? 0.10 : 0.025)))
+                .allowsHitTesting(false))
+            .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.12) : Color.black.opacity(0.055), lineWidth: 0.75)
+                .allowsHitTesting(false))
+            .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.32 : 0.10), radius: 3, y: 3)
             .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
             .allowsHitTesting(interactive)
             .accessibilityHidden(!interactive)
@@ -103,22 +109,23 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
         var y: CGFloat = 0
         var scale: CGFloat = 1
         var opacity: Double = 1
+        var depth: CGFloat = 0
     }
 
-    private func position(for depth: Int, width: CGFloat) -> CardPosition {
+    private func position(for depth: Int, size: CGSize) -> CardPosition {
         let progress = navigation.progress
         if progress >= 0 {
             if depth == 0 {
-                return CardPosition(x: -(width + 80) * progress, opacity: Double(1 - max(0, progress - 0.8) * 5))
+                return CardPosition(x: -(size.width + 80) * progress, opacity: Double(1 - max(0, progress - 0.8) * 5))
             }
             let remainingDepth = CGFloat(depth) - progress
-            let placement = KnowledgeDeckMetrics.stackPlacement(depth: remainingDepth)
-            return CardPosition(y: placement.y, scale: placement.scale)
+            let placement = KnowledgeDeckMetrics.stackPlacement(depth: remainingDepth, cardHeight: size.height)
+            return CardPosition(y: placement.y, scale: placement.scale, depth: remainingDepth)
         }
         let depth = CGFloat(depth) - progress
-        let placement = KnowledgeDeckMetrics.stackPlacement(depth: depth)
+        let placement = KnowledgeDeckMetrics.stackPlacement(depth: depth, cardHeight: size.height)
         return CardPosition(y: placement.y, scale: placement.scale,
-                            opacity: Double(max(0, 3 - depth)))
+                            opacity: Double(max(0, 3 - depth)), depth: depth)
     }
 
     private func locator(maxHeight: CGFloat) -> some View {
@@ -157,8 +164,6 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
         }
         .padding(.vertical, 10)
         .frame(minWidth: 38)
-        .background(runway.card.opacity(0.96), in: Capsule())
-        .overlay(Capsule().strokeBorder(runway.hairline, lineWidth: 1))
     }
 
     private func scrollLocator(_ reader: ScrollViewProxy) {
