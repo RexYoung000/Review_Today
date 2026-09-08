@@ -39,4 +39,34 @@
 
 完成后记录运行器测试、既有服务回归、飞书同一批次重复同步无重复的回读、仪表盘计算值与真实界面检查。首轮真实成绩无论好坏如实汇报；12 个校准样本需 Rex 抽查后，才可把模型裁判视为已校准。原生 Mac 全闭环另行验收。
 
-实施结果、命令与首轮证据将在本次实现后补充。
+## 已实现的使用入口
+
+`agent-service/evals/` 包含版本化 JSON 样本、固定来源、rubric、真实 Harness 运行器、独立裁判、规则/门槛计算、Markdown 证据报告及飞书 CLI 同步。没有修改生产 Harness、供应商配置或原生 App。每批次自动留存数据/rubric 副本、生产源码及运行器哈希；中途改生产源码的批次不得过门槛。
+
+从仓库根运行（使用项目现有 Python 环境）：
+
+```bash
+bash agent-service/run-evals.sh validate
+bash agent-service/run-evals.sh run --live --suite calibration --feishu-config ../output/harness-evals/feishu.json
+bash agent-service/run-evals.sh run --live --suite full --feishu-config ../output/harness-evals/feishu.json
+bash agent-service/run-evals.sh run --live --suite critical --feishu-config ../output/harness-evals/feishu.json
+```
+
+注意：脚本进入 `agent-service`，因此 `--feishu-config` 应传绝对路径，或使用 `../output/harness-evals/feishu.json`。首次创建工作台用 `provision --config <本地配置路径>`，之后复用同一配置；不要重复创建 Base。当前工作台见 [飞书质量总览](https://my.feishu.cn/base/ZDJeb5B9na4TAgs8PDncQRMKnFh?block=blktXbRhatkjdPTQ)。配置保存 Base/表/图表 ID，不含认证令牌；认证仍由飞书 CLI 管理。
+
+`--env-file` 可重复指定原项目 `.env` 和 DeepSeek 私密环境文件（独立工作树使用）；不复制密钥进仓库。`REVIEW_TODAY_TEST_PYTHON` 可指向已有虚拟环境 Python。默认每场景最多 40 次真实 SDK 请求（包括裁判/重试）、600 秒、并发 2；关键批固定 3 次，不无限循环。`--case <编号>` 可复现单个开发失败，单题结果不满足完整门槛。`--environment online` 显式开启真实公开网络，成绩不混入固定来源门槛。
+
+`run --feishu-config ...` 在批次结束时自动同步；本地运行进度每个场景更新，飞书更新为批末。同步失败保留原始成绩，以 `sync <批次绝对目录> --config <配置绝对路径>` 重试；不重跑模型。`report <批次目录>` 从原始 JSON 复算本地报告。`review <批次目录> --config ...` 拉取人工意见单独保存，不覆盖机器原始分数。
+
+在飞书：打开「结果明细 → 失败与异常」查看回复/诊断/修复入口；「人工校准」视图填写「人工结论、人工原因」。问题表从「待分析」走到「待确认修复」，Rex 确认后才进入修复；状态更改只是工作记录，不直接触发代码执行。样本表的「候选变更备注」用于提出修改，必须审阅后更新 Git 的场景/rubric 版本。误判不会自动变成新的金标。
+
+## 首轮校准与验证记录
+
+- 生产基线 `3428a79`，实施分支 `codex/harness-evaluations`；文档检查点 `9c543c8` 已先提交推送。
+- 初版 v1 的 12 场景机器校准批 `20260908T085136Z-calibration-af0ba8`：5 通过、4 失败、3 运行错误、0 已检出的硬失败。原始批次已同步飞书，不代表真实用户总体通过概率。
+- 校准发现 O04 把“表达理解”与 UI 保存按钮放进同一请求，和实际按钮路径不符。v1.1 将其拆为表达理解、绑定当前版本保存、模拟 ACK 三步；保留原版证据。标准未降低，产品未修复。新版本单题复验仍遇到 `RT.INTENT.INVALID_TARGET`，如实记录。
+- 311 项 Python 测试通过（含 26 项新增评测器测试），覆盖计划分母、模式/重复门槛、硬失败、裁判缺失/证据、真实请求计数、导入无副作用、重复同步/人工意见保护和不确定写入去重；模型替身测试不作为质量分数。
+- 原虚拟环境缺 pytest；只在临时测试依赖目录安装 pytest 8.4.2 / Black 25.12.0，未变更日常服务环境。全量 pytest 使用隔离库、空模型密钥，311 passed；既有 FastAPI startup 弃用警告 2 条。
+- 飞书四表及总览已创建。初批回读 12 条结果、通过标记之和 5；图表计算返回通过 5、失败 4。后续完整基线、稳定性批和重复同步验证见本次交付证据。
+- 原生 SwiftData/FSRS/UI 验收与人工裁判校准仍待完成。浏览器界面验收需要飞书网页登录态，与 CLI 授权不同。
+
