@@ -18,9 +18,6 @@ struct SessionOrganizationContractTests {
             let draftID = draft.agentDraftID
             draft.agentDraftText = "RAG 草稿"; try context.save()
             require(try AgentComposerStore.prepare(context).agentDraftID == draftID)
-            require(SessionOrganization.showsDraft(isCurrent: true, text: ""))
-            require(SessionOrganization.showsDraft(isCurrent: false, text: draft.agentDraftText))
-            require(!SessionOrganization.showsDraft(isCurrent: false, text: " \n"))
             require(try context.fetch(FetchDescriptor<AgentSession>()).isEmpty)
             do { _ = try AgentComposerStore.sendFirst("RAG", context: context, runtime: AppRuntime(mode: .normal), save: { throw Disk.failed }); preconditionFailure() } catch Disk.failed {}
             require(draft.agentDraftText == "RAG 草稿")
@@ -54,6 +51,6 @@ struct SessionOrganizationContractTests {
             require(try context.fetch(FetchDescriptor<AgentMessage>()).count == 1)
             require(try context.fetch(FetchDescriptor<SessionFolder>()).isEmpty)
         }
-        print("PASS: single visible draft and stable first-send identity, save failure, folder validation/move/rollback, archive search scope, folder retention, disk reopen and non-destructive folder deletion")
+        print("PASS: landing fallback stable first-send identity, save failure, folder validation/move/rollback, archive search scope, folder retention, disk reopen and non-destructive folder deletion")
     }
 }

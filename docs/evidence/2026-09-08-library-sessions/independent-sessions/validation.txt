@@ -1,0 +1,11 @@
+PASS: independent creation, legacy draft preservation/rollback, per-session disk persistence, no message/run on creation, creation/first-send failure, first-send identity, active empty/populated deletion and no draft resurrection
+PASS: deletion preview, rollback, scope revalidation, shared/unknown protection, batch purge, preview removal, durable offline tombstones and no index resurrection
+PASS: landing fallback stable first-send identity, save failure, folder validation/move/rollback, archive search scope, folder retention, disk reopen and non-destructive folder deletion
+PASS: 12 scenarios, 6-card refresh, protected prefill/IME/undo, sidebar preference, native input, atomic first-send failure/retry, no empty Sessions, independent drafts/preferences, tags, partial persistence, activity
+PASS: typed local recall, no drafts/consent, archive vs exclusion, policy/content versions, late-run fence, no formal review writes
+Service unittest test_conditional_teaching.py: 16 tests OK
+Debug build: BUILD SUCCEEDED
+Release build: BUILD SUCCEEDED
+Isolated native preview build: success
+codesign --verify --deep --strict: success
+36.488333s original recording: ffmpeg full decode with original timebase, no errors

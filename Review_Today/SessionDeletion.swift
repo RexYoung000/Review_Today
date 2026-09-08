@@ -24,8 +24,8 @@ enum SessionDeletion {
 
     static func impact(_ ids: Set<UUID>, context: ModelContext) throws -> SessionDeletionImpact {
         let sessions = try context.fetch(FetchDescriptor<AgentSession>()).filter { ids.contains($0.id) }
-        guard sessions.count == ids.count, !ids.isEmpty, sessions.allSatisfy({ $0.status == "archived" }) else {
-            throw HarnessAPIError.server(code: "RT.SESSION.DELETE_SCOPE", message: "只能永久删除已归档的会话。")
+        guard sessions.count == ids.count, !ids.isEmpty, sessions.allSatisfy({ ["active", "archived"].contains($0.status) }) else {
+            throw HarnessAPIError.server(code: "RT.SESSION.DELETE_SCOPE", message: "会话已变化，请重新选择要删除的会话。")
         }
         let refs = try context.fetch(FetchDescriptor<KnowledgeReference>())
         let runs = try context.fetch(FetchDescriptor<AgentRun>())
@@ -66,7 +66,7 @@ enum SessionDeletion {
             let targets = sessions.filter { approved.sessionIDs.contains($0.id) }
             for session in targets {
                 markers.append(["session_id": session.id.uuidString.lowercased(), "action_id": UUID().uuidString.lowercased(),
-                                "archive_action_id": UUID().uuidString.lowercased(), "action": "delete", "lifecycle_revision": session.lifecycleRevision + 1,
+                                "archive_action_id": UUID().uuidString.lowercased(), "action": "delete", "lifecycle_revision": session.lifecycleRevision + (session.status == "active" ? 2 : 1),
                                 "deleted_at": Date.now.ISO8601Format(), "cleaned": false])
                 session.memoryUseAllowed = false
                 session.memoryPolicyRevision += 1

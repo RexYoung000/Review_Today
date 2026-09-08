@@ -143,14 +143,12 @@ struct AppSidebar: View {
     var onCollapse: () -> Void
     var onStartLearning: () -> Void
     var onSearch: () -> Void
-    var draftRequested: Bool
     var inboxCount: Int
     @Environment(\.modelContext) private var modelContext
     @Environment(\.runway) private var runway
     @Environment(\.brandReduceMotion) private var reduceMotion
     @Query(sort: \AgentSession.updatedAt, order: .reverse) private var sessions: [AgentSession]
     @Query(sort: \SessionFolder.createdAt) private var folders: [SessionFolder]
-    @Query private var settings: [AppSettings]
     @Query(sort: \AgentRun.updatedAt, order: .reverse) private var runs: [AgentRun]
     @Query(sort: \LearningTask.updatedAt, order: .reverse) private var tasks: [LearningTask]
     @State private var hoveredSessionID: UUID?
@@ -168,10 +166,6 @@ struct AppSidebar: View {
     @State private var batchError: String?
     @AppStorage("reviewToday.collapsedSessionFolders") private var collapsedRaw = ""
     private var activeSessions: [AgentSession] { sessions.filter { $0.status == "active" } }
-    private var draftVisible: Bool {
-        SessionOrganization.showsDraft(isCurrent: draftRequested && selection == .learning && selectedSessionID == nil,
-                                      text: settings.first?.agentDraftText ?? "")
-    }
     private var collapsed: Set<String> { Set(collapsedRaw.split(separator: ",").map(String.init)) }
 
     var body: some View {
@@ -247,13 +241,6 @@ struct AppSidebar: View {
             }.padding(.horizontal, 10)
             ScrollView {
                 LazyVStack(spacing: 4) {
-                    if draftVisible {
-                        Button(action: createSession) {
-                            HStack { Image(systemName: "square.and.pencil"); Text("新会话"); Spacer(); Text("草稿").font(.caption).foregroundStyle(.secondary) }
-                                .padding(.horizontal, 12).padding(.vertical, 10).contentShape(Rectangle())
-                        }.buttonStyle(InteractionButtonStyle(selected: selection == .learning && selectedSessionID == nil, padding: 0))
-                            .transition(.opacity.combined(with: .move(edge: .top)))
-                    }
                     ForEach(activeSessions.filter { session in !folders.contains(where: { $0.id == session.folderID }) }) { session in sessionRow(session) }
                     ForEach(folders) { folder in
                         folderHeader(folder)
@@ -265,9 +252,9 @@ struct AppSidebar: View {
             }
             .scrollPosition(id: $scrollAnchor, anchor: .top)
             .overlay {
-                if activeSessions.isEmpty && folders.isEmpty && !draftVisible { SessionWelcome(action: createSession) }
+                if activeSessions.isEmpty && folders.isEmpty { SessionWelcome(action: createSession) }
             }
-            .animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: draftVisible)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: activeSessions.map(\.id))
         }.frame(maxHeight: .infinity)
     }
 
@@ -361,7 +348,7 @@ struct AppSidebar: View {
                 .init(id: "tags", title: "编辑标签", symbol: "tag"),
                 .init(id: "move", title: "移动到…", symbol: "folder"),
                 .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain")
-            ] + (session.status == "archived" ? [.init(id: "delete", title: "永久删除", symbol: "trash", destructive: true)] : []), onPresentationChange: { openMenuSessionID = $0 ? session.id : nil },
+            ] + [.init(id: "delete", title: "删除会话", symbol: "trash", destructive: true)], onPresentationChange: { openMenuSessionID = $0 ? session.id : nil },
                onFocusChange: { focusedMenuSessionID = $0 ? session.id : nil }) { action in
                 switch action {
                 case "archive": if session.status == "active" { archive(session) } else { restore(session) }
@@ -382,9 +369,7 @@ struct AppSidebar: View {
         .contextMenu {
             if session.status == "active" { Button("归档", systemImage: "archivebox") { archive(session) } }
             else { Button("恢复", systemImage: "arrow.uturn.backward") { restore(session) } }
-            if session.status == "archived" {
-                Button("永久删除", systemImage: "trash", role: .destructive) { prepareDeletion([session.id]) }
-            }
+            Button("删除会话", systemImage: "trash", role: .destructive) { prepareDeletion([session.id]) }
             Button("移动到…", systemImage: "folder") { movingSession = session }
             Button("编辑标签", systemImage: "tag") { editingSessionID = session.id }
             Button(session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", systemImage: "brain") {
@@ -519,7 +504,7 @@ struct ContentView: View {
     @State private var selection: SidebarItem?
     @State private var learningFocusRequest = 0
     @State private var searchPresented = false
-    @State private var draftRequested = false
+    @State private var creationError: String?
     @State private var draftEntrance = true
     @Environment(\.brandReduceMotion) private var reduceMotion
     @State private var selectedKnowledgeID: UUID?
@@ -554,7 +539,7 @@ struct ContentView: View {
         HStack(spacing: 0) {
             if columnVisibility != .detailOnly {
                 AppSidebar(selection: $selection, selectedSessionID: $selectedLearningSessionID,
-                           scrollAnchor: $sidebarScrollAnchor, onCollapse: { setSidebar(expanded: false) }, onStartLearning: startLearning, onSearch: { searchPresented = true }, draftRequested: draftRequested, inboxCount: inboxCount)
+                           scrollAnchor: $sidebarScrollAnchor, onCollapse: { setSidebar(expanded: false) }, onStartLearning: startLearning, onSearch: { searchPresented = true }, inboxCount: inboxCount)
                     .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
                     .padding(8)
                     .frame(width: min(340, max(250, savedSidebarWidth)))
@@ -578,8 +563,8 @@ struct ContentView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)).padding(8)
             }
             detailContent
-                .opacity(selection == .learning && selectedLearningSessionID == nil && !draftEntrance ? 0 : 1)
-                .offset(y: selection == .learning && selectedLearningSessionID == nil && !draftEntrance ? 8 : 0)
+                .opacity(selection == .learning && !draftEntrance ? 0 : 1)
+                .offset(y: selection == .learning && !draftEntrance ? 8 : 0)
                 .padding(.top, 20).frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .background(PaperSurface())
@@ -597,8 +582,6 @@ struct ContentView: View {
         .background(ConversationWindowTarget { id in
             selectedLearningSessionID = id; selection = .learning; searchPresented = false
         })
-        .onChange(of: selection) { _, value in if value != .learning { draftRequested = false } }
-        .onChange(of: selectedLearningSessionID) { _, value in if value != nil { draftRequested = false } }
         .toolbar(.hidden, for: .windowToolbar)
         .ignoresSafeArea(.container, edges: .top)
         .toolbar(removing: .sidebarToggle)
@@ -633,8 +616,13 @@ struct ContentView: View {
                 try? await Task.sleep(for: .seconds(2))
             }
         }
+        .alert("无法新建会话", isPresented: Binding(get: { creationError != nil }, set: { if !$0 { creationError = nil } })) {
+            Button("好", role: .cancel) { creationError = nil }
+        } message: { Text(creationError ?? "") }
         .onDisappear { monitor.stop() }
         .onAppear {
+            do { try AgentComposerStore.preserveLandingDraft(context: modelContext) }
+            catch { creationError = "原有草稿暂时无法保存为会话，请重试。" }
             sidebarPolicy.preferredExpanded = sidebarVisible
             columnVisibility = sidebarPolicy.expanded ? .all : .detailOnly
 #if DEBUG
@@ -661,18 +649,23 @@ struct ContentView: View {
     }
 
     private func startLearning() {
-        let alreadyHere = draftRequested && selection == .learning && selectedLearningSessionID == nil
-        draftRequested = true
-        selectedLearningSessionID = nil
-        selection = .learning
-        learningFocusRequest += 1
-        if !alreadyHere && !reduceMotion {
-            draftEntrance = false
-            Task { @MainActor in
-                await Task.yield()
-                withAnimation(.easeOut(duration: 0.18)) { draftEntrance = true }
+        NotificationCenter.default.post(name: .prepareNewConversation, object: nil)
+        do {
+            try AgentComposerStore.preserveLandingDraft(context: modelContext)
+            let session = try AgentComposerStore.createSession(context: modelContext)
+            selectedLearningSessionID = session.id
+            sidebarScrollAnchor = session.id
+            selection = .learning
+            searchPresented = false
+            learningFocusRequest += 1
+            if !reduceMotion {
+                draftEntrance = false
+                Task { @MainActor in
+                    await Task.yield()
+                    withAnimation(.easeOut(duration: 0.18)) { draftEntrance = true }
+                }
             }
-        }
+        } catch { creationError = "新会话未保存，请重试。已有输入仍保留。" }
     }
 
     private func setSidebar(expanded: Bool) {
@@ -704,6 +697,7 @@ struct ContentView: View {
                         selectedSessionID: $selectedLearningSessionID,
                         entryFocusRequest: learningFocusRequest,
                         onEntryFocusConsumed: { learningFocusRequest = 0 },
+                        onNewSession: startLearning,
                         onOpenKnowledge: { id in
                             selectedKnowledgeID = id
                             selection = .library

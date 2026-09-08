@@ -70,7 +70,12 @@ enum ConversationProcessor {
     static func tick(context: ModelContext, monitor: AgentServiceMonitor, pollEvents: Bool = true, onlySession: UUID? = nil, controlsOnly: Bool = false, skipControls: Bool = false) async {
         guard monitor.serviceReachable && monitor.conversationSupported else { return }
         let allSessions = (try? context.fetch(FetchDescriptor<AgentSession>())) ?? []
-        let sessions = allSessions.filter { onlySession == nil || $0.id == onlySession }
+        let messageOwners = Set(((try? context.fetch(FetchDescriptor<AgentMessage>())) ?? []).map(\.sessionID))
+        // Empty local conversations have no server work until a message or explicit lifecycle action exists.
+        let sessions = allSessions.filter {
+            (onlySession == nil || $0.id == onlySession) &&
+            (messageOwners.contains($0.id) || $0.lifecycleActionsJSON != "[]" || $0.lastSessionEventSeq > 0)
+        }
         // Durable controls run before pulling committable output. Never lose rapid
         // stop/mode/resume operations by storing only one pending field on a Task.
         let controls = (try? context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { !$0.sent }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []

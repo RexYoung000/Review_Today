@@ -6,6 +6,7 @@ struct LearningWorkspace: View {
     @Binding var selectedSessionID: UUID?
     var entryFocusRequest = 0
     var onEntryFocusConsumed: () -> Void = {}
+    var onNewSession: () -> Void = {}
     var onOpenKnowledge: (UUID) -> Void
 
     @Environment(\.modelContext) private var modelContext
@@ -158,6 +159,7 @@ struct LearningWorkspace: View {
                 saveDraft()
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .prepareNewConversation)) { _ in saveDraft() }
         .onDisappear { dictation.leave(); saveDraft() }
         .onReceive(NotificationCenter.default.publisher(for: .dictationSessionsDeleted)) { note in
             if let ids = note.object as? Set<UUID>, let owner = dictation.owner, ids.contains(owner) { dictation.cancel() }
@@ -203,10 +205,11 @@ struct LearningWorkspace: View {
 
     private func workspace(width: CGFloat, height: CGFloat) -> some View {
         let gutter = Layout.gutter(for: width)
-        let contentWidth = max(0, min(selectedSession == nil ? 820 : Layout.readingWidth, width - gutter * 2))
+        let isStarting = selectedSession == nil || (selectedSession?.status == "active" && messages(for: selectedSession!.id).isEmpty)
+        let contentWidth = max(0, min(isStarting ? 820 : Layout.readingWidth, width - gutter * 2))
         return VStack(spacing: 0) {
           if selectedSession != nil { workspaceHeader(contentWidth: contentWidth) }
-          if selectedSession == nil {
+          if isStarting {
             serviceBanner
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
@@ -275,10 +278,10 @@ struct LearningWorkspace: View {
         SingleLevelMenu(title: "会话操作", symbol: "ellipsis", arrowEdge: .top, items:
             [.init(id: "new", title: "新对话", symbol: "plus")] +
             (session.status == "active" ? [.init(id: "tags", title: "编辑主题标签", symbol: "tag"),
-             .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain")] : [.init(id: "delete", title: "永久删除", symbol: "trash", destructive: true)])
+             .init(id: "memory", title: session.memoryUseAllowed ? "不用于跨会话记忆" : "允许跨会话记忆", symbol: "brain")] : []) + [.init(id: "delete", title: "删除会话", symbol: "trash", destructive: true)]
         ) { action in
             switch action {
-            case "new": selectedSessionID = nil
+            case "new": onNewSession()
             case "tags": editingSessionID = session.id
             case "delete":
                 do { deletionImpact = try SessionDeletion.impact([session.id], context: modelContext) }
@@ -863,6 +866,15 @@ struct LearningWorkspace: View {
             localError = "请先恢复归档的会话，再继续输入。"
             return
         }
+        if operation == nil && messages(for: session.id).isEmpty {
+            do {
+                let message = try AgentComposerStore.sendInitial(content, in: session, context: modelContext)
+                draft = ""; sentMessageID = message.id; localError = nil
+                focusRequest += 1
+                ConversationSync.wake()
+            } catch { localError = "本机保存失败，输入仍保留，请重试。" }
+            return
+        }
         let message = AgentMessage(sessionID: session.id, role: "user", content: content,
                                    contentType: TodayView.firstURL(in: content) == nil ? "text" : "url")
         message.clientMessageID = message.id
@@ -877,7 +889,7 @@ struct LearningWorkspace: View {
             }
         }
         session.updatedAt = .now
-        if session.title == "新学习 Session" { session.title = String(content.prefix(28)) }
+        if session.title == "新学习 Session" || (session.title == "新会话" && messages(for: session.id).filter { $0.role == "user" }.count <= 1) { session.title = String(content.prefix(28)) }
         do {
             if operation == nil { session.composerDraft = "" }
             try modelContext.save()
@@ -992,10 +1004,12 @@ struct LearningWorkspace: View {
 
     private func saveDraft() {
         draftSave?.cancel()
-        if let id = draftSessionID, let session = sessions.first(where: { $0.id == id }) {
+        if let id = draftSessionID {
+            // Deleted owners must never spill their input into the landing draft.
+            guard let session = sessions.first(where: { $0.id == id }), session.status != "deleted" else { return }
             guard session.composerDraft != draft else { return }
             session.composerDraft = draft
-        } else if let draftSettings { draftSettings.agentDraftText = draft }
+        } else if selectedSessionID == nil, let draftSettings { draftSettings.agentDraftText = draft }
         else { return }
         do { try modelContext.save() }
         catch { localError = "草稿尚未保存，请保留当前窗口并重试。" }

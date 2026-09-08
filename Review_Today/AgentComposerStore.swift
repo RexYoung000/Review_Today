@@ -101,7 +101,7 @@ struct QuickStartPrefill {
 
 @MainActor
 enum AgentComposerStore {
-    enum Failure: Error { case blankInput }
+    enum Failure: Error { case blankInput, inactiveSession }
     static func settings(_ context: ModelContext) throws -> AppSettings {
         if let row = try context.fetch(FetchDescriptor<AppSettings>()).first { return row }
         let row = AppSettings()
@@ -121,8 +121,64 @@ enum AgentComposerStore {
         return row
     }
 
+    /// Explicit creation is local only; unsent text belongs to its session.
+    static func createSession(context: ModelContext, save: (() throws -> Void)? = nil) throws -> AgentSession {
+        let row = try settings(context)
+        let session = AgentSession(title: "新会话")
+        session.thinkingStrength = row.lastThinkingStrength
+        context.insert(session)
+        do {
+            if let save { try save() } else { try context.save() }
+            return session
+        } catch { context.processPendingChanges(); context.rollback(); throw error }
+    }
+
+    static func sendInitial(_ text: String, in session: AgentSession, context: ModelContext,
+                            runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> AgentMessage {
+        try (runtime ?? .current).requireSending()
+        let content = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !content.isEmpty else { throw Failure.blankInput }
+        guard session.status == "active" else { throw Failure.inactiveSession }
+        let snapshot = (session.composerDraft, session.title, session.updatedAt)
+        let message = AgentMessage(sessionID: session.id, role: "user", content: content,
+                                   contentType: TodayView.firstURL(in: content) == nil ? "text" : "url")
+        message.clientMessageID = message.id
+        context.insert(message)
+        session.composerDraft = ""
+        if ["新会话", "新学习 Session"].contains(session.title) { session.title = String(content.prefix(28)) }
+        session.updatedAt = .now
+        do {
+            if let save { try save() } else { try context.save() }
+            return message
+        } catch {
+            context.processPendingChanges(); context.rollback()
+            session.composerDraft = snapshot.0; session.title = snapshot.1; session.updatedAt = snapshot.2
+            throw error
+        }
+    }
+
+    @discardableResult
+    static func preserveLandingDraft(context: ModelContext, save: (() throws -> Void)? = nil) throws -> AgentSession? {
+        let row = try settings(context)
+        guard !row.agentDraftText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        let snapshot = (row.agentDraftText, row.agentDraftID, row.agentDraftMessageID)
+        let session = AgentSession(id: row.agentDraftID ?? UUID(), title: "新会话", modePreset: row.agentDraftMode)
+        session.composerDraft = row.agentDraftText
+        session.thinkingStrength = row.agentDraftThinking
+        context.insert(session)
+        row.agentDraftText = ""; row.agentDraftID = nil; row.agentDraftMessageID = nil
+        do {
+            if let save { try save() } else { try context.save() }
+            return session
+        } catch {
+            context.processPendingChanges(); context.rollback()
+            row.agentDraftText = snapshot.0; row.agentDraftID = snapshot.1; row.agentDraftMessageID = snapshot.2
+            throw error
+        }
+    }
+
     /// One local transaction owns first message, Session and outbox. The unsent
-    /// landing draft never appears as an empty Session in navigation or memory.
+    /// landing-page fallback creates a session only when no explicit session exists.
     static func sendFirst(_ text: String, context: ModelContext, runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> (AgentSession, AgentMessage) {
         try (runtime ?? .current).requireSending()
         let content = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -152,4 +208,8 @@ enum AgentComposerStore {
             throw error
         }
     }
+}
+
+extension Notification.Name {
+    static let prepareNewConversation = Notification.Name("reviewToday.prepareNewConversation")
 }

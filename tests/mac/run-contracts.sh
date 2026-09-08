@@ -9,7 +9,7 @@ for file in Review_Today/*.swift; do
     *) sources+=("$file") ;;
   esac
 done
-for test in BrandMaterialContractTests AnswerDocumentContractTests AppRuntimeContractTests InteractionFocusTests AgentServiceMonitorContractTests LearningInputContractTests ConversationReplayTests LearningMemoryContractTests SessionDeletionContractTests SessionListSelectionTests SessionOrganizationContractTests LibraryManagementContractTests KnowledgeDeckNavigationTests; do
+for test in BrandMaterialContractTests AnswerDocumentContractTests AppRuntimeContractTests InteractionFocusTests AgentServiceMonitorContractTests LearningInputContractTests ConversationReplayTests LearningMemoryContractTests SessionDeletionContractTests SessionListSelectionTests SessionOrganizationContractTests IndependentSessionContractTests LibraryManagementContractTests KnowledgeDeckNavigationTests; do
   xcrun swiftc -parse-as-library -D DEBUG -swift-version 5 -default-isolation MainActor \
     "${sources[@]}" "tests/mac/$test.swift" -o "$build_dir/$test"
   "$build_dir/$test"

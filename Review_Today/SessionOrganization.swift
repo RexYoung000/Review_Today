@@ -21,9 +21,6 @@ enum SessionOrganization {
             }
         }
     }
-    static func showsDraft(isCurrent: Bool, text: String) -> Bool {
-        isCurrent || !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }
     static func matches(_ session: AgentSession, query: String, archived: Bool = false) -> Bool {
         guard session.status == (archived ? "archived" : "active") else { return false }
         let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
