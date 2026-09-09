@@ -13,7 +13,7 @@ final class MrBPreviewCapture {
 
     private var folder: URL {
         URL(fileURLWithPath: Bundle.main.object(forInfoDictionaryKey: "PreviewProjectRoot") as! String)
-            .appendingPathComponent(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBContactPreview" ? "docs/evidence/2026-09-08-mr-b/line-beats-2d" : "docs/evidence/2026-09-08-mr-b")
+            .appendingPathComponent(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBContactPreview" ? "docs/evidence/2026-09-08-mr-b/timing-polish" : "docs/evidence/2026-09-08-mr-b")
     }
 
     func resize(_ width: CGFloat, _ height: CGFloat) {

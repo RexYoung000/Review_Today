@@ -1,0 +1,22 @@
+✔ new Spine timelines preserve accepted mesh and old animations; neutral endings hide the book (51.021333ms)
+✔ low-frequency new idle clips have two classic clips between them, and thinking never repeats (0.376042ms)
+✔ row transfer is progressive and compact/full use identical semantic stages (0.365833ms)
+✔ rolling body stays inside the enlarged stage without camera shrink (31.100625ms)
+✔ Rex exaggeration revision has distinct silhouettes while keeping all clips in fixed framing (71.326583ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 208.064291
+Isolated Mr. B resource: 6471977 bytes
+output/mr-b-preview/MrBTests.app: replacing existing signature
+FAIL: Failure(message: "Clock not advancing")
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['output/mr-b-preview/MrBTests.app/Contents/MacOS/MrBTests']' returned non-zero exit status 1.

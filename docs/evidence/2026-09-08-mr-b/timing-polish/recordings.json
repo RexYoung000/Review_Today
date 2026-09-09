@@ -1,0 +1,44 @@
+[
+  {
+    "file": "walk-native.mp4",
+    "capture": "native own-window; real presentation timestamps; no retiming or audio",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 820,
+          "avg_frame_rate": "97200/3413",
+          "nb_frames": "162"
+        }
+      ],
+      "format": {
+        "duration": "5.668333"
+      }
+    },
+    "decodeExit": 0,
+    "decodeStderr": ""
+  },
+  {
+    "file": "stamp-native.mp4",
+    "capture": "native own-window; real presentation timestamps; no retiming or audio",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 820,
+          "avg_frame_rate": "102600/3521",
+          "nb_frames": "171"
+        }
+      ],
+      "format": {
+        "duration": "5.868333"
+      }
+    },
+    "decodeExit": 0,
+    "decodeStderr": ""
+  }
+]
