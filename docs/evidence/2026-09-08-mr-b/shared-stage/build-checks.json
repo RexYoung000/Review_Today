@@ -1,0 +1,31 @@
+[
+  {
+    "command": [
+      "node",
+      "tools/mascot-motion/src/build-native.mjs",
+      "--check"
+    ],
+    "exit": 0,
+    "output": "Native animation resource matches its source.\n"
+  },
+  {
+    "command": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "output/mr-b-preview/MrBContactPreview.app"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit": 0,
+    "output": ""
+  }
+]

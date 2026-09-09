@@ -1,0 +1,12 @@
+{
+  "source": "CUA native app screenshots at 4.5667 and 4.6000 s; scene region excludes controls",
+  "region": {
+    "left": 300,
+    "top": 220,
+    "width": 300,
+    "height": 270
+  },
+  "changedChannels": 0,
+  "totalChannels": 243000,
+  "identical": true
+}

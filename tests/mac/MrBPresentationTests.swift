@@ -52,7 +52,7 @@ struct MrBPresentationTests {
         c.configuration.kind="mr_ingest_short";c.configuration.token=3;c.send();let before=completions;for _ in 0..<60 {try await Task.sleep(for:.milliseconds(100));state=try await inspect();if state["done"] as? Bool == true {break}};try expect(state["done"] as? Bool == true,"Compact settlement never ends: \(state)");try expect(completions==before+1,"Completion callback not exactly once")
         c.configuration.dark=true;c.send();try await Task.sleep(for:.milliseconds(200));try expect(completions==before+1,"Theme change replays completion")
         c.configuration.kind="thinking";c.configuration.token=4;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect();try expect(state["done"] as? Bool == false,"New request stuck completed")
-        for (kind, duration) in [("walk_study",4.6),("stamp_study",4.8)] {
+        for (kind, duration) in [("walk_study",4.6),("stamp_study",4.8),("continuity_study",9.4)] {
             c.configuration = MrBConfiguration(kind:kind,token:c.configuration.token+1)
             c.send(); try await Task.sleep(for:.milliseconds(400));state=try await inspect()
             try expect((state["runtimeError"] as? String ?? "").isEmpty,"Study runtime failed: \(state)")
@@ -76,6 +76,14 @@ struct MrBPresentationTests {
             let countBefore=completions;c.send();for _ in 0..<30 {try await Task.sleep(for:.milliseconds(100));state=try await inspect();if state["done"] as? Bool == true {break}}
             try expect(state["done"] as? Bool == true && completions==countBefore+1,"Study completion not delivered exactly once")
             c.configuration.debugMesh=true;c.send();try await Task.sleep(for:.milliseconds(100));try expect(completions==countBefore+1,"Debug toggle replays completed event")
+        }
+        c.configuration=MrBConfiguration(kind:"continuity_study",token:100,paused:true)
+        for (time, segment) in [(4.6-1.0/30,"walk_study"),(4.6,"stamp_study"),(4.6+1.0/30,"stamp_study"),(4.6-1.0/30,"walk_study")] {
+            c.configuration.seekTime=time;c.configuration.seekToken += 1;c.send();try await Task.sleep(for:.milliseconds(120));state=try await inspect()
+            let info=state["study"] as? [String:Any],meta=info?["meta"] as? [String:Any]
+            try expect(meta?["segment"] as? String == segment,"Native joined seam selects wrong segment")
+            try expect(meta?["body"] as? [Double] == [380,154],"Native seam changes Mr. B position")
+            try expect((state["runtimeError"] as? String ?? "").isEmpty,"Native seam runtime error")
         }
         c.visible=false;c.send();web.stopLoading();settings.userContentController.removeScriptMessageHandler(forName:"mrB")
     }

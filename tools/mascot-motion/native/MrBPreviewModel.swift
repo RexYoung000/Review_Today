@@ -11,7 +11,8 @@ final class MrBPreviewModel {
     var studySeekToken = 0
     var studyMesh = false
     var studyFailed = false
-    var studyDuration: Double { scene == "逐行消除短样" ? 4.6 : 4.8 }
+    var studyKind: String { scene == "消除 → 盖章连播" ? "continuity_study" : (scene == "逐行消除短样" ? "walk_study" : "stamp_study") }
+    var studyDuration: Double { scene == "消除 → 盖章连播" ? 9.4 : (scene == "逐行消除短样" ? 4.6 : 4.8) }
     func replayStudy() { finished = false; studyPaused = false; studyTime = 0; studySeek = nil; token += 1 }
     func seekStudy(_ time: Double) { studyPaused = true; studySeek = min(studyDuration,max(0,time)); studyTime = studySeek!; studySeekToken += 1 }
     var dark = false

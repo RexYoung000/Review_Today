@@ -9,10 +9,10 @@ import {createStudyPlayer} from './settlement-player.mjs';
 import {bakeStudy} from './settlement-scene.mjs';
 import {root,previewRoot} from './paths.mjs';
 import {createMaterials} from '../../../brand/refresh-2026-09/motion-rig/material.mjs';
-const folder=resolve(root,'output/mr-b-preview/timing-polish');await mkdir(folder,{recursive:true});
+const folder=resolve(root,'output/mr-b-preview/shared-stage');await mkdir(folder,{recursive:true});
 const body=await loadImage(resolve(previewRoot,'data/images/body.png')),materials=createMaterials([['body.png',body]],createCanvas);
 const canvas=createCanvas(760,400),ctx=canvas.getContext('2d'),player=await createStudyPlayer({...core,CanvasTexture,SkeletonRenderer},ctx,resolve(root,'brand/refresh-2026-09/masters/mark-alpha.png'),{createCanvas,loadImage,bodyTexture:dark=>materials('graphite',dark).get(body)});
-const frames={walk_study:[0,.5,.85,1.10,1.29,2.05,3.25,4.6],stamp_study:[0,.7,1.3,1.9,2.1,2.18,2.28,2.6,2.9,3.6,4.8]};
+const frames={walk_study:[0,.5,.85,1.10,1.29,2.05,3.25,4.6],stamp_study:[0,.7,1.3,1.9,2.1,2.18,2.28,2.6,2.9,3.6,4.8],continuity_study:[4.566666666666666,4.6,4.633333333333333,6.78,9.4]};
 const report={source:'offline authoring renders, not native screenshots',fps:30,studies:{}};
 for(const [kind,times] of Object.entries(frames)){
  const path=resolve(folder,kind);await mkdir(path,{recursive:true});

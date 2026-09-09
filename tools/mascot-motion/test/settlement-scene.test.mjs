@@ -2,7 +2,7 @@ import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {TextureAtlas,FakeTexture,AtlasAttachmentLoader,SkeletonJson,Skeleton,Physics,MixBlend,MixDirection} from '@esotericsoftware/spine-core';
-import {scene,walking,stamping,bodyMesh,project,spineData,applyScene,bakeStudy,studyDuration,stepStarts,contactTime} from '../src/settlement-scene.mjs';
+import {scene,walking,stamping,bodyMesh,project,spineData,applyScene,bakeStudy,studyDuration,stepStarts,contactTime,studyLayout} from '../src/settlement-scene.mjs';
 import {contour} from '../src/settlement-character.mjs';
 function load(json){const names=[...new Set(Object.values(json.skins[0].attachments).flatMap(a=>Object.values(a).map(x=>x.path)))],atlas=new TextureAtlas(names.map(name=>`${name}.png\nsize: 64,64\n${name}\nbounds: 0,0,64,64\n`).join('\n'));for(const page of atlas.pages)page.setTexture(new FakeTexture({width:64,height:64}));const data=new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(json);return {data,skeleton:new Skeleton(data)};}
 const area=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
@@ -58,7 +58,7 @@ test('stamp is rigid and body stays unchanged; behind/front handoff is outside t
   assert.ok(Math.abs(Math.hypot(s.points[1][0]-s.points[0][0],s.points[1][1]-s.points[0][1])-72)<.0001);
   assert.ok(Math.abs(Math.hypot(s.points[2][0]-s.points[1][0],s.points[2][1]-s.points[1][1])-90)<.0001);
   assert.equal(s.layer,t<.7||t>=3.6?5:15);
-  assert.deepEqual(mesh(f,'card').points,mesh(scene('stamp_study',0),'card').points);
+  assert.deepEqual(mesh(f,'paper').points,mesh(scene('stamp_study',0),'paper').points);
   assert.equal(s.alpha,p.stamp.visible?1:0);
  }
  for(const t of [.7,3.6]){const f=scene('stamp_study',t);assert.ok(Math.min(...mesh(f,'stamp').points.map(p=>p[0]))>Math.max(...rest.map(p=>p[0])),'Painter switch intersects the body');}
@@ -68,10 +68,10 @@ test('stamp is rigid and body stays unchanged; behind/front handoff is outside t
 test('stamp settles, lifts, presses straight down; R and the small puff only follow contact',()=>{
  assert.ok(stamping(1.8).stamp.y<stamping(1.35).stamp.y-35);
  let lastY=-Infinity;
- for(let t=2;t<contactTime;t+=.005){const p=stamping(t);assert.equal(p.stamp.x,340);assert.ok(Math.abs(p.stamp.angle)<.0001);assert.ok(p.stamp.y>=lastY);lastY=p.stamp.y;assert.equal(p.imprinted,false);assert.equal(p.puff,0);assert.equal(mesh(scene('stamp_study',t),'logo').alpha,0);}
- assert.equal(stamping(contactTime).stamp.y,275);assert.equal(stamping(contactTime).imprinted,true);
+ for(let t=2;t<contactTime;t+=.005){const p=stamping(t);assert.equal(p.stamp.x,studyLayout.stampContact.x);assert.ok(Math.abs(p.stamp.angle)<.0001);assert.ok(p.stamp.y>=lastY);lastY=p.stamp.y;assert.equal(p.imprinted,false);assert.equal(p.puff,0);assert.equal(mesh(scene('stamp_study',t),'logo').alpha,0);}
+ assert.equal(stamping(contactTime).stamp.y,studyLayout.stampContact.y);assert.equal(stamping(contactTime).imprinted,true);
  assert.ok(stamping(2.3).puff>0);assert.equal(stamping(2.8).puff,0);
- assert.ok(stamping(2.72).stamp.y<275-50);assert.equal(mesh(scene('stamp_study',4.8),'logo').alpha,1);
+ assert.ok(stamping(2.72).stamp.y<studyLayout.stampContact.y-50);assert.equal(mesh(scene('stamp_study',4.8),'logo').alpha,1);
 });
 
 test('all flat body triangles preserve winding and stay inside the fixed frame',()=>{
@@ -87,8 +87,8 @@ test('all flat body triangles preserve winding and stay inside the fixed frame',
 test('30 fps Spine exports reproduce deform, alpha and draw order when seeking both directions',()=>{
  for(const kind of Object.keys(studyDuration)){
   const rig=load(bakeStudy(kind)),animation=rig.data.findAnimation(kind);
-  for(const frameIndex of [0,15,26,42,63,70,99,118,138,15,0]){const t=Math.min(frameIndex/30,studyDuration[kind]);rig.skeleton.setToSetupPose();animation.apply(rig.skeleton,0,t,false,[],1,MixBlend.replace,MixDirection.mixIn);rig.skeleton.updateWorldTransform(Physics.none);const f=scene(kind,t);
-   for(const p of f.patches){const v=vertices(rig.skeleton,p.id);assert.ok(v.every((x,i)=>Math.abs(x-p.points.flatMap(project)[i])<.002),`${kind} ${p.id} ${t}`);assert.ok(Math.abs(rig.skeleton.findSlot(p.id).color.a-p.alpha)<.001);}
+  for(const frameIndex of [0,15,26,42,63,70,99,118,137,138,139,204,282,139,138,137,15,0]){const t=Math.min(frameIndex/30,studyDuration[kind]);rig.skeleton.setToSetupPose();animation.apply(rig.skeleton,0,t,false,[],1,MixBlend.replace,MixDirection.mixIn);rig.skeleton.updateWorldTransform(Physics.none);const f=scene(kind,t);
+   for(const p of f.patches){const v=vertices(rig.skeleton,p.id);assert.ok(v.every((x,i)=>Math.abs(x-p.points.flatMap(project)[i])<.002),`${kind} ${p.id} ${t}`);assert.ok(Math.abs(rig.skeleton.findSlot(p.id).color.a-p.alpha)<.001,`${kind} ${p.id} alpha at ${t}: ${rig.skeleton.findSlot(p.id).color.a} expected ${p.alpha}`);}
    assert.deepEqual(rig.skeleton.drawOrder.map(s=>s.data.name),[...f.patches].sort((a,b)=>a.layer-b.layer).map(p=>p.id));
   }
  }
@@ -110,6 +110,13 @@ test('daily contour/material are reused and study pixels are identical in Chines
   for(const kind of Object.keys(studyDuration))for(const t of [.85,2.3,studyDuration[kind]]){
    ctx.clearRect(0,0,760,400);player.draw(kind,t,760,400,{dark,language:'zh'});const zh=ctx.getImageData(0,0,760,400).data;
    ctx.clearRect(0,0,760,400);player.draw(kind,t,760,400,{dark,language:'en'});assert.deepEqual(ctx.getImageData(0,0,760,400).data,zh);
+  }
+  for(const [w,h] of [[760,400],[502,320]]){
+   const render=(kind,t)=>{ctx.clearRect(0,0,760,400);player.draw(kind,t,w,h,{dark,language:'zh'});return ctx.getImageData(0,0,760,400).data;};
+   const end=render('walk_study',4.6);
+   assert.deepEqual(render('stamp_study',0),end,'Clip boundary changes visible pixels');
+   for(const t of [4.6-1/30,4.6,4.6+1/30])assert.deepEqual(render('continuity_study',t),end,'Joined seam flashes or jumps');
+   assert.deepEqual(render('continuity_study',9.4),render('stamp_study',4.8),'Reduced joined result differs');
   }
   assert.ok(!Object.keys(player.exportTextures()).some(k=>/text|ink/.test(k)));
  }
@@ -133,8 +140,32 @@ test('stamp has distinct aim, raised, pressure and result holds; gaze follows th
  for(const [a,b] of [[1.23,1.38],[1.8,1.98],[2.18,2.40],[2.74,3.08]])assert.deepEqual(stamping(a).stamp,stamping(b).stamp);
  const slow=stamping(2.02).stamp.y-stamping(2).stamp.y,fast=stamping(2.16).stamp.y-stamping(2.14).stamp.y;
  assert.ok(fast>slow*4,'Press lacks acceleration into contact');
- assert.ok(stamping(.69).gaze[0]>2);assert.ok(stamping(1.3).gaze[0]<-2);assert.ok(stamping(2.25).gaze[1]>1);
+ assert.ok(stamping(.69).gaze[0]>2);assert.ok(stamping(1.3).gaze[0]>2);assert.ok(stamping(2.25).gaze[1]>1);
  for(const kind of Object.keys(studyDuration))for(let t=0;t<=studyDuration[kind];t+=.03){const f=scene(kind,t);
   for(const i of [0,1]){const eye=mesh(f,'eye'+i).points,pupil=mesh(f,'pupil'+i).points;assert.ok(pupil[0][0]>=eye[0][0]&&pupil[1][0]<=eye[1][0]);assert.ok(pupil[0][1]>=eye[0][1]&&pupil[2][1]<=eye[2][1]);}
+ }
+});
+
+
+test('one sheet, body, gaze and shadow survive the clip boundary and reverse seeking',()=>{
+ const end=scene('walk_study',4.6),start=scene('stamp_study',0);
+ assert.deepEqual(start.patches,end.patches,'Stamp resets the settled walk pose');
+ for(const kind of Object.keys(studyDuration))for(let t=0;t<=studyDuration[kind];t+=.025){
+  const f=scene(kind,t);assert.deepEqual(mesh(f,'paper'),mesh(end,'paper'),'Paper changes geometry or material');
+  assert.equal(f.patches.filter(p=>['paper','card'].includes(p.material)).length,1);
+ }
+ for(const t of [4.6-1/30,4.6,4.6+1/30,6.78,9.4,4.6,4.6-1/30]){
+  const f=scene('continuity_study',t),expected=t<4.6?scene('walk_study',t):scene('stamp_study',t-4.6);
+  assert.deepEqual(f.patches,expected.patches);
+ }
+});
+
+test('R fits the shared paper, the stamp covers it at contact and avoids the eyes while raised',()=>{
+ const press=scene('stamp_study',contactTime),paper=mesh(press,'paper').points,logo=mesh(press,'logo').points;
+ for(const [x,y] of logo)assert.ok(x>paper[0][0]&&x<paper[1][0]&&y>paper[0][1]&&y<paper[2][1]);
+ const stamp=mesh(press,'stamp').points;
+ for(const [x,y] of logo)assert.ok(x>=stamp[0][0]&&x<=stamp[1][0]&&y>=stamp[0][1]&&y<=stamp[2][1],'R escapes the pressing prop');
+ for(let t=1.2;t<=3.1;t+=.02){const f=scene('stamp_study',t),s=mesh(f,'stamp').points;
+  for(const i of [0,1])assert.ok(s[0][0]>mesh(f,'eye'+i).points[1][0],'Raised prop covers the face');
  }
 });

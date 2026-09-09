@@ -1,6 +1,6 @@
 import {stage,scene,spineData,applyScene,studyDuration} from './settlement-scene.mjs';
 import {seamlessRenderer} from '../../../brand/refresh-2026-09/motion-rig/mesh-renderer.mjs';
-const materials=['body','eye','pupil','line','paper','card','stamp','puff','shadow','logo'];
+const materials=['body','eye','pupil','line','paper','stamp','puff','shadow','logo'];
 export async function createStudyPlayer(spine,ctx,logoURL,platform={}){
  const logo=platform.loadImage?await platform.loadImage(logoURL):await (async()=>{const image=new Image();image.src=logoURL;await image.decode();return image;})();
  function canvas(w,h){if(platform.createCanvas)return platform.createCanvas(w,h);const c=document.createElement('canvas');c.width=w;c.height=h;return c;}
@@ -14,8 +14,8 @@ export async function createStudyPlayer(spine,ctx,logoURL,platform={}){
   else if(material==='eye'){g.fillStyle='#f7f7f7';g.beginPath();g.roundRect(2,2,140,76,38);g.fill();if(dark){g.strokeStyle='#777';g.stroke();}}
   else if(material==='pupil'){g.fillStyle='#232323';g.beginPath();g.arc(24,24,22,0,Math.PI*2);g.fill();}
   else if(material==='line'){g.fillStyle=dark?'#9b9b9b':'#b2b2b2';g.fillRect(0,0,w,h);}
-  else if(material==='paper'||material==='card'){
-   g.fillStyle=dark?'#343434':'#ffffff';g.strokeStyle=dark?'#555555':'#dedede';g.beginPath();g.roundRect(2,2,w-4,h-4,material==='paper'?22:42);g.fill();g.stroke();
+  else if(material==='paper'){
+   g.fillStyle=dark?'#343434':'#ffffff';g.strokeStyle=dark?'#555555':'#dedede';g.beginPath();g.roundRect(2,2,w-4,h-4,22);g.fill();g.stroke();
   }else if(material==='stamp'){
    // A book-like flat attachment: knob, stem and pad form one rigid silhouette.
    g.fillStyle=dark?'#c5c5c5':'#353535';g.beginPath();g.roundRect(46,3,52,51,16);g.fill();

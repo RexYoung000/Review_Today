@@ -1,0 +1,44 @@
+[
+  {
+    "file": "continuity-native.mp4",
+    "capture": "native own window; actual presentation timestamps; no retiming or audio",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 820,
+          "avg_frame_rate": "92100/3139",
+          "nb_frames": "307"
+        }
+      ],
+      "format": {
+        "duration": "10.445000"
+      }
+    },
+    "decodeExit": 0,
+    "decodeStderr": ""
+  },
+  {
+    "file": "stamp-native.mp4",
+    "capture": "native own window; actual presentation timestamps; no retiming or audio",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 820,
+          "avg_frame_rate": "103200/3529",
+          "nb_frames": "172"
+        }
+      ],
+      "format": {
+        "duration": "5.855000"
+      }
+    },
+    "decodeExit": 0,
+    "decodeStderr": ""
+  }
+]
