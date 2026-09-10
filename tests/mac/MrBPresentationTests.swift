@@ -33,6 +33,29 @@ struct MrBPresentationTests {
         try expect(!MrBSettlementGate.reviewEligible(formal:true,saved:false,reason:"complete",count:3),"Failed result badge")
         try expect(!MrBSettlementGate.reviewEligible(formal:true,saved:true,reason:"complete",count:0),"Empty badge")
         try expect(MrBSettlementGate.reviewEligible(formal:true,saved:true,reason:"complete",count:3),"Completion missed")
+        let intake=MrBIngestionSession()
+        try expect(!intake.begin(count:3,compact:false,foreground:false),"Background opens an ingestion modal")
+        try expect(!intake.begin(count:0,compact:false),"Empty ingestion starts")
+        try expect(intake.begin(count:3,compact:false),"Full ingestion cannot start")
+        let oldID=intake.id
+        intake.presented=false
+        try expect(intake.resolve(id:oldID,outcome:"saved") && intake.resultAvailable && !intake.presented,"Closing cancels saving or result steals focus")
+        try expect(!intake.finish(reduced:false),"Closed presentation consumes first full experience")
+        try expect(!intake.resolve(id:oldID,outcome:"failed"),"Duplicate outcome overwrites saved result")
+        intake.replay();try expect(intake.resultAvailable && intake.count==3 && intake.presented && !intake.compact,"Replay loses saved result")
+        try expect(intake.finish(reduced:false) && !intake.finish(reduced:false),"Full completion is not consumed exactly once")
+        for reason in ["failed","cancelled"] {
+            try expect(intake.begin(count:2,compact:false),"Retry cannot begin")
+            try expect(!intake.resolve(id:oldID,outcome:"saved"),"Old result overwrites newer run")
+            try expect(!intake.resolve(id:intake.id,outcome:"saved",historical:true),"History triggers a new result")
+            intake.resolve(id:intake.id,outcome:reason)
+            try expect(!intake.resultAvailable && !intake.finish(reduced:false),"Unsuccessful run consumes first full experience")
+        }
+        for (short,reduced,failed) in [(true,false,false),(false,true,false),(false,false,true)] {
+            intake.begin(count:4,compact:short);intake.resolve(id:intake.id,outcome:"saved");intake.resourceFailed=failed
+            try expect(!intake.finish(reduced:reduced) && intake.resultAvailable,"Fallback loses result or consumes first full")
+            intake.showResult();try expect(intake.showingResult && !intake.presented,"Result not immediately accessible")
+        }
         let c=MrBMotionView.Coordinator(),settings=WKWebViewConfiguration();settings.websiteDataStore = .nonPersistent();settings.userContentController.add(c,name:"mrB")
         let web=MrBPassiveWebView(frame:NSRect(x:0,y:0,width:560,height:400),configuration:settings);web.setValue(false,forKey:"drawsBackground");web.navigationDelegate=c;c.view=web;window.contentView=web
         c.configuration.kind="walk_study"
@@ -152,6 +175,26 @@ struct MrBPresentationTests {
             c.configuration.seekTime=(event["stampAt"] as! Double)+4.8;c.configuration.seekToken += 1;c.send()
             _=try await settleState({flowMeta($0)["flowPhase"] as? String == "done"},"Finished flow still reports stamping")
         }
+        c.configuration=MrBConfiguration(kind:"flow_study",token:170,paused:true,seekTime:1.31,seekToken:80,compact:true);c.send()
+        _=try await settleState({flowMeta($0)["flowPhase"] as? String == "A"},"Compact A missing")
+        c.configuration.flowOutcome="saved";c.configuration.flowSignalToken=80;c.send()
+        state=try await settleState({flowMeta($0)["flowPhase"] as? String == "B"},"Compact B missing")
+        let compactEvent=state["flow"] as! [String:Any]
+        c.configuration.seekTime=(compactEvent["stampAt"] as! Double)+3.30;c.configuration.seekToken += 1;c.configuration.paused=false;c.send()
+        _=try await settleState({$0["done"] as? Bool == true && flowMeta($0)["flowPhase"] as? String == "done"},"Compact never completes")
+        c.configuration=MrBConfiguration(kind:"review_study",token:180,paused:true,seekTime:2.97,seekToken:90);c.send()
+        state=try await settleState({($0["study"] as? [String:Any])?["kind"] as? String == "review_study" && abs((($0["study"] as? [String:Any])?["time"] as? Double ?? 0)-2.97)<0.001},"Review seek failed")
+        try expect(flowMeta(state)["imprinted"] as? Bool == false,"Review stamps before contact")
+        c.configuration.seekTime=3.05;c.configuration.seekToken += 1;c.send()
+        _=try await settleState({flowMeta($0)["imprinted"] as? Bool == true},"Review R missing")
+        c.configuration.seekTime=6.45;c.configuration.seekToken += 1;c.configuration.paused=false;c.send()
+        _=try await settleState({$0["done"] as? Bool == true},"Review never finishes")
+        let reviewCompletions=completions;c.configuration.dark.toggle();c.send();try await Task.sleep(for:.milliseconds(100))
+        try expect(completions==reviewCompletions,"Theme change repeats review completion")
+        c.configuration=MrBConfiguration(kind:"review_study",token:181,reduced:true);c.send()
+        _=try await settleState({($0["config"] as? [String:Any])?["token"] as? Int == 181 && $0["done"] as? Bool == true && flowMeta($0)["imprinted"] as? Bool == true},"Reduced review lacks static R")
+        c.configuration.reduced=false;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect()
+        try expect(state["animating"] as? Bool == false,"Turning off reduced motion replays review")
         c.visible=false;c.send();web.stopLoading();settings.userContentController.removeScriptMessageHandler(forName:"mrB")
     }
 }

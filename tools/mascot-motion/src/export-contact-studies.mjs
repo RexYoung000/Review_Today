@@ -6,21 +6,24 @@ import * as core from '@esotericsoftware/spine-core';
 import {CanvasTexture,SkeletonRenderer} from '@esotericsoftware/spine-canvas';
 import {createCanvas,loadImage} from '@napi-rs/canvas';
 import {createStudyPlayer} from './settlement-player.mjs';
-import {bakeStudy} from './settlement-scene.mjs';
+import {bakeStudy,bakeScene} from './settlement-scene.mjs';
+import {stampFrame,reviewFrame,compactStampDuration,reviewDuration} from './settlement-sequences.mjs';
 import {createSettlementFlow} from './settlement-flow.mjs';
 import {root,previewRoot} from './paths.mjs';
 import {createMaterials} from '../../../brand/refresh-2026-09/motion-rig/material.mjs';
-const folder=resolve(root,'output/mr-b-preview/process-flow');await mkdir(folder,{recursive:true});
+const folder=resolve(root,'output/mr-b-preview/settlement-suite');await mkdir(folder,{recursive:true});
 const body=await loadImage(resolve(previewRoot,'data/images/body.png')),materials=createMaterials([['body.png',body]],createCanvas);
 const canvas=createCanvas(760,400),ctx=canvas.getContext('2d'),player=await createStudyPlayer({...core,CanvasTexture,SkeletonRenderer},ctx,resolve(root,'brand/refresh-2026-09/masters/mark-alpha.png'),{createCanvas,loadImage,bodyTexture:dark=>materials('graphite',dark).get(body)});
 const frames={walk_study:[0,.5,.85,1.10,1.29,2.05,3.25,4.6],stamp_study:[0,.7,1.3,1.9,2.1,2.18,2.28,2.6,2.9,3.6,4.8],continuity_study:[4.566666666666666,4.6,4.633333333333333,6.78,9.4]};
+frames.compact_stamp=[0,.6,1.53,1.76,1.88,2.18,3.36];frames.review_study=[0,.4,.8,2.98,5.6,6.1,6.6];
 const report={source:'offline authoring renders, not native screenshots',fps:30,studies:{}};
 for(const [kind,times] of Object.entries(frames)){
+ const sample=kind==='compact_stamp'?t=>stampFrame(t,true):kind==='review_study'?reviewFrame:null;
  const path=resolve(folder,kind);await mkdir(path,{recursive:true});
- for(const time of times){ctx.fillStyle='#f7f7f7';ctx.fillRect(0,0,760,400);player.draw(kind,time,760,400,{dark:false,language:'zh'});await writeFile(resolve(path,`frame-${time}.png`),canvas.toBuffer('image/png'));}
+ for(const time of times){ctx.fillStyle='#f7f7f7';ctx.fillRect(0,0,760,400);player.draw(kind,time,760,400,{dark:false,language:'zh'},sample?.(time));await writeFile(resolve(path,`frame-${time}.png`),canvas.toBuffer('image/png'));}
  const textures=player.exportTextures();for(const [name,texture] of Object.entries(textures))await writeFile(resolve(path,name+'.png'),texture.toBuffer('image/png'));
  await writeFile(resolve(path,'study.atlas'),Object.keys(textures).map(name=>`${name}.png\nsize: ${textures[name].width},${textures[name].height}\nfilter: Linear,Linear\n${name}\nbounds: 0,0,${textures[name].width},${textures[name].height}\n`).join('\n'));
- const json=bakeStudy(kind);await writeFile(resolve(path,'study.json'),JSON.stringify(json));
+ const json=sample?bakeScene(kind,kind==='compact_stamp'?compactStampDuration:reviewDuration,sample):bakeStudy(kind);await writeFile(resolve(path,'study.json'),JSON.stringify(json));
  report.studies[kind]={slots:json.slots.length,frames:times,notes:'Spine 4.2 flat mesh/deform, alpha and drawOrder. The same official Canvas renderer and original daily contour/material are used in native and offline rendering. No literal text, body ink, perspective depth or custom lighting. 30 fps export is runtime-tested; Spine editor import is not manually verified.'};console.log('Exported',kind,json.slots.length,'Spine mesh slots');
 }
 // Dynamic A/B is a host event schedule, not a fixed-duration Spine clip.

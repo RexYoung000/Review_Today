@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-09-10T08:16:45.123985+00:00",
+  "checks": [
+    {
+      "name": "strict-signature",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "--verbose=2",
+        "output/mr-b-preview/MrBContactPreview.app"
+      ],
+      "exitCode": 0,
+      "output": "output/mr-b-preview/MrBContactPreview.app: valid on disk\noutput/mr-b-preview/MrBContactPreview.app: satisfies its Designated Requirement\n"
+    },
+    {
+      "name": "daily-source-consistency",
+      "command": [
+        "node",
+        "tools/mascot-motion/src/build-native.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "output": "Native animation resource matches its source.\n"
+    },
+    {
+      "name": "diff-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "output": ""
+    }
+  ],
+  "nativeResourceSHA256": "6ab0c6d4c9c9b751d9259613b2fa7ede34b727f3021bd4ed5255825cef82dfd9",
+  "nativeBuild": "Passed; final native-build.txt includes scene-config first-draw gating and state-specific fallback copy.",
+  "nativeContracts": "Passed 58 JS tests and full native contracts including compact and review, lifecycle, first-full preference, interruption and event deduplication.",
+  "visualAcceptance": "Prior A/B and same-paper stamp accepted by Rex. New full/compact/review compositions self-checked, pending Rex review. Isolated simulation only."
+}

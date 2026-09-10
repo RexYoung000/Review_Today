@@ -120,11 +120,12 @@ export function applyScene(skeleton,frame){
  for(const p of frame.patches){const slot=slots.get(p.id);slot.color.a=p.alpha;slot.deform=p.points.flatMap(project);layers.set(p.id,p.layer);}
  skeleton.drawOrder=[...skeleton.slots].sort((a,b)=>layers.get(a.data.name)-layers.get(b.data.name));skeleton.updateWorldTransform(0);
 }
-export function bakeStudy(kind,fps=30){
- const first=scene(kind,0),json=spineData(first),animation={attachments:{default:{}},slots:{},drawOrder:[]};
+export function bakeStudy(kind,fps=30){return bakeScene(kind,studyDuration[kind],t=>scene(kind,t),fps);}
+export function bakeScene(kind,duration,sample,fps=30){
+ const first=sample(0),json=spineData(first),animation={attachments:{default:{}},slots:{},drawOrder:[]};
  const baseIndex=new Map(json.slots.map((s,i)=>[s.name,i]));
- for(let i=0;i<=Math.ceil(studyDuration[kind]*fps);i++){
-  const sampleTime=Math.min(i/fps,studyDuration[kind]),f=scene(kind,sampleTime);
+ for(let i=0;i<=Math.ceil(duration*fps);i++){
+  const sampleTime=Math.min(i/fps,duration),f=sample(sampleTime);
   // Spine stores timeline times as Float32. Round toward the authored sample,
   // otherwise a stepped key at e.g. 6.8 is read one frame late at that time.
   const key=new Float32Array([sampleTime]);

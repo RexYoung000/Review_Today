@@ -1,4 +1,5 @@
-import {walking,scene,poseFrame,studyDuration,clamp} from './settlement-scene.mjs';
+import {walking,poseFrame,studyDuration,clamp} from './settlement-scene.mjs';
+import {stampFrame,compactStampDuration} from './settlement-sequences.mjs';
 
 export const flowTiming={lead:.25,cycle:1.2,settle:.15,stop:.18};
 const emptyPose=()=>({...walking(4.6),lines:[0,1,2,3].map(i=>({erase:1,y:234+i*34}))});
@@ -15,7 +16,8 @@ export function processingPose(time,lastRow=Infinity){
  ]};
 }
 
-export function createSettlementFlow(){
+export function createSettlementFlow({compact=false}={}){
+ const stampDuration=compact?compactStampDuration:studyDuration.stamp_study;
  let event=null;
  function signal(outcome,time){
   if(event||!['saved','failed','cancelled'].includes(outcome))return false;
@@ -25,7 +27,7 @@ export function createSettlementFlow(){
   event={outcome,time,lastRow,clearAt,stampAt:clearAt+flowTiming.settle};
   return true;
  }
- function duration(){return !event?Infinity:event.outcome==='saved'?event.stampAt+studyDuration.stamp_study:event.time+flowTiming.stop;}
+ function duration(){return !event?Infinity:event.outcome==='saved'?event.stampAt+stampDuration:event.time+flowTiming.stop;}
  function frame(time,reduced=false){
   time=Math.max(0,time);const accepted=event&&time>=event.time?event:null;
   let f,phase;
@@ -33,8 +35,8 @@ export function createSettlementFlow(){
    phase='A';f=poseFrame('flow_study',time,processingPose(reduced?0:time),true,'walk_study','A · 持续整理');
   }else if(accepted.outcome==='saved'){
    if(reduced||time>=event.stampAt){
-    const t=reduced||time>=duration()-1e-9?studyDuration.stamp_study:Math.min(studyDuration.stamp_study,time-event.stampAt);
-    phase=t>=studyDuration.stamp_study?'done':'stamp';f=scene('stamp_study',t);
+    const t=reduced||time>=duration()-1e-9?stampDuration:Math.min(stampDuration,time-event.stampAt);
+    phase=t>=stampDuration?'done':'stamp';f=stampFrame(t,compact);
    }else{
     phase='B';f=poseFrame('flow_study',time,time>=event.clearAt?emptyPose():processingPose(time,event.lastRow),true,'walk_study','B · 收好剩余内容');
    }

@@ -1,0 +1,59 @@
+[
+  {
+    "file": "ingestion-full-native.mp4",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1280,
+        "height": 820,
+        "avg_frame_rate": "450600/16717",
+        "nb_frames": "751"
+      }
+    ],
+    "format": {
+      "duration": "27.860000"
+    },
+    "decodeExit": 0,
+    "decodeOutput": "",
+    "source": "Native ScreenCaptureKit window recording; original presentation timestamps; no speed change"
+  },
+  {
+    "file": "ingestion-compact-native.mp4",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1280,
+        "height": 820,
+        "avg_frame_rate": "486000/16553",
+        "nb_frames": "810"
+      }
+    ],
+    "format": {
+      "duration": "27.571667"
+    },
+    "decodeExit": 0,
+    "decodeOutput": "",
+    "source": "Native ScreenCaptureKit window recording; original presentation timestamps; no speed change"
+  },
+  {
+    "file": "review-native.mp4",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1280,
+        "height": 820,
+        "avg_frame_rate": "33450/1139",
+        "nb_frames": "223"
+      }
+    ],
+    "format": {
+      "duration": "7.588333"
+    },
+    "decodeExit": 0,
+    "decodeOutput": "",
+    "source": "Native ScreenCaptureKit window recording; original presentation timestamps; no speed change"
+  }
+]

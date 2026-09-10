@@ -13,7 +13,7 @@ final class MrBPreviewCapture {
 
     private var folder: URL {
         URL(fileURLWithPath: Bundle.main.object(forInfoDictionaryKey: "PreviewProjectRoot") as! String)
-            .appendingPathComponent(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBContactPreview" ? "docs/evidence/2026-09-08-mr-b/process-flow" : "docs/evidence/2026-09-08-mr-b")
+            .appendingPathComponent(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBContactPreview" ? "docs/evidence/2026-09-08-mr-b/settlement-suite" : "docs/evidence/2026-09-08-mr-b")
     }
 
     func resize(_ width: CGFloat, _ height: CGFloat) {
@@ -47,6 +47,40 @@ final class MrBPreviewCapture {
             do { try await record(view) }
             catch { message = String(describing: error); NSLog("QA export failed: %@", message) }
             recording = false
+        }
+    }
+
+    func recordIngestion(model: MrBPreviewModel, compact: Bool) {
+        guard !recording && !model.reduced && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
+              let window = NSApp.keyWindow else { return }
+        NSApp.activate(ignoringOtherApps:true); window.makeKeyAndOrderFront(nil)
+        model.enter("知识入库")
+        if model.ingestion.outcome == "processing" { model.ingestion.resolve(id:model.ingestion.id,outcome:"cancelled") }
+        model.beginIngestion(compact:compact); model.studyRecording = true; model.studyPaused = true; recording = true
+        Task { @MainActor in
+            do {
+                try await Task.sleep(for:.milliseconds(600))
+                // ScreenCaptureKit composites an attached sheet into its parent window.
+                // Capture that parent at its actual size to avoid shrinking/cropping it.
+                guard let view = window.contentView else { throw CocoaError(.fileWriteUnknown) }
+                try await record(view,onStarted:{
+                    model.ingestion.resolve(id:model.ingestion.id,outcome:"cancelled")
+                    model.ingestion.begin(count:model.count,compact:compact); model.studyPaused = false
+                },shouldStop:{model.ingestion.finished || !model.ingestion.presented})
+            } catch { message=String(describing:error);NSLog("QA export failed: %@",message) }
+            model.studyRecording = false; recording = false
+        }
+    }
+    func recordReview(model: MrBPreviewModel) {
+        guard !recording && !model.reduced && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
+              let view = NSApp.keyWindow?.contentView else { return }
+        NSApp.activate(ignoringOtherApps:true); view.window?.makeKeyAndOrderFront(nil)
+        model.enter("复习结算"); model.reviewReason="complete"; model.reviewCount=3
+        model.studyRecording=true; recording=true
+        Task { @MainActor in
+            do { try await record(view,onStarted:{model.finished=false;model.token += 1},shouldStop:{model.finished}) }
+            catch { message=String(describing:error);NSLog("QA export failed: %@",message) }
+            model.studyRecording=false;recording=false
         }
     }
 

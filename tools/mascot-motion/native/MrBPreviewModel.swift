@@ -3,7 +3,17 @@ import SwiftUI
 
 @MainActor @Observable
 final class MrBPreviewModel {
-    var scene = "逐行消除短样"
+    var scene = "知识入库"
+    var ingestion = MrBIngestionSession()
+    var reviewCount = 3
+    func beginIngestion(compact: Bool? = nil) {
+        _ = ingestion.begin(count: count, compact: compact ?? preferences.bool(forKey: "seenFullLineStampV1"), foreground: NSApp.isActive)
+    }
+    func ingestionEvent(_ event: String, reduced: Bool) {
+        if event == "failed" { ingestion.resourceFailed = true }
+        if event == "ready" { ingestion.resourceFailed = false }
+        if event == "finished", ingestion.finish(reduced: reduced) { preferences.set(true, forKey: "seenFullLineStampV1") }
+    }
     var studyRecording = false
     var studyPaused = false
     var studyTime = 0.0
@@ -110,4 +120,43 @@ final class MrBPreviewModel {
         if accepted { compact = seenFull; token += 1; finished = false; modal = true }
     }
     func replay() { compact = false; finished = false; token += 1; modal = true }
+}
+
+/// Isolated presentation state. Saving is simulated; animation never writes results.
+@MainActor @Observable
+final class MrBIngestionSession {
+    var id = UUID()
+    var token = 0
+    var signalToken = 0
+    var presented = false
+    var outcome = "idle"
+    var count = 0
+    var compact = false
+    var finished = false
+    var resourceFailed = false
+    var showingResult = false
+    var resultAvailable: Bool { outcome == "saved" }
+    @discardableResult
+    func begin(count: Int, compact: Bool, foreground: Bool = true, modalBusy: Bool = false) -> Bool {
+        guard count > 0, foreground, !modalBusy, outcome != "processing" else { return false }
+        id = UUID(); token += 1; self.count = count; self.compact = compact
+        outcome = "processing"; presented = true; finished = false; resourceFailed = false; showingResult = false
+        return true
+    }
+    @discardableResult
+    func resolve(id: UUID, outcome: String, historical: Bool = false) -> Bool {
+        guard id == self.id, !historical, self.outcome == "processing", ["saved","failed","cancelled"].contains(outcome) else { return false }
+        self.outcome = outcome; signalToken += 1
+        return true
+    }
+    func replay() {
+        guard resultAvailable else { return }
+        compact = false; token += 1; signalToken += 1; presented = true; finished = false; resourceFailed = false
+    }
+    func finish(reduced: Bool) -> Bool {
+        guard !finished else { return false }
+        finished = true
+        return resultAvailable && presented && !compact && !reduced && !resourceFailed
+    }
+    func showResult() { guard resultAvailable else { return }; showingResult = true; presented = false }
 }
