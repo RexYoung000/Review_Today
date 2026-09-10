@@ -72,8 +72,8 @@ def configured_window(model=None):
     raw = os.getenv(name, "")
     if raw:
         return int(raw) if raw.isdigit() and int(raw) > 4096 else None
-    # Official model table checked 2026-09-06. Unknown names stay unknown.
+    # Official model table checked 2026-09-10. Unknown names stay unknown.
     # https://api-docs.deepseek.com/quick_start/pricing/
-    if PROVIDER == "deepseek" and (model or MODEL) in {"deepseek-v4-flash", "deepseek-v4-pro"}:
+    if PROVIDER == "deepseek" and (model or MODEL) in {"deepseek-flash", "deepseek-v4-flash", "deepseek-v4-pro"}:
         return 1_000_000
     return None

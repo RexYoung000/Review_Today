@@ -29,7 +29,7 @@ class DeepSeekConfigTests(unittest.TestCase):
                               "OPENAI_BASE_URL": "https://old-provider.invalid", "OPENAI_ROUTER_MODEL": "old-router",
                               "DEEPSEEK_API_KEY": "deepseek-test-key"})
         self.assertEqual(values["BASE_URL"], "https://api.deepseek.com")
-        self.assertEqual(values["ROUTER_MODEL"], "deepseek-v4-flash")
+        self.assertEqual(values["ROUTER_MODEL"], "deepseek-flash")
         self.assertEqual(values["COACH_MODEL"], "deepseek-v4-flash")
         self.assertEqual(values["RISK_MODEL"], "deepseek-v4-pro")
         self.assertEqual(values["MODEL"], "deepseek-v4-flash")

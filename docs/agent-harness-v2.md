@@ -87,7 +87,7 @@
 
 Rex 在核对旧线路仍为 `api.aijws.com` 后明确要求接入已提供的 DeepSeek 官方。此授权覆盖本机项目主供应商及模型映射；不改变 Codex 自身配置，不启用旧线路自动备用，也不授权上传全量知识库。先独立提交并推送本节与相关文档，再修改功能/本机配置。
 
-- 主连接固定为 `https://api.deepseek.com`。路由/摘要、日常教学/生成使用 `deepseek-v4-flash`；风险与证据判断使用 `deepseek-v4-pro`。职责不变，旧段落的 Luna/Terra/Sol 仅表示历史模型映射，不代表当前实际调用名称。
+- 主连接固定为 `https://api.deepseek.com`。2026-09-10 按 Rex 要求，路由/摘要使用 DeepSeek V4.1 Flash，API 名称为 `deepseek-flash`；日常教学/生成配置保留 `deepseek-v4-flash`，风险与证据判断配置保留 `deepseek-v4-pro`。官方模型表已说明旧 Flash 名称也由 V4.1 Flash 承接；`deepseek-v4.1-flash` 不是有效 API 名称。新路由名称按官方模型表识别为 1M 上下文窗口。职责不变，旧段落的 Luna/Terra/Sol 仅表示历史模型映射，不代表当前实际调用名称。
 - 使用独立 provider 选择及 DeepSeek 凭证命名空间；旧 OpenAI-compatible `.env` 值原样保留，便于显式恢复。DeepSeek 凭证只留本机被 Git 忽略、权限受限的配置，不进文档、提交、测试记录或错误消息。不将 DeepSeek key 发给旧域名。
 - 复用 Responses、结构化校验、真实 SSE 正文投影、取消及统一步骤预算。按官方兼容规则把系统约束放到 `system`/`instructions`，不使用被 DeepSeek 当作普通用户内容的 `developer` 角色。
 - 实测兼容限制：`anyOf` 内的本地 `$ref` 被官方结构编译器以 400 拒绝。发送前等价展开本地 schema 引用，保留 required/nullable/枚举/长度等约束；最终仍用原 Pydantic 类型校验，不降为无约束 JSON。未知/递归引用显式报不支持，不悄悄删字段。路由轻量回应只使用产品身份，不把旧 Luna 名称暴露给用户。

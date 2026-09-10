@@ -21,7 +21,7 @@ if not 1024 <= PORT <= 65535:
     raise RuntimeError("RT.CONFIG.INVALID_LOCAL_PORT")
 if PROVIDER == "deepseek":
     MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash").strip() or "deepseek-v4-flash"
-    ROUTER_MODEL = os.getenv("DEEPSEEK_ROUTER_MODEL", "deepseek-v4-flash").strip() or "deepseek-v4-flash"
+    ROUTER_MODEL = os.getenv("DEEPSEEK_ROUTER_MODEL", "deepseek-flash").strip() or "deepseek-flash"
     COACH_MODEL = os.getenv("DEEPSEEK_COACH_MODEL", "deepseek-v4-flash").strip() or "deepseek-v4-flash"
     RISK_MODEL = os.getenv("DEEPSEEK_RISK_MODEL", "deepseek-v4-pro").strip() or "deepseek-v4-pro"
     BASE_URL = "https://api.deepseek.com"

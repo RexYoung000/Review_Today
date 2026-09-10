@@ -60,6 +60,7 @@ class ExecutionPolicyTests(unittest.TestCase):
             with patch("agent_service.config.PROVIDER", "deepseek"):
                 self.assertEqual(configured_window("deepseek-v4-flash"), 1_000_000)
                 self.assertEqual(configured_window("deepseek-v4-pro"), 1_000_000)
+                self.assertEqual(configured_window("deepseek-flash"), 1_000_000)
                 self.assertIsNone(configured_window("unknown"))
                 _, info = prepare("rules", "prompt", window=configured_window("deepseek-v4-flash"))
                 self.assertEqual(info["input_budget"], 256000)
