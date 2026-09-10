@@ -151,6 +151,8 @@ struct AppSidebar: View {
     @Query(sort: \SessionFolder.createdAt) private var folders: [SessionFolder]
     @Query(sort: \AgentRun.updatedAt, order: .reverse) private var runs: [AgentRun]
     @Query(sort: \LearningTask.updatedAt, order: .reverse) private var tasks: [LearningTask]
+    @State private var sessionHoverScrollOffset: CGFloat = 0
+    @State private var sessionHoverScrolling = false
     @State private var hoveredSessionID: UUID?
     @State private var openMenuSessionID: UUID?
     @State private var focusedMenuSessionID: UUID?
@@ -244,15 +246,22 @@ struct AppSidebar: View {
             }.padding(.horizontal, 10)
             ScrollView {
                 LazyVStack(spacing: 4) {
-                    ForEach(activeSessions.filter { session in !folders.contains(where: { $0.id == session.folderID }) }) { session in sessionRow(session) }
+                    ForEach(activeSessions.filter { session in !folders.contains(where: { $0.id == session.folderID }) }) { session in sessionRow(session).fluidHoverTarget(session.id.uuidString, group: "unfiled") }
                     ForEach(folders) { folder in
                         folderHeader(folder)
                         if !collapsed.contains(folder.id.uuidString) {
-                            ForEach(activeSessions.filter { $0.folderID == folder.id }) { session in sessionRow(session).padding(.leading, 12) }
+                            ForEach(activeSessions.filter { $0.folderID == folder.id }) { session in sessionRow(session).fluidHoverTarget(session.id.uuidString, group: folder.id.uuidString).padding(.leading, 12) }
                         }
                     }
-                }.scrollTargetLayout().padding(.horizontal, 8)
+                }.scrollTargetLayout()
+                    .fluidHoverSurface(reset: sessionHoverScrollOffset,
+                        blocked: sessionHoverScrolling || openMenuSessionID != nil)
+                    .padding(.horizontal, 8)
             }
+            .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y } action: { _, value in
+                sessionHoverScrollOffset = value; hoveredSessionID = nil
+            }
+            .onScrollPhaseChange { _, phase in sessionHoverScrolling = phase != .idle }
             .scrollPosition(id: $scrollAnchor, anchor: .top)
             .overlay {
                 if activeSessions.isEmpty && folders.isEmpty { SessionWelcome(action: createSession) }
@@ -340,9 +349,14 @@ struct AppSidebar: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(InteractionButtonStyle(selected: selected, focused: focusedSessionID == session.id, padding: 0, outline: .rounded(10)))
+            .buttonStyle(InteractionButtonStyle(selected: selected, hoverFeedback: false, focused: focusedSessionID == session.id, padding: 0, outline: .rounded(10)))
             .focusable().focusEffectDisabled()
             .focused($focusedSessionID, equals: session.id)
+            .onKeyPress(keys: [.return, .space], phases: .down) { _ in
+                guard focusedSessionID == session.id else { return .ignored }
+                selectedSessionID = session.id; selection = .learning
+                return .handled
+            }
             .help(session.title)
             .accessibilityAddTraits(selected ? [.isSelected] : [])
             .overlay(alignment: .trailing) {

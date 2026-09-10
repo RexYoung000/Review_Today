@@ -301,3 +301,124 @@ struct SidebarVisibilityPolicy {
         explicitlyExpandedInNarrowWindow = value && narrow
     }
 }
+
+// Visual-only shared hover. Row buttons continue to own all hit testing.
+struct FluidHoverTarget: Equatable {
+    var id: String
+    var group: String
+    var rect: CGRect
+}
+
+enum FluidHoverPicking {
+    static func nearest(_ point: CGPoint, targets: [FluidHoverTarget], maxGap: CGFloat) -> FluidHoverTarget? {
+        let valid = targets.filter { !$0.rect.isEmpty && !$0.rect.isInfinite && !$0.rect.isNull }
+        var bounds: [String: CGRect] = [:]
+        for target in valid { bounds[target.group] = (bounds[target.group] ?? .null).union(target.rect) }
+        let candidates = valid.filter { bounds[$0.group]?.contains(point) == true }
+        let winner = candidates.min { lhs, rhs in
+            let a = distance(point, lhs.rect), b = distance(point, rhs.rect)
+            return a == b ? lhs.id < rhs.id : a < b
+        }
+        guard let winner, distance(point, winner.rect) <= maxGap * maxGap else { return nil }
+        return winner
+    }
+
+    private static func distance(_ p: CGPoint, _ rect: CGRect) -> CGFloat {
+        let dx = max(rect.minX - p.x, 0, p.x - rect.maxX)
+        let dy = max(rect.minY - p.y, 0, p.y - rect.maxY)
+        return dx * dx + dy * dy
+    }
+}
+
+private struct FluidHoverScopeKey: EnvironmentKey { static let defaultValue: UUID? = nil }
+private extension EnvironmentValues {
+    var fluidHoverScope: UUID? {
+        get { self[FluidHoverScopeKey.self] }
+        set { self[FluidHoverScopeKey.self] = newValue }
+    }
+}
+private struct FluidHoverMeasurement: Equatable {
+    var scope: UUID
+    var target: FluidHoverTarget
+}
+private struct FluidHoverFrames: PreferenceKey {
+    static let defaultValue: [FluidHoverMeasurement] = []
+    static func reduce(value: inout [FluidHoverMeasurement], nextValue: () -> [FluidHoverMeasurement]) {
+        value.append(contentsOf: nextValue())
+    }
+}
+private struct FluidHoverRow: ViewModifier {
+    var id: String
+    var group: String
+    @Environment(\.fluidHoverScope) private var scope
+    func body(content: Content) -> some View {
+        content.background {
+            if let scope {
+                GeometryReader { geometry in
+                    Color.clear.preference(key: FluidHoverFrames.self, value: [
+                        FluidHoverMeasurement(scope: scope, target: FluidHoverTarget(id: id, group: group,
+                            rect: geometry.frame(in: .named(scope))))
+                    ])
+                }
+            }
+        }
+    }
+}
+private struct FluidHoverSurface: ViewModifier {
+    var radius: CGFloat
+    var maxGap: CGFloat
+    var reset: CGFloat
+    var blocked: Bool
+    @State private var scope = UUID()
+    @State private var targets: [FluidHoverTarget] = []
+    @State private var active: FluidHoverTarget?
+    @Environment(\.brandReduceMotion) private var reduced
+    @Environment(\.controlActiveState) private var windowState
+    @Environment(\.isEnabled) private var enabled
+    @Environment(\.runway) private var runway
+
+    func body(content: Content) -> some View {
+        content.environment(\.fluidHoverScope, scope)
+            .coordinateSpace(name: scope)
+            .onPreferenceChange(FluidHoverFrames.self) { measurements in
+                let next = measurements.filter { $0.scope == scope }.map(\.target)
+                if targets != next { targets = next; active = nil }
+            }
+            .overlay(alignment: .topLeading) {
+                if let active {
+                    RoundedRectangle(cornerRadius: radius, style: .continuous)
+                        .fill(runway.ink.opacity(0.045))
+                        .frame(width: active.rect.width, height: active.rect.height)
+                        .offset(x: active.rect.minX, y: active.rect.minY)
+                        .allowsHitTesting(false).accessibilityHidden(true)
+                }
+            }
+            .contentShape(Rectangle())
+            .onContinuousHover(coordinateSpace: .named(scope)) { phase in
+                switch phase {
+                case .active(let point):
+                    guard enabled, !blocked, windowState == .key else { active = nil; return }
+                    let next = FluidHoverPicking.nearest(point, targets: targets, maxGap: maxGap)
+                    guard next != active else { return }
+                    let travel = !reduced && active != nil && next != nil && active?.group == next?.group
+                    withAnimation(travel ? .easeOut(duration: 0.12) : nil) { active = next }
+                case .ended: active = nil
+                }
+            }
+            .onChange(of: reset) { _, _ in active = nil }
+            .onChange(of: blocked) { _, _ in active = nil }
+            .onChange(of: enabled) { _, _ in active = nil }
+            .onChange(of: reduced) { _, _ in active = nil }
+            .onChange(of: windowState) { _, state in if state != .key { active = nil } }
+            .onDisappear { active = nil }
+    }
+}
+extension View {
+    func fluidHoverTarget(_ id: String, group: String = "default") -> some View {
+        modifier(FluidHoverRow(id: id, group: group))
+    }
+    func fluidHoverSurface(radius: CGFloat = 10, maxGap: CGFloat = 8,
+                           reset: CGFloat = 0, blocked: Bool = false) -> some View {
+        modifier(FluidHoverSurface(radius: radius, maxGap: maxGap, reset: reset, blocked: blocked))
+    }
+}
