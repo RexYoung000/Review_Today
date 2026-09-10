@@ -55,18 +55,20 @@ final class InteractionInputMode: ObservableObject {
 /// Shared feedback, without changing the geometry of navigation or text rows.
 struct InteractionButtonStyle: ButtonStyle {
     var selected = false
+    var hoverFeedback = true
     // Owned by the control, not inherited from a focusable list/container.
     var focused = false
     var padding: CGFloat = 6
     var outline: InteractionOutline = .rounded(9)
 
     func makeBody(configuration: Configuration) -> some View {
-        Feedback(configuration: configuration, selected: selected, focused: focused, padding: padding, outline: outline)
+        Feedback(configuration: configuration, selected: selected, hoverFeedback: hoverFeedback, focused: focused, padding: padding, outline: outline)
     }
 
     private struct Feedback: View {
         let configuration: ButtonStyle.Configuration
         let selected: Bool
+        let hoverFeedback: Bool
         let focused: Bool
         let padding: CGFloat
         let outline: InteractionOutline
@@ -82,7 +84,7 @@ struct InteractionButtonStyle: ButtonStyle {
                 .padding(padding)
                 .background(background, in: outline.shape)
                 .overlay(outline.shape
-                    .fill(hovering && enabled ? runway.hoverWash.opacity(0.035) : .clear)
+                    .fill(hoverFeedback && hovering && enabled ? runway.hoverWash.opacity(0.035) : .clear)
                     .allowsHitTesting(false))
                 .overlay(outline.shape
                     .strokeBorder(focused && inputMode.keyboardNavigation && enabled && controlState == .key ? runway.agent : .clear, lineWidth: 1.5))
@@ -98,7 +100,7 @@ struct InteractionButtonStyle: ButtonStyle {
             guard enabled else { return .clear }
             if configuration.isPressed { return runway.ink.opacity(0.12) }
             if selected { return runway.monochrome ? runway.agent.opacity(0.10) : runway.field }
-            return hovering ? runway.field.opacity(0.7) : .clear
+            return hoverFeedback && hovering ? runway.field.opacity(0.7) : .clear
         }
     }
 }

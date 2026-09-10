@@ -155,6 +155,9 @@ struct AppSidebar: View {
     @State private var openMenuSessionID: UUID?
     @State private var focusedMenuSessionID: UUID?
     @FocusState private var focusedNavigation: SidebarItem?
+    @State private var navigationFrames: [SidebarItem: CGRect] = [:]
+    @State private var hoveredNavigation: SidebarItem?
+    @Environment(\.controlActiveState) private var navigationWindowState
     @FocusState private var focusedSessionID: UUID?
     @FocusState private var searchFocused: Bool
     @State private var editingSessionID: UUID?
@@ -172,7 +175,7 @@ struct AppSidebar: View {
         VStack(alignment: .leading, spacing: 0) {
             SidebarWindowControls().frame(height: 32).padding(.horizontal, 18).padding(.top, 8)
             brand
-            VStack(spacing: 4) { ForEach(SidebarItem.allCases) { item in sidebarRow(item) } }.padding(.horizontal, 10)
+            primaryNavigation.padding(.horizontal, 10)
             Divider().padding(.vertical, 12)
             sessionNavigation
             if let batchError { Text(batchError).font(.caption).foregroundStyle(.red).padding(10) }
@@ -378,12 +381,61 @@ struct AppSidebar: View {
         }
     }
 
+    private var primaryNavigation: some View {
+        VStack(spacing: 4) {
+            ForEach(SidebarItem.allCases) { item in
+                sidebarRow(item)
+                    .background(GeometryReader { geometry in
+                        Color.clear.preference(key: NavigationRowFrames.self,
+                            value: [item: geometry.frame(in: .named("primaryNavigation"))])
+                    })
+            }
+        }
+        .coordinateSpace(name: "primaryNavigation")
+        .onPreferenceChange(NavigationRowFrames.self) { frames in
+            if navigationFrames != frames {
+                navigationFrames = frames
+                hoveredNavigation = nil
+            }
+        }
+        .background(alignment: .topLeading) {
+            if let item = hoveredNavigation, let rect = navigationFrames[item] {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(runway.field.opacity(0.5))
+                    .frame(width: rect.width, height: rect.height)
+                    .offset(x: rect.minX, y: rect.minY)
+                    .allowsHitTesting(false).accessibilityHidden(true)
+            }
+        }
+        .contentShape(Rectangle())
+        .onContinuousHover(coordinateSpace: .named("primaryNavigation")) { phase in
+            switch phase {
+            case .active(let point):
+                guard navigationWindowState == .key, !navigationFrames.isEmpty else { return }
+                let nearest = SidebarItem.allCases.min {
+                    abs((navigationFrames[$0]?.midY ?? .infinity) - point.y) <
+                    abs((navigationFrames[$1]?.midY ?? .infinity) - point.y)
+                }
+                guard nearest != hoveredNavigation else { return }
+                // Animate only travel inside this group, never the initial entry.
+                withAnimation(reduceMotion || hoveredNavigation == nil ? nil : .easeOut(duration: 0.12)) {
+                    hoveredNavigation = nearest
+                }
+            case .ended: hoveredNavigation = nil
+            }
+        }
+        .onChange(of: navigationWindowState) { _, state in
+            if state != .key { hoveredNavigation = nil }
+        }
+        .onDisappear { hoveredNavigation = nil }
+    }
+
     private func sidebarRow(_ item: SidebarItem) -> some View {
         let selected = selection == item && (item != .learning || selectedSessionID == nil)
         return Button { if item == .learning { selectedSessionID = nil }; selection = item } label: {
             HStack(spacing: 8) {
                 Image(systemName: item.systemImage).frame(width: 27)
-                Text(item.title)
+                Text(item.title).fontWeight(selected ? .semibold : .regular)
                 Spacer()
                 if item == .inbox, inboxCount > 0 {
                     Text("\(inboxCount)").font(.caption.weight(.semibold))
@@ -396,8 +448,14 @@ struct AppSidebar: View {
             .background(selected ? runway.field : .clear, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .contentShape(Rectangle())
         }
-        .buttonStyle(InteractionButtonStyle(focused: focusedNavigation == item, padding: 0, outline: .rounded(10)))
+        .buttonStyle(InteractionButtonStyle(hoverFeedback: false, focused: focusedNavigation == item, padding: 0, outline: .rounded(10)))
         .focusable().focusEffectDisabled().focused($focusedNavigation, equals: item)
+        .onKeyPress(keys: [.return, .space], phases: .down) { _ in
+            guard focusedNavigation == item else { return .ignored }
+            if item == .learning { selectedSessionID = nil }
+            selection = item
+            return .handled
+        }
         .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
 
@@ -834,5 +892,12 @@ private struct SessionWelcome: View {
                 // Keep the animation canvas intact, excluding transparent footroom from centering.
                 .padding(.bottom, -38)
         }.frame(maxWidth: .infinity)
+    }
+}
+
+private struct NavigationRowFrames: PreferenceKey {
+    static let defaultValue: [SidebarItem: CGRect] = [:]
+    static func reduce(value: inout [SidebarItem: CGRect], nextValue: () -> [SidebarItem: CGRect]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, new in new })
     }
 }
