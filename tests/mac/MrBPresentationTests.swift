@@ -33,6 +33,20 @@ struct MrBPresentationTests {
         try expect(!MrBSettlementGate.reviewEligible(formal:true,saved:false,reason:"complete",count:3),"Failed result badge")
         try expect(!MrBSettlementGate.reviewEligible(formal:true,saved:true,reason:"complete",count:0),"Empty badge")
         try expect(MrBSettlementGate.reviewEligible(formal:true,saved:true,reason:"complete",count:3),"Completion missed")
+        let answer=MrBAnswerSession()
+        for (grade,kind) in [("good","reaction_approve"),("hard","reaction_encourage"),("again","reaction_guide")] {
+            answer.next();answer.text="隔离样例";answer.scenario=grade
+            let id=answer.begin()!;answer.scenario="good";answer.resolve(id:id)
+            try expect(answer.hasFeedback && answer.assessment==grade && answer.kind==kind,"Answer scenario not snapshotted or wrong reaction")
+            let token=answer.token;answer.resolve(id:id);answer.adopted="hard";answer.save()
+            try expect(answer.phase=="saved" && answer.token==token,"Accept or override replays reaction")
+            answer.next();answer.resolve(id:id);try expect(answer.phase=="asking" && answer.kind=="reaction_rest","Old answer reaches next question")
+        }
+        answer.text=" ";try expect(answer.begin()==nil,"Empty answer submits")
+        answer.text="保留的回答";answer.fail=true;let failedID=answer.begin()!;answer.resolve(id:failedID)
+        try expect(answer.phase=="failed" && answer.text=="保留的回答" && !answer.hasFeedback,"Assessment error treated as learner error")
+        answer.fail=false;let retryID=answer.begin()!;answer.resolve(id:failedID);try expect(answer.phase=="judging","Stale failure interrupts retry");answer.resolve(id:retryID)
+        try expect(answer.hasFeedback,"Retry loses answer")
         let intake=MrBIngestionSession()
         try expect(!intake.begin(count:3,compact:false,foreground:false),"Background opens an ingestion modal")
         try expect(!intake.begin(count:0,compact:false),"Empty ingestion starts")
@@ -195,6 +209,31 @@ struct MrBPresentationTests {
         _=try await settleState({($0["config"] as? [String:Any])?["token"] as? Int == 181 && $0["done"] as? Bool == true && flowMeta($0)["imprinted"] as? Bool == true},"Reduced review lacks static R")
         c.configuration.reduced=false;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect()
         try expect(state["animating"] as? Bool == false,"Turning off reduced motion replays review")
+        for (i,kind) in ["reaction_approve","reaction_encourage","reaction_guide"].enumerated() {
+            c.configuration=MrBConfiguration(kind:kind,token:200+i,paused:true,seekTime:0.95,seekToken:200+i);c.send()
+            _=try await settleState({($0["study"] as? [String:Any])?["kind"] as? String == kind && abs(($0["clipTime"] as? Double ?? 0)-0.95)<0.001},"Reaction not rendered")
+            c.configuration.paused=false;c.visible=false;c.send();try await Task.sleep(for:.milliseconds(200));state=try await inspect()
+            let pausedTime=state["clipTime"] as! Double;try await Task.sleep(for:.milliseconds(150));state=try await inspect()
+            try expect(state["clipTime"] as! Double == pausedTime,"Hidden reaction keeps moving")
+            c.visible=true;c.configuration.kind="reaction_rest";c.configuration.token += 10;c.configuration.seekTime=nil;c.send()
+            _=try await settleState({($0["study"] as? [String:Any])?["kind"] as? String == "reaction_rest" && $0["done"] as? Bool == true},"Reaction does not settle on next question")
+        }
+        c.configuration=MrBConfiguration(kind:"reaction_guide",token:220,paused:true,seekTime:0.95,seekToken:220);c.send()
+        _=try await settleState({($0["study"] as? [String:Any])?["kind"] as? String == "reaction_guide" && abs(($0["clipTime"] as? Double ?? 0)-0.95)<0.001},"Guide pose missing before interruption")
+        c.configuration.kind="reaction_rest";c.configuration.token=221;c.configuration.seekTime=0.09;c.configuration.seekToken=221;c.send()
+        _=try await settleState({($0["study"] as? [String:Any])?["kind"] as? String == "reaction_rest" && abs((($0["study"] as? [String:Any])?["time"] as? Double ?? 0)-0.09)<0.001},"First return not rendered")
+        _=try await web.evaluateJavaScript("window.returningPixels=document.querySelector('canvas').getContext('2d').getImageData(0,0,document.querySelector('canvas').width,document.querySelector('canvas').height).data;true")
+        c.configuration.token=222;c.configuration.seekTime=0;c.configuration.seekToken=222;c.send()
+        _=try await settleState({($0["config"] as? [String:Any])?["token"] as? Int == 222 && ($0["study"] as? [String:Any])?["time"] as? Double == 0},"Repeated return not rendered")
+        let pixelDifference=try await web.evaluateJavaScript("(()=>{const c=document.querySelector('canvas'),b=c.getContext('2d').getImageData(0,0,c.width,c.height).data,a=window.returningPixels;let maximum=0,changed=0;for(let i=0;i<a.length;i++){const d=Math.abs(a[i]-b[i]);maximum=Math.max(maximum,d);changed+=d>0;}delete window.returningPixels;return {maximum,changed,fraction:changed/a.length};})()") as! [String:Any]
+        // Re-interpolation can round a few antialiased channel values by 1–2/255.
+        // A visible pose jump changes far more pixels and exceeds this bound.
+        try expect((pixelDifference["maximum"] as! Int)<=2 && (pixelDifference["fraction"] as! Double)<0.0001,"Repeated next-question request snaps to the old reaction pose: \(pixelDifference)")
+        c.configuration=MrBConfiguration(kind:"reaction_guide",token:230,reduced:true);c.send()
+        state=try await settleState({($0["study"] as? [String:Any])?["kind"] as? String == "reaction_guide" && $0["done"] as? Bool == true},"Reduced reaction does not finish")
+        try expect((flowMeta(state)["lean"] as? Double ?? 0)>65,"Reduced motion loses representative pose")
+        let reactionCompletions=completions;c.configuration.dark.toggle();c.configuration.reduced=false;c.send();try await Task.sleep(for:.milliseconds(120));state=try await inspect()
+        try expect(completions==reactionCompletions && state["animating"] as? Bool == false,"Theme or Reduce Motion toggle replays reaction")
         c.visible=false;c.send();web.stopLoading();settings.userContentController.removeScriptMessageHandler(forName:"mrB")
     }
 }

@@ -16,6 +16,8 @@ struct MrBPreviewApp: App {
         .windowResizability(.contentMinSize)
         .commands {
             CommandMenu("试演") {
+                Button("录制当前单题反馈") { capture.recordAnswer(model:model) }
+                Button("录制三种单题回应") { capture.recordReactions(model:model) }
                 Button("录制完整入库（手动保存）") { capture.recordIngestion(model:model,compact:false) }
                 Button("录制精简入库（手动保存）") { capture.recordIngestion(model:model,compact:true) }
                 Button("录制复习完成") { capture.recordReview(model:model) }
@@ -54,12 +56,12 @@ struct MrBPreviewRoot: View {
             VStack(alignment:.leading,spacing:16) {
                 Text("Mr. B").font(.title2.bold()); Text("Bread · 认真一点点").font(.caption).foregroundStyle(.secondary)
                 Divider().padding(.vertical,8)
-                ForEach(["A → B → 盖章","逐行消除短样","2D 盖章短样","消除 → 盖章连播","等待","知识入库","复习结算","待机动作"],id:\.self) { scene in
+                ScrollView { ForEach(["答题反应","答题反馈","A → B → 盖章","逐行消除短样","2D 盖章短样","消除 → 盖章连播","等待","知识入库","复习结算","待机动作"],id:\.self) { scene in
                     Button { model.enter(scene) } label: {
                         Text(scene).frame(maxWidth:.infinity,alignment:.leading).padding(10)
                             .background(model.scene == scene ? Color.primary.opacity(0.08) : .clear,in:RoundedRectangle(cornerRadius:10))
                     }.buttonStyle(.plain)
-                }
+                }}
                 Spacer()
                 Text("隔离原生试演\n真实 Spine · 模拟事件\n不连接模型或日常数据").font(.caption).foregroundStyle(.secondary).lineSpacing(4)
             }.padding(20).frame(width:170).background(paper)
@@ -75,6 +77,8 @@ struct MrBPreviewRoot: View {
                 Group {
                     switch model.scene {
                     case "逐行消除短样", "2D 盖章短样", "消除 → 盖章连播", "A → B → 盖章": study
+                    case "答题反应": MrBReactionPreview(model:model,reduced:reduced)
+                    case "答题反馈": MrBAnswerPreview(model:model,reduced:reduced)
                     case "知识入库": knowledge
                     case "复习结算": review
                     case "待机动作": idle
@@ -311,6 +315,7 @@ struct MrBDecoratedMotion: View {
         }
     }
     private var unavailableCopy: String {
+        if configuration.kind.hasPrefix("reaction_") { return "动画暂不可用，题目与反馈仍可使用" }
         guard configuration.kind == "flow_study" else { return "动画暂不可用，结果已保留" }
         switch configuration.flowOutcome {
         case "saved": return "动画暂不可用，结果已保留"

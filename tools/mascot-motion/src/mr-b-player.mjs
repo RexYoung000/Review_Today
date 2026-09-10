@@ -1,3 +1,4 @@
+import {reactionFrame,returnReaction,reactionDuration} from '@review-motion/reaction-scene.mjs';
 import {createStudyPlayer} from '@review-motion/settlement-player.mjs';
 import {studyDuration} from '@review-motion/settlement-scene.mjs';
 import {reviewFrame,reviewDuration} from '@review-motion/settlement-sequences.mjs';
@@ -10,12 +11,17 @@ const Renderer=seamlessRenderer(spine.SkeletonRenderer),renderer=new Renderer(ct
 let studyPlayer,studyInfo,lastTick=-1,rig,materials,raf=0,last=0,elapsed=0,clipTime=0,clip='',wait=0,done=false,frames=0,sequence=createSequence(),returnPose=null,runtimeError='';
 let config={kind:'thinking',stage:'answer',token:0,dark:false,reduced:false,visible:true,lines:[],count:1,title:'知识卡片'};
 let flow=createSettlementFlow(),lastFlowPhase='',flowCompletionSent=false,configured=false;
-const isStudy=()=>config.kind==='flow_study'||config.kind==='review_study'||!!studyDuration[config.kind];
+let reactionSource=null;
+const isReaction=()=>config.kind.startsWith('reaction_');
+const currentReaction=()=>config.kind==='reaction_rest'?returnReaction(reactionSource,clipTime,config.reduced):reactionFrame(config.kind,clipTime,config.reduced);
+const isStudy=()=>isReaction()||config.kind==='flow_study'||config.kind==='review_study'||!!studyDuration[config.kind];
 const send=(type,value={})=>window.webkit?.messageHandlers.mrB?.postMessage({type,token:config.token,...value});
 function choose(){const next=sequence.next(config.kind,config.stage==='organize');clip=next.clip;wait=next.wait;clipTime=0;}
 function reset(){elapsed=clipTime=0;done=false;sequence=createSequence();flow=createSettlementFlow({compact:config.compact});flowCompletionSent=false;lastFlowPhase='';lastTick=-1;clip=config.kind==='thinking'?'mr_receive':config.kind==='idle'?'idle_look':config.kind;wait=1;returnPose=null;}
-function duration(){return config.kind==='flow_study'?flow.duration():config.kind==='review_study'?reviewDuration:studyDuration[clip]??durations[clip]??rig.data.findAnimation(clip)?.duration??1;}
+function duration(){if(isReaction())return config.kind==='reaction_rest'?.18:reactionDuration;return config.kind==='flow_study'?flow.duration():config.kind==='review_study'?reviewDuration:studyDuration[clip]??durations[clip]??rig.data.findAnimation(clip)?.duration??1;}
 function apply(dt){
+ if(isReaction()){if(config.reduced){clipTime=duration();finish();}else if(!config.paused&&!done){clipTime=Math.min(duration(),clipTime+dt);if(clipTime>=duration())finish();}return;}
+
  if(config.kind==='flow_study'){
   if(config.reduced&&Number.isFinite(duration()))clipTime=duration();
   else if(!config.paused&&!done&&!config.reduced)clipTime=Math.min(duration(),clipTime+dt);
@@ -40,6 +46,8 @@ function apply(dt){
 function finish(){if(!done){done=true;send('finished');}}
 function rounded(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();}}
 function drawScene(w,h){
+ if(isReaction()){studyInfo=studyPlayer.draw(config.kind,clipTime,w,h,config,currentReaction());if(Math.abs(clipTime-lastTick)>=.09||done){lastTick=clipTime;send('studyTime',{time:clipTime});}return;}
+
  if(config.kind==='review_study'){
   const t=config.reduced?reviewDuration:clipTime;studyInfo=studyPlayer.draw(config.kind,t,w,h,config,reviewFrame(t));
   if(Math.abs(t-lastTick)>=.09||done){lastTick=t;send('studyTime',{time:t});}return;
@@ -102,13 +110,14 @@ function frame(now){raf=0;if(!rig)return;const gap=(now-(last||now))/1000,dt=isS
 function wake(){if(configured&&rig&&!raf)raf=requestAnimationFrame(frame);}
 window.mrB={setState(next){
  configured=true;
+ if(next.kind==='reaction_rest'&&isReaction()&&(config.kind!=='reaction_rest'||next.token!==config.token))reactionSource=currentReaction();
  const old=config,changed=old.token!==next.token||old.kind!==next.kind;
  if(next.kind==='settle'&&old.kind!=='settle'&&rig)returnPose={bones:rig.skeleton.bones.map(b=>Object.fromEntries(['x','y','rotation','scaleX','scaleY'].map(k=>[k,b[k]]))),alpha:rig.skeleton.slots.map(s=>s.color.a),deform:rig.skeleton.slots.map(s=>Array.from(s.deform)),order:rig.skeleton.drawOrder.slice()};
  config={...old,...next};
  if(changed){if(config.kind==='settle'){elapsed=0;done=false;}else reset();}
  if(config.kind==='flow_study'&&next.flowSignalToken!==old.flowSignalToken&&next.flowOutcome!=='processing')flow.signal(next.flowOutcome,clipTime);
  if(isStudy()&&next.seekToken!==old.seekToken&&next.seekTime!=null){clipTime=Math.max(0,Math.min(duration(),next.seekTime));done=clipTime>=duration();lastTick=-1;}
- if(config.reduced&&!['flow_study','review_study'].includes(config.kind))done=false;
+ if(config.reduced&&!isReaction()&&!['flow_study','review_study'].includes(config.kind))done=false;
  if(!config.visible){cancelAnimationFrame(raf);raf=0;last=0;if(rig)paint(0);return;}
  if(old.visible!==config.visible||old.reduced!==config.reduced||old.paused!==config.paused)last=0;wake();
 },inspect(){return {study:studyInfo,flow:flow.inspect(),runtimeError,ready:!!rig,frames,animating:!!raf,clip,clipTime,done,config};}};

@@ -13,7 +13,7 @@ final class MrBPreviewCapture {
 
     private var folder: URL {
         URL(fileURLWithPath: Bundle.main.object(forInfoDictionaryKey: "PreviewProjectRoot") as! String)
-            .appendingPathComponent(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBContactPreview" ? "docs/evidence/2026-09-08-mr-b/settlement-suite" : "docs/evidence/2026-09-08-mr-b")
+            .appendingPathComponent(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBContactPreview" ? "docs/evidence/2026-09-08-mr-b/answer-reactions" : "docs/evidence/2026-09-08-mr-b")
     }
 
     func resize(_ width: CGFloat, _ height: CGFloat) {
@@ -69,6 +69,31 @@ final class MrBPreviewCapture {
                 },shouldStop:{model.ingestion.finished || !model.ingestion.presented})
             } catch { message=String(describing:error);NSLog("QA export failed: %@",message) }
             model.studyRecording = false; recording = false
+        }
+    }
+    func recordAnswer(model: MrBPreviewModel) {
+        guard !recording && !model.reduced && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion, let view=NSApp.keyWindow?.contentView else{return}
+        NSApp.activate(ignoringOtherApps:true);view.window?.makeKeyAndOrderFront(nil)
+        model.enter("答题反馈");model.answerSession.next();model.answerSession.fail=false;model.failedResource=false
+        model.answerSession.text = model.answerSession.scenario == "again" ? "检索和生成都在直接生成答案。" : model.answerSession.scenario == "hard" ? "提示后想起来了：检索找资料，生成依据资料组织回答。" : "检索找到相关资料，生成依据资料组织回答。"
+        model.studyRecording=true;recording=true
+        Task { @MainActor in
+            do {try await record(view,onStarted:{
+                model.finished=false
+                if let id=model.answerSession.begin() {Task {try? await Task.sleep(for:.milliseconds(650));model.answerSession.resolve(id:id)}}
+            },shouldStop:{model.finished && model.answerSession.hasFeedback})}
+            catch {message=String(describing:error);NSLog("QA export failed: %@",message)}
+            model.studyRecording=false;recording=false
+        }
+    }
+    func recordReactions(model: MrBPreviewModel) {
+        guard !recording && !model.reduced && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion, let view=NSApp.keyWindow?.contentView else{return}
+        NSApp.activate(ignoringOtherApps:true);view.window?.makeKeyAndOrderFront(nil)
+        model.enter("答题反应");model.reactionLabels=false;model.studyMesh=false;model.studyPaused=true;model.studyRecording=true;recording=true
+        Task { @MainActor in
+            do {try await record(view,onStarted:{model.replayReactions()},shouldStop:{model.finished})}
+            catch {message=String(describing:error);NSLog("QA export failed: %@",message)}
+            model.studyRecording=false;recording=false
         }
     }
     func recordReview(model: MrBPreviewModel) {

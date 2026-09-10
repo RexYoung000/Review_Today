@@ -1,0 +1,46 @@
+[
+  {
+    "file": "comparison-native.mp4",
+    "native": true,
+    "accelerated": false,
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 820,
+          "avg_frame_rate": "2200/87",
+          "nb_frames": "110"
+        }
+      ],
+      "format": {
+        "duration": "4.335000"
+      }
+    },
+    "fullDecodeExitCode": 0,
+    "decodeStderr": ""
+  },
+  {
+    "file": "answer-feedback-native.mp4",
+    "native": true,
+    "accelerated": false,
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 760,
+          "height": 652,
+          "avg_frame_rate": "82800/2933",
+          "nb_frames": "138"
+        }
+      ],
+      "format": {
+        "duration": "4.888333"
+      }
+    },
+    "fullDecodeExitCode": 0,
+    "decodeStderr": ""
+  }
+]

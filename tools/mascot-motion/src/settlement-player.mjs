@@ -42,7 +42,7 @@ export async function createStudyPlayer(spine,ctx,logoURL,platform={}){
    const [x,y]=frame.meta.contact;g.strokeStyle='#eb7133';g.lineWidth=1.5;g.beginPath();g.moveTo(x-14,y);g.lineTo(x+14,y);g.moveTo(x,y-14);g.lineTo(x,y+14);g.stroke();
    g.fillStyle=dark?'#ccc':'#555';g.font='12px -apple-system';g.fillText(`${frame.time.toFixed(2)} s · ${frame.meta.phase}`,26,378);
   }
-  g.restore();const fit=Math.min(w/stage.width,h/stage.height);ctx.drawImage(raster,(w-stage.width*fit)/2,(h-stage.height*fit)/2,stage.width*fit,stage.height*fit);
+  g.restore();const viewport=frame.viewport??{x:0,y:0,...stage},fit=Math.min(w/viewport.width,h/viewport.height);ctx.drawImage(raster,viewport.x*2,viewport.y*2,viewport.width*2,viewport.height*2,(w-viewport.width*fit)/2,(h-viewport.height*fit)/2,viewport.width*fit,viewport.height*fit);
   const pixels=g.getImageData(0,0,1520,800).data;let paintedPixels=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i])paintedPixels++;
   return {kind:frame.kind,time:frame.time,drawMilliseconds:performance.now()-started,paintedPixels,phase:frame.meta.phase,patches:frame.patches.length,visible:rig.slots.filter(s=>s.color.a>0).length,meta:frame.meta};
  },exportTextures:()=>textures,duration:kind=>studyDuration[kind]};

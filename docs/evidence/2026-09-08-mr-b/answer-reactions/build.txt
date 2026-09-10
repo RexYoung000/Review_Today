@@ -1,0 +1,3 @@
+Isolated Mr. B resource: 6487824 bytes
+/Users/rexyoung/Desktop/vibe coding/Review_Today/output/mr-b-preview/MrBContactPreview.app: replacing existing signature
+/Users/rexyoung/Desktop/vibe coding/Review_Today/output/mr-b-preview/MrBContactPreview.app

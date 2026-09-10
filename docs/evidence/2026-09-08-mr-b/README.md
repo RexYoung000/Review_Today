@@ -1,4 +1,22 @@
-# 当前：完整／精简入库与复习结算（2026-09-10，已实现／自测完成／新增编排待 Rex 验收）
+# 当前：单题认可、鼓励与一起再看（2026-09-10，已实现／自测完成／待 Rex 视觉验收）
+
+按 Rex 确认先完成三个同尺寸、无语义标签的真实 Spine 短样，再放入隔离答题反馈页。角色沿用已有轮廓和材质，差异由局部身体形变与节奏承担：认可先压后挺并点头；鼓励左侧靠近再点头；一起再看转向右侧解析并停留。无手、无嘴，不新增庆祝道具。本轮没有改正式答题、评分、排期、数据或模型。
+
+- [三个动作无标签原速对照](answer-reactions/comparison-native.mp4)：1280×820，4.34 秒。先看 A／B／C 能否区分，再在试演勾选「显示动作含义」。
+- [最小窗口中的答题反馈原速录像](answer-reactions/answer-feedback-native.mp4)：760×652，4.89 秒。模拟核对后解释和操作立即出现，Mr. B 在旁回应，不阻塞采用与改判。
+- [最小窗口深色／减少动态](answer-reactions/minimum-dark-reduced.png)与[英文反馈／动画失败降级](answer-reactions/minimum-english-fallback.png)。减少动态保留各自代表姿态；降级仍可采用判断、进入下一题。
+
+[62 项动作回归](answer-reactions/animation-regression.txt)与[原生状态／生命周期契约](answer-reactions/native-contracts.txt)通过。覆盖局部网格形变、三角形方向、固定取景和面部包含、真实 Spine 正反定位、结果快照与事件去重、费力区别于错误、采用／改判不重播、下一题中断、后台暂停与减少动态。连续重置改为接住当前收势帧；原生检查最初因要求 PNG 字节完全相等失败，解码诊断为极少量边缘取整差，改为严格原始像素容差后通过，失败记录保留。原因和实际原生观察见 [观察记录](answer-reactions/native-observations.md)。
+
+[录像元数据与完整解码](answer-reactions/recordings.json)、[最终构建检查](answer-reactions/build-checks.json)、构建／导出日志均保存在本目录。录像保留实际时间戳，不加速，无音频；三条短样均 3.2 秒。测试证明所覆盖的行为，不代替用户识别与视觉验收。
+
+运行 `bash tests/mac/run-mr-b-contact-preview.sh`，打开 `output/mr-b-preview/MrBContactPreview.app`：默认「答题反应」可并排重播、暂停、逐帧和显示网格；「答题反馈」选模拟评估后用「填入当前样例并试答」检查三种反应、改判、下一题和故障。菜单「试演」可录制对照与当前单题反馈。
+
+`node tools/mascot-motion/src/export-reactions.mjs` 可重建 `output/mr-b-preview/answer-reactions/` 下三套 Spine 4.2 JSON、atlas、纹理及明确标为离线的关键帧。动作通过 Spine 网格／附件渲染，隔离宿主排程使用相同几何；不把离线帧当原生证据。正式答题是否持续展示角色尚未定案，本次反馈位置是试演方案；编辑器人工导入、完整辅助技术与正式模型／保存未验证。
+
+---
+
+# 前一阶段：完整／精简入库与复习结算（2026-09-10，已实现／自测完成／新增编排待 Rex 验收）
 
 Rex 已验收的 A 循环整理 → B 收尾 → 同纸面盖章保持通过。本轮据此完成新版完整入库流程、精简盖章和复习结算；全部仍在隔离原生试演中，未接入正式服务、日常数据或真实保存信号。
 
