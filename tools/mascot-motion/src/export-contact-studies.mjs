@@ -7,9 +7,10 @@ import {CanvasTexture,SkeletonRenderer} from '@esotericsoftware/spine-canvas';
 import {createCanvas,loadImage} from '@napi-rs/canvas';
 import {createStudyPlayer} from './settlement-player.mjs';
 import {bakeStudy} from './settlement-scene.mjs';
+import {createSettlementFlow} from './settlement-flow.mjs';
 import {root,previewRoot} from './paths.mjs';
 import {createMaterials} from '../../../brand/refresh-2026-09/motion-rig/material.mjs';
-const folder=resolve(root,'output/mr-b-preview/shared-stage');await mkdir(folder,{recursive:true});
+const folder=resolve(root,'output/mr-b-preview/process-flow');await mkdir(folder,{recursive:true});
 const body=await loadImage(resolve(previewRoot,'data/images/body.png')),materials=createMaterials([['body.png',body]],createCanvas);
 const canvas=createCanvas(760,400),ctx=canvas.getContext('2d'),player=await createStudyPlayer({...core,CanvasTexture,SkeletonRenderer},ctx,resolve(root,'brand/refresh-2026-09/masters/mark-alpha.png'),{createCanvas,loadImage,bodyTexture:dark=>materials('graphite',dark).get(body)});
 const frames={walk_study:[0,.5,.85,1.10,1.29,2.05,3.25,4.6],stamp_study:[0,.7,1.3,1.9,2.1,2.18,2.28,2.6,2.9,3.6,4.8],continuity_study:[4.566666666666666,4.6,4.633333333333333,6.78,9.4]};
@@ -22,4 +23,10 @@ for(const [kind,times] of Object.entries(frames)){
  const json=bakeStudy(kind);await writeFile(resolve(path,'study.json'),JSON.stringify(json));
  report.studies[kind]={slots:json.slots.length,frames:times,notes:'Spine 4.2 flat mesh/deform, alpha and drawOrder. The same official Canvas renderer and original daily contour/material are used in native and offline rendering. No literal text, body ink, perspective depth or custom lighting. 30 fps export is runtime-tested; Spine editor import is not manually verified.'};console.log('Exported',kind,json.slots.length,'Spine mesh slots');
 }
+// Dynamic A/B is a host event schedule, not a fixed-duration Spine clip.
+const flow=createSettlementFlow();flow.signal('saved',5.31);
+const flowPath=resolve(folder,'flow_study');await mkdir(flowPath,{recursive:true});
+const flowFrames=[.85,1.31,1.449,1.451,5.31,6.1,flow.inspect().stampAt,flow.duration()];
+for(const time of flowFrames){ctx.fillStyle='#f7f7f7';ctx.fillRect(0,0,760,400);player.draw('flow_study',time,760,400,{dark:false,language:'zh'},flow.frame(time));await writeFile(resolve(flowPath,`frame-${time}.png`),canvas.toBuffer('image/png'));}
+report.studies.flow_study={signal:flow.inspect(),frames:flowFrames,notes:'Offline snapshots for one simulated saved signal at 5.31 s. A/B is evaluated by settlement-flow.mjs over the shared Spine meshes; these snapshots are not a fixed Spine animation or native recording.'};
 await writeFile(resolve(folder,'manifest.json'),JSON.stringify(report,null,2));

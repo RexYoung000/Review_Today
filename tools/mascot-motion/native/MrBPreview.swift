@@ -16,6 +16,7 @@ struct MrBPreviewApp: App {
         .windowResizability(.contentMinSize)
         .commands {
             CommandMenu("试演") {
+                Button("录制 A → B → 盖章（手动触发）") { capture.recordStudy(model:model,scene:"A → B → 盖章") }
                 Button("录制消除 → 盖章连播") { capture.recordStudy(model:model,scene:"消除 → 盖章连播") }
                 Button("录制逐行消除短样") { capture.recordStudy(model:model,scene:"逐行消除短样") }
                 Button("录制2D 盖章短样") { capture.recordStudy(model:model,scene:"2D 盖章短样") }
@@ -50,7 +51,7 @@ struct MrBPreviewRoot: View {
             VStack(alignment:.leading,spacing:16) {
                 Text("Mr. B").font(.title2.bold()); Text("Bread · 认真一点点").font(.caption).foregroundStyle(.secondary)
                 Divider().padding(.vertical,8)
-                ForEach(["逐行消除短样","2D 盖章短样","消除 → 盖章连播","等待","知识入库","复习结算","待机动作"],id:\.self) { scene in
+                ForEach(["A → B → 盖章","逐行消除短样","2D 盖章短样","消除 → 盖章连播","等待","知识入库","复习结算","待机动作"],id:\.self) { scene in
                     Button { model.enter(scene) } label: {
                         Text(["知识入库","复习结算"].contains(scene) ? scene+" · 旧版" : scene).frame(maxWidth:.infinity,alignment:.leading).padding(10)
                             .background(model.scene == scene ? Color.primary.opacity(0.08) : .clear,in:RoundedRectangle(cornerRadius:10))
@@ -70,7 +71,7 @@ struct MrBPreviewRoot: View {
                 Divider()
                 Group {
                     switch model.scene {
-                    case "逐行消除短样", "2D 盖章短样", "消除 → 盖章连播": study
+                    case "逐行消除短样", "2D 盖章短样", "消除 → 盖章连播", "A → B → 盖章": study
                     case "知识入库": knowledge
                     case "复习结算": review
                     case "待机动作": idle
@@ -94,23 +95,32 @@ struct MrBPreviewRoot: View {
     }
     private var study: some View {
         VStack(alignment:.leading,spacing:16) {
-            Text(model.scene == "消除 → 盖章连播" ? "同一张纸，收好再盖章。" : (model.scene == "逐行消除短样" ? "一步一条，把内容收好。" : "拿出来，认真盖一下。"))
+            Text(model.isFlow ? "整理中，直到内容收好。" : model.scene == "消除 → 盖章连播" ? "同一张纸，收好再盖章。" : (model.scene == "逐行消除短样" ? "一步一条，把内容收好。" : "拿出来，认真盖一下。"))
                 .font(.title2.bold())
-            Text("逐行踏步与 2D 取放短样 · 待视觉验收").font(.caption).foregroundStyle(.secondary)
+            Text("逐行踏步与 2D 取放短样 · 动作视觉已验收").font(.caption).foregroundStyle(.secondary)
+            if model.isFlow {
+                Text(model.flowCopy).font(.callout).accessibilityIdentifier("flow-status")
+                HStack {
+                    Button("完成并保存（模拟）") { model.signalFlow("saved") }
+                    Button("失败") { model.signalFlow("failed") }
+                    Button("取消") { model.signalFlow("cancelled") }
+                }.font(.caption).disabled(model.flowOutcome != "processing")
+            }
             GeometryReader { geometry in
                 ZStack {
-                    MrBMotionView(configuration:.init(kind:model.studyKind,token:model.token,dark:model.dark,reduced:reduced,language:model.english ? "en" : "zh",paused:model.studyPaused,seekTime:model.studySeek,seekToken:model.studySeekToken,debugMesh:model.studyMesh,reviewRecording:model.studyRecording),onEvent:{ event in
+                    MrBMotionView(configuration:.init(kind:model.studyKind,token:model.token,dark:model.dark,reduced:reduced,language:model.english ? "en" : "zh",paused:model.studyPaused,seekTime:model.studySeek,seekToken:model.studySeekToken,debugMesh:model.studyMesh,reviewRecording:model.studyRecording,flowOutcome:model.flowOutcome,flowSignalToken:model.flowSignalToken),onEvent:{ event in
                         if event == "failed" { model.studyFailed = true }
                         if event == "ready" { model.studyFailed = false }
-                        if event == "finished" { model.finished = true; model.studyPaused = true; model.studyTime = model.studyDuration }
-                    },onTime:{ time in model.studyTime = time })
+                        if event == "finished" || event == "flowStopped" { model.finished = true; model.studyPaused = true; if !model.isFlow { model.studyTime = model.studyDuration } }
+                        if event.hasPrefix("flow:") { model.flowPhase = String(event.dropFirst(5)); if model.flowPhase == "done" { model.finished = true; model.studyPaused = true } }
+                    },onTime:{ time in model.trackStudyTime(time) })
                     .accessibilityHidden(true)
                     if model.studyFailed { Text("短样加载失败，请重新打开试演。").foregroundStyle(.secondary) }
                 }.frame(width:geometry.size.width,height:geometry.size.height)
             }.frame(minHeight:220)
             HStack {
-                Button { model.replayStudy() } label: { Label("重播",systemImage:"arrow.counterclockwise") }
-                Button { if model.studyTime >= model.studyDuration { model.replayStudy() } else { model.studyPaused.toggle() } } label: { Label(model.studyPaused ? "播放" : "暂停",systemImage:model.studyPaused ? "play.fill" : "pause.fill") }.disabled(reduced)
+                Button { model.replayStudy() } label: { Label(model.isFlow ? "重新开始" : "重播",systemImage:"arrow.counterclockwise") }
+                Button { if model.isFlow ? model.finished : model.studyTime >= model.studyDuration { model.replayStudy() } else { model.studyPaused.toggle() } } label: { Label(model.studyPaused ? "播放" : "暂停",systemImage:model.studyPaused ? "play.fill" : "pause.fill") }.disabled(reduced)
                 Button { model.seekStudy(model.studyTime-1.0/30) } label: { Image(systemName:"backward.frame") }.help("前一帧").accessibilityLabel("前一帧").disabled(reduced)
                 Button { model.seekStudy(model.studyTime+1.0/30) } label: { Image(systemName:"forward.frame") }.help("后一帧").accessibilityLabel("后一帧").disabled(reduced)
                 Spacer()
@@ -118,9 +128,9 @@ struct MrBPreviewRoot: View {
             }.font(.caption)
             HStack {
                 Slider(value:Binding(get:{model.studyTime},set:{model.seekStudy($0)}),in:0...model.studyDuration).accessibilityLabel("短样时间位置").disabled(reduced)
-                Text(String(format:"%.2f / %.1f s",model.studyTime,model.studyDuration)).font(.caption.monospacedDigit()).frame(width:105,alignment:.trailing)
+                Text(model.isFlow ? String(format:"%.2f s",model.studyTime) : String(format:"%.2f / %.1f s",model.studyTime,model.studyDuration)).font(.caption.monospacedDigit()).frame(width:105,alignment:.trailing)
             }
-            Text(reduced ? "减少动态：直接显示消字／盖章后的静态结果。" : "暂停后可逐帧检查；网格与橙色接触标记只用于制作检查。").font(.caption).foregroundStyle(.secondary)
+            Text(model.isFlow ? (reduced ? "减少动态：整理中静止，成功直接显示结果。" : "时间条仅用于回看已播放片段，不表示任务进度。完成信号为模拟。") : (reduced ? "减少动态：直接显示消字／盖章后的静态结果。" : "暂停后可逐帧检查；网格与橙色接触标记只用于制作检查。")).font(.caption).foregroundStyle(.secondary)
         }.padding(24)
     }
     private var conversation: some View {

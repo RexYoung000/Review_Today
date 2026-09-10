@@ -22,7 +22,7 @@ test('2D meshes reach official Spine vertices; layer changes never change projec
 test('three step beats erase one abstract line each, then feed remaining lines; never erase on lift',()=>{
  let previous=[0,0,0];
  for(let t=0;t<=4.6;t+=.01){const p=walking(t),f=scene('walk_study',t);
-  assert.equal(f.patches.filter(p=>p.material==='line').length,3);
+  assert.equal(f.patches.filter(p=>p.material==='line').length,4);
   assert.ok(!f.patches.some(p=>/text|ink/.test(p.material)));
   p.lines.forEach((line,i)=>{
    assert.ok(line.erase>=previous[i]);

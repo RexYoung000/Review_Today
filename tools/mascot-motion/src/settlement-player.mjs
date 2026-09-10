@@ -29,14 +29,14 @@ export async function createStudyPlayer(spine,ctx,logoURL,platform={}){
   }
   map[material]=c;
  }return map;}
- function setup(kind,dark){textures=makeTextures(dark);darkValue=dark;currentKind=kind;
+ function setup(kind,dark,frame){textures=makeTextures(dark);darkValue=dark;currentKind=kind;
   const atlasText=materials.map(name=>`${name}.png\nsize: ${textures[name].width},${textures[name].height}\nfilter: Linear,Linear\n${name}\nbounds: 0,0,${textures[name].width},${textures[name].height}\n`).join('\n');
   const atlas=new spine.TextureAtlas(atlasText);for(const page of atlas.pages)page.setTexture(new spine.CanvasTexture(textures[page.name.replace('.png','')]));
-  const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(spineData(scene(kind,0)));rig=new spine.Skeleton(data);
+  const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(spineData(frame));rig=new spine.Skeleton(data);
  }
- return {draw(kind,time,w,h,config){
-  const started=performance.now(),dark=config.dark;if(kind!==currentKind||darkValue!==dark)setup(kind,dark);
-  const frame=scene(kind,time);applyScene(rig,frame);g.clearRect(0,0,1520,800);g.save();g.scale(2,2);renderer.draw(rig);
+ return {draw(kind,time,w,h,config,providedFrame){
+  const started=performance.now(),dark=config.dark,frame=providedFrame??scene(kind,time);if(kind!==currentKind||darkValue!==dark)setup(kind,dark,frame);
+  applyScene(rig,frame);g.clearRect(0,0,1520,800);g.save();g.scale(2,2);renderer.draw(rig);
   if(config.debugMesh){const p=frame.patches.find(p=>p.id==='body');g.strokeStyle=dark?'rgba(70,220,220,.6)':'rgba(0,120,125,.5)';g.lineWidth=.55;
    for(let i=0;i<p.triangles.length;i+=3){g.beginPath();for(let j=0;j<3;j++){const [x,y]=p.points[p.triangles[i+j]];j?g.lineTo(x,y):g.moveTo(x,y);}g.closePath();g.stroke();}
    const [x,y]=frame.meta.contact;g.strokeStyle='#eb7133';g.lineWidth=1.5;g.beginPath();g.moveTo(x-14,y);g.lineTo(x+14,y);g.moveTo(x,y-14);g.lineTo(x,y+14);g.stroke();

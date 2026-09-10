@@ -1,0 +1,16 @@
+✔ new Spine timelines preserve accepted mesh and old animations; neutral endings hide the book (59.29775ms)
+✔ low-frequency new idle clips have two classic clips between them, and thinking never repeats (0.446667ms)
+✔ row transfer is progressive and compact/full use identical semantic stages (0.476333ms)
+✔ rolling body stays inside the enlarged stage without camera shrink (33.217125ms)
+✔ Rex exaggeration revision has distinct silhouettes while keeping all clips in fixed framing (88.933917ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 253.809708
+Isolated Mr. B resource: 6478990 bytes
+output/mr-b-preview/MrBTests.app: replacing existing signature
+PASS: native Spine bridge, lifecycle, interruption, compact completion, eligibility and event deduplication

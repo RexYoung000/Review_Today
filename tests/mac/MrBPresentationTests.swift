@@ -85,6 +85,73 @@ struct MrBPresentationTests {
             try expect(meta?["body"] as? [Double] == [380,154],"Native seam changes Mr. B position")
             try expect((state["runtimeError"] as? String ?? "").isEmpty,"Native seam runtime error")
         }
+        model.enter("A → B → 盖章");model.signalFlow("saved");model.signalFlow("failed")
+        try expect(model.flowOutcome == "saved", "Preview accepts conflicting outcomes")
+        model.replayStudy();try expect(model.flowOutcome == "processing" && model.flowPhase == "A", "Retry retains terminal state")
+        model.seekStudy(10);try expect(model.studyTime == 0, "Unplayed flow time can be sought")
+        model.trackStudyTime(3.2);model.seekStudy(20);try expect(model.studyTime == 3.2, "Flow seeking goes beyond played history")
+        func settleState(_ check: ([String:Any]) -> Bool, _ message: String) async throws -> [String:Any] {
+            for _ in 0..<30 { let value=try await inspect();if check(value) { return value };try await Task.sleep(for:.milliseconds(50)) }
+            throw Failure(message:message)
+        }
+        func flowMeta(_ value:[String:Any]) -> [String:Any] { (value["study"] as? [String:Any])?["meta"] as? [String:Any] ?? [:] }
+        c.configuration=MrBConfiguration(kind:"flow_study",token:110,paused:true,seekTime:5.31,seekToken:1);c.send()
+        state=try await settleState({flowMeta($0)["flowPhase"] as? String == "A"},"Flow A failed to start")
+        let bodyBefore=flowMeta(state)["body"] as? [Double],timeBefore=state["clipTime"] as? Double ?? 0
+        c.configuration.flowOutcome="saved";c.configuration.flowSignalToken=1;c.send()
+        state=try await settleState({flowMeta($0)["flowPhase"] as? String == "B"},"Paused completion did not enter B")
+        try expect(flowMeta(state)["body"] as? [Double] == bodyBefore,"A to B jumps while paused")
+        try expect(state["clipTime"] as? Double == timeBefore,"Completion advances a paused clock")
+        let event=state["flow"] as! [String:Any],stampAt=event["stampAt"] as! Double
+        c.configuration.flowOutcome="failed";c.configuration.flowSignalToken=2;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect()
+        try expect((state["flow"] as? [String:Any])?["outcome"] as? String == "saved","Duplicate signal overrides saved")
+        c.configuration.seekTime=stampAt+2.3;c.configuration.seekToken += 1;c.send()
+        state=try await settleState({flowMeta($0)["imprinted"] as? Bool == true},"Flow stamp missing after contact")
+        c.configuration.seekTime=stampAt+4.7;c.configuration.seekToken += 1;c.configuration.paused=false
+        let flowCompletions=completions;c.send()
+        state=try await settleState({$0["done"] as? Bool == true},"Flow never finishes")
+        try expect(completions==flowCompletions+1,"Flow completion not once")
+        c.configuration.seekTime=stampAt+4.6;c.configuration.seekToken += 1;c.send()
+        try await Task.sleep(for:.milliseconds(350));state=try await inspect()
+        try expect(state["done"] as? Bool == true && completions==flowCompletions+1,"Seeking re-emits flow completion")
+        for (index,outcome) in ["failed","cancelled"].enumerated() {
+            c.configuration=MrBConfiguration(kind:"flow_study",token:120+index,paused:true,seekTime:0.91,seekToken:10+index);c.send()
+            _=try await settleState({flowMeta($0)["flowPhase"] as? String == "A"},"Retry does not reset A")
+            c.configuration.flowOutcome=outcome;c.configuration.flowSignalToken=10+index;c.configuration.paused=false;c.send()
+            state=try await settleState({$0["done"] as? Bool == true && flowMeta($0)["flowPhase"] as? String == outcome},"Flow stop did not settle")
+            try expect(completions==flowCompletions+1,"Failure or cancellation emits success")
+            try expect(flowMeta(state)["imprinted"] as? Bool != true,"Stopped flow stamped")
+        }
+        c.configuration=MrBConfiguration(kind:"flow_study",token:130,reduced:true);c.send()
+        state=try await settleState({flowMeta($0)["flowPhase"] as? String == "A"},"Reduced processing shows a result")
+        try expect(state["animating"] as? Bool == false,"Reduced processing moves")
+        c.configuration.flowOutcome="saved";c.configuration.flowSignalToken=30;c.send()
+        state=try await settleState({flowMeta($0)["flowPhase"] as? String == "done"},"Reduced success does not show R")
+        try expect(state["animating"] as? Bool == false,"Reduced success moves")
+        c.configuration.reduced=false;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect()
+        try expect(state["animating"] as? Bool == false,"Turning off Reduce Motion replays successful flow")
+        c.configuration=MrBConfiguration(kind:"flow_study",token:140);c.send()
+        _=try await settleState({($0["clipTime"] as? Double ?? 0)>0.12 && flowMeta($0)["flowPhase"] as? String == "A"},"A clock not advancing")
+        c.visible=false;c.send();try await Task.sleep(for:.milliseconds(100));let flowHidden=try await inspect()
+        try await Task.sleep(for:.milliseconds(180));state=try await inspect()
+        try expect(state["frames"] as? Int == flowHidden["frames"] as? Int,"Background A still renders")
+        c.visible=true;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect()
+        try expect((state["clipTime"] as? Double ?? 0)-(flowHidden["clipTime"] as? Double ?? 0)<0.2,"A catches up background time")
+        c.visible=false;c.configuration.reviewRecording=true;c.send()
+        let captureBefore=state["clipTime"] as? Double ?? 0
+        _=try await settleState({($0["clipTime"] as? Double ?? 0)>captureBefore+0.12},"Explicit flow recording stops in background")
+        c.configuration.flowOutcome="failed";c.configuration.flowSignalToken=60;c.send()
+        _=try await settleState({$0["done"] as? Bool == true && flowMeta($0)["flowPhase"] as? String == "failed"},"Recorded background failure never settles")
+        c.configuration.reviewRecording=false;c.visible=true
+        for (index,time) in [0.1,1.29].enumerated() {
+            c.configuration=MrBConfiguration(kind:"flow_study",token:150+index,paused:true,seekTime:time,seekToken:40+index);c.send()
+            _=try await settleState({flowMeta($0)["flowPhase"] as? String == "A"},"Endpoint test did not enter A")
+            c.configuration.flowOutcome="saved";c.configuration.flowSignalToken=50+index;c.send()
+            state=try await settleState({flowMeta($0)["flowPhase"] as? String == "B"},"Endpoint test did not enter B")
+            let event=state["flow"] as! [String:Any]
+            c.configuration.seekTime=(event["stampAt"] as! Double)+4.8;c.configuration.seekToken += 1;c.send()
+            _=try await settleState({flowMeta($0)["flowPhase"] as? String == "done"},"Finished flow still reports stamping")
+        }
         c.visible=false;c.send();web.stopLoading();settings.userContentController.removeScriptMessageHandler(forName:"mrB")
     }
 }

@@ -11,10 +11,29 @@ final class MrBPreviewModel {
     var studySeekToken = 0
     var studyMesh = false
     var studyFailed = false
-    var studyKind: String { scene == "消除 → 盖章连播" ? "continuity_study" : (scene == "逐行消除短样" ? "walk_study" : "stamp_study") }
-    var studyDuration: Double { scene == "消除 → 盖章连播" ? 9.4 : (scene == "逐行消除短样" ? 4.6 : 4.8) }
-    func replayStudy() { finished = false; studyPaused = false; studyTime = 0; studySeek = nil; token += 1 }
-    func seekStudy(_ time: Double) { studyPaused = true; studySeek = min(studyDuration,max(0,time)); studyTime = studySeek!; studySeekToken += 1 }
+    var isFlow: Bool { scene == "A → B → 盖章" }
+    var flowOutcome = "processing"
+    var flowPhase = "A"
+    var flowSignalToken = 0
+    var flowMaxTime = 0.0
+    var studyKind: String { isFlow ? "flow_study" : (scene == "消除 → 盖章连播" ? "continuity_study" : (scene == "逐行消除短样" ? "walk_study" : "stamp_study")) }
+    var studyDuration: Double { isFlow ? max(0.001,flowMaxTime) : (scene == "消除 → 盖章连播" ? 9.4 : (scene == "逐行消除短样" ? 4.6 : 4.8)) }
+    var flowCopy: String {
+        if flowOutcome == "failed" { return "整理失败（模拟）· 未保存" }
+        if flowOutcome == "cancelled" { return "已取消（模拟）" }
+        if flowOutcome == "saved" {
+            return flowPhase == "done" ? "卡片已保存（模拟）" : (flowPhase == "stamp" ? "已保存（模拟）· 盖章确认" : "已保存（模拟）· 收好剩余内容")
+        }
+        return "A · Mr. B 正在整理（模拟）"
+    }
+    func signalFlow(_ outcome: String) {
+        guard isFlow, flowOutcome == "processing", ["saved","failed","cancelled"].contains(outcome) else { return }
+        flowOutcome = outcome; flowSignalToken += 1
+    }
+    func resetFlow() { flowOutcome = "processing"; flowPhase = "A"; flowMaxTime = 0 }
+    func replayStudy() { resetFlow(); finished = false; studyPaused = false; studyTime = 0; studySeek = nil; token += 1 }
+    func trackStudyTime(_ time: Double) { studyTime = time; if isFlow { flowMaxTime = max(flowMaxTime,time) } }
+    func seekStudy(_ time: Double) { finished = false; studyPaused = true; studySeek = min(isFlow ? flowMaxTime : studyDuration,max(0,time)); studyTime = studySeek!; studySeekToken += 1 }
     var dark = false
     var reduced = false
     var english = false
@@ -81,7 +100,7 @@ final class MrBPreviewModel {
         Task { if !noMotion { try? await Task.sleep(for: .milliseconds(240)) }; guard token == current else { return }; waiting = false; settling = false }
     }
     func stop(failed: Bool = false) { waiting = false; settling = false; status = failed ? "这次处理未完成，可以重试。" : "已停止，可以继续或重新提问。" }
-    func enter(_ value: String) { modal = false; scene = value; studyPaused = false; studyTime = 0; studySeek = nil; token += 1; finished = false; if value == "等待" { restart() } }
+    func enter(_ value: String) { resetFlow(); modal = false; scene = value; studyPaused = false; studyTime = 0; studySeek = nil; token += 1; finished = false; if value == "等待" { restart() } }
     func save(newEvent: Bool = true, saved: Bool = true, historical: Bool = false) {
         if newEvent { eventID = UUID().uuidString }
         let accepted = gate.accept(id: eventID, saved: saved, foreground: NSApp.isActive, modalBusy: modal, historical: historical)

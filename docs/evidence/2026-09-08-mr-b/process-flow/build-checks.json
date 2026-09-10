@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-09-10T01:18:48.378517+00:00",
+  "checks": [
+    {
+      "name": "strict-signature",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "--verbose=2",
+        "output/mr-b-preview/MrBContactPreview.app"
+      ],
+      "exitCode": 0,
+      "output": "output/mr-b-preview/MrBContactPreview.app: valid on disk\noutput/mr-b-preview/MrBContactPreview.app: satisfies its Designated Requirement\n"
+    },
+    {
+      "name": "daily-source-consistency",
+      "command": [
+        "node",
+        "tools/mascot-motion/src/build-native.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "output": "Native animation resource matches its source.\n"
+    },
+    {
+      "name": "diff-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "output": ""
+    }
+  ],
+  "nativeResourceSHA256": "016c29983dafc8e19f12047e9cedcba2ac3203dc9607b6d47087cf365e3f938a",
+  "nativeContracts": "Passed full native suite including flow recording in background and failure settling after unlock; see native-contracts.txt.",
+  "visualAcceptance": "Rex confirmed A processing -> B finishing -> same-paper 2D stamping on 2026-09-10. Isolated simulated events; full/compact settlement and production integration remain separate."
+}

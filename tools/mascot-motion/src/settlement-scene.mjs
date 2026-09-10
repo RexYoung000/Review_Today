@@ -60,9 +60,9 @@ function quad(id,material,x,y,w,h,layer,{angle=0,alpha=1,uvs=[0,0,1,0,1,1,0,1],a
 }
 // Four rings use the unchanged daily contour and its UV mapping. Only the
 // walking lower edge receives local lift/plant deformation; the face stays rigid.
-export function bodyMesh(kind,t){
+export function bodyMesh(kind,t,pose){
  ({kind,t}=segment(kind,t));
- const walk=kind==='walk_study',p=walk?walking(t):stamping(t),x=walk?p.x:p.bodyX,y=walk?p.y:p.bodyY;
+ const walk=kind==='walk_study',p=pose??(walk?walking(t):stamping(t)),x=walk?p.x:p.bodyX,y=walk?p.y:p.bodyY;
  const points=[],uvs=[],triangles=[],n=contour.length;
  for(const ratio of [1,.75,.5,.25,0])for(let i=0;i<(ratio? n:1);i++){
   const source=ratio?contour[i]:{x:0,y:0},xx=source.x*.7*ratio,yy=-source.y*.7*ratio;
@@ -79,28 +79,35 @@ export function bodyMesh(kind,t){
 }
 
 export function scene(kind,time){
- const resolved=segment(kind,time),t=resolved.t,walk=resolved.kind==='walk_study',p=walk?walking(t):stamping(t),out=[];
+ const resolved=segment(kind,time),t=resolved.t,walk=resolved.kind==='walk_study',p=walk?walking(t):stamping(t);
+ return poseFrame(kind,Math.max(0,Math.min(studyDuration[kind],time)),p,walk,resolved.kind,
+  walk?(t<.25?'准备踏步':t<3.8?`第 ${p.active+1} 次踏步 · 逐行消除`:'横线已收好，站稳'):p.phase);
+}
+
+// The event-driven rehearsal uses the same body, paper and attachments.
+export function poseFrame(kind,time,p,walk=true,segmentName='walk_study',phase=''){
+ const out=[];
  const x=walk?p.x:p.bodyX,y=walk?p.y:p.bodyY;
  const paper=studyLayout.paper,contact=studyLayout.stampContact;
  out.push(quad('paper','paper',paper.x,paper.y,paper.w,paper.h,1));
  // Keep the same attachments alive across the cut; no rig reload or blank frame.
- (walk?p:walking(studyDuration.walk_study)).lines.forEach((line,i)=>{const width=Math.max(.001,lineWidth*(1-line.erase)),cut=lineX+lineWidth*line.erase;
-   out.push(quad('line'+i,'line',cut+width/2,line.y,width,5,3,{alpha:line.erase<1?1:0}));
- });
+ const lines=(walk?p:walking(studyDuration.walk_study)).lines;
+ for(let i=0;i<4;i++){const line=lines[i]??{erase:1,y:lineY+lineGap*3},width=Math.max(.001,lineWidth*(1-line.erase)),cut=lineX+lineWidth*line.erase;
+   out.push(quad('line'+i,'line',cut+width/2,line.y,width,5,3,{alpha:line.erase<1?(line.alpha??1):0}));
+ }
  const stamp=walk?stamping(0):p;
  out.push(quad('logo','logo',contact.x,contact.y-16,30,30,4,{alpha:stamp.imprinted?1:0}));
  out.push(quad('stamp','stamp',stamp.stamp.x,stamp.stamp.y,72,90,stamp.stamp.layer,{angle:stamp.stamp.angle,anchorY:1,alpha:stamp.stamp.visible?1:0}));
  for(const side of [-1,1])out.push(quad('puff'+side,'puff',contact.x+side*(42+18*stamp.puffTravel),contact.y-4-12*stamp.puffTravel,26,16,16,{alpha:stamp.puff*.65}));
  out.push(quad('body_shadow','shadow',x,studyLayout.shadowY,walk?188+8*p.lift+6*p.plant:188,walk?17+4*p.lift-3*p.plant:17,4,{alpha:walk?.55-.19*p.lift+.22*p.plant:.55}));
- out.push(bodyMesh(resolved.kind,t));
+ out.push(bodyMesh(walk?'walk_study':'stamp_study',0,p));
  for(let i=0;i<2;i++){
   // Daily face position (-15,23), eyes +/-26, 36x20, pupil 10.8x10.8.
   const ex=x+(i?11:-41)*.7,ey=y-23*.7;
   out.push(quad('eye'+i,'eye',ex,ey,25.2,14,11));
   out.push(quad('pupil'+i,'pupil',ex+p.gaze[0],ey+p.gaze[1],7.56,7.56,12));
  }
- return {patches:out,time:Math.max(0,Math.min(studyDuration[kind],time)),kind,meta:{...p,segment:resolved.kind,body:[x,y],contact:walk?[p.contactX,lineY]:[contact.x,contact.y],
-  phase:walk?(t<.25?'准备踏步':t<3.8?`第 ${p.active+1} 次踏步 · 逐行消除`:'横线已收好，站稳'):p.phase}};
+ return {patches:out,time,kind,meta:{...p,segment:segmentName,body:[x,y],contact:walk?[p.contactX,lineY]:[contact.x,contact.y],phase}};
 }
 
 export function spineData(frame){

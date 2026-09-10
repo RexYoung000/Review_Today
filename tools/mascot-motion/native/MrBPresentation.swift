@@ -19,6 +19,8 @@ struct MrBConfiguration: Codable, Equatable {
     var seekToken = 0
     var debugMesh = false
     var reviewRecording = false
+    var flowOutcome = "processing"
+    var flowSignalToken = 0
 }
 
 /// This bridge is exclusively bundled by the isolated preview runner.
@@ -69,7 +71,7 @@ struct MrBMotionView: NSViewRepresentable {
         var last: Data?
         func send() {
             guard ready else { return }
-            var next = configuration; next.visible = next.visible && (visible || (next.reviewRecording && ["walk_study","stamp_study","continuity_study"].contains(next.kind)))
+            var next = configuration; next.visible = next.visible && (visible || (next.reviewRecording && ["walk_study","stamp_study","continuity_study","flow_study"].contains(next.kind)))
             guard let data = try? JSONEncoder().encode(next), data != last, let json = String(data: data, encoding: .utf8) else { return }
             last = data
             view?.evaluateJavaScript("window.mrB.setState(\(json))") { [weak self] _, error in

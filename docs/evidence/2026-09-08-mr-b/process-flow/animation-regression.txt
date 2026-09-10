@@ -1,0 +1,66 @@
+
+> review-today-mascot-motion@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ moving body and complete capsule edges stay separate, retain area and deform locally (778.921334ms)
+✔ uneven middle, side and multiple supports do not enter the body, including between vertices (450.123666ms)
+✔ stopping throughout a hop preserves position and velocity then reaches exact quiet rest (95.109208ms)
+✔ resuming thought before settling starts another physical hop (5.929958ms)
+✔ landing transfers downward motion to both the body and the struck bars (3.268375ms)
+✔ local preview rejects cross-origin mutation, traversal and malformed edits without changing revision (823.674167ms)
+✔ simultaneous MCP clients preserve each other’s distinct parameter updates (936.047333ms)
+✔ idle enters after one second, finishes clips, and draws only from three other choices (2.471791ms)
+✔ single clip ends; paused clock is unchanged; seeded timelines replay consistently (29.499125ms)
+✔ all four Spine clips keep geometry valid, end in setup body pose and hide props (156.557292ms)
+✔ idle gaze keeps the whole pupil inside the rounded eye white (60.900875ms)
+✔ exaggerated stretch and jump have measurable anticipation, height and landing (30.303458ms)
+✔ upright book is opaque, keeps R outward, and changes depth only clear of the body (16.805208ms)
+✔ all visible motion stays inside the App and preview canvases, below the eyes when reading (423.484ms)
+✔ sidebar cycles book and gaze only, with short rests and no terminal static state (0.294709ms)
+✔ graphite texture keeps alpha, dimensions and shading without mutating source or geometry (1465.871917ms)
+✔ wave rests in gray, active feedback uses supplied theme accent and legacy colors remain (0.241541ms)
+✔ native source and saved original assets are not changed by offline material rendering (864.918959ms)
+✔ dark theme lightens body and keeps white eyes with dark pupils while preserving material shading and neutral fragments (0.329417ms)
+✔ new Spine timelines preserve accepted mesh and old animations; neutral endings hide the book (230.689167ms)
+✔ low-frequency new idle clips have two classic clips between them, and thinking never repeats (1.164083ms)
+✔ row transfer is progressive and compact/full use identical semantic stages (1.002583ms)
+✔ rolling body stays inside the enlarged stage without camera shrink (166.561709ms)
+✔ Rex exaggeration revision has distinct silhouettes while keeping all clips in fixed framing (384.609375ms)
+✔ official parser loads weighted deformation; all sampled triangles remain positive and loop closes (315.92925ms)
+✔ eye leads body and pupils move within independent eye coordinates (50.822792ms)
+✔ weight corruption, malformed frames and unsafe parameter budgets are rejected (116.010416ms)
+✔ zero motion remains valid; excessive combined deformation is detected before saving (219.3265ms)
+✔ MCP handshake, tools, versioned edits, image response, export and rejection work through stdio (1000.724291ms)
+✔ near pass overlaps the body in front; far pass is behind; shadows and clipping follow the same pose (33.780917ms)
+✔ interrupting the near pass keeps the ball in front until it fades to rest (22.020875ms)
+✔ A repeats for long processing without a completion mark or false progress (289.167209ms)
+✔ success at lift, erase, hold or feed keeps the exact pose and finishes only existing rows (86.715709ms)
+✔ failure and cancellation freeze the rows, settle the body and cannot become a success (12.781084ms)
+✔ reduced motion distinguishes processing, saved, failed and cancelled, and seeking preserves event order (1.067583ms)
+✔ A and B geometry reaches official Spine vertices without folds and alpha matches when seeking (1548.058167ms)
+✔ rendered A wraps continuously; success adds no jump and both themes/languages share geometry (3229.423084ms)
+✔ 2D meshes reach official Spine vertices; layer changes never change projection (123.377209ms)
+✔ three step beats erase one abstract line each, then feed remaining lines; never erase on lift (36.680708ms)
+✔ the moving planted lobe covers the active erase boundary while upper body stays stable (17.42725ms)
+✔ stamp is rigid and body stays unchanged; behind/front handoff is outside the silhouette (51.972042ms)
+✔ stamp settles, lifts, presses straight down; R and the small puff only follow contact (0.849667ms)
+✔ all flat body triangles preserve winding and stay inside the fixed frame (185.548542ms)
+✔ 30 fps Spine exports reproduce deform, alpha and draw order when seeking both directions (453.873292ms)
+✔ daily contour/material are reused and study pixels are identical in Chinese and English (6443.256084ms)
+✔ weight settles before erasing, holds the cleared row, unloads before feeding and has one small rebound (0.498375ms)
+✔ stamp has distinct aim, raised, pressure and result holds; gaze follows the work within the eyes (7.064375ms)
+✔ one sheet, body, gaze and shadow survive the clip boundary and reverse seeking (10.589875ms)
+✔ R fits the shared paper, the stamp covers it at contact and avoids the eyes while raised (0.848583ms)
+✔ voice loops deform locally beyond bone motion, close exactly and reject broken voice frames (206.32ms)
+✔ voice reacts on next frame; silence, stop and reduced motion settle to stable geometry (311.185208ms)
+✔ incoming and outgoing crests travel oppositely; voice keeps one shadow-free silhouette (179.537166ms)
+✔ listening passively separates and relands; each reply emits once after actual contact (224.721667ms)
+✔ 30, 60 and 120 fps produce the same contact and audio state across transitions (104.722834ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7530.367334

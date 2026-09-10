@@ -1,0 +1,76 @@
+[
+  {
+    "file": "flow-success-native.mp4",
+    "capture": "native current-process window, actual presentation timestamps, no speed changes or audio",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 760,
+          "height": 652,
+          "avg_frame_rate": "19400/793",
+          "nb_frames": "388"
+        }
+      ],
+      "format": {
+        "duration": "15.840000"
+      }
+    },
+    "decodeExitCode": 0,
+    "defaultNullDecodeOutput": "[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 2 >= 2\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 8 >= 8\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 14 >= 14\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 19 >= 19\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 24 >= 24\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 26 >= 26\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 52 >= 52\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 74 >= 74\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 80 >= 80\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 91 >= 91\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 126 >= 126\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 138 >= 138\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 159 >= 159\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 171 >= 171\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 274 >= 274\n[null @ 0xcbb049680] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 377 >= 377\n",
+    "decodeCommand": [
+      "ffmpeg",
+      "-v",
+      "error",
+      "-i",
+      "docs/evidence/2026-09-08-mr-b/process-flow/flow-success-native.mp4",
+      "-fps_mode",
+      "passthrough",
+      "-enc_time_base",
+      "-1",
+      "-f",
+      "null",
+      "-"
+    ],
+    "decodeOutput": ""
+  },
+  {
+    "file": "flow-failed-native.mp4",
+    "capture": "native current-process window, actual presentation timestamps, no speed changes or audio",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 820,
+          "avg_frame_rate": "17025/712",
+          "nb_frames": "227"
+        }
+      ],
+      "format": {
+        "duration": "9.468333"
+      }
+    },
+    "decodeExitCode": 0,
+    "defaultNullDecodeOutput": "[null @ 0x849044a00] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 5 >= 5\n[null @ 0x849044a00] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 9 >= 9\n[null @ 0x849044a00] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 15 >= 15\n[null @ 0x849044a00] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 19 >= 19\n[null @ 0x849044a00] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 23 >= 23\n[null @ 0x849044a00] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 202 >= 202\n[null @ 0x849044a00] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 204 >= 204\n[null @ 0x849044a00] Application provided invalid, non monotonically increasing dts to muxer in stream 0: 212 >= 212\n",
+    "decodeCommand": [
+      "ffmpeg",
+      "-v",
+      "error",
+      "-i",
+      "docs/evidence/2026-09-08-mr-b/process-flow/flow-failed-native.mp4",
+      "-fps_mode",
+      "passthrough",
+      "-enc_time_base",
+      "-1",
+      "-f",
+      "null",
+      "-"
+    ],
+    "decodeOutput": ""
+  }
+]
