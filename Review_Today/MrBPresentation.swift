@@ -24,8 +24,8 @@ struct MrBConfiguration: Codable, Equatable {
     var flowSignalToken = 0
 }
 
-/// This bridge is exclusively bundled by the isolated preview runner.
-/// The daily application does not load its animations or preferences.
+/// Shared offline Spine bridge. Product callers expose only accepted ingestion motion;
+/// diagnostics and other motion kinds remain in the isolated preview.
 struct MrBMotionView: NSViewRepresentable {
     var configuration: MrBConfiguration
     var simulateFailure = false

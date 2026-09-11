@@ -6,7 +6,7 @@ python3 - <<'PY'
 import pathlib,plistlib,shutil,subprocess,os
 root=pathlib.Path.cwd();folder=root/'output/mr-b-preview';app=folder/(os.environ.get('MR_B_PREVIEW_APP','MrBPreview')+'.app');contents=app/'Contents';binary=contents/'MacOS/MrBPreview';resources=contents/'Resources'
 binary.parent.mkdir(parents=True,exist_ok=True);resources.mkdir(parents=True,exist_ok=True)
-sources=sorted(str(p) for p in pathlib.Path('tools/mascot-motion/native').glob('*.swift'))
+sources=['Review_Today/MrBPresentation.swift']+sorted(str(p) for p in pathlib.Path('tools/mascot-motion/native').glob('*.swift'))
 with (folder/'build.log').open('w') as log:
  r=subprocess.run(['xcrun','swiftc','-parse-as-library','-swift-version','5','-default-isolation','MainActor','-target','arm64-apple-macos26.5',*sources,'-o',str(binary.with_suffix('.building'))],stdout=log,stderr=subprocess.STDOUT)
 if r.returncode:print((folder/'build.log').read_text());raise SystemExit(r.returncode)

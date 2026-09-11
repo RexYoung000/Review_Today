@@ -1,4 +1,31 @@
-# 当前：段落横线与随行长涂抹（2026-09-11，已实现／新增节奏待 Rex 视觉验收）
+# 当前：知识入库正式接入（2026-09-11，已实现／自测完成／正式体验待 Rex 验收）
+
+Rex 明确确认“可以接入了”，此次解除段落 A／B → 同纸面 2D 盖章的隔离限制，仅接知识入库。正式应用读取同一离线 Spine 资源，共享原生桥接，不新增网络或模型请求；正式 UI 不展示试演／逐帧／网格开关。日常待机、思考、单题与复习总结仍保持各自状态。
+
+- 新消息由实际会话保存入口登记；服务明确进入知识整理后也可触发自然语言入库的演出，不靠关键词猜意图。只有本机保存成功才交付知识 ID 和盖章信号，回执失败仍显示已保存。
+- 结果数量来自本次真正落盘的卡片，保存成功即可“查看知识”／“完成”，无等待动画的产品延时；关闭、Escape、换会话和页面不补弹。背景／历史／模态不积压，首次完整未看完不消耗，重播没有业务写入。
+- 本地插入与更新失败测试发现：SwiftData 的已观察对象可能保留失败值。修复同时回滚持久图、恢复任务标记、来源、既有卡片与题目，避免外层保存错误说明时误写这些值；新增失败后的再次保存与独立磁盘读取检查。
+
+验证证据：
+
+- [本地保存与呈现契约](ingestion-integration/contracts.txt)：真正的隔离磁盘存储、错误注入、重复与回执重试、结果立即可用、重播只读、关闭／历史／后台／其他模态／导航、需要补充、自然语言服务状态、首次偏好、重开存储。
+- [66 项动作回归](ingestion-integration/animation-regression.txt)、[共享原生桥接与生命周期](ingestion-integration/motion-contracts.txt)、[关联删除／记忆引用保护](ingestion-integration/protection-regression.txt)、[主程序构建与资源检查](ingestion-integration/build.txt)。
+- 隔离原生入口：`bash tests/mac/run-ingestion-preview.sh`，打开输出的 `KnowledgeIngestionPreview.app`。窗口复用真正的 `LearningWorkspace` 保存按钮、`KnowledgeIngestionSheet`、`HarnessProcessor.persistMemory` 和 `LibraryView`；只有服务响应／六秒处理时间由确定样例替代，未连接服务或模型。数据库是本次独立临时磁盘文件，偏好也使用独立 bundle 域。
+- 验收菜单可准备下一次、注入磁盘失败、切换主题／减少动态／窗口尺寸、录制与截图；这些仅存在于测试 App。主应用操作路径为会话中的“加入知识库与复习”。
+
+原生结果与录像：
+
+- [标准浅色完整入库](ingestion-integration/ingestion-full-light-native.mp4)：1040×760，45.42 秒，实际时间戳，包含从真实按钮进入 A、实际保存后 B 与盖章。服务延时为隔离样例，没有加速。
+- [最小深色精简收尾](ingestion-integration/ingestion-compact-dark-native.mp4)：内容区 760×620，带标题栏录制 760×652，36.86 秒；同纸面 A／B，后续使用精简盖章停顿。正常后台规则未被录制开关绕过。
+- [深色整理](ingestion-integration/dark-processing.png)、[减少动态静态结果](ingestion-integration/reduced-saved.png)、[关闭后的会话](ingestion-integration/closed-result-context.png)、[失败返回会话](ingestion-integration/failure-return-context.png)。原生实看磁盘失败停在无 R 纸面，仅保留返回入口；随后正常重试保存两张，知识库总数由两张变四张，失败未泄漏卡片。“查看知识”实际打开本次卡片，主问题／判断要点／来源和“试一题”入口完整。
+- Escape 在六秒样例写入前关闭，写入继续完成，浮层没有重开。减少动态处理中保持静态横线，保存后直接显示 R，没有快速播放空间动作。共享桥接回归另覆盖隐藏／后台暂停、恢复不追赶、事件去重与资源失败。
+- 自查过程修正了测试 App 的主题接线：单独改系统颜色会与项目配色不一致，现调用正式 `AppearanceController`；旧错误配色录屏不作为验收证据。另避免在 AppKit 初始化前读取主题单例。两项均为验收宿主修正，正式主题组件未改。
+
+正式模型与线上服务端到端未运行；测试不替代真实模型结果质量和 Rex 对正式接入体验的验收。接入范围不含旧 CaptureTask 的历史导入自动弹窗。
+
+---
+
+# 前阶段：段落横线与随行长涂抹（2026-09-11，已实现／新增节奏待 Rex 视觉验收）
 
 横线改为三组稳定的长短段落组合，统一左对齐，段末更短、段间留白。短行缩短底缘涂抹距离与接触时间，保持相近的擦除速度；准备与恢复随行长小幅调整，段末卸力后停顿再上移。行长在出现后固定，暂停、回看、A 转 B 不重新抽取。
 

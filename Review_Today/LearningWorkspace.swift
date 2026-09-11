@@ -8,6 +8,7 @@ struct LearningWorkspace: View {
     var onEntryFocusConsumed: () -> Void = {}
     var onNewSession: () -> Void = {}
     var onOpenKnowledge: (UUID) -> Void
+    var onMessageSaved: (AgentMessage, Bool) -> Void = { _, _ in }
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.runway) private var runway
@@ -858,6 +859,7 @@ struct LearningWorkspace: View {
                 selectedSessionID = session.id
                 sentMessageID = message.id
                 focusRequest += 1
+                onMessageSaved(message, false)
                 ConversationSync.wake()
             } catch { localError = "本机保存失败，草稿仍保留，请重试。" }
             return
@@ -871,6 +873,7 @@ struct LearningWorkspace: View {
                 let message = try AgentComposerStore.sendInitial(content, in: session, context: modelContext)
                 draft = ""; sentMessageID = message.id; localError = nil
                 focusRequest += 1
+                onMessageSaved(message, false)
                 ConversationSync.wake()
             } catch { localError = "本机保存失败，输入仍保留，请重试。" }
             return
@@ -899,6 +902,7 @@ struct LearningWorkspace: View {
             localError = nil
             sentMessageID = message.id
             focusRequest += 1
+            onMessageSaved(message, operation?["kind"] as? String == "save")
             ConversationSync.wake()
         } catch {
             modelContext.rollback()

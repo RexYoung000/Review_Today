@@ -24,3 +24,11 @@ const folder=resolve(root,'output/mr-b-preview');await mkdir(folder,{recursive:t
 await writeFile(resolve(folder,'MrBMotion.html'),html);
 await writeFile(resolve(folder,'mr-b.spine.json'),JSON.stringify(json));
 console.log('Isolated Mr. B resource:',html.length,'bytes');
+
+if(process.argv.includes('--app')) {
+ await writeFile(resolve(root,'Review_Today/MrBMotion.html'),html);
+ console.log('Synced accepted ingestion resource to app bundle');
+}
+if(process.argv.includes('--check-app')) {
+ if(await readFile(resolve(root,'Review_Today/MrBMotion.html'),'utf8')!==html) throw new Error('App ingestion resource differs from motion sources');
+}

@@ -1,0 +1,5 @@
+xcodebuild -project Review_Today.xcodeproj -scheme Review_Today -configuration Debug -derivedDataPath output/ingestion-build CODE_SIGNING_ALLOWED=NO build
+BUILD SUCCEEDED
+
+66 animation contracts passed. Shared native bridge/lifecycle tests passed.
+App MrBMotion.html matches generated source; existing daily MascotMotion.html unchanged and source check passed.

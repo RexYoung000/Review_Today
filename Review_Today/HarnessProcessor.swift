@@ -199,37 +199,7 @@ enum HarnessProcessor {
             return // a new correction or stop gets priority over an uncommitted result
         }
         guard let payload = view.memoryPackage else { throw HarnessProcessorError.invalidResponse }
-        let ids = payload.knowledge.compactMap { UUID(uuidString: $0.id) }
-        guard ids.count == payload.knowledge.count, Set(ids).count == ids.count else {
-            throw HarnessProcessorError.invalidResponse
-        }
-
-        let source: Source
-        if let sourceID = task.sourceID,
-           let existing = fetchSources(context).first(where: { $0.id == sourceID }) {
-            source = existing
-            if !view.memorySourceText.isEmpty { source.rawText = view.memorySourceText }
-        } else {
-            let sourceID = task.sourceID ?? UUID()
-            source = Source(id: sourceID, inputType: "text", rawText: view.memorySourceText)
-            task.sourceID = sourceID
-            context.insert(source)
-        }
-
-        let priorIDs = Set(try context.fetch(FetchDescriptor<Knowledge>()).map(\.id))
-        try CaptureProcessor.insertKnowledge(payload, into: source, context: context)
-        for card in try context.fetch(FetchDescriptor<Knowledge>()) where ids.contains(card.id) && !priorIDs.contains(card.id) {
-            card.originSessionID = task.sessionID
-            card.originTaskID = task.id
-        }
-        task.memoryCommitted = true
-        task.errorCode = nil
-        for id in ids where !fetchKnowledgeReferences(context).contains(where: {
-            $0.sessionID == task.sessionID && $0.taskID == task.id && $0.knowledgeID == id
-        }) {
-            context.insert(KnowledgeReference(sessionID: task.sessionID, taskID: task.id, knowledgeID: id))
-        }
-        try context.save()
+        let ids = try persistMemory(payload, sourceText: view.memorySourceText, task: task, context: context)
 
         let acked = try await AgentAPI.ackLearningTask(
             taskId: task.id,
@@ -314,6 +284,81 @@ enum HarnessProcessor {
                     locator: source.snippet
                 ))
             }
+        }
+    }
+
+    /// The only settlement success boundary: cards, source, ownership and references
+    /// have all been saved. Receipt acknowledgement remains an independent retry.
+    @MainActor
+    static func persistMemory(_ payload: AgentAPI.ExtractPayload, sourceText: String,
+                              task: LearningTask, context: ModelContext,
+                              save: (() throws -> Void)? = nil) throws -> [UUID] {
+        let taskSnapshot = (task.sourceID, task.memoryCommitted, task.errorCode)
+        let sourceSnapshot = fetchSources(context).first { $0.id == task.sourceID }.map { source in
+            (source, source.rawText, source.attribution, source.knowledgeItems)
+        }
+        let affected = Set(payload.knowledge.compactMap { UUID(uuidString: $0.id) })
+        let fields: [ReferenceWritableKeyPath<Knowledge, String>] = [\.learningGoal, \.knowledgeType, \.theme,
+            \.contentLanguage, \.questionLanguage, \.answerLanguage, \.evidenceExcerpt, \.evidenceLocator, \.title, \.explanation]
+        let restores: [() -> Void] = try context.fetch(FetchDescriptor<Knowledge>()).filter { affected.contains($0.id) }.map { card in
+            let values = fields.map { card[keyPath: $0] }
+            let source = card.source, questions = card.questions
+            let questionValues = questions.map { ($0, $0.knowledgeVersion, $0.promptText, $0.scoringSpecJSON) }
+            return {
+                for (field, value) in zip(fields, values) { card[keyPath: field] = value }
+                card.source = source; card.questions = questions
+                for (question, version, prompt, spec) in questionValues {
+                    question.knowledgeVersion = version; question.promptText = prompt; question.scoringSpecJSON = spec
+                }
+            }
+        }
+        do {
+            let ids = payload.knowledge.compactMap { UUID(uuidString: $0.id) }
+            guard ids.count == payload.knowledge.count, Set(ids).count == ids.count else {
+                throw HarnessProcessorError.invalidResponse
+            }
+
+            let source: Source
+            if let sourceID = task.sourceID,
+               let existing = fetchSources(context).first(where: { $0.id == sourceID }) {
+                source = existing
+                if !sourceText.isEmpty { source.rawText = sourceText }
+            } else {
+                let sourceID = task.sourceID ?? UUID()
+                source = Source(id: sourceID, inputType: "text", rawText: sourceText)
+                task.sourceID = sourceID
+                context.insert(source)
+            }
+
+            let priorIDs = Set(try context.fetch(FetchDescriptor<Knowledge>()).map(\.id))
+            try CaptureProcessor.insertKnowledge(payload, into: source, context: context)
+            for card in try context.fetch(FetchDescriptor<Knowledge>()) where ids.contains(card.id) && !priorIDs.contains(card.id) {
+                card.originSessionID = task.sessionID
+                card.originTaskID = task.id
+            }
+            task.memoryCommitted = true
+            task.errorCode = nil
+            for id in ids where !fetchKnowledgeReferences(context).contains(where: {
+                $0.sessionID == task.sessionID && $0.taskID == task.id && $0.knowledgeID == id
+            }) {
+                context.insert(KnowledgeReference(sessionID: task.sessionID, taskID: task.id, knowledgeID: id))
+            }
+            try (save ?? { try context.save() })()
+            NotificationCenter.default.post(name: .knowledgeIngestionSaved, object: context,
+                userInfo: ["receipt": KnowledgeIngestionReceipt(taskID: task.id, inputID: task.inputMessageID,
+                    sessionID: task.sessionID, knowledgeIDs: ids)])
+            return ids
+        } catch {
+            context.processPendingChanges()
+            context.rollback()
+            // SwiftData can retain failed values in already-observed objects.
+            // Restore those as well, so the outer error-status save cannot re-save them.
+            task.sourceID = taskSnapshot.0; task.memoryCommitted = taskSnapshot.1; task.errorCode = taskSnapshot.2
+            if let (source, text, attribution, items) = sourceSnapshot {
+                source.rawText = text; source.attribution = attribution; source.knowledgeItems = items
+            }
+            restores.forEach { $0() }
+            throw error
         }
     }
 

@@ -1,0 +1,97 @@
+Review_Today/KnowledgeLibrary.swift:495:13: warning: variable 'value' was never mutated; consider changing to 'let' constant
+ 493 | 
+ 494 |     private static func stripCommandLead(_ text: String) -> String {
+ 495 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+     |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant
+ 496 |         for prefix in commandPrefixes + ["什么是"] where value.hasPrefix(prefix) {
+ 497 |             let rest = String(value.dropFirst(prefix.count))
+Review_Today/LibraryInboxSettings.swift:166:13: warning: result of 'try?' is unused [#no-usage]
+164 |             task.updatedAt = .now
+165 |             try? modelContext.save()
+166 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#no-usage]
+167 |             return
+168 |         }
+Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+620 | 
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+622 |     private var synth = NSSpeechSynthesizer()
+    |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+623 |     private var onFinish: (() -> Void)?
+624 | 
+
+Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+639 |     }
+640 | 
+641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+    |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+642 |         let done = onFinish
+643 |         onFinish = nil
+
+Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+619 | }
+620 | 
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+    |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+622 |     private var synth = NSSpeechSynthesizer()
+623 |     private var onFinish: (() -> Void)?
+
+Review_Today/ReviewView.swift:627:15: warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+625 |     override init() {
+626 |         super.init()
+627 |         synth.delegate = self
+    |               `- warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+628 |     }
+629 | 
+
+Review_Today/ReviewView.swift:633:15: warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+631 |         stop()
+632 |         self.onFinish = onFinish
+633 |         synth.startSpeaking(text)
+    |               `- warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+634 |     }
+635 | 
+
+Review_Today/ReviewView.swift:637:15: warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+635 | 
+636 |     func stop() {
+637 |         synth.stopSpeaking()
+    |               `- warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+638 |         onFinish = nil
+639 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+tests/mac/KnowledgeIngestionTests.swift:25:79: warning: capture of 'c' with non-Sendable type 'ModelContext' in a '@Sendable' closure [#SendableClosureCaptures]
+ 23 |         let observer = NotificationCenter.default.addObserver(forName: .knowledgeIngestionSaved, object: nil, queue: .main) { note in
+ 24 |             MainActor.assumeIsolated {
+ 25 |                 guard let context = note.object as? ModelContext, context === c,
+    |                                                                               `- warning: capture of 'c' with non-Sendable type 'ModelContext' in a '@Sendable' closure [#SendableClosureCaptures]
+ 26 |                       let receipt = note.userInfo?["receipt"] as? KnowledgeIngestionReceipt else { return }
+ 27 |                 // A separate disk reader must see all cards at the event boundary.
+
+SwiftData.ModelContext:3:14: note: class 'ModelContext' does not conform to the 'Sendable' protocol
+ 1 | @available(swift 5.9)
+ 2 | @available(macOS 14, iOS 17, tvOS 17, watchOS 10, *)
+ 3 | public class ModelContext : Equatable, SendableMetatype {
+   |              `- note: class 'ModelContext' does not conform to the 'Sendable' protocol
+ 4 |     @available(swift 5.9)
+ 5 |     @available(macOS 15, iOS 18, tvOS 18, watchOS 11, visionOS 2, *)
+
+tests/mac/KnowledgeIngestionTests.swift:31:30: warning: capture of 'task' with non-Sendable type 'LearningTask' in a '@Sendable' closure [#SendableClosureCaptures]
+ 29 |                 let savedIDs = Set((try! reader.fetch(FetchDescriptor<Knowledge>())).map(\.id))
+ 30 |                 precondition(Set(receipt.knowledgeIDs).isSubset(of: savedIDs))
+ 31 |                 precondition(task.memoryCommitted)
+    |                              `- warning: capture of 'task' with non-Sendable type 'LearningTask' in a '@Sendable' closure [#SendableClosureCaptures]
+ 32 |                 receipts += 1
+ 33 |                 state.receive(receipt, eligible: true, compact: false)
+
+Review_Today/Models.swift:440:13: note: class 'LearningTask' does not conform to the 'Sendable' protocol
+438 | 
+439 | @Model
+440 | final class LearningTask {
+    |             `- note: class 'LearningTask' does not conform to the 'Sendable' protocol
+441 |     @Attribute(.unique) var id: UUID
+442 |     var sessionID: UUID
+
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+PASS: atomic disk save/rollback and post-save receipt; references/ownership; duplicate and ACK retry; immediate results; read-only replay; close/history/background/modal/navigation; failure/needs-attention; natural-message gating; first-full preference; reopened store

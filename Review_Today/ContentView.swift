@@ -1,3 +1,4 @@
+import Combine
 import SwiftData
 import SwiftUI
 import UserNotifications
@@ -588,6 +589,8 @@ struct ContentView: View {
     @AppStorage("reviewToday.sidebarWidth") private var savedSidebarWidth = 280.0
     @State private var sidebarResizeStart: Double?
     @State private var monitor = AgentServiceMonitor()
+    @State private var ingestion = KnowledgeIngestion()
+    @AppStorage(KnowledgeIngestion.preferenceKey) private var seenFullIngestion = false
     @Query private var inbox: [CaptureTask]
     @Query private var knowledge: [Knowledge]
     @Query private var settingsRows: [AppSettings]
@@ -654,6 +657,21 @@ struct ContentView: View {
         .background(ConversationWindowTarget { id in
             selectedLearningSessionID = id; selection = .learning; searchPresented = false
         })
+        .sheet(isPresented: $ingestion.presented) {
+            KnowledgeIngestionSheet(ingestion: ingestion) { id in
+                selectedKnowledgeID = id; selection = .library
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .knowledgeIngestionSaved)) { notification in
+            guard let source = notification.object as? ModelContext, source === modelContext,
+                  let receipt = notification.userInfo?["receipt"] as? KnowledgeIngestionReceipt else { return }
+            ingestion.receive(receipt, eligible: ingestionEligible, compact: seenFullIngestion)
+        }
+        .onChange(of: selection) { _, _ in ingestion.leaveContext() }
+        .onChange(of: selectedLearningSessionID) { _, next in ingestion.changeSession(to: next) }
+        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave).receive(on: RunLoop.main)) { _ in
+            ingestion.refresh(context: modelContext, eligible: ingestionEligible, compact: seenFullIngestion)
+        }
         .toolbar(.hidden, for: .windowToolbar)
         .ignoresSafeArea(.container, edges: .top)
         .toolbar(removing: .sidebarToggle)
@@ -773,6 +791,10 @@ struct ContentView: View {
                         onOpenKnowledge: { id in
                             selectedKnowledgeID = id
                             selection = .library
+                        },
+                        onMessageSaved: { message, explicitSave in
+                            ingestion.register(input: message.clientMessageID ?? message.id, session: message.sessionID,
+                                               explicitSave: explicitSave, eligible: ingestionEligible, compact: seenFullIngestion)
                         }
                     )
                 case .library:
@@ -781,6 +803,10 @@ struct ContentView: View {
                     InboxView(onOpenSession: { id in selectedLearningSessionID = id; selection = .learning })
                 }
             }
+    }
+
+    private var ingestionEligible: Bool {
+        NSApp.isActive && selection == .learning && !searchPresented && NSApp.keyWindow?.attachedSheet == nil
     }
 
     private var inboxCount: Int {
