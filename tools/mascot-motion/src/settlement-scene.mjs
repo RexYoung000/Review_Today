@@ -1,3 +1,4 @@
+import {rowSpec,rowStart,rowOffset,beatTime,rowLayout} from './paragraph-rows.mjs';
 import {contour} from './settlement-character.mjs';
 // Flat stage coordinates. The third coordinate is painter order, never depth:
 // no perspective scaling, cylinder, or new body lighting model.
@@ -10,28 +11,30 @@ const ease=x=>{x=clamp(x);return x*x*(3-2*x);};
 const ramp=(t,a,b)=>ease((t-a)/(b-a));
 const mix=(a,b,t)=>a+(b-a)*t;
 export const project=([x,y])=>[x,y];
-export const stepStarts=[.25,1.45,2.65];
+export const stepStarts=[0,1,2].map(rowStart);
 export const contactTime=2.18;
-const lineX=310,lineY=234,lineWidth=140,lineGap=34;
+const {x:lineX,y:lineY,maxWidth:lineWidth,gap:lineGap}=rowLayout;
 function segment(kind,time){
  const t=Math.max(0,Math.min(studyDuration[kind],time));
  return kind==='continuity_study'?(t<studyDuration.walk_study?{kind:'walk_study',t}:{kind:'stamp_study',t:t-studyDuration.walk_study}):{kind,t};
 }
 
-export function walking(t){
- const steps=stepStarts.map(start=>{
-  const local=t-start,erase=ramp(local,.48,.80),feed=ramp(local,.98,1.16);
-  return {local,erase,feed,contact:local>=.48&&local<=.80,
-   lift:ramp(local,0,.20)*(1-ramp(local,.25,.43)),
-   planted:ramp(local,.34,.48)*(1-ramp(local,.87,.98)),
-   rebound:ramp(local,.98,1.04)*(1-ramp(local,1.04,1.16))};
- });
- const active=Math.min(2,Math.max(0,stepStarts.findLastIndex(start=>t>=start))),step=steps[active];
- const lift=steps.reduce((sum,s)=>sum+s.lift,0),plant=steps.reduce((sum,s)=>sum+s.planted,0),rebound=steps.reduce((sum,s)=>sum+s.rebound,0);
+export function walkingBeat(index,t){
+ const spec=rowSpec(index),local=beatTime(index,t-rowStart(index)),erase=ramp(local,.48,.80),feed=ramp(local,.98,1.16);
+ return {...spec,local,erase,feed,contact:local>=.48&&local<=.80,
+  lift:spec.liftScale*ramp(local,0,.20)*(1-ramp(local,.25,.43)),
+  planted:ramp(local,.34,.48)*(1-ramp(local,.87,.98)),
+  rebound:ramp(local,.98,1.04)*(1-ramp(local,1.04,1.16))};
+}
+function walkingPose(steps,active){
+ const step=steps[active],lift=steps.reduce((sum,s)=>sum+s.lift,0),plant=steps.reduce((sum,s)=>sum+s.planted,0),rebound=steps.reduce((sum,s)=>sum+s.rebound,0);
  return {x:studyLayout.body.x,y:studyLayout.body.y-5*lift+3*plant-1.4*rebound,steps,active,lift,plant,rebound,
-  gaze:[2.2-4.4*ramp(step.local,.03,.28)+4.4*step.erase,.6+.7*plant],
-  contactX:mix(lineX,lineX+lineWidth,step.erase),
-  lines:steps.map((s,i)=>({erase:s.erase,y:lineY+i*lineGap-lineGap*steps.slice(0,i).reduce((n,s)=>n+s.feed,0)}))};
+  gaze:[2.2-4.4*ramp(step.local,.03,.28)+4.4*step.erase,.6+.7*plant],contactX:mix(lineX,lineX+step.width,step.erase)};
+}
+export function walkingRow(index,t){return walkingPose([walkingBeat(index,t)],0);}
+export function walking(t){
+ const steps=[0,1,2].map(i=>walkingBeat(i,t)),active=Math.min(2,Math.max(0,stepStarts.findLastIndex(start=>t>=start)));
+ return {...walkingPose(steps,active),lines:steps.map((s,i)=>({index:i,width:s.width,erase:s.erase,y:lineY+rowOffset(0,i)-steps.slice(0,i).reduce((n,s)=>n+s.gap*s.feed,0)}))};
 }
 
 // One rigid prop follows the same behind -> clear of body -> front route as
@@ -92,7 +95,7 @@ export function poseFrame(kind,time,p,walk=true,segmentName='walk_study',phase='
  out.push(quad('paper','paper',paper.x,paper.y,paper.w,paper.h,1));
  // Keep the same attachments alive across the cut; no rig reload or blank frame.
  const lines=(walk?p:walking(studyDuration.walk_study)).lines;
- for(let i=0;i<4;i++){const line=lines[i]??{erase:1,y:lineY+lineGap*3},width=Math.max(.001,lineWidth*(1-line.erase)),cut=lineX+lineWidth*line.erase;
+ for(let i=0;i<4;i++){const line=lines[i]??{erase:1,y:lineY+lineGap*3},fullWidth=line.width??lineWidth,width=Math.max(.001,fullWidth*(1-line.erase)),cut=lineX+fullWidth*line.erase;
    out.push(quad('line'+i,'line',cut+width/2,line.y,width,5,3,{alpha:line.erase<1?(line.alpha??1):0}));
  }
  const stamp=walk?stamping(0):p;

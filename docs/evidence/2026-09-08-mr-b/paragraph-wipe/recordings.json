@@ -1,0 +1,22 @@
+{
+  "file": "paragraph-flow-native.mp4",
+  "native": true,
+  "accelerated": false,
+  "metadata": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1280,
+        "height": 820,
+        "avg_frame_rate": "164100/5609",
+        "nb_frames": "547"
+      }
+    ],
+    "format": {
+      "duration": "18.696667"
+    }
+  },
+  "fullDecodeExitCode": 0,
+  "stderr": ""
+}

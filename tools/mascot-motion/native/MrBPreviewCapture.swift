@@ -13,7 +13,7 @@ final class MrBPreviewCapture {
 
     private var folder: URL {
         URL(fileURLWithPath: Bundle.main.object(forInfoDictionaryKey: "PreviewProjectRoot") as! String)
-            .appendingPathComponent(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBContactPreview" ? "docs/evidence/2026-09-08-mr-b/answer-reactions" : "docs/evidence/2026-09-08-mr-b")
+            .appendingPathComponent(Bundle.main.bundleIdentifier == "Rex.Review-Today.MrBContactPreview" ? "docs/evidence/2026-09-08-mr-b/paragraph-wipe" : "docs/evidence/2026-09-08-mr-b")
     }
 
     func resize(_ width: CGFloat, _ height: CGFloat) {
@@ -109,14 +109,17 @@ final class MrBPreviewCapture {
         }
     }
 
-    func recordStudy(model:MrBPreviewModel,scene:String) {
+    func recordStudy(model:MrBPreviewModel,scene:String,completeAt:Double? = nil) {
         guard !recording && !model.reduced && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else { return }
         model.enter(scene); model.studyRecording = true; model.studyPaused = true; model.finished = false
         guard let view = NSApp.keyWindow?.contentView else { model.studyRecording = false; return }
         NSApp.activate(ignoringOtherApps:true); view.window?.makeKeyAndOrderFront(nil)
         recording = true
         Task { @MainActor in
-            do { try await record(view,onStarted:{model.replayStudy()},shouldStop:{model.finished}) }
+            do { try await record(view,onStarted:{model.replayStudy()},shouldStop:{
+                if let completeAt, model.isFlow && model.flowOutcome == "processing" && model.studyTime >= completeAt { model.signalFlow("saved") }
+                return model.finished
+            }) }
             catch { message=String(describing:error);NSLog("QA export failed: %@",message) }
             model.studyRecording = false; recording = false
         }

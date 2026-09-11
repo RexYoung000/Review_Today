@@ -79,11 +79,15 @@ struct MrBPresentationTests {
         for _ in 0..<200 {if c.ready{break};try await Task.sleep(for:.milliseconds(50))}
         try expect(c.ready,"Spine resource failed")
         func inspect() async throws -> [String:Any] {try await web.evaluateJavaScript("window.mrB.inspect()") as! [String:Any]}
+        func settleState(_ check: ([String:Any]) -> Bool, _ message: String) async throws -> [String:Any] {
+            for _ in 0..<30 { let value=try await inspect();if check(value) { return value };try await Task.sleep(for:.milliseconds(50)) }
+            throw Failure(message:message)
+        }
         c.configuration.kind="thinking";c.configuration.token=1;c.send();try await Task.sleep(for:.milliseconds(500))
         var state=try await inspect();try expect((state["clipTime"] as? Double ?? 0) > 0.1,"Clock not advancing")
         c.visible=false;c.send();try await Task.sleep(for:.milliseconds(100));let hidden=try await inspect();try await Task.sleep(for:.milliseconds(200));state=try await inspect()
         try expect(state["frames"] as? Int == hidden["frames"] as? Int,"Hidden still renders")
-        c.visible=true;c.configuration.reduced=true;c.send();try await Task.sleep(for:.milliseconds(100));state=try await inspect();try expect(state["animating"] as? Bool == false,"Reduced still animates")
+        c.visible=true;c.configuration.reduced=true;c.send();state=try await settleState({($0["config"] as? [String:Any])?["reduced"] as? Bool == true && $0["animating"] as? Bool == false},"Reduced still animates")
         c.configuration.reduced=false;c.configuration.kind="mr_hide";c.configuration.token=2;c.send();try await Task.sleep(for:.milliseconds(1200))
         c.configuration.kind="settle";c.send();try await Task.sleep(for:.milliseconds(360));state=try await inspect();try expect(state["done"] as? Bool == true && state["animating"] as? Bool == false,"Mid-book stop did not settle")
         c.configuration.kind="mr_ingest_short";c.configuration.token=3;c.send();let before=completions;for _ in 0..<60 {try await Task.sleep(for:.milliseconds(100));state=try await inspect();if state["done"] as? Bool == true {break}};try expect(state["done"] as? Bool == true,"Compact settlement never ends: \(state)");try expect(completions==before+1,"Completion callback not exactly once")
@@ -127,13 +131,16 @@ struct MrBPresentationTests {
         model.replayStudy();try expect(model.flowOutcome == "processing" && model.flowPhase == "A", "Retry retains terminal state")
         model.seekStudy(10);try expect(model.studyTime == 0, "Unplayed flow time can be sought")
         model.trackStudyTime(3.2);model.seekStudy(20);try expect(model.studyTime == 3.2, "Flow seeking goes beyond played history")
-        func settleState(_ check: ([String:Any]) -> Bool, _ message: String) async throws -> [String:Any] {
-            for _ in 0..<30 { let value=try await inspect();if check(value) { return value };try await Task.sleep(for:.milliseconds(50)) }
-            throw Failure(message:message)
-        }
         func flowMeta(_ value:[String:Any]) -> [String:Any] { (value["study"] as? [String:Any])?["meta"] as? [String:Any] ?? [:] }
+        for (index,time,width,gap) in [(0,0.0,140.0,28.0),(1,2.5372,64.0,40.0),(2,6.0,136.0,28.0)] {
+            c.configuration=MrBConfiguration(kind:"flow_study",token:105+index,paused:true,seekTime:time,seekToken:105+index);c.send()
+            state=try await settleState({($0["config"] as? [String:Any])?["token"] as? Int == 105+index && abs((($0["study"] as? [String:Any])?["time"] as? Double ?? -1)-time)<0.001},"Paragraph frame not drawn")
+            let rows=flowMeta(state)["lines"] as! [[String:Any]]
+            try expect(rows[0]["width"] as? Double == width,"Native paragraph row width is stale")
+            try expect(abs((rows[1]["y"] as! Double)-(rows[0]["y"] as! Double)-gap)<0.001,"Paragraph spacing lost in native playback")
+        }
         c.configuration=MrBConfiguration(kind:"flow_study",token:110,paused:true,seekTime:5.31,seekToken:1);c.send()
-        state=try await settleState({flowMeta($0)["flowPhase"] as? String == "A"},"Flow A failed to start")
+        state=try await settleState({($0["config"] as? [String:Any])?["token"] as? Int == 110 && abs((($0["study"] as? [String:Any])?["time"] as? Double ?? -1)-5.31)<0.001 && flowMeta($0)["flowPhase"] as? String == "A"},"Flow A failed to start")
         let bodyBefore=flowMeta(state)["body"] as? [Double],timeBefore=state["clipTime"] as? Double ?? 0
         c.configuration.flowOutcome="saved";c.configuration.flowSignalToken=1;c.send()
         state=try await settleState({flowMeta($0)["flowPhase"] as? String == "B"},"Paused completion did not enter B")

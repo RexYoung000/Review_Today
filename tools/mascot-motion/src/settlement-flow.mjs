@@ -1,19 +1,17 @@
-import {walking,poseFrame,studyDuration,clamp} from './settlement-scene.mjs';
+import {rowSpec,rowStart,rowAt,rowOffset,rowLayout} from './paragraph-rows.mjs';
+import {walking,walkingRow,poseFrame,studyDuration,clamp} from './settlement-scene.mjs';
 import {stampFrame,compactStampDuration} from './settlement-sequences.mjs';
 
-export const flowTiming={lead:.25,cycle:1.2,settle:.15,stop:.18};
+export const flowTiming={lead:rowLayout.lead,settle:.15,stop:.18};
 const emptyPose=()=>({...walking(4.6),lines:[0,1,2,3].map(i=>({erase:1,y:234+i*34}))});
-const cycleAt=time=>Math.max(0,Math.floor((time-flowTiming.lead)/flowTiming.cycle));
-const localAt=time=>time<flowTiming.lead?time:flowTiming.lead+(time-flowTiming.lead)%flowTiming.cycle;
-
 export function processingPose(time,lastRow=Infinity){
- const cycle=cycleAt(time),p=walking(localAt(time)),step=p.steps[0];
- return {...p,cycle,lines:[
-  {erase:step.erase,y:234,alpha:cycle<=lastRow?1:0},
-  {erase:0,y:268-34*step.feed,alpha:cycle+1<=lastRow?1:0},
-  {erase:0,y:302-34*step.feed,alpha:cycle+2<=lastRow?1:0},
-  {erase:0,y:336-34*step.feed,alpha:cycle+3<=lastRow?step.feed:0}
- ]};
+ const cycle=rowAt(time),p=walkingRow(cycle,time),step=p.steps[0];
+ return {...p,cycle,lines:[0,1,2,3].map(i=>{
+  const spec=rowSpec(cycle+i);
+  return {index:spec.index,width:spec.width,paragraphEnd:spec.paragraphEnd,
+   erase:i===0?step.erase:0,y:rowLayout.y+rowOffset(cycle,cycle+i)-(i?step.gap*step.feed:0),
+   alpha:spec.index>lastRow?0:i===3?step.feed:1};
+ })};
 }
 
 export function createSettlementFlow({compact=false}={}){
@@ -23,7 +21,7 @@ export function createSettlementFlow({compact=false}={}){
   if(event||!['saved','failed','cancelled'].includes(outcome))return false;
   time=Math.max(0,time);
   const p=processingPose(time),lastRow=p.cycle+(p.steps[0].feed>0?3:2);
-  const clearAt=flowTiming.lead+(lastRow+1)*flowTiming.cycle;
+  const clearAt=rowStart(lastRow+1);
   event={outcome,time,lastRow,clearAt,stampAt:clearAt+flowTiming.settle};
   return true;
  }

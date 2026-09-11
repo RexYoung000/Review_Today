@@ -3,7 +3,7 @@ import SwiftUI
 
 @MainActor @Observable
 final class MrBPreviewModel {
-    var scene = "答题反应"
+    var scene = "A → B → 盖章"
     var answerSession=MrBAnswerSession()
     var reactionLabels=false
     var reactionsCompleted=Set<String>()

@@ -1,0 +1,23 @@
+{
+  "signature": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "dailySource": {
+    "exitCode": 0,
+    "output": "Native animation resource matches its source.\n"
+  },
+  "diff": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "build": {
+    "exitCode": 0,
+    "log": "build.txt"
+  },
+  "resource": {
+    "path": "output/mr-b-preview/MrBContactPreview.app/Contents/Resources/MrBMotion.html",
+    "sha256": "9ca05295206546c56c104c0b4e9363fb0be048dba1afc2ed35ba5d6c810783fd"
+  },
+  "scope": "Isolated paragraph wiping rehearsal only; no production integration."
+}

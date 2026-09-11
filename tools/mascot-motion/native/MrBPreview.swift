@@ -16,6 +16,7 @@ struct MrBPreviewApp: App {
         .windowResizability(.contentMinSize)
         .commands {
             CommandMenu("试演") {
+                Button("录制段落循环与收尾（自动演示）") { capture.recordStudy(model:model,scene:"A → B → 盖章",completeAt:10) }
                 Button("录制当前单题反馈") { capture.recordAnswer(model:model) }
                 Button("录制三种单题回应") { capture.recordReactions(model:model) }
                 Button("录制完整入库（手动保存）") { capture.recordIngestion(model:model,compact:false) }
@@ -104,9 +105,9 @@ struct MrBPreviewRoot: View {
     }
     private var study: some View {
         VStack(alignment:.leading,spacing:16) {
-            Text(model.isFlow ? "整理中，直到内容收好。" : model.scene == "消除 → 盖章连播" ? "同一张纸，收好再盖章。" : (model.scene == "逐行消除短样" ? "一步一条，把内容收好。" : "拿出来，认真盖一下。"))
+            Text(model.isFlow ? "长短成段，一点点收好。" : model.scene == "消除 → 盖章连播" ? "同一张纸，收好再盖章。" : (model.scene == "逐行消除短样" ? "一步一条，把内容收好。" : "拿出来，认真盖一下。"))
                 .font(.title2.bold())
-            Text("逐行踏步与 2D 取放短样 · 动作视觉已验收").font(.caption).foregroundStyle(.secondary)
+            Text(model.scene == "2D 盖章短样" ? "2D 盖章基准 · 动作视觉已验收" : "段落涂抹调整 · 新节奏待视觉验收").font(.caption).foregroundStyle(.secondary)
             if model.isFlow {
                 Text(model.flowCopy).font(.callout).accessibilityIdentifier("flow-status")
                 HStack {

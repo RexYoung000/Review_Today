@@ -1,3 +1,4 @@
+import {rowTime,rowSpec,rowOffset} from '../src/paragraph-rows.mjs';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
@@ -28,19 +29,20 @@ test('three step beats erase one abstract line each, then feed remaining lines; 
    assert.ok(line.erase>=previous[i]);
    if(line.erase>previous[i]+.00001&&line.erase<1)assert.ok(p.steps[i].contact,'Line clears without a planted step');
    if(p.steps[i].lift>0)assert.equal(line.erase,0,'Erasing while gathering/lifting');
-   const feeds=Math.ceil((234+i*34-line.y)/34-1e-8);for(let k=0;k<feeds;k++)assert.equal(p.lines[k].erase,1,'Feeding before the removed row clears');
+   for(let k=0;k<i;k++)if(p.steps[k].feed>0)assert.equal(p.lines[k].erase,1,'Feeding before the removed row clears');
+   assert.ok(Math.abs(line.y-(234+rowOffset(0,i)-p.steps.slice(0,i).reduce((y,s)=>y+s.gap*s.feed,0)))<1e-8);
    if(line.erase>0&&i>0)assert.equal(p.lines[i-1].erase,1);
   });previous=p.lines.map(s=>s.erase);
  }
  assert.deepEqual(previous,[1,1,1]);
- for(const start of stepStarts){assert.equal(walking(start+.44).steps[stepStarts.indexOf(start)].erase,0);assert.equal(walking(start+.81).steps[stepStarts.indexOf(start)].erase,1);}
+ for(let i=0;i<3;i++){assert.equal(walking(rowTime(i,.44)).steps[i].erase,0);assert.equal(walking(rowTime(i,.81)).steps[i].erase,1);}
  assert.deepEqual(scene('walk_study',4.6),scene('walk_study',20));
 });
 
 test('the moving planted lobe covers the active erase boundary while upper body stays stable',()=>{
  let deformation=0;
  const base=bodyMesh('walk_study',0);
- for(const start of stepStarts)for(let local=.49;local<.80;local+=.012){const t=start+local,p=walking(t),b=bodyMesh('walk_study',t);
+ for(let i=0;i<3;i++)for(let local=.49;local<.80;local+=.012){const t=rowTime(i,local),p=walking(t),b=bodyMesh('walk_study',t);
   // Locate the lower silhouette where the erasure cursor crosses it.
   const edge=b.points.slice(0,b.hull),ys=[];
   for(let i=0;i<edge.length;i++){const a=edge[i],q=edge[(i+1)%edge.length];if((a[0]<=p.contactX&&q[0]>=p.contactX)||(q[0]<=p.contactX&&a[0]>=p.contactX)){const ratio=(p.contactX-a[0])/(q[0]-a[0]);if(Number.isFinite(ratio))ys.push(a[1]+ratio*(q[1]-a[1]));}}
@@ -124,15 +126,16 @@ test('daily contour/material are reused and study pixels are identical in Chines
 
 
 test('weight settles before erasing, holds the cleared row, unloads before feeding and has one small rebound',()=>{
- for(const start of stepStarts){
-  const poised=walking(start+.42),planted=walking(start+.60),hold=walking(start+.84),unload=walking(start+.98),rebound=walking(start+1.04),rest=walking(start+1.17);
+ for(let i=0;i<3;i++){
+  const at=beat=>rowTime(i,beat);
+  const poised=walking(at(.42)),planted=walking(at(.60)),hold=walking(at(.84)),unload=walking(at(.98)),rebound=walking(at(1.04)),rest=walking(at(1.17));
   assert.equal(poised.steps[poised.active].erase,0);assert.ok(poised.plant>.6);
   assert.ok(planted.y>154+2);assert.equal(hold.steps[hold.active].erase,1);assert.equal(hold.plant,1);assert.equal(hold.steps[hold.active].feed,0);
   assert.equal(unload.plant,0);assert.equal(unload.steps[unload.active].feed,0);
   assert.ok(rebound.y<154&&rebound.y>152);assert.equal(rest.y,154);
   const shadow=t=>mesh(scene('walk_study',t),'body_shadow');
-  assert.ok(shadow(start+.20).alpha<shadow(start+.60).alpha);
-  assert.ok(shadow(start+.20).points[2][1]-shadow(start+.20).points[1][1]>shadow(start+.60).points[2][1]-shadow(start+.60).points[1][1]);
+  assert.ok(shadow(at(.20)).alpha<shadow(at(.60)).alpha);
+  assert.ok(shadow(at(.20)).points[2][1]-shadow(at(.20)).points[1][1]>shadow(at(.60)).points[2][1]-shadow(at(.60)).points[1][1]);
  }
 });
 

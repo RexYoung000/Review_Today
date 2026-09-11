@@ -1,3 +1,4 @@
+import {rowStart,rowTime,paragraphPeriod} from '../src/paragraph-rows.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
@@ -14,8 +15,8 @@ test('A repeats for long processing without a completion mark or false progress'
   assert.ok(rows(f).filter(r=>r.alpha>0).length>=2);assert.ok(rows(f).filter(r=>r.alpha>0).length<=3);
   assert.deepEqual(patch(f,'paper'),patch(scene('walk_study',0),'paper'));
  }
- for(let n=0;n<30;n++){const a=processingPose(.25+n*1.2+.6),b=processingPose(.25+(n+1)*1.2+.6);
-  assert.ok(Math.abs(a.y-b.y)<1e-8);assert.ok(Math.abs(a.steps[0].erase-b.steps[0].erase)<1e-8);
+ for(let n=0;n<30;n++){const a=processingPose(rowTime(n,.6)),b=processingPose(rowTime(n,.6)+paragraphPeriod);
+  assert.ok(Math.abs(a.y-b.y)<1e-8);assert.ok(Math.abs(a.steps[0].erase-b.steps[0].erase)<1e-8);assert.deepEqual(a.lines.map(r=>r.width),b.lines.map(r=>r.width));
  }
 });
 
@@ -85,7 +86,7 @@ test('rendered A wraps continuously; success adds no jump and both themes/langua
  const canvas=createCanvas(760,400),ctx=canvas.getContext('2d'),player=await createStudyPlayer({...core,CanvasTexture,SkeletonRenderer},ctx,fileURLToPath(new URL('../../../brand/refresh-2026-09/masters/mark-alpha.png',import.meta.url)),{createCanvas,loadImage,bodyTexture:dark=>material('graphite',dark).get(body)});
  for(const dark of [false,true]){
   const render=(f,language='zh')=>{ctx.clearRect(0,0,760,400);player.draw('flow_study',f.time,760,400,{dark,language},f);return ctx.getImageData(0,0,760,400).data;};
-  for(const time of [1.45,2.65,10*1.2+.25]){const flow=createSettlementFlow();assert.deepEqual(render(flow.frame(time-1e-6)),render(flow.frame(time+1e-6)),'A loop jumps');}
+  for(const time of [1,2,3,5,8,10].map(rowStart)){const flow=createSettlementFlow();assert.deepEqual(render(flow.frame(time-1e-6)),render(flow.frame(time+1e-6)),'A loop jumps');}
   for(const time of [.85,1.31]){const flow=createSettlementFlow(),before=render(flow.frame(time));flow.signal('saved',time);assert.deepEqual(render(flow.frame(time)),before);assert.deepEqual(render(flow.frame(time),'en'),before);}
  }
 });
