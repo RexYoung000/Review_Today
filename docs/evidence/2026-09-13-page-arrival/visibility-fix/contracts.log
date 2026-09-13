@@ -1,15 +1,15 @@
 Isolated contract directory: /tmp/review-today-shared-contracts.4sge9u5y
 /Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
-620 | 
+620 |
 621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
 622 |     private var synth = NSSpeechSynthesizer()
     |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 623 |     private var onFinish: (() -> Void)?
-624 | 
+624 |
 
 /Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 639 |     }
-640 | 
+640 |
 641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
     |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 642 |         let done = onFinish
@@ -17,7 +17,7 @@ Isolated contract directory: /tmp/review-today-shared-contracts.4sge9u5y
 
 /Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 619 | }
-620 | 
+620 |
 621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
     |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 622 |     private var synth = NSSpeechSynthesizer()
@@ -25,7 +25,7 @@ Isolated contract directory: /tmp/review-today-shared-contracts.4sge9u5y
 
 [#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
 /Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant
-177 | 
+177 |
 178 |     private static func isWeak(_ text: String) -> Bool {
 179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
     |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant
@@ -39,16 +39,16 @@ Isolated contract directory: /tmp/review-today-shared-contracts.4sge9u5y
 167 |             return
 168 |         }
 /Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
-620 | 
+620 |
 621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
 622 |     private var synth = NSSpeechSynthesizer()
     |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 623 |     private var onFinish: (() -> Void)?
-624 | 
+624 |
 
 /Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 639 |     }
-640 | 
+640 |
 641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
     |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 642 |         let done = onFinish
@@ -56,7 +56,7 @@ Isolated contract directory: /tmp/review-today-shared-contracts.4sge9u5y
 
 /Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 619 | }
-620 | 
+620 |
 621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
     |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 622 |     private var synth = NSSpeechSynthesizer()
@@ -68,7 +68,7 @@ Isolated contract directory: /tmp/review-today-shared-contracts.4sge9u5y
 627 |         synth.delegate = self
     |               `- warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 628 |     }
-629 | 
+629 |
 
 /Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:633:15: warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 631 |         stop()
@@ -76,10 +76,10 @@ Isolated contract directory: /tmp/review-today-shared-contracts.4sge9u5y
 633 |         synth.startSpeaking(text)
     |               `- warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
 634 |     }
-635 | 
+635 |
 
 /Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:637:15: warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
-635 | 
+635 |
 636 |     func stop() {
 637 |         synth.stopSpeaking()
     |               `- warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
