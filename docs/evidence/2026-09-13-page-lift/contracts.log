@@ -1,0 +1,121 @@
+Isolated contract directory: /tmp/review-today-shared-contracts.xkpyhjt8
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+620 |
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+622 |     private var synth = NSSpeechSynthesizer()
+    |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+623 |     private var onFinish: (() -> Void)?
+624 |
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+639 |     }
+640 |
+641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+    |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+642 |         let done = onFinish
+643 |         onFinish = nil
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+619 | }
+620 |
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+    |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+622 |     private var synth = NSSpeechSynthesizer()
+623 |     private var onFinish: (() -> Void)?
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant
+177 |
+178 |     private static func isWeak(_ text: String) -> Bool {
+179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant
+180 |         if value.count < 2 { return true }
+181 |         if genericTitles.contains(value) { return true }
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:166:13: warning: result of 'try?' is unused [#no-usage]
+164 |             task.updatedAt = .now
+165 |             try? modelContext.save()
+166 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#no-usage]
+167 |             return
+168 |         }
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+620 |
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+622 |     private var synth = NSSpeechSynthesizer()
+    |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+623 |     private var onFinish: (() -> Void)?
+624 |
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+639 |     }
+640 |
+641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+    |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+642 |         let done = onFinish
+643 |         onFinish = nil
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+619 | }
+620 |
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+    |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+622 |     private var synth = NSSpeechSynthesizer()
+623 |     private var onFinish: (() -> Void)?
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:627:15: warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+625 |     override init() {
+626 |         super.init()
+627 |         synth.delegate = self
+    |               `- warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+628 |     }
+629 |
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:633:15: warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+631 |         stop()
+632 |         self.onFinish = onFinish
+633 |         synth.startSpeaking(text)
+    |               `- warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+634 |     }
+635 |
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:637:15: warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+635 |
+636 |     func stop() {
+637 |         synth.stopSpeaking()
+    |               `- warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+638 |         onFinish = nil
+639 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/tmp/review-today-shared-contracts.xkpyhjt8/NavigationRenderContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'NavigationRenderContractTests/NavigationRenderContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/NavigationRenderContractTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'NavigationRenderContractTests/NavigationRenderContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.xkpyhjt8/NavigationRenderContractTests.swift'
+  3 | import AppKit
+  4 | import SwiftUI
+PASS: real SwiftUI navigation and draft saves skip projection; insert, rename, delete, completion and explicit recovery still refresh
+PASS: navigation skips status queries; inserts, edits, task actions, ordering, deletion, archive and session changes remain live
+PASS: arrival fade, no initial/same-page replay, direct hit testing, rapid interruption, reduced motion, dark canvas and window deactivation
+PASS: real SwiftUI page replacement retains one fade surface and respects live Reduce Motion
+PASS: native date buttons, exact actions, disabled/future accessibility, compact geometry, reused targets, single-set composer layout
+PASS executable: NavigationRenderContractTests
+/tmp/review-today-shared-contracts.xkpyhjt8/LearningInputContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'LearningInputContractTests/LearningInputContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/LearningInputContractTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'LearningInputContractTests/LearningInputContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.xkpyhjt8/LearningInputContractTests.swift'
+  3 | // Run as an isolated AppKit/SwiftData test executable, not against user data.
+  4 | import AppKit
+PASS: 12 scenarios, 6-card refresh, protected prefill/IME/undo, sidebar preference, native input, atomic first-send failure/retry, no empty Sessions, independent drafts/preferences, tags, partial persistence, activity
+PASS executable: LearningInputContractTests
+/tmp/review-today-shared-contracts.xkpyhjt8/InteractionFocusTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'InteractionFocusTests/InteractionFocusTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/InteractionFocusTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'InteractionFocusTests/InteractionFocusTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.xkpyhjt8/InteractionFocusTests.swift'
+ 3 | import AppKit
+ 4 | import SwiftUI
+PASS: ancestor-focus guard, rendered single-row focus independent of selection, light/dark/disabled
+PASS executable: InteractionFocusTests
+All selected contracts complete: /tmp/review-today-shared-contracts.xkpyhjt8

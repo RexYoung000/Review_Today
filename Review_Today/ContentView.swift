@@ -89,6 +89,7 @@ struct ContentView: View {
             ZStack { detailContent }
                 .navigationPaintProbe(selection?.rawValue ?? "today", stage: "page")
                 .overlay(PageArrivalFade(page: selection ?? .today).allowsHitTesting(false).accessibilityHidden(true))
+                .modifier(PageArrivalLift(page: selection ?? .today))
                 .opacity(selection == .learning && !draftEntrance ? 0 : 1)
                 .offset(y: selection == .learning && !draftEntrance ? 8 : 0)
                 .padding(.top, 20).frame(maxWidth: .infinity, maxHeight: .infinity)

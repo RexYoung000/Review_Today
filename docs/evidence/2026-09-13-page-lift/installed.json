@@ -1,0 +1,17 @@
+{
+  "daily": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "backup": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.before-lift-1789301221.app.backup",
+  "configuration": "standard Debug (-Onone)",
+  "same_designated_requirement": true,
+  "debug_dylib_sha256": "abb86bd3442f5e4905dd7581af0a16977643c12b31c0550e2a16263bb739c72e",
+  "startup_checked": true,
+  "running_processes": [
+    "46292 /Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app/Contents/MacOS/Review_Today"
+  ],
+  "checks": [
+    "3 original sessions and 8 knowledge visible",
+    "7 main-page navigations, selected destination correct",
+    "Chinese unsent draft preserved across Library and Agent; cleared after check"
+  ],
+  "service_status": "ok"
+}

@@ -17,7 +17,7 @@ struct PageArrivalFade: NSViewRepresentable {
     static func dismantleNSView(_ view: Surface, coordinator: ()) { view.clear() }
 
     final class Surface: NSView {
-        static let duration: TimeInterval = 0.15
+        static let duration: TimeInterval = 0.18
         static let animationKey = "pageArrival"
         private var page: SidebarItem?
         private var lastChange: TimeInterval?
@@ -70,6 +70,48 @@ struct PageArrivalFade: NSViewRepresentable {
             animation.duration = Self.duration
             animation.timingFunction = CAMediaTimingFunction(name: .easeOut)
             layer?.add(animation, forKey: Self.animationKey)
+        }
+    }
+}
+
+/// Translate only the existing content's presentation; do not retain or resize pages.
+struct PageArrivalLift: ViewModifier {
+    let page: SidebarItem
+    @Environment(\.brandReduceMotion) private var reduced
+    @Environment(\.scenePhase) private var phase
+    @State private var displacement: CGFloat = 0
+    @State private var lastChange: TimeInterval?
+    @State private var startTask: Task<Void, Never>?
+
+    func body(content: Content) -> some View {
+        content.offset(y: displacement)
+            .onChange(of: page) { _, _ in arrive() }
+            .onChange(of: reduced) { _, value in if value { settle() } }
+            .onChange(of: phase) { _, value in if value != .active { settle() } }
+            .onDisappear { settle() }
+    }
+
+    private func settle() {
+        startTask?.cancel()
+        startTask = nil
+        var transaction = Transaction(animation: nil)
+        transaction.disablesAnimations = true
+        withTransaction(transaction) { displacement = 0 }
+    }
+
+    private func arrive() {
+        let now = ProcessInfo.processInfo.systemUptime
+        let repeated = lastChange.map { now - $0 < PageArrivalFade.Surface.duration } ?? false
+        lastChange = now
+        settle()
+        guard !reduced, phase == .active, !repeated else { return }
+        var transaction = Transaction(animation: nil)
+        transaction.disablesAnimations = true
+        withTransaction(transaction) { displacement = 8 }
+        startTask = Task { @MainActor in
+            await Task.yield()
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeOut(duration: PageArrivalFade.Surface.duration)) { displacement = 0 }
         }
     }
 }
