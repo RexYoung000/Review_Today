@@ -7,5 +7,7 @@ export OPENAI_API_KEY=''
 export DEEPSEEK_API_KEY=''
 export REVIEW_TODAY_LLM_PROVIDER='openai_compatible'
 python_bin="${REVIEW_TODAY_TEST_PYTHON:-.venv/bin/python}"
-"$python_bin" -m unittest discover -s tests -v
+# pytest also collects unittest.TestCase. unittest alone silently omits the
+# parameterized dictation tests even when their modules import successfully.
+"$python_bin" -m pytest tests -q
 printf 'Isolated test database: %s\n' "$test_dir"

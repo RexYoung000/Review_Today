@@ -4,7 +4,11 @@ import SwiftData
 enum CaptureProcessor {
     @MainActor
     static func tick(context: ModelContext, monitor: AgentServiceMonitor) async {
+        let activeStatuses = ["queued", "retryable_failed", "uploading", "processing", "committing"]
         let descriptor = FetchDescriptor<CaptureTask>(
+            predicate: #Predicate {
+                activeStatuses.contains($0.status) || ($0.status == "completed" && !$0.localCommitDone)
+            },
             sortBy: [SortDescriptor(\.createdAt, order: .forward)]
         )
         guard let tasks = try? context.fetch(descriptor) else { return }
@@ -18,9 +22,11 @@ enum CaptureProcessor {
         switch task.status {
         case "queued", "retryable_failed":
             guard monitor.connection == .ready, monitor.keyConfigured else {
-                task.userStatus = monitor.connection == .ready
+                let status = monitor.connection == .ready
                     ? String(localized: "已保存，Key 未配置")
                     : String(localized: "已保存，服务恢复后处理")
+                guard task.userStatus != status else { return }
+                task.userStatus = status
                 task.updatedAt = .now
                 appendStatus(task.userStatus, to: task)
                 try? context.save()

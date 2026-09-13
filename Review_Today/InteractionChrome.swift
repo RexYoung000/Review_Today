@@ -152,10 +152,17 @@ struct SingleLevelMenu: View {
 
     private enum CloseReason { case outside, keyboard, pointerSelection }
 
+    private func setPresentation(_ value: Bool) {
+        var transaction = Transaction(animation: nil)
+        transaction.disablesAnimations = true
+        withTransaction(transaction) { presented = value }
+    }
+
     var body: some View {
         Button {
             closeReason = .outside
-            presented.toggle()
+            if !presented { NavigationPerformance.begin("menu:" + title) }
+            setPresentation(!presented)
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: symbol).frame(width: 18)
@@ -169,18 +176,27 @@ struct SingleLevelMenu: View {
         .accessibilityValue(presented ? "已展开" : "已收起")
         .onChange(of: triggerFocused) { _, value in onFocusChange(value) }
         .onChange(of: presented) { _, value in onPresentationChange(value) }
+#if PERFORMANCE_QA
+        .onReceive(NotificationCenter.default.publisher(for: NavigationPerformance.menu)) { note in
+            guard note.object as? String == title, let open = note.userInfo?["open"] as? Bool else { return }
+            closeReason = .outside
+            if open && !presented { NavigationPerformance.begin("menu:" + title) }
+            setPresentation(open)
+        }
+#endif
         .popover(isPresented: $presented, arrowEdge: arrowEdge) {
             ChoiceMenuContent(items: items, selectedID: selectedID, onSelect: { id in
                 selectionTime = NSApp.currentEvent?.timestamp ?? 0
                 closeReason = NSApp.currentEvent?.type == .keyDown ? .keyboard : .pointerSelection
-                presented = false
+                setPresentation(false)
                 action(id)
             }, onEscape: {
                 selectionTime = NSApp.currentEvent?.timestamp ?? 0
                 closeReason = .keyboard
-                presented = false
+                setPresentation(false)
             })
             .environment(\.runway, runway)
+            .navigationPaintProbe("menu:" + title, stage: "page")
             .onDisappear {
                 // Outside clicks keep their new focus. Only deliberate menu actions restore it.
                 switch closeReason {

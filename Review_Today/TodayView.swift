@@ -3,6 +3,7 @@ import SwiftUI
 import UserNotifications
 
 struct TodayView: View {
+    var activityCache = TodayActivityCache()
     var coordinator: ReviewCoordinator
     var onOpenKnowledge: (UUID) -> Void
     var onOpenInbox: () -> Void
@@ -19,19 +20,7 @@ struct TodayView: View {
     @Query private var attempts: [ReviewAttempt]
     @Query(sort: \AgentSession.updatedAt, order: .reverse) private var learningSessions: [AgentSession]
     @Query private var learningTasks: [LearningTask]
-    @Query private var agentRuns: [AgentRun]
     @State private var recentExpanded = false
-    @State private var selectedActivityDate: Date?
-
-    private struct ActivityItem: Identifiable {
-        var id: String
-        var date: Date
-        var kind: String
-        var title: String
-        var sessionID: UUID?
-        var knowledgeID: UUID?
-    }
-
     private var settings: AppSettings? { settingsRows.first }
     private var developerMode: Bool { settings?.developerMode == true }
 
@@ -68,21 +57,6 @@ struct TodayView: View {
         recentExpanded ? activeLearningSessions : Array(activeLearningSessions.prefix(3))
     }
 
-    private var activityItems: [ActivityItem] {
-        let runItems = agentRuns.compactMap { run -> ActivityItem? in
-            guard run.status == "completed", let kind = run.activityKind, let date = run.completedAt else { return nil }
-            let title = learningSessions.first(where: { $0.id == run.sessionID })?.title ?? "学习会话"
-            return ActivityItem(id: "run-\(run.id)", date: date, kind: kind, title: title, sessionID: run.sessionID)
-        }
-        let reviewItems = attempts.compactMap { attempt -> ActivityItem? in
-            guard attempt.mode != "preview", attempt.acked, !attempt.effectiveGrade.isEmpty,
-                  let date = attempt.completedAt else { return nil }
-            let title = knowledge.first(where: { $0.id == attempt.knowledgeId }).map { KnowledgeLexicon.keyword(for: $0, clipped: false) } ?? "正式复习"
-            return ActivityItem(id: "review-\(attempt.attemptId)", date: date, kind: "formal_review", title: title, knowledgeID: attempt.knowledgeId)
-        }
-        return runItems + reviewItems
-    }
-
     var body: some View {
         VStack(spacing: 0) {
             statusHeader
@@ -100,7 +74,7 @@ struct TodayView: View {
                 if !todayResults.isEmpty {
                     resultsCard
                 }
-                activityHeatmap
+                TodayActivityHeatmap(cache: activityCache, onOpenLearning: onOpenLearning, onOpenKnowledge: onOpenKnowledge)
             }
             .frame(maxWidth: 960)
             .padding(.horizontal, 24)
@@ -110,15 +84,7 @@ struct TodayView: View {
         }
         .background(PaperSurface())
         .navigationTitle(String(localized: "今天"))
-        .onAppear {
-            ReminderNotifications.request()
-            ReminderNotifications.scheduleDaily(
-                minuteOfDay: settings?.dailyReminderMinutes ?? 21 * 60,
-                hasDue: !dueItems.isEmpty,
-                skippedToday: settings?.skipToday == Self.todayStamp()
-            )
-            backfillClearReviewDates()
-        }
+
     }
 
     private var statusHeader: some View {
@@ -208,7 +174,7 @@ struct TodayView: View {
                                 HStack(spacing: 5) {
                                     ForEach(Array(session.displayTopicTags.prefix(2)), id: \.self) { Text($0) }
                                     if !session.displayTopicTags.isEmpty { Text("·") }
-                                    Text(latestStatus(for: session))
+                                    TodaySessionStatus(sessionID: session.id)
                                 }.font(.caption).foregroundStyle(.secondary).lineLimit(1)
                             }
                             Spacer()
@@ -221,125 +187,6 @@ struct TodayView: View {
                     }
                     .buttonStyle(InteractionButtonStyle(padding: 4))
                     .padding(.vertical, 5)
-            }
-        }
-    }
-
-    private var activityHeatmap: some View {
-        RunwayCard(padding: activityItems.isEmpty ? 12 : Runway.gap) {
-            VStack(alignment: .leading, spacing: activityItems.isEmpty ? 10 : 16) {
-                HStack(spacing: 44) {
-                    activityStat(value: activeDayCount, title: "活跃天数")
-                    activityStat(value: currentStreak, title: "当前连续天数")
-                    activityStat(value: longestStreak, title: "最长连续天数")
-                    Spacer()
-                    Text("最近 26 周").font(.caption).foregroundStyle(.secondary)
-                }
-                ViewThatFits(in: .horizontal) {
-                    heatmapGrid(cell: 16, spacing: 5)
-                    heatmapGrid(cell: 12, spacing: 4)
-                    ScrollView(.horizontal) { heatmapGrid(cell: 12, spacing: 4) }
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                HStack(spacing: 5) {
-                    Text("较少")
-                    ForEach(0 ..< 5, id: \.self) { level in
-                        RoundedRectangle(cornerRadius: 3).fill(activityColor(level: level)).frame(width: 14, height: 14)
-                    }
-                    Text("较多")
-                }
-                .font(.caption2).foregroundStyle(.secondary)
-                if let selectedActivityDate {
-                    Divider()
-                    activityDayDetails(selectedActivityDate)
-                }
-            }
-        }
-    }
-
-    private func activityStat(value: Int, title: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text("\(value) 天").font(.title2.bold()).foregroundStyle(runway.ink)
-            Text(title).font(.caption).foregroundStyle(.secondary)
-        }
-    }
-
-    private func heatmapGrid(cell: CGFloat, spacing: CGFloat) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: spacing) {
-                ForEach(0 ..< 26, id: \.self) { week in
-                    Color.clear.frame(width: cell, height: 14)
-                        .overlay(alignment: .leading) {
-                            if let label = heatmapMonth(week: week) {
-                                Text(label).font(.caption2).foregroundStyle(.secondary)
-                                    .fixedSize().accessibilityHidden(true)
-                            }
-                        }
-                }
-            }.padding(.leading, 20)
-        HStack(alignment: .top, spacing: 8) {
-            VStack(spacing: spacing) {
-                ForEach(Self.weekdayLabels, id: \.self) { Text($0).frame(width: 12, height: cell) }
-            }.font(.caption2).foregroundStyle(.secondary)
-            HStack(spacing: spacing) {
-                ForEach(0 ..< 26, id: \.self) { week in
-                    VStack(spacing: spacing) {
-                        ForEach(0 ..< 7, id: \.self) { day in
-                            heatmapCell(date: Calendar.current.date(byAdding: .day, value: week * 7 + day, to: heatmapStart)!, size: cell)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    }
-
-    private func heatmapMonth(week: Int) -> String? {
-        let calendar = Calendar.current
-        let date = calendar.date(byAdding: .day, value: week * 7, to: heatmapStart)!
-        let previous = calendar.date(byAdding: .day, value: -7, to: date)!
-        guard week == 0 || calendar.component(.month, from: date) != calendar.component(.month, from: previous) else { return nil }
-        return date.formatted(.dateTime.month(.abbreviated))
-    }
-
-    private func heatmapCell(date: Date, size: CGFloat) -> some View {
-        let items = activities(on: date)
-        let future = date > Calendar.current.startOfDay(for: .now)
-        return Button {
-            if !items.isEmpty { selectedActivityDate = Calendar.current.startOfDay(for: date) }
-        } label: {
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .fill(future ? Color.clear : activityColor(level: intensity(for: items.count)))
-                .overlay(RoundedRectangle(cornerRadius: 4).stroke(runway.hairline.opacity(future ? 0.35 : 0)))
-                .frame(width: size, height: size)
-        }
-        .buttonStyle(.plain)
-        .disabled(items.isEmpty)
-        .help(activityHelp(date: date, items: items))
-        .accessibilityLabel(activityHelp(date: date, items: items))
-    }
-
-    private func activityDayDetails(_ date: Date) -> some View {
-        let rows = activities(on: date).sorted { $0.date < $1.date }
-        return VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(date, format: .dateTime.year().month().day()).font(.subheadline.weight(.semibold))
-                Text("\(rows.count) 次有效活动").font(.caption).foregroundStyle(.secondary)
-            }
-            ForEach(rows) { item in
-                Button {
-                    if let sessionID = item.sessionID { onOpenLearning(sessionID) }
-                    else if let knowledgeID = item.knowledgeID { onOpenKnowledge(knowledgeID) }
-                } label: {
-                    HStack {
-                        Text(activityKindLabel(item.kind)).font(.caption).foregroundStyle(.secondary).frame(width: 72, alignment: .leading)
-                        Text(item.title).foregroundStyle(runway.ink).lineLimit(1)
-                        Spacer()
-                        Text(item.date, style: .time).font(.caption).foregroundStyle(.secondary)
-                        Image(systemName: "chevron.right").font(.caption2).foregroundStyle(.secondary)
-                    }.contentShape(Rectangle())
-                }.buttonStyle(InteractionButtonStyle(padding: 4))
             }
         }
     }
@@ -377,108 +224,11 @@ struct TodayView: View {
         .shadow(color: runway.liftShadow, radius: 8, y: 2)
     }
 
-    private var boardSubtitle: String {
-        if !activeLearning.isEmpty { return "有 \(activeLearning.count) 个学习任务正在继续" }
-        if dueItems.isEmpty { return "没有到期知识，可以开始新的学习" }
-        return "预计约 \(dueItems.count) 分钟"
-    }
-
     private var tonightTitle: String { "今晚 \(tonightClock) 复习" }
-
-    private static var weekdayLabels: [String] {
-        let formatter = DateFormatter()
-        formatter.locale = .current
-        let symbols = formatter.veryShortStandaloneWeekdaySymbols ?? ["日", "一", "二", "三", "四", "五", "六"]
-        let offset = max(0, min(6, Calendar.current.firstWeekday - 1))
-        return Array(symbols[offset...]) + Array(symbols[..<offset])
-    }
-
-    private var heatmapStart: Date {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: .now)
-        let weekday = calendar.component(.weekday, from: today)
-        let offset = (weekday - calendar.firstWeekday + 7) % 7
-        let thisWeek = calendar.date(byAdding: .day, value: -offset, to: today)!
-        return calendar.date(byAdding: .weekOfYear, value: -25, to: thisWeek)!
-    }
-
-    private var activeDates: [Date] {
-        LearningActivityCalendar.uniqueDays(activityItems.map(\.date))
-    }
-
-    private var activeDayCount: Int { activeDates.count }
-
-    private var currentStreak: Int {
-        LearningActivityCalendar.currentStreak(activeDates)
-    }
-
-    private var longestStreak: Int {
-        LearningActivityCalendar.longestStreak(activeDates)
-    }
-
-    private func activities(on date: Date) -> [ActivityItem] {
-        activityItems.filter { Calendar.current.isDate($0.date, inSameDayAs: date) }
-    }
-
-    private func intensity(for count: Int) -> Int {
-        LearningActivityCalendar.intensity(count)
-    }
-
-    private func activityColor(level: Int) -> Color {
-        switch level {
-        case 0: return runway.field.opacity(0.72)
-        case 1: return runway.history.opacity(0.22)
-        case 2: return runway.history.opacity(0.42)
-        case 3: return runway.history.opacity(0.68)
-        default: return runway.history
-        }
-    }
-
-    private func activityHelp(date: Date, items: [ActivityItem]) -> String {
-        let counts = Dictionary(grouping: items, by: \.kind).mapValues(\.count)
-        let details = counts.sorted(by: { $0.key < $1.key })
-            .map { "\(activityKindLabel($0.key)) \($0.value)" }.joined(separator: "，")
-        return "\(date.formatted(date: .abbreviated, time: .omitted))：\(items.count) 次\(details.isEmpty ? "" : "（\(details)）")"
-    }
-
-    private func activityKindLabel(_ kind: String) -> String {
-        switch kind {
-        case "lesson_step": return "资料学习"
-        case "formal_review": return "正式复习"
-        default: return "知识回答"
-        }
-    }
-
-    private func backfillClearReviewDates() {
-        var changed = false
-        for attempt in attempts where attempt.mode != "preview" && attempt.acked && !attempt.effectiveGrade.isEmpty && attempt.completedAt == nil {
-            guard let review = reviewSessions.first(where: { $0.id == attempt.sessionId }) else { continue }
-            attempt.completedAt = review.endedAt ?? review.startedAt
-            changed = true
-        }
-        if changed { try? modelContext.save() }
-    }
 
     private var tonightClock: String {
         let minutes = settings?.dailyReminderMinutes ?? 21 * 60
         return String(format: "%d:%02d", minutes / 60, minutes % 60)
-    }
-
-    private func latestStatus(for session: AgentSession) -> String {
-        if let task = learningTasks.filter({ $0.sessionID == session.id && $0.learningPlanJSON != nil }).max(by: { $0.updatedAt < $1.updatedAt }),
-           let plan = ConversationProcessor.object(task.learningPlanJSON),
-           let steps = plan["steps"] as? [[String: Any]],
-           let current = steps.first(where: { $0["id"] as? String == plan["current_step_id"] as? String }),
-           let title = current["title"] as? String {
-            return task.status == "completed" ? "查看本次学习小结" : "上次学到：" + title
-        }
-        if let run = agentRuns.filter({ $0.sessionID == session.id }).max(by: { $0.updatedAt < $1.updatedAt }) {
-            return run.userSummary
-        }
-        return learningTasks
-            .filter { $0.sessionID == session.id }
-            .max(by: { $0.updatedAt < $1.updatedAt })?
-            .userSummary ?? "尚未开始任务"
     }
 
     static func firstURL(in text: String) -> String? {

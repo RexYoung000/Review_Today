@@ -1,0 +1,54 @@
+{
+  "baseline": "3bfe550",
+  "scope": "Function bodies only, excluding docstrings. Wrapper signatures and injected hooks are covered by regression tests.",
+  "methods": [
+    {
+      "original_method": "maintain_summary",
+      "module": "conversation_context",
+      "function": "maintain_summary",
+      "body_equal_excluding_docstring": true
+    },
+    {
+      "original_method": "_compact_history",
+      "module": "conversation_context",
+      "function": "compact_history",
+      "body_equal_excluding_docstring": true
+    },
+    {
+      "original_method": "_context",
+      "module": "conversation_context",
+      "function": "context",
+      "body_equal_excluding_docstring": true
+    },
+    {
+      "original_method": "action",
+      "module": "conversation_controls",
+      "function": "action",
+      "body_equal_excluding_docstring": true
+    },
+    {
+      "original_method": "session_action",
+      "module": "conversation_controls",
+      "function": "session_action",
+      "body_equal_excluding_docstring": true
+    },
+    {
+      "original_method": "_cancel_older",
+      "module": "conversation_controls",
+      "function": "cancel_older",
+      "body_equal_excluding_docstring": true
+    },
+    {
+      "original_method": "_stop",
+      "module": "conversation_controls",
+      "function": "stop",
+      "body_equal_excluding_docstring": true
+    },
+    {
+      "original_method": "_call",
+      "module": "conversation_model_call",
+      "function": "call",
+      "body_equal_excluding_docstring": true
+    }
+  ]
+}

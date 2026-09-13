@@ -106,7 +106,7 @@ final class AgentServiceMonitor {
     @ObservationIgnored private var terminationObserver: NSObjectProtocol?
 
     func start() {
-#if DEBUG
+#if DEBUG || PERFORMANCE_QA
         if AppRuntime.current.isPreview { useFixturePresentation(); return }
 #endif
         guard pollTask == nil else { return }
@@ -134,7 +134,7 @@ final class AgentServiceMonitor {
         pollTask = nil
     }
 
-#if DEBUG
+#if DEBUG || PERFORMANCE_QA
     func useFixturePresentation() {
         stop()
         connection = .unavailable

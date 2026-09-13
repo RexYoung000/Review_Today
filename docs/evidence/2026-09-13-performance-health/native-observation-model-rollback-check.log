@@ -1,0 +1,8 @@
+/tmp/review-today-shared-contracts.vt7khgh1/NavigationRenderContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'NavigationRenderContractTests/NavigationRenderContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/NavigationRenderContractTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'NavigationRenderContractTests/NavigationRenderContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.vt7khgh1/NavigationRenderContractTests.swift'
+  3 | import AppKit
+  4 | import SwiftUI
+NavigationRenderContractTests/NavigationRenderContractTests.swift:103: Precondition failed: the model itself must roll back before checking its projection

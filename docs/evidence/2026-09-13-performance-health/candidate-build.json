@@ -1,0 +1,10 @@
+{
+  "candidate": "/tmp/review-today-health-build/Build/Products/Debug/Review_Today.app",
+  "daily": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "previous_build_backup": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.before-performance-20260913-160501.app.backup",
+  "same_designated_requirement_as_daily": true,
+  "binary_sha256": "3ced39166db0997b6ead98b6b9e8f18730f9f0086f04d85f0aa11488edf03195",
+  "daily_updated": true,
+  "daily_launched_and_checked": false,
+  "reason": "Mac locked; normal UI launch and final live measurements pending"
+}

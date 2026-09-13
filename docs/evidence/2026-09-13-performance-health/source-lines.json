@@ -1,0 +1,150 @@
+{
+  "native": {
+    "before_files": 60,
+    "before_lines": 14925,
+    "after_files": 78,
+    "after_lines": 15290,
+    "largest_before": [
+      [
+        "Review_Today/LearningWorkspace.swift",
+        1091
+      ],
+      [
+        "Review_Today/KnowledgeLibrary.swift",
+        1067
+      ],
+      [
+        "Review_Today/ContentView.swift",
+        952
+      ],
+      [
+        "Review_Today/AgentAPI.swift",
+        701
+      ],
+      [
+        "Review_Today/ReviewView.swift",
+        646
+      ],
+      [
+        "Review_Today/Models.swift",
+        627
+      ],
+      [
+        "Review_Today/ConversationProcessor.swift",
+        552
+      ],
+      [
+        "Review_Today/TodayView.swift",
+        499
+      ]
+    ],
+    "largest_after": [
+      [
+        "Review_Today/LearningWorkspace.swift",
+        868
+      ],
+      [
+        "Review_Today/AgentAPI.swift",
+        701
+      ],
+      [
+        "Review_Today/ReviewView.swift",
+        646
+      ],
+      [
+        "Review_Today/Models.swift",
+        627
+      ],
+      [
+        "Review_Today/ConversationProcessor.swift",
+        553
+      ],
+      [
+        "Review_Today/HarnessProcessor.swift",
+        503
+      ],
+      [
+        "Review_Today/MascotAnimationPOC.swift",
+        474
+      ],
+      [
+        "Review_Today/KnowledgeCardReader.swift",
+        448
+      ]
+    ]
+  },
+  "service": {
+    "before_files": 29,
+    "before_lines": 7200,
+    "after_files": 32,
+    "after_lines": 7264,
+    "largest_before": [
+      [
+        "agent-service/agent_service/conversation.py",
+        1799
+      ],
+      [
+        "agent-service/agent_service/harness.py",
+        892
+      ],
+      [
+        "agent-service/agent_service/main.py",
+        681
+      ],
+      [
+        "agent-service/agent_service/schemas.py",
+        664
+      ],
+      [
+        "agent-service/agent_service/capture/__init__.py",
+        534
+      ],
+      [
+        "agent-service/agent_service/openai_client.py",
+        334
+      ],
+      [
+        "agent-service/agent_service/harness_store.py",
+        273
+      ],
+      [
+        "agent-service/agent_service/dictation_cleanup.py",
+        217
+      ]
+    ],
+    "largest_after": [
+      [
+        "agent-service/agent_service/conversation.py",
+        1320
+      ],
+      [
+        "agent-service/agent_service/harness.py",
+        892
+      ],
+      [
+        "agent-service/agent_service/main.py",
+        681
+      ],
+      [
+        "agent-service/agent_service/schemas.py",
+        664
+      ],
+      [
+        "agent-service/agent_service/capture/__init__.py",
+        534
+      ],
+      [
+        "agent-service/agent_service/openai_client.py",
+        334
+      ],
+      [
+        "agent-service/agent_service/harness_store.py",
+        273
+      ],
+      [
+        "agent-service/agent_service/dictation_cleanup.py",
+        217
+      ]
+    ]
+  }
+}

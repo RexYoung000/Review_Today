@@ -3,8 +3,11 @@ import UserNotifications
 
 enum ReminderNotifications {
     static let category = "RT_DAILY_REVIEW"
+    private static var requested = false
 
     static func request() {
+        guard !requested, AppRuntime.current.mode == .normal else { return }
+        requested = true
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
         let start = UNNotificationAction(identifier: "start", title: String(localized: "现在开始"))
         let later15 = UNNotificationAction(identifier: "later15", title: String(localized: "15 分钟后"))

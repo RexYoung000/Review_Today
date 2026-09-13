@@ -111,13 +111,21 @@ enum AgentComposerStore {
 
     static func prepare(_ context: ModelContext) throws -> AppSettings {
         let row = try settings(context)
-        if row.agentDraftID == nil {
-            row.agentDraftID = UUID()
-            row.agentDraftMessageID = UUID()
-            row.agentDraftMode = "auto"
-            row.agentDraftThinking = row.lastThinkingStrength
+        guard row.agentDraftID == nil else { return row }
+        let previous = (row.agentDraftMessageID, row.agentDraftMode, row.agentDraftThinking)
+        row.agentDraftID = UUID()
+        row.agentDraftMessageID = UUID()
+        row.agentDraftMode = "auto"
+        row.agentDraftThinking = row.lastThinkingStrength
+        do { try context.save() }
+        catch {
+            // An unsuccessful initialization must remain eligible for retry.
+            row.agentDraftID = nil
+            row.agentDraftMessageID = previous.0
+            row.agentDraftMode = previous.1
+            row.agentDraftThinking = previous.2
+            throw error
         }
-        try context.save()
         return row
     }
 

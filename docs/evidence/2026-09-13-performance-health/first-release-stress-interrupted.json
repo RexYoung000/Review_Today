@@ -1,0 +1,442 @@
+{
+  "boundary" : "selection handler to AppKit draw; not physical scanout",
+  "dataset" : "stress",
+  "foreground_required" : true,
+  "rows" : [
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1191.1447916645557,
+      "page_draw_ms" : 1190.9035834250972,
+      "time" : 1789281351.783293
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 410.29004170559347,
+      "page_draw_ms" : 410.21666664164513,
+      "time" : 1789281352.4113321
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 977.90387494023889,
+      "page_draw_ms" : 977.81529161147773,
+      "time" : 1789281353.6060839
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 365.2155416784808,
+      "page_draw_ms" : 365.13037502299994,
+      "time" : 1789281354.187063
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1031.2464584130794,
+      "page_draw_ms" : 1031.1691249953583,
+      "time" : 1789281355.423383
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 375.25245838332921,
+      "page_draw_ms" : 375.17154170200229,
+      "time" : 1789281356.01404
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1106.0233333846554,
+      "page_draw_ms" : 1105.9522499563172,
+      "time" : 1789281357.3333092
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 368.38862509466708,
+      "page_draw_ms" : 368.27862507198006,
+      "time" : 1789281357.9063401
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1093.4127499349415,
+      "page_draw_ms" : 1093.2837083237246,
+      "time" : 1789281359.206558
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 383.20379168726504,
+      "page_draw_ms" : 383.09066672809422,
+      "time" : 1789281359.804106
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1046.6523750219494,
+      "page_draw_ms" : 1046.4052916504443,
+      "time" : 1789281361.0635819
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 342.55437494721264,
+      "page_draw_ms" : 342.43320825044066,
+      "time" : 1789281361.6122561
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1074.7714582830667,
+      "page_draw_ms" : 1074.6954582864419,
+      "time" : 1789281362.8994231
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 431.83408328332007,
+      "page_draw_ms" : 431.61895824596286,
+      "time" : 1789281363.5383539
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1087.9100833553821,
+      "page_draw_ms" : 1087.7749583451077,
+      "time" : 1789281364.8646379
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 395.74529160745442,
+      "page_draw_ms" : 395.65800002310425,
+      "time" : 1789281365.468415
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1034.2481667175889,
+      "page_draw_ms" : 1034.1904166853055,
+      "time" : 1789281366.715976
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 372.4432917078957,
+      "page_draw_ms" : 372.2546249628067,
+      "time" : 1789281367.303632
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1026.5140832634643,
+      "page_draw_ms" : 1026.4415832934901,
+      "time" : 1789281368.5398901
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 442.16066668741405,
+      "page_draw_ms" : 442.07270839251578,
+      "time" : 1789281369.198091
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1083.5411250591278,
+      "page_draw_ms" : 1083.4534583846107,
+      "time" : 1789281370.4938722
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 373.82974999491125,
+      "page_draw_ms" : 373.75883327331394,
+      "time" : 1789281371.0782552
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1016.6429165983573,
+      "page_draw_ms" : 1016.5442082798108,
+      "time" : 1789281372.310199
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 344.75925005972385,
+      "page_draw_ms" : 344.69154162798077,
+      "time" : 1789281372.862545
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1090.8411249984056,
+      "page_draw_ms" : 1090.7134583685547,
+      "time" : 1789281374.163358
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 388.19008332211524,
+      "page_draw_ms" : 388.09254160150886,
+      "time" : 1789281374.7660708
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1087.8619167488068,
+      "page_draw_ms" : 1087.4710833886638,
+      "time" : 1789281376.0703599
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 395.67333343438804,
+      "page_draw_ms" : 395.59566671960056,
+      "time" : 1789281376.679749
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1124.6942083816975,
+      "page_draw_ms" : 1124.569374951534,
+      "time" : 1789281378.014343
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 582.745416671969,
+      "page_draw_ms" : 582.48770830687135,
+      "time" : 1789281378.811413
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1269.8769166599959,
+      "page_draw_ms" : 1269.7195833316073,
+      "time" : 1789281380.299443
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 484.93325000163168,
+      "page_draw_ms" : 484.82695838902146,
+      "time" : 1789281381.0024951
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1303.5227082436904,
+      "page_draw_ms" : 1303.4303749445826,
+      "time" : 1789281382.5339789
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 477.29249997064471,
+      "page_draw_ms" : 477.15020831674337,
+      "time" : 1789281383.225518
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1365.3486666735262,
+      "page_draw_ms" : 1365.2170416899025,
+      "time" : 1789281384.8064599
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 498.80879162810743,
+      "page_draw_ms" : 498.71012498624623,
+      "time" : 1789281385.522048
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1322.7560833329335,
+      "page_draw_ms" : 1322.6371250348166,
+      "time" : 1789281387.091414
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 555.32954167574644,
+      "page_draw_ms" : 554.9385417252779,
+      "time" : 1789281387.8563251
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1312.1231249533594,
+      "page_draw_ms" : 1312.0284166652709,
+      "time" : 1789281389.385942
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 456.66662498842925,
+      "page_draw_ms" : 456.5579165937379,
+      "time" : 1789281390.0550089
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1200.8348749950528,
+      "page_draw_ms" : 1200.7315832888708,
+      "time" : 1789281391.479816
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 535.537458374165,
+      "page_draw_ms" : 535.44633334968239,
+      "time" : 1789281392.231293
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1384.9689166527241,
+      "page_draw_ms" : 1384.800500003621,
+      "time" : 1789281393.8284831
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 471.91770828794688,
+      "page_draw_ms" : 471.76224994473159,
+      "time" : 1789281394.5111661
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1376.9554584287107,
+      "page_draw_ms" : 1376.5975000569597,
+      "time" : 1789281396.101851
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 482.76083334349096,
+      "page_draw_ms" : 482.50904167070985,
+      "time" : 1789281396.8195691
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1398.2662500347942,
+      "page_draw_ms" : 1398.1469583231956,
+      "time" : 1789281398.4263558
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 552.39816661924124,
+      "page_draw_ms" : 552.26549995131791,
+      "time" : 1789281399.1881819
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 1376.8539583543316,
+      "page_draw_ms" : 1376.6922500217333,
+      "time" : 1789281400.825587
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 609.40970829688013,
+      "page_draw_ms" : 608.84416662156582,
+      "time" : 1789281401.654408
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1366.5357499849051,
+      "page_draw_ms" : 1366.4050833322108,
+      "time" : 1789281403.2385468
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 491.21016659773886,
+      "page_draw_ms" : 490.63699995167553,
+      "time" : 1789281403.948854
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1350.1179582672194,
+      "page_draw_ms" : 1350.0090416055173,
+      "time" : 1789281405.5196161
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 470.58462502900511,
+      "page_draw_ms" : 470.50987498369068,
+      "time" : 1789281406.198858
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1296.9577499898151,
+      "page_draw_ms" : 1296.870999969542,
+      "time" : 1789281407.7151351
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 463.01145839970559,
+      "page_draw_ms" : 462.93612499721348,
+      "time" : 1789281408.3933339
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1246.5398332569748,
+      "page_draw_ms" : 1246.416624984704,
+      "time" : 1789281409.854337
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 464.84220831189305,
+      "page_draw_ms" : 464.75370833650231,
+      "time" : 1789281410.530905
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1407.7301250072196,
+      "page_draw_ms" : 1407.6218332629651,
+      "time" : 1789281412.15539
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 459.42970830947161,
+      "page_draw_ms" : 459.26716667599976,
+      "time" : 1789281412.8285799
+    },
+    {
+      "app_active" : false,
+      "destination" : "today",
+      "feedback_draw_ms" : 1336.7690000450239,
+      "page_draw_ms" : 1336.6181666497141,
+      "time" : 1789281414.3684731
+    },
+    {
+      "app_active" : false,
+      "destination" : "learning",
+      "feedback_draw_ms" : 396.43695834092796,
+      "page_draw_ms" : 396.31858339998871,
+      "time" : 1789281414.983516
+    }
+  ],
+  "warmup_rows" : 2
+}

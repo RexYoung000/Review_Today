@@ -1,0 +1,82 @@
+/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-shared-contracts.7go1b1_u
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+620 |
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+622 |     private var synth = NSSpeechSynthesizer()
+    |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+623 |     private var onFinish: (() -> Void)?
+624 |
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+639 |     }
+640 |
+641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+    |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+642 |         let done = onFinish
+643 |         onFinish = nil
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+619 | }
+620 |
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+    |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+622 |     private var synth = NSSpeechSynthesizer()
+623 |     private var onFinish: (() -> Void)?
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:135:34: error: cannot assign to value: 'value' is a 'let' constant
+124 |
+125 |     private static func stripRepeatedTheme(_ text: String, theme: String) -> String {
+126 |         let value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |         `- note: change 'let' to 'var' to make it mutable
+127 |         let aliases = [theme, "检索增强生成 (RAG)", "检索增强生成", "RAG"]
+128 |             .filter { !$0.isEmpty }
+    :
+133 |                 .trimmingCharacters(in: CharacterSet(charactersIn: " ·・-—：:（）()"))
+134 |             if rest.hasPrefix("的") { rest = String(rest.dropFirst()).trimmingCharacters(in: .whitespaces) }
+135 |             if rest.count >= 2 { value = rest }
+    |                                  `- error: cannot assign to value: 'value' is a 'let' constant
+136 |         }
+137 |         return value
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:172:19: error: cannot use mutating member on immutable value: 'value' is a 'let' constant
+168 |
+169 |     private static func finishPhrase(_ text: String) -> String {
+170 |         let value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |         `- note: change 'let' to 'var' to make it mutable
+171 |         while let last = value.last, String(last).unicodeScalars.allSatisfy({ incompleteEnds.contains($0) }), value.count > 2 {
+172 |             value.removeLast()
+    |                   `- error: cannot use mutating member on immutable value: 'value' is a 'let' constant
+173 |             value = value.trimmingCharacters(in: .whitespaces)
+174 |         }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:173:13: error: cannot assign to value: 'value' is a 'let' constant
+168 |
+169 |     private static func finishPhrase(_ text: String) -> String {
+170 |         let value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |         `- note: change 'let' to 'var' to make it mutable
+171 |         while let last = value.last, String(last).unicodeScalars.allSatisfy({ incompleteEnds.contains($0) }), value.count > 2 {
+172 |             value.removeLast()
+173 |             value = value.trimmingCharacters(in: .whitespaces)
+    |             `- error: cannot assign to value: 'value' is a 'let' constant
+174 |         }
+175 |         return value
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:191:13: error: cannot assign to value: 'value' is a 'let' constant
+187 |
+188 |     private static func stripLeadingAcronym(_ text: String, theme: String) -> String {
+189 |         let value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |         `- note: change 'let' to 'var' to make it mutable
+190 |         for token in [theme, "RAG", "检索增强生成"].filter({ !$0.isEmpty }) where value.hasPrefix(token) {
+191 |             value = String(value.dropFirst(token.count))
+    |             `- error: cannot assign to value: 'value' is a 'let' constant
+192 |                 .trimmingCharacters(in: CharacterSet(charactersIn: " 的：:，,"))
+193 |         }
+Traceback (most recent call last):
+  File "/tmp/review-today-run-shared-contracts.py", line 5, in <module>
+    subprocess.run(['xcrun','swiftc',*flags,'-enable-testing','-emit-library','-emit-module','-module-name','ReviewTodayContractSupport','-emit-module-path',str(build/'ReviewTodayContractSupport.swiftmodule'),*sources,'-o',str(build/'libReviewTodayContractSupport.dylib')],check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['xcrun', 'swiftc', '-parse-as-library', '-D', 'DEBUG', '-swift-version', '5', '-default-isolation', 'MainActor', '-enable-testing', '-emit-library', '-emit-module', '-module-name', 'ReviewTodayContractSupport', '-emit-module-path', '/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-shared-contracts.7go1b1_u/ReviewTodayContractSupport.swiftmodule', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentAPI.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentComposerStore.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentServiceMonitor.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AnswerDocument.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AnswerReadabilitySamples.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AppRuntime.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AppSidebar.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ArchivedConversations.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/BrandMark.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/BrandMaterialTrial.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/BrandTypography.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/CaptureProcessor.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/CoachMark.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ComposerKnowledgePicker.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ContentView.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ContextCapacityIndicator.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ConversationCheckpoint.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ConversationModels.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ConversationProcessor.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ConversationSync.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ConversationWorkSnapshot.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/DeckRenderProbe.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/DepthCarousel.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/DictationController.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/Fsrs.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/GlassPreviewStyle.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/HarnessProcessor.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/InteractionChrome.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeCardReader.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeDeckInput.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeDeckNavigation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeIngestion.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLibrary.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLocator.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeManagement.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningAnswerText.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningComposerInput.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningDraftStore.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningMemory.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningSessionActions.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningSessionProgress.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningTaskCard.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningTextInput.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningWorkspace.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/M1DebugFixture.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MascotAnimationPOC.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MascotMotion.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MascotMotionPreview.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MascotSpeechDemoController.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MessageDeliveryPresentation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/Models.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MrBPresentation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/NavigationPerformance.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReminderNotifications.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewCoordinator.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewMaintenance.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/RunFeedbackViews.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/RunwayChrome.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SessionActivityStatus.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SessionDeletion.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SessionListSelection.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SessionOrganization.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SessionTagEditor.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SidebarNavigation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SidebarWindowControls.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ThemeToggle.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayActivityHeatmap.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayActivitySnapshot.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayActivitySource.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayView.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/UserLanguage.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/VoiceRecorder.swift', '-o', '/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-shared-contracts.7go1b1_u/libReviewTodayContractSupport.dylib']' returned non-zero exit status 1.

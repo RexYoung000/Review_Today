@@ -31,6 +31,10 @@ struct LearningTextInput: NSViewRepresentable {
         scroll.autohidesScrollers = true
         scroll.hasHorizontalScroller = false
         let view = LearningEditor(frame: .zero)
+        view.font = .systemFont(ofSize: 14)
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.lineSpacing = 4
+        view.defaultParagraphStyle = paragraph
         view.isRichText = false
         view.isAutomaticQuoteSubstitutionEnabled = false
         view.isAutomaticDashSubstitutionEnabled = false
@@ -59,27 +63,36 @@ struct LearningTextInput: NSViewRepresentable {
         view.onSubmit = onSubmit
         view.setEditingEnabled(editable)
         view.onInsertionApplied = onInsertionApplied
-        view.onFocus = { value in DispatchQueue.main.async { coordinator.parent.focused = value } }
-        view.placeholder = placeholder
-        view.font = .systemFont(ofSize: 14)
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.lineSpacing = 4
-        view.defaultParagraphStyle = paragraph
-        view.typingAttributes = [.font: NSFont.systemFont(ofSize: 14), .paragraphStyle: paragraph, .foregroundColor: ink]
-        view.textColor = ink
-        view.insertionPointColor = ink
+        view.onFocus = { [weak coordinator, weak view] value in
+            guard let coordinator else { return }
+            let owner = coordinator.sessionID
+            DispatchQueue.main.async { [weak coordinator, weak view] in
+                guard let coordinator, let view, coordinator.sessionID == owner,
+                      !value || (view.window?.isKeyWindow == true && view.window?.firstResponder === view),
+                      coordinator.parent.focused != value else { return }
+                coordinator.parent.focused = value
+            }
+        }
+        if view.placeholder != placeholder { view.placeholder = placeholder; view.needsDisplay = true }
+        if coordinator.ink != ink {
+            coordinator.ink = ink
+            view.typingAttributes = [.font: NSFont.systemFont(ofSize: 14), .paragraphStyle: view.defaultParagraphStyle!, .foregroundColor: ink]
+            view.textColor = ink
+            view.insertionPointColor = ink
+        }
         if coordinator.sessionID != sessionID {
             coordinator.sessionID = sessionID
             view.releaseFocus()
             view.unmarkText()
             view.undoManager?.removeAllActions()
             view.string = text
+            coordinator.invalidateLayout()
             view.resetPrefill()
         } else if view.string != text && !view.hasMarkedText() {
             view.string = text
+            coordinator.invalidateLayout()
             view.resetPrefill()
         }
-        view.needsDisplay = true
         coordinator.measure()
         if let insertion, coordinator.lastInsertion != insertion.id {
             coordinator.lastInsertion = insertion.id
@@ -110,20 +123,34 @@ struct LearningTextInput: NSViewRepresentable {
         var sessionID: UUID?
         var focusRequest: Int
         var lastInsertion: UUID?
+        var ink: NSColor?
+        private var measuredWidth: CGFloat?
+        private var layoutInvalid = true
+        private var measurementRevision = 0
+        private(set) var layoutMeasurementCount = 0
+        func invalidateLayout() { layoutInvalid = true }
         init(_ parent: LearningTextInput) { self.parent = parent; focusRequest = parent.focusRequest }
         func textDidChange(_ notification: Notification) {
             guard let view else { return }
             parent.text = view.string
             view.needsDisplay = true
+            invalidateLayout()
             measure()
         }
         func measure() {
             guard let view, let container = view.textContainer, let layout = view.layoutManager else { return }
+            let width = container.containerSize.width
+            guard width > 0, layoutInvalid || measuredWidth != width else { return }
+            measuredWidth = width; layoutInvalid = false
+            measurementRevision += 1
+            let revision = measurementRevision, owner = sessionID
+            layoutMeasurementCount += 1
             layout.ensureLayout(for: container)
             let measured = min(160, max(64, ceil(layout.usedRect(for: container).height + 16)))
             guard abs(parent.height - measured) > 0.5 else { return }
             DispatchQueue.main.async { [weak self] in
-                guard let self, self.parent.height != measured else { return }
+                guard let self, self.measurementRevision == revision, self.sessionID == owner,
+                      abs(self.parent.height - measured) > 0.5 else { return }
                 self.parent.height = measured
             }
         }
@@ -144,6 +171,7 @@ final class LearningEditor: NSTextView {
     private var focusAfterUnlock: Int?
     private(set) var interactionRevision = 0
     private var intentionalFocus = false
+    private var publishedFocus: Bool?
     private var eventMonitor: Any?
     private var focusObservers: [NSObjectProtocol] = []
 
@@ -196,6 +224,7 @@ final class LearningEditor: NSTextView {
     }
 
     func setEditingEnabled(_ enabled: Bool) {
+        guard isEditable != enabled else { return }
         isEditable = enabled
         if !enabled { releaseFocus() }
         else if let revision = focusAfterUnlock {
@@ -205,7 +234,10 @@ final class LearningEditor: NSTextView {
     }
 
     private func publishFocus() {
-        onFocus?(isEditable && window?.isKeyWindow == true && window?.firstResponder === self)
+        let value = isEditable && window?.isKeyWindow == true && window?.firstResponder === self
+        guard publishedFocus != value else { return }
+        publishedFocus = value
+        onFocus?(value)
         needsDisplay = true
     }
 
@@ -303,7 +335,7 @@ final class LearningEditor: NSTextView {
     }
     override func resignFirstResponder() -> Bool {
         let result = super.resignFirstResponder()
-        if result { onFocus?(false) }
+        if result { publishedFocus = false; onFocus?(false) }
         return result
     }
     override func layout() { super.layout(); onLayout?() }

@@ -1,0 +1,450 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project Review_Today.xcodeproj -scheme Review_Today -configuration Release -derivedDataPath /tmp/review-today-health-build CODE_SIGNING_ALLOWED=NO build
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+2026-09-13 15:20:52.615 xcodebuild[31942:20997794] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00008142-000925D20109401C, name:My Mac }
+{ platform:macOS, arch:x86_64, id:00008142-000925D20109401C, name:My Mac }
+{ platform:macOS, name:Any Mac }
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'Review_Today' in project 'Review_Today' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 4ad4e7ec84b281877ac742c7e76b95fa
+Build description path: /tmp/review-today-health-build/Build/Intermediates.noindex/XCBuildData/4ad4e7ec84b281877ac742c7e76b95fa.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk /tmp/review-today-health-build/SDKStatCaches.noindex/macosx26.5-25F70-e082c4a02f00227109f4ed75e425c832.sdkstatcache
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -o /tmp/review-today-health-build/SDKStatCaches.noindex/macosx26.5-25F70-e082c4a02f00227109f4ed75e425c832.sdkstatcache
+
+CreateBuildDirectory /tmp/review-today-health-build/Build/Products/Release
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today.xcodeproj
+    builtin-create-build-directory /tmp/review-today-health-build/Build/Products/Release
+
+CreateBuildDirectory /tmp/review-today-health-build/Build/Intermediates.noindex/EagerLinkingTBDs/Release
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today.xcodeproj
+    builtin-create-build-directory /tmp/review-today-health-build/Build/Intermediates.noindex/EagerLinkingTBDs/Release
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today-b70fdcf0cabbad8a9773b71bbe1a4aa3-VFS/all-product-headers.yaml
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today.xcodeproj
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today-b70fdcf0cabbad8a9773b71bbe1a4aa3-VFS/all-product-headers.yaml
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-project-headers.hmap (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-project-headers.hmap
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-all-target-headers.hmap (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-all-target-headers.hmap
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-all-non-framework-target-headers.hmap (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-own-target-headers.hmap (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-own-target-headers.hmap
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today.DependencyStaticMetadataFileList (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-generated-files.hmap (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-generated-files.hmap
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today.DependencyMetadataFileList (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today.DependencyMetadataFileList
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today.hmap (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today.hmap
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today_const_extract_protocols.json (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today_const_extract_protocols.json
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.SwiftFileList (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.SwiftFileList
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.SwiftConstValuesFileList (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.LinkFileList (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.LinkFileList
+
+WriteAuxiliaryFile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-OutputFileMap.json (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    write-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-OutputFileMap.json
+
+MkDir /tmp/review-today-health-build/Build/Products/Release/Review_Today.app (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /bin/mkdir -p /tmp/review-today-health-build/Build/Products/Release/Review_Today.app
+
+MkDir /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /bin/mkdir -p /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents
+
+MkDir /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/MacOS (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /bin/mkdir -p /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/MacOS
+
+MkDir /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /bin/mkdir -p /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources
+
+CpResource /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources/MrBMotion.html /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MrBMotion.html (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MrBMotion.html /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources
+
+CpResource /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources/MascotMotion.html /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MascotMotion.html (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MascotMotion.html /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources
+
+CpResource /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources/KNMaiyuan-Regular.ttf /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Fonts/KNMaiyuan-Regular.ttf (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Fonts/KNMaiyuan-Regular.ttf /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources
+
+CpResource /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources/KNMaiyuan-OFL.txt /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Fonts/KNMaiyuan-OFL.txt (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Fonts/KNMaiyuan-OFL.txt /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources
+
+GenerateAssetSymbols /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Assets.xcassets (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Assets.xcassets --compile /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources --output-format human-readable-text --notices --warnings --export-dependency-info /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_dependencies --output-partial-info-plist /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_generated_info.plist --app-icon AppIcon --accent-color AccentColor --enable-on-demand-resources NO --development-region zh-Hans --target-device mac --minimum-deployment-target 26.5 --platform macosx --bundle-identifier Rex.Review-Today --generate-swift-asset-symbols /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/GeneratedAssetSymbols.swift --generate-objc-asset-symbols /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/GeneratedAssetSymbols.h --generate-asset-symbol-index /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/* com.apple.actool.compilation-results */
+/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/GeneratedAssetSymbols.h
+/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/GeneratedAssetSymbols.swift
+
+
+MkDir /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_output/thinned (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /bin/mkdir -p /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_output/thinned
+
+MkDir /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_output/unthinned (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /bin/mkdir -p /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_output/unthinned
+
+CompileAssetCatalogVariant thinned /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Assets.xcassets (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Assets.xcassets --compile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_dependencies_thinned --output-partial-info-plist /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_generated_info.plist_thinned --app-icon AppIcon --accent-color AccentColor --enable-on-demand-resources NO --development-region zh-Hans --target-device mac --minimum-deployment-target 26.5 --platform macosx
+/* com.apple.actool.compilation-results */
+/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_generated_info.plist_thinned
+/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_output/thinned/AppIcon.icns
+/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_output/thinned/Assets.car
+
+
+SwiftDriver Review_Today normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Review_Today -O -whole-module-optimization @/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.SwiftFileList -default-isolation\=MainActor -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/review-today-health-build/ModuleCache.noindex -Xfrontend -serialize-debugging-options -swift-version 5 -I /tmp/review-today-health-build/Build/Products/Release -F /tmp/review-today-health-build/Build/Products/Release -emit-localized-strings -emit-localized-strings-path /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64 -c -num-threads 10 -Xcc -ivfsstatcache -Xcc /tmp/review-today-health-build/SDKStatCaches.noindex/macosx26.5-25F70-e082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/review-today-health-build/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/review-today-health-build/ModuleCache.noindex -sdk-module-cache-path /tmp/review-today-health-build/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/review-today-health-build/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-generated-files.hmap -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-own-target-headers.hmap -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-project-headers.hmap -Xcc -I/tmp/review-today-health-build/Build/Products/Release/include -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources-normal/arm64 -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/arm64 -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources -emit-objc-header -emit-objc-header-path /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-Swift.h -working-directory /Users/rexyoung/Desktop/vibe\ coding/Review_Today -no-emit-module-separately-wmo
+
+SwiftDriver\ Compilation Review_Today normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Review_Today -O -whole-module-optimization @/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.SwiftFileList -default-isolation\=MainActor -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/review-today-health-build/ModuleCache.noindex -Xfrontend -serialize-debugging-options -swift-version 5 -I /tmp/review-today-health-build/Build/Products/Release -F /tmp/review-today-health-build/Build/Products/Release -emit-localized-strings -emit-localized-strings-path /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64 -c -num-threads 10 -Xcc -ivfsstatcache -Xcc /tmp/review-today-health-build/SDKStatCaches.noindex/macosx26.5-25F70-e082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/review-today-health-build/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/review-today-health-build/ModuleCache.noindex -sdk-module-cache-path /tmp/review-today-health-build/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/review-today-health-build/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-generated-files.hmap -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-own-target-headers.hmap -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-project-headers.hmap -Xcc -I/tmp/review-today-health-build/Build/Products/Release/include -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources-normal/arm64 -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/arm64 -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources -emit-objc-header -emit-objc-header-path /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-Swift.h -working-directory /Users/rexyoung/Desktop/vibe\ coding/Review_Today -no-emit-module-separately-wmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_SwiftConcurrencyShims-7FMCKYA7UCU1HDLA0RYEIC55J.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_stddef-FDB9473J6B86111J5A8OEIMH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_stdarg-COTYR24F6MNE1FNFG34VXFAAP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/ptrcheck-D79M6YZP5176JDV2A8LXYZUAG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/DeveloperToolsSupport-45DKK0XKBX54NBQMF1JDTNQ3P.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_float-9J74FJZHGHM4SMHRM4762HU38.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_stdbool-53XIPVIY83NF7NI6V8N7LIDH3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_AvailabilityInternal-7BW1CAPGDBKPYKCXTOXWE4XQF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/SwiftShims-10MJ51Y1E4TWQE816QB7YEVZW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/ptrauth-CSJUAB0UAY6MAL713VORCZU1S.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_DarwinFoundation1-4RLGFZ75F4MXZY1MU0X27AJJ7.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_limits-5GK3HBDMVC3V29HXUME569C3E.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_DarwinFoundation2-4LCB7KDEX86CLRGG90PBOFZIG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_stdint-E4TUKALRXUUK7U80EJHZTMEI4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/sys_types-U52UEOHACEYVJHSMTZQQBQJV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_tgmath-1EULGIW0XKK1LDFWCNC7J6XZ3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_DarwinFoundation3-DSNQML57DL4HGO5K4302U1T8C.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_intrinsics-31HSMZ0T18ZRSR6E4CDZX5LEZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_stdatomic-EV24DGV37J0QYZ7I5GQ2DGCLH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/OpenGL-6CBR8URLUI2DSZILHVV4Z2KGX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/libDER-LA6YAOMYO2X6B0SVV1GU20TL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_inttypes-4BU9ZK8DI09FB7LLTTXW6FGQ5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Darwin-72HUQEMFN18IPK2Y64UZM248M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/simd-8SR970S8DJXXWAYJ8ZVN9464T.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/MachO-6PL6H7CY1Y7XAK090QYWD4NL0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/libkern-1RUJVUYRSV0591KM752NM4QK1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/launch-7GKN2P2AVEOIIMUZXQLCOXRVC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CUPS-ALPGTWC8N8OREIGILEA2UOMFN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Spatial-2D5G9GW218C7BDGHDGW9PG6Q2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/ObjectiveC-BA3DCRY8X2W9DRAFXZTH76AAM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/os_object-8WRADTQK39ZX5OQ8T0LEHNWSL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/os_workgroup-5AH1ZDQFEBHKLIU681IVMTRQW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Dispatch-8CC2J2PCUW4JV2JNW63JCLD2U.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/XPC-5824SP172NPO71FKH6I6VARV1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/dnssd-52NBUOG6NTXNF6SWMDH82W1AU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreFoundation-3B1CGGWKNIAK5OSRGG4QR6XIN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/os-EZTINJG72ZOOK647OIYR713F8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreAudioTypes-CS2O3HXKNX4RCZT48ZOWB9FVF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CFNetwork-2NGLBDI94JCOGKI93QHP1D83O.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/ColorSync-5FY3PH29VN0JR40R21TCPVRWA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/IOKit-DGMM5GIIEE22OYKSCKYLNO110.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Security-B08A132YLRIQV1FQ3E35FS79O.pcm
+
+LinkAssetCatalog /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Assets.xcassets (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-linkAssetCatalog --thinned /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_output/thinned --thinned-dependencies /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_dependencies_thinned --thinned-info-plist-content /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_generated_info.plist_thinned --unthinned /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_output/unthinned --unthinned-dependencies /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_generated_info.plist_unthinned --output /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources --plist-output /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_generated_info.plist
+note: Emplaced /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources/Assets.car (in target 'Review_Today' from project 'Review_Today')
+note: Emplaced /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources/AppIcon.icns (in target 'Review_Today' from project 'Review_Today')
+
+ProcessInfoPlistFile /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Info.plist /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Info.plist (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-infoPlistUtility /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Info.plist -producttype com.apple.product-type.application -genpkginfo /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/assetcatalog_generated_info.plist -o /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Info.plist
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/DiskArbitration-8CUN9ZA1GXCS6GSNTPZ71IL9A.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreGraphics-EC11O6KS1XIWMDE6KF9J2SLFT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreServices-8G27KTM50P4WLKFMNHO180W7A.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreText-AR6CX9EP2N3D1DVY2PEGQPE2L.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/ImageIO-5L7RUM073ESU1YAC62B7UIYZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Foundation-AKENW6FDD8BGO8KPRI1FTE5Q7.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreTransferable-48VYHD3JDN5WDH4VVVXBUCJEM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/NaturalLanguage-2JRKNAH54454BAEKFT2B3EENU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Network-8PUPQX7QT47CS2IFWTM0AE7V2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/ModelIO-ECVGSFT29M6BEPISF21HARQUI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreData-E640R4R6VALX0KJVLGU0TP3W0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Symbols-4JQUQNGL1D5BJIL8FZ9BLSQYB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/UserNotifications-507UAKG7POB1BMA5CU8W0B2V1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/OSLog-97BONTRCY5NGPJ0ZYMY0GE8GH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/IOSurface-2ADQAJKM02O9Y8Y8X3SPWGFPW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Accessibility-C0JSAJM1A6JGJO1J9ISEKK3EP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreAudio-329Q6T38M4G0AQFDK2QJYKB16.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreMIDI-DSE7QPQL7VPVQBAYQKKV2TH95.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/JavaScriptCore-380TI8J3WLW3DTR2FMZELCV0J.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/UniformTypeIdentifiers-1ILTWAPLLQDC5YZNLW30VJM1F.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Metal-E31H50DFSJ5666ABILVSP48L4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/ApplicationServices-6IEYQA8Y854Y52FJ3XLYSEBHD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/DataDetection-DURMK0TGUKI7GVG2N8XRO0VWX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Carbon-87ZH8OMQWB1JG2TLL5TZEFXVH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreVideo-777RKQPAF818KVRVETNCIHDQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/QuartzCore-5XWX4CMTE1VT2RR2A7ROKUBWV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreImage-34IEYDUGNP2D0W0MNDDIDY339.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/CoreMedia-3XMBYAJZUR8WS86ESIDFDUYBL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/AudioToolbox-BPYW8Z017C8S4ZL7A3ERNMF00.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/SwiftUICore-15NL9RHSDEDP9992NUG982AU4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/AppKit-1CDN5A3ACS1TNPPPEXWSORO5G.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/AVFAudio-49YC1E24CR81JNYO53CTSMA2S.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/MediaToolbox-7FVIKD7TPAH8UTV4KETNR15E0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/AVFoundation-BKL2KW15H3ZWP0OLHOF5DTBU1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/Cocoa-770ATSLOOWPRT1SWKPTGRHRSA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/WebKit-5OCLXGHF39P1OJX5Z7PHR42DR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/SwiftUI-6W0G0XDUV928DXE6AO60A9BVS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/GLKit-A8SNT4T35XC9ENLQOY2OK0D1E.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/review-today-health-build/ModuleCache.noindex/SpriteKit-A85ZW6PFZLVPL017EN79ZTDXC.pcm
+
+SwiftCompile normal arm64 Compiling\ ActivityDayGrid.swift,\ AgentAPI.swift,\ AgentComposerStore.swift,\ AgentServiceMonitor.swift,\ AnswerDocument.swift,\ AnswerReadabilitySamples.swift,\ AppRuntime.swift,\ AppSidebar.swift,\ ArchivedConversations.swift,\ BrandMark.swift,\ BrandMaterialTrial.swift,\ BrandTypography.swift,\ CaptureProcessor.swift,\ CoachMark.swift,\ ComposerControlsLayout.swift,\ ComposerKnowledgePicker.swift,\ ContentView.swift,\ ContextCapacityIndicator.swift,\ ConversationCheckpoint.swift,\ ConversationModels.swift,\ ConversationProcessor.swift,\ ConversationSync.swift,\ ConversationWorkSnapshot.swift,\ DeckRenderProbe.swift,\ DepthCarousel.swift,\ DictationController.swift,\ Fsrs.swift,\ GlassPreviewStyle.swift,\ HarnessProcessor.swift,\ InteractionChrome.swift,\ KnowledgeCardReader.swift,\ KnowledgeDeckInput.swift,\ KnowledgeDeckNavigation.swift,\ KnowledgeIngestion.swift,\ KnowledgeLexicon.swift,\ KnowledgeLibrary.swift,\ KnowledgeLocator.swift,\ KnowledgeManagement.swift,\ LearningAnswerText.swift,\ LearningComposerInput.swift,\ LearningDraftStore.swift,\ LearningMemory.swift,\ LearningSessionActions.swift,\ LearningSessionProgress.swift,\ LearningTaskCard.swift,\ LearningTextInput.swift,\ LearningWorkspace.swift,\ LibraryInboxSettings.swift,\ M1DebugFixture.swift,\ MascotAnimationPOC.swift,\ MascotMotion.swift,\ MascotMotionPreview.swift,\ MascotSpeechDemoController.swift,\ MessageDeliveryPresentation.swift,\ Models.swift,\ MrBPresentation.swift,\ NavigationPerformance.swift,\ ReminderNotifications.swift,\ Review_TodayApp.swift,\ ReviewCoordinator.swift,\ ReviewMaintenance.swift,\ ReviewView.swift,\ RunFeedbackViews.swift,\ RunwayChrome.swift,\ SessionActivityStatus.swift,\ SessionDeletion.swift,\ SessionListSelection.swift,\ SessionOrganization.swift,\ SessionTagEditor.swift,\ SidebarNavigation.swift,\ SidebarWindowControls.swift,\ ThemeToggle.swift,\ TodayActivityHeatmap.swift,\ TodayActivitySnapshot.swift,\ TodayActivitySource.swift,\ TodayView.swift,\ UserLanguage.swift,\ VoiceRecorder.swift,\ GeneratedAssetSymbols.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ActivityDayGrid.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/AgentAPI.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/AgentComposerStore.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/AgentServiceMonitor.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/AnswerDocument.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/AnswerReadabilitySamples.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/AppRuntime.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/AppSidebar.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ArchivedConversations.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/BrandMark.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/BrandMaterialTrial.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/BrandTypography.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/CaptureProcessor.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/CoachMark.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ComposerControlsLayout.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ComposerKnowledgePicker.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ContentView.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ContextCapacityIndicator.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ConversationCheckpoint.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ConversationModels.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ConversationProcessor.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ConversationSync.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ConversationWorkSnapshot.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/DeckRenderProbe.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/DepthCarousel.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/DictationController.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Fsrs.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/GlassPreviewStyle.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/HarnessProcessor.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/InteractionChrome.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeCardReader.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeDeckInput.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeDeckNavigation.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeIngestion.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeLexicon.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeLibrary.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeLocator.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeManagement.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LearningAnswerText.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LearningComposerInput.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LearningDraftStore.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LearningMemory.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LearningSessionActions.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LearningSessionProgress.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LearningTaskCard.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LearningTextInput.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LearningWorkspace.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LibraryInboxSettings.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/M1DebugFixture.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MascotAnimationPOC.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MascotMotion.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MascotMotionPreview.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MascotSpeechDemoController.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MessageDeliveryPresentation.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Models.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MrBPresentation.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/NavigationPerformance.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ReminderNotifications.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Review_TodayApp.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ReviewCoordinator.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ReviewMaintenance.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ReviewView.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/RunFeedbackViews.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/RunwayChrome.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/SessionActivityStatus.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/SessionDeletion.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/SessionListSelection.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/SessionOrganization.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/SessionTagEditor.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/SidebarNavigation.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/SidebarWindowControls.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ThemeToggle.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/TodayActivityHeatmap.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/TodayActivitySnapshot.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/TodayActivitySource.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/TodayView.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/UserLanguage.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/VoiceRecorder.swift /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/GeneratedAssetSymbols.swift /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/_DarwinFoundation3.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/_Concurrency.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/_DarwinFoundation2.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/os.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/UniformTypeIdentifiers.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Network.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Spatial.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Accessibility.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/simd.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/XPC.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/System.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/CoreText.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/SwiftUICore.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/DataDetection.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/QuartzCore.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/AVFoundation.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/ModelIO.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/CoreMedia.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/AudioToolbox.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/SwiftData.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/WebKit.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/CoreVideo.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/CoreGraphics.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/CoreImage.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/_Builtin_float.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/NaturalLanguage.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Symbols.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/SpriteKit.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/_SpriteKit_SwiftUI.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Metal.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/IOKit.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/_WebKit_SwiftUI.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/ObjectiveC.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/CoreFoundation.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/GLKit.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Combine.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/_SwiftData_SwiftUI.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/CoreMIDI.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Observation.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/CoreAudio.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/_DarwinFoundation1.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Synchronization.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/DeveloperToolsSupport.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/AVFAudio.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Swift.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/AppKit.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/OSLog.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Distributed.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/_StringProcessing.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Dispatch.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/SwiftUI.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/CoreTransferable.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Foundation.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/CoreData.swiftmodule/arm64e-apple-macos.swiftmodule /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/26.5/Darwin.swiftmodule/arm64e-apple-macos.swiftmodule /tmp/review-today-health-build/ModuleCache.noindex/AVFAudio-49YC1E24CR81JNYO53CTSMA2S.pcm /tmp/review-today-health-build/ModuleCache.noindex/WebKit-5OCLXGHF39P1OJX5Z7PHR42DR.pcm /tmp/review-today-health-build/ModuleCache.noindex/ObjectiveC-BA3DCRY8X2W9DRAFXZTH76AAM.pcm /tmp/review-today-health-build/ModuleCache.noindex/DeveloperToolsSupport-45DKK0XKBX54NBQMF1JDTNQ3P.pcm /tmp/review-today-health-build/ModuleCache.noindex/Darwin-72HUQEMFN18IPK2Y64UZM248M.pcm /tmp/review-today-health-build/ModuleCache.noindex/CUPS-ALPGTWC8N8OREIGILEA2UOMFN.pcm /tmp/review-today-health-build/ModuleCache.noindex/ptrauth-CSJUAB0UAY6MAL713VORCZU1S.pcm /tmp/review-today-health-build/ModuleCache.noindex/AppKit-1CDN5A3ACS1TNPPPEXWSORO5G.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreServices-8G27KTM50P4WLKFMNHO180W7A.pcm /tmp/review-today-health-build/ModuleCache.noindex/QuartzCore-5XWX4CMTE1VT2RR2A7ROKUBWV.pcm /tmp/review-today-health-build/ModuleCache.noindex/Metal-E31H50DFSJ5666ABILVSP48L4.pcm /tmp/review-today-health-build/ModuleCache.noindex/simd-8SR970S8DJXXWAYJ8ZVN9464T.pcm /tmp/review-today-health-build/ModuleCache.noindex/IOSurface-2ADQAJKM02O9Y8Y8X3SPWGFPW.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreVideo-777RKQPAF818KVRVETNCIHDQ.pcm /tmp/review-today-health-build/ModuleCache.noindex/Carbon-87ZH8OMQWB1JG2TLL5TZEFXVH.pcm /tmp/review-today-health-build/ModuleCache.noindex/MachO-6PL6H7CY1Y7XAK090QYWD4NL0.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreImage-34IEYDUGNP2D0W0MNDDIDY339.pcm /tmp/review-today-health-build/ModuleCache.noindex/launch-7GKN2P2AVEOIIMUZXQLCOXRVC.pcm /tmp/review-today-health-build/ModuleCache.noindex/ModelIO-ECVGSFT29M6BEPISF21HARQUI.pcm /tmp/review-today-health-build/ModuleCache.noindex/os-EZTINJG72ZOOK647OIYR713F8.pcm /tmp/review-today-health-build/ModuleCache.noindex/Accessibility-C0JSAJM1A6JGJO1J9ISEKK3EP.pcm /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_inttypes-4BU9ZK8DI09FB7LLTTXW6FGQ5.pcm /tmp/review-today-health-build/ModuleCache.noindex/AudioToolbox-BPYW8Z017C8S4ZL7A3ERNMF00.pcm /tmp/review-today-health-build/ModuleCache.noindex/XPC-5824SP172NPO71FKH6I6VARV1.pcm /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_stdbool-53XIPVIY83NF7NI6V8N7LIDH3.pcm /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_intrinsics-31HSMZ0T18ZRSR6E4CDZX5LEZ.pcm /tmp/review-today-health-build/ModuleCache.noindex/_SwiftConcurrencyShims-7FMCKYA7UCU1HDLA0RYEIC55J.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreMIDI-DSE7QPQL7VPVQBAYQKKV2TH95.pcm /tmp/review-today-health-build/ModuleCache.noindex/_DarwinFoundation2-4LCB7KDEX86CLRGG90PBOFZIG.pcm /tmp/review-today-health-build/ModuleCache.noindex/GLKit-A8SNT4T35XC9ENLQOY2OK0D1E.pcm /tmp/review-today-health-build/ModuleCache.noindex/UniformTypeIdentifiers-1ILTWAPLLQDC5YZNLW30VJM1F.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreFoundation-3B1CGGWKNIAK5OSRGG4QR6XIN.pcm /tmp/review-today-health-build/ModuleCache.noindex/SpriteKit-A85ZW6PFZLVPL017EN79ZTDXC.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreAudio-329Q6T38M4G0AQFDK2QJYKB16.pcm /tmp/review-today-health-build/ModuleCache.noindex/libDER-LA6YAOMYO2X6B0SVV1GU20TL.pcm /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_float-9J74FJZHGHM4SMHRM4762HU38.pcm /tmp/review-today-health-build/ModuleCache.noindex/Foundation-AKENW6FDD8BGO8KPRI1FTE5Q7.pcm /tmp/review-today-health-build/ModuleCache.noindex/SwiftUICore-15NL9RHSDEDP9992NUG982AU4.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreGraphics-EC11O6KS1XIWMDE6KF9J2SLFT.pcm /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_limits-5GK3HBDMVC3V29HXUME569C3E.pcm /tmp/review-today-health-build/ModuleCache.noindex/SwiftUI-6W0G0XDUV928DXE6AO60A9BVS.pcm /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_stdarg-COTYR24F6MNE1FNFG34VXFAAP.pcm /tmp/review-today-health-build/ModuleCache.noindex/DiskArbitration-8CUN9ZA1GXCS6GSNTPZ71IL9A.pcm /tmp/review-today-health-build/ModuleCache.noindex/Cocoa-770ATSLOOWPRT1SWKPTGRHRSA.pcm /tmp/review-today-health-build/ModuleCache.noindex/AVFoundation-BKL2KW15H3ZWP0OLHOF5DTBU1.pcm /tmp/review-today-health-build/ModuleCache.noindex/ApplicationServices-6IEYQA8Y854Y52FJ3XLYSEBHD.pcm /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_stddef-FDB9473J6B86111J5A8OEIMH.pcm /tmp/review-today-health-build/ModuleCache.noindex/ptrcheck-D79M6YZP5176JDV2A8LXYZUAG.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreTransferable-48VYHD3JDN5WDH4VVVXBUCJEM.pcm /tmp/review-today-health-build/ModuleCache.noindex/OpenGL-6CBR8URLUI2DSZILHVV4Z2KGX.pcm /tmp/review-today-health-build/ModuleCache.noindex/IOKit-DGMM5GIIEE22OYKSCKYLNO110.pcm /tmp/review-today-health-build/ModuleCache.noindex/Symbols-4JQUQNGL1D5BJIL8FZ9BLSQYB.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreMedia-3XMBYAJZUR8WS86ESIDFDUYBL.pcm /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_stdatomic-EV24DGV37J0QYZ7I5GQ2DGCLH.pcm /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_stdint-E4TUKALRXUUK7U80EJHZTMEI4.pcm /tmp/review-today-health-build/ModuleCache.noindex/UserNotifications-507UAKG7POB1BMA5CU8W0B2V1.pcm /tmp/review-today-health-build/ModuleCache.noindex/os_workgroup-5AH1ZDQFEBHKLIU681IVMTRQW.pcm /tmp/review-today-health-build/ModuleCache.noindex/os_object-8WRADTQK39ZX5OQ8T0LEHNWSL.pcm /tmp/review-today-health-build/ModuleCache.noindex/ImageIO-5L7RUM073ESU1YAC62B7UIYZ.pcm /tmp/review-today-health-build/ModuleCache.noindex/_DarwinFoundation3-DSNQML57DL4HGO5K4302U1T8C.pcm /tmp/review-today-health-build/ModuleCache.noindex/Spatial-2D5G9GW218C7BDGHDGW9PG6Q2.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreData-E640R4R6VALX0KJVLGU0TP3W0.pcm /tmp/review-today-health-build/ModuleCache.noindex/ColorSync-5FY3PH29VN0JR40R21TCPVRWA.pcm /tmp/review-today-health-build/ModuleCache.noindex/NaturalLanguage-2JRKNAH54454BAEKFT2B3EENU.pcm /tmp/review-today-health-build/ModuleCache.noindex/CFNetwork-2NGLBDI94JCOGKI93QHP1D83O.pcm /tmp/review-today-health-build/ModuleCache.noindex/_Builtin_tgmath-1EULGIW0XKK1LDFWCNC7J6XZ3.pcm /tmp/review-today-health-build/ModuleCache.noindex/Dispatch-8CC2J2PCUW4JV2JNW63JCLD2U.pcm /tmp/review-today-health-build/ModuleCache.noindex/Security-B08A132YLRIQV1FQ3E35FS79O.pcm /tmp/review-today-health-build/ModuleCache.noindex/MediaToolbox-7FVIKD7TPAH8UTV4KETNR15E0.pcm /tmp/review-today-health-build/ModuleCache.noindex/libkern-1RUJVUYRSV0591KM752NM4QK1.pcm /tmp/review-today-health-build/ModuleCache.noindex/dnssd-52NBUOG6NTXNF6SWMDH82W1AU.pcm /tmp/review-today-health-build/ModuleCache.noindex/sys_types-U52UEOHACEYVJHSMTZQQBQJV.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreText-AR6CX9EP2N3D1DVY2PEGQPE2L.pcm /tmp/review-today-health-build/ModuleCache.noindex/SwiftShims-10MJ51Y1E4TWQE816QB7YEVZW.pcm /tmp/review-today-health-build/ModuleCache.noindex/_AvailabilityInternal-7BW1CAPGDBKPYKCXTOXWE4XQF.pcm /tmp/review-today-health-build/ModuleCache.noindex/JavaScriptCore-380TI8J3WLW3DTR2FMZELCV0J.pcm /tmp/review-today-health-build/ModuleCache.noindex/Network-8PUPQX7QT47CS2IFWTM0AE7V2.pcm /tmp/review-today-health-build/ModuleCache.noindex/DataDetection-DURMK0TGUKI7GVG2N8XRO0VWX.pcm /tmp/review-today-health-build/ModuleCache.noindex/OSLog-97BONTRCY5NGPJ0ZYMY0GE8GH.pcm /tmp/review-today-health-build/ModuleCache.noindex/CoreAudioTypes-CS2O3HXKNX4RCZT48ZOWB9FVF.pcm /tmp/review-today-health-build/ModuleCache.noindex/_DarwinFoundation1-4RLGFZ75F4MXZY1MU0X27AJJ7.pcm /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-dependencies-1.json (in target 'Review_Today' from project 'Review_Today')
+
+CompileSwift normal arm64 (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ContextCapacityIndicator.swift:27:75: warning: call to main actor-isolated static method 'compact' in a synchronous nonisolated context
+        return String(localized: "约 \(Self.compact(used)) / \(limit.map(Self.compact) ?? String(localized: "上限未知"))")
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ContextCapacityIndicator.swift:41:17: note: calls to static method 'compact' from outside of its actor context are implicitly asynchronous
+    static func compact(_ value: Int) -> String {
+                ^
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant
+        var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        ~~~ ^
+        let
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:219:18: warning: call to main actor-isolated static method 'parseLine' in a synchronous nonisolated context
+            .map(parseLine)
+                 ^
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:222:25: note: calls to static method 'parseLine' from outside of its actor context are implicitly asynchronous
+    private static func parseLine(_ line: String) -> ExplanationPiece {
+                        ^
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:166:13: warning: result of 'try?' is unused
+            try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead
+    private var synth = NSSpeechSynthesizer()
+                        ^
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead
+    func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+                                     ^
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead
+private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+                                             ^
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:627:15: warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead
+        synth.delegate = self
+              ^
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:633:15: warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead
+        synth.startSpeaking(text)
+              ^
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:637:15: warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead
+        synth.stopSpeaking()
+              ^
+
+SwiftDriverJobDiscovery normal arm64 Compiling ActivityDayGrid.swift, AgentAPI.swift, AgentComposerStore.swift, AgentServiceMonitor.swift, AnswerDocument.swift, AnswerReadabilitySamples.swift, AppRuntime.swift, AppSidebar.swift, ArchivedConversations.swift, BrandMark.swift, BrandMaterialTrial.swift, BrandTypography.swift, CaptureProcessor.swift, CoachMark.swift, ComposerControlsLayout.swift, ComposerKnowledgePicker.swift, ContentView.swift, ContextCapacityIndicator.swift, ConversationCheckpoint.swift, ConversationModels.swift, ConversationProcessor.swift, ConversationSync.swift, ConversationWorkSnapshot.swift, DeckRenderProbe.swift, DepthCarousel.swift, DictationController.swift, Fsrs.swift, GlassPreviewStyle.swift, HarnessProcessor.swift, InteractionChrome.swift, KnowledgeCardReader.swift, KnowledgeDeckInput.swift, KnowledgeDeckNavigation.swift, KnowledgeIngestion.swift, KnowledgeLexicon.swift, KnowledgeLibrary.swift, KnowledgeLocator.swift, KnowledgeManagement.swift, LearningAnswerText.swift, LearningComposerInput.swift, LearningDraftStore.swift, LearningMemory.swift, LearningSessionActions.swift, LearningSessionProgress.swift, LearningTaskCard.swift, LearningTextInput.swift, LearningWorkspace.swift, LibraryInboxSettings.swift, M1DebugFixture.swift, MascotAnimationPOC.swift, MascotMotion.swift, MascotMotionPreview.swift, MascotSpeechDemoController.swift, MessageDeliveryPresentation.swift, Models.swift, MrBPresentation.swift, NavigationPerformance.swift, ReminderNotifications.swift, Review_TodayApp.swift, ReviewCoordinator.swift, ReviewMaintenance.swift, ReviewView.swift, RunFeedbackViews.swift, RunwayChrome.swift, SessionActivityStatus.swift, SessionDeletion.swift, SessionListSelection.swift, SessionOrganization.swift, SessionTagEditor.swift, SidebarNavigation.swift, SidebarWindowControls.swift, ThemeToggle.swift, TodayActivityHeatmap.swift, TodayActivitySnapshot.swift, TodayActivitySource.swift, TodayView.swift, UserLanguage.swift, VoiceRecorder.swift, GeneratedAssetSymbols.swift (in target 'Review_Today' from project 'Review_Today')
+
+SwiftDriver\ Compilation\ Requirements Review_Today normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Review_Today -O -whole-module-optimization @/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.SwiftFileList -default-isolation\=MainActor -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/review-today-health-build/ModuleCache.noindex -Xfrontend -serialize-debugging-options -swift-version 5 -I /tmp/review-today-health-build/Build/Products/Release -F /tmp/review-today-health-build/Build/Products/Release -emit-localized-strings -emit-localized-strings-path /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64 -c -num-threads 10 -Xcc -ivfsstatcache -Xcc /tmp/review-today-health-build/SDKStatCaches.noindex/macosx26.5-25F70-e082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/review-today-health-build/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/review-today-health-build/ModuleCache.noindex -sdk-module-cache-path /tmp/review-today-health-build/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/review-today-health-build/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-generated-files.hmap -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-own-target-headers.hmap -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today-project-headers.hmap -Xcc -I/tmp/review-today-health-build/Build/Products/Release/include -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources-normal/arm64 -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/arm64 -Xcc -I/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources -emit-objc-header -emit-objc-header-path /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-Swift.h -working-directory /Users/rexyoung/Desktop/vibe\ coding/Review_Today -no-emit-module-separately-wmo
+
+SwiftMergeGeneratedHeaders /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/Review_Today-Swift.h /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-Swift.h (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-swiftHeaderTool -arch arm64 /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-Swift.h -o /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/DerivedSources/Review_Today-Swift.h
+
+Copy /tmp/review-today-health-build/Build/Products/Release/Review_Today.swiftmodule/arm64-apple-macos.swiftmodule /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.swiftmodule (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.swiftmodule /tmp/review-today-health-build/Build/Products/Release/Review_Today.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /tmp/review-today-health-build/Build/Products/Release/Review_Today.swiftmodule/arm64-apple-macos.abi.json /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.abi.json (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.abi.json /tmp/review-today-health-build/Build/Products/Release/Review_Today.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /tmp/review-today-health-build/Build/Products/Release/Review_Today.swiftmodule/arm64-apple-macos.swiftdoc /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.swiftdoc (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.swiftdoc /tmp/review-today-health-build/Build/Products/Release/Review_Today.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /tmp/review-today-health-build/Build/Products/Release/Review_Today.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.swiftsourceinfo (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.swiftsourceinfo /tmp/review-today-health-build/Build/Products/Release/Review_Today.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Ld /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/MacOS/Review_Today normal (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -Os -L/tmp/review-today-health-build/Build/Intermediates.noindex/EagerLinkingTBDs/Release -L/tmp/review-today-health-build/Build/Products/Release -F/tmp/review-today-health-build/Build/Intermediates.noindex/EagerLinkingTBDs/Release -F/tmp/review-today-health-build/Build/Products/Release -filelist /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.LinkFileList -Xlinker -rpath -Xlinker @executable_path/../Frameworks -Xlinker -object_path_lto -Xlinker /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today_lto.o -Xlinker -dependency_info -Xlinker /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.swiftmodule @/tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today-linker-args.resp -o /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/MacOS/Review_Today
+
+ExtractAppIntentsMetadata (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name Review_Today --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk --xcode-version 17F113 --platform-family macOS --deployment-target 26.5 --bundle-identifier Rex.Review-Today --output /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Resources --target-triple arm64-apple-macos26.5 --binary-file /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/MacOS/Review_Today --dependency-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today_dependency_info.dat --stringsdata-file /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.SwiftFileList --metadata-file-list /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today.DependencyMetadataFileList --static-metadata-file-list /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Review_Today.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/Objects-normal/arm64/Review_Today.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-13 15:21:35.062 appintentsmetadataprocessor[32333:20999635] Starting appintentsmetadataprocessor export
+2026-09-13 15:21:35.063 appintentsmetadataprocessor[32333:20999635] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CopySwiftLibs /tmp/review-today-health-build/Build/Products/Release/Review_Today.app (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/MacOS/Review_Today --scan-folder /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Frameworks --scan-folder /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/PlugIns --scan-folder /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Library/SystemExtensions --scan-folder /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Extensions --platform macosx --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/review-today-health-build/Build/Intermediates.noindex/Review_Today.build/Release/Review_Today.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+GenerateDSYMFile /tmp/review-today-health-build/Build/Products/Release/Review_Today.app.dSYM /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/MacOS/Review_Today (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dsymutil /tmp/review-today-health-build/Build/Products/Release/Review_Today.app/Contents/MacOS/Review_Today -o /tmp/review-today-health-build/Build/Products/Release/Review_Today.app.dSYM
+
+RegisterExecutionPolicyException /tmp/review-today-health-build/Build/Products/Release/Review_Today.app (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-RegisterExecutionPolicyException /tmp/review-today-health-build/Build/Products/Release/Review_Today.app
+
+Validate /tmp/review-today-health-build/Build/Products/Release/Review_Today.app (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    builtin-validationUtility /tmp/review-today-health-build/Build/Products/Release/Review_Today.app -no-validate-extension -infoplist-subpath Contents/Info.plist
+
+Touch /tmp/review-today-health-build/Build/Products/Release/Review_Today.app (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /usr/bin/touch -c /tmp/review-today-health-build/Build/Products/Release/Review_Today.app
+
+RegisterWithLaunchServices /tmp/review-today-health-build/Build/Products/Release/Review_Today.app (in target 'Review_Today' from project 'Review_Today')
+    cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
+    /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f -R -trusted /tmp/review-today-health-build/Build/Products/Release/Review_Today.app
+
+** BUILD SUCCEEDED **

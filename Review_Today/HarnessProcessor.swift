@@ -5,6 +5,10 @@ enum HarnessProcessor {
     @MainActor
     static func tick(context: ModelContext, monitor: AgentServiceMonitor) async {
         let descriptor = FetchDescriptor<LearningTask>(
+            predicate: #Predicate {
+                $0.status != "cancelled" && $0.status != "terminal_failed" &&
+                ($0.status != "completed" || $0.lastAckedSeq < $0.lastEventSeq)
+            },
             sortBy: [SortDescriptor(\.createdAt, order: .forward)]
         )
         guard let tasks = try? context.fetch(descriptor) else { return }
@@ -23,6 +27,7 @@ enum HarnessProcessor {
         guard writable(task, context: context) else { return }
         guard monitor.connection == .ready || (task.conversationManaged && monitor.serviceReachable) else {
             if task.status == "accepted" || task.errorCode == "RT.HARNESS.SERVICE_UNAVAILABLE" {
+                guard task.userSummary != monitor.launchStatus || task.errorCode != "RT.HARNESS.SERVICE_UNAVAILABLE" else { return }
                 task.userSummary = monitor.launchStatus
                 task.errorCode = "RT.HARNESS.SERVICE_UNAVAILABLE"
                 task.updatedAt = .now
@@ -31,6 +36,7 @@ enum HarnessProcessor {
             return
         }
         guard monitor.keyConfigured else {
+            guard task.userSummary != "输入已保存在本机；配置模型凭证后会继续" || task.errorCode != "RT.HARNESS.NO_KEY" else { return }
             task.userSummary = "输入已保存在本机；配置模型凭证后会继续"
             task.errorCode = "RT.HARNESS.NO_KEY"
             task.updatedAt = .now

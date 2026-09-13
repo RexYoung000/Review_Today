@@ -49,28 +49,29 @@ final class ConversationSync {
                     await SessionDeletion.cleanPending(context: context)
                 }
             }
-            let sessions = (try? context.fetch(FetchDescriptor<AgentSession>())) ?? []
+            guard let work = try? ConversationWorkSnapshot(context: context) else { continue }
+            let sessions = work.sessions
             let existingIDs = Set(sessions.map(\.id))
             for id in streams.keys where !existingIDs.contains(id) { streams[id]?.cancel(); streams[id] = nil; ackTargets[id] = nil }
-            respondToLookups(context: context)
+            respondToLookups(context: context, runs: work.runs)
             for session in sessions {
-                if controllers[session.id] == nil {
+                if controllers[session.id] == nil && work.needsControl(session) {
                     controllers[session.id] = Task {
                         defer { self.controllers[session.id] = nil }
-                        await ConversationProcessor.tick(context: context, monitor: monitor, pollEvents: false, onlySession: session.id, controlsOnly: true)
+                        await ConversationProcessor.tick(context: context, monitor: monitor, pollEvents: false, onlySession: session.id, controlsOnly: true, work: work)
                     }
                 }
-                if senders[session.id] == nil && session.status == "active" {
+                if senders[session.id] == nil && session.status == "active" && !(work.messagesBySession[session.id] ?? []).isEmpty {
                     senders[session.id] = Task {
                         defer { self.senders[session.id] = nil }
-                        await ConversationProcessor.tick(context: context, monitor: monitor, pollEvents: false, onlySession: session.id, skipControls: true)
+                        await ConversationProcessor.tick(context: context, monitor: monitor, pollEvents: false, onlySession: session.id, skipControls: true, work: work)
                     }
                 }
                 scheduleACK(session.id)
             }
-            let runs = (try? context.fetch(FetchDescriptor<AgentRun>())) ?? []
-            for session in sessions where runs.contains(where: { $0.sessionID == session.id }) {
-                let active = runs.contains { $0.sessionID == session.id && (["accepted", "running", "stopping", "adjusting"].contains($0.status) || ($0.status == "queued" && !session.runPaused)) }
+            for session in sessions {
+                guard let runs = work.runsBySession[session.id] else { continue }
+                let active = runs.contains { (["accepted", "running", "stopping", "adjusting"].contains($0.status) || ($0.status == "queued" && !session.runPaused)) }
                 guard streams[session.id] == nil, active || !synced.contains(session.id) else { continue }
                 streams[session.id] = Task {
                     defer { self.streams[session.id] = nil }
@@ -130,8 +131,8 @@ final class ConversationSync {
         }
     }
 
-    private func respondToLookups(context: ModelContext) {
-        for run in (try? context.fetch(FetchDescriptor<AgentRun>())) ?? [] {
+    private func respondToLookups(context: ModelContext, runs: [AgentRun]? = nil) {
+        for run in runs ?? ((try? context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.status == "running" }))) ?? []) {
             guard run.status == "running", lookups[run.id] == nil,
                   let lookup = ConversationProcessor.object(run.memoryLookupJSON), lookup["state"] as? String == "pending",
                   let query = lookup["query"] as? String, let requestID = lookup["request_id"] as? String else { continue }

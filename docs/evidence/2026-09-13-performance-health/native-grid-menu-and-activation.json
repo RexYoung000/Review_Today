@@ -1,0 +1,669 @@
+{
+  "activations" : [
+    {
+      "activation_draw_ms" : 57.090500020422041,
+      "app_active" : true,
+      "time" : 1789285171.9078422
+    },
+    {
+      "activation_draw_ms" : 10.575666674412787,
+      "app_active" : true,
+      "time" : 1789285176.5847511
+    }
+  ],
+  "boundary" : "handler\/activation notification to native draw; excludes OS input delivery and scanout",
+  "dataset" : "small",
+  "navigation_and_menus" : [
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 93.915708363056183,
+      "time" : 1789285238.8440928
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.54875001590699,
+      "time" : 1789285239.126518
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.419416667893529,
+      "time" : 1789285239.40503
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 58.833166724070907,
+      "time" : 1789285239.6677961
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.827083334326744,
+      "time" : 1789285239.9393981
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 58.815666707232594,
+      "time" : 1789285240.2093039
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 75.515249976888299,
+      "time" : 1789285240.4886432
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 61.388333444483578,
+      "time" : 1789285240.7517009
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 76.042333268560469,
+      "time" : 1789285241.038662
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 58.215583325363696,
+      "time" : 1789285241.308773
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 56.833749986253679,
+      "time" : 1789285241.580559
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 52.519541583023965,
+      "time" : 1789285241.836374
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.74329166021198,
+      "time" : 1789285242.115104
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 65.781000070273876,
+      "time" : 1789285242.388298
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 54.404208320192993,
+      "time" : 1789285242.6465511
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 60.041874996386468,
+      "time" : 1789285242.921226
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 57.810125057585537,
+      "time" : 1789285243.19086
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 63.160208403132856,
+      "time" : 1789285243.4636631
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 71.261000004597008,
+      "time" : 1789285243.748198
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 59.220708324573934,
+      "time" : 1789285244.0098171
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 66.276749945245683,
+      "time" : 1789285244.2906311
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 69.019458373077214,
+      "time" : 1789285244.5732431
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 55.521124973893166,
+      "time" : 1789285244.8381419
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 57.723124977201223,
+      "time" : 1789285245.1040978
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 64.924041624180973,
+      "time" : 1789285245.378077
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 63.42354160733521,
+      "time" : 1789285245.653502
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 60.895583359524608,
+      "time" : 1789285245.928231
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 66.962874960154295,
+      "time" : 1789285246.2040501
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 61.858249944634736,
+      "time" : 1789285246.474833
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 53.955499897710979,
+      "time" : 1789285246.7406039
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:添加材料",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 61.718416633084416,
+      "time" : 1789285247.0039148
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 74.613166623748839,
+      "time" : 1789285247.2830791
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 65.477291704155505,
+      "time" : 1789285247.56251
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 65.792083274573088,
+      "time" : 1789285247.8370991
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 67.339791683480144,
+      "time" : 1789285248.1125369
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.296249955892563,
+      "time" : 1789285248.393471
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 60.367999947629869,
+      "time" : 1789285248.6566401
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 61.555083259008825,
+      "time" : 1789285248.9300032
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.962624995037913,
+      "time" : 1789285249.212923
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 60.654500033706427,
+      "time" : 1789285249.486856
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 59.600583394058049,
+      "time" : 1789285249.759913
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 74.364041676744819,
+      "time" : 1789285250.039897
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 60.182708315551281,
+      "time" : 1789285250.3075109
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 74.498916626907885,
+      "time" : 1789285250.587229
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 60.670833336189389,
+      "time" : 1789285250.8549352
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 71.425666683353484,
+      "time" : 1789285251.127804
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 60.875333263538778,
+      "time" : 1789285251.390177
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 63.347583287395537,
+      "time" : 1789285251.6551499
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 74.049875023774803,
+      "time" : 1789285251.9410739
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.641666672192514,
+      "time" : 1789285252.222482
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.682041601277888,
+      "time" : 1789285252.4984732
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 66.664625075645745,
+      "time" : 1789285252.778496
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 61.6285833530128,
+      "time" : 1789285253.054426
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 62.976833316497505,
+      "time" : 1789285253.3364301
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 61.628666589967906,
+      "time" : 1789285253.6113181
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 63.84487496688962,
+      "time" : 1789285253.8765979
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 59.648041729815304,
+      "time" : 1789285254.1432691
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 67.101916647516191,
+      "time" : 1789285254.422822
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.294625030830503,
+      "time" : 1789285254.7055249
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 73.403708287514746,
+      "time" : 1789285254.9862719
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 61.666666646488011,
+      "time" : 1789285255.258991
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:学习方式",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 82.29291660245508,
+      "time" : 1789285255.553678
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 60.855208314023912,
+      "time" : 1789285255.820395
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 55.127708241343498,
+      "time" : 1789285256.078496
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 59.310875018127263,
+      "time" : 1789285256.342416
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.543958244845271,
+      "time" : 1789285256.625751
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 55.081291706301272,
+      "time" : 1789285256.884089
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.952500005252659,
+      "time" : 1789285257.1640811
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 56.166833383031189,
+      "time" : 1789285257.423347
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 55.540416622534394,
+      "time" : 1789285257.6884871
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 59.296541730873287,
+      "time" : 1789285257.9620681
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 50.736624980345368,
+      "time" : 1789285258.218276
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 68.954208283685148,
+      "time" : 1789285258.4903159
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 56.977833388373256,
+      "time" : 1789285258.75425
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 64.501041662879288,
+      "time" : 1789285259.0226221
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 54.284958401694894,
+      "time" : 1789285259.2842889
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 57.036166661418974,
+      "time" : 1789285259.5494189
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 62.481416738592088,
+      "time" : 1789285259.8214231
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 60.350791667588055,
+      "time" : 1789285260.0963039
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 56.215416640043259,
+      "time" : 1789285260.356724
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 60.657708323560655,
+      "time" : 1789285260.622061
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 73.582458309829235,
+      "time" : 1789285260.9083939
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 56.727125076577067,
+      "time" : 1789285261.174305
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 58.295791735872626,
+      "time" : 1789285261.436414
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 61.283208313398063,
+      "time" : 1789285261.7115679
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 58.501041610725224,
+      "time" : 1789285261.978462
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 65.824916702695191,
+      "time" : 1789285262.2461891
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 55.405625025741756,
+      "time" : 1789285262.5051022
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 64.647916704416275,
+      "time" : 1789285262.7820439
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 64.285666681826115,
+      "time" : 1789285263.0655179
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 72.880124906077981,
+      "time" : 1789285263.3439291
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 63.385291607119143,
+      "time" : 1789285263.613503
+    },
+    {
+      "app_active" : true,
+      "destination" : "menu:思考强度",
+      "feedback_draw_ms" : null,
+      "page_draw_ms" : 63.106958288699389,
+      "time" : 1789285263.880456
+    }
+  ]
+}

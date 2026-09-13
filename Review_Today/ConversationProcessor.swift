@@ -67,10 +67,11 @@ enum ConversationProcessor {
         ConversationSync.wake()
     }
     @MainActor
-    static func tick(context: ModelContext, monitor: AgentServiceMonitor, pollEvents: Bool = true, onlySession: UUID? = nil, controlsOnly: Bool = false, skipControls: Bool = false) async {
+    static func tick(context: ModelContext, monitor: AgentServiceMonitor, pollEvents: Bool = true, onlySession: UUID? = nil, controlsOnly: Bool = false, skipControls: Bool = false, work: ConversationWorkSnapshot? = nil) async {
         guard monitor.serviceReachable && monitor.conversationSupported else { return }
-        let allSessions = (try? context.fetch(FetchDescriptor<AgentSession>())) ?? []
-        let messageOwners = Set(((try? context.fetch(FetchDescriptor<AgentMessage>())) ?? []).map(\.sessionID))
+        guard let work = work ?? (try? ConversationWorkSnapshot(context: context)) else { return }
+        let allSessions = work.sessions
+        let messageOwners = work.messageOwners
         // Empty local conversations have no server work until a message or explicit lifecycle action exists.
         let sessions = allSessions.filter {
             (onlySession == nil || $0.id == onlySession) &&
@@ -78,7 +79,7 @@ enum ConversationProcessor {
         }
         // Durable controls run before pulling committable output. Never lose rapid
         // stop/mode/resume operations by storing only one pending field on a Task.
-        let controls = (try? context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { !$0.sent }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
+        let controls = onlySession.map { work.controlsBySession[$0] ?? [] } ?? work.controls
         var blockedSessions = Set<UUID>()
         for session in sessions where !skipControls {
             if session.memoryPolicySyncedRevision != session.memoryPolicyRevision || session.memoryContentSyncedRevision != session.memoryContentRevision {
@@ -126,7 +127,7 @@ enum ConversationProcessor {
             }
         }
         if controlsOnly { return }
-        let messages = (try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.role == "user" && $0.deliveryStatus == "local" }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
+        let messages = onlySession.map { work.messagesBySession[$0] ?? [] } ?? work.localMessages
         for message in messages where message.role == "user" && message.deliveryStatus == "local" {
             guard message.lastDeliveryError != "RT.RUN.INVALID_ACCEPTANCE" else { continue }
             guard let session = sessions.first(where: { $0.id == message.sessionID }), session.status == "active" else { continue }
@@ -178,7 +179,7 @@ enum ConversationProcessor {
                 // has never used message/run processing. No cross-Session context.
                 let runs = (try? context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }))) ?? []
                 if !runs.contains(where: { $0.sessionID == session.id }) {
-                    let tasks = (try? context.fetch(FetchDescriptor<LearningTask>())) ?? []
+                    let tasks = (try? context.fetch(FetchDescriptor<LearningTask>(predicate: #Predicate { $0.sessionID == sid }))) ?? []
                     if let legacy = tasks.filter({ $0.sessionID == session.id && !["completed", "cancelled", "terminal_failed", "accepted"].contains($0.status) })
                         .sorted(by: { $0.updatedAt < $1.updatedAt }).last {
                         body["task_id"] = legacy.id.uuidString.lowercased()

@@ -1,4 +1,4 @@
-#if DEBUG
+#if DEBUG || PERFORMANCE_QA
 import Foundation
 import SwiftData
 

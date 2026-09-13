@@ -7,18 +7,29 @@ struct AppRuntime: Equatable {
     var validationDirectory: URL? = nil
     var port = 8742
     var isPreview: Bool { mode == .preview }
+    var isPerformanceQA: Bool {
+#if PERFORMANCE_QA
+        true
+#else
+        false
+#endif
+    }
     var allowsSending: Bool { !isPreview }
     var serviceURL: URL { URL(string: "http://127.0.0.1:\(port)")! }
     var windowSuffix: String {
+        if isPerformanceQA { return " · 性能隔离验收" }
         switch mode {
-        case .normal: ""
-        case .preview: " · 界面预览（不可发送）"
-        case .modelValidation: " · 真实模型隔离验收"
+        case .normal: return ""
+        case .preview: return " · 界面预览（不可发送）"
+        case .modelValidation: return " · 真实模型隔离验收"
         }
     }
 
     static let current: AppRuntime = {
-#if DEBUG
+#if PERFORMANCE_QA
+        precondition(Bundle.main.bundleIdentifier?.hasSuffix(".PerformanceQA") == true, "Performance QA requires its own app identity")
+        return AppRuntime(mode: .preview)
+#elseif DEBUG
         do { return try resolve(ProcessInfo.processInfo.environment, bundleID: Bundle.main.bundleIdentifier ?? "") }
         catch { fatalError("Invalid isolated runtime configuration; refusing to open the normal database") }
 #else
