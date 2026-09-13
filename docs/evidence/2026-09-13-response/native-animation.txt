@@ -1,0 +1,4 @@
+Native animation resource matches its source.
+PASS: native idle reuse without document reload; cold ready 206.3 ms (50 ms polling), warm acquire 0.2 ms; pause, new configuration, stale callbacks, attachment, failure and capacity
+PASS: actual SwiftUI conditional page removal and re-entry reuse the same WKWebView and HTML document
+Native animation checks passed

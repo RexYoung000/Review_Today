@@ -2,8 +2,21 @@ import AppKit
 import SwiftUI
 import WebKit
 import AVFoundation
+import Combine
 
 private struct CheckFailure: Error, CustomStringConvertible { var description: String }
+@MainActor private final class CacheMountState: ObservableObject {
+    @Published var shown = true
+}
+private struct CacheMountProbe: View {
+    @ObservedObject var state: CacheMountState
+    var body: some View {
+        Group {
+            if state.shown { MascotMotion(phase: .idle, ambient: true) }
+            else { Color.clear }
+        }.frame(width: 150, height: 170)
+    }
+}
 @main
 struct MascotMotionNativeTests {
     @MainActor static func main() {
@@ -144,6 +157,130 @@ struct MascotMotionNativeTests {
         if CommandLine.arguments.contains("--record-ui-book") { try await recordIdle(web, window: window, sidebar: true) }
         if CommandLine.arguments.contains("--record-sidebar-loop") { try await recordIdle(web, window: window, sidebar: true, loop: true) }
         web.configuration.userContentController.removeScriptMessageHandler(forName: "mascot"); web.dispose()
+        try await checkRendererReuse(window)
+    }
+
+    @MainActor static func checkRendererReuse(_ window: NSWindow) async throws {
+        func expect(_ value: Bool, _ reason: String) throws { if !value { throw CheckFailure(description: reason) } }
+        let cache = MascotIdleRendererCache.shared
+        cache.clear()
+        var oldCallbacks = 0
+        let first = MascotWebSurface.Coordinator(onReady: { _ in oldCallbacks += 1 })
+        let start = ProcessInfo.processInfo.systemUptime
+        let web = first.makeView(configuration: .init(ambient: true))
+        window.contentView = web
+        for _ in 0..<200 {
+            if first.ready && !web.isLoading { break }
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        try expect(first.ready && !web.isLoading, "Cache fixture did not finish loading")
+        let coldMS = (ProcessInfo.processInfo.systemUptime - start) * 1000
+        _ = try await web.evaluateJavaScript("window.rendererReuseMarker = 'original-document'")
+        first.release(web)
+        window.contentView = nil
+        let previousCallbacks = oldCallbacks
+        try await Task.sleep(for: .milliseconds(120))
+        let parked = try await web.evaluateJavaScript("window.mascotMotion.inspect()") as! [String: Any]
+        try await Task.sleep(for: .milliseconds(180))
+        let still = try await web.evaluateJavaScript("window.mascotMotion.inspect()") as! [String: Any]
+        try expect(cache.count == 1 && still["animating"] as? Bool == false && parked["time"] as? Double == still["time"] as? Double,
+                   "Parked cache must retain one renderer with a stopped clock")
+
+        var newReady = false
+        let next = MascotWebSurface.Coordinator(onReady: { newReady = $0 })
+        let warmStart = ProcessInfo.processInfo.systemUptime
+        let reused = next.makeView(configuration: .init(reduced: true, dark: true, ambient: true, idleClip: .readingAndLooking,
+                                                        material: "graphite", palette: .theme(dark: true)))
+        let warmMS = (ProcessInfo.processInfo.systemUptime - warmStart) * 1000
+        try expect(reused === web && next.ready && first.webView == nil && cache.count == 0,
+                   "Re-entry must acquire the loaded renderer and detach its old owner")
+        window.contentView = reused
+        try await Task.sleep(for: .milliseconds(150))
+        let marker = try await reused.evaluateJavaScript("window.rendererReuseMarker") as? String
+        let resumed = try await reused.evaluateJavaScript("window.mascotMotion.inspect()") as! [String: Any]
+        let config = resumed["config"] as! [String: Any]
+        try expect(marker == "original-document" && newReady && previousCallbacks == oldCallbacks,
+                   "Reuse reloaded the document or delivered a stale readiness callback")
+        try expect(config["dark"] as? Bool == true && config["reduced"] as? Bool == true &&
+                   config["idleClip"] as? String == "sidebar_loop" && resumed["animating"] as? Bool == false,
+                   "Reused renderer did not apply current appearance, clip and Reduce Motion")
+
+        next.release(reused) // SwiftUI may dismantle just before removing its NSView.
+        let concurrent = MascotWebSurface.Coordinator(onReady: { _ in })
+        let separate = concurrent.makeView(configuration: .init(ambient: true))
+        try expect(separate !== reused, "A still-attached renderer was stolen by another surface")
+        concurrent.release(separate)
+        try expect(cache.count == 1 && concurrent.webView == nil, "A loading renderer was cached")
+        window.contentView = nil
+        next.webViewWebContentProcessDidTerminate(reused)
+        try expect(cache.take() == nil && cache.count == 0 && next.webView == nil, "A failed cached process was reused")
+
+        // Only fully ready ambient recall is eligible; ordinary run/voice surfaces release.
+        for configuration in [MascotMotionConfiguration(mode: .thinking), .init(surface: .voice, ambient: true)] {
+            let owner = MascotWebSurface.Coordinator(onReady: { _ in })
+            let transient = owner.makeView(configuration: configuration)
+            owner.release(transient)
+            try expect(cache.count == 0 && owner.webView == nil, "Business/voice surface entered the idle cache")
+        }
+        // Capacity remains bounded even when multiple windows return at once.
+        var owners: [MascotWebSurface.Coordinator] = []
+        for _ in 0..<3 {
+            let owner = MascotWebSurface.Coordinator(onReady: { _ in })
+            let settings = WKWebViewConfiguration()
+            let view = PassiveMascotWebView(frame: .zero, configuration: settings)
+            owner.webView = view; owner.ready = true
+            view.configuration.userContentController.add(owner, name: "mascot")
+            cache.insert(view, coordinator: owner)
+            owners.append(owner)
+        }
+        try expect(cache.count == 2 && owners[0].webView == nil, "Idle renderer cache grew beyond its two-entry budget")
+        cache.clear()
+        try expect(owners.allSatisfy { $0.webView == nil }, "Cache eviction kept old owners bound")
+        print(String(format: "PASS: native idle reuse without document reload; cold ready %.1f ms (50 ms polling), warm acquire %.1f ms; pause, new configuration, stale callbacks, attachment, failure and capacity", coldMS, warmMS))
+        try await checkSwiftUIMounting(window)
+    }
+
+    @MainActor static func checkSwiftUIMounting(_ window: NSWindow) async throws {
+        let cache = MascotIdleRendererCache.shared
+        let state = CacheMountState()
+        let host = NSHostingView(rootView: CacheMountProbe(state: state))
+        window.contentView = host
+        func find(_ parent: NSView) -> PassiveMascotWebView? {
+            if let web = parent as? PassiveMascotWebView { return web }
+            return parent.subviews.lazy.compactMap(find).first
+        }
+        func loadedView() async throws -> PassiveMascotWebView {
+            for _ in 0..<200 {
+                if let web = find(host), let owner = web.navigationDelegate as? MascotWebSurface.Coordinator,
+                   owner.ready && !web.isLoading { return web }
+                try await Task.sleep(for: .milliseconds(50))
+            }
+            throw CheckFailure(description: "SwiftUI-mounted renderer did not become ready")
+        }
+        let initial = try await loadedView()
+        _ = try await initial.evaluateJavaScript("window.swiftUIMountMarker = 'same-document'")
+        state.shown = false
+        for _ in 0..<100 {
+            if cache.count == 1 && initial.superview == nil && initial.window == nil { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        guard cache.count == 1 && initial.superview == nil else {
+            throw CheckFailure(description: "SwiftUI did not return and detach its renderer")
+        }
+        state.shown = true
+        let returned = try await loadedView()
+        let marker = try await returned.evaluateJavaScript("window.swiftUIMountMarker") as? String
+        guard returned === initial && marker == "same-document" && cache.count == 0 else {
+            throw CheckFailure(description: "Actual SwiftUI page re-entry recreated its renderer")
+        }
+        state.shown = false
+        for _ in 0..<100 {
+            if cache.count == 1 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        window.contentView = nil
+        cache.clear()
+        print("PASS: actual SwiftUI conditional page removal and re-entry reuse the same WKWebView and HTML document")
     }
 
     // Native WKWebView snapshots sampled against the actual playback clock.

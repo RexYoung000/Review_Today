@@ -157,10 +157,6 @@ struct AppSidebar: View {
     @State private var hoveredSessionID: UUID?
     @State private var openMenuSessionID: UUID?
     @State private var focusedMenuSessionID: UUID?
-    @FocusState private var focusedNavigation: SidebarItem?
-    @State private var navigationFrames: [SidebarItem: CGRect] = [:]
-    @State private var hoveredNavigation: SidebarItem?
-    @Environment(\.controlActiveState) private var navigationWindowState
     @FocusState private var focusedSessionID: UUID?
     @FocusState private var searchFocused: Bool
     @State private var editingSessionID: UUID?
@@ -178,7 +174,8 @@ struct AppSidebar: View {
         VStack(alignment: .leading, spacing: 0) {
             SidebarWindowControls().frame(height: 32).padding(.horizontal, 18).padding(.top, 8)
             brand
-            primaryNavigation.padding(.horizontal, 10)
+            SidebarPrimaryNavigation(selection: $selection, selectedSessionID: $selectedSessionID, inboxCount: inboxCount)
+                .padding(.horizontal, 10)
             Divider().padding(.vertical, 12)
             sessionNavigation
             if let batchError { Text(batchError).font(.caption).foregroundStyle(.red).padding(10) }
@@ -394,84 +391,6 @@ struct AppSidebar: View {
                 if !LearningMemory.setAllowed(!session.memoryUseAllowed, session: session, context: modelContext) { batchError = "记忆设置未保存，请重试。" }
             }
         }
-    }
-
-    private var primaryNavigation: some View {
-        VStack(spacing: 4) {
-            ForEach(SidebarItem.allCases) { item in
-                sidebarRow(item)
-                    .background(GeometryReader { geometry in
-                        Color.clear.preference(key: NavigationRowFrames.self,
-                            value: [item: geometry.frame(in: .named("primaryNavigation"))])
-                    })
-            }
-        }
-        .coordinateSpace(name: "primaryNavigation")
-        .onPreferenceChange(NavigationRowFrames.self) { frames in
-            if navigationFrames != frames {
-                navigationFrames = frames
-                hoveredNavigation = nil
-            }
-        }
-        .background(alignment: .topLeading) {
-            if let item = hoveredNavigation, let rect = navigationFrames[item] {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(runway.field.opacity(0.5))
-                    .frame(width: rect.width, height: rect.height)
-                    .offset(x: rect.minX, y: rect.minY)
-                    .allowsHitTesting(false).accessibilityHidden(true)
-            }
-        }
-        .contentShape(Rectangle())
-        .onContinuousHover(coordinateSpace: .named("primaryNavigation")) { phase in
-            switch phase {
-            case .active(let point):
-                guard navigationWindowState == .key, !navigationFrames.isEmpty else { return }
-                let nearest = SidebarItem.allCases.min {
-                    abs((navigationFrames[$0]?.midY ?? .infinity) - point.y) <
-                    abs((navigationFrames[$1]?.midY ?? .infinity) - point.y)
-                }
-                guard nearest != hoveredNavigation else { return }
-                // Animate only travel inside this group, never the initial entry.
-                withAnimation(reduceMotion || hoveredNavigation == nil ? nil : .easeOut(duration: 0.12)) {
-                    hoveredNavigation = nearest
-                }
-            case .ended: hoveredNavigation = nil
-            }
-        }
-        .onChange(of: navigationWindowState) { _, state in
-            if state != .key { hoveredNavigation = nil }
-        }
-        .onDisappear { hoveredNavigation = nil }
-    }
-
-    private func sidebarRow(_ item: SidebarItem) -> some View {
-        let selected = selection == item && (item != .learning || selectedSessionID == nil)
-        return Button { if item == .learning { selectedSessionID = nil }; selection = item } label: {
-            HStack(spacing: 8) {
-                Image(systemName: item.systemImage).frame(width: 27)
-                Text(item.title).fontWeight(selected ? .semibold : .regular)
-                Spacer()
-                if item == .inbox, inboxCount > 0 {
-                    Text("\(inboxCount)").font(.caption.weight(.semibold))
-                        .padding(.horizontal, 7).padding(.vertical, 2).background(runway.field, in: Capsule())
-                }
-            }
-            .padding(.horizontal, 6).padding(.vertical, 9)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .foregroundStyle(selected ? runway.ink : Color.secondary)
-            .background(selected ? runway.field : .clear, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(InteractionButtonStyle(hoverFeedback: false, focused: focusedNavigation == item, padding: 0, outline: .rounded(10)))
-        .focusable().focusEffectDisabled().focused($focusedNavigation, equals: item)
-        .onKeyPress(keys: [.return, .space], phases: .down) { _ in
-            guard focusedNavigation == item else { return .ignored }
-            if item == .learning { selectedSessionID = nil }
-            selection = item
-            return .handled
-        }
-        .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
 
     private func sessionState(_ session: AgentSession) -> (symbol: String, label: String, problem: Bool) {
@@ -940,4 +859,94 @@ private struct NavigationRowFrames: PreferenceKey {
     static func reduce(value: inout [SidebarItem: CGRect], nextValue: () -> [SidebarItem: CGRect]) {
         value.merge(nextValue(), uniquingKeysWith: { _, new in new })
     }
+}
+
+/// Pointer updates stay in these four rows, outside the session queries/list.
+private struct SidebarPrimaryNavigation: View {
+    @Binding var selection: SidebarItem?
+    @Binding var selectedSessionID: UUID?
+    var inboxCount: Int
+    @Environment(\.runway) private var runway
+    @Environment(\.brandReduceMotion) private var reduceMotion
+    @FocusState private var focusedNavigation: SidebarItem?
+    @State private var navigationFrames: [SidebarItem: CGRect] = [:]
+    @State private var hoveredNavigation: SidebarItem?
+    @Environment(\.controlActiveState) private var navigationWindowState
+    var body: some View {
+        VStack(spacing: 4) {
+            ForEach(SidebarItem.allCases) { item in
+                sidebarRow(item)
+                    .background(GeometryReader { geometry in
+                        Color.clear.preference(key: NavigationRowFrames.self,
+                            value: [item: geometry.frame(in: .named("primaryNavigation"))])
+                    })
+            }
+        }
+        .coordinateSpace(name: "primaryNavigation")
+        .onPreferenceChange(NavigationRowFrames.self) { frames in
+            if navigationFrames != frames {
+                navigationFrames = frames
+                hoveredNavigation = nil
+            }
+        }
+        .background(alignment: .topLeading) {
+            if let item = hoveredNavigation, let rect = navigationFrames[item] {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(runway.navigationHover)
+                    .frame(width: rect.width, height: rect.height)
+                    .offset(x: rect.minX, y: rect.minY)
+                    .animation(reduceMotion ? nil : .easeOut(duration: 0.08), value: item)
+                    .allowsHitTesting(false).accessibilityHidden(true)
+            }
+        }
+        .contentShape(Rectangle())
+        .onContinuousHover(coordinateSpace: .named("primaryNavigation")) { phase in
+            switch phase {
+            case .active(let point):
+                guard navigationWindowState == .key, !navigationFrames.isEmpty else { return }
+                let nearest = SidebarItem.allCases.min {
+                    abs((navigationFrames[$0]?.midY ?? .infinity) - point.y) <
+                    abs((navigationFrames[$1]?.midY ?? .infinity) - point.y)
+                }
+                guard nearest != hoveredNavigation else { return }
+                // Keep the transaction out of labels, buttons and the destination page.
+                hoveredNavigation = nearest
+            case .ended: hoveredNavigation = nil
+            }
+        }
+        .onChange(of: navigationWindowState) { _, state in
+            if state != .key { hoveredNavigation = nil }
+        }
+        .onDisappear { hoveredNavigation = nil }
+    }
+
+    private func sidebarRow(_ item: SidebarItem) -> some View {
+        let selected = selection == item && (item != .learning || selectedSessionID == nil)
+        return Button { if item == .learning { selectedSessionID = nil }; selection = item } label: {
+            HStack(spacing: 8) {
+                Image(systemName: item.systemImage).frame(width: 27)
+                Text(item.title).fontWeight(selected ? .semibold : .regular)
+                Spacer()
+                if item == .inbox, inboxCount > 0 {
+                    Text("\(inboxCount)").font(.caption.weight(.semibold))
+                        .padding(.horizontal, 7).padding(.vertical, 2).background(runway.field, in: Capsule())
+                }
+            }
+            .padding(.horizontal, 6).padding(.vertical, 9)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundStyle(selected || hoveredNavigation == item ? runway.ink : Color.secondary)
+            .background(selected ? runway.navigationSelection : .clear, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(InteractionButtonStyle(hoverFeedback: false, focused: focusedNavigation == item, padding: 0, outline: .rounded(10)))
+        .focusable().focusEffectDisabled().focused($focusedNavigation, equals: item)
+        .onKeyPress(keys: [.return, .space], phases: .down) { _ in
+            guard focusedNavigation == item else { return .ignored }
+            if item == .learning { selectedSessionID = nil }
+            selection = item
+            return .handled
+        }
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
+    }
+
 }

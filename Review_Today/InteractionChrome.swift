@@ -41,10 +41,10 @@ final class InteractionInputMode: ObservableObject {
     func receive(_ event: NSEvent) {
         switch event.type {
         case .leftMouseDown, .rightMouseDown, .otherMouseDown:
-            keyboardNavigation = false
+            if keyboardNavigation { keyboardNavigation = false }
         case .keyDown:
             // Tab, arrows and Escape are navigation; typing alone is not.
-            if [48, 53, 123, 124, 125, 126].contains(event.keyCode) {
+            if !keyboardNavigation && [48, 53, 123, 124, 125, 126].contains(event.keyCode) {
                 keyboardNavigation = true
             }
         default: break
@@ -90,7 +90,7 @@ struct InteractionButtonStyle: ButtonStyle {
                     .strokeBorder(focused && inputMode.keyboardNavigation && enabled && controlState == .key ? runway.agent : .clear, lineWidth: 1.5))
                 .contentShape(outline.shape)
                 .opacity(enabled ? (configuration.isPressed ? 0.78 : 1) : 0.4)
-                .onHover { hovering = $0 }
+                .onHover { if hoverFeedback { hovering = $0 } }
                 .onChange(of: controlState) { _, state in if state != .key { hovering = false } }
                 .onDisappear { hovering = false }
                 .animation(reduced ? nil : .easeOut(duration: 0.12), value: hovering)
@@ -372,6 +372,7 @@ private struct FluidHoverSurface: ViewModifier {
     @State private var scope = UUID()
     @State private var targets: [FluidHoverTarget] = []
     @State private var active: FluidHoverTarget?
+    @State private var animatesTravel = false
     @Environment(\.brandReduceMotion) private var reduced
     @Environment(\.controlActiveState) private var windowState
     @Environment(\.isEnabled) private var enabled
@@ -387,9 +388,10 @@ private struct FluidHoverSurface: ViewModifier {
             .overlay(alignment: .topLeading) {
                 if let active {
                     RoundedRectangle(cornerRadius: radius, style: .continuous)
-                        .fill(runway.ink.opacity(0.045))
+                        .fill(runway.navigationHover)
                         .frame(width: active.rect.width, height: active.rect.height)
                         .offset(x: active.rect.minX, y: active.rect.minY)
+                        .animation(animatesTravel && !reduced ? .easeOut(duration: 0.08) : nil, value: active)
                         .allowsHitTesting(false).accessibilityHidden(true)
                 }
             }
@@ -400,8 +402,8 @@ private struct FluidHoverSurface: ViewModifier {
                     guard enabled, !blocked, windowState == .key else { active = nil; return }
                     let next = FluidHoverPicking.nearest(point, targets: targets, maxGap: maxGap)
                     guard next != active else { return }
-                    let travel = !reduced && active != nil && next != nil && active?.group == next?.group
-                    withAnimation(travel ? .easeOut(duration: 0.12) : nil) { active = next }
+                    animatesTravel = active != nil && next != nil && active?.group == next?.group
+                    active = next
                 case .ended: active = nil
                 }
             }

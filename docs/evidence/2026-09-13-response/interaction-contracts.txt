@@ -1,0 +1,2 @@
+PASS: ancestor-focus guard, rendered single-row focus independent of selection, light/dark/disabled
+PASS: row gaps, folder boundary/indentation, outside groups, empty/invalid targets, stable ties and refreshed identities

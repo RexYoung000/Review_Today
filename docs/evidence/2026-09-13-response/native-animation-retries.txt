@@ -1,0 +1,3 @@
+Supplemental full native run: Native animation check failed: Ambient idle did not breathe
+Same executable, before explicit native window Raise: Native animation check failed: Ambient idle did not breathe
+Same executable after explicit native window Raise: all checks passed; see native-animation.txt. No assertions or timing thresholds changed.

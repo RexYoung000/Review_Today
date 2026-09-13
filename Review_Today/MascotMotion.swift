@@ -64,21 +64,7 @@ struct MascotWebSurface: NSViewRepresentable {
 
     func makeCoordinator() -> Coordinator { Coordinator(onReady: onReady) }
     func makeNSView(context: Context) -> PassiveMascotWebView {
-        let settings = WKWebViewConfiguration()
-        settings.websiteDataStore = .nonPersistent()
-        settings.userContentController.add(context.coordinator, name: "mascot")
-        let view = PassiveMascotWebView(frame: .zero, configuration: settings)
-        view.setValue(false, forKey: "drawsBackground")
-        view.underPageBackgroundColor = .clear
-        view.navigationDelegate = context.coordinator
-        context.coordinator.webView = view
-        view.visibilityChanged = { [weak coordinator = context.coordinator] visible in coordinator?.setVisible(visible) }
-        context.coordinator.configuration = configuration
-        if let url = Bundle.main.url(forResource: "MascotMotion", withExtension: "html"),
-           let html = try? String(contentsOf: url, encoding: .utf8) {
-            view.loadHTMLString(html, baseURL: nil)
-        } else { context.coordinator.onReady(false) }
-        return view
+        context.coordinator.makeView(configuration: configuration)
     }
     func updateNSView(_ view: PassiveMascotWebView, context: Context) {
         context.coordinator.onReady = onReady
@@ -86,13 +72,7 @@ struct MascotWebSurface: NSViewRepresentable {
         context.coordinator.send()
     }
     static func dismantleNSView(_ view: PassiveMascotWebView, coordinator: Coordinator) {
-        coordinator.configuration.visible = false
-        coordinator.send()
-        view.stopLoading()
-        view.configuration.userContentController.removeScriptMessageHandler(forName: "mascot")
-        view.navigationDelegate = nil
-        view.dispose()
-        coordinator.webView = nil
+        coordinator.release(view)
     }
 
     final class Coordinator: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
@@ -103,6 +83,72 @@ struct MascotWebSurface: NSViewRepresentable {
         private var visible = true
         private var lastSent: Data?
         init(onReady: @escaping (Bool) -> Void) { self.onReady = onReady }
+
+        func makeView(configuration: MascotMotionConfiguration) -> PassiveMascotWebView {
+            self.configuration = configuration
+            let cached = Self.canReuse(configuration) ? MascotIdleRendererCache.shared.take() : nil
+            let view: PassiveMascotWebView
+            if let cached {
+                view = cached.view
+                cached.coordinator.disconnect(view)
+                ready = true
+            } else {
+                let settings = WKWebViewConfiguration()
+                settings.websiteDataStore = .nonPersistent()
+                view = PassiveMascotWebView(frame: .zero, configuration: settings)
+                view.setValue(false, forKey: "drawsBackground")
+                view.underPageBackgroundColor = .clear
+            }
+            webView = view
+            visible = false // Attachment decides visibility; a cached clock must remain paused.
+            lastSent = nil
+            view.configuration.userContentController.add(self, name: "mascot")
+            view.navigationDelegate = self
+            view.visibilityChanged = { [weak self] visible in self?.setVisible(visible) }
+            if cached != nil {
+                send()
+                // Avoid mutating SwiftUI state from makeNSView, and discard old callbacks.
+                Task { @MainActor [weak self, weak view] in
+                    guard let self, let view, self.webView === view else { return }
+                    self.onReady(self.ready)
+                }
+            } else if let html = Self.bundledHTML {
+                view.loadHTMLString(html, baseURL: nil)
+            }
+            return view
+        }
+
+        private static let bundledHTML: String? = Bundle.main.url(forResource: "MascotMotion", withExtension: "html")
+            .flatMap { try? String(contentsOf: $0, encoding: .utf8) }
+
+        private static func canReuse(_ value: MascotMotionConfiguration) -> Bool {
+            value.surface == .recall && value.ambient && value.mode == .idle
+        }
+
+        func release(_ view: PassiveMascotWebView) {
+            let reusable = Self.canReuse(configuration) && ready && !view.isLoading
+            onReady = { _ in }
+            configuration.visible = false
+            setVisible(false)
+            view.visibilityChanged = nil
+            view.dispose()
+            if reusable {
+                MascotIdleRendererCache.shared.insert(view, coordinator: self)
+            } else {
+                disconnect(view)
+            }
+        }
+
+        fileprivate func disconnect(_ view: PassiveMascotWebView) {
+            onReady = { _ in }
+            view.stopLoading()
+            view.configuration.userContentController.removeScriptMessageHandler(forName: "mascot")
+            view.navigationDelegate = nil
+            view.visibilityChanged = nil
+            view.dispose()
+            webView = nil
+            ready = false
+        }
         func setVisible(_ value: Bool) { visible = value; send() }
         func send() {
             guard ready, let webView else { return }
@@ -127,6 +173,45 @@ struct MascotWebSurface: NSViewRepresentable {
                      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             decisionHandler(navigationAction.request.url?.scheme == "about" ? .allow : .cancel)
         }
+    }
+}
+
+/// A bounded warm cache of offline decoration, never a live business presentation.
+/// Keep the old coordinator only to observe process failure while parked.
+@MainActor
+final class MascotIdleRendererCache {
+    static let shared = MascotIdleRendererCache()
+    struct Entry {
+        let view: PassiveMascotWebView
+        let coordinator: MascotWebSurface.Coordinator
+    }
+    private var entries: [Entry] = []
+    var count: Int { entries.count }
+
+    func take() -> Entry? {
+        for index in entries.indices.reversed() {
+            let entry = entries[index]
+            if !entry.coordinator.ready || entry.view.isLoading {
+                entries.remove(at: index).coordinator.disconnect(entry.view)
+            } else if entry.view.superview == nil && entry.view.window == nil {
+                return entries.remove(at: index)
+            }
+        }
+        return nil
+    }
+
+    func insert(_ view: PassiveMascotWebView, coordinator: MascotWebSurface.Coordinator) {
+        guard !entries.contains(where: { $0.view === view }) else { return }
+        entries.append(Entry(view: view, coordinator: coordinator))
+        while entries.count > 2 {
+            let old = entries.removeFirst()
+            old.coordinator.disconnect(old.view)
+        }
+    }
+
+    func clear() {
+        for entry in entries { entry.coordinator.disconnect(entry.view) }
+        entries.removeAll()
     }
 }
 

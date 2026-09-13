@@ -42,6 +42,8 @@ extension RunwayPalette {
     var decorativeAccent: Color { monochrome ? copy : agent }
     var history: Color { monochrome ? ink : agent }
     var hoverWash: Color { monochrome ? ink : agent }
+    var navigationHover: Color { ink.opacity(0.07) }
+    var navigationSelection: Color { ink.opacity(0.12) }
     var controlBorder: Color { monochrome ? copy : hairline }
 }
 
