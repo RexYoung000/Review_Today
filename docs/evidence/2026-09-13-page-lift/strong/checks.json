@@ -1,0 +1,20 @@
+{
+  "light": {
+    "max_opacity": 0.6464115977287292,
+    "all_active": true,
+    "decode_exit": 0,
+    "decode_errors": ""
+  },
+  "dark": {
+    "max_opacity": 0.6467533707618713,
+    "all_active": true,
+    "decode_exit": 0,
+    "decode_errors": ""
+  },
+  "reduced": {
+    "max_opacity": 0,
+    "all_active": true,
+    "decode_exit": 0,
+    "decode_errors": ""
+  }
+}

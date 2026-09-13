@@ -1,0 +1,106 @@
+{
+  "method": "Original frame timestamps; Today title crop x310 y30 w180 h80, gray<205, at least 8 ink pixels per row",
+  "observed_displacement_pixels": 24,
+  "rows": [
+    {
+      "time": 0.64,
+      "title_top": 73
+    },
+    {
+      "time": 0.666667,
+      "title_top": 72
+    },
+    {
+      "time": 0.698333,
+      "title_top": 69
+    },
+    {
+      "time": 0.728333,
+      "title_top": 67
+    },
+    {
+      "time": 0.76,
+      "title_top": 60
+    },
+    {
+      "time": 0.791667,
+      "title_top": 58
+    },
+    {
+      "time": 0.825,
+      "title_top": 54
+    },
+    {
+      "time": 0.856667,
+      "title_top": 52
+    },
+    {
+      "time": 0.881667,
+      "title_top": 50
+    },
+    {
+      "time": 0.911667,
+      "title_top": 49
+    },
+    {
+      "time": 0.941667,
+      "title_top": 49
+    },
+    {
+      "time": 0.973333,
+      "title_top": 49
+    },
+    {
+      "time": 1.001667,
+      "title_top": 49
+    },
+    {
+      "time": 1.031667,
+      "title_top": 49
+    },
+    {
+      "time": 1.06,
+      "title_top": 49
+    },
+    {
+      "time": 1.095,
+      "title_top": 49
+    },
+    {
+      "time": 1.126667,
+      "title_top": 49
+    },
+    {
+      "time": 1.161667,
+      "title_top": 49
+    },
+    {
+      "time": 1.196667,
+      "title_top": 49
+    },
+    {
+      "time": 1.226667,
+      "title_top": 49
+    },
+    {
+      "time": 1.255,
+      "title_top": 49
+    },
+    {
+      "time": 1.285,
+      "title_top": 49
+    },
+    {
+      "time": 1.315,
+      "title_top": 49
+    },
+    {
+      "time": 1.343333,
+      "title_top": 49
+    },
+    {
+      "time": 1.373333,
+      "title_top": 49
+    }
+  ]
+}

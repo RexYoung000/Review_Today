@@ -17,7 +17,7 @@ struct PageArrivalFade: NSViewRepresentable {
     static func dismantleNSView(_ view: Surface, coordinator: ()) { view.clear() }
 
     final class Surface: NSView {
-        static let duration: TimeInterval = 0.18
+        static let duration: TimeInterval = 0.26
         static let animationKey = "pageArrival"
         private var page: SidebarItem?
         private var lastChange: TimeInterval?
@@ -107,7 +107,7 @@ struct PageArrivalLift: ViewModifier {
         guard !reduced, phase == .active, !repeated else { return }
         var transaction = Transaction(animation: nil)
         transaction.disablesAnimations = true
-        withTransaction(transaction) { displacement = 8 }
+        withTransaction(transaction) { displacement = 24 }
         startTask = Task { @MainActor in
             await Task.yield()
             guard !Task.isCancelled else { return }

@@ -1,0 +1,16 @@
+{
+  "daily": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "backup": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.before-strong-1789301990.app.backup",
+  "configuration": "standard Debug (-Onone)",
+  "same_designated_requirement": true,
+  "debug_dylib_sha256": "a91bf6c63bf7bea068607034c1ef058d4dc5677e032399fe5882af9581d96908",
+  "startup_checked": true,
+  "running_processes": [
+    "47889 /Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app/Contents/MacOS/Review_Today"
+  ],
+  "checks": [
+    "original 3 sessions and 8 knowledge visible",
+    "5 main-page navigations select the correct target",
+    "Agent text input accepts focus"
+  ]
+}
