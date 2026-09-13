@@ -1,0 +1,35 @@
+Diagnostic only, not a latency measurement. Full sample: /tmp/review-today-followup-stress-sample.txt
+
+Process:         NavigationPerformanceQA [36287]
+Parent Process:  launchd [1]
+Date/Time:       2026-09-13 16:49:54.935 +0800
+Launch Time:     2026-09-13 16:45:23.116 +0800
+Physical footprint:         100.9M
+Physical footprint (peak):  139.0M
+3 @objc ActivityDayGrid.DayButton.draw(_:)  (in NavigationPerformanceQA) + 24  [0x1024267a4]
+3 specialized ActivityDayGrid.DayButton.draw(_:)  (in NavigationPerformanceQA) + 124  [0x102606d28]
+214 TodayView.body.getter  (in NavigationPerformanceQA) + 476  [0x1025d2638]
+45 TodayView.body.getter  (in NavigationPerformanceQA) + 580  [0x1025d26a0]
+4 TodayView.body.getter  (in NavigationPerformanceQA) + 1092  [0x1025d28a0]
+3 TodayView.body.getter  (in NavigationPerformanceQA) + 1916  [0x1025d2bd8]
+2 TodayView.body.getter  (in NavigationPerformanceQA) + 1240  [0x1025d2934]
+2 TodayView.body.getter  (in NavigationPerformanceQA) + 2952  [0x1025d2fe4]
+1 TodayView.body.getter  (in NavigationPerformanceQA) + 524  [0x1025d2668]
+1 TodayView.body.getter  (in NavigationPerformanceQA) + 940  [0x1025d2808]
+1 TodayView.body.getter  (in NavigationPerformanceQA) + 2876  [0x1025d2f98]
+40 ActivityDayGrid.updateNSView(_:context:)  (in NavigationPerformanceQA) + 572  [0x102425f1c]
+40 @objc ActivityDayGrid.DayButton.init(frame:)  (in NavigationPerformanceQA) + 20  [0x102426650]
+30 ActivityDayGrid.DayButton.init(frame:)  (in NavigationPerformanceQA) + 176  [0x102426578]
+5 ActivityDayGrid.DayButton.init(frame:)  (in NavigationPerformanceQA) + 252  [0x1024265c4]
+3 ActivityDayGrid.DayButton.init(frame:)  (in NavigationPerformanceQA) + 240  [0x1024265b8]
+1 ActivityDayGrid.DayButton.init(frame:)  (in NavigationPerformanceQA) + 292  [0x1024265ec]
+1 ActivityDayGrid.DayButton.init(frame:)  (in NavigationPerformanceQA) + 332  [0x102426614]
+12 ActivityDayGrid.updateNSView(_:context:)  (in NavigationPerformanceQA) + 1000  [0x1024260c8]
+4 ActivityDayGrid.updateNSView(_:context:)  (in NavigationPerformanceQA) + 520  [0x102425ee8]
+2 ActivityDayGrid.updateNSView(_:context:)  (in NavigationPerformanceQA) + 1036  [0x1024260ec]
+1 ActivityDayGrid.updateNSView(_:context:)  (in NavigationPerformanceQA) + 900  [0x102426064]
+1 ActivityDayGrid.updateNSView(_:context:)  (in NavigationPerformanceQA) + 1188  [0x102426184]
+1 initializeWithCopy for SessionActivityContent  (in NavigationPerformanceQA) + 120  [0x1026ff838]
+1 ActivityDayGrid.updateNSView(_:context:)  (in NavigationPerformanceQA) + 1036  [0x1024260ec]
+1 ActivityDayGrid.updateNSView(_:context:)  (in NavigationPerformanceQA) + 1176  [0x102426178]
+1 ActivityDayGrid.updateNSView(_:context:)  (in NavigationPerformanceQA) + 1188  [0x102426184]

@@ -1,14 +1,31 @@
 import SwiftData
 import SwiftUI
 
-/// Each visible row observes its own newest records. A navigation selection no
-/// longer scans every historical run for each sidebar/Today row.
+/// This identity boundary must not contain Query/DynamicProperty. SwiftUI may
+/// update those before testing equality, even when navigation did not change
+/// the row's session. The child still independently observes real data changes.
 struct SessionActivityStatus: View {
+    let sessionID: UUID
     let archived: Bool
+    var body: some View {
+        SessionStatusIdentity(sessionID: sessionID, archived: archived).equatable()
+    }
+}
+
+private struct SessionStatusIdentity: View, Equatable {
+    let sessionID: UUID
+    let archived: Bool
+    var body: some View { SessionActivityContent(sessionID: sessionID, archived: archived) }
+}
+
+private struct SessionActivityContent: View {
+    let archived: Bool
+    private let sessionID: UUID
     @Query private var runs: [AgentRun]
     @Query private var tasks: [LearningTask]
     init(sessionID: UUID, archived: Bool) {
         self.archived = archived
+        self.sessionID = sessionID
         _runs = Query(SessionRecentRecords.run(sessionID))
         _tasks = Query(SessionRecentRecords.task(sessionID))
     }
@@ -25,6 +42,9 @@ struct SessionActivityStatus: View {
     }
     var body: some View {
         let state = state
+#if DEBUG
+        let _ = SessionStatusDiagnostics.didRender?(sessionID, state.symbol, state.label)
+#endif
         Group {
             if state.symbol == "circle" { Circle().fill(.secondary.opacity(0.4)).frame(width: 5, height: 5) }
             else { Image(systemName: state.symbol).help(state.label) }
@@ -65,3 +85,10 @@ struct TodaySessionStatus: View {
     }
     var body: some View { Text(label) }
 }
+
+#if DEBUG
+/// Native-host integration evidence; omitted from optimized performance QA and Release.
+enum SessionStatusDiagnostics {
+    static var didRender: ((UUID, String, String) -> Void)?
+}
+#endif

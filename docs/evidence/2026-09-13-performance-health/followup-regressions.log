@@ -1,0 +1,61 @@
+Verified current-source module SHA256: 983b497748de4fce3c0cb4d6af77401b7318f62e926b697b6622692e1341123a
+/tmp/review-today-shared-contracts.zhnmm3m5/NavigationDataContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'NavigationDataContractTests/NavigationDataContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/NavigationDataContractTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'NavigationDataContractTests/NavigationDataContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.zhnmm3m5/NavigationDataContractTests.swift'
+ 3 | import Foundation
+ 4 | import SwiftData
+PASS: unchanged/failed/retried/deleted drafts, date backfill, scoped sync work, activity identity/history/DST/timezone/cache invalidation
+PASS executable: NavigationDataContractTests
+/tmp/review-today-shared-contracts.zhnmm3m5/UIPolishContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'UIPolishContractTests/UIPolishContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/UIPolishContractTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'UIPolishContractTests/UIPolishContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.zhnmm3m5/UIPolishContractTests.swift'
+ 3 | import AppKit
+ 4 | import SwiftUI
+PASS: initial/explicit/outside/locked/stale focus, protected text and selection, complete legacy titles and explanations without writes, exact capsule geometry, native book configuration
+PASS executable: UIPolishContractTests
+/tmp/review-today-shared-contracts.zhnmm3m5/InteractionFocusTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'InteractionFocusTests/InteractionFocusTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/InteractionFocusTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'InteractionFocusTests/InteractionFocusTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.zhnmm3m5/InteractionFocusTests.swift'
+ 3 | import AppKit
+ 4 | import SwiftUI
+PASS: ancestor-focus guard, rendered single-row focus independent of selection, light/dark/disabled
+PASS executable: InteractionFocusTests
+/tmp/review-today-shared-contracts.zhnmm3m5/LearningInputContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'LearningInputContractTests/LearningInputContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/LearningInputContractTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'LearningInputContractTests/LearningInputContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.zhnmm3m5/LearningInputContractTests.swift'
+  3 | // Run as an isolated AppKit/SwiftData test executable, not against user data.
+  4 | import AppKit
+PASS: 12 scenarios, 6-card refresh, protected prefill/IME/undo, sidebar preference, native input, atomic first-send failure/retry, no empty Sessions, independent drafts/preferences, tags, partial persistence, activity
+PASS executable: LearningInputContractTests
+/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/SessionOrganizationContractTests.swift:7:168: warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+ 7 | struct SessionOrganizationContractTests {
+ 8 |     enum Disk: Error { case failed }
+ 9 |     static func require(_ value: Bool, _ message: String = "Contract failed", file: StaticString = #filePath, line: UInt = #line) { precondition(value, message, file: file, line: line) }
+   |                                                                                                    |                                                                   |- warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+   |                                                                                                    |                                                                   `- note: add parentheses to silence this warning
+   |                                                                                                    `- note: did you mean for parameter 'file' to default to '#file'?
+10 |     @MainActor static func main() throws {
+11 |         let directory = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("review-today-folders-" + UUID().uuidString)
+
+Swift.precondition.file:1:1: note: 'file' declared here
+1 | file: StaticString
+  | `- note: 'file' declared here
+
+/tmp/review-today-shared-contracts.zhnmm3m5/SessionOrganizationContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'SessionOrganizationContractTests/SessionOrganizationContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/SessionOrganizationContractTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'SessionOrganizationContractTests/SessionOrganizationContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.zhnmm3m5/SessionOrganizationContractTests.swift'
+ 3 | import Foundation
+ 4 | import SwiftData
+PASS: landing fallback stable first-send identity, save failure, folder validation/move/rollback, archive search scope, folder retention, disk reopen and non-destructive folder deletion
+PASS executable: SessionOrganizationContractTests
+All selected contracts complete: /tmp/review-today-shared-contracts.zhnmm3m5

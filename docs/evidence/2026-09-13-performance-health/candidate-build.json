@@ -5,6 +5,6 @@
   "same_designated_requirement_as_daily": true,
   "binary_sha256": "3ced39166db0997b6ead98b6b9e8f18730f9f0086f04d85f0aa11488edf03195",
   "daily_updated": true,
-  "daily_launched_and_checked": false,
-  "reason": "Mac locked; normal UI launch and final live measurements pending"
+  "daily_launched_and_checked": true,
+  "startup_check": "2026-09-13: current daily app launched normally; 3 existing sessions, 8 knowledge items and local service health verified before this follow-up change."
 }

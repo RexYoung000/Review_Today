@@ -1,0 +1,14 @@
+{
+  "candidate": "/tmp/review-today-health-build/Build/Products/Debug/Review_Today.app",
+  "daily": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "previous_build_backup": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.before-followup-20260913-165328.app.backup",
+  "same_designated_requirement_as_daily": true,
+  "binary_sha256": "e2c6e71fb1e2d4870793876a627fe04c2df5c95b54f672eea45c16248d11282d",
+  "daily_updated": true,
+  "daily_launched_and_checked": true,
+  "status": "Started through Finder; existing 3 sessions and 8 knowledge items, service health, 20 navigation selections, Chinese draft across navigation and mode menu verified. QA apps closed.",
+  "service_health": {
+    "status": "ok",
+    "key_configured": true
+  }
+}

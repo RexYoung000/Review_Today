@@ -1,0 +1,35 @@
+Diagnostic only, not a latency measurement. Full sample: /tmp/review-today-followup-daily-sample.txt
+20 navigation UI checks started at Unix ms 1789289680609 and ended at 1789289702181; sample overlaps about the first 10 seconds of that sequence. All 20 selected-page checks passed.
+
+Process:         Review_Today [36726]
+Parent Process:  launchd [1]
+Date/Time:       2026-09-13 16:54:30.545 +0800
+Launch Time:     2026-09-13 16:54:02.017 +0800
+Physical footprint:         53.8M
+Physical footprint (peak):  58.7M
+24 ActivityDayGrid.updateNSView(_:context:)  (in Review_Today) + 596  [0x10428a174]  ActivityDayGrid.swift:15
+24 @objc ActivityDayGrid.DayButton.init(frame:)  (in Review_Today) + 20  [0x10428b69c]  /<compiler-generated>:0
+21 ActivityDayGrid.DayButton.init(frame:)  (in Review_Today) + 176  [0x10428b5c4]  ActivityDayGrid.swift:44
+2 ActivityDayGrid.DayButton.init(frame:)  (in Review_Today) + 240  [0x10428b604]  ActivityDayGrid.swift:45
+1 ActivityDayGrid.DayButton.init(frame:)  (in Review_Today) + 220  [0x10428b5f0]  ActivityDayGrid.swift:45
+10 ActivityDayGrid.updateNSView(_:context:)  (in Review_Today) + 992  [0x10428a300]  ActivityDayGrid.swift:15
+6 ActivityDayGrid.updateNSView(_:context:)  (in Review_Today) + 544  [0x10428a140]  ActivityDayGrid.swift:15
+1 ActivityDayGrid.updateNSView(_:context:)  (in Review_Today) + 952  [0x10428a2d8]  ActivityDayGrid.swift:15
+3 TodaySessionStatus.label.getter  (in Review_Today) + 160  [0x1045e33c8]  SessionActivityStatus.swift:77
+2 TodaySessionStatus.label.getter  (in Review_Today) + 1676  [0x1045e39b4]  SessionActivityStatus.swift:84
+1 TodaySessionStatus.label.getter  (in Review_Today) + 1440  [0x1045e38c8]  SessionActivityStatus.swift:84
+3 TodayView.body.getter  (in Review_Today) + 476  [0x10463bc00]  TodayView.swift:37
+2 TodayView.body.getter  (in Review_Today) + 3280  [0x10463c6f4]  TodayView.swift:48
+1 TodayView.body.getter  (in Review_Today) + 524  [0x10463bc30]  TodayView.swift:38
+1 TodayView.body.getter  (in Review_Today) + 576  [0x10463bc64]  TodayView.swift:39
+1 TodayView.body.getter  (in Review_Today) + 1104  [0x10463be74]  TodayView.swift:41
+1 TodayView.body.getter  (in Review_Today) + 3324  [0x10463c720]  TodayView.swift:49
+1 ActivityDayGrid.updateNSView(_:context:)  (in Review_Today) + 1232  [0x10428a3f0]  /<compiler-generated>:0
+2 @objc ActivityDayGrid.DayButton.draw(_:)  (in Review_Today) + 24  [0x10428b914]  /<compiler-generated>:53
+1 specialized ActivityDayGrid.DayButton.draw(_:)  (in Review_Today) + 92  [0x104292ce0]  ActivityDayGrid.swift:54
+1 specialized ActivityDayGrid.DayButton.draw(_:)  (in Review_Today) + 148  [0x104292d18]  ActivityDayGrid.swift:55
+32 ConversationSync.run(context:monitor:)  (in Review_Today) + 1404  [0x1043b2dd8]  ConversationSync.swift:52
+2 ConversationSync.run(context:monitor:)  (in Review_Today) + 3768  [0x1043b3714]  ConversationSync.swift:58
+1 ConversationSync.run(context:monitor:)  (in Review_Today) + 8984  [0x1043b4b74]  ConversationSync.swift:75
+6 partial apply for closure #3 in ConversationSync.run(context:monitor:)  (in Review_Today) + 1  [0x1043c4551]
+6 closure #3 in ConversationSync.run(context:monitor:)  (in Review_Today) + 1  [0x1043b5939]  ConversationSync.swift:49

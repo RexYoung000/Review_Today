@@ -24,42 +24,35 @@ struct TodayView: View {
     private var settings: AppSettings? { settingsRows.first }
     private var developerMode: Bool { settings?.developerMode == true }
 
+    // Actions re-evaluate the clock and developer settings at activation time.
     private var dueItems: [Knowledge] {
-        knowledge.filter { ReviewQueue.isDue($0, developerMode: developerMode) }
-    }
-
-    private var activeLearning: [LearningTask] {
-        learningTasks.filter { !["completed", "cancelled", "terminal_failed"].contains($0.status) }
-    }
-
-    private var inboxCount: Int {
-        captureTasks.filter { ["needs_attention", "retryable_failed"].contains($0.status) }.count +
-        learningTasks.filter { LearningDecisionInbox.includes($0, sessions: learningSessions) }.count
-    }
-
-    private var todayResults: [ReviewAttempt] {
-        attempts.filter { row in
-            guard row.mode != "preview", row.acked, !row.effectiveGrade.isEmpty else { return false }
-            let completed = row.completedAt ?? reviewSessions.first(where: { $0.id == row.sessionId })?.endedAt
-            return completed.map(Calendar.current.isDateInToday) ?? false
-        }
-    }
-
-    private var activeKnowledgeCount: Int {
-        knowledge.filter { $0.lifecycle == "active" }.count
-    }
-
-    private var activeLearningSessions: [AgentSession] {
-        learningSessions.filter { $0.status == "active" }
-    }
-
-    private var recentLearningSessions: [AgentSession] {
-        recentExpanded ? activeLearningSessions : Array(activeLearningSessions.prefix(3))
+        let developerMode = developerMode
+        let now = Date.now
+        return knowledge.filter { ReviewQueue.isDue($0, developerMode: developerMode, now: now) }
     }
 
     var body: some View {
+        // Query getters and derived lists are evaluated once per body, not once
+        // per stat/header/row. In particular, do not read settings per knowledge.
+        let items = knowledge
+        let tasks = learningTasks
+        let sessions = learningSessions
+        let activeSessions = sessions.filter { $0.status == "active" }
+        let developerMode = developerMode
+        let now = Date.now
+        let dueCount = items.filter { ReviewQueue.isDue($0, developerMode: developerMode, now: now) }.count
+        let learningCount = tasks.filter { !["completed", "cancelled", "terminal_failed"].contains($0.status) }.count
+        let inboxCount = captureTasks.filter { ["needs_attention", "retryable_failed"].contains($0.status) }.count +
+            tasks.filter { LearningDecisionInbox.includes($0, sessions: sessions) }.count
+        let libraryCount = items.filter { $0.lifecycle == "active" }.count
+        let reviews = reviewSessions
+        let results = attempts.filter { row in
+            guard row.mode != "preview", row.acked, !row.effectiveGrade.isEmpty else { return false }
+            let completed = row.completedAt ?? reviews.first(where: { $0.id == row.sessionId })?.endedAt
+            return completed.map(Calendar.current.isDateInToday) ?? false
+        }
         VStack(spacing: 0) {
-            statusHeader
+            statusHeader(dueCount: dueCount, learningCount: learningCount)
                 .frame(maxWidth: 960)
                 .padding(.horizontal, 24)
                 .padding(.top, 24)
@@ -67,12 +60,12 @@ struct TodayView: View {
                 .frame(maxWidth: .infinity)
             ScrollView {
             VStack(alignment: .leading, spacing: Runway.gap) {
-                statusBoard
-                if !activeLearningSessions.isEmpty {
-                    recentLearningCard
+                statusBoard(dueCount: dueCount, learningCount: learningCount, inboxCount: inboxCount, libraryCount: libraryCount)
+                if !activeSessions.isEmpty {
+                    recentLearningCard(sessions: activeSessions)
                 }
-                if !todayResults.isEmpty {
-                    resultsCard
+                if !results.isEmpty {
+                    resultsCard(results: results, knowledge: items)
                 }
                 TodayActivityHeatmap(cache: activityCache, onOpenLearning: onOpenLearning, onOpenKnowledge: onOpenKnowledge)
             }
@@ -87,39 +80,39 @@ struct TodayView: View {
 
     }
 
-    private var statusHeader: some View {
+    private func statusHeader(dueCount: Int, learningCount: Int) -> some View {
             HStack(alignment: .center, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(dueItems.isEmpty ? "今天的学习状态" : tonightTitle)
+                    Text(dueCount == 0 ? "今天的学习状态" : tonightTitle)
                         .font(.system(size: 28, weight: .bold))
                         .foregroundStyle(runway.ink)
                 }
                 Spacer(minLength: 8)
-                if !dueItems.isEmpty {
+                if dueCount > 0 {
                     RunwayPrimaryButton(title: String(localized: "现在开始")) {
                         coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
                         openWindow(id: "review")
                     }
                 } else {
-                    RunwayPrimaryButton(title: activeLearning.isEmpty ? "开始学习" : "继续学习") { onOpenLearning(nil) }
+                    RunwayPrimaryButton(title: learningCount == 0 ? "开始学习" : "继续学习") { onOpenLearning(nil) }
                 }
             }
     }
 
-    private var statusBoard: some View {
+    private func statusBoard(dueCount: Int, learningCount: Int, inboxCount: Int, libraryCount: Int) -> some View {
             StatStrip(items: [
                 StatCell(
                     id: "due",
-                    value: "\(dueItems.count)",
+                    value: "\(dueCount)",
                     title: String(localized: "今晚复习"),
-                    action: dueItems.isEmpty ? nil : {
+                    action: dueCount == 0 ? nil : {
                         coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
                         openWindow(id: "review")
                     }
                 ),
                 StatCell(
                     id: "learning",
-                    value: "\(activeLearning.count)",
+                    value: "\(learningCount)",
                     title: String(localized: "学习中"),
                     action: { onOpenLearning(nil) }
                 ),
@@ -131,14 +124,14 @@ struct TodayView: View {
                 ),
                 StatCell(
                     id: "library",
-                    value: "\(activeKnowledgeCount)",
+                    value: "\(libraryCount)",
                     title: String(localized: "知识库"),
                     action: onOpenLibrary
                 )
             ])
     }
 
-    private var recentLearningCard: some View {
+    private func recentLearningCard(sessions: [AgentSession]) -> some View {
         RunwayCard {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
@@ -151,20 +144,20 @@ struct TodayView: View {
                 Group {
                     if recentExpanded {
                         ScrollView {
-                            recentSessionRows
+                            recentSessionRows(sessions)
                         }
                         .frame(maxHeight: 280)
                     } else {
-                        recentSessionRows
+                        recentSessionRows(Array(sessions.prefix(3)))
                     }
                 }
             }
         }
     }
 
-    private var recentSessionRows: some View {
+    private func recentSessionRows(_ sessions: [AgentSession]) -> some View {
         VStack(spacing: 4) {
-            ForEach(recentLearningSessions, id: \.id) { session in
+            ForEach(sessions, id: \.id) { session in
                     Button { onOpenLearning(session.id) } label: {
                         HStack {
                             VStack(alignment: .leading, spacing: 3) {
@@ -191,13 +184,13 @@ struct TodayView: View {
         }
     }
 
-    private var resultsCard: some View {
+    private func resultsCard(results: [ReviewAttempt], knowledge: [Knowledge]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(String(localized: "今日复习结果"))
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(runway.ink)
             VStack(alignment: .leading, spacing: 10) {
-                ForEach(todayResults, id: \.attemptId) { row in
+                ForEach(results, id: \.attemptId) { row in
                     let item = knowledge.first(where: { $0.id == row.knowledgeId })
                     HStack(alignment: .firstTextBaseline) {
                         VStack(alignment: .leading, spacing: 2) {

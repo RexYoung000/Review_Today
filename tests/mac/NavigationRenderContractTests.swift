@@ -3,7 +3,20 @@ import SwiftUI
 import SwiftData
 import Observation
 
-@Observable private final class NavigationState { var page = 0 }
+@Observable private final class NavigationState {
+    var page = 0
+    var archived = false
+    var sessionID = UUID()
+}
+private struct SessionStatusHost: View {
+    let state: NavigationState
+    var body: some View {
+        HStack {
+            Text("Page \(state.page)")
+            SessionActivityStatus(sessionID: state.sessionID, archived: state.archived)
+        }
+    }
+}
 private struct ActivitySourceHost: View {
     let state: NavigationState
     let cache: TodayActivityCache
@@ -50,7 +63,67 @@ struct NavigationRenderContractTests {
         precondition(ComposerControlsLayout.size(sizes, available: 192) == CGSize(width: 192, height: 28))
         precondition(ComposerControlsLayout.size(sizes, available: 180) == CGSize(width: 160, height: 54))
         try activityObservation()
+        try sessionStatusObservation()
         print("PASS: native date buttons, exact actions, disabled/future accessibility, compact geometry, reused targets, single-set composer layout")
+    }
+
+    @MainActor static func sessionStatusObservation() throws {
+        let container = try ModelContainer(for: M1DebugFixture.schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let context = container.mainContext
+        let state = NavigationState()
+        let session = AgentSession(title: "Status fixture")
+        state.sessionID = session.id
+        context.insert(session); try context.save()
+        var renders = 0
+        var symbol = "", label = ""
+        SessionStatusDiagnostics.didRender = { _, nextSymbol, nextLabel in
+            renders += 1; symbol = nextSymbol; label = nextLabel
+        }
+        defer { SessionStatusDiagnostics.didRender = nil }
+        let host = NSHostingView(rootView: SessionStatusHost(state: state).modelContainer(container))
+        host.frame = NSRect(x: 0, y: 0, width: 320, height: 100)
+        let window = NSWindow(contentRect: host.frame, styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false; window.contentView = host
+        defer { window.close() }
+        func settle() {
+            let deadline = Date.now.addingTimeInterval(0.2)
+            while Date.now < deadline {
+                host.layoutSubtreeIfNeeded()
+                RunLoop.main.run(until: Date.now.addingTimeInterval(0.01))
+            }
+        }
+        settle()
+        precondition(renders > 0 && label == "尚未运行")
+        let before = renders
+        for index in 1...10 { state.page = index; settle() }
+        precondition(renders == before, "navigation identity changes must not read status queries")
+        let run = AgentRun(id: UUID(), sessionID: session.id)
+        run.status = "running"; run.userSummary = "Working"
+        context.insert(run); try context.save(); settle()
+        precondition(symbol == "circle.dotted" && label == "Working", "inserted run must appear through the stable identity boundary")
+        run.status = "retryable_failed"; try context.save(); settle()
+        precondition(symbol == "exclamationmark.triangle", "existing run edits must independently refresh")
+        run.status = "completed"
+        let task = LearningTask(sessionID: session.id, inputMessageID: UUID())
+        task.status = "awaiting_user"; task.requiredActionType = "submit_answer"
+        context.insert(task); try context.save(); settle()
+        precondition(symbol == "bubble.left" && label == "等待作答")
+        task.requiredActionType = "continue"; try context.save(); settle()
+        precondition(label == "可继续学习")
+        let newer = AgentRun(id: UUID(), sessionID: session.id)
+        newer.status = "cancelled"; newer.updatedAt = run.updatedAt.addingTimeInterval(10)
+        context.insert(newer); try context.save(); settle()
+        precondition(symbol == "pause.circle", "newest record must replace the previous one")
+        run.updatedAt = newer.updatedAt.addingTimeInterval(10)
+        run.status = "running"; try context.save(); settle()
+        precondition(symbol == "circle.dotted", "updated ordering must change the displayed latest run")
+        context.delete(run); try context.save(); settle()
+        precondition(symbol == "pause.circle", "deleting the latest record must reveal its predecessor")
+        state.archived = true; settle()
+        precondition(symbol == "archivebox")
+        state.archived = false; state.sessionID = UUID(); settle()
+        precondition(label == "尚未运行", "a reused row must not retain another session's status")
+        print("PASS: navigation skips status queries; inserts, edits, task actions, ordering, deletion, archive and session changes remain live")
     }
 
     @MainActor static func activityObservation() throws {

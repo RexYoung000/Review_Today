@@ -1,0 +1,63 @@
+{
+  "activations" : [
+    {
+      "activation_draw_ms" : 67.788416636176407,
+      "app_active" : true,
+      "time" : 1789289130.5530682
+    },
+    {
+      "activation_draw_ms" : 17.212208360433578,
+      "app_active" : true,
+      "time" : 1789289136.3868961
+    },
+    {
+      "activation_draw_ms" : 66.607083310373127,
+      "app_active" : true,
+      "time" : 1789289229.3282661
+    },
+    {
+      "activation_draw_ms" : 0.26179163251072168,
+      "app_active" : true,
+      "time" : 1789289280.8950009
+    }
+  ],
+  "boundary" : "handler\/activation notification to native draw; excludes OS input delivery and scanout",
+  "dataset" : "stress",
+  "navigation_and_menus" : [
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 152.49308338388801,
+      "page_draw_ms" : 152.36608334816992,
+      "time" : 1789289136.851094
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 88.045666692778468,
+      "page_draw_ms" : 87.987583363428712,
+      "time" : 1789289136.9926529
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 130.72466664016247,
+      "page_draw_ms" : 130.65612502396107,
+      "time" : 1789289137.683871
+    },
+    {
+      "app_active" : true,
+      "destination" : "learning",
+      "feedback_draw_ms" : 83.325458341278136,
+      "page_draw_ms" : 83.261124906130135,
+      "time" : 1789289138.1982589
+    },
+    {
+      "app_active" : true,
+      "destination" : "today",
+      "feedback_draw_ms" : 131.02562492713332,
+      "page_draw_ms" : 130.98191656172276,
+      "time" : 1789289139.3424571
+    }
+  ]
+}
