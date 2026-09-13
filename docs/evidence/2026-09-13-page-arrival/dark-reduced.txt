@@ -1,0 +1,1 @@
+Current-process QA window, actual presentation timestamps, 60 fps target, reduced=true, no audio. Scripted real page selection; not OS input latency evidence.

@@ -1,0 +1,2522 @@
+[
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.15525050461292267,
+    "time" : 0.11834374989848584,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.11888083070516586,
+    "time" : 0.13979108328931034,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.081260092556476593,
+    "time" : 0.16041391657199711,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.047910917550325394,
+    "time" : 0.1818592082709074,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.021670741960406303,
+    "time" : 0.20314412494190037,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.0043727015145123005,
+    "time" : 0.22465620830189437,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.24607245833612978,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.2664508749730885,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.2878938332432881,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.30937116662971675,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.33086508326232433,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.35233404161408544,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.37354204163420945,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.39493987499736249,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.41645345825236291,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.43788658326957375,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.45811337500344962,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.47957483329810202,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.50099949992727488,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.52235454157926142,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.54253749991767108,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.56400187499821186,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.58439179160632193,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.60542208328843117,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.62686462490819395,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.64829529158305377,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.66975149989593774,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.6900830416707322,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.71148012496996671,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.73262479156255722,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.75400999991688877,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.77481204166542739,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.79629937489517033,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.81679374992381781,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.8374008332611993,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.8588290415937081,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.87965733325108886,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.90114379161968827,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.92190070822834969,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 0.94256349990610033,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 0.97865274990908802,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.15526677668094635,
+    "time" : 1.0173117916565388,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.12156002968549728,
+    "time" : 1.0375115416245535,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.084479086101055145,
+    "time" : 1.057627416565083,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.050593309104442596,
+    "time" : 1.0790565416682512,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.024023285135626793,
+    "time" : 1.100016166572459,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.0056264400482177734,
+    "time" : 1.1215307916281745,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.1429710832890123,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.1636187916155905,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.1850481249857694,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.2054655415704474,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.2267322082770988,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.2476408749353141,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.2678730000043288,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.2886987916426733,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.309299458283931,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.3308143332833424,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.3513222499750555,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.3728257499169558,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.3943307499866933,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.4158961249049753,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.4373377916635945,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.4587823332985863,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.4802589999744669,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.5017269583186135,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.5232793749310076,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.5447236666223034,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.566245291614905,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.5877384999766946,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.6092593332286924,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.6294941665837541,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.6509717499138787,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.6724562499439344,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.693919499986805,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.7154659582301974,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.7368980000028387,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.7574789166683331,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.7787521249847487,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.7997872915584594,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 1.8212550833122805,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 1.9119404582306743,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.15766814351081848,
+    "time" : 1.9812983749434352,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.12454207241535187,
+    "time" : 2.002549291588366,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.084698781371116638,
+    "time" : 2.024040833231993,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.05065639317035675,
+    "time" : 2.0455565833253786,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.023530244827270508,
+    "time" : 2.067036833264865,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.0053709889762103558,
+    "time" : 2.0885057499399409,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.1097025416092947,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.130007250001654,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.1514837082941085,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.1720449583372101,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.1934634583303705,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.214945291634649,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.2354562082327902,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.2569759999169037,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.2784973332891241,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.3000309582566842,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.3216028749011457,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.3430317499442026,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.3645130832446739,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.386007291614078,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.4074766666162759,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.4289034166140482,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.4501420416636392,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.4715664582327008,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.4930476666195318,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.5133245416218415,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.5346451249206439,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.5561449165688828,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.577603374957107,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.5990377916023135,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.6204674165928736,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.6407527083065361,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.6622332916595042,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.6837026666617021,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.7045415416359901,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.7260142499580979,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.7475067499326542,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.7681959999026731,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 2.7893653332721442,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0.15814304351806641,
+    "time" : 2.9145136249717325,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0.12044547498226166,
+    "time" : 2.9360869582742453,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0.081267446279525757,
+    "time" : 2.9575141249224544,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0.04793117567896843,
+    "time" : 2.9789412083337083,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0.02285577729344368,
+    "time" : 2.9991268332814798,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0.0050073335878551006,
+    "time" : 3.0206010416150093,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.0411529166158289,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.0623329998925328,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.0842363332631066,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.1052004999946803,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.1266790416557342,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.1477717915549874,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.1692500415956602,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.1907503332477063,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.2120692916214466,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.2335014999844134,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.2549156249733642,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.276424124953337,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.2979296249104664,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.3193762499140576,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.3395316249225289,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.3609153332654387,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.3819787915563211,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.4033299583243206,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.4248374166199937,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.4462718332652003,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.4666094166459516,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.4880578332813457,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.5095374166266993,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.5310051249107346,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.5524737916421145,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.5737643749453127,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.5952033749781549,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.6164731249446049,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.6379312915960327,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.6594018749892712,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.6808655415661633,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.7023884999798611,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.7239470832282677,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "inbox",
+    "presentation_opacity" : 0,
+    "time" : 3.745460124919191,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.15859957039356232,
+    "time" : 3.9106402499601245,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.12207609415054321,
+    "time" : 3.9316755832405761,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.082595713436603546,
+    "time" : 3.9531396249076352,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.049567710608243942,
+    "time" : 3.9742058749543503,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.022668313235044479,
+    "time" : 3.9957119582686573,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0.0053194141946732998,
+    "time" : 4.0164762082276866,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.0379167082719505,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.0581562916049734,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.0782374582486227,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.0996827916242182,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.1211156249046326,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.1424745415570214,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.1639349999604747,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.1848578333156183,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.2063392916461453,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.2273954999400303,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.2488217082573101,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.2703113749157637,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.2914806249318644,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.3125013749813661,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.3339647916145623,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.3554029582301155,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.376859916606918,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.3983376249670982,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.418752291589044,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.4402041248977184,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.461685249931179,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.4819385833106935,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.5035129999741912,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.525011416641064,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.5464471249142662,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.5676429165760055,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.5890961249824613,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.6099850832251832,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.6311184582300484,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.6525660832412541,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.6740590416593477,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.6955652083270252,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.7170064999954775,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "library",
+    "presentation_opacity" : 0,
+    "time" : 4.7385322499321774,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.15676780045032501,
+    "time" : 4.8213677916210145,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.1206066906452179,
+    "time" : 4.8425317083019763,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.081382244825363159,
+    "time" : 4.8639840832911432,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.047896452248096466,
+    "time" : 4.8854922082973644,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.021430110558867455,
+    "time" : 4.9070150000043213,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0.0042477990500628948,
+    "time" : 4.9285265415674075,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 4.9500134999398142,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 4.9714874166529626,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 4.9926673748996109,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.0139794582501054,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.0348594998940825,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.0563534166431054,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.0776934166206047,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.0991996666416526,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.1206026666332036,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.1420504165580496,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.1633752499474213,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.1848753333324566,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.2052860832773149,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.2257656665751711,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.2472958749858662,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.2688123332336545,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.2903296665754169,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.3113789582857862,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.3321568749379367,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.353638416621834,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.3742869165726006,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.3955381666310132,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.4169914582744241,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.4371661666082218,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.4576111249625683,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.478216499905102,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.4997517082374543,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.5211575832217932,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.5415859583299607,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.563022333313711,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.5839631248963997,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.6054463332984596,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.6260724582243711,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "learning",
+    "presentation_opacity" : 0,
+    "time" : 5.6475066249258816,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.15686556696891785,
+    "time" : 5.747140874969773,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.12086758762598038,
+    "time" : 5.7685710833175108,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.08155282586812973,
+    "time" : 5.7900488332379609,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.048735618591308594,
+    "time" : 5.8110757499234751,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.023359784856438637,
+    "time" : 5.8313612082274631,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0.0052980901673436165,
+    "time" : 5.8527993332827464,
+    "width" : 994
+  },
+  {
+    "animation_present" : true,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 5.8737976249540225,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 5.8952066249912605,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 5.9156528332969174,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 5.937151416670531,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 5.9583515416597947,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 5.9786697499221191,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.0002404999686405,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.0217371665639803,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.0420340832788497,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.0635339999571443,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.0850403333315626,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.1065482082776725,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.12806891661603,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.1494914999930188,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.1709201249759644,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.1919908749405295,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.2122165416367352,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.2334107499336824,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.2548430416500196,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.2763130415696651,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.2972883749753237,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.3187977082561702,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.3402951249154285,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.3617349999258295,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.3818777499254793,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.4030597916571423,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.4244831249816343,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.4459550415631384,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.4665348749840632,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.4876546666491777,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.5090781250037253,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.5305339166661724,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.5520177916623652,
+    "width" : 994
+  },
+  {
+    "animation_present" : false,
+    "app_active" : true,
+    "height" : 735,
+    "page" : "today",
+    "presentation_opacity" : 0,
+    "time" : 6.5735242916271091,
+    "width" : 994
+  }
+]

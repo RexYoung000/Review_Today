@@ -1,0 +1,41 @@
+[
+  {
+    "name": "light-standard",
+    "decode_exit": 0,
+    "decode_messages": "",
+    "strictly_increasing_source_pts": true,
+    "stream": {
+      "width": 1280,
+      "height": 820,
+      "avg_frame_rate": "25500/451",
+      "duration": "7.515000",
+      "nb_frames": "425"
+    }
+  },
+  {
+    "name": "dark-standard",
+    "decode_exit": 0,
+    "decode_messages": "",
+    "strictly_increasing_source_pts": true,
+    "stream": {
+      "width": 1280,
+      "height": 820,
+      "avg_frame_rate": "257400/4523",
+      "duration": "7.530000",
+      "nb_frames": "429"
+    }
+  },
+  {
+    "name": "dark-reduced",
+    "decode_exit": 0,
+    "decode_messages": "",
+    "strictly_increasing_source_pts": true,
+    "stream": {
+      "width": 1280,
+      "height": 820,
+      "avg_frame_rate": "255600/4543",
+      "duration": "7.570000",
+      "nb_frames": "426"
+    }
+  }
+]

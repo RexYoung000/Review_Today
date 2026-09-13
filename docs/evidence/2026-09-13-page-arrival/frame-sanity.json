@@ -1,0 +1,38 @@
+[
+  {
+    "video": "light-standard",
+    "region": "content x320 y40 w940 h700",
+    "frames": 425,
+    "statistic": "YMIN",
+    "range": [
+      10.0,
+      16.0
+    ],
+    "uniform_blank_candidate_frames": 0,
+    "note": "Only excludes fully washed-out/blank content frames; not a smoothness or text-contrast certification."
+  },
+  {
+    "video": "dark-standard",
+    "region": "content x320 y40 w940 h700",
+    "frames": 429,
+    "statistic": "YMAX",
+    "range": [
+      208.0,
+      245.0
+    ],
+    "uniform_blank_candidate_frames": 0,
+    "note": "Only excludes fully washed-out/blank content frames; not a smoothness or text-contrast certification."
+  },
+  {
+    "video": "dark-reduced",
+    "region": "content x320 y40 w940 h700",
+    "frames": 426,
+    "statistic": "YMAX",
+    "range": [
+      208.0,
+      249.0
+    ],
+    "uniform_blank_candidate_frames": 0,
+    "note": "Only excludes fully washed-out/blank content frames; not a smoothness or text-contrast certification."
+  }
+]

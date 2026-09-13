@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 import SwiftData
 import Observation
+import QuartzCore
 
 @Observable private final class NavigationState {
     var page = 0
@@ -15,6 +16,20 @@ private struct SessionStatusHost: View {
             Text("Page \(state.page)")
             SessionActivityStatus(sessionID: state.sessionID, archived: state.archived)
         }
+    }
+}
+private struct PageArrivalHost: View {
+    let state: NavigationState
+    var body: some View {
+        // Keep the surface outside the changing page, as in ContentView.
+        ZStack {
+            if state.page == 0 { Text("今天") }
+            else { Button("Agent 输入可用") {} }
+        }
+        .overlay(PageArrivalFade(page: state.page == 0 ? .today : .learning)
+            .allowsHitTesting(false).accessibilityHidden(true))
+        .environment(\.scenePhase, .active)
+        .environment(\.brandTrialStill, state.archived)
     }
 }
 private struct ActivitySourceHost: View {
@@ -64,7 +79,74 @@ struct NavigationRenderContractTests {
         precondition(ComposerControlsLayout.size(sizes, available: 180) == CGSize(width: 160, height: 54))
         try activityObservation()
         try sessionStatusObservation()
+        try pageArrival()
+        try pageArrivalHosting()
         print("PASS: native date buttons, exact actions, disabled/future accessibility, compact geometry, reused targets, single-set composer layout")
+    }
+
+    @MainActor static func pageArrivalHosting() throws {
+        let state = NavigationState()
+        let host = NSHostingView(rootView: PageArrivalHost(state: state))
+        host.frame = NSRect(x: 0, y: 0, width: 320, height: 100)
+        let window = NSWindow(contentRect: host.frame, styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false; window.contentView = host
+        defer { window.close() }
+        func settle() {
+            host.layoutSubtreeIfNeeded()
+            RunLoop.main.run(until: Date.now.addingTimeInterval(0.025))
+            host.layoutSubtreeIfNeeded()
+        }
+        func surface(_ view: NSView) -> PageArrivalFade.Surface? {
+            if let view = view as? PageArrivalFade.Surface { return view }
+            return view.subviews.lazy.compactMap { surface($0) }.first
+        }
+        settle()
+        let fade = surface(host)!
+        let key = PageArrivalFade.Surface.animationKey
+        precondition(fade.layer?.animation(forKey: key) == nil)
+        state.page = 1; settle()
+        precondition(surface(host) === fade, "the arrival surface must survive replacement of the business page")
+        precondition(fade.layer?.animation(forKey: key) != nil, "real SwiftUI navigation must start the fade")
+        state.archived = true; settle()
+        precondition(fade.layer?.animation(forKey: key) == nil, "live Reduce Motion changes must cancel the fade")
+        state.page = 0; settle()
+        precondition(surface(host) === fade && fade.layer?.animation(forKey: key) == nil)
+        print("PASS: real SwiftUI page replacement retains one fade surface and respects live Reduce Motion")
+    }
+
+    @MainActor static func pageArrival() throws {
+        let base = NSView(frame: NSRect(x: 0, y: 0, width: 320, height: 100))
+        let button = NSButton(frame: NSRect(x: 20, y: 20, width: 100, height: 30))
+        button.title = "立即操作"
+        base.addSubview(button)
+        let fade = PageArrivalFade.Surface(frame: base.bounds)
+        base.addSubview(fade)
+        let window = NSWindow(contentRect: base.bounds, styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false; window.contentView = base
+        defer { window.close() }
+        let key = PageArrivalFade.Surface.animationKey
+        fade.update(page: .today, color: .white, enabled: true)
+        precondition(fade.layer?.animation(forKey: key) == nil, "initial display must not fade")
+        fade.update(page: .learning, color: .white, enabled: true)
+        let animation = fade.layer?.animation(forKey: key) as? CABasicAnimation
+        precondition(animation?.duration == 0.12 && animation?.keyPath == "opacity")
+        precondition(fade.layer?.opacity == 0, "final model opacity must never obscure the page")
+        precondition(fade.hitTest(NSPoint(x: 30, y: 30)) == nil && !fade.acceptsFirstResponder)
+        precondition(base.hitTest(NSPoint(x: 30, y: 30)) === button, "input must reach the underlying control during the fade")
+        precondition(!fade.isAccessibilityElement(), "decorative arrival layer must not create a focus stop")
+        fade.update(page: .library, color: .white, enabled: true)
+        precondition(fade.layer?.animation(forKey: key) == nil, "rapid navigation must stop rather than queue the previous animation")
+        fade.update(page: .inbox, color: .black, enabled: false)
+        precondition(fade.layer?.animation(forKey: key) == nil)
+        fade.update(page: .inbox, color: .black, enabled: true)
+        precondition(fade.layer?.animation(forKey: key) == nil, "restoring motion or foreground must not replay the page")
+        RunLoop.main.run(until: Date.now.addingTimeInterval(0.15))
+        fade.update(page: .today, color: .black, enabled: true)
+        precondition(fade.layer?.animation(forKey: key) != nil)
+        NotificationCenter.default.post(name: NSWindow.didResignKeyNotification, object: window)
+        precondition(fade.layer?.animation(forKey: key) == nil, "window deactivation must settle immediately")
+        precondition(fade.layer?.opacity == 0 && base.subviews.count == 2)
+        print("PASS: arrival fade, no initial/same-page replay, direct hit testing, rapid interruption, reduced motion, dark canvas and window deactivation")
     }
 
     @MainActor static func sessionStatusObservation() throws {

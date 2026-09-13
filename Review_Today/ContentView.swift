@@ -86,8 +86,9 @@ struct ContentView: View {
                     .navigationPaintProbe(selection?.rawValue ?? "today", stage: "feedback")
                     .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous)).padding(8)
             }
-            detailContent
+            ZStack { detailContent }
                 .navigationPaintProbe(selection?.rawValue ?? "today", stage: "page")
+                .overlay(PageArrivalFade(page: selection ?? .today).allowsHitTesting(false).accessibilityHidden(true))
                 .opacity(selection == .learning && !draftEntrance ? 0 : 1)
                 .offset(y: selection == .learning && !draftEntrance ? 8 : 0)
                 .padding(.top, 20).frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -201,6 +202,7 @@ struct ContentView: View {
     }
 
     private func startLearning() {
+        let alreadyLearning = selection == .learning
         NotificationCenter.default.post(name: .prepareNewConversation, object: nil)
         do {
             try AgentComposerStore.preserveLandingDraft(context: modelContext)
@@ -210,7 +212,7 @@ struct ContentView: View {
             selection = .learning
             searchPresented = false
             learningFocusRequest += 1
-            if !reduceMotion {
+            if !reduceMotion && alreadyLearning {
                 draftEntrance = false
                 Task { @MainActor in
                     await Task.yield()

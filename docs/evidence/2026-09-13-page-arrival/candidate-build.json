@@ -1,0 +1,15 @@
+{
+  "candidate": "/tmp/review-today-health-build/Build/Products/Debug/Review_Today.app",
+  "daily": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "backup": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.before-arrival-20260913-192318.app.backup",
+  "same_designated_requirement": true,
+  "binary_sha256": "8ba15ee3018d5b820a730f78a32ecf2325c756ba2b16b3cdf739cb73e773f619",
+  "installed": true,
+  "startup_checked": true,
+  "runtime_checks": [
+    "Finder normal launch; original 3 sessions and 8 knowledge items visible",
+    "8 main-page navigations; selected destination verified",
+    "Unsent Chinese draft retained across Library and Agent; cleared after check",
+    "Local service health OK; no model request"
+  ]
+}
