@@ -1,0 +1,26 @@
+{
+  "light": {
+    "samples": 280,
+    "max_opacity": 0.638572633266449,
+    "animation_samples": 60,
+    "all_active": true,
+    "decode_exit": 0,
+    "decode_errors": ""
+  },
+  "dark": {
+    "samples": 280,
+    "max_opacity": 0.64253169298172,
+    "animation_samples": 61,
+    "all_active": true,
+    "decode_exit": 0,
+    "decode_errors": ""
+  },
+  "reduced": {
+    "samples": 280,
+    "max_opacity": 0,
+    "animation_samples": 0,
+    "all_active": true,
+    "decode_exit": 0,
+    "decode_errors": ""
+  }
+}

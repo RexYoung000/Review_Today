@@ -1,0 +1,15 @@
+{
+  "daily": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "backup": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.before-visible-1789299943.app.backup",
+  "configuration": "standard Debug (-Onone)",
+  "same_designated_requirement": true,
+  "debug_dylib_sha256": "4dde9cc9e17dd347ef2c2ac12d8141a0b325bb9428a132e3999238fcf26b8338",
+  "startup_checked": true,
+  "navigation_checked": [
+    "Agent",
+    "library",
+    "inbox",
+    "today",
+    "Agent"
+  ]
+}

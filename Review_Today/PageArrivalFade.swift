@@ -17,7 +17,7 @@ struct PageArrivalFade: NSViewRepresentable {
     static func dismantleNSView(_ view: Surface, coordinator: ()) { view.clear() }
 
     final class Surface: NSView {
-        static let duration: TimeInterval = 0.12
+        static let duration: TimeInterval = 0.15
         static let animationKey = "pageArrival"
         private var page: SidebarItem?
         private var lastChange: TimeInterval?
@@ -65,7 +65,7 @@ struct PageArrivalFade: NSViewRepresentable {
             clear()
             guard !repeated else { return }
             let animation = CABasicAnimation(keyPath: "opacity")
-            animation.fromValue = 0.16
+            animation.fromValue = 0.65
             animation.toValue = 0
             animation.duration = Self.duration
             animation.timingFunction = CAMediaTimingFunction(name: .easeOut)

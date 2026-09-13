@@ -129,7 +129,7 @@ struct NavigationRenderContractTests {
         precondition(fade.layer?.animation(forKey: key) == nil, "initial display must not fade")
         fade.update(page: .learning, color: .white, enabled: true)
         let animation = fade.layer?.animation(forKey: key) as? CABasicAnimation
-        precondition(animation?.duration == 0.12 && animation?.keyPath == "opacity")
+        precondition(animation?.duration == 0.15 && animation?.keyPath == "opacity")
         precondition(fade.layer?.opacity == 0, "final model opacity must never obscure the page")
         precondition(fade.hitTest(NSPoint(x: 30, y: 30)) == nil && !fade.acceptsFirstResponder)
         precondition(base.hitTest(NSPoint(x: 30, y: 30)) === button, "input must reach the underlying control during the fade")
