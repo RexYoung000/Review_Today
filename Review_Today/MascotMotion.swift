@@ -23,6 +23,7 @@ struct MascotMotionConfiguration: Codable, Equatable {
     var visible = true
     var rate: Double = 1
     var ambient = false
+    var header = false
     var idleClip: MascotIdleClip = .random
     var material = "current"
     var palette: MascotMaterialPalette? = nil

@@ -1,0 +1,18 @@
+sandbox_extension_issue_file_to_process failed for /tmp/review-today-header-qa.UQI8QL/AgentTitleQA.app: 1 (Operation not permitted)
+PASS: test window has native input focus
+PASS: native pointer direction 300.0, 0.0; actual=1.0, point=(724.0, 552.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction -300.0, 0.0; actual=-1.0, point=(124.0, 552.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction 0.0, 100.0; actual=0.625, point=(424.0, 652.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction 0.0, -180.0; actual=-1.0, point=(424.0, 372.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native button starts click reaction
+PASS: mascot click retains current responder
+PASS: rapid clicks settle without a queue
+PASS: composer can acquire intentional focus
+PASS: click preserves Chinese marked text and editor focus
+PASS: typing returns gaze to rest
+PASS: Reduce Motion stays static for pointer and click
+PASS: minimized renderer stops
+PASS: leaving removes pointer monitor region
+PASS: return never replays stale click
+PASS: native recording finalized
+PASS: Agent title mascot native checks

@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 /// Focus and text measurement redraw this input surface, without rebuilding the
@@ -11,6 +12,7 @@ struct LearningComposerInput<Controls: View>: View {
     let editable: Bool
     let onInsertionApplied: (String) -> Void
     let onSubmit: () -> Void
+    var preservesFocusOnClick: ((NSEvent) -> Bool)? = nil
     @ViewBuilder var controls: () -> Controls
     @State private var inputHeight: CGFloat = 64
     @State private var inputFocused = false
@@ -21,7 +23,7 @@ struct LearningComposerInput<Controls: View>: View {
             LearningTextInput(text: $text, height: $inputHeight, focused: $inputFocused,
                 focusRequest: focusRequest, sessionID: sessionID, placeholder: placeholder,
                 ink: NSColor(runway.ink), insertion: insertion, editable: editable,
-                onInsertionApplied: onInsertionApplied, onSubmit: onSubmit)
+                onInsertionApplied: onInsertionApplied, preservesFocusOnClick: preservesFocusOnClick, onSubmit: onSubmit)
                 .frame(height: inputHeight)
             controls()
         }

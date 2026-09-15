@@ -20,6 +20,7 @@ struct LearningTextInput: NSViewRepresentable {
     var insertion: EditorInsertion? = nil
     var editable = true
     var onInsertionApplied: ((String) -> Void)? = nil
+    var preservesFocusOnClick: ((NSEvent) -> Bool)? = nil
     var onSubmit: () -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -63,6 +64,7 @@ struct LearningTextInput: NSViewRepresentable {
         view.onSubmit = onSubmit
         view.setEditingEnabled(editable)
         view.onInsertionApplied = onInsertionApplied
+        view.preservesFocusOnClick = preservesFocusOnClick
         view.onFocus = { [weak coordinator, weak view] value in
             guard let coordinator else { return }
             let owner = coordinator.sessionID
@@ -158,6 +160,7 @@ struct LearningTextInput: NSViewRepresentable {
 }
 
 final class LearningEditor: NSTextView {
+    var preservesFocusOnClick: ((NSEvent) -> Bool)?
     var placeholder = ""
     var onSubmit: (() -> Void)?
     var onFocus: ((Bool) -> Void)?
@@ -206,7 +209,8 @@ final class LearningEditor: NSTextView {
 
     func observeInteraction(_ event: NSEvent) {
         interactionRevision += 1
-        if [.leftMouseDown, .rightMouseDown].contains(event.type), event.window === window, !containsPointer(event) {
+        if [.leftMouseDown, .rightMouseDown].contains(event.type), event.window === window, !containsPointer(event),
+           preservesFocusOnClick?(event) != true {
             releaseFocus()
         }
     }

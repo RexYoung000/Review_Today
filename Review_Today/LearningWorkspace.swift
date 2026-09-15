@@ -40,6 +40,7 @@ struct LearningWorkspace: View {
     @State private var quickStarts = AgentQuickStart.initial
     @State private var showSessionTags = false
     @State private var previewMotion = false
+    @State private var titleMascot = AgentTitleMascotDriver()
     private let runtime = AppRuntime.current
 
     init(draftStore: LearningDraftStore = LearningDraftStore(), monitor: AgentServiceMonitor,
@@ -77,6 +78,10 @@ struct LearningWorkspace: View {
         sessions.first { $0.id == selectedSessionID }
     }
 
+    private var isStarting: Bool {
+        selectedSession == nil || (selectedSession?.status == "active" && firstMessages.isEmpty)
+    }
+
     private var developerDiagnostics: Bool { draftSettings?.developerMode == true }
 
     private func messages(for id: UUID) -> [AgentMessage] {
@@ -91,6 +96,9 @@ struct LearningWorkspace: View {
         GeometryReader { geometry in
             workspace(width: geometry.size.width, height: geometry.size.height)
                 .frame(width: geometry.size.width, height: geometry.size.height)
+                .background {
+                    if isStarting { AgentTitlePointerRegion(driver: titleMascot).accessibilityHidden(true) }
+                }
         }
         .background(PaperSurface())
         .navigationTitle((selectedSession?.title ?? "Agent") + runtime.windowSuffix)
@@ -163,7 +171,6 @@ struct LearningWorkspace: View {
 
     private func workspace(width: CGFloat, height: CGFloat) -> some View {
         let gutter = Layout.gutter(for: width)
-        let isStarting = selectedSession == nil || (selectedSession?.status == "active" && firstMessages.isEmpty)
         let contentWidth = max(0, min(isStarting ? 820 : Layout.readingWidth, width - gutter * 2))
         return VStack(spacing: 0) {
           if selectedSession != nil { workspaceHeader(contentWidth: contentWidth) }
@@ -171,12 +178,8 @@ struct LearningWorkspace: View {
             serviceBanner
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    HStack(spacing: 16) {
-                        VStack(alignment: .center, spacing: 6) {
-                            Text("Review Today").font(.system(size: 30, weight: .semibold)).foregroundStyle(runway.ink)
-                            Text("从一个问题开始，把理解留住。").font(.callout).foregroundStyle(.secondary)
-                        }
-                    }.multilineTextAlignment(.center).frame(maxWidth: .infinity).padding(.top, 24)
+                    AgentLandingTitle(driver: titleMascot)
+                        .frame(maxWidth: .infinity).padding(.top, 24)
                     composer(contentWidth: contentWidth)
                     HStack {
                         Text("快捷开始").font(.subheadline.weight(.medium)).foregroundStyle(.secondary)
@@ -557,7 +560,8 @@ struct LearningWorkspace: View {
             LearningComposerInput(text: $draft, focusRequest: focusRequest,
                 sessionID: selectedSessionID ?? draftSettings?.agentDraftID, placeholder: activeActionPlaceholder,
                 insertion: dictation.insertion ?? insertion, editable: !dictation.busy,
-                onInsertionApplied: acceptDictation, onSubmit: submitDraft) {
+                onInsertionApplied: acceptDictation, onSubmit: submitDraft,
+                preservesFocusOnClick: titleMascot.preservesInputFocus) {
                 HStack {
                   composerControls.disabled(dictation.busy)
                   Spacer(minLength: 8)

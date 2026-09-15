@@ -1,0 +1,23 @@
+✔ header follows promptly, clamps extremes, and settles after leaving or typing (0.626625ms)
+✔ rapid clicks never queue and interruption drops the reaction (0.079167ms)
+✔ Spine header mesh stays valid and framed; pupils stay inside eye whites through clicks (43.21775ms)
+✔ idle enters after one second, finishes clips, and draws only from three other choices (1.129292ms)
+✔ single clip ends; paused clock is unchanged; seeded timelines replay consistently (0.358458ms)
+✔ all four Spine clips keep geometry valid, end in setup body pose and hide props (50.328ms)
+✔ idle gaze keeps the whole pupil inside the rounded eye white (6.858ms)
+✔ exaggerated stretch and jump have measurable anticipation, height and landing (2.40275ms)
+✔ upright book is opaque, keeps R outward, and changes depth only clear of the body (4.870833ms)
+✔ all visible motion stays inside the App and preview canvases, below the eyes when reading (86.430167ms)
+✔ sidebar cycles book and gaze only, with short rests and no terminal static state (0.232459ms)
+✔ graphite texture keeps alpha, dimensions and shading without mutating source or geometry (601.777583ms)
+✔ wave rests in gray, active feedback uses supplied theme accent and legacy colors remain (0.193375ms)
+✔ native source and saved original assets are not changed by offline material rendering (668.871166ms)
+✔ dark theme lightens body and keeps white eyes with dark pupils while preserving material shading and neutral fragments (0.15ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1561.754541

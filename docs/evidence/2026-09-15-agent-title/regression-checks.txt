@@ -1,0 +1,11 @@
+PASS: ancestor-focus guard, rendered single-row focus independent of selection, light/dark/disabled
+PASS executable: InteractionFocusTests
+PASS: 12 scenarios, 6-card refresh, protected prefill/IME/undo, sidebar preference, native input, atomic first-send failure/retry, no empty Sessions, independent drafts/preferences, tags, partial persistence, activity
+PASS executable: LearningInputContractTests
+PASS: real SwiftUI navigation and draft saves skip projection; insert, rename, delete, completion and explicit recovery still refresh
+PASS: navigation skips status queries; inserts, edits, task actions, ordering, deletion, archive and session changes remain live
+PASS: arrival fade, no initial/same-page replay, direct hit testing, rapid interruption, reduced motion, dark canvas and window deactivation
+PASS: real SwiftUI page replacement retains one fade surface and respects live Reduce Motion
+PASS: native date buttons, exact actions, disabled/future accessibility, compact geometry, reused targets, single-set composer layout
+PASS executable: NavigationRenderContractTests
+All selected contracts complete: /tmp/review-today-shared-contracts.xq_4w26w
