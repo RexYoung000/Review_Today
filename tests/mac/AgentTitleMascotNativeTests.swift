@@ -56,7 +56,7 @@ private final class HeaderRecordingDelegate: NSObject, SCRecordingOutputDelegate
         editItem.submenu = edit; menu.addItem(editItem); app.mainMenu = menu
         let state = HeaderQAState()
         let container = try! M1DebugFixture.makeContainer(mode: "learning")
-        let window = NSWindow(contentRect: NSRect(x: 120, y: 100, width: 1040, height: 760), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
+        let window = NSWindow(contentRect: NSRect(x: 120, y: 100, width: 1040, height: 760), styleMask: [.titled, .closable, .resizable, .miniaturizable], backing: .buffered, defer: false)
         window.title = "Review Today · 标题吉祥物验证"
         window.contentView = NSHostingView(rootView: HeaderQARoot(state: state).modelContainer(container))
         window.makeKeyAndOrderFront(nil); app.activate(ignoringOtherApps: true)
@@ -155,6 +155,21 @@ private final class HeaderRecordingDelegate: NSObject, SCRecordingOutputDelegate
             let quiet = try await inspect()["header"] as! [String: Any]
             try expect(abs(quiet["x"] as! Double) < 0.01, "typing returns gaze to rest")
         } else { throw HeaderQAError(message: "actual composer editor missing") }
+        // Exercise actual native button dispatch until each random reaction is observed.
+        try await Task.sleep(for: .milliseconds(800))
+        var previous = (try await inspect()["header"] as! [String: Any])["reaction"] as? String
+        var seen = Set<String>()
+        for _ in 0..<24 {
+            mouse(anchor, type: .leftMouseDown); mouse(anchor, type: .leftMouseUp)
+            try await Task.sleep(for: .milliseconds(180))
+            let current = try await inspect()["header"] as! [String: Any]
+            let name = current["reaction"] as! String
+            try expect(name != previous && (current["elapsed"] as! Double) < 0.72, "native click selects a different reaction: \(name)")
+            previous = name; seen.insert(name)
+            try await Task.sleep(for: .milliseconds(650))
+            if seen.count == 3 { break }
+        }
+        try expect(seen == Set(["squash", "wobble", "hop"]), "native clicks exercise all three Spine reactions")
         state.dark = true; try await Task.sleep(for: .milliseconds(500)); try await screenshot("dark")
         state.reduced = true; try await Task.sleep(for: .milliseconds(250))
         mouse(NSPoint(x: anchor.x+300, y: anchor.y)); mouse(anchor, type: .leftMouseDown); mouse(anchor, type: .leftMouseUp)
@@ -164,7 +179,13 @@ private final class HeaderRecordingDelegate: NSObject, SCRecordingOutputDelegate
         try await screenshot("reduced")
         state.reduced = false
         window.setContentSize(NSSize(width: 520, height: 680)); try await Task.sleep(for: .milliseconds(650)); try await screenshot("narrow")
-        window.miniaturize(nil); try await Task.sleep(for: .milliseconds(350))
+        window.miniaturize(nil)
+        for _ in 0..<60 {
+            let animating = try await inspect()["animating"] as? Bool
+            if window.isMiniaturized && animating == false { break }
+            try await Task.sleep(for: .milliseconds(30))
+        }
+        try expect(window.isMiniaturized, "test window actually minimizes")
         try expect(try await inspect()["animating"] as? Bool == false, "minimized renderer stops")
         window.deminiaturize(nil); window.makeKeyAndOrderFront(nil)
         state.shown = false; try await Task.sleep(for: .milliseconds(250))
