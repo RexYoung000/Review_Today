@@ -1,0 +1,24 @@
+PASS: test window has native input focus
+PASS: native pointer direction 300.0, 0.0; actual=1.0, point=(675.0, 552.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction -300.0, 0.0; actual=-1.0, point=(75.0, 552.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction 0.0, 100.0; actual=0.625, point=(375.0, 652.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction 0.0, -180.0; actual=-1.0, point=(375.0, 372.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native button starts click reaction
+PASS: mascot click retains current responder
+PASS: rapid clicks settle without a queue
+PASS: composer can acquire intentional focus
+PASS: click preserves Chinese marked text and editor focus
+PASS: typing returns gaze to rest
+PASS: native click selects a different reaction: wobble
+PASS: native click selects a different reaction: hop
+PASS: native click selects a different reaction: wobble
+PASS: native click selects a different reaction: hop
+PASS: native click selects a different reaction: squash
+PASS: native clicks exercise all three Spine reactions
+PASS: Reduce Motion stays static for pointer and click
+PASS: test window actually minimizes
+PASS: minimized renderer stops
+PASS: leaving removes pointer monitor region
+PASS: return never replays stale click
+PASS: native recording finalized
+PASS: Agent title mascot native checks

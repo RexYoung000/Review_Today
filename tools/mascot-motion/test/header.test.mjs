@@ -49,6 +49,24 @@ test('three Spine reactions produce distinct motion and return exactly to setup 
  assert.equal(new Set(poses.map(JSON.stringify)).size,3);
 });
 
+test('squash visibly compresses the actual mesh, holds contact, then rebounds',async()=>{
+ const {skeleton:s}=await loadRig(json),p=createHeaderPlayer(()=>0);
+ function bounds(){
+  s.updateWorldTransform(0);const v=Array.from(verticesOf(s)),ys=v.filter((_,i)=>i%2===1);
+  return {height:Math.max(...ys)-Math.min(...ys),bottom:Math.min(...ys)};
+ }
+ s.setToSetupPose();const rest=bounds();p.poke();let held=0,peak=0;
+ for(let i=0;i<90;i++){
+  p.advance(1/120);s.setToSetupPose();p.apply(s);const b=bounds();
+  if(b.height/rest.height<=.70)held+=1/120;
+  peak=Math.max(peak,b.height/rest.height);
+  assert.ok(Math.abs(b.bottom-rest.bottom)<1,'squash loses ground contact');
+ }
+ assert.ok(held>=.09,'compression is too shallow or too brief at title size');
+ assert.ok(peak>=1.08,'rebound has no visible stretch');
+ assert.equal(p.moving(),false);
+});
+
 test('Spine header mesh stays valid and framed; pupils stay inside eye whites through clicks',async()=>{
  const rig=await loadRig(json),s=rig.skeleton;
  for(let reaction=0;reaction<3;reaction++){

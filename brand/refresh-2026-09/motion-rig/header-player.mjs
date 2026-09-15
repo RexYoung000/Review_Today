@@ -1,5 +1,14 @@
 // Header-only pointer response on the existing Spine bones and weighted mesh.
 const clamp=v=>Number.isFinite(v)?Math.max(-1,Math.min(1,v)):0;
+const smooth=v=>{v=Math.max(0,Math.min(1,v));return v*v*(3-2*v);};
+function squashImpact(t){
+ if(t<.09)return smooth(t/.09);
+ if(t<.18)return 1;
+ if(t<.34)return 1-1.3*smooth((t-.18)/.16);
+ if(t<.50)return -.3+.4*smooth((t-.34)/.16);
+ if(t<.72)return .1*(1-smooth((t-.50)/.22));
+ return 0;
+}
 export const headerReactions=['squash','wobble','hop'];
 export function createHeaderPlayer(random=Math.random){
  let x=0,y=0,tx=0,ty=0,elapsed=1,reaction=null;
@@ -18,12 +27,14 @@ export function createHeaderPlayer(random=Math.random){
   inspect(){return {x,y,tx,ty,elapsed,reaction};},
   apply(s){
    const b=s.findBone('body'),face=s.findBone('face');
-   // Brief squash, damped recovery, then exact rest. No queued reactions.
-   const t=elapsed,impact=t<.72?Math.sin(Math.min(1,t/.12)*Math.PI/2)*Math.exp(-t*6)*Math.cos(Math.max(0,t-.12)*17)*(1-t/.72):0;
+   const t=elapsed;
    let eyes=1;
    if(reaction==='squash'){
-    b.scaleY*=1-.24*impact;b.scaleX*=1+.16*impact;
-    eyes+=Math.max(0,impact)*.35;
+    const impact=squashImpact(t);
+    b.scaleY*=1-.36*impact;b.scaleX*=1+.15*impact;
+    // The rig's setup sole is y=-92.724: compensate scaling to keep contact.
+    b.y-=92.724*.36*impact;
+    eyes-=Math.max(0,impact)*.30;eyes+=Math.max(0,-impact)*.50;
    }else if(reaction==='wobble'&&t<.72){
     const u=t/.72,envelope=Math.sin(Math.PI*u)*(1-u),sway=Math.sin(u*Math.PI*4)*envelope;
     b.rotation+=18*sway;face.rotation-=8*sway;
