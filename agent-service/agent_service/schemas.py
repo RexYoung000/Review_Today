@@ -554,6 +554,13 @@ class MemorySelection(BaseModel):
     relation: Literal["prerequisite", "analogy", "contrast", "transfer"]
 
 
+class TopicClosure(BaseModel):
+    evidence: str = Field(min_length=1, max_length=300)
+    title: str = Field(min_length=1, max_length=100)
+    message_ids: list[str] = Field(min_length=1, max_length=30)
+    next_request: str = Field(default="", max_length=1000)
+
+
 class IntentDecision(BaseModel):
     intents: list[Literal[
         "greeting", "thanks", "capabilities", "question", "goal", "material",
@@ -570,6 +577,7 @@ class IntentDecision(BaseModel):
     rationale: str = Field(min_length=1)
     understanding: Literal["unknown", "self_reported"] = "unknown"
     answer_evidence: str = Field(default="", description="For answer intent, copy the exact text of the current user answer; never copy options or a prior message.")
+    topic_closure: TopicClosure | None = None
     learning_goal_ready: bool = False
     direct_teaching: bool = False
     answer_only: bool = False
@@ -587,7 +595,7 @@ class IntentDecision(BaseModel):
 
 class BoundOperation(BaseModel):
     """An explicit UI action bound to the displayed object, never inferred by Swift."""
-    kind: Literal["save", "reject_save", "continue_session", "new_session", "select_sources", "select_question"]
+    kind: Literal["save", "reject_save", "continue_session", "new_session", "select_sources", "select_question", "capture_save", "capture_later", "capture_skip"]
     target_id: str
     version: int = Field(ge=1)
     selection: list[str] = Field(default_factory=list)

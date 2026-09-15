@@ -188,6 +188,7 @@ def context(self, data, run):
               if m["message_id"] not in summarized_ids]
     external = last.get("context", {})
     return dict(mode=data["mode"], session_goal=data.get("focus_goal", ""),
+                capture_continuation=bool(run.get("capture_continuation")),
                 current_inputs=[run["resolved_input"]] if run.get("resolved_input") else [m["content"] for m in selected], task=task_context,
                 pending=data["pending"], draft=None if data.get("draft", {}) and data["draft"].get("invalidated") else data["draft"],
                 summary=data["summary"] if data.get("summary_invalidated") else data["summary"] or external.get("summary", ""),

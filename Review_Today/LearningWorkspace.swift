@@ -5,6 +5,7 @@ struct LearningWorkspace: View {
     var draftStore: LearningDraftStore
     var monitor: AgentServiceMonitor
     @Binding var selectedSessionID: UUID?
+    var captureDestination: UUID? = nil
     var entryFocusRequest = 0
     var onEntryFocusConsumed: () -> Void = {}
     var onNewSession: () -> Void = {}
@@ -19,6 +20,7 @@ struct LearningWorkspace: View {
     @Query(sort: \TaskEventRecord.seq) private var events: [TaskEventRecord]
     @Query(sort: \AgentRun.createdAt) private var runs: [AgentRun]
     @Query private var firstMessages: [AgentMessage]
+    @Query private var captureReferences: [KnowledgeReference]
     @State private var queueInput = false
     @State private var draft = ""
     @State private var dictation = DictationController()
@@ -32,6 +34,7 @@ struct LearningWorkspace: View {
     @State private var followsLatest = true
     @State private var userScrolling = false
     @State private var sentMessageID: UUID?
+    @State private var activeCaptureID: UUID?
     @State private var stepMessageID: UUID?
     @State private var memoryDestination: (sessionID: UUID, messageID: UUID)?
     @State private var draftSettings: AppSettings?
@@ -44,10 +47,11 @@ struct LearningWorkspace: View {
     private let runtime = AppRuntime.current
 
     init(draftStore: LearningDraftStore = LearningDraftStore(), monitor: AgentServiceMonitor,
-         selectedSessionID: Binding<UUID?>, entryFocusRequest: Int = 0,
+         selectedSessionID: Binding<UUID?>, captureDestination: UUID? = nil, entryFocusRequest: Int = 0,
          onEntryFocusConsumed: @escaping () -> Void = {}, onNewSession: @escaping () -> Void = {},
          onOpenKnowledge: @escaping (UUID) -> Void,
          onMessageSaved: @escaping (AgentMessage, Bool) -> Void = { _, _ in }) {
+        self.captureDestination = captureDestination
         self.draftStore = draftStore; self.monitor = monitor; _selectedSessionID = selectedSessionID
         self.entryFocusRequest = entryFocusRequest; self.onEntryFocusConsumed = onEntryFocusConsumed
         self.onNewSession = onNewSession; self.onOpenKnowledge = onOpenKnowledge; self.onMessageSaved = onMessageSaved
@@ -76,6 +80,17 @@ struct LearningWorkspace: View {
 
     private var selectedSession: AgentSession? {
         sessions.first { $0.id == selectedSessionID }
+    }
+
+    private var captureOffers: [TopicCaptureOffer] {
+        TopicCaptureOffer.read(selectedSession?.captureOffersJSON ?? "[]").map { original in
+            var offer = original
+            if let task = sessionTasks.first(where: { $0.id == offer.saveTaskID && $0.memoryCommitted }) {
+                let ids = captureReferences.filter { $0.taskID == task.id }.map(\.knowledgeID)
+                if !ids.isEmpty { offer.status = "saved"; offer.knowledgeIDs = ids; offer.error = nil }
+            }
+            return offer
+        }
     }
 
     private var isStarting: Bool {
@@ -331,6 +346,23 @@ struct LearningWorkspace: View {
                     ForEach(sessionMessages, id: \.id) { message in
                         messageBubble(message, contentWidth: contentWidth)
                             .id(message.id)
+                        ForEach(captureOffers.filter { $0.anchorMessageID == message.id }) { offer in
+                            TopicCapturePanel(offer: offer, focused: captureDestination == offer.id,
+                                enabled: selectedSession?.status == "active" && runtime.allowsSending && !dictation.busy,
+                                persistenceError: sessionTasks.first(where: { $0.id == offer.saveTaskID && !$0.memoryCommitted })?.errorCode,
+                                deliveryError: sessionMessages.last(where: { ConversationProcessor.object($0.operationJSON)?["target_id"] as? String == offer.id.uuidString.lowercased() })?.lastDeliveryError, onAction: { kind in
+                                    if kind == "capture_save" { followsLatest = false; activeCaptureID = offer.id }
+                                    else { activeCaptureID = nil }
+                                    sendBound(kind, title: kind == "capture_save" ? "录入这段知识" : kind == "capture_later" ? "稍后录入" : "跳过录入",
+                                              target: offer.id.uuidString.lowercased(), version: offer.version)
+                                    if kind == "capture_save", localError == nil {
+                                        Task { @MainActor in await Task.yield(); proxy.scrollTo(offer.id, anchor: .top) }
+                                    }
+                                    return localError == nil
+                                }, onOpenKnowledge: onOpenKnowledge)
+                                .id(offer.id)
+                                .transition(.opacity.combined(with: .offset(y: reduceMotion ? 0 : 8)))
+                        }
                         if message.role == "user" {
                             let task = sessionTasks.first(where: { $0.inputMessageID == message.id })
                             if task == nil, let runID = message.runID,
@@ -349,7 +381,8 @@ struct LearningWorkspace: View {
                                 }
                             }
                         }
-                        if message.role == "user", let task = sessionTasks.first(where: { $0.inputMessageID == message.id }) {
+                        if message.role == "user", let task = sessionTasks.first(where: { $0.inputMessageID == message.id }),
+                           !captureOffers.contains(where: { $0.saveTaskID == task.id }) {
                             taskCard(task, run: message.runID.flatMap { id in runs.first(where: { $0.id == id }) }, runEvents: runEvents, sessionMessages: sessionMessages)
                         }
                         if let task = sessionTasks.first(where: { ConversationProcessor.object($0.learningOutcomeJSON)?["message_id"] as? String == message.id.uuidString.lowercased() }) {
@@ -360,6 +393,7 @@ struct LearningWorkspace: View {
                 pendingOperation
                 Color.clear.frame(height: 1).id("latest")
             }
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: captureOffers.map(\.id))
             .frame(width: contentWidth)
             .padding(.vertical, 24)
             .frame(maxWidth: .infinity)
@@ -377,12 +411,23 @@ struct LearningWorkspace: View {
           .task(id: selectedSessionID) {
               await Task.yield() // the destination transcript must own the scroll IDs first
               guard !Task.isCancelled else { return }
-              if let destination = memoryDestination, destination.sessionID == selectedSessionID,
+              if let id = captureDestination, captureOffers.contains(where: { $0.id == id }) {
+                  followsLatest = false
+                  proxy.scrollTo(id, anchor: .center)
+              } else if let destination = memoryDestination, destination.sessionID == selectedSessionID,
                  sessionMessages.contains(where: { $0.id == destination.messageID }) {
                   followsLatest = false
                   proxy.scrollTo(destination.messageID, anchor: .top)
                   memoryDestination = nil
               } else { proxy.scrollTo("latest", anchor: .bottom) }
+          }
+          .onChange(of: captureOffers) { _, values in
+              if let id = activeCaptureID, values.contains(where: { $0.id == id && $0.status == "saving" }) {
+                  proxy.scrollTo(id, anchor: .top)
+              }
+          }
+          .onChange(of: captureDestination) { _, id in
+              if let id { followsLatest = false; proxy.scrollTo(id, anchor: .center) }
           }
           .onChange(of: sentMessageID) { _, id in
               if id != nil { proxy.scrollTo("latest", anchor: .bottom); followsLatest = true }
@@ -701,8 +746,10 @@ struct LearningWorkspace: View {
             message.localSavedMS = Int(Date.now.timeIntervalSince(started) * 1000)
             queueInput = false
             localError = nil
-            sentMessageID = message.id
-            focusRequest += 1
+            if operation?["kind"] as? String != "capture_save" {
+                sentMessageID = message.id
+                focusRequest += 1
+            }
             onMessageSaved(message, operation?["kind"] as? String == "save")
             ConversationSync.wake()
         } catch {
@@ -773,17 +820,11 @@ struct LearningWorkspace: View {
     @ViewBuilder
     private var pendingOperation: some View {
         if selectedSession?.status == "active", let pending = ConversationProcessor.object(selectedSession?.pendingOperationJSON),
-           let kind = pending["kind"] as? String,
+           let kind = pending["kind"] as? String, kind != "save",
            let target = pending["target_id"] as? String,
            let version = pending["version"] as? Int {
             VStack(alignment: .leading, spacing: 8) {
-                if kind == "save" {
-                    Text("整理版本 \(version) · 尚未入库").font(.caption).foregroundStyle(.secondary)
-                    HStack {
-                        Button("加入知识库与复习") { sendBound("save", title: "加入知识库与复习", target: target, version: version) }
-                        Button("暂不保存") { sendBound("reject_save", title: "暂不保存", target: target, version: version) }
-                    }
-                } else if kind == "new_session" {
+                if kind == "new_session" {
                     HStack {
                         Button("新建学习会话") { sendBound(kind, title: "新建学习会话", target: target, version: version) }
                         Button("继续放在这里") { sendBound("continue_session", title: "继续放在这里", target: target, version: version) }

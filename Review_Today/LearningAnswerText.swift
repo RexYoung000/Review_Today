@@ -47,6 +47,11 @@ struct LearningAnswerText: View {
 
     @ViewBuilder private func blockView(_ kind: AnswerBlock.Kind) -> some View {
         switch kind {
+        case .notice(let value):
+            Label { inline(value).fixedSize(horizontal: false, vertical: true) } icon: {
+                Image(systemName: "info.circle")
+            }.font(.caption).foregroundStyle(.secondary)
+                .padding(.vertical, 6).accessibilityElement(children: .combine)
         case .paragraph(let value):
             prose(value)
         case .heading(let level, let value):

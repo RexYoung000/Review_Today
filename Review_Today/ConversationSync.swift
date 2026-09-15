@@ -72,7 +72,8 @@ final class ConversationSync {
             for session in sessions {
                 guard let runs = work.runsBySession[session.id] else { continue }
                 let active = runs.contains { (["accepted", "running", "stopping", "adjusting"].contains($0.status) || ($0.status == "queued" && !session.runPaused)) }
-                guard streams[session.id] == nil, active || !synced.contains(session.id) else { continue }
+                let awaitingCaptureReceipt = TopicCaptureOffer.read(session.captureOffersJSON).contains { $0.status == "saving" }
+                guard streams[session.id] == nil, active || awaitingCaptureReceipt || !synced.contains(session.id) else { continue }
                 streams[session.id] = Task {
                     defer { self.streams[session.id] = nil }
                     do {

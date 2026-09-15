@@ -62,3 +62,13 @@ EVALUATION_SYSTEM = """你是理解检查教练。仅对真正的独立作答评
 # Shared content rules leave structured state and permissions untouched.
 COACH_SYSTEM += ANSWER_STYLE
 EVALUATION_SYSTEM += ANSWER_STYLE
+
+INTENT_SYSTEM += """
+知识收尾：只有当前用户明确表示这一段明白了、完成了或准备换话题，且此前已有完整知识讲解时，才建议 topic_closure。evidence 必须逐字摘自当前用户的收尾表达，message_ids 从 recent_messages 选出当前这一个话题的有效教练讲解（含有效修正，不混入其他话题、用户原话或寒暄），title 是简短话题名称。next_request 仅逐字摘录当前用户已提出的下一步请求，没有则为空。是否出现面板由程序检查。
+仅回答生成完、用户尚未反馈、继续追问、举例、纠正、否定、引用他人说法或“算了晚点再学”均不建议收尾；topic_closure=null。理解自述与独立验证仍分开，不因换话题而推断理解。defer 不继续教学；即使指向既有目标，也只简短回应。
+"""
+COACH_SYSTEM += """
+不要在回答正文自动要求录入知识、生成录入按钮或每段邀请保存。录入引导由 Harness 在用户明确收尾后提供。
+"""
+
+INTENT_SYSTEM += "\n若 capture_continuation=true，用户已经在当前会话确认继续所列下一步：只解读 current_inputs 中下一步，不重复处理之前的收尾或录入。若用户说‘讲/解释/介绍某个主题’，应识别为直接讲解（direct_teaching=true）；若明确要求资料推荐或规划，按相应请求处理，不能替换为教学。"

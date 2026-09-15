@@ -9,6 +9,7 @@ struct ContentView: View {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
     var coordinator: ReviewCoordinator
+    @State private var captureDestination: UUID?
     @State private var selection: SidebarItem?
     @State private var learningFocusRequest = 0
     @State private var searchPresented = false
@@ -26,8 +27,6 @@ struct ContentView: View {
     @State private var draftStore = LearningDraftStore()
     @State private var activityCache = TodayActivityCache()
     @State private var monitor = AgentServiceMonitor()
-    @State private var ingestion = KnowledgeIngestion()
-    @AppStorage(KnowledgeIngestion.preferenceKey) private var seenFullIngestion = false
     @Query private var inbox: [CaptureTask]
     @Query private var knowledge: [Knowledge]
     @Query private var settingsRows: [AppSettings]
@@ -118,23 +117,8 @@ struct ContentView: View {
         .background(ConversationWindowTarget { id in
             selectedLearningSessionID = id; selection = .learning; searchPresented = false
         })
-        .sheet(isPresented: $ingestion.presented) {
-            KnowledgeIngestionSheet(ingestion: ingestion) { id in
-                selectedKnowledgeID = id; selection = .library
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .knowledgeIngestionSaved)) { notification in
-            guard let source = notification.object as? ModelContext, source === modelContext,
-                  let receipt = notification.userInfo?["receipt"] as? KnowledgeIngestionReceipt else { return }
-            ingestion.receive(receipt, eligible: ingestionEligible, compact: seenFullIngestion)
-        }
-        .onChange(of: selection) { _, _ in ingestion.leaveContext() }
         .onReceive(NotificationCenter.default.publisher(for: .dictationSessionsDeleted)) { note in
             if let ids = note.object as? Set<UUID> { draftStore.discard(ids) }
-        }
-        .onChange(of: selectedLearningSessionID) { _, next in ingestion.changeSession(to: next) }
-        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave).receive(on: RunLoop.main)) { _ in
-            ingestion.refresh(context: modelContext, eligible: ingestionEligible, compact: seenFullIngestion)
         }
         .toolbar(.hidden, for: .windowToolbar)
         .ignoresSafeArea(.container, edges: .top)
@@ -252,33 +236,28 @@ struct ContentView: View {
                         draftStore: draftStore,
                         monitor: monitor,
                         selectedSessionID: $selectedLearningSessionID,
+                        captureDestination: captureDestination,
                         entryFocusRequest: learningFocusRequest,
                         onEntryFocusConsumed: { learningFocusRequest = 0 },
                         onNewSession: startLearning,
                         onOpenKnowledge: { id in
                             selectedKnowledgeID = id
                             selection = .library
-                        },
-                        onMessageSaved: { message, explicitSave in
-                            ingestion.register(input: message.clientMessageID ?? message.id, session: message.sessionID,
-                                               explicitSave: explicitSave, eligible: ingestionEligible, compact: seenFullIngestion)
                         }
                     )
                 case .library:
                     LibraryView(selectedID: $selectedKnowledgeID, coordinator: coordinator, onStartLearning: startLearning)
                 case .inbox:
-                    InboxView(onOpenSession: { id in selectedLearningSessionID = id; selection = .learning })
+                    InboxView(onOpenSession: { id in captureDestination = nil; selectedLearningSessionID = id; selection = .learning },
+                              onOpenCapture: { session, offer in captureDestination = offer; selectedLearningSessionID = session; selection = .learning })
                 }
             }
     }
 
-    private var ingestionEligible: Bool {
-        NSApp.isActive && selection == .learning && !searchPresented && NSApp.keyWindow?.attachedSheet == nil
-    }
-
     private var inboxCount: Int {
         inbox.filter { $0.status == "needs_attention" || $0.status == "retryable_failed" }.count +
-        learningTasks.filter { LearningDecisionInbox.includes($0, sessions: learningSessions) }.count
+        learningTasks.filter { LearningDecisionInbox.includes($0, sessions: learningSessions) }.count +
+        learningSessions.filter { $0.status == "active" }.reduce(0) { $0 + TopicCaptureOffer.read($1.captureOffersJSON).filter(\.needsAttention).count }
     }
 
     private func startDueReview() {

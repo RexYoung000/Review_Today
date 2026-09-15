@@ -3,13 +3,15 @@ import SwiftUI
 
 enum LearningDecisionInbox {
     static func includes(_ task: LearningTask, sessions: [AgentSession]) -> Bool {
+        task.requiredActionType != "confirm_memory" &&
         sessions.contains { $0.id == task.sessionID && $0.status == "active" } &&
-        (task.status == "needs_attention" || ["choose_sources", "choose_question", "confirm_memory"].contains(task.requiredActionType ?? ""))
+        (task.status == "needs_attention" || ["choose_sources", "choose_question"].contains(task.requiredActionType ?? ""))
     }
 }
 
 struct InboxView: View {
     var onOpenSession: (UUID) -> Void = { _ in }
+    var onOpenCapture: (UUID, UUID) -> Void = { _, _ in }
     @Environment(\.modelContext) private var modelContext
     @Query(
         filter: #Predicate<CaptureTask> { $0.status == "needs_attention" || $0.status == "retryable_failed" },
@@ -25,9 +27,14 @@ struct InboxView: View {
         learningTasks.filter { LearningDecisionInbox.includes($0, sessions: sessions) }.sorted { $0.updatedAt > $1.updatedAt }
     }
 
+    private var deferredCaptures: [(AgentSession, TopicCaptureOffer)] {
+        sessions.filter { $0.status == "active" }.flatMap { session in
+            TopicCaptureOffer.read(session.captureOffersJSON).filter(\.needsAttention).map { (session, $0) }
+        }
+    }
     var body: some View {
         Group {
-            if tasks.isEmpty && decisions.isEmpty {
+            if tasks.isEmpty && decisions.isEmpty && deferredCaptures.isEmpty {
                 VStack(spacing: 14) {
                     MascotMotion(phase: .idle, ambient: true).frame(width: 150, height: 170)
                     Text(String(localized: "没有需要处理的内容。"))
@@ -37,6 +44,15 @@ struct InboxView: View {
             } else {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 16) {
+                        ForEach(deferredCaptures, id: \.1.id) { session, offer in
+                            Button { onOpenCapture(session.id, offer.id) } label: {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text(offer.title).font(.headline)
+                                    Text(offer.status == "failed" ? "录入未完成" : "稍后录入的知识").foregroundStyle(.secondary)
+                                    Label("回到会话处理", systemImage: "arrow.right").font(.caption)
+                                }.frame(maxWidth: .infinity, alignment: .leading).padding(14).contentShape(Rectangle())
+                            }.buttonStyle(InteractionButtonStyle(padding: 0))
+                        }
                         ForEach(decisions, id: \.id) { task in
                             Button { onOpenSession(task.sessionID) } label: {
                                 VStack(alignment: .leading, spacing: 6) {

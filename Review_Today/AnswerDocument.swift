@@ -7,7 +7,7 @@ struct AnswerBlock: Identifiable, Equatable {
     enum Kind: Equatable {
         case paragraph(String), heading(Int, String), list([ListItem])
         case table([String], [[String]]), quote(String), rule
-        case code(String, String), flow([String], complete: Bool)
+        case code(String, String), flow([String], complete: Bool), notice(String)
     }
     struct ListItem: Equatable {
         var marker: String
@@ -33,6 +33,10 @@ enum AnswerDocument {
             let start = i
             let line = lines[i].trimmingCharacters(in: .whitespaces)
             if line.isEmpty { i += 1; continue }
+            if ["网页核验暂未完成，先讲基础内容；涉及变化或争议的部分仍需核实。", "网页核验暂未完成，先讲基础内容；需要查证的部分仍待核实。", "部分内容尚待核实。"].contains(line),
+               lines.dropFirst(i + 1).allSatisfy({ $0.trimmingCharacters(in: .whitespaces).isEmpty }) {
+                result.append(.init(id: start, kind: .notice(line))); i += 1; continue
+            }
             if let fence = fenceStart(line) {
                 i += 1
                 var body: [String] = []
@@ -75,7 +79,11 @@ enum AnswerDocument {
                     quoted.append(String(value.dropFirst()).trimmingCharacters(in: .whitespaces))
                     i += 1
                 }
-                result.append(.init(id: start, kind: .quote(quoted.joined(separator: "\n"))))
+                if quoted.first == "[!NOTE]" {
+                    result.append(.init(id: start, kind: .notice(quoted.dropFirst().joined(separator: "\n"))))
+                } else {
+                    result.append(.init(id: start, kind: .quote(quoted.joined(separator: "\n"))))
+                }
                 continue
             }
             if listItem(lines[i]) != nil {

@@ -513,6 +513,11 @@ enum ConversationProcessor {
             if !pendingControls.contains(where: { $0.action == "set_thinking" }), let strength = page["thinking_strength"] as? String {
                 session.thinkingStrength = strength
             }
+            if let offers = page["capture_offers"] as? [[String: Any]],
+               let revision = page["capture_offers_revision"] as? Int, revision >= session.captureOffersRevision {
+                session.captureOffersJSON = json(offers)
+                session.captureOffersRevision = revision
+            }
             if !invalidMemoryInPage {
                 let pending = page["pending"] as? [String: Any]
                 let target = pending?["target_id"] as? String

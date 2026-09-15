@@ -35,7 +35,7 @@ from agent_service.schemas import (
     MessageAccepted, ProblemCoachBundle, RunActionRequest, SessionMessageRequest, TaskEvent,
 )
 
-from agent_service import conversation_context, conversation_controls, conversation_model_call
+from agent_service import conversation_context, conversation_controls, conversation_model_call, topic_capture
 from agent_service.conversation_controls import LABELS, FINISHED
 
 
@@ -111,6 +111,8 @@ class ConversationHarness(ConditionalTeaching):
                     if not data["foreground"] and (not data["paused"] or paused_entry):
                         data["foreground"] = run["run_id"]
                     summary = "排队中" if run["status"] == "queued" else "已保存，准备回应"
+                if not body.operation:
+                    topic_capture.interrupt(data)
                 message = dict(message_id=body.client_message_id, role="user", content=body.content,
                                content_type=body.content_type, created_at=now_iso(), run_id=run["run_id"],
                                task_id=body.task_id, context=body.context.model_dump(),
@@ -226,7 +228,12 @@ class ConversationHarness(ConditionalTeaching):
                 run.setdefault("action_ids", [])
                 if run["status"] not in {"completed", "cancelled", "terminal_failed", "retryable_failed"}:
                     run.update(status="interrupted", started_at=None, revision=run["revision"] + 1)
-            incoming.update(foreground=None, paused=True, pending=None, restore_fingerprint=fingerprint)
+            incoming.update(foreground=None, paused=True, pending=None, restore_fingerprint=fingerprint,
+                            recovery_version=snapshot.get("recovery_version", 0))
+            topic_capture.interrupt(incoming)
+            for offer in topic_capture.offers(incoming).values():
+                if offer['status'] == 'saving':
+                    offer.update(status='failed', error='服务状态已恢复，请重新确认这次录入。')
             if incoming.get("draft"):
                 incoming["draft"]["invalidated"] = True
             with self.store.transaction(sid) as data:
@@ -275,7 +282,11 @@ class ConversationHarness(ConditionalTeaching):
     def recover(self):
         for session_id in self.store.sessions():
             with self.store.transaction(session_id) as data:
+                for offer in topic_capture.offers(data).values():
+                    offer["continuation_consumed"] = True
                 for run in data["runs"].values():
+                    if run.get("capture_continuation") and run["status"] in {"accepted", "queued"}:
+                        self._stop(data, run)
                     if run["status"] == "running":
                         if run.get("execution_complete"):
                             self._freeze_clock(run)
@@ -325,9 +336,10 @@ class ConversationHarness(ConditionalTeaching):
                         last_input = next((m["content"] for m in data["messages"] if m["message_id"] == run["input_ids"][-1]), "")
                         operations = (run.get("intent") or {}).get("proposed_actions", [])
                         uncertain_write = any(op["kind"] == "save" and (op["disposition"] not in {"confirm", "request"} or not self._explicit(op, last_input)) for op in operations)
-                        if intents & {"reject", "correction", "stop", "pause", "cancel"} or uncertain_write:
+                        if intents & {"reject", "correction", "stop", "pause", "cancel", "defer"} or uncertain_write:
                             task["context"].pop("held_commit", None)
                             task.update(status="cancelled", stage="save_cancelled", user_summary="未提交的入库已取消，草稿保留")
+                            topic_capture.cancel_unclaimed(self, data, task, run)
                         elif task["stage"] == "commit_held" and not (run.get("intent") or {}).get("clarification"):
                             task["memory_package"] = task["context"].pop("held_commit")
                             task.update(status="committing", stage="committing", user_summary="已回应补充，继续原先确认的入库")
@@ -363,6 +375,7 @@ class ConversationHarness(ConditionalTeaching):
                         self._end_response(data, run, "failed")
                         self._freeze_clock(run)
                         run["status"] = "retryable_failed"
+                        topic_capture.failed(self, data, run, "这次录入未完成，可重试或跳过。")
                         task = self._task(data, run)
                         if task and task["status"] not in FINISHED | {"committing"}:
                             task.update(status="retryable_failed", user_summary="当前步骤未完成，可重试；学习进度保留", error_code=code)
@@ -504,6 +517,9 @@ class ConversationHarness(ConditionalTeaching):
         intents = set(decision.intents)
         basic = bool(intents) and intents <= {"greeting", "thanks", "capabilities"}
         defer = intents == {"defer"}
+        if defer and not last.get("operation") and not decision.proposed_actions:
+            reply = decision.light_reply.strip()
+            return reply if reply and len(reply) <= 100 and not re.search(r"[?？]", reply) else "好的，你慢慢想。准备好后继续。"
         # Runs created before `defer` existed may already have a validated
         # self_report checkpoint. It is only side-effect free without learning
         # state; an active-task self report must still update understanding.
@@ -534,6 +550,8 @@ class ConversationHarness(ConditionalTeaching):
     def _execute(self, sid, rid, rev):
         data, run = self._snapshot(sid, rid, rev)
         context, last = self._context(data, run)
+        if topic_capture.handle_action(self, sid, rid, rev, last):
+            return
         # Context reuse inherits the source versions even when Luna chooses no
         # additional cross-Session example on this turn.
         recent_ids = {m.get("message_id") for m in context["recent_messages"]}
@@ -567,6 +585,30 @@ class ConversationHarness(ConditionalTeaching):
         else:
             decision = self._call(sid, rid, rev, "intent", INTENT_SYSTEM,
                                   json.dumps(context, ensure_ascii=False), IntentDecision, ROUTER_MODEL)
+        if run.get("capture_continuation") and decision.relation == "new_topic":
+            # The inline Continue action already chose this conversation. Keep
+            # the old task in history while starting the explicitly named topic.
+            with self.store.transaction(sid, rid, rev) as current:
+                current["active_task_id"] = None
+                current["runs"][rid]["task_id"] = None
+                current["focus_goal"] = last["content"][:2000]
+                current["pending"] = None
+                current["draft"] = None
+            decision = decision.model_copy(update={"relation": "continuation", "target_task_id": ""})
+            data, run = self._snapshot(sid, rid, rev)
+        if topic_capture.maybe_offer(self, sid, rid, rev, decision, last):
+            return
+        closure = decision.topic_closure
+        if closure and not run.get("capture_continuation") and not last.get("operation") and not decision.proposed_actions and not set(decision.intents) & {"defer", "stop", "pause", "cancel", "reject", "correction", "followup", "hint", "example", "skip_check"} and self._explicit({"evidence": closure.evidence}, last["content"]):
+            # A valid closing signal with no eligible/new offer is still not a
+            # request for another lecture. Execute only an explicit next request.
+            if closure.next_request and self._explicit({"evidence": closure.next_request}, last["content"]):
+                with self.store.transaction(sid, rid, rev) as current:
+                    current["runs"][rid].update(resolved_input=closure.next_request, capture_continuation=True)
+                self._execute(sid, rid, rev)
+            else:
+                self._publish(sid, rid, rev, "好的，这一段先到这里。")
+            return
         light_reply = self._light_reply(
             decision,
             last,
@@ -609,6 +651,7 @@ class ConversationHarness(ConditionalTeaching):
             if task and "hint" in decision.intents:
                 task["context"]["hint_used"] = True
             if "correction" in decision.intents:
+                topic_capture.invalidate(self, data, run)
                 self.store.event(data, run, "memory_corrected", "已收到纠正，正在调整相关内容", payload={"invalidate_memory": True})
             self.store.event(data, run, "intent_decided", "已理解本轮要求", detail=decision.rationale,
                              model="" if last.get("operation") else ROUTER_MODEL,
@@ -1022,12 +1065,14 @@ class ConversationHarness(ConditionalTeaching):
                 source["content"] = text
                 source["locator"] = f"task:{task['task_id']}" if task else f"run:{rid}"
         if evidence["state"] in {"insufficient", "conflicting", "outdated"}:
-            text += "\n\n" + (evidence["summary"] or "部分内容尚待核实。")
+            text += "\n\n> [!NOTE]\n> " + (evidence["summary"] or "部分内容尚待核实。").replace("\n", "\n> ")
         cited = [source for source in sources if source.get("url") in evidence.get("sources", []) and source["url"] not in text]
         if cited:
             text += render_sources(cited)
         with self.store.transaction(sid, rid, rev) as data:
             task = self._task(data, data["runs"][rid])
+            data["runs"][rid]["answer_sources"] = sources
+            data["runs"][rid]["answer_source_type"] = source_type
             if teaching:
                 data["runs"][rid]["activity_candidate"] = "lesson_step"
             elif node == "answer" and "question" in decision.intents:
@@ -1127,8 +1172,8 @@ class ConversationHarness(ConditionalTeaching):
                 record_understanding(task, ctx.get("understanding", "unknown"))
             ctx["check_question"] = result.followup_question or "请换一个应用场景，解释你的判断与局限。"
         if mastered:
-            self._publish(sid, rid, rev, result.feedback + "\n\n这次理解检查已通过。是否要将确认过的内容加入知识库与复习？",
-                          stage="mastered", task_status="completed", required={"type": "confirm_memory", "prompt": "是否加入知识库？", "options": []}, draft=True,
+            self._publish(sid, rid, rev, result.feedback + "\n\n这次理解检查已通过。",
+                          stage="mastered", task_status="completed", draft=True,
                           draft_content=ctx.get("reference_answer") or ctx.get("last_lesson") or task["content"], source_type=ctx.get("source_type"))
         elif result.passed and not ctx.get("requires_mastery"):
             self._publish(sid, rid, rev, result.feedback + "\n\n这一节的理解检查已通过。你可以继续下一节，也可以继续追问。",
@@ -1200,10 +1245,12 @@ class ConversationHarness(ConditionalTeaching):
         if not draft or draft.get("invalidated"):
             self._publish(sid, rid, rev, "整理内容已变化，请先重新确认修订版，旧版本不会入库。", complete=False)
             return
+        capture_offer = data.get("capture_offers", {}).get(run.get("capture_offer_id"))
+        save_context = capture_offer if capture_offer else (task or {}).get("context", {})
         understood = draft["understanding"]
         if decision.understanding == "self_reported":
             understood = "self_reported"
-        if understood == "unknown" or (task and task["context"].get("requires_mastery") and not task["context"].get("transfer_passed")):
+        if understood == "unknown" or (save_context.get("requires_mastery") and not save_context.get("transfer_passed")):
             with self.store.transaction(sid, rid, rev) as data:
                 if data.get("pending"):
                     data["pending"]["consent_received"] = True
@@ -1211,11 +1258,16 @@ class ConversationHarness(ConditionalTeaching):
             return
         with self.store.transaction(sid, rid, rev) as data:
             run = data["runs"][rid]
+            capture_offer = topic_capture.adopt_explicit(self, data, run, draft, task)
             # Separate controlled commit task; do not regenerate the delivered draft.
             run["memory_references"] = draft.get("memory_references", [])
             commit_id = str(uuid.uuid5(uuid.UUID(sid), f"memory:{draft['id']}:{draft['version']}"))
             existing = data["tasks"].get(commit_id)
             if existing and existing["status"] in {"completed", "committing"}:
+                capture_offer['save_task_id'] = commit_id
+                capture_offer['status'] = 'saved' if existing['status'] == 'completed' else 'saving'
+                capture_offer['knowledge_ids'] = [k['id'] for k in (existing.get('memory_package') or {}).get('knowledge', [])] if existing['status'] == 'completed' else []
+                topic_capture.emit(self, data, run, capture_offer)
                 self.store.event(data, run, "already_saved", "这个整理版本已提交，不会重复生成")
                 return
             if not existing:
@@ -1223,9 +1275,11 @@ class ConversationHarness(ConditionalTeaching):
                                            content=draft["content"], content_type="text", primary_language="zh", mode_preset=data["mode"],
                                            mode="memory_organization", context=dict(conversation_managed=True, draft_id=draft["id"], draft_version=draft["version"],
                                                                                     source_type=draft["source_type"], origin_run_id=rid,
-                                                                                    sources=(task or {}).get("context", {}).get("sources", []),
+                                                                                    sources=capture_offer["sources"] if capture_offer else (task or {}).get("context", {}).get("sources", []),
                                                                                     lifecycle_revision=data.get("lifecycle_revision", 0)))
                 data["tasks"][commit_id] = asdict(record)
+            data["tasks"][commit_id]["context"].update(origin_run_id=rid, lifecycle_revision=data.get("lifecycle_revision", 0), capture_offer_id=capture_offer["id"])
+            capture_offer["save_task_id"] = commit_id
             run["task_id"] = commit_id
             data["active_task_id"] = commit_id
             self.store.event(data, run, "memory_generation", "正在提交已确认的整理版本", model=COACH_MODEL)
@@ -1254,12 +1308,14 @@ class ConversationHarness(ConditionalTeaching):
             task = data["tasks"][commit_id]
             if result.get("outcome") != "committing" or not result.get("extracted"):
                 task.update(status="needs_attention", stage="knowledge_conflict", user_summary="证据不足或冲突，已暂停入库")
+                topic_capture.failed(self, data, run, "核验发现冲突或证据不足，请补充资料或修订后重试。")
                 self._project_event(data, run, task)
                 self.store.event(data, run, "knowledge_conflict", "知识尚未入库", message="核验发现冲突或证据不足，已暂停写入；请补充资料或修订内容。")
                 return
             task.update(memory_package=result["extracted"], memory_source_text=draft["content"], status="committing", stage="committing",
                         user_summary="已确认的知识等待本机保存", required_action=None)
             task["context"]["commit_revision"] = rev
+            topic_capture.emit(self, data, run, data["capture_offers"][run["capture_offer_id"]])
             self._project_event(data, run, task)
             data["pending"] = None
 
@@ -1279,6 +1335,7 @@ class ConversationHarness(ConditionalTeaching):
         if not record:
             raise ValueError("RT.TASK.UNKNOWN")
         # Permission, receipt and completion share the archive transaction lock.
+        continue_capture = False
         with self.store.transaction(record.session_id) as data:
             task = data["tasks"][task_id]
             if last_event_seq > len(task["events"]):
@@ -1300,6 +1357,10 @@ class ConversationHarness(ConditionalTeaching):
                     attempt=max(task.get("retry_count", 0) + 1, 1),
                 ).model_dump())
             task["last_acked_seq"] = max(task["last_acked_seq"], last_event_seq)
+            if task["status"] == "completed":
+                continue_capture = topic_capture.acknowledged(self, data, task, knowledge_ids)
+        if continue_capture:
+            self.start(record.session_id)
         return self.store.tasks.get(task_id).view().model_dump()
 
     def claim_commit(self, task_id: str):

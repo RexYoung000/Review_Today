@@ -309,6 +309,8 @@ final class AgentSession {
     var checkpointJSON: String?
     var learningChecklistExpanded: Bool = false
     var runPaused: Bool = false
+    var captureOffersJSON: String = "[]"
+    var captureOffersRevision: Int = 0
     var pendingOperationJSON: String?
     var handoffID: String?
     var handoffJSON: String?

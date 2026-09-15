@@ -3,6 +3,10 @@ import Foundation
 @main
 struct AnswerDocumentContractTests {
     static func main() {
+        let legacyNotice = "网页核验暂未完成，先讲基础内容；涉及变化或争议的部分仍需核实。"
+        precondition(AnswerDocument.parse("正文\n\n" + legacyNotice).last?.kind == .notice(legacyNotice))
+        precondition(AnswerDocument.parse("> [!NOTE]\n> 核验尚未完成").first?.kind == .notice("核验尚未完成"))
+        precondition(AnswerDocument.parse("```text\n" + legacyNotice + "\n```").first?.kind == .code("text", legacyNotice))
         let mixed = """
         核心 **观点**。
         ## 原因

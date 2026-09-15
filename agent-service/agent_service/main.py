@@ -67,6 +67,7 @@ from agent_service.schemas import (
 from agent_service.store import TaskRecord, store
 from agent_service.conversation import conversation_harness
 from agent_service.checkpoint_delta import recovery_page
+from agent_service.topic_capture import public as public_capture_offer
 from agent_service.schemas import SessionMessageRequest, RunActionRequest, SessionAckRequest, MessageAccepted
 
 from agent_service.dictation import router as dictation_router
@@ -195,6 +196,8 @@ def session_events(session_id: str, after_seq: int = 0, recovery_version: int = 
                 last_seq=conversation_harness.store.last_seq(data), paused=data["paused"], mode=data["mode"],
                 recovery=recovery_page(data, recovery_version),
                 thinking_strength=data.get("thinking_strength", "smart"),
+                capture_offers_revision=data.get("recovery_version", 0),
+                capture_offers=[public_capture_offer(o) for o in data.get("capture_offers", {}).values()],
                 pending=data["pending"], runs=[conversation_harness.public_run(r) for r in data["runs"].values()])
 
 

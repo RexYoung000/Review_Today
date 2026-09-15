@@ -113,6 +113,12 @@ def session_action(self, sid, action_id, action, lifecycle_revision):
         data["lifecycle_revision"] = lifecycle_revision
         data["status"] = "archived" if action == "archive" else "active"
         data["paused"] = True
+        from agent_service import topic_capture
+        topic_capture.interrupt(data)
+        for offer in topic_capture.offers(data).values():
+            commit = data['tasks'].get(offer.get('save_task_id'))
+            if offer['status'] == 'saving' and not (commit or {}).get('context', {}).get('commit_claimed'):
+                offer.update(status='failed', error='会话已暂停，内容尚未保存。')
         data["pending"] = None
         if data.get("draft"):
             data["draft"]["invalidated"] = True
@@ -143,6 +149,8 @@ def cancel_older(self, sid, rid, revision):
 
 
 def stop(self, data: dict, run: dict, *, cancel: bool = False):
+    from agent_service import topic_capture
+    topic_capture.interrupt(data)
     already_replied = run["status"] == "completed"
     self._end_response(data, run, "interrupted")
     self._freeze_clock(run)
@@ -163,6 +171,7 @@ def stop(self, data: dict, run: dict, *, cancel: bool = False):
             task["memory_package"] = None
             if cancel:
                 data["active_task_id"] = None
+            topic_capture.cancel_unclaimed(self, data, task, run)
             self._project_event(data, run, task)
     self.store.event(data, run, "cancelled" if cancel else "stopped",
                      "目标已取消，历史已保留" if cancel else "本轮已结束，队列已暂停" if already_replied else "已停止回复；目标与进度保留，队列已暂停")

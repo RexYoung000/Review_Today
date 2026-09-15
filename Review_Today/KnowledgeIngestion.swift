@@ -33,7 +33,7 @@ final class KnowledgeIngestion {
     var saved: Bool { outcome == "saved" }
 
     func register(input: UUID, session: UUID, explicitSave: Bool, eligible: Bool, compact: Bool) {
-        guard eligible else { return }
+        guard eligible, explicitSave else { return }
         if inputs.count >= 64 { inputs.removeAll() }
         inputs[input] = session
         if explicitSave { begin(input: input, compact: compact, eligible: eligible) }
@@ -92,9 +92,7 @@ final class KnowledgeIngestion {
                 run.sessionID == sid && ((try? JSONDecoder().decode([UUID].self, from: Data(run.inputMessageIDsJSON.utf8))) ?? []).contains(input)
             }
             let task = tasks.first { $0.sessionID == sid && $0.mode == "memory_organization" && ($0.inputMessageID == input || $0.id == run?.taskID) }
-            if task != nil || run?.stage.hasPrefix("memory_") == true {
-                begin(input: input, compact: compact, eligible: eligible)
-            }
+            // Only an explicitly registered save can own an ingestion presentation.
             // A persisted success is delivered separately, exactly after ModelContext.save.
             // Acknowledgement/network failures after that boundary never undo the result.
             if task?.memoryCommitted == true { continue }
