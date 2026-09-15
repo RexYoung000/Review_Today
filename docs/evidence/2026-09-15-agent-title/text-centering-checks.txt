@@ -1,0 +1,24 @@
+文字居中修订：签名 Debug 构建通过，日常 Agent 页面与 520 pt 隔离窄窗口目视确认文字居中。
+本次原生全套复测未完整通过；以下如实保留两次结果，不能将此前通过记录当作本次全套通过。
+
+native
+FAIL: HeaderQAError(message: "minimized renderer stops")
+PASS: test window has native input focus
+PASS: native pointer direction 300.0, 0.0; actual=1.0, point=(675.0, 552.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction -300.0, 0.0; actual=-1.0, point=(75.0, 552.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction 0.0, 100.0; actual=0.625, point=(375.0, 652.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction 0.0, -180.0; actual=-1.0, point=(375.0, 372.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native button starts click reaction
+PASS: mascot click retains current responder
+PASS: rapid clicks settle without a queue
+PASS: composer can acquire intentional focus
+PASS: click preserves Chinese marked text and editor focus
+PASS: typing returns gaze to rest
+PASS: Reduce Motion stays static for pointer and click
+
+native-retry
+FAIL: HeaderQAError(message: "native pointer direction 0.0, -180.0; actual=0.25060771536231513, point=(375.0, 372.0), region=(0.0, 0.0, 1040.0, 792.0)")
+PASS: test window has native input focus
+PASS: native pointer direction 300.0, 0.0; actual=1.0, point=(675.0, 552.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction -300.0, 0.0; actual=-1.0, point=(75.0, 552.0), region=(0.0, 0.0, 1040.0, 792.0)
+PASS: native pointer direction 0.0, 100.0; actual=0.30654296875, point=(375.0, 652.0), region=(0.0, 0.0, 1040.0, 792.0)

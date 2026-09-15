@@ -107,6 +107,9 @@ struct AgentLandingTitle: View {
                 Text("从一个问题开始，把理解留住。").font(.callout).foregroundStyle(.secondary)
             }
             .layoutPriority(1)
+            // Match the decoration's width so the text owns the content centerline.
+            Color.clear.frame(width: 92, height: 1)
+                .allowsHitTesting(false).accessibilityHidden(true)
         }
         .multilineTextAlignment(.center)
         .fixedSize(horizontal: false, vertical: true)
