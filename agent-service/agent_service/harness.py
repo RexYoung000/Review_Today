@@ -6,6 +6,7 @@ import uuid
 from typing import Any
 
 from agent_service.answer_style import ANSWER_STYLE
+from agent_service.conversation_prompts import PROGRAMMING_BOUNDARY
 from agent_service.capture import RISK_RULE, find_source_candidates, run_capture
 from agent_service.capture.fetch import fetch_public_url, looks_like_url
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL
@@ -61,6 +62,8 @@ MASTERY_SYSTEM = """你是问题攻克模式的验收教练。比较用户独立
 未通过时 followup_question 只追问一个最关键缺口；通过时留空。使用用户主语言。"""
 
 
+PROBLEM_SYSTEM += PROGRAMMING_BOUNDARY
+SOURCE_LEARNING_SYSTEM += PROGRAMMING_BOUNDARY
 PROBLEM_SYSTEM += ANSWER_STYLE
 JD_SYSTEM += ANSWER_STYLE
 SOURCE_LEARNING_SYSTEM += ANSWER_STYLE

@@ -1,0 +1,10 @@
+{
+  "status": "ok",
+  "harness": "v2",
+  "model_roles": {
+    "router": "ready",
+    "coach": "ready",
+    "risk": "ready"
+  },
+  "note": "Normal app-owned service restarted after verifying no accepted, queued or running runs. No test messages written to normal storage."
+}

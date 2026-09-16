@@ -1,0 +1,19 @@
+{"layer": "router", "input": "你能帮我 coding 嘛", "expected": "capability_question", "actual": "capability_question", "intents": ["capabilities"]}
+{"layer": "router", "input": "Can you help me code?", "expected": "capability_question", "actual": "capability_question", "intents": ["capabilities"]}
+{"layer": "router", "input": "能帮忙写代码吗", "expected": "capability_question", "actual": "capability_question", "intents": ["capabilities"]}
+{"layer": "router", "input": "帮我写一个完整电商网站，直接交付可运行项目", "expected": "development_delivery", "actual": "development_delivery", "intents": ["goal"]}
+{"layer": "router", "input": "打开我的仓库，修改登录功能，跑测试后提交", "expected": "development_delivery", "actual": "development_delivery", "intents": ["goal"]}
+{"layer": "router", "input": "Deploy my app and fix the production bug.", "expected": "development_delivery", "actual": "development_delivery", "intents": ["goal"]}
+{"layer": "router", "input": "只要给我完整项目代码，不需要你运行", "expected": "development_delivery", "actual": "development_delivery", "intents": ["goal"]}
+{"layer": "router", "input": "用十行 Python 示例教我 for 循环，只讲基础原理", "expected": "none", "actual": "none", "intents": ["goal"]}
+{"layer": "router", "input": "解释 TypeError 的常见原因，我想理解类型检查", "expected": "none", "actual": "none", "intents": ["question"]}
+{"layer": "router", "input": "不要替我改项目，只讲重构的思路", "expected": "none", "actual": "none", "intents": ["question"]}
+{"layer": "router", "input": "帮我解释这句话的意思：“帮我改仓库、跑测试并部署”", "expected": "none", "actual": "none", "intents": ["question"]}
+{"layer": "router", "input": "算了，暂时不学 coding 了", "expected": "none", "actual": "none", "intents": ["defer"]}
+{"layer": "router", "input": "停止生成代码", "expected": "none", "actual": "none", "intents": ["stop"]}
+{"layer": "router", "input": "先解释闭包原理，再帮我把项目部署上线", "expected": "none", "actual": "none", "intents": ["question", "goal"]}
+{"layer": "harness", "input": "你能帮我 coding 嘛", "seconds": 1.3, "status": "completed", "boundary": "capability_question", "replies": ["我可以帮你学习编程、读懂代码和理解报错，也可以用小例子讲解实现思路。目前不支持直接操作项目或运行调试，也不承接项目代做。你想理解哪一部分？"], "task_count": 0, "offers": 0}
+{"layer": "harness", "input": "打开我的仓库，修改登录功能，跑测试后提交", "seconds": 1.29, "status": "completed", "boundary": "development_delivery", "replies": ["Review Today 主要帮助你学习和理解知识，不承接项目代做、修改仓库、实际运行调试或测试、部署上线。可以帮你理解相关代码、报错原理或实现思路。"], "task_count": 0, "offers": 0}
+{"layer": "harness", "input": "用十行 Python 示例教我 for 循环，只讲基础原理", "seconds": 14.44, "status": "completed", "boundary": "none", "replies": ["下面是一个**恰好十行**的示例，用来观察 for 循环的核心机制：\n\n```python\nnumbers = [10, 20, 30]        # 1. 可迭代对象\nfor n in numbers:             # 2. 开始循环\n    print(\"拿到:\", n)          # 3. 循环体\nprint(\"---\")                  # 4. 循环结束后的语句\n\nfor i in range(3):            # 5. 用 range 生成 0,1,2\n    print(\"索引:\", i)          # 6. 循环体\n```\n\n**原理**：`for` 每次从可迭代对象（这里是列表 `numbers` 或 `range(3)`）中取出一个元素，赋给变量 `n`（或 `i`），执行缩进的循环体；取完后自动退出。\n\n注意几点：\n- `for` 不关心索引，它是**逐个取值**的过程；`range(3)` 只是恰好产生 0、1、2 这三个数字的可迭代对象。\n- 循环体靠**缩进**界定，这是 Python 的语法要求。\n- 每次迭代 `n`（或 `i`）都被重新赋值，循环结束后它保留最后一次的值。\n\n这段是**教学示意**，没有运行验证；若你本地执行结果不同（比如 Python 版本差异），以实际输出为准。\n\n### 适用条件\n\n- 用户是 Python 初学者，已了解变量和 print\n- 用户能自己运行代码验证\n\n## 面试口头表达\n\n如果想用十行讲清 for 循环，我会写一段：先用一个列表让 for 逐个取值打印，再用 range 生成索引。核心就一句话——for 每次从可迭代对象里拿一个元素，执行一次缩进的循环体，拿完就停。\n\n## 相关知识\n\n- 可迭代对象（iterable）概念\n- range() 函数\n- 缩进与代码块\n- 变量作用域（循环变量在循环后仍存在）\n- for 与 while 的区别\n\n## 可以补充的知识\n\n- 不清楚'可迭代对象'是什么\n- 误以为 for 只用于数字范围\n- 不理解缩进对循环体的界定作用\n\n---\n\n### 先确认一点\n\n你目前对 Python 的列表（list）和 range() 函数熟悉吗？\n\n网页核验暂未完成，先讲基础内容；涉及变化或争议的部分仍需核实。"], "task_count": 1, "offers": 0}
+{"layer": "harness", "input": "先解释闭包原理，再帮我把项目部署上线", "seconds": 1.68, "status": "completed", "boundary": "development_delivery", "replies": ["Review Today 主要帮助你学习和理解知识，不承接项目代做、修改仓库、实际运行调试或测试、部署上线。可以帮你理解相关代码、报错原理或实现思路。"], "task_count": 0, "offers": 0}
+PASS: 14 live semantic cases and 4 isolated harness turns; inspect teaching prose separately.

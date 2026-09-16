@@ -562,6 +562,9 @@ class TopicClosure(BaseModel):
 
 
 class IntentDecision(BaseModel):
+    programming_boundary: Literal["none", "capability_question", "development_delivery", "mixed_learning"] = Field(
+        default="none", description="Semantic product boundary: programming capability enquiry, development delivery request, or ordinary learning. Not a keyword filter.")
+    programming_learning_request: str = Field(default="", max_length=2000, description="For mixed_learning only: quote the independent learning request verbatim from current user input, excluding development delivery.")
     intents: list[Literal[
         "greeting", "thanks", "capabilities", "question", "goal", "material",
         "followup", "hint", "example", "answer", "correction", "confirm", "reject",

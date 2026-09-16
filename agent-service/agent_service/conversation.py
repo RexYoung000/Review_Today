@@ -258,7 +258,7 @@ class ConversationHarness(ConditionalTeaching):
             return
         candidate = foreground if foreground and foreground["status"] in {"accepted", "queued"} else next(r for r in data["runs"].values() if r["status"] in {"accepted", "queued"})
         last = next((m for m in data["messages"] if m["message_id"] == candidate["input_ids"][-1]), {})
-        cached_intent = candidate.get("intent") and candidate.get("decision_input_ids") == candidate["input_ids"] and candidate.get("decision_mode") == data["mode"]
+        cached_intent = candidate.get("intent") and "programming_boundary" in candidate["intent"] and candidate.get("decision_input_ids") == candidate["input_ids"] and candidate.get("decision_mode") == data["mode"]
         if not last.get("operation") and not cached_intent and snapshot()["router"]["status"] != "ready":
             return
         with self._worker_lock:
@@ -448,6 +448,8 @@ class ConversationHarness(ConditionalTeaching):
             self.store.event(data, run, f"response.{status}", "未完成内容已保留", payload={"response": dict(response)})
 
     def _task(self, data, run):
+        if run.get("programming_scope_reply"):
+            return None
         return data["tasks"].get(run.get("task_id") or data["active_task_id"])
 
     def _project_event(self, data, run, task, message=None):
@@ -580,11 +582,42 @@ class ConversationHarness(ConditionalTeaching):
                                       relation="continuation", workflow=task["mode"] if task else "source_learning",
                                       scope="continue_goal", direct_teaching=True, learning_goal_ready=True,
                                       rationale="用户明确要求继续教学，不是独立作答或保存授权。")
-        elif run.get("intent") and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"]:
+        elif run.get("intent") and "programming_boundary" in run["intent"] and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"]:
             decision = IntentDecision.model_validate(run["intent"])
         else:
             decision = self._call(sid, rid, rev, "intent", INTENT_SYSTEM,
                                   json.dumps(context, ensure_ascii=False), IntentDecision, ROUTER_MODEL)
+        # Product-scope replies must precede free-form answers, task creation and
+        # topic capture. Bound UI actions and lifecycle controls keep their path.
+        if (decision.programming_boundary != "none" and not last.get("operation")
+                and not set(decision.intents) & {"stop", "pause", "cancel", "defer", "queue"}):
+            reply = ("我可以帮你学习编程、读懂代码和理解报错，也可以用小例子讲解实现思路。目前不支持直接操作项目或运行调试，也不承接项目代做。你想理解哪一部分？"
+                     if decision.programming_boundary == "capability_question" else
+                     "Review Today 主要帮助你学习和理解知识，不承接项目代做、修改仓库、实际运行调试或测试、部署上线。可以帮你理解相关代码、报错原理或实现思路。")
+            with self.store.transaction(sid, rid, rev) as current:
+                active = current["runs"][rid]
+                active.update(intent=decision.model_dump(), decision_input_ids=list(active["input_ids"]),
+                              decision_mode=current["mode"], task_id=None, programming_scope_reply=True)
+                self.store.event(current, active, "intent_decided", "已说明编程学习的能力范围",
+                                 model=ROUTER_MODEL, detail=decision.rationale,
+                                 payload={"intent": decision.model_dump()})
+            learning_request = decision.programming_learning_request.strip()
+            original_input = next((m["content"] for m in data["messages"] if m["message_id"] == last["message_id"]), last["content"])
+            if (decision.programming_boundary == "mixed_learning" and learning_request
+                    and learning_request != original_input.strip()
+                    and self._explicit({"evidence": learning_request}, original_input)):
+                # Isolate the expressly requested learning part. Do not route the
+                # unsupported delivery into a new goal, operation or capture.
+                with self.store.transaction(sid, rid, rev) as current:
+                    current["runs"][rid]["resolved_input"] = learning_request
+                local = decision.model_copy(update={"programming_boundary": "none", "scope": "conversation",
+                    "workflow": None, "intents": ["question"], "target_task_id": "", "proposed_actions": [],
+                    "topic_closure": None, "direct_teaching": False, "answer_only": True})
+                self._respond(sid, rid, rev, local,
+                    "先简短说明不执行代做项目、改仓库、运行调试或部署等开发操作；再仅解释 current_inputs 中用户明确提出的学习问题，不创建课程或开发交付物。", node="answer")
+            else:
+                self._publish(sid, rid, rev, reply)
+            return
         if run.get("capture_continuation") and decision.relation == "new_topic":
             # The inline Continue action already chose this conversation. Keep
             # the old task in history while starting the explicitly named topic.
