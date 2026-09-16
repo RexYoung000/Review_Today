@@ -591,7 +591,7 @@ class ConversationHarness(ConditionalTeaching):
         # topic capture. Bound UI actions and lifecycle controls keep their path.
         if (decision.programming_boundary != "none" and not last.get("operation")
                 and not set(decision.intents) & {"stop", "pause", "cancel", "defer", "queue"}):
-            reply = ("我可以帮你学习编程、读懂代码和理解报错，也可以用小例子讲解实现思路。目前不支持直接操作项目或运行调试，也不承接项目代做。你想理解哪一部分？"
+            reply = ("我是 Review Today 学习教练，可以帮助你理解 coding 相关的知识，比如编程概念、代码逻辑和背后的原理。"
                      if decision.programming_boundary == "capability_question" else
                      "Review Today 主要帮助你学习和理解知识，不承接项目代做、修改仓库、实际运行调试或测试、部署上线。可以帮你理解相关代码、报错原理或实现思路。")
             with self.store.transaction(sid, rid, rev) as current:

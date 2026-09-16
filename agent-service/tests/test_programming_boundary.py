@@ -22,7 +22,9 @@ class ProgrammingBoundaryTests(unittest.TestCase):
         self.f.decision = self.decision('capability_question', light_reply='可以，我能替你写完整项目并运行调试。')
         result = self.f.send('你能帮我 coding 嘛')
         state = self.f.state()
-        self.assertIn('目前不支持直接操作项目或运行调试', state['messages'][-1]['content'])
+        self.assertIn('学习教练，可以帮助你理解 coding 相关的知识', state['messages'][-1]['content'])
+        self.assertNotIn('？', state['messages'][-1]['content'])
+        self.assertNotIn('运行调试', state['messages'][-1]['content'])
         self.assertEqual(state['runs'][result.run_id]['status'], 'completed')
         self.assertEqual([s for s, _ in self.f.calls], [IntentDecision])
         self.assertFalse(state['tasks'])
@@ -86,7 +88,7 @@ class ProgrammingBoundaryTests(unittest.TestCase):
             old.pop('programming_boundary', None)
             run.update(intent=old, decision_input_ids=list(run['input_ids']), decision_mode=data['mode'])
         self.f.harness.drain(self.f.sid)
-        self.assertIn('目前不支持直接操作项目或运行调试', self.f.state()['messages'][-1]['content'])
+        self.assertIn('学习教练，可以帮助你理解 coding 相关的知识', self.f.state()['messages'][-1]['content'])
         self.assertEqual([s for s, _ in self.f.calls], [IntentDecision])
 
     def test_deferred_capture_survives_capability_question(self):
