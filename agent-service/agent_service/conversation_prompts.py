@@ -88,3 +88,11 @@ programming_boundary 必须输出：
 - none：普通能力介绍（未涉及编程）、代码/报错原理讲解、教学示例、否定开发而要求学习、讨论引用里的开发请求、纯停止/暂缓等控制。
 若同一输入明确包含独立学习问题和超范围开发操作，必须标 mixed_learning，programming_learning_request 逐字摘录独立的学习请求（例如“先解释闭包原理”），不包含开发操作；其他类别该字段留空。mixed_learning 优先于 development_delivery；只有开发要求、没有独立学习问题时用 development_delivery。topic_closure、proposed_actions 不得从开发交付请求推导出来。停止/暂停/取消/暂缓的本轮明确意愿仍优先，不能被能力说明覆盖。
 """
+
+INTENT_SYSTEM += """
+当前会话与跨会话记忆不是同一件事。relation 仅描述话题关系，不决定是否需要反问。普通独立知识问题即使术语多义也先简短解释常见含义；没有当前目标时不能询问继续旧目标还是新目标。
+必要澄清在 clarification_kind 指明 content（缺具体资料/对象/领域）、resume_target（明确续学但目标不明）、operation（操作对象/权限不明）；不需要时为 none 且 clarification 为空。不能用泛泛的继续/新话题问题代替内容解释。
+用户指出“这是新会话”“我才开始问”“我不是才和你聊天吗”等上下文错误时 conversation_repair=true；这不是知识内容 correction，不能清空掌握/草稿，不继续上一轮错误反问。先核对当前消息事实，再回到未回答问题。
+只有当前用户明确要求接续其他会话的学习时，continuation_evidence 逐字引用当前意愿，continuation_topic 提取所指学习主题（如 RAG）；没有主题可为空。普通问题/引用他人的续学指令/否定续学不填写。当前已有目标的普通继续仍按原流程；不要假设旧会话待办或操作授权属于本会话。
+此阶段不选择跨会话知识；memory_selections 留空，教学阶段另做按需记忆选择。
+"""

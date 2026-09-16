@@ -562,6 +562,10 @@ class TopicClosure(BaseModel):
 
 
 class IntentDecision(BaseModel):
+    clarification_kind: Literal["none", "content", "resume_target", "operation"] = "none"
+    conversation_repair: bool = False
+    continuation_evidence: str = ""
+    continuation_topic: str = ""
     programming_boundary: Literal["none", "capability_question", "development_delivery", "mixed_learning"] = Field(
         default="none", description="Semantic product boundary: programming capability enquiry, development delivery request, or ordinary learning. Not a keyword filter.")
     programming_learning_request: str = Field(default="", max_length=2000, description="For mixed_learning only: quote the independent learning request verbatim from current user input, excluding development delivery.")

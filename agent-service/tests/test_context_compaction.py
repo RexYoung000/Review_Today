@@ -71,7 +71,10 @@ class ContextCompactionTests(unittest.TestCase):
         self.assertFalse(covered & {m['message_id'] for m in context['recent_messages']})
         count = count_request('', json.dumps(context, ensure_ascii=False))
         self.assertLess(count, 160000)
-        self.assertGreater(count, 128000)
+        # The intent prompt excludes duplicate related-learning bodies; recent raw
+        # turns still retain substantial context (not a fixed message truncation).
+        self.assertGreater(count, 100000)
+        self.assertGreater(len(context["recent_messages"]), 10)
 
     def test_foreground_compacts_when_new_input_crosses_threshold_and_does_not_recompact_next_turn(self):
         self.seed(pairs=20)

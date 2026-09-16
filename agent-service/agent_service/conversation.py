@@ -35,7 +35,7 @@ from agent_service.schemas import (
     MessageAccepted, ProblemCoachBundle, RunActionRequest, SessionMessageRequest, TaskEvent,
 )
 
-from agent_service import conversation_context, conversation_controls, conversation_model_call, topic_capture
+from agent_service import conversation_context, conversation_controls, conversation_model_call, topic_capture, dialogue_routing
 from agent_service.conversation_controls import LABELS, FINISHED
 
 
@@ -448,7 +448,7 @@ class ConversationHarness(ConditionalTeaching):
             self.store.event(data, run, f"response.{status}", "未完成内容已保留", payload={"response": dict(response)})
 
     def _task(self, data, run):
-        if run.get("programming_scope_reply"):
+        if run.get("programming_scope_reply") or run.get("dialogue_only"):
             return None
         return data["tasks"].get(run.get("task_id") or data["active_task_id"])
 
@@ -586,7 +586,14 @@ class ConversationHarness(ConditionalTeaching):
             decision = IntentDecision.model_validate(run["intent"])
         else:
             decision = self._call(sid, rid, rev, "intent", INTENT_SYSTEM,
-                                  json.dumps(context, ensure_ascii=False), IntentDecision, ROUTER_MODEL)
+                                  json.dumps(dialogue_routing.intent_context(context), ensure_ascii=False), IntentDecision, ROUTER_MODEL)
+        if dialogue_routing.handle(self, sid, rid, rev, decision, last):
+            return
+        # Relation uncertainty alone is not a request to clarify or switch goals.
+        if decision.relation == "uncertain":
+            decision = decision.model_copy(update={"relation": "continuation", "clarification": ""})
+        elif decision.clarification_kind == "resume_target" and not decision.continuation_evidence:
+            decision = decision.model_copy(update={"clarification": ""})
         # Product-scope replies must precede free-form answers, task creation and
         # topic capture. Bound UI actions and lifecycle controls keep their path.
         if (decision.programming_boundary != "none" and not last.get("operation")
@@ -716,12 +723,6 @@ class ConversationHarness(ConditionalTeaching):
                     return
         if decision.direct_teaching and decision.relation != "uncertain" and (data.get("active_task_id") or data.get("goal_clarification") or decision.target_description):
             decision = decision.model_copy(update={"clarification": "", "learning_goal_ready": True})
-        if decision.clarification or decision.relation == "uncertain":
-            if decision.scope in {"learning", "continue_goal"} or "goal" in decision.intents:
-                with self.store.transaction(sid, rid, rev) as current:
-                    current["goal_clarification"] = {"goal": decision.target_description or last["content"], "question": decision.clarification}
-            self._publish(sid, rid, rev, decision.clarification or "你希望继续刚才的内容，还是开始一个新的学习问题？", required={"type": "respond", "prompt": "明确本轮问题", "options": []})
-            return
         operation_key = hashlib.sha256(json.dumps([run["input_ids"], decision.model_dump(), last.get("operation")], sort_keys=True).encode()).hexdigest()
         # An action and an explanatory follow-up may share a turn. Checkpoint the
         # action separately, so retrying its answer never repeats the confirmed write.

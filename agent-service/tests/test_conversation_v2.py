@@ -158,7 +158,7 @@ class ConversationTests(unittest.TestCase):
         self.assertEqual(self.state()["runs"][third.run_id]["status"], "completed")
         routing = next(value for schema, value in self.calls if schema is IntentDecision)
         self.assertNotIn("这是本轮真实回答", json.dumps(routing, ensure_ascii=False))
-        self.assertEqual(routing["related_learning"], [])
+        self.assertNotIn("related_learning", routing)
         self.assertTrue(any(m.get("run_id") == first.run_id for m in self.state()["messages"]), "history remains")
 
     def test_stale_memory_candidate_cannot_create_authority_or_strand_run(self):

@@ -94,7 +94,7 @@ enum LearningMemory {
         var result = Set<String>()
         tokenizer.enumerateTokens(in: source.startIndex..<source.endIndex) { range, _ in
             let value = String(source[range])
-            if value.count > 1 { result.insert(value) }
+            if value.count > 1 && !["什么", "如何", "怎么", "为什么", "请问", "说明", "解释", "一下", "可以", "帮我", "这个", "那个", "学习", "知识", "what", "how", "why", "the", "is", "are", "please", "explain"].contains(value) { result.insert(value) }
             return true
         }
         return result

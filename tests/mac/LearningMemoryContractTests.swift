@@ -13,6 +13,11 @@ struct LearningMemoryContractTests {
         context.insert(origin); context.insert(target)
         let emptyLibrary = try LearningMemory.candidates(for: "检索", excluding: target.id, context: context)
         precondition(emptyLibrary.isEmpty, "a new library has no prerequisite memory")
+        let questionCard = Knowledge(learningGoal: "说明什么是检索增强生成", knowledgeType: "concept", theme: "RAG", contentLanguage: "zh", questionLanguage: "zh", answerLanguage: "zh", evidenceExcerpt: "什么是检索", evidenceLocator: "1")
+        context.insert(questionCard); try context.save()
+        let questionNoise = try LearningMemory.candidates(for: "什么叫 harness", excluding: target.id, context: context)
+        precondition(questionNoise.isEmpty, "question words alone must not recall unrelated topics")
+        context.delete(questionCard); try context.save()
         origin.composerDraft = "秘密未发送草稿"
         origin.pendingOperationJSON = "{\"kind\":\"save\"}"
         LearningMemory.store(["id": evidenceID, "session_id": origin.id.uuidString, "concept": "索引",
