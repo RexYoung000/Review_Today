@@ -50,6 +50,10 @@ class ConversationTests(unittest.TestCase):
     def model(self, system, user, schema, **kwargs):
         self.calls.append((schema, json.loads(user) if user.startswith("{") else user))
         from agent_service.schemas import TeachingPreparation, MemoryChoice, SourceList, EvidenceAssessmentV2
+        from agent_service.goal_continuation import ContinuationRequest
+        if schema is ContinuationRequest:
+            text = json.loads(user)["request"]
+            return ContinuationRequest(evidence=text if text.startswith("继续") else "", topic="")
         if schema is TeachingPreparation:
             return TeachingPreparation(concepts=["RAG"] if self.decision.public_search_query else [], public_query=self.decision.public_search_query)
         if schema is MemoryChoice:

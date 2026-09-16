@@ -384,6 +384,10 @@ enum HarnessProcessor {
 
     @MainActor
     static func apply(_ view: AgentAPI.LearningTaskView, to task: LearningTask) {
+        let priorVersion = LearningGoalContinuity.ownership(task)["version"] as? Int ?? 1
+        let incomingVersion = ConversationProcessor.object(view.goalOwnershipJSON)?["version"] as? Int ?? 1
+        guard incomingVersion >= priorVersion, LearningGoalContinuity.owns(task) || incomingVersion > priorVersion else { return }
+        if let owner = view.goalOwnershipJSON { task.goalOwnershipJSON = owner }
         task.lifecycleRevision = view.lifecycleRevision ?? 0
         task.learningPlanJSON = view.learningPlanJSON
         task.learningOutcomeJSON = view.learningOutcomeJSON
@@ -413,7 +417,7 @@ enum HarnessProcessor {
     @MainActor
     private static func writable(_ task: LearningTask, context: ModelContext) -> Bool {
         guard let session = fetchSessions(context).first(where: { $0.id == task.sessionID }) else { return false }
-        return session.status == "active" && session.lifecycleRevision == session.lifecycleSyncedRevision && task.lifecycleRevision == session.lifecycleRevision
+        return LearningGoalContinuity.owns(task) && session.status == "active" && session.lifecycleRevision == session.lifecycleSyncedRevision && task.lifecycleRevision == session.lifecycleRevision
     }
 
     @MainActor

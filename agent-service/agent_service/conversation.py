@@ -35,7 +35,7 @@ from agent_service.schemas import (
     MessageAccepted, ProblemCoachBundle, RunActionRequest, SessionMessageRequest, TaskEvent,
 )
 
-from agent_service import conversation_context, conversation_controls, conversation_model_call, topic_capture, dialogue_routing
+from agent_service import conversation_context, conversation_controls, conversation_model_call, topic_capture, dialogue_routing, goal_continuation
 from agent_service.conversation_controls import LABELS, FINISHED
 
 
@@ -236,8 +236,9 @@ class ConversationHarness(ConditionalTeaching):
                     offer.update(status='failed', error='服务状态已恢复，请重新确认这次录入。')
             if incoming.get("draft"):
                 incoming["draft"]["invalidated"] = True
-            with self.store.transaction(sid) as data:
-                data.update(incoming)
+            if self.store.deleted(sid):
+                raise ValueError("RT.SESSION.DELETED")
+            self.store.write_batch(goal_continuation.reconciled_states(self.store, incoming))
         return self.export_snapshot(sid)
 
     def _cancel_older(self, sid, rid, revision):
@@ -361,7 +362,8 @@ class ConversationHarness(ConditionalTeaching):
                     return
                 with self.store.transaction(session_id) as data:
                     obsolete = data["runs"].get(run_id)
-                    if obsolete and obsolete["revision"] == revision and obsolete["status"] == "running" and not self._memory_run_valid(obsolete):
+                    stale_task = data["tasks"].get((obsolete or {}).get("task_id"))
+                    if obsolete and obsolete["revision"] == revision and obsolete["status"] == "running" and (not self._memory_run_valid(obsolete) or stale_task and not goal_continuation.owns(stale_task)):
                         self._stop(data, obsolete)
                 continue
             except Exception as exc:  # each failure is persisted, not swallowed as a blank UI
@@ -399,6 +401,9 @@ class ConversationHarness(ConditionalTeaching):
     def _snapshot(self, session_id, run_id, revision):
         data = self.store.get(session_id)
         run = data["runs"][run_id]
+        target = data["tasks"].get(run.get("task_id"))
+        if target and not goal_continuation.owns(target):
+            raise Superseded()
         if (data.get("status", "active") != "active" or run["revision"] != revision or run["status"] != "running"
                 or run.get("lifecycle_revision", 0) != data.get("lifecycle_revision", 0)
                 or not self._memory_run_valid(run)):
@@ -450,7 +455,8 @@ class ConversationHarness(ConditionalTeaching):
     def _task(self, data, run):
         if run.get("programming_scope_reply") or run.get("dialogue_only"):
             return None
-        return data["tasks"].get(run.get("task_id") or data["active_task_id"])
+        task = data["tasks"].get(run.get("task_id") or data["active_task_id"])
+        return task if not task or goal_continuation.owns(task) else None
 
     def _project_event(self, data, run, task, message=None):
         task["context"]["memory_references"] = merge_references(task["context"].get("memory_references", []), run.get("memory_references", []))
@@ -587,6 +593,8 @@ class ConversationHarness(ConditionalTeaching):
         else:
             decision = self._call(sid, rid, rev, "intent", INTENT_SYSTEM,
                                   json.dumps(dialogue_routing.intent_context(context), ensure_ascii=False), IntentDecision, ROUTER_MODEL)
+        if goal_continuation.handle(self, sid, rid, rev, decision, last):
+            return
         if dialogue_routing.handle(self, sid, rid, rev, decision, last):
             return
         # Relation uncertainty alone is not a request to clarify or switch goals.
@@ -1046,7 +1054,10 @@ class ConversationHarness(ConditionalTeaching):
         if teaching and task and not task["context"].get("requires_mastery"):
             with self.store.transaction(sid, rid, rev) as current:
                 live_task = self._task(current, current["runs"][rid])
-                finished = advance(live_task) if set(decision.intents) & {"continue", "skip_check"} else False
+                active_run = current["runs"][rid]
+                finished = advance(live_task) if set(decision.intents) & {"continue", "skip_check"} and not active_run.get("goal_step_advanced") else False
+                if active_run.get("goal_transfer"):
+                    active_run["goal_step_advanced"] = True
             if finished:
                 self._publish(sid, rid, rev, "这份学习安排已讲解完毕。未检查或跳过的部分仍需练习；你可以继续追问或调整学习安排。",
                               stage="lesson_complete", task_status="completed")
@@ -1093,7 +1104,8 @@ class ConversationHarness(ConditionalTeaching):
                                             source_type=source_type, evidence=evidence), ensure_ascii=False), ConversationOutput)
         with self.store.transaction(sid, rid, rev) as current:
             current["runs"][rid]["learning_concepts"] = output.learning_concepts
-        text = output.message
+        intro = run.get("continuation_intro")
+        text = (intro + "\n\n" if intro else "") + output.message
         for source in sources:
             if source.get("type") == "agent_generated" and not source.get("content"):
                 source["content"] = text

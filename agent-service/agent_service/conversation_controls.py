@@ -18,6 +18,10 @@ def action(self, run_id: str, body: RunActionRequest) -> dict:
         if data.get("status", "active") != "active":
             raise ValueError("RT.SESSION.ARCHIVED")
         run = data["runs"][run_id]
+        from agent_service.goal_continuation import owns
+        old_task = data["tasks"].get(run.get("task_id"))
+        if old_task and not owns(old_task) and body.action in {"retry", "resume", "cancel_task"}:
+            raise ValueError("RT.GOAL.CONTINUED_ELSEWHERE")
         action_fingerprint = hashlib.sha256(json.dumps(body.model_dump(), sort_keys=True).encode()).hexdigest()
         prior_action = run.setdefault("action_receipts", {}).get(body.action_id)
         if prior_action is not None and prior_action != action_fingerprint:

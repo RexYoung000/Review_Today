@@ -213,7 +213,7 @@ struct LearningWorkspace: View {
                 }.frame(width: contentWidth).padding(.bottom, 24).frame(minHeight: height, alignment: .center).frame(maxWidth: .infinity)
             }
           } else {
-            LearningChecklist(session: selectedSession, tasks: sessionTasks) { stepMessageID = $0 }
+            LearningChecklist(session: selectedSession, tasks: sessionTasks, onSelectMessage: { stepMessageID = $0 }, onOpenSession: { selectedSessionID = $0 })
                 .frame(width: contentWidth).frame(maxWidth: .infinity)
             Divider()
             serviceBanner

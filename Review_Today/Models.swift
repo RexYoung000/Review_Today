@@ -465,6 +465,7 @@ final class LearningTask {
     var conversationManaged: Bool = false
     var understanding: String = "unknown"
     var lifecycleRevision: Int = 0
+    var goalOwnershipJSON: String?
     var learningPlanJSON: String?
     var learningOutcomeJSON: String?
     var sourcesJSON: String?

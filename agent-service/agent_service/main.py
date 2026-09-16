@@ -181,6 +181,25 @@ def submit_message(session_id: str, body: SessionMessageRequest) -> dict:
     return result.model_dump()
 
 
+class ContinuationSourcesRequest(BaseModel):
+    session_ids: list[str] = Field(max_length=1000)
+
+
+@app.post("/v2/continuation/sources")
+def continuation_sources(body: ContinuationSourcesRequest):
+    missing, owners = [], []
+    for sid in set(body.session_ids):
+        sid = _require_uuid(sid, code="RT.SESSION.INVALID_ID")
+        if conversation_harness.store.deleted(sid):
+            continue
+        data = conversation_harness.store.get(sid)
+        if data is None:
+            missing.append(sid)
+        else:
+            owners.extend(t['context']['goal_ownership'] for t in data['tasks'].values() if t['context'].get('goal_ownership'))
+    return dict(missing_session_ids=missing, goal_ownership=owners)
+
+
 @app.get("/v2/sessions/{session_id}/events")
 def session_events(session_id: str, after_seq: int = 0, recovery_version: int = 0) -> dict:
     session_id = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
@@ -194,6 +213,7 @@ def session_events(session_id: str, after_seq: int = 0, recovery_version: int = 
     return dict(session_id=session_id, events=[e for e in data["events"] if e["seq"] > after_seq],
                 status=data.get("status", "active"), lifecycle_revision=data.get("lifecycle_revision", 0),
                 last_seq=conversation_harness.store.last_seq(data), paused=data["paused"], mode=data["mode"],
+                goal_ownership=[t["context"]["goal_ownership"] for t in data["tasks"].values() if t["context"].get("goal_ownership")],
                 recovery=recovery_page(data, recovery_version),
                 thinking_strength=data.get("thinking_strength", "smart"),
                 capture_offers_revision=data.get("recovery_version", 0),

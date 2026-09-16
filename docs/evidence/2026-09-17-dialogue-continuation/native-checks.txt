@@ -1,0 +1,60 @@
+PASS: real SwiftUI navigation and draft saves skip projection; insert, rename, delete, completion and explicit recovery still refresh
+PASS: navigation skips status queries; inserts, edits, task actions, ordering, deletion, archive and session changes remain live
+PASS: arrival fade, no initial/same-page replay, direct hit testing, rapid interruption, reduced motion, dark canvas and window deactivation
+PASS: real SwiftUI page replacement retains one fade surface and respects live Reduce Motion
+PASS: native date buttons, exact actions, disabled/future accessibility, compact geometry, reused targets, single-set composer layout
+PASS executable: NavigationRenderContractTests
+PASS: unchanged/failed/retried/deleted drafts, date backfill, scoped sync work, activity identity/history/DST/timezone/cache invalidation
+PASS executable: NavigationDataContractTests
+PASS: initial/explicit/outside/locked/stale focus, protected text and selection, complete legacy titles and explanations without writes, exact capsule geometry, native book configuration
+PASS executable: UIPolishContractTests
+PASS light: text, control edges, state accent and neutral information roles
+PASS dark: text, control edges, state accent and neutral information roles
+PASS: daily palette is monochrome; legacy comparison remains; memory-only trial rejects sending and keeps draft
+PASS executable: BrandMaterialContractTests
+AnswerDocument: blocks, incremental rows/flows, malformed fallbacks, Unicode and question dedup passed; long parse 16 ms
+PASS executable: AnswerDocumentContractTests
+PASS: runtime/storage/network identity, preview submit guard, durable isolation, invalid acceptance and stable retry, delivery feedback, bounded static samples
+PASS executable: AppRuntimeContractTests
+PASS: ancestor-focus guard, rendered single-row focus independent of selection, light/dark/disabled
+PASS executable: InteractionFocusTests
+PASS: 90s cold startup, 10s sustained outage, recovery resets timer, monotonic startup diagnostics, single termination
+PASS: capability probing is background state; partial capability is compact; all unavailable blocks
+PASS executable: AgentServiceMonitorContractTests
+PASS: 12 scenarios, 6-card refresh, protected prefill/IME/undo, sidebar preference, native input, atomic first-send failure/retry, no empty Sessions, independent drafts/preferences, tags, partial persistence, activity
+PASS executable: LearningInputContractTests
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+PASS executable: ConversationReplayTests
+PASS: typed local recall, no drafts/consent, archive vs exclusion, policy/content versions, late-run fence, no formal review writes
+PASS executable: LearningMemoryContractTests
+PASS: deletion preview, rollback, scope revalidation, shared/unknown protection, batch purge, preview removal, durable offline tombstones and no index resurrection
+PASS executable: SessionDeletionContractTests
+PASS: scoped title/tag search, search/reset boundaries, range and identity selection, current visible action targets, live scope changes, partial retry, empty-scope tools and no-results recovery
+PASS executable: SessionListSelectionTests
+/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/SessionOrganizationContractTests.swift:7:168: warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+   |                                                                                                    |                                                                   |- warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+PASS: landing fallback stable first-send identity, save failure, folder validation/move/rollback, archive search scope, folder retention, disk reopen and non-destructive folder deletion
+PASS executable: SessionOrganizationContractTests
+PASS: independent creation, legacy draft preservation/rollback, per-session disk persistence, no message/run on creation, creation/first-send failure, first-send identity, active empty/populated deletion and no draft resurrection
+PASS executable: IndependentSessionContractTests
+/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/LibraryManagementContractTests.swift:7:168: warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+    |                                                                                                    |                                                                   |- warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+PASS: scoped knowledge selection, atomic lifecycle rollback, recycle/undo, permanent-delete revalidation, shared source retention, question/review cleanup, continuous locator and stale motion
+PASS executable: LibraryManagementContractTests
+PASS: reversible deck selection, following drag, rapid stale-completion rejection, wrap, snapback, flick, data reconciliation, single/empty, dimensions, native title/body/axis/key/text/wheel scope, trackpad pause, key/app loss and deferred teardown cancellation
+PASS executable: KnowledgeDeckNavigationTests
+PASS: atomic disk save/rollback and post-save receipt; references/ownership; duplicate and ACK retry; immediate results; read-only replay; close/history/background/modal/navigation; failure/needs-attention; natural-message gating; first-full preference; reopened store
+PASS executable: KnowledgeIngestionTests
+Dictation contracts passed: permission, cancellation, retention, fallback notices, cached compatibility, timing, duplicate callbacks, append and undo
+PASS executable: DictationContractTests
+PASS: topic offers persisted, deferred inbox semantics, consumed continuation, stale/archived page fencing, no knowledge writes
+PASS executable: TopicCaptureContractTests
+PASS: legacy identity, unique progress, historic navigation, stale projection fence, checkpoint restore, archive/exclusion
+PASS executable: LearningGoalContinuityTests
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+PASS: real SSE Unicode transport, incremental delivery, max controlled receive delay 25 ms
+All selected contracts complete: /tmp/review-today-shared-contracts.m6ks65e3
+PASS: old-schema fixture saved
+PASS: prior disk schema migrated without changing conversation, source, knowledge, review or draft
+Isolated migration fixture: /tmp/review-today-migration.bzH5y4
+** BUILD SUCCEEDED **

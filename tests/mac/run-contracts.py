@@ -18,7 +18,7 @@ DEFAULT_TESTS = [
     "ConversationReplayTests", "LearningMemoryContractTests", "SessionDeletionContractTests",
     "SessionListSelectionTests", "SessionOrganizationContractTests", "IndependentSessionContractTests",
     "LibraryManagementContractTests", "KnowledgeDeckNavigationTests", "KnowledgeIngestionTests",
-    "DictationContractTests", "TopicCaptureContractTests",
+    "DictationContractTests", "TopicCaptureContractTests", "LearningGoalContinuityTests",
 ]
 names = sys.argv[1:] or DEFAULT_TESTS
 for name in names:

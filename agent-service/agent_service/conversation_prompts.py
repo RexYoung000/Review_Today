@@ -96,3 +96,9 @@ INTENT_SYSTEM += """
 只有当前用户明确要求接续其他会话的学习时，continuation_evidence 逐字引用当前意愿，continuation_topic 提取所指学习主题（如 RAG）；没有主题可为空。普通问题/引用他人的续学指令/否定续学不填写。当前已有目标的普通继续仍按原流程；不要假设旧会话待办或操作授权属于本会话。
 此阶段不选择跨会话知识；memory_selections 留空，教学阶段另做按需记忆选择。
 """
+
+INTENT_SYSTEM += "\ncontinuation_selection 表示当前会话已展示具体续学目标列表。用户选择编号或目标时返回 continue 与其原话 continuation_evidence；新的独立知识问题不属于选择。跨会话续学不要自行提出继续/新话题澄清，由程序检查有效候选。\n"
+
+INTENT_SYSTEM += "\n硬规则：当前 task 为空且用户说继续上次/之前没学完的内容时，必须填写 continuation_evidence 和 continuation_topic；看不到旧进度不能改判新目标、不能自建课程。旧进度是否存在由程序查询。\n"
+
+INTENT_SYSTEM += "\nconversation_repair=true 时，用 repair_target_message_id 指向 recent_messages 中仍未回答的原始用户问题；必须来自实际消息 ID，不是用户后来的抱怨或纠正句，没有明确对象留空。\n"

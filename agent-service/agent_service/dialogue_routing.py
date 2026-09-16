@@ -21,7 +21,13 @@ def handle(harness, sid, rid, rev, decision, last):
         if original:
             pending = dict(message_id=original['message_id'], content=original['content'], kind='resume_target', question=LEGACY_QUESTION)
     if decision.conversation_repair:
-        original = pending or next((dict(content=m['content'], message_id=m['message_id']) for m in reversed(earlier) if m['role'] == 'user'), None)
+        identified = next((dict(content=m['content'], message_id=m['message_id']) for m in earlier
+            if m['role'] == 'user' and m['message_id'] == decision.repair_target_message_id), None)
+        # Recover the original question even after one extra legacy rephrase.
+        # A model-provided ID must refer to an actual user message in this session.
+        if not identified and not pending and len(earlier) >= 4 and earlier[-3]['content'] == LEGACY_QUESTION and earlier[-4]['role'] == 'user':
+            identified = dict(content=earlier[-4]['content'], message_id=earlier[-4]['message_id'])
+        original = identified or pending or next((dict(content=m['content'], message_id=m['message_id']) for m in reversed(earlier) if m['role'] == 'user'), None)
         with harness.store.transaction(sid, rid, rev) as current:
             active = current['runs'][rid]
             active.update(intent=decision.model_dump(), dialogue_only=True)

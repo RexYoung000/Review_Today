@@ -3,7 +3,7 @@ import SwiftUI
 
 enum LearningDecisionInbox {
     static func includes(_ task: LearningTask, sessions: [AgentSession]) -> Bool {
-        task.requiredActionType != "confirm_memory" &&
+        LearningGoalContinuity.owns(task) && task.requiredActionType != "confirm_memory" &&
         sessions.contains { $0.id == task.sessionID && $0.status == "active" } &&
         (task.status == "needs_attention" || ["choose_sources", "choose_question"].contains(task.requiredActionType ?? ""))
     }

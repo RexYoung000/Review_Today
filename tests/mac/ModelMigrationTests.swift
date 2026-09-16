@@ -42,6 +42,7 @@ struct ModelMigrationTests {
             precondition(sessions[0].thinkingStrength == "smart" && sessions[0].contextCapacityJSON == nil)
             let tasks = try context.fetch(FetchDescriptor<LearningTask>())
             precondition(tasks.count == 1 && tasks[0].learningPlanJSON == nil && tasks[0].learningOutcomeJSON == nil)
+            precondition(tasks[0].goalOwnershipJSON == nil && LearningGoalContinuity.owns(tasks[0]))
 #endif
             print("PASS: prior disk schema migrated without changing conversation, source, knowledge, review or draft")
         }

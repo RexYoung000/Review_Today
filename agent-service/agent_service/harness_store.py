@@ -55,6 +55,7 @@ class HarnessTaskRecord:
 
     def view(self) -> LearningTaskView:
         return LearningTaskView(
+            goal_ownership_json=json.dumps(self.context.get("goal_ownership"), ensure_ascii=False) if self.context.get("goal_ownership") else None,
             lifecycle_revision=self.context.get("lifecycle_revision", 0),
             learning_plan_json=json.dumps(self.context["learning_plan"], ensure_ascii=False) if self.context.get("learning_plan") else None,
             learning_outcome_json=json.dumps(self.context["learning_outcome"], ensure_ascii=False) if self.context.get("learning_outcome") else None,
@@ -117,6 +118,11 @@ class HarnessStore:
 
     def _save_unlocked(self, record: HarnessTaskRecord) -> None:
         epoch = execution_epoch.get()
+        existing = self.get(record.task_id)
+        if existing and existing.context.get("goal_ownership"):
+            owner = existing.context["goal_ownership"]
+            if owner.get("owner_task_id") != record.task_id or owner["version"] > record.context.get("goal_ownership", {}).get("version", 0):
+                raise StaleExecution()
         with self._connection() as connection:
             if connection.execute("SELECT 1 FROM agent_session_deletions WHERE session_id=?", (record.session_id,)).fetchone():
                 raise ValueError("RT.SESSION.DELETED")

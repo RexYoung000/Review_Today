@@ -157,6 +157,10 @@ enum ConversationProcessor {
                     message.runID.map { !invalidRuns.contains($0) } ?? true
                 }.map { ["role": $0.role == "assistant" ? "coach" : $0.role, "content": $0.content] }
                 let relatedKnowledge = HarnessProcessor.relevantKnowledgeSummaries(for: message.content, candidates: knowledge.filter { $0.lifecycle == "active" })
+                // Make Mac-owned unfinished checkpoints available after backend recovery.
+                // This performs no teaching or goal selection.
+                // A missing unrelated checkpoint must never block a new question.
+                try? await LearningGoalContinuity.prepareSources(excluding: sid, context: context)
                 let memoryCandidates = try LearningMemory.candidates(for: message.content, excluding: sid, context: context)
                 var body: [String: Any] = [
                     "client_message_id": (message.clientMessageID ?? message.id).uuidString.lowercased(),
@@ -167,6 +171,7 @@ enum ConversationProcessor {
                     "expected_event_seq": session.lastSessionEventSeq, "lifecycle_revision": session.lifecycleRevision,
                     "context": ["summary": invalidRuns.isEmpty ? String(session.summaryText.prefix(12000)) : "", "recent_messages": Array(recent),
                                 "knowledge_summaries": memoryCandidates.isEmpty ? Array(relatedKnowledge.prefix(5)) : [],
+                                "continuation_candidates": try LearningGoalContinuity.candidates(excluding: sid, context: context),
                                 "memory_candidates": memoryCandidates, "memory_lookup_available": knowledge.contains(where: { $0.lifecycle == "active" }) || allSessions.contains(where: { $0.id != sid && $0.memoryUseAllowed && !LearningMemory.array($0.learningEvidenceJSON).isEmpty }),
                                 "invalid_memory_run_ids": invalidRuns.map { $0.uuidString.lowercased() }],
                 ]
@@ -243,6 +248,7 @@ enum ConversationProcessor {
         checkpoint["last_acked_seq"] = min(checkpoint["last_acked_seq"] as? Int ?? 0, session.lastSessionEventSeq)
         checkpoint["paused"] = true
         checkpoint["pending"] = NSNull()
+        try LearningGoalContinuity.fenceCheckpoint(&checkpoint, context: context)
         snapshot["checkpoint"] = checkpoint
         _ = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/snapshot/restore", body: snapshot)
         guard session.lifecycleRevision == lifecycle else { return }
@@ -532,6 +538,7 @@ enum ConversationProcessor {
             session.checkpointJSON = try ConversationCheckpoint.merge(recovery, into: session.checkpointJSON,
                                                                       sessionID: sid, cursor: session.lastSessionEventSeq)
         }
+        try LearningGoalContinuity.apply(page["goal_ownership"] as? [[String: Any]] ?? [], context: context)
         try context.save()
     }
 

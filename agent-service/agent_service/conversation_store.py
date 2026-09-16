@@ -120,6 +120,10 @@ class ConversationStore:
             prior_payload = json.dumps({k: v for k, v in data.items() if k != "tasks"}, ensure_ascii=False)
             if run_id is not None:
                 run = data["runs"].get(run_id)
+                from agent_service.goal_continuation import owns
+                target = data["tasks"].get((run or {}).get("task_id"))
+                if target and not owns(target):
+                    raise Superseded()
                 if (data.get("status", "active") != "active" or not run or run["revision"] != revision
                         or run["status"] != "running"
                         or run.get("lifecycle_revision", 0) != data.get("lifecycle_revision", 0)):
@@ -145,6 +149,21 @@ class ConversationStore:
                 encoded = json.dumps(payload, ensure_ascii=False)
                 if encoded != prior_payload or not self.get(session_id):
                     db.execute("INSERT INTO agent_sessions_v2 VALUES (?, ?) ON CONFLICT(session_id) DO UPDATE SET payload=excluded.payload", (session_id, encoded))
+
+    def write_batch(self, states):
+        """Caller holds _lock; every Session projection shares one SQLite commit."""
+        with self._lock, self.tasks._connection() as db:
+            for data in states:
+                for task in data['tasks'].values():
+                    prior = db.execute('SELECT payload FROM harness_tasks WHERE task_id=?', (task['task_id'],)).fetchone()
+                    if prior and json.loads(prior[0]) == task:
+                        continue
+                    task['updated_at'] = now_iso()
+                    db.execute("INSERT INTO harness_tasks VALUES (?, ?, ?, ?, ?) ON CONFLICT(task_id) DO UPDATE SET updated_at=excluded.updated_at, payload=excluded.payload",
+                        (task['task_id'], data['session_id'], task['client_message_id'], task['updated_at'], json.dumps(task, ensure_ascii=False)))
+                update_journal(data)
+                db.execute("INSERT INTO agent_sessions_v2 VALUES (?, ?) ON CONFLICT(session_id) DO UPDATE SET payload=excluded.payload",
+                    (data['session_id'], json.dumps({k:v for k,v in data.items() if k != 'tasks'}, ensure_ascii=False)))
 
     @staticmethod
     def last_seq(data: dict) -> int:

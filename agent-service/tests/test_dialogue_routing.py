@@ -44,3 +44,16 @@ class DialogueRoutingTests(unittest.TestCase):
         self.f.send('保存那个')
         self.assertEqual(self.f.state()['messages'][-1]['content'],'你希望保存哪一版？')
         self.f.capture.assert_not_called()
+
+    def test_second_legacy_rephrase_still_repairs_original_question(self):
+        self.f.decision=f.intent('question',answer_only=True)
+        self.f.send('什么叫 harness')
+        with self.f.store.transaction(self.f.sid) as d:
+            d['messages'][-1]['content']='你希望继续刚才的内容，还是开始一个新的学习问题？'
+        self.f.send('我不是才和你聊天吗')
+        with self.f.store.transaction(self.f.sid) as d:
+            d['messages'][-1]['content']='你是想继续问“什么叫 harness”，还是想接着之前的话题？'
+        self.f.decision=f.intent('question',conversation_repair=True,repair_target_message_id='invalid-other-session')
+        accepted=self.f.send('这是新会话，你又理解错了')
+        self.assertEqual(self.f.state()['runs'][accepted.run_id]['resolved_input'],'什么叫 harness')
+        self.assertFalse(self.f.state()['tasks'])

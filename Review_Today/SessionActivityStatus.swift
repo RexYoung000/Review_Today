@@ -74,6 +74,7 @@ struct TodaySessionStatus: View {
         _plans = Query(SessionRecentRecords.task(sessionID, withPlan: true))
     }
     private var label: String {
+        if let task = plans.first, !LearningGoalContinuity.owns(task) { return "已在另一会话继续" }
         if let task = plans.first,
            let plan = ConversationProcessor.object(task.learningPlanJSON),
            let steps = plan["steps"] as? [[String: Any]],

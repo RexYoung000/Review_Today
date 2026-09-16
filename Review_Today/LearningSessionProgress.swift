@@ -5,6 +5,7 @@ struct LearningChecklist: View {
     let session: AgentSession?
     let tasks: [LearningTask]
     var onSelectMessage: (UUID?) -> Void
+    var onOpenSession: (UUID) -> Void = { _ in }
     @Environment(\.modelContext) private var modelContext
     @ViewBuilder
     var body: some View {
@@ -14,13 +15,17 @@ struct LearningChecklist: View {
            let steps = plan["steps"] as? [[String: Any]], !steps.isEmpty {
             let current = steps.first { $0["id"] as? String == plan["current_step_id"] as? String }
             VStack(alignment: .leading, spacing: 8) {
+                if let destination = LearningGoalContinuity.destination(task) {
+                    Button("已在另一会话继续 · 前往查看") { onOpenSession(destination) }
+                        .font(.callout).buttonStyle(.plain).foregroundStyle(.secondary)
+                }
                 Button {
                     session.learningChecklistExpanded.toggle()
                     try? modelContext.save()
                 } label: {
                     HStack(spacing: 8) {
                         Image(systemName: session.learningChecklistExpanded ? "chevron.down" : "chevron.right")
-                        Text(task.status == "completed" ? "本次学习已结束" : "学习安排").fontWeight(.medium)
+                        Text(!LearningGoalContinuity.owns(task) ? "历史学习安排" : task.status == "completed" ? "本次学习已结束" : "学习安排").fontWeight(.medium)
                         Text(current?["title"] as? String ?? plan["goal"] as? String ?? "").foregroundStyle(.secondary).lineLimit(1)
                         Spacer(minLength: 0)
                     }.font(.callout).padding(.vertical, 5).contentShape(Rectangle())
@@ -33,7 +38,11 @@ struct LearningChecklist: View {
                                 let understanding = step["understanding"] as? String ?? "unknown"
                                 let label = understanding == "verified" ? "已验证" : understanding == "self_reported" ? "自述理解" : state == "skipped" ? "跳过检查" : state == "explained" ? "已讲解" : "待学习"
                                 Button {
-                                    if let raw = (step["message_ids"] as? [String])?.first { onSelectMessage(UUID(uuidString: raw)) }
+                                    if let raw = (step["message_ids"] as? [String])?.first {
+                                        if let owner = (step["message_sessions"] as? [String: String])?[raw], let id = UUID(uuidString: owner), id != session.id {
+                                            onOpenSession(id)
+                                        } else { onSelectMessage(UUID(uuidString: raw)) }
+                                    }
                                 } label: {
                                     HStack(alignment: .firstTextBaseline, spacing: 9) {
                                         Text("\(index + 1)").monospacedDigit().foregroundStyle(.secondary).frame(width: 18)
@@ -47,7 +56,7 @@ struct LearningChecklist: View {
                             }
                         }
                     }.frame(height: min(CGFloat(steps.count) * 38, 160))
-                    Text("点击步骤回看内容；要调整安排，直接告诉我。").font(.caption2).foregroundStyle(.secondary)
+                    Text(LearningGoalContinuity.owns(task) ? "点击步骤回看内容；要调整安排，直接告诉我。" : "这是历史安排；继续学习请前往当前会话。").font(.caption2).foregroundStyle(.secondary)
                 }
             }.padding(.bottom, 10)
         }

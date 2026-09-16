@@ -275,6 +275,7 @@ class ContextMessage(BaseModel):
 
 
 class TurnContext(BaseModel):
+    continuation_candidates: list[dict[str, Any]] | None = None
     summary: str = Field(default="", max_length=12_000)
     recent_messages: list[ContextMessage] = Field(default_factory=list, max_length=20)
     knowledge_summaries: list[str] = Field(default_factory=list, max_length=5)
@@ -359,6 +360,7 @@ class SessionTurnAccepted(BaseModel):
 
 
 class LearningTaskView(BaseModel):
+    goal_ownership_json: str | None = None
     lifecycle_revision: int = 0
     learning_plan_json: str | None = None
     learning_outcome_json: str | None = None
@@ -564,6 +566,7 @@ class TopicClosure(BaseModel):
 class IntentDecision(BaseModel):
     clarification_kind: Literal["none", "content", "resume_target", "operation"] = "none"
     conversation_repair: bool = False
+    repair_target_message_id: str = ""
     continuation_evidence: str = ""
     continuation_topic: str = ""
     programming_boundary: Literal["none", "capability_question", "development_delivery", "mixed_learning"] = Field(

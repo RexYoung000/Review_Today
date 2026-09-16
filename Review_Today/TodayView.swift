@@ -41,7 +41,7 @@ struct TodayView: View {
         let developerMode = developerMode
         let now = Date.now
         let dueCount = items.filter { ReviewQueue.isDue($0, developerMode: developerMode, now: now) }.count
-        let learningCount = tasks.filter { !["completed", "cancelled", "terminal_failed"].contains($0.status) }.count
+        let learningCount = LearningGoalContinuity.unfinished(tasks, sessions: sessions).count
         let inboxCount = captureTasks.filter { ["needs_attention", "retryable_failed"].contains($0.status) }.count +
             tasks.filter { LearningDecisionInbox.includes($0, sessions: sessions) }.count +
             activeSessions.reduce(0) { $0 + TopicCaptureOffer.read($1.captureOffersJSON).filter(\.needsAttention).count }

@@ -29,7 +29,7 @@ def set_plan(task, titles, success_check="", step_ids=None):
         steps.append(step)
     unchanged = [(s["id"], s["title"]) for s in old.get("steps", [])] == [(s["id"], s["title"]) for s in steps]
     task["context"]["learning_plan"] = dict(
-        id=task["task_id"], version=old.get("version", 0) + (0 if unchanged else 1),
+        id=task["context"].get("goal_ownership", {}).get("goal_id", task["task_id"]), version=old.get("version", 0) + (0 if unchanged else 1),
         goal=task["context"].get("learning_goal") or task["content"], steps=steps,
         current_step_id=old.get("current_step_id") if any(s["id"] == old.get("current_step_id") for s in steps) else (steps[0]["id"] if steps else None),
         success_check=success_check or old.get("success_check", ""))
