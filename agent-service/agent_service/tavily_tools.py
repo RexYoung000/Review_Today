@@ -2,7 +2,6 @@
 import httpx
 from agent_service.call_errors import WebToolError
 from agent_service.certs import ssl_context
-from agent_service.execution_policy import budget_scope
 
 
 def _client():
@@ -12,47 +11,43 @@ def _client():
 class TavilyBackend:
     name = 'tavily'
 
-    def __init__(self, key):
-        if not key:
+    def __init__(self, key, *, keyless=False):
+        if not key and not keyless:
             raise WebToolError('NO_KEY')
         self.key = key
 
     def _post(self, endpoint, body, on_cancel_handle):
-        with budget_scope(seconds=30) as budget, _client() as client:
-            budget.register(client.close)
-            if on_cancel_handle:
-                on_cancel_handle(client.close)
-            try:
-                with client.stream('POST', 'https://api.tavily.com/' + endpoint,
-                                   headers={'Authorization': 'Bearer ' + self.key},
-                                   json=body, timeout=min(30, budget.take())) as response:
-                    if response.status_code != 200:
-                        raise WebToolError('PROVIDER', f'HTTP {response.status_code}')
-                    chunks, size = [], 0
-                    for chunk in response.iter_bytes():
-                        budget.remaining()
-                        size += len(chunk)
-                        if size > 1_000_000:
-                            raise WebToolError('PROTOCOL', 'response too large')
-                        chunks.append(chunk)
-                    import json
-                    try:
-                        payload = json.loads(b''.join(chunks))
-                    except (ValueError, UnicodeError):
-                        raise WebToolError('PROTOCOL') from None
-                    if not isinstance(payload, dict) or not isinstance(payload.get('results'), list):
-                        raise WebToolError('PROTOCOL')
-                    return payload
-            except httpx.TimeoutException:
-                raise WebToolError('TIMEOUT') from None
-            except httpx.TransportError:
-                raise WebToolError('CONNECTION') from None
+        from agent_service.web_http import request_json
+        import uuid
+        headers = ({'Authorization': 'Bearer ' + self.key} if self.key else
+                   {'X-Tavily-Access-Mode': 'keyless', 'X-Client-Source': 'review-today',
+                    'X-Session-Id': str(uuid.uuid4())})
+        payload = request_json(_client, 'POST', 'https://api.tavily.com/' + endpoint,
+                               headers=headers, body=body, on_cancel_handle=on_cancel_handle)
+        if not isinstance(payload.get('results'), list):
+            # Keyless cap envelopes may be successful HTTP responses, never evidence.
+            error = payload.get('error')
+            if isinstance(error, dict) and isinstance(error.get('code'), str):
+                code = error['code'].lower()
+                kind = 'RATE_LIMIT' if any(word in code for word in ('limit', 'quota', 'cap', 'credit')) else 'AUTH_REQUIRED' if any(word in code for word in ('auth', 'key')) else 'TOOL_FAILED'
+                failure = WebToolError(kind)
+                retry = error.get('retry_after_seconds')
+                if isinstance(retry, (int, float)) and 0 < retry < float('inf'):
+                    failure.retry_after = retry
+                raise failure
+            if payload.get('status') in {'rate_limited', 'limit_reached'}:
+                raise WebToolError('RATE_LIMIT')
+            raise WebToolError('PROTOCOL')
+        return payload
 
     def search(self, query, *, on_cancel_handle=None):
         from agent_service.web_tools import SearchResult, public_service_url
+        import re
+        domains = list(dict.fromkeys(re.findall(r'\bsite:([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})', query)))[:4]
         payload = self._post('search', dict(query=query, search_depth='basic', max_results=5,
                             topic='general', auto_parameters=False, include_answer=False,
-                            include_raw_content=False, include_images=False), on_cancel_handle)
+                            include_raw_content=False, include_images=False,
+                            **({'include_domains': domains} if domains else {})), on_cancel_handle)
         results, seen = [], set()
         for item in payload['results'][:5]:
             if not isinstance(item, dict):

@@ -1,0 +1,128 @@
+{
+  "outcome": "fail: Tavily results were third-party pages, correctly rejected but search did not supply official sources; add API domain filter",
+  "runs": [
+    {
+      "fixed_routing": false,
+      "expect_read_blocked": false,
+      "scenario": "official",
+      "forced_exa_limit": true,
+      "search_adapter": {
+        "status": "unverified",
+        "provider": "exa",
+        "reason": "requires_search_result",
+        "protocol": "harness_web_tools_v1",
+        "providers": [
+          {
+            "provider": "exa",
+            "status": "unverified"
+          },
+          {
+            "provider": "tavily",
+            "status": "unverified"
+          },
+          {
+            "provider": "brave",
+            "status": "unavailable",
+            "reason": "RT.WEB.NO_KEY"
+          }
+        ]
+      }
+    },
+    {
+      "input": "请查阅 Python 官方文档，用两三句话解释列表 append 和 extend 的区别，并附上来源。",
+      "status": "completed",
+      "search_state": "no_results",
+      "evidence": {
+        "state": "insufficient",
+        "summary": "暂未找到可读取的合适资料，先讲基础内容；需要查证的部分会标明。",
+        "sources": []
+      },
+      "replies": [
+        "可以先用两三句话抓住核心区别：\n\n- **`append(x)`** 把 `x` 当作**一个元素**加到列表末尾，列表长度只增加 1。如果 `x` 本身是列表，它就作为一个嵌套列表整体放进去。\n- **`extend(iterable)`** 把可迭代对象（列表、字符串、元组、生成器等）里的元素**逐个追加**，长度增加的是其中元素个数。\n- 记忆点：`append` 追加「一个东西」，`extend` 追加「一串东西」。\n\n```python\na = [1, 2]\na.append([3, 4])   # 结果：[1, 2, [3, 4]]\n\nb = [1, 2]\nb.extend([3, 4])   # 结果：[1, 2, 3, 4]\n```\n\n关于来源：你希望我查 Python 官方文档，但**本轮我没有成功读取到任何网页**，因此不能凭记忆替你粘贴官方链接或声称已核对过文档。上面讲的是这两个方法在我已知范围内的常规语义；若需要，我下一轮可以再尝试检索并引用实际读到的页面。\n\n另外，`extend` 接收的是**可迭代对象**，不是只能接收列表——这是常见用法与“必需条件”的区别：传字符串会把每个字符拆开追加，这一行为值得单独确认。\n\n> [!NOTE]\n> 暂未找到可读取的合适资料，先讲基础内容；需要查证的部分会标明。"
+      ],
+      "nodes": [
+        "received",
+        "understanding",
+        "intent",
+        "model_attempt",
+        "intent",
+        "intent_decided",
+        "teaching_preparation",
+        "model_attempt",
+        "teaching_preparation",
+        "search_attempt",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "public_search",
+        "source_candidates",
+        "model_attempt",
+        "source_candidates",
+        "web_provider",
+        "search_no_results",
+        "answer",
+        "model_attempt",
+        "response.started",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "answer",
+        "sources",
+        "response.completed",
+        "learning_evidence",
+        "completed"
+      ],
+      "failures": [],
+      "provider_events": [
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "failed",
+          "code": "RT.WEB.RATE_LIMIT"
+        },
+        {
+          "provider": "tavily",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "tavily",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "brave",
+          "operation": "context",
+          "status": "skipped",
+          "code": "RT.WEB.NO_KEY"
+        }
+      ],
+      "read_sources": []
+    }
+  ]
+}

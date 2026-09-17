@@ -49,12 +49,12 @@ current_budget = ContextVar("review_today_attempt_budget", default=None)
 
 
 @contextmanager
-def budget_scope(seconds=MODEL_TIMEOUT_SECONDS):
+def budget_scope(seconds=MODEL_TIMEOUT_SECONDS, *, limit=2, isolated=False):
     existing = current_budget.get()
-    if existing:
+    if existing and not isolated:
         yield existing
         return
-    budget = AttemptBudget(seconds=seconds)
+    budget = AttemptBudget(seconds=seconds, limit=limit)
     token = current_budget.set(budget)
     timer = threading.Timer(budget.seconds, lambda: budget.close(expired=True))
     timer.daemon = True

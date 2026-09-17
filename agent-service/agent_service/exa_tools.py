@@ -79,10 +79,9 @@ class ExaBackend:
                 if params is not None: body['params'] = params
                 if request_id is not None: body['id'] = request_id
                 with client.stream('POST', ENDPOINT, headers=headers, json=body, timeout=check()) as response:
-                    if response.status_code == 429:
-                        raise WebToolError('RATE_LIMIT', 'HTTP 429')
                     if response.status_code not in (200, 202):
-                        raise WebToolError('PROVIDER', f'HTTP {response.status_code}')
+                        from agent_service.web_http import response_error
+                        raise response_error(response)
                     session = response.headers.get('mcp-session-id')
                     if session:
                         if not re.fullmatch(r'[!-~]{1,512}', session):
@@ -163,7 +162,7 @@ class ExaBackend:
         from agent_service.web_tools import public_service_url
         public_service_url(url)
         text = self._call('web_fetch_exa', dict(urls=[url], maxCharacters=min(limit, 20000)), on_cancel_handle)
-        match = re.match(r'\A# ([^\n]+)\nURL: ([^\n]+)\n\n([\s\S]+)\Z', text)
+        match = re.match(r'\A# ([^\n]+)\nURL: ([^\n]+)\n(?:Published: [^\n]*\n)?(?:Author: [^\n]*\n)?\n([\s\S]+)\Z', text)
         if not match: raise WebToolError('READ_FAILED')
         title, actual, body = match.groups()
         if actual != url or not body.strip(): raise WebToolError('READ_FAILED')

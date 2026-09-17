@@ -1,0 +1,251 @@
+{
+  "outcome": "first turn web failover passed; second turn model generation failed; whole replay failed",
+  "runs": [
+    {
+      "fixed_routing": false,
+      "expect_read_blocked": false,
+      "scenario": "official",
+      "forced_exa_limit": true,
+      "search_adapter": {
+        "status": "unverified",
+        "provider": "exa",
+        "reason": "requires_search_result",
+        "protocol": "harness_web_tools_v1",
+        "providers": [
+          {
+            "provider": "exa",
+            "status": "unverified"
+          },
+          {
+            "provider": "tavily",
+            "status": "unverified"
+          },
+          {
+            "provider": "brave",
+            "status": "unavailable",
+            "reason": "RT.WEB.NO_KEY"
+          }
+        ]
+      }
+    },
+    {
+      "input": "请查阅 Python 官方文档，用两三句话解释列表 append 和 extend 的区别，并附上来源。",
+      "status": "completed",
+      "search_state": "verified",
+      "evidence": {
+        "state": "supported",
+        "summary": "Python 官方文档教程（英文版与中文版）均直接说明：list.append(x) 在列表末尾添加一个元素，类似于 a[len(a):] = [x]；list.extend(iterable) 通过添加迭代器中的所有项来扩展列表，类似于 a[len(a):] = iterable。因此，append 将单个对象作为一个元素加入列表，而 extend 会遍历可迭代对象并把每个元素逐个加入列表。两者所依据的文档版本都是 Python 3.14.7，可以支持上述区别表述。",
+        "sources": [
+          "https://docs.python.org/3/tutorial/datastructures.html",
+          "https://docs.python.org/zh-cn/3/tutorial/datastructures.html"
+        ]
+      },
+      "replies": [
+        "**append 一次只加一项，extend 会把一个可迭代对象里的元素逐个加进去。**\n\nPython 官方教程的列表方法说明中，`list.append(value)` 是“在列表末尾添加一项”，效果类似于 `a[len(a):] = [x]`；`list.extend(iterable)` 是“通过添加来自 iterable 的所有项来扩展列表”，效果类似于 `a[len(a):] = iterable`。两个赋值写法里的方括号是区别的关键：前者把 `x` 整体作为一项，后者直接铺开 `iterable` 的各项。\n\n比如：\n\n```python\na = [1, 2]\na.append([3, 4])   # a 变成 [1, 2, [3, 4]]\nb = [1, 2]\nb.extend([3, 4])   # b 变成 [1, 2, 3, 4]\n```\n\n**一个常见注意点**：字符串也是可迭代对象，所以 `b.extend(\"ab\")` 会加入 `'a'` 和 `'b'` 两个元素，而不是 `\"ab\"` 这一项。需要把整个字符串当成一项时用 `append`。\n\n来源（Python 官方教程，5.1 列表详解）：\n- 中文版：https://docs.python.org/zh-cn/3/tutorial/datastructures.html\n- 英文版：https://docs.python.org/3/tutorial/datastructures.html\n\n以上差异依据当前官方文档原文；文档也在持续更新，遇到方法签名变化时以对应版本的文档为准。\n\n如果只是想快速用上，记住一条判断：**“想加一个东西”用 append，“想把一批东西逐个并进去”用 extend。**"
+      ],
+      "nodes": [
+        "received",
+        "understanding",
+        "intent",
+        "model_attempt",
+        "intent",
+        "intent_decided",
+        "teaching_preparation",
+        "model_attempt",
+        "teaching_preparation",
+        "search_attempt",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "public_search",
+        "source_candidates",
+        "model_attempt",
+        "source_candidates",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "evidence_assessment",
+        "model_attempt",
+        "evidence_assessment",
+        "search_verified",
+        "answer",
+        "model_attempt",
+        "response.started",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "answer",
+        "sources",
+        "response.completed",
+        "learning_evidence",
+        "completed"
+      ],
+      "provider_events": [
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "failed",
+          "code": "RT.WEB.RATE_LIMIT"
+        },
+        {
+          "provider": "tavily",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "tavily",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "skipped",
+          "code": "RT.WEB.RATE_LIMIT"
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "skipped",
+          "code": "RT.WEB.RATE_LIMIT"
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "read_sources": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "https://docs.python.org/3/tutorial/datastructures.html",
+          "fetched_at": "2026-09-17T05:11:35.683655+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+          "title": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+          "fetched_at": "2026-09-17T05:11:36.959579+00:00",
+          "content_chars": 10000
+        }
+      ]
+    },
+    {
+      "input": "针对刚才 append 和 extend 的区别，举个生活类比就好。",
+      "status": "retryable_failed",
+      "search_state": "not_called",
+      "evidence": {
+        "state": "supported",
+        "summary": "Python 官方文档教程（英文版与中文版）均直接说明：list.append(x) 在列表末尾添加一个元素，类似于 a[len(a):] = [x]；list.extend(iterable) 通过添加迭代器中的所有项来扩展列表，类似于 a[len(a):] = iterable。因此，append 将单个对象作为一个元素加入列表，而 extend 会遍历可迭代对象并把每个元素逐个加入列表。两者所依据的文档版本都是 Python 3.14.7，可以支持上述区别表述。",
+        "sources": [
+          "https://docs.python.org/3/tutorial/datastructures.html",
+          "https://docs.python.org/zh-cn/3/tutorial/datastructures.html"
+        ]
+      },
+      "replies": [],
+      "nodes": [
+        "received",
+        "understanding",
+        "intent",
+        "model_attempt",
+        "intent",
+        "intent_decided",
+        "task_updated",
+        "teaching_preparation",
+        "model_attempt",
+        "teaching_preparation",
+        "search_not_called",
+        "lesson",
+        "model_attempt",
+        "response.started",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "model_attempt_failed",
+        "lesson",
+        "response.failed",
+        "task_updated",
+        "failed"
+      ],
+      "provider_events": [],
+      "read_sources": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "https://docs.python.org/3/tutorial/datastructures.html",
+          "fetched_at": "2026-09-17T05:11:35.683655+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+          "title": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+          "fetched_at": "2026-09-17T05:11:36.959579+00:00",
+          "content_chars": 10000
+        }
+      ]
+    }
+  ]
+}

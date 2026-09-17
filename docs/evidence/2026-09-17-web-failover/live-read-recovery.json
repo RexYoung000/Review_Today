@@ -1,0 +1,31 @@
+{
+  "scenario": "injected Exa URL read failure; actual Tavily same URL recovery",
+  "url": "https://docs.python.org/3/tutorial/datastructures.html",
+  "characters": 20000,
+  "events": [
+    {
+      "provider": "exa",
+      "operation": "read",
+      "status": "started",
+      "code": ""
+    },
+    {
+      "provider": "exa",
+      "operation": "read",
+      "status": "failed",
+      "code": "RT.WEB.READ_FAILED"
+    },
+    {
+      "provider": "tavily",
+      "operation": "read",
+      "status": "started",
+      "code": ""
+    },
+    {
+      "provider": "tavily",
+      "operation": "read",
+      "status": "succeeded",
+      "code": ""
+    }
+  ]
+}

@@ -1320,7 +1320,7 @@ class ConversationHarness(ConditionalTeaching):
                         self._snapshot(sid, rid, rev)
             with self.store.transaction(sid, rid, rev) as current:
                 current["runs"][rid].setdefault("search_results", {})[key] = result
-                self.store.event(current, current["runs"][rid], "public_search", "公开资料检索已返回", payload={"web_provider": web_search_capability()["provider"]},
+                self.store.event(current, current["runs"][rid], "public_search", "公开资料检索已返回", payload={"web_provider": (json.loads(result).get("provider", web_search_capability()["provider"]) if result.lstrip().startswith("{") else web_search_capability()["provider"])},
                                  duration_ms=int((time.monotonic() - started) * 1000))
             return result
         finally:

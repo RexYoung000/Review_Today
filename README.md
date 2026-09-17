@@ -97,3 +97,5 @@ Debug 日常构建使用工程配置的 Apple Development 签名，需本机相�
 - 无密钥回归：`bash agent-service/run-controlled.sh`（脚本主动清空两种凭证、使用隔离库）。真实模型检查：在 `agent-service` 运行 `.venv/bin/python -m tests.stream_real_smoke`，或加 `--case rag_answer --deep`；使用合成输入和临时数据库，会产生真实 API 用量。
 
 当前目标主规格为 [Harness §19 / §18](docs/agent-harness-v2.md)，新门槛与旧实施证据分别见 [验收 §0.12 / §0.11 / §0.10](docs/m1-acceptance.md)。旧「已有」只说明基础存在，不保证新目标完成。先独立文档 commit/push，后续实现按契约分批验证与提交；本轮文档检查点推送成功后连续实施，不在文档完成处停止；各批实际证据另记。品牌当前状态以 [品牌记录](brand/README.md) 为准：原始 A 图标已接入，吉祥物仍在造型探索。
+
+网页多服务备用：搜索 Exa → Tavily → Brave，读取 Exa → Tavily；Brave Context 作为相关正文片段补充。Brave 需独立 Key，未配置时跳过。配置及预算见 [网页工具说明](agent-service/providers/web/README.md)，A008 验证见 [多服务备用证据](docs/evidence/2026-09-17-web-failover/README.md)。

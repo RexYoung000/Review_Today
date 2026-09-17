@@ -88,7 +88,7 @@ def check_model_capabilities() -> None:
 
 @app.get("/healthz")
 def healthz() -> dict[str, object]:
-    from agent_service.web_tools import web_search_capability, web_read_capability
+    from agent_service.web_tools import web_search_capability, web_read_capability, web_context_capability
     return {
         "status": "ok",
         "key_configured": bool(openai_key()),
@@ -100,6 +100,7 @@ def healthz() -> dict[str, object]:
         "model_roles": model_capability_snapshot(),
         "web_search": web_search_capability(),
         "web_read": web_read_capability(),
+        "web_context": web_context_capability(),
     }
 
 

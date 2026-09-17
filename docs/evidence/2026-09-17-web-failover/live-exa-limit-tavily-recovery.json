@@ -1,0 +1,285 @@
+{
+  "outcome": "passed",
+  "failure_injection": "Exa quota only; Tavily, routing, assessment and response model all live",
+  "runs": [
+    {
+      "fixed_routing": false,
+      "expect_read_blocked": false,
+      "scenario": "official",
+      "forced_exa_limit": true,
+      "search_adapter": {
+        "status": "unverified",
+        "provider": "exa",
+        "reason": "requires_search_result",
+        "protocol": "harness_web_tools_v1",
+        "providers": [
+          {
+            "provider": "exa",
+            "status": "unverified"
+          },
+          {
+            "provider": "tavily",
+            "status": "unverified"
+          },
+          {
+            "provider": "brave",
+            "status": "unavailable",
+            "reason": "RT.WEB.NO_KEY"
+          }
+        ]
+      }
+    },
+    {
+      "input": "请查阅 Python 官方文档，用两三句话解释列表 append 和 extend 的区别，并附上来源。",
+      "status": "completed",
+      "search_state": "verified",
+      "evidence": {
+        "state": "supported",
+        "summary": "Python 官方文档明确说明了 list.append 与 list.extend 的区别：list.append(value, /) 将一个项目添加到列表末尾，类似于 a[len(a):] = [x]；list.extend(iterable, /) 将可迭代对象中的所有项目追加到列表末尾，类似于 a[len(a):] = iterable。因此，append 接收单个元素，而 extend 接收可迭代对象并逐一加入其元素。该说明在 Python 3.14.7 官方教程的英文版和繁体中文版中均能直接验证。",
+        "sources": [
+          "https://docs.python.org/3/tutorial/datastructures.html",
+          "https://docs.python.org/zh-tw/3/tutorial/datastructures.html"
+        ]
+      },
+      "replies": [
+        "**append 加一个元素，extend 拆开一个可迭代对象逐个加。**\n\nPython 官方教程在 list 方法一节里的表述是：`list.append(value, /)` 把「一个项目」加到列表末尾，效果类似 `a[len(a):] = [x]`；而 `list.extend(iterable, /)` 是把可迭代对象里的「所有项目」接到列表末尾，效果类似 `a[len(a):] = iterable`。所以参数类型是关键区别：传列表给 `append`，它会作为一个整体元素被塞进去；传给 `extend`，里面的元素会被逐一取出、依次追加。\n\n例如 `a = [1, 2]` 时，`a.append([3, 4])` 得到 `[1, 2, [3, 4]]`（嵌套了一层），而 `a.extend([3, 4])` 得到 `[1, 2, 3, 4]`（展平展开）。\n\n来源：\n- Python 官方教程（英文）5.1 节 More on Lists：https://docs.python.org/3/tutorial/datastructures.html\n- Python 官方教程（繁體中文）5.1 節：https://docs.python.org/zh-tw/3/tutorial/datastructures.html\n\n注意 extend 接受的是可迭代对象而不是任意值；字符串也是可迭代对象，`a.extend(\"ab\")` 会逐个加入 `'a'`、`'b'`，而不是把 `\"ab\"` 当成一个元素。"
+      ],
+      "nodes": [
+        "received",
+        "understanding",
+        "intent",
+        "model_attempt",
+        "intent",
+        "intent_decided",
+        "teaching_preparation",
+        "model_attempt",
+        "teaching_preparation",
+        "search_attempt",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "public_search",
+        "source_candidates",
+        "model_attempt",
+        "source_candidates",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "web_provider",
+        "evidence_assessment",
+        "model_attempt",
+        "evidence_assessment",
+        "search_verified",
+        "answer",
+        "model_attempt",
+        "response.started",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "answer",
+        "sources",
+        "response.completed",
+        "learning_evidence",
+        "completed"
+      ],
+      "failures": [],
+      "provider_events": [
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "failed",
+          "code": "RT.WEB.RATE_LIMIT"
+        },
+        {
+          "provider": "tavily",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "tavily",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "skipped",
+          "code": "RT.WEB.RATE_LIMIT"
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "skipped",
+          "code": "RT.WEB.RATE_LIMIT"
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "preparation": [
+        {
+          "official_sources_required": true,
+          "source_domains": [
+            "docs.python.org"
+          ],
+          "concepts": [
+            "list.append",
+            "list.extend",
+            "Python 官方文档"
+          ],
+          "public_query": "Python 官方文档 list.append list.extend 区别 site:docs.python.org",
+          "new_knowledge": true
+        }
+      ],
+      "read_sources": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "https://docs.python.org/3/tutorial/datastructures.html",
+          "fetched_at": "2026-09-17T05:15:45.348601+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://docs.python.org/zh-tw/3/tutorial/datastructures.html",
+          "title": "https://docs.python.org/zh-tw/3/tutorial/datastructures.html",
+          "fetched_at": "2026-09-17T05:15:46.787526+00:00",
+          "content_chars": 10000
+        }
+      ]
+    },
+    {
+      "input": "针对刚才 append 和 extend 的区别，举个生活类比就好。",
+      "status": "completed",
+      "search_state": "not_called",
+      "evidence": {
+        "state": "supported",
+        "summary": "Python 官方文档明确说明了 list.append 与 list.extend 的区别：list.append(value, /) 将一个项目添加到列表末尾，类似于 a[len(a):] = [x]；list.extend(iterable, /) 将可迭代对象中的所有项目追加到列表末尾，类似于 a[len(a):] = iterable。因此，append 接收单个元素，而 extend 接收可迭代对象并逐一加入其元素。该说明在 Python 3.14.7 官方教程的英文版和繁体中文版中均能直接验证。",
+        "sources": [
+          "https://docs.python.org/3/tutorial/datastructures.html",
+          "https://docs.python.org/zh-tw/3/tutorial/datastructures.html"
+        ]
+      },
+      "replies": [
+        "刚才介绍了 append 是「加一个整体」，extend 是「拆开逐个加」。用生活场景来对照的话：\n\n**append 像往购物袋里丢一整盒鸡蛋**——盒子不拆开，袋子里多出来的「一件东西」就是那盒蛋。\n\n**extend 像把这盒蛋拆开，一颗一颗放进袋子**——袋子里多出来的是 6 颗独立的蛋。\n\n再换个更贴近代码的场景：\n\n- 你有一个「今日待办」清单。`append([\"买菜\", \"洗衣服\"])` 相当于把一张写着两件事的便条纸整体贴进清单里，清单上还是只有一条便条。\n- `extend([\"买菜\", \"洗衣服\"])` 相当于把便条上的两件事分别抄进清单，清单上多出两条独立条目。\n\n这个类比能对上官方文档的等价写法：`append` 类似 `a[len(a):] = [x]`（右边是一个只含单元素的列表），`extend` 类似 `a[len(a):] = iterable`（右边直接是可迭代对象本身）。\n\n类比的边界也值得注意：**extend 不是「智能识别并展开任意东西」**，它只按可迭代对象逐个取值。所以给它一个字符串，展开的是字符而不是整个字符串；给它一个整数，会报错，因为整数不可迭代。\n\n来源：\n- Python 官方教程（英文）5.1 节 More on Lists：https://docs.python.org/3/tutorial/datastructures.html\n- Python 官方教程（繁體中文）5.1 節：https://docs.python.org/zh-tw/3/tutorial/datastructures.html"
+      ],
+      "nodes": [
+        "received",
+        "understanding",
+        "intent",
+        "model_attempt",
+        "intent",
+        "intent_decided",
+        "task_updated",
+        "teaching_preparation",
+        "model_attempt",
+        "teaching_preparation",
+        "search_not_called",
+        "lesson",
+        "model_attempt",
+        "response.started",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "response.delta",
+        "lesson",
+        "sources",
+        "response.completed",
+        "task_updated",
+        "learning_evidence",
+        "completed"
+      ],
+      "failures": [],
+      "provider_events": [],
+      "preparation": [
+        {
+          "official_sources_required": false,
+          "source_domains": [],
+          "concepts": [
+            "list.append 与 list.extend 的区别（生活类比）",
+            "Python 可变序列的原地修改与元素迭代"
+          ],
+          "public_query": "Python list.append vs extend 区别 原地修改 可迭代对象 官方文档",
+          "new_knowledge": false
+        }
+      ],
+      "read_sources": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "https://docs.python.org/3/tutorial/datastructures.html",
+          "fetched_at": "2026-09-17T05:15:45.348601+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://docs.python.org/zh-tw/3/tutorial/datastructures.html",
+          "title": "https://docs.python.org/zh-tw/3/tutorial/datastructures.html",
+          "fetched_at": "2026-09-17T05:15:46.787526+00:00",
+          "content_chars": 10000
+        }
+      ]
+    }
+  ]
+}

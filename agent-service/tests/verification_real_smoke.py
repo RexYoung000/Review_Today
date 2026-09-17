@@ -14,6 +14,7 @@ def main():
     parser.add_argument('--live', action='store_true', required=True)
     parser.add_argument('--fixed-routing', action='store_true', help='Isolate search/coach from the intent router; preparation, search, reads and answers still run live.')
     parser.add_argument('--expect-read-blocked', action='store_true', help='Verify honest degradation on a network whose public DNS answers are rejected; never counts as verified evidence.')
+    parser.add_argument('--force-exa-limit', action='store_true', help='Inject an Exa quota error; fallback tools and model remain real.')
     parser.add_argument('--scenario', choices=['official', 'chinese', 'current'], default='official')
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix='review-verification-live-') as directory:
@@ -26,7 +27,7 @@ def main():
         from agent_service.web_tools import web_search_capability
         h = ConversationHarness(ConversationStore(HarnessStore(os.environ['REVIEW_TODAY_HARNESS_DB'])))
         sid = str(uuid.uuid4())
-        print(json.dumps({'fixed_routing': args.fixed_routing, 'expect_read_blocked': args.expect_read_blocked, 'scenario': args.scenario, 'search_adapter': web_search_capability()}), flush=True)
+        print(json.dumps({'fixed_routing': args.fixed_routing, 'expect_read_blocked': args.expect_read_blocked, 'scenario': args.scenario, 'forced_exa_limit': args.force_exa_limit, 'search_adapter': web_search_capability()}), flush=True)
         questions = ['请查阅 Python 官方文档，用两三句话解释列表 append 和 extend 的区别，并附上来源。',
                      '针对刚才 append 和 extend 的区别，举个生活类比就好。']
         if args.scenario == 'chinese':
@@ -43,7 +44,8 @@ def main():
                                           public_search_query={'official':'Python official documentation list append extend','chinese':'光合作用 大学 科普 原理','current':'Python latest stable release official downloads'}[args.scenario], rationale='synthetic verification test route')
                 return parse_model(system, user, schema, **kwargs)
             accepted = h.accept(sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content=text))
-            with patch('agent_service.conversation.parse_model', side_effect=routed) if args.fixed_routing else nullcontext():
+            from agent_service.call_errors import WebToolError
+            with (patch('agent_service.conversation.parse_model', side_effect=routed) if args.fixed_routing else nullcontext()), (patch('agent_service.exa_tools.ExaBackend._call', side_effect=WebToolError('RATE_LIMIT')) if args.force_exa_limit else nullcontext()):
                 h.drain(sid)
             data = h.store.get(sid); run = data['runs'][accepted.run_id]
             replies = [m['content'] for m in data['messages'] if m['role']=='coach' and m['run_id']==accepted.run_id]
@@ -51,7 +53,10 @@ def main():
             sources = run.get('teaching_sources', [])
             print(json.dumps(dict(input=text, status=run['status'], search_state=run.get('search_state'),
                                   evidence=run.get('teaching_evidence'), replies=replies, nodes=nodes,
+                                  failures=[{k:e.get(k) for k in ('node','detail_summary','error_code')} for e in data['events'] if e['run_id']==accepted.run_id and e.get('state')=='failed'],
+                                  provider_events=[e.get('payload') for e in data['events'] if e['run_id']==accepted.run_id and e['node']=='web_provider'],
                                   search_results=list(run.get('search_results', {}).values()),
+                                  preparation=[v for v in run.get('steps', {}).values() if 'official_sources_required' in v],
                                   selected_sources=[v for v in run.get('steps', {}).values() if 'candidates' in v],
                                   read_sources=[dict(url=s.get('url'), title=s.get('title'), fetched_at=s.get('fetched_at'),
                                                      content_chars=len(s.get('content', ''))) for s in sources]), ensure_ascii=False), flush=True)

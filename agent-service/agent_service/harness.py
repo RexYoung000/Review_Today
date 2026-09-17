@@ -10,6 +10,7 @@ from agent_service.answer_style import ANSWER_STYLE
 from agent_service.conversation_prompts import PROGRAMMING_BOUNDARY
 from agent_service.capture import RISK_RULE, find_source_candidates, run_capture
 from agent_service.capture.fetch import looks_like_url
+from agent_service.web_resilience import bounded_web_round
 from agent_service.web_tools import web_search_text, read_public_url as fetch_public_url
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL
 from agent_service.harness_store import HarnessTaskRecord, harness_store, now_iso
@@ -288,6 +289,7 @@ def _render_problem(bundle: ProblemCoachBundle, *, compact: bool = False) -> str
     return "\n\n".join(sections)
 
 
+@bounded_web_round
 def _problem_solving(record: HarnessTaskRecord) -> None:
     if JD_HINT.search(record.content) and not any(item.get("action_type") == "select_question" for item in record.action_history):
         started = time.monotonic()

@@ -439,3 +439,38 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertEqual(model.call_count, 2)
         self.assertEqual(self.state()["runs"][accepted.run_id]["status"], "retryable_failed")
         self.assertTrue(any("intents" in e["detail_summary"] for e in self.state()["events"]))
+
+    def test_failover_success_records_actual_provider_without_failure_notice(self):
+        import os
+        from unittest.mock import Mock
+        from agent_service import web_resilience
+        from agent_service.web_tools import SearchResult
+        from agent_service.call_errors import WebToolError
+        backends={name:Mock() for name in ['exa','tavily']}
+        backends['exa'].search.side_effect=WebToolError('RATE_LIMIT')
+        backends['tavily'].search.return_value=[SearchResult('https://example.com/rag','RAG')]
+        backends['tavily'].read.return_value=('RAG','先检索再生成')
+        self.decision=intent('question',public_search_query='RAG')
+        with patch.dict(os.environ,{'REVIEW_TODAY_SEARCH_PROVIDER':'exa','REVIEW_TODAY_SEARCH_FALLBACKS':'tavily','REVIEW_TODAY_READ_PROVIDER':'exa','REVIEW_TODAY_READ_FALLBACKS':'tavily'}), patch.object(web_resilience,'_states',{}), patch('agent_service.web_tools._backend',side_effect=lambda name:backends[name]):
+            result=self.send('RAG 是什么')
+        state=self.state();run=state['runs'][result.run_id]
+        self.assertEqual(run['search_state'],'verified')
+        self.assertEqual(run['verification_notice'],'')
+        self.assertEqual(run['teaching_sources'][0]['content_kind'],'page_text')
+        events=[e for e in state['events'] if e['node']=='web_provider']
+        self.assertTrue(any(e['payload']['provider']=='tavily' and e['payload']['operation']=='read' and e['payload']['status']=='succeeded' for e in events))
+        public=next(e for e in state['events'] if e['node']=='public_search')
+        self.assertEqual(public['payload']['web_provider'],'tavily')
+
+    def test_brave_chunks_recovery_never_becomes_full_page_evidence(self):
+        self.decision=intent('question',public_search_query='RAG')
+        from agent_service.call_errors import WebToolError
+        chunks=[dict(url='https://example.com/rag',title='RAG',content='相关正文片段',provider='brave',content_kind='extracted_chunks')]
+        with patch('agent_service.conversation.web_search_text',return_value='https://example.com/rag'), patch('agent_service.conditional_teaching.fetch_public_url',side_effect=WebToolError('CHAIN_FAILED')), patch('agent_service.web_tools.web_context_pages',return_value=chunks) as recovery:
+            result=self.send('RAG 是什么')
+        run=self.state()['runs'][result.run_id]
+        recovery.assert_called_once()
+        self.assertEqual(run['teaching_evidence']['state'],'scoped')
+        self.assertIn('未读取指定网页全文',run['teaching_evidence']['summary'])
+        self.assertEqual(run['teaching_sources'][0]['content_kind'],'extracted_chunks')
+        self.assertNotIn('https://example.com/rag',run.get('source_cache',{}))

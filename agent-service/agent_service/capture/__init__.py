@@ -9,6 +9,7 @@ from langgraph.graph import END, START, StateGraph
 from pydantic import ValidationError
 
 from agent_service.capture.fetch import looks_like_url
+from agent_service.web_resilience import bounded_web_round
 from agent_service.web_tools import web_search_text, read_public_url as fetch_public_url
 from agent_service.capture.prompts import (
     CLASSIFY_SYSTEM,
@@ -370,6 +371,7 @@ def risk_node(state: CaptureState) -> dict[str, Any]:
     return updates
 
 
+@bounded_web_round
 def verify_node(state: CaptureState) -> dict[str, Any]:
     updates = _event(state, "node_start", "verify")
     if state.get("outcome") in {"retryable_failed", "needs_attention", "committing"}:
