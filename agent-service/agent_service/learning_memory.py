@@ -14,6 +14,8 @@ def merge_references(*groups):
 
 
 def make_evidence(run, task, message_id, text, sid):
+    if run.get('dialogue_only') or (run.get('intent') or {}).get('resource_boundary', 'none') in {'resource_delivery', 'capability_question'}:
+        return None
     intent = run.get("intent") or {}
     intents = set(intent.get("intents", []))
     if run.get("status") != "completed" or not (run.get("activity_candidate") in {"knowledge_answer", "lesson_step"}

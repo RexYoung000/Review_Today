@@ -1,0 +1,77 @@
+{"cases": 16, "fixed_scenarios": 26, "result": "VALID", "note": "Offline structure only; no model behavior evaluated."}
+........................................................................ [ 13%]
+...................................................................... [ 27%]
+...................F............................................. [ 40%]
+................................................................ [ 52%]
+..................................................................................................................... [ 75%]
+............................F......................................................................... [ 94%]
+..........................                       [100%]
+=================================== FAILURES ===================================
+_ ConversationTests.test_summary_failure_retry_does_not_repeat_an_already_published_answer _
+
+self = <test_conversation_v2.ConversationTests testMethod=test_summary_failure_retry_does_not_repeat_an_already_published_answer>
+
+    def test_summary_failure_retry_does_not_repeat_an_already_published_answer(self):
+        for i in range(11): self.send(f"你好 {i}")
+        with self.store.transaction(self.sid) as data:
+            for m in data["messages"]:
+                if m["role"] == "user": m["content"] = "a" * 42000
+        normal = self.model
+        def fail_summary(*args, **kwargs):
+            if args[2] is ConversationSummary: raise RuntimeError("RT.MODEL.TIMEOUT")
+            return normal(*args, **kwargs)
+        with patch("agent_service.conversation.parse_model", side_effect=fail_summary):
+            run = self.send("第十二条")
+            self.harness.maintain_summary(self.sid)
+>       self.assertEqual(self.state()["runs"][run.run_id]["status"], "completed")
+E       AssertionError: 'retryable_failed' != 'completed'
+E       - retryable_failed
+E       + completed
+
+tests/test_conversation_v2.py:717: AssertionError
+_ SelectiveWebTests.test_cross_check_remaining_source_is_batched_after_first_pair _
+
+self = <test_selective_web.SelectiveWebTests testMethod=test_cross_check_remaining_source_is_batched_after_first_pair>
+
+    def test_cross_check_remaining_source_is_batched_after_first_pair(self):
+        run, count, assessed = self.progressive(['insufficient'])
+        self.assertLessEqual(len(assessed), 2)
+        run, count, assessed = self.progressive(['insufficient'], cross=True)
+>       self.assertEqual((count, assessed, run['search_state']), (3, [2, 3], 'insufficient'))
+E       AssertionError: Tuples differ: (1, [2, 3], 'insufficient') != (3, [2, 3], 'insufficient')
+E
+E       First differing element 0:
+E       1
+E       3
+E
+E       - (1, [2, 3], 'insufficient')
+E       ?  ^
+E
+E       + (3, [2, 3], 'insufficient')
+E       ?  ^
+
+tests/test_selective_web.py:101: AssertionError
+=============================== warnings summary ===============================
+agent_service/main.py:82
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:82: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_conversation_v2.py::ConversationTests::test_summary_failure_retry_does_not_repeat_an_already_published_answer
+FAILED tests/test_selective_web.py::SelectiveWebTests::test_cross_check_remaining_source_is_batched_after_first_pair
+2 failed, 514 passed, 2 warnings, 110 subtests passed in 57.49s

@@ -164,7 +164,8 @@ class ConditionalTeaching:
             prep = self._call(sid, rid, rev, "teaching_preparation", PREPARE,
                               json.dumps(dict(current_date=now_iso()[:10], topic=(task or {}).get("content") or context.get("session_goal") or decision.target_description,
                                               learning_purpose=prior.get("learning_goal"), instruction=instruction,
-                                              user_input=last["content"], relation=decision.relation,
+                                              user_input=context.get('current_inputs', [last["content"]]),
+                                              requested_query=decision.public_search_query, relation=decision.relation,
                                               current_step=next((s for s in prior.get("learning_plan", {}).get("steps", []) if s["id"] == prior.get("learning_plan", {}).get("current_step_id")), None),
                                               previous_concepts=prior.get("taught_concepts", []), prior_queries=prior.get("verified_queries", [])), ensure_ascii=False), TeachingPreparation, ROUTER_MODEL)
         except ModelCallError:
@@ -251,6 +252,8 @@ class ConditionalTeaching:
                 return result
 
             for candidate in packed.candidates[:3]:
+                if not cross_check and len(read) >= 2:
+                    break
                 url = looks_like_url(candidate.url)
                 if not url or (url not in search_urls if search_urls is not None else url not in search):
                     continue
@@ -278,6 +281,9 @@ class ConditionalTeaching:
                 read.append(cached)
                 self._snapshot(sid, rid, rev)
                 # A corroboration request must first obtain independent origins.
+                # Ordinary verification has at most two successful reads;
+                # corroboration first requires independent origins. Both paths
+                # retain evidence-enough early stopping and at most two checks.
                 if not cross_check or len({(urlsplit(s['url']).hostname or '').removeprefix('www.') for s in read}) >= 2:
                     checked = assess()
                     checked_count = len(read)
@@ -288,11 +294,11 @@ class ConditionalTeaching:
                 try:
                     chunks = self._read_page(sid, rid, rev, query,
                         lambda q, **kw: web_context_pages(q, allowed_domains=domains if official_required else (), **kw))
-                    for page in chunks:
+                    for page in chunks[:3 if cross_check else 2]:
                         read.append(dict(page, source_id=str(uuid.uuid5(uuid.UUID(sid), page['url'])),
                                          version=1, type='public_source', fetched_at=now_iso()))
                 except CallError as error:
-                    if error.code.endswith('CANCELLED'): raise
+                    if error.code.endswith('CANCELLED') or error.code.startswith('RT.RUN.BUDGET') or error.code == 'RT.MODEL.BUSY': raise
                     # Optional recovery failure never promotes search snippets to evidence.
                     pass
             if read:
@@ -308,7 +314,7 @@ class ConditionalTeaching:
                                        "暂未找到可读取的合适资料，先讲基础内容；需要查证的部分会标明。")
             self._search_state(sid, rid, rev, state, evidence=evidence, sources=sources)
         except CallError as exc:
-            if exc.code.endswith("CANCELLED"):
+            if exc.code.endswith("CANCELLED") or exc.code.startswith('RT.RUN.BUDGET') or exc.code == 'RT.MODEL.BUSY':
                 raise
             unavailable = not search_returned and exc.code.endswith(("UNSUPPORTED", "NOT_CONFIGURED", "NO_KEY"))
             evidence["summary"] = ("当前网页检索服务不可用，本次内容未完成网页核验；涉及最新信息或争议的结论仍需查证。"

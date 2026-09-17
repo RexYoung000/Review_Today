@@ -16,7 +16,7 @@ def kind_for(decision, last):
     if (last.get("operation") or decision.proposed_actions or decision.requested_mode
             or decision.direct_teaching or decision.continuation_evidence
             or decision.conversation_repair or decision.clarification
-            or decision.is_jd or decision.programming_boundary != "none"):
+            or decision.is_jd or decision.programming_boundary != "none" or decision.resource_boundary != "none"):
         return None
     intents = set(decision.intents)
     kind = decision.conversation_kind

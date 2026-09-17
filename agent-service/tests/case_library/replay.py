@@ -87,8 +87,9 @@ def facts(record):
     reply = '\n'.join(record['replies'])
     intent = run.get('intent') or {}
     return {
-        **{'intent.' + key: intent.get(key) for key in ('conversation_kind', 'clarification_kind', 'intents')},
+        **{'intent.' + key: intent.get(key) for key in ('conversation_kind', 'clarification_kind', 'intents', 'resource_boundary')},
         'social_reply_kind': run.get('social_reply_kind'), 'reply': reply, 'reply_length': len(reply),
+        'resource_scope_reply': bool(run.get('resource_scope_reply')),
         'stages': [e['stage'] for e in record['events']], 'task_count': len(after['tasks']),
         'tasks_unchanged': before['tasks'] == after['tasks'],
         'plan_ids_unchanged': plan_ids(before) == plan_ids(after) and bool(before['tasks']),

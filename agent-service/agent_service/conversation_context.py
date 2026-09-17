@@ -9,6 +9,8 @@ from agent_service.schemas import ConversationSummary, IntentDecision
 from agent_service.execution_policy import budget_scope
 from agent_service.learning_memory import merge_references
 from agent_service.context_budget import OUTPUT_RESERVE, count_request, policy, prepare as prepare_context
+from agent_service import run_accounting
+from agent_service.interruptible_call import pool
 
 def maintain_summary(self, sid):
     """Idle compaction uses the same token policy as foreground requests."""
@@ -76,7 +78,7 @@ def compact_history(self, sid, run, system, payload, schema, model, *, backgroun
 
     def still_current():
         current = self.store.get(sid)
-        if (current.get("status", "active") != "active"
+        if (not current or current.get("status", "active") != "active"
                 or version != (self.store.last_seq(current), current.get("lifecycle_revision", 0),
                                current["summary_version"], tuple(m["message_id"] for m in current["messages"]))
                 or not self.store.memory_valid(dependencies)):
@@ -101,22 +103,38 @@ def compact_history(self, sid, run, system, payload, schema, model, *, backgroun
                 if not batch:
                     raise ValueError("RT.CONTEXT.SUMMARY_INPUT_TOO_LARGE")
                 still_current()
-                summary_prompt, _ = prepare_context(summary_system,
+                summary_prompt, capacity = prepare_context(summary_system,
                     json.dumps(dict(previous=previous, messages=batch), ensure_ascii=False),
                     window=configured_window(ROUTER_MODEL), schema=summary_schema)
                 handle_key = (sid, run["run_id"], run["revision"])
                 def register_cancel(handle):
+                    still_current()
                     with self._worker_lock:
                         self._cancel_handles[handle_key] = handle
                     try:
                         still_current()
-                    except Superseded:
+                    except Exception:
+                        with self._worker_lock:
+                            if self._cancel_handles.get(handle_key) is handle:
+                                self._cancel_handles.pop(handle_key, None)
                         handle()
                         raise
                 try:
-                    output = parse_model(summary_system, summary_prompt, ConversationSummary, model=ROUTER_MODEL,
-                                         timeout=summary_budget.remaining(), max_output_tokens=OUTPUT_RESERVE,
-                                         on_cancel_handle=None if background else register_cancel)
+                    call_id = run_accounting.reserve(self, sid, run['run_id'], run['revision'],
+                        node='session_summary', model=ROUTER_MODEL, estimated_input=capacity['input_tokens'], background=background)
+                    def invoke(prompt=summary_prompt, call_id=call_id):
+                        try:
+                            result = parse_model(summary_system, prompt, ConversationSummary, model=ROUTER_MODEL,
+                                timeout=summary_budget.remaining(), max_output_tokens=OUTPUT_RESERVE,
+                                on_cancel_handle=None if background else register_cancel,
+                                on_request=lambda: run_accounting.request(self, sid, run['run_id'], run['revision'], call_id, background=background),
+                                on_usage=lambda usage: run_accounting.record(self, sid, run['run_id'], call_id, usage=usage))
+                        except BaseException:
+                            run_accounting.record(self, sid, run['run_id'], call_id, status='failed_or_cancelled')
+                            raise
+                        run_accounting.record(self, sid, run['run_id'], call_id, status='returned')
+                        return result
+                    output = pool.invoke((sid, run['run_id']), invoke, check=still_current, budget=summary_budget)
                 finally:
                     if not background:
                         with self._worker_lock:

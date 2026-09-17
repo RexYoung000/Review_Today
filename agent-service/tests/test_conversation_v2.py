@@ -711,7 +711,11 @@ class ConversationTests(unittest.TestCase):
         def fail_summary(*args, **kwargs):
             if args[2] is ConversationSummary: raise RuntimeError("RT.MODEL.TIMEOUT")
             return normal(*args, **kwargs)
-        with patch("agent_service.conversation.parse_model", side_effect=fail_summary):
+        # This deliberately huge history isolates summary-failure recovery.
+        # Whole-turn admission limits are tested separately; allow the raw
+        # context fallback here so the already-published-answer invariant runs.
+        with patch("agent_service.conversation.parse_model", side_effect=fail_summary), \
+             patch("agent_service.run_accounting.ESTIMATED_INPUT_LIMIT", 1_000_000):
             run = self.send("第十二条")
             self.harness.maintain_summary(self.sid)
         self.assertEqual(self.state()["runs"][run.run_id]["status"], "completed")

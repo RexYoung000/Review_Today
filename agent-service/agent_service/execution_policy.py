@@ -16,6 +16,7 @@ class AttemptBudget:
     started: float = field(default_factory=time.monotonic)
     closers: list = field(default_factory=list)
     expired: bool = False
+    abandoned: bool = False
 
     def remaining(self):
         from agent_service.call_errors import ModelCallError
@@ -35,6 +36,13 @@ class AttemptBudget:
         for close in list(self.closers):
             try: close()
             except Exception: pass  # cancellation must not conceal the original error
+
+    def abandon(self):
+        # A close callback itself can block. Leave it with the detached request,
+        # never on the Session worker that must process stop/steering.
+        self.abandoned = True
+        self.expired = True
+        threading.Thread(target=self.close, daemon=True, name='review-today-close').start()
 
     def take(self):
         from agent_service.call_errors import ModelCallError
@@ -63,7 +71,8 @@ def budget_scope(seconds=MODEL_TIMEOUT_SECONDS, *, limit=2, isolated=False):
         yield budget
     finally:
         timer.cancel()
-        budget.close()
+        if not budget.abandoned:
+            budget.close()
         current_budget.reset(token)
 
 

@@ -15,6 +15,8 @@ from agent_service.context_budget import OUTPUT_RESERVE, count_request, policy, 
 from agent_service.response_projection import public_preview
 from agent_service.schemas import IntentDecision
 from agent_service.source_links import bound_source_links
+from agent_service import run_accounting
+from agent_service.interruptible_call import pool
 
 def call(self, session_id, run_id, revision, node, system, prompt, schema, model=COACH_MODEL, *, parse_model, configured_window, alternatives, require_model):
     data, run = self._snapshot(session_id, run_id, revision)
@@ -87,17 +89,22 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
 
     handle_key = (session_id, run_id, revision)
     def register_cancel(handle):
+        self._snapshot(session_id, run_id, revision)
         with self._worker_lock:
             self._cancel_handles[handle_key] = handle
         try:
             self._snapshot(session_id, run_id, revision)
-        except Superseded:
+        except Exception:
+            with self._worker_lock:
+                if self._cancel_handles.get(handle_key) is handle:
+                    self._cancel_handles.pop(handle_key, None)
             handle()
             raise
 
     try:
         streamable = node in {"answer", "lesson", "organize", "problem_answer", "evaluate", "jd_analysis"}
-        with budget_scope() as budget:
+        from agent_service.config import MODEL_TIMEOUT_SECONDS
+        with budget_scope(seconds=min(MODEL_TIMEOUT_SECONDS, run_accounting.remaining(run))) as budget:
             choices = ([model] + (alternatives(model, strength, streamable) or [model]))[:2]
             repaired = False
             for index, selected_model in enumerate(choices):
@@ -121,13 +128,29 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                             self.store.event(current, current["runs"][run_id], "context_capacity", "上下文容量已更新",
                                              payload={"context_capacity": actual_capacity})
                     capacity = actual_capacity
+                    call_id = run_accounting.reserve(self, session_id, run_id, revision, node=node,
+                        model=selected_model, estimated_input=capacity['input_tokens'])
                     with self.store.transaction(session_id, run_id, revision) as current:
                         attempt_event = self.store.event(current, current["runs"][run_id], "model_attempt", "正在处理当前步骤", model=selected_model, payload={"step": node, "step_attempt": index + 1})
                         attempt_event["attempt"] = index + 1
                     attempt_started = time.monotonic()
-                    parsed = parse_model(system, prompt, schema, model=selected_model, on_cancel_handle=register_cancel,
-                                         timeout=budget.remaining(), max_output_tokens=OUTPUT_RESERVE, reasoning_effort="high" if strength == "deep" else None,
-                                         **({"on_partial": emit, "on_transport": transport} if streamable else {}))
+                    # Capture immutable attempt arguments: a detached old request
+                    # must never observe the next retry's prompt/model/call ID.
+                    def invoke(system=system, prompt=prompt, selected_model=selected_model, call_id=call_id):
+                        try:
+                            value = parse_model(system, prompt, schema, model=selected_model, on_cancel_handle=register_cancel,
+                                timeout=budget.remaining(), max_output_tokens=OUTPUT_RESERVE,
+                                reasoning_effort="high" if strength == "deep" else None,
+                                on_usage=lambda usage: run_accounting.record(self, session_id, run_id, call_id, usage=usage),
+                                on_request=lambda: run_accounting.request(self, session_id, run_id, revision, call_id),
+                                **({"on_partial": emit, "on_transport": transport} if streamable else {}))
+                        except BaseException:
+                            run_accounting.record(self, session_id, run_id, call_id, status='failed_or_cancelled')
+                            raise
+                        run_accounting.record(self, session_id, run_id, call_id, status='returned')
+                        return value
+                    parsed = pool.invoke((session_id, run_id), invoke,
+                        check=lambda: self._snapshot(session_id, run_id, revision), budget=budget)
                     if schema is IntentDecision and "answer" in parsed.intents:
                         checked_context = intent_context
                         user_inputs = checked_context.get("current_inputs", [])
@@ -155,7 +178,7 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                         with self.store.transaction(session_id, run_id, revision) as current:
                             current["runs"][run_id]["context_capacity"] = repaired_capacity
                         continue
-                    if latest or not diagnose(error)["retryable"] or index + 1 == len(choices) or budget.attempts >= budget.limit:
+                    if budget.expired or latest or not diagnose(error)["retryable"] or index + 1 == len(choices) or budget.attempts >= budget.limit:
                         raise
                     self._snapshot(session_id, run_id, revision)
         if streamable and latest:

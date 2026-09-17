@@ -83,15 +83,19 @@ def parse_model(
     on_partial: Callable[[dict], None] | None = None,
     on_transport: Callable[[str], None] | None = None,
     on_cancel_handle: Callable[[Callable[[], None]], None] | None = None,
+    on_usage: Callable[[dict], None] | None = None,
+    on_request: Callable[[], None] | None = None,
 ) -> BaseModel:
     try:
         with budget_scope(timeout) as budget:
             if on_partial is not None:
                 result = _stream_model(system, user, text_format, model=model, timeout=timeout,
                                      on_partial=on_partial, on_transport=on_transport, on_cancel_handle=on_cancel_handle,
+                                     on_usage=on_usage, on_request=on_request,
                                      reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens)
             else:
                 result = _parse_model(system, user, text_format, model=model, timeout=timeout, on_cancel_handle=on_cancel_handle,
+                                on_usage=on_usage, on_request=on_request,
                                 reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens)
             budget.remaining()
             return result
@@ -122,7 +126,32 @@ def _validate_output(schema, raw, response):
                              request_id=getattr(response, "_request_id", None)) from None
 
 
-def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_transport, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None):
+def _report_usage(response, callback):
+    if callback is None:
+        return
+    usage = getattr(response, 'usage', None)
+    if usage is None:
+        return
+    def get(obj, key):
+        return obj.get(key) if isinstance(obj, dict) else getattr(obj, key, None)
+    def number(value):
+        return value if type(value) is int and value >= 0 else None
+    def choose(*values):
+        return next((n for v in values if (n := number(v)) is not None), None)
+    inputs = choose(get(usage, 'input_tokens'), get(usage, 'prompt_tokens'))
+    outputs = choose(get(usage, 'output_tokens'), get(usage, 'completion_tokens'))
+    if inputs is None and outputs is None:
+        return
+    callback(dict(response_id=getattr(response, 'id', None),
+        input_tokens=inputs, output_tokens=outputs, total_tokens=number(get(usage, 'total_tokens')),
+        cached_input_tokens=choose(get(get(usage, 'input_tokens_details'), 'cached_tokens'),
+                                  get(get(usage, 'prompt_tokens_details'), 'cached_tokens'),
+                                  get(usage, 'prompt_cache_hit_tokens')),
+        reasoning_output_tokens=choose(get(get(usage, 'output_tokens_details'), 'reasoning_tokens'),
+                                       get(get(usage, 'completion_tokens_details'), 'reasoning_tokens'))))
+
+
+def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_transport, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None, on_usage=None, on_request=None):
     """Only output_text reaches the projection callback; reasoning is never read.
 
     A projection is a preview, not a validated model result. Once any preview has
@@ -139,14 +168,17 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
     try:
         # Use raw SDK events: some compatible providers emit whitespace keepalives
         # before response.created, which the SDK's snapshot aggregator rejects.
+        request_timeout = current_budget.get().take()
+        if on_request: on_request()
         with client.responses.create(model=selected, input=_input(system, user),
            text={"format": _text_format(text_format)}, stream=True,
-           timeout=current_budget.get().take(), **({"max_output_tokens": max_output_tokens} if max_output_tokens else {}), **_reasoning(reasoning_effort)) as stream:
+           timeout=request_timeout, **({"max_output_tokens": max_output_tokens} if max_output_tokens else {}), **_reasoning(reasoning_effort)) as stream:
             for event in stream:
                 current_budget.get().remaining()
                 if event.type == "response.refusal.delta":
                     raise ModelCallError("REFUSAL")
                 if event.type in {"response.failed", "response.incomplete", "error"}:
+                    _report_usage(getattr(event, 'response', None), on_usage)
                     raise ModelCallError("INCOMPLETE", event.type)
                 if event.type == "response.created":
                     incoming = getattr(event.response, "id", None)
@@ -157,6 +189,7 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
                     response_id = incoming
                 if event.type == "response.completed":
                     response = event.response
+                    _report_usage(response, on_usage)
                 if event.type != "response.output_text.delta":
                     continue
                 snapshot += event.delta
@@ -190,7 +223,7 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
     if on_transport:
         on_transport("buffered")
     return _parse_model(system, user, text_format, model=model, timeout=current_budget.get().remaining(),
-                        on_cancel_handle=on_cancel_handle, reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens)
+                        on_cancel_handle=on_cancel_handle, reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens, on_usage=on_usage, on_request=on_request)
 
 
 def model_stream_capability(model: str, *, reasoning_effort: str | None = None) -> dict:
@@ -208,17 +241,19 @@ def model_stream_capability(model: str, *, reasoning_effort: str | None = None) 
     return {"ready": result.ready, "streaming": "ready" if distinct and "buffered" not in transports else "buffered"}
 
 
-def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None):
+def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None, on_usage=None, on_request=None):
     client = _client(timeout=timeout)
     if on_cancel_handle:
         on_cancel_handle(client.close)
     selected_model = model or MODEL
     params = dict(model=selected_model, input=_input(system, user),
                   timeout=current_budget.get().take(), **({"max_output_tokens": max_output_tokens} if max_output_tokens else {}), **_reasoning(reasoning_effort))
+    if on_request: on_request()
     if PROVIDER == "deepseek":
         response = client.responses.create(**params, text={"format": _text_format(text_format)})
     else:
         response = client.responses.parse(**params, text_format=text_format)
+    _report_usage(response, on_usage)
     if getattr(response, "status", None) in {"incomplete", "failed", "cancelled"}:
         raise ModelCallError("INCOMPLETE", str(response.status))
     for output in getattr(response, "output", []) or []:
@@ -235,6 +270,8 @@ def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=
 
     # Some OpenAI-compatible providers complete Responses requests without output.
     # Fall back only for that empty-success case; transport and API errors still raise.
+    request_timeout = current_budget.get().take()
+    if on_request: on_request()
     completion = client.chat.completions.parse(
         model=selected_model,
         messages=[
@@ -242,10 +279,11 @@ def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=
             {"role": "user", "content": user},
         ],
         response_format=text_format,
-        timeout=current_budget.get().take(),
+        timeout=request_timeout,
         **({"reasoning_effort": reasoning_effort} if reasoning_effort else {}),
         **({"max_completion_tokens": max_output_tokens} if max_output_tokens else {}),
     )
+    _report_usage(completion, on_usage)
     if not completion.choices:
         raise ModelCallError("EMPTY")
     if getattr(completion.choices[0].message, "refusal", None):

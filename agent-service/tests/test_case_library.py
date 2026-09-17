@@ -277,7 +277,7 @@ def test_heading_only_case_cannot_bypass_inventory_gate(suite, monkeypatch):
     original = Path.read_text
     def changed(path, *args, **kwargs):
         value = original(path, *args, **kwargs)
-        return value + '\n## A014 未登记的问题\n' if path == ROOT / 'docs/agent-iteration.md' else value
+        return value + '\n## A999 未登记的问题\n' if path == ROOT / 'docs/agent-iteration.md' else value
     monkeypatch.setattr(Path, 'read_text', changed)
     with pytest.raises(ValueError, match='case/document mismatch'):
         validate(*suite)

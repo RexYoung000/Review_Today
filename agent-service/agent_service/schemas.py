@@ -574,6 +574,9 @@ class IntentDecision(BaseModel):
     programming_boundary: Literal["none", "capability_question", "development_delivery", "mixed_learning"] = Field(
         default="none", description="Semantic product boundary: programming capability enquiry, development delivery request, or ordinary learning. Not a keyword filter.")
     programming_learning_request: str = Field(default="", max_length=2000, description="For mixed_learning only: quote the independent learning request verbatim from current user input, excluding development delivery.")
+    resource_boundary: Literal["none", "capability_question", "resource_delivery", "mixed_learning"] = Field(
+        default="none", description="Product scope for resource acquisition and external errands, not a download keyword filter. Knowledge/source study stays none.")
+    resource_learning_request: str = Field(default="", max_length=2000, description="For mixed_learning quote only the independent knowledge request from current inputs; search flags/query must refer only to that request.")
     intents: list[Literal[
         "greeting", "thanks", "capabilities", "social", "question", "goal", "material",
         "followup", "hint", "example", "answer", "correction", "confirm", "reject",

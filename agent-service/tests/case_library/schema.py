@@ -127,13 +127,15 @@ class InitialState(Strict):
 FIELD_TYPES = {
     'intent.conversation_kind': str, 'intent.clarification_kind': str,
     'intent.intents': list, 'social_reply_kind': str, 'reply': str,
+    'intent.resource_boundary': str,
+    'resource_scope_reply': bool,
     'reply_length': int, 'stages': list, 'task_count': int,
     'tasks_unchanged': bool, 'plan_ids_unchanged': bool,
     'old_goals_unchanged': bool, 'capture_offer_count': int,
     'goal_transfer': bool, 'current_understanding': str,
 }
 POSITIVE_FIELDS = {'intent.conversation_kind', 'intent.intents', 'intent.clarification_kind',
-                   'social_reply_kind', 'reply', 'stages', 'goal_transfer'}
+                   'intent.resource_boundary', 'resource_scope_reply', 'social_reply_kind', 'reply', 'stages', 'goal_transfer'}
 
 
 class Check(Strict):

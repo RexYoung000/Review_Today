@@ -651,6 +651,179 @@
       "remaining_gap": "不代表所有自然表达覆盖；授权与并发仍由专项测试负责",
       "acceptance": "pending",
       "acceptance_reference": null
+    },
+    {
+      "domain": "mixed",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+        "inputs": [
+          "找上面的书籍下载链接",
+          "继续",
+          "运行中切换思考强度"
+        ],
+        "actual": "旧调用长时间不退出，重跑；纯代办进入检索并写入学习证据；缺少实际用量。",
+        "context_status": "partial",
+        "known_context": [
+          "已核对本机完整该轮事件和前后对话",
+          "原聊天不复制到仓库，合成回放显式重建最小前文"
+        ],
+        "missing_context": [
+          "未取得供应商实际账单及旧请求服务端取消结果"
+        ]
+      },
+      "expected": [
+        "运行中切换强度不改当前轮版本或取消调用，下一轮应用新值",
+        "停止/补充及时释放会话调度，迟到内容不能发布，遗留调用槽位有界"
+      ],
+      "forbidden": [
+        "思考强度切换重跑当前轮",
+        "旧请求持续占用前台调度或发布过期内容"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+          "limits": "运行并发和用量协议为隔离可控测试；实际模型话术独立验证。"
+        },
+        {
+          "layer": "native",
+          "reference": "docs/evidence/2026-09-17-run-scope-usage/native-contracts.txt",
+          "limits": "原生输入和事件重放/SSE契约通过，不等于真实界面手动切换验收。"
+        }
+      ],
+      "acceptance": "pending",
+      "acceptance_reference": null,
+      "id": "A014",
+      "title": "运行中切换与取消阻塞会话",
+      "controlled": [
+        "agent-service/tests/test_run_controls_scope_usage.py::test_switch_during_request_keeps_current_run_and_next_turn_uses_preference",
+        "agent-service/tests/test_run_controls_scope_usage.py::test_uncooperative_old_request_does_not_hold_session_or_publish_late_text",
+        "agent-service/tests/test_run_controls_scope_usage.py::test_bounded_pool_rejects_more_detached_work_until_real_exit"
+      ],
+      "fixed_scenarios": [],
+      "fixed_scope": "并发、预算与持久化由专项测试验证，不宣称普通文本回放覆盖它们。",
+      "remaining_gap": "真实供应商取消计费不可保证；最终原生体验待验收。"
+    },
+    {
+      "domain": "mixed",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+        "inputs": [
+          "找上面的书籍下载链接",
+          "继续",
+          "运行中切换思考强度"
+        ],
+        "actual": "旧调用长时间不退出，重跑；纯代办进入检索并写入学习证据；缺少实际用量。",
+        "context_status": "partial",
+        "known_context": [
+          "已核对本机完整该轮事件和前后对话",
+          "原聊天不复制到仓库，合成回放显式重建最小前文"
+        ],
+        "missing_context": [
+          "未取得供应商实际账单及旧请求服务端取消结果"
+        ]
+      },
+      "expected": [
+        "纯资源获取代办仅识别一次后短回复，不调用网页或创建目标、录入、学习证据",
+        "知识解释、引文、否定代办保留正常问答；混合输入只回答明确知识部分",
+        "停止、保存确认等操作沿用绑定对象与授权检查"
+      ],
+      "forbidden": [
+        "因用户说继续而继承助手旧代办承诺",
+        "用下载关键词直接拦截知识问题",
+        "纯代办被记为 explained 或 verified"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+          "limits": "运行并发和用量协议为隔离可控测试；实际模型话术独立验证。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "docs/evidence/2026-09-17-run-scope-usage/live-fixed-context-final.jsonl",
+          "limits": "实际层级是 live_fixed_context，7/7 自动通过；网页和知识写入被阻断，不以此证明工具成功。"
+        }
+      ],
+      "acceptance": "pending",
+      "acceptance_reference": null,
+      "id": "A015",
+      "title": "资源代办被当学习检索并生成学习证据",
+      "controlled": [
+        "agent-service/tests/test_run_controls_scope_usage.py::test_resource_delivery_never_reaches_tools_goals_capture_or_learning",
+        "agent-service/tests/test_run_controls_scope_usage.py::test_resource_mixed_keeps_only_explicit_learning_without_changing_existing_goal",
+        "agent-service/tests/test_run_controls_scope_usage.py::test_real_controls_are_not_swallowed_by_resource_boundary"
+      ],
+      "fixed_scenarios": [
+        "A015-capability",
+        "A015-links-after-promise",
+        "A015-continue-errand",
+        "A015-download-knowledge",
+        "A015-quoted-request",
+        "A015-negated-errand",
+        "A015-mixed-knowledge"
+      ],
+      "fixed_scope": "7 个合成固定上下文场景覆盖能力、延续代办、引文/否定反例和混合知识；不是原始聊天逐字重放或完整生成式长对话。",
+      "remaining_gap": "未见表达与长期多轮漂移仍需持续回放；自动断言不验证全部知识事实，话术自然度及最终体验待 Rex 验收。"
+    },
+    {
+      "domain": "mixed",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+        "inputs": [
+          "找上面的书籍下载链接",
+          "继续",
+          "运行中切换思考强度"
+        ],
+        "actual": "旧调用长时间不退出，重跑；纯代办进入检索并写入学习证据；缺少实际用量。",
+        "context_status": "partial",
+        "known_context": [
+          "已核对本机完整该轮事件和前后对话",
+          "原聊天不复制到仓库，合成回放显式重建最小前文"
+        ],
+        "missing_context": [
+          "未取得供应商实际账单及旧请求服务端取消结果"
+        ]
+      },
+      "expected": [
+        "真实 usage 与估算分列，迟到用量可记录且不复活删除会话，ACK 不丢账本",
+        "模型尝试、累计输入估算和运行时间均有整轮限制，备用请求计入预算",
+        "普通核验最多两份有效来源，交叉核验最多三份；正文输入有界且原文保留"
+      ],
+      "forbidden": [
+        "把估算/缺失/部分 usage 说成实际完整账单",
+        "补充消息重置消耗预算",
+        "重复核验三次累加相同正文"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+          "limits": "运行并发和用量协议为隔离可控测试；实际模型话术独立验证。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "docs/evidence/2026-09-17-run-scope-usage/live-learning-source.txt",
+          "limits": "真实模型+Exa 搜索/读取+核验+追问复用两轮；一次耗时样本不代表延迟分布。"
+        }
+      ],
+      "acceptance": "pending",
+      "acceptance_reference": null,
+      "id": "A016",
+      "title": "缺少真实用量与整轮预算且重复核验正文",
+      "controlled": [
+        "agent-service/tests/test_run_controls_scope_usage.py::test_usage_is_actual_optional_and_reported_before_invalid_output",
+        "agent-service/tests/test_run_controls_scope_usage.py::test_ledger_survives_ack_deduplicates_and_does_not_revive_deleted_session",
+        "agent-service/tests/test_run_controls_scope_usage.py::test_turn_budget_stops_before_more_work_and_retry_keeps_ledger",
+        "agent-service/tests/test_run_controls_scope_usage.py::test_endpoint_fallback_is_another_budgeted_input",
+        "agent-service/tests/test_run_controls_scope_usage.py::test_answer_source_projection_is_bounded_and_keeps_durable_originals"
+      ],
+      "fixed_scenarios": [],
+      "fixed_scope": "并发、预算与持久化由专项测试验证，不宣称普通文本回放覆盖它们。",
+      "remaining_gap": "旧调用无供应商 usage，不能追溯实际账单；请求取消不保证上游免费，未覆盖每一种供应商计费字段。"
     }
   ]
 }

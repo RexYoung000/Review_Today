@@ -1213,6 +1213,466 @@
         "无计划问下个主题，有计划按当前步骤继续",
         "不应出现：无证据查询旧目标、推断掌握或保存授权"
       ]
+    },
+    {
+      "id": "A015-capability",
+      "case_id": "A015",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "重建最小前文，包含历史助手曾过度承诺的情形；不是原始会话逐字回放。mixed 的最终 intent 为隔离后的知识请求，原始判定在 intent_decided 事件保留。",
+      "source_reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "推荐两本推理小说",
+            "coach": "可以了解《十角馆事件》和《无人生还》。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "你能帮我网上找资源然后帮我下载吗",
+      "checks": [
+        {
+          "field": "intent.resource_boundary",
+          "op": "eq",
+          "value": "capability_question"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "public_search"
+        },
+        {
+          "field": "reply",
+          "op": "contains",
+          "value": "不承接"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "learning_evidence"
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "source_read"
+        }
+      ],
+      "manual_review": [
+        "不主动承接代办，知识解释正常；不复读边界或强行建学习目标。"
+      ]
+    },
+    {
+      "id": "A015-links-after-promise",
+      "case_id": "A015",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "重建最小前文，包含历史助手曾过度承诺的情形；不是原始会话逐字回放。mixed 的最终 intent 为隔离后的知识请求，原始判定在 intent_decided 事件保留。",
+      "source_reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "推荐两本推理小说",
+            "coach": "可以了解《十角馆事件》和《无人生还》。",
+            "social_reply_kind": null
+          },
+          {
+            "user": "能帮我找资源并下载吗",
+            "coach": "我可以帮你找公开链接，不能代为下载。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "那你帮我找下链接吧，就上面的书籍下载链接",
+      "checks": [
+        {
+          "field": "intent.resource_boundary",
+          "op": "eq",
+          "value": "resource_delivery"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "public_search"
+        },
+        {
+          "field": "reply",
+          "op": "contains",
+          "value": "不承接"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "learning_evidence"
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "source_read"
+        }
+      ],
+      "manual_review": [
+        "不主动承接代办，知识解释正常；不复读边界或强行建学习目标。"
+      ]
+    },
+    {
+      "id": "A015-continue-errand",
+      "case_id": "A015",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "重建最小前文，包含历史助手曾过度承诺的情形；不是原始会话逐字回放。mixed 的最终 intent 为隔离后的知识请求，原始判定在 intent_decided 事件保留。",
+      "source_reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "推荐两本推理小说",
+            "coach": "可以了解《十角馆事件》和《无人生还》。",
+            "social_reply_kind": null
+          },
+          {
+            "user": "帮我找这些书的下载链接",
+            "coach": "这里主要围绕知识理解，不承接寻找下载资源。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "继续",
+      "checks": [
+        {
+          "field": "intent.resource_boundary",
+          "op": "eq",
+          "value": "resource_delivery"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "public_search"
+        },
+        {
+          "field": "reply",
+          "op": "contains",
+          "value": "不承接"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "learning_evidence"
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "source_read"
+        }
+      ],
+      "manual_review": [
+        "不主动承接代办，知识解释正常；不复读边界或强行建学习目标。"
+      ]
+    },
+    {
+      "id": "A015-download-knowledge",
+      "case_id": "A015",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "重建最小前文，包含历史助手曾过度承诺的情形；不是原始会话逐字回放。mixed 的最终 intent 为隔离后的知识请求，原始判定在 intent_decided 事件保留。",
+      "source_reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "解释下载和流式读取的区别",
+      "checks": [
+        {
+          "field": "intent.resource_boundary",
+          "op": "eq",
+          "value": "none"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "public_search"
+        },
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "answer"
+        },
+        {
+          "field": "reply_length",
+          "op": "gte",
+          "value": 25
+        }
+      ],
+      "manual_review": [
+        "不主动承接代办，知识解释正常；不复读边界或强行建学习目标。"
+      ]
+    },
+    {
+      "id": "A015-quoted-request",
+      "case_id": "A015",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "重建最小前文，包含历史助手曾过度承诺的情形；不是原始会话逐字回放。mixed 的最终 intent 为隔离后的知识请求，原始判定在 intent_decided 事件保留。",
+      "source_reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "解释这句话的意思：“帮我找下载链接”",
+      "checks": [
+        {
+          "field": "intent.resource_boundary",
+          "op": "eq",
+          "value": "none"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "public_search"
+        },
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "answer"
+        },
+        {
+          "field": "reply_length",
+          "op": "gte",
+          "value": 25
+        }
+      ],
+      "manual_review": [
+        "不主动承接代办，知识解释正常；不复读边界或强行建学习目标。"
+      ]
+    },
+    {
+      "id": "A015-negated-errand",
+      "case_id": "A015",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "重建最小前文，包含历史助手曾过度承诺的情形；不是原始会话逐字回放。mixed 的最终 intent 为隔离后的知识请求，原始判定在 intent_decided 事件保留。",
+      "source_reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "推荐两本推理小说",
+            "coach": "可以了解《十角馆事件》和《无人生还》。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "不用找资源也别下载，解释本格推理和社会派的区别",
+      "checks": [
+        {
+          "field": "intent.resource_boundary",
+          "op": "eq",
+          "value": "none"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "public_search"
+        },
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "answer"
+        },
+        {
+          "field": "reply_length",
+          "op": "gte",
+          "value": 25
+        }
+      ],
+      "manual_review": [
+        "不主动承接代办，知识解释正常；不复读边界或强行建学习目标。"
+      ]
+    },
+    {
+      "id": "A015-mixed-knowledge",
+      "case_id": "A015",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "重建最小前文，包含历史助手曾过度承诺的情形；不是原始会话逐字回放。mixed 的最终 intent 为隔离后的知识请求，原始判定在 intent_decided 事件保留。",
+      "source_reference": "docs/evidence/2026-09-17-run-scope-usage/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "推荐两本推理小说",
+            "coach": "可以了解《十角馆事件》和《无人生还》。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "帮我下载电子书，顺便解释叙述性诡计是什么意思",
+      "checks": [
+        {
+          "field": "intent.resource_boundary",
+          "op": "eq",
+          "value": "none"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "public_search"
+        },
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "answer"
+        },
+        {
+          "field": "reply_length",
+          "op": "gte",
+          "value": 25
+        },
+        {
+          "field": "resource_scope_reply",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "manual_review": [
+        "不主动承接代办，知识解释正常；不复读边界或强行建学习目标。"
+      ]
     }
   ]
 }

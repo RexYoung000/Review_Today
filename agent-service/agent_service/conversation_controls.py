@@ -51,12 +51,9 @@ def action(self, run_id: str, body: RunActionRequest) -> dict:
             if body.thinking_strength not in {"smart", "deep"}:
                 raise ValueError("RT.THINKING.INVALID")
             data["thinking_strength"] = body.thinking_strength
-            target["thinking_strength"] = body.thinking_strength
-            if target["status"] in {"running", "accepted"}:
-                self._end_response(data, target, "interrupted")
-                target["revision"] += 1
-                target["status"] = "accepted"
-            self.store.event(data, target, "thinking_changed", "思考强度已保存，从下一步生效")
+            # An in-flight Run owns its strength, including steering/retries.
+            # Changing a preference is not permission to cancel or regenerate it.
+            self.store.event(data, target, "thinking_changed", "思考强度已保存，从下一轮生效")
         elif body.action in {"stop", "cancel_task"}:
             if body.action == "cancel_task" and run.get("task_id") != data["active_task_id"]:
                 task = data["tasks"].get(run.get("task_id"))
@@ -74,6 +71,7 @@ def action(self, run_id: str, body: RunActionRequest) -> dict:
             if run.get("control_only"):
                 run["status"] = "completed"
             if run["status"] in {"interrupted", "retryable_failed", "terminal_failed", "queued"}:
+                run.pop("execution_budget", None)  # explicit recovery, never steering
                 run["revision"] += 1
                 run["lifecycle_revision"] = data.get("lifecycle_revision", 0)
                 run["status"] = "accepted"

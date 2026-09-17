@@ -52,6 +52,7 @@ def main():
             nodes = [e['node'] for e in data['events'] if e['run_id']==accepted.run_id]
             sources = run.get('teaching_sources', [])
             print(json.dumps(dict(input=text, status=run['status'], search_state=run.get('search_state'),
+                                  elapsed_ms=run.get('elapsed_ms'), model_calls=run.get('model_calls', []),
                                   evidence=run.get('teaching_evidence'), replies=replies, nodes=nodes,
                                   failures=[{k:e.get(k) for k in ('node','detail_summary','error_code')} for e in data['events'] if e['run_id']==accepted.run_id and e.get('state')=='failed'],
                                   provider_events=[e.get('payload') for e in data['events'] if e['run_id']==accepted.run_id and e['node']=='web_provider'],

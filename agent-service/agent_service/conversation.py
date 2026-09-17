@@ -106,6 +106,12 @@ class ConversationHarness(ConditionalTeaching):
                     run["revision"] += 1
                     run["status"] = "accepted"
                     run["input_ids"].append(body.client_message_id)
+                    # A new supplement may stop/change the earlier mixed request.
+                    # Recompute its scope from all current inputs, not a stale
+                    # learning-only projection from the superseded attempt.
+                    for key in ("resolved_input", "resource_scope_reply", "programming_scope_reply",
+                                "dialogue_only", "social_reply_kind", "activity_candidate", "learning_concepts"):
+                        run.pop(key, None)
                     summary = "已收到补充，正在调整"
                 else:
                     paused_entry = data["paused"] and body.delivery == "steer"
@@ -263,7 +269,7 @@ class ConversationHarness(ConditionalTeaching):
             return
         candidate = foreground if foreground and foreground["status"] in {"accepted", "queued"} else next(r for r in data["runs"].values() if r["status"] in {"accepted", "queued"})
         last = next((m for m in data["messages"] if m["message_id"] == candidate["input_ids"][-1]), {})
-        cached_intent = candidate.get("intent") and "programming_boundary" in candidate["intent"] and candidate.get("decision_input_ids") == candidate["input_ids"] and candidate.get("decision_mode") == data["mode"]
+        cached_intent = candidate.get("intent") and {"programming_boundary", "resource_boundary"} <= candidate["intent"].keys() and candidate.get("decision_input_ids") == candidate["input_ids"] and candidate.get("decision_mode") == data["mode"]
         if not last.get("operation") and not cached_intent and snapshot()["router"]["status"] != "ready":
             return
         with self._worker_lock:
@@ -319,7 +325,9 @@ class ConversationHarness(ConditionalTeaching):
                     return
                 data["foreground"] = run["run_id"]
                 run["status"] = "running"
-                run["thinking_strength"] = data.get("thinking_strength", "smart")
+                run.setdefault("thinking_strength", data.get("thinking_strength", "smart"))
+                from agent_service.run_accounting import begin
+                begin(run)
                 run["attempt"] += 1
                 if not run.get("started_at"):
                     run.update(started_at=now_iso(), elapsed_ms=0, first_text_ms=None)
@@ -386,7 +394,11 @@ class ConversationHarness(ConditionalTeaching):
                         if task and task["status"] not in FINISHED | {"committing"}:
                             task.update(status="retryable_failed", user_summary="当前步骤未完成，可重试；学习进度保留", error_code=code)
                             self._project_event(data, run, task)
-                        if code.startswith("RT.CONTEXT."):
+                        if code.startswith("RT.RUN.BUDGET"):
+                            summary = "本轮已达到处理预算，已暂停；输入与进度保留，可缩小范围后继续。"
+                        elif code == "RT.MODEL.BUSY":
+                            summary = "之前的请求仍在退出，当前步骤已暂停；稍后可重试，输入与进度保留。"
+                        elif code.startswith("RT.CONTEXT."):
                             summary = ("上下文整理暂未完成，当前内容超过容量；可重试，输入与历史已保留"
                                        if data.get("summary_error") else "当前内容超过可处理的上下文容量，请缩小本次范围；输入已保留")
                         elif code == "RT.MODEL.SCHEMA":
@@ -412,6 +424,8 @@ class ConversationHarness(ConditionalTeaching):
                 or run.get("lifecycle_revision", 0) != data.get("lifecycle_revision", 0)
                 or not self._memory_run_valid(run)):
             raise Superseded()
+        from agent_service.run_accounting import remaining
+        remaining(run)
         return data, run
 
     def _schedule_summary(self, sid):
@@ -457,7 +471,7 @@ class ConversationHarness(ConditionalTeaching):
             self.store.event(data, run, f"response.{status}", "未完成内容已保留", payload={"response": dict(response)})
 
     def _task(self, data, run):
-        if run.get("programming_scope_reply") or run.get("dialogue_only"):
+        if run.get("programming_scope_reply") or run.get("resource_scope_reply") or run.get("dialogue_only"):
             return None
         task = data["tasks"].get(run.get("task_id") or data["active_task_id"])
         return task if not task or goal_continuation.owns(task) else None
@@ -592,12 +606,15 @@ class ConversationHarness(ConditionalTeaching):
                                       relation="continuation", workflow=task["mode"] if task else "source_learning",
                                       scope="continue_goal", direct_teaching=True, learning_goal_ready=True,
                                       rationale="用户明确要求继续教学，不是独立作答或保存授权。")
-        elif run.get("intent") and {"programming_boundary", "conversation_kind"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"]:
+        elif run.get("intent") and {"programming_boundary", "conversation_kind", "resource_boundary"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"]:
             decision = IntentDecision.model_validate(run["intent"])
         else:
             decision = self._call(sid, rid, rev, "intent", INTENT_SYSTEM,
                                   json.dumps(dialogue_routing.intent_context(context), ensure_ascii=False), IntentDecision, ROUTER_MODEL)
         decision = dialogue_routing.normalize(data, decision, last)
+        from agent_service import resource_boundary
+        if resource_boundary.handle(self, sid, rid, rev, decision, last):
+            return
         if social_dialogue.handle(self, sid, rid, rev, decision, last):
             return
         if goal_continuation.handle(self, sid, rid, rev, decision, last):
@@ -1136,8 +1153,10 @@ class ConversationHarness(ConditionalTeaching):
         # Only actual read URLs may become citations, including no-search answers.
         with self.store.transaction(sid, rid, rev) as current:
             current["runs"][rid]["allowed_source_urls"] = readable_urls
+        from agent_service.source_projection import answer_sources
+        instruction += "\n标有 content_excerpted 的网页仅向本次回答提供节选；结合 evidence 的核验范围回答，不补写未见原文或声称节选是全文。"
         output = self._call(sid, rid, rev, node, COACH_SYSTEM,
-                            json.dumps(dict(instruction=instruction, context=context, sources=sources,
+                            json.dumps(dict(instruction=instruction, context=context, sources=answer_sources(sources),
                                             source_type=source_type, evidence=coach_evidence,
                                             verification_notice=run.get("verification_notice", "")), ensure_ascii=False), ConversationOutput)
         with self.store.transaction(sid, rid, rev) as current:

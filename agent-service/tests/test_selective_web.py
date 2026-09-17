@@ -90,6 +90,26 @@ class SelectiveWebTests(unittest.TestCase):
         run, count, assessed = self.progressive(['supported'], cross=True)
         self.assertEqual((count, assessed, run['search_state']), (2, [2], 'verified'))
 
+    def test_ordinary_insufficient_evidence_has_two_read_and_assessment_limit(self):
+        run, count, assessed = self.progressive(['insufficient'])
+        self.assertEqual((count, assessed, run['search_state']), (2, [1, 2], 'insufficient'))
+
+    def test_cross_check_remaining_source_is_batched_after_first_pair(self):
+        run, count, assessed = self.progressive(['insufficient'], cross=True)
+        self.assertEqual((count, assessed, run['search_state']), (3, [2, 3], 'insufficient'))
+
+    def test_optional_context_recovery_obeys_ordinary_evidence_limit(self):
+        self.decision = intent('question', needs_verification=True, public_search_query='RAG')
+        chunks = [dict(url=f'https://example.com/{i}', title='RAG', content='检索后生成',
+                       provider='brave', content_kind='extracted_chunks') for i in range(4)]
+        with patch('agent_service.conversation.web_search_text', return_value='https://example.com/rag'), \
+             patch('agent_service.conditional_teaching.fetch_public_url', side_effect=WebToolError('CHAIN_FAILED')), \
+             patch('agent_service.web_tools.web_context_pages', return_value=chunks):
+            result = self.send('请查证 RAG')
+        run = self.state()['runs'][result.run_id]
+        self.assertEqual(run['status'], 'completed')
+        self.assertEqual(len(run['teaching_sources']), 2)
+
     def test_two_pages_on_same_host_do_not_satisfy_cross_check(self):
         run, count, assessed = self.progressive(['supported'], cross=True, same_host=True)
         self.assertEqual((count, assessed, run['search_state']), (3, [3], 'verified'))
