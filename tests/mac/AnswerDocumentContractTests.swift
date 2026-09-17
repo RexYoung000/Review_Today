@@ -3,6 +3,39 @@ import Foundation
 @main
 struct AnswerDocumentContractTests {
     static func main() {
+        let originalSentence = "不会没用，但**「有用」的地方会换位置**。这轮先只讲清楚换到哪儿去。"
+        let emphasized = AnswerInlineMarkdown.parse(originalSentence)
+        precondition(String(emphasized.characters) == "不会没用，但「有用」的地方会换位置。这轮先只讲清楚换到哪儿去。")
+        precondition(emphasized.runs.contains {
+            $0.inlinePresentationIntent?.contains(.stronglyEmphasized) == true &&
+            String(emphasized[$0.range].characters) == "「有用」的地方会换位置"
+        })
+        for source in ["但**“有用”**的位置", "但**「甲」**与**「乙」**", "中文**（关键）**继续"] {
+            let parsed = AnswerInlineMarkdown.parse(source)
+            precondition(!String(parsed.characters).contains("**"), source)
+            precondition(parsed.runs.contains { $0.inlinePresentationIntent?.contains(.stronglyEmphasized) == true })
+        }
+        // Native parsing remains authoritative for escaped/code/link/nested syntax.
+        for source in [#"但\*\*「有用」\*\*"#, "`但**「有用」**`", "``但**「有用」**`代码``",
+                       "**普通加粗**和 *斜体*", "***嵌套***", "**粗体中 *斜体* 结尾**",
+                       "[链接](https://example.com/a**「b」**)", "[但**「有用」**](https://example.com)",
+                       "<https://example.com/a**b**>", "未完成`但**「有用」**", "但**「有用」",
+                       "但**「有用」的地方*", "空 ** 空 **", "原有\u{200A}空白"] {
+            let native = try! AttributedString(markdown: source, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace))
+            precondition(AnswerInlineMarkdown.parse(source) == native, source)
+        }
+        let combined = AnswerInlineMarkdown.parse("`**代码**`与但**「有用」**，[来源](https://example.com)")
+        precondition(String(combined.characters) == "**代码**与但「有用」，来源")
+        precondition(combined.runs.contains { $0.link?.absoluteString == "https://example.com" })
+        precondition(combined.runs.contains { $0.inlinePresentationIntent?.contains(.code) == true })
+        // Every partial stream preserves the native literal until the pair closes.
+        let streamBold = "但**「有用」的地方**"
+        for end in streamBold.indices {
+            let prefix = String(streamBold[..<end])
+            let native = try! AttributedString(markdown: prefix, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace))
+            precondition(AnswerInlineMarkdown.parse(prefix) == native)
+        }
+        print("A009: CJK strong emphasis, exact text, code, escapes, links and streaming prefixes passed")
         let legacyNotice = "网页核验暂未完成，先讲基础内容；涉及变化或争议的部分仍需核实。"
         precondition(AnswerDocument.parse("正文\n\n" + legacyNotice).last?.kind == .notice(legacyNotice))
         precondition(AnswerDocument.parse("> [!NOTE]\n> 核验尚未完成").first?.kind == .notice("核验尚未完成"))

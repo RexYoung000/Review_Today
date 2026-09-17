@@ -97,7 +97,62 @@ class ConditionalTeachingTests(unittest.TestCase):
         run = self.state()["runs"][accepted.run_id]
         self.assertEqual(run["status"], "completed")
         self.assertEqual(run["search_state"], "not_called")
-        self.assertIn("网页核验暂未完成", self.state()["messages"][-1]["content"])
+        self.assertIn("尚未进行网页核验", self.state()["messages"][-1]["content"])
+
+    def test_failed_search_followup_has_no_repeated_notice_but_refresh_and_new_topic_do(self):
+        self.decision = intent("question", public_search_query="RAG")
+        with patch("agent_service.conversation.web_search_text", side_effect=ModelCallError("CONNECTION")) as search:
+            first = self.send("RAG 是什么")
+            self.assertIn("> [!NOTE]", self.state()["messages"][-1]["content"])
+            self.decision = intent("followup", public_search_query="RAG")
+            followup = self.send("追问，能举例吗")
+            self.assertEqual(search.call_count, 2)
+            run = self.state()["runs"][followup.run_id]
+            self.assertEqual(run["search_state"], "not_called")
+            self.assertEqual(run["teaching_evidence"]["state"], "insufficient")
+            self.assertNotIn("> [!NOTE]", self.state()["messages"][-1]["content"])
+            self.decision = intent("followup", public_search_query="RAG", refresh_sources=True)
+            refreshed = self.send("追问，请重新查证")
+            self.assertEqual(self.state()["runs"][refreshed.run_id]["search_state"], "failed")
+            self.assertIn("> [!NOTE]", self.state()["messages"][-1]["content"])
+            self.decision = intent("question", needs_verification=True)
+            current = self.send("追问，现在的最新信息是什么")
+            self.assertEqual(self.state()["runs"][current.run_id]["search_state"], "failed")
+            self.assertIn("> [!NOTE]", self.state()["messages"][-1]["content"])
+
+    def test_unavailable_service_has_own_state_and_never_calls_provider(self):
+        self.decision = intent("question", public_search_query="RAG")
+        with patch("agent_service.conversation.web_search_capability", return_value={"status": "unavailable"}), patch("agent_service.conversation.web_search_text") as search:
+            result = self.send("RAG 是什么")
+        search.assert_not_called()
+        state = self.state()
+        self.assertEqual(state["runs"][result.run_id]["search_state"], "unavailable")
+        self.assertIn("网页检索服务不可用", state["messages"][-1]["content"])
+        self.assertFalse(any(e["node"] == "search_attempt" for e in state["events"]))
+
+    def test_example_becoming_learning_task_keeps_same_session_evidence(self):
+        self.decision = intent("question", public_search_query="RAG")
+        with patch("agent_service.conversation.web_search_text", side_effect=ModelCallError("UNSUPPORTED")) as search:
+            self.send("RAG 是什么")
+            self.assertFalse(self.state()["tasks"])
+            self.decision = intent("example", scope="learning", workflow="source_learning", public_search_query="RAG")
+            result = self.send("追问，举例解释刚才的 RAG")
+            self.assertEqual(search.call_count, 1)
+        state = self.state()
+        self.assertTrue(state["tasks"])
+        self.assertEqual(state["runs"][result.run_id]["search_state"], "not_called")
+        self.assertNotIn("[!NOTE]", state["messages"][-1]["content"])
+        self.assertEqual(next(iter(state["tasks"].values()))["context"]["evidence"]["state"], "insufficient")
+
+    def test_source_assessment_unsupported_is_failure_not_search_unavailable(self):
+        base = self.model
+        def fail_assessment(system, prompt, schema, **kw):
+            if schema is EvidenceAssessmentV2: raise ModelCallError("UNSUPPORTED")
+            return base(system, prompt, schema, **kw)
+        self.decision = intent("question", public_search_query="RAG")
+        with patch("agent_service.conversation.parse_model", side_effect=fail_assessment), patch("agent_service.conversation.web_search_text", return_value="https://example.com/rag"), patch("agent_service.conditional_teaching.fetch_public_url", return_value=("RAG", "检索再生成")):
+            result = self.send("RAG 是什么")
+        self.assertEqual(self.state()["runs"][result.run_id]["search_state"], "failed")
 
     def test_uncertain_empty_question_cannot_execute_save(self):
         self.decision = intent("goal").model_copy(update={"relation": "uncertain"})

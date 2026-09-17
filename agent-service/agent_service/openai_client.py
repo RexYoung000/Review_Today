@@ -276,7 +276,17 @@ def model_is_callable(model: str, *, reasoning_effort: str | None = None) -> boo
     return result.ready is True
 
 
+def web_search_capability() -> dict:
+    # 2026-09-17: the official DeepSeek Responses API ignores built-in tools.
+    # A callable teaching model does not establish search capability.
+    return {"status": "unavailable" if PROVIDER == "deepseek" else "unverified",
+            "provider": PROVIDER,
+            "reason": "built_in_tools_ignored" if PROVIDER == "deepseek" else "requires_completed_search_call"}
+
+
 def web_search_text(query: str, *, model: str | None = None, reasoning_effort: str | None = None, on_cancel_handle=None) -> str:
+    if web_search_capability()["status"] == "unavailable":
+        raise ModelCallError("UNSUPPORTED", "configured provider ignores built-in web search")
     selected_model = model or MODEL
     with budget_scope() as budget:
         client = _client()
@@ -284,24 +294,21 @@ def web_search_text(query: str, *, model: str | None = None, reasoning_effort: s
             on_cancel_handle(client.close)
         for tool in ({"type": "web_search"}, {"type": "web_search_preview"}):
             try:
-                search_input = ([{"role": "system", "content": "必须实际调用 web_search 查证公开资料，然后给出简短结论和可定位的来源链接。不能只凭模型记忆回答；没有找到证据就明确说明。"},
-                                 {"role": "user", "content": query}] if PROVIDER == "deepseek" else query)
+                search_input = query
                 # Forcing web_search on every continuation can yield only tool
                 # items. Allow the final answer, but require completed search proof.
                 response = client.responses.create(model=selected_model, tools=[tool], input=search_input, timeout=budget.take(),
                     **_reasoning(reasoning_effort))
                 budget.remaining()
-                if PROVIDER == "deepseek":
-                    if getattr(response, "status", None) != "completed":
-                        raise ModelCallError("INCOMPLETE", "search response not completed")
-                    if not any(getattr(item, "type", "") == "web_search_call" and getattr(item, "status", "") == "completed"
-                               for item in getattr(response, "output", [])):
-                        raise ModelCallError("UNSUPPORTED", "provider did not execute web search")
+                if getattr(response, "status", None) != "completed":
+                    raise ModelCallError("INCOMPLETE", "search response not completed")
+                if not any(getattr(item, "type", "") == "web_search_call" and getattr(item, "status", "") == "completed"
+                           for item in getattr(response, "output", [])):
+                    raise ModelCallError("UNSUPPORTED", "provider did not execute web search")
                 text = getattr(response, "output_text", "") or ""
                 if text.strip():
                     return text.strip()[:8000]
-                if PROVIDER == "deepseek":
-                    raise ModelCallError("EMPTY", "search completed without an answer")
+                raise ModelCallError("EMPTY", "search completed without an answer")
             except APIStatusError as exc:
                 # Only an explicitly unsupported tool permits the compatibility
                 # form. Access denial, rate limits and outages are not retried
@@ -313,7 +320,7 @@ def web_search_text(query: str, *, model: str | None = None, reasoning_effort: s
                 raise ModelCallError("TIMEOUT") from None
             except (APIConnectionError, httpx.TransportError):
                 raise ModelCallError("CONNECTION") from None
-    return ""
+    raise ModelCallError("UNSUPPORTED", "provider rejected web search tools")
 
 
 def transcribe_audio(data: bytes, filename: str) -> str:

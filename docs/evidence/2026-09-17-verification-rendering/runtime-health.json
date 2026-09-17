@@ -1,0 +1,22 @@
+{
+  "status": "ok",
+  "web_search": {
+    "status": "unavailable",
+    "provider": "deepseek",
+    "reason": "built_in_tools_ignored"
+  },
+  "roles": {
+    "router": {
+      "model": "deepseek-flash",
+      "status": "ready"
+    },
+    "coach": {
+      "model": "deepseek-v4-flash",
+      "status": "ready"
+    },
+    "risk": {
+      "model": "deepseek-v4-pro",
+      "status": "ready"
+    }
+  }
+}

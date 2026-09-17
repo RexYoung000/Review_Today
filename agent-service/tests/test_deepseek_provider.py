@@ -101,28 +101,13 @@ class DeepSeekTransportTests(unittest.TestCase):
         self.assertEqual(params["reasoning"], {"effort": "high"})
         self.assertEqual(params["input"][0]["role"], "system")
 
-    def test_search_keeps_selected_strength(self):
-        client = Mock()
-        client.responses.create.return_value = NS(status="completed", output_text="https://example.org source",
-                                                 output=[NS(type="web_search_call", status="completed")])
-        with patch.object(llm, "_client", return_value=client):
-            llm.web_search_text("public query", model="deepseek-v4-pro")
-        self.assertEqual(client.responses.create.call_args.kwargs["reasoning"], {"effort": "none"})
-        self.assertNotIn("tool_choice", client.responses.create.call_args.kwargs)
-        self.assertIn("web_search", client.responses.create.call_args.kwargs["input"][0]["content"])
-
-    def test_plain_model_answer_cannot_masquerade_as_search_evidence(self):
-        client = Mock()
-        client.responses.create.return_value = NS(status="completed", output_text="An unsearched claim", output=[])
-        with patch.object(llm, "_client", return_value=client), self.assertRaisesRegex(llm.ModelCallError, "RT.MODEL.UNSUPPORTED"):
-            llm.web_search_text("public question")
-
-    def test_tool_only_search_is_not_an_empty_success_or_second_generation(self):
-        client = Mock()
-        client.responses.create.return_value = NS(status="completed", output_text="", output=[NS(type="web_search_call", status="completed")])
-        with patch.object(llm, "_client", return_value=client), self.assertRaisesRegex(llm.ModelCallError, "RT.MODEL.EMPTY"):
-            llm.web_search_text("public question")
-        self.assertEqual(client.responses.create.call_count, 1)
+    def test_search_unavailable_does_not_call_model_or_reuse_old_provider(self):
+        for model in ["deepseek-v4-flash", "deepseek-v4-pro"]:
+            with self.subTest(model=model), patch.object(llm, "_client") as client:
+                self.assertEqual(llm.web_search_capability()["status"], "unavailable")
+                with self.assertRaisesRegex(llm.ModelCallError, "RT.MODEL.UNSUPPORTED"):
+                    llm.web_search_text("public query", model=model)
+                client.assert_not_called()
 
     def test_voice_is_not_sent_to_unverified_provider(self):
         with patch.object(llm, "_client") as client, self.assertRaisesRegex(llm.ModelCallError, "RT.MODEL.UNSUPPORTED"):

@@ -107,6 +107,7 @@ Rex 在核对旧线路仍为 `api.aijws.com` 后明确要求接入已提供的 D
 - 智能模式显式采用非思考调用，深入思考采用 `high`；已有会话强度不重置、不静默降档。结构化和流式能力按两种强度分别验证；实际模型如实进入开发诊断。
 - 只投影 `output_text` 白名单正文，忽略推理文本；最终 schema 校验成功后才推进目标、理解和入库状态。空响应、截断、拒绝、403、超时分别失败，不放松守卫。
 - 公开查证沿用当前服务端搜索/公网抓取边界。单独验证 DeepSeek 的 `web_search`；不支持时诚实报告，不退回旧服务、伪造来源或绕过核验。语音本轮不接通。
+- 2026-09-17 复核：当前官方文档及本机实测表明 DeepSeek 内置 web_search 被忽略（普通/强制均无搜索记录），覆盖历史通过记录对当前能力的推断。已知不支持时直接 unavailable；healthz 单列 web_search，不以模型 ready 证明搜索能力。保留证据不足，但同主题普通追问不重复旧服务提示；新的核验、风险/时效结论仍说明限制。接入其他检索服务待明确服务与费用，不自动切换已有模型或凭证。案例 A008。
 - 配置修改后核对/刷新真实本地服务的有效 provider；已有失败回复仍由用户重试，停止/归档不自动恢复。验收使用隔离数据库，保留用户原数据。
 
 参考：已读取 [官方模型说明](https://api-docs.deepseek.com/quick_start/pricing/)、[Responses 兼容与流式](https://api-docs.deepseek.com/guides/responses_api/)及[思考强度](https://api-docs.deepseek.com/guides/thinking_mode/)。模型列表 200 仅证明鉴权与可见 ID，不代替结构化、流式及真实 Harness 验收。

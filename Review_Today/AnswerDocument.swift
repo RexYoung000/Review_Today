@@ -1,5 +1,89 @@
 import Foundation
 
+/// Keep stored/copied Markdown intact. The native parser treats punctuation next
+/// to CJK emphasis delimiters as literal; add temporary boundaries only around
+/// complete, simple emphasis that it actually left unparsed.
+enum AnswerInlineMarkdown {
+    static func parse(_ source: String) -> AttributedString {
+        let options = AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        guard let original = try? AttributedString(markdown: source, options: options) else {
+            return AttributedString(source)
+        }
+        let rendered = String(original.characters)
+        guard rendered.contains("**") else { return original }
+        let chars = Array(source)
+        // Unique boundaries cannot collide with real spaces or user text.
+        let boundary = " \u{F0000}" + UUID().uuidString + "\u{F0001} "
+        var normalized = ""
+        var i = 0
+        var changed = false
+        while i < chars.count {
+            let start = i
+            if chars[i] == "\\" {
+                i = min(i + 2, chars.count)
+            } else if chars[i] == "`" {
+                var count = 0
+                while i < chars.count && chars[i] == "`" { count += 1; i += 1 }
+                // Protect code and incomplete code spans, including multi-backticks.
+                while i < chars.count {
+                    if chars[i] != "`" { i += 1; continue }
+                    let close = i
+                    while i < chars.count && chars[i] == "`" { i += 1 }
+                    if i - close == count { break }
+                }
+            } else if chars[i] == "[" || chars[i] == "<" {
+                // Links/images and autolinks keep their native parsing, including
+                // nested labels, escaped delimiters and destinations with '*'.
+                let open = chars[i], close: Character = open == "[" ? "]" : ">"
+                i = protectedEnd(chars, from: i, open: open, close: close)
+                if open == "[", i < chars.count, chars[i] == "(" {
+                    i = protectedEnd(chars, from: i, open: "(", close: ")")
+                }
+            } else if chars[i] == "*" {
+                while i < chars.count && chars[i] == "*" { i += 1 }
+                if i - start == 2 {
+                    var end = i
+                    let complex: Set<Character> = ["*", "`", "\\", "[", "]", "<", ">", "\n", "\r"]
+                    while end < chars.count && !complex.contains(chars[end]) { end += 1 }
+                    if end > i, end + 1 < chars.count,
+                       chars[end] == "*", chars[end + 1] == "*",
+                       (end + 2 == chars.count || chars[end + 2] != "*"),
+                       !chars[i].isWhitespace, !chars[end - 1].isWhitespace,
+                       chars[i].isPunctuation || chars[end - 1].isPunctuation {
+                        let literal = String(chars[start..<(end + 2)])
+                        if let isolated = try? AttributedString(markdown: literal, options: options),
+                           isolated.runs.contains(where: { $0.inlinePresentationIntent?.contains(.stronglyEmphasized) == true }) {
+                            normalized += boundary + literal + boundary
+                            i = end + 2
+                            changed = true
+                            continue
+                        }
+                    }
+                }
+            } else {
+                i += 1
+            }
+            normalized += String(chars[start..<i])
+        }
+        guard changed, var result = try? AttributedString(markdown: normalized, options: options) else { return original }
+        while let range = result.range(of: boundary) { result.removeSubrange(range) }
+        return result
+    }
+
+    private static func protectedEnd(_ chars: [Character], from start: Int, open: Character, close: Character) -> Int {
+        var depth = 1
+        var i = start + 1
+        while i < chars.count {
+            if chars[i] == "\\" { i = min(i + 2, chars.count); continue }
+            if chars[i] == open { depth += 1 }
+            if chars[i] == close { depth -= 1 }
+            i += 1
+            if depth == 0 { return i }
+        }
+        return i
+    }
+}
+
 /// Presentation only; persisted message text remains the source of truth.
 struct AnswerBlock: Identifiable, Equatable {
     var id: Int // Starting source line, stable while the last block streams.

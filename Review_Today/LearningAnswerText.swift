@@ -34,11 +34,7 @@ struct LearningAnswerText: View {
     }
 
     private func inline(_ value: String) -> Text {
-        if let attributed = try? AttributedString(markdown: value, options:
-            .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)) {
-            return Text(attributed)
-        }
-        return Text(verbatim: value)
+        Text(AnswerInlineMarkdown.parse(value))
     }
 
     private func prose(_ value: String) -> some View {

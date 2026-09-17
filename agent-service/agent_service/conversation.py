@@ -23,7 +23,7 @@ from agent_service.conditional_teaching import ConditionalTeaching
 from agent_service.conversation_store import ConversationStore, Superseded, conversation_store
 from agent_service.harness import JD_SYSTEM, PROBLEM_SYSTEM, _render_problem
 from agent_service.harness_store import HarnessTaskRecord, now_iso
-from agent_service.openai_client import ModelCallError, parse_model, web_search_text
+from agent_service.openai_client import ModelCallError, parse_model, web_search_text, web_search_capability
 from agent_service.model_capabilities import require_model
 from agent_service.service_diagnostics import diagnose
 from agent_service.learning_progress import set_plan, current_step, record_understanding, advance, outcome
@@ -1099,9 +1099,22 @@ class ConversationHarness(ConditionalTeaching):
         types = {s.get("type", "public_source") for s in sources}
         if len(types) > 1:
             source_type = "mixed"
+        coach_evidence = dict(evidence)
+        if run.get("search_state") == "not_called" and not run.get("verification_notice"):
+            # Preserve uncertainty, but do not feed a stale service failure as a
+            # fresh summary to be paraphrased into each follow-up answer.
+            if coach_evidence.get("summary") in {
+                "当前网页检索服务不可用，本次内容未完成网页核验；涉及最新信息或争议的结论仍需查证。",
+                "本次网页核验未完成，以下先说明基础原理；涉及最新信息或争议的结论仍需查证。",
+                "网页核验暂未完成，先讲基础内容；涉及变化或争议的部分仍需核实。",
+                "网页核验暂未完成，先讲基础内容；需要查证的部分仍待核实。",
+            }:
+                coach_evidence["summary"] = ""
+            instruction += "\n本轮沿用已讲内容，不重复网页检索状态。不要追加‘本次未做网页核验’‘依据通用原理’‘需要另行查证’等通用尾注；只在实际讲到某条具体不确定结论时说明该结论的具体限制。证据不足状态仍保留，不能宣称已核验。"
         output = self._call(sid, rid, rev, node, COACH_SYSTEM,
                             json.dumps(dict(instruction=instruction, context=context, sources=sources,
-                                            source_type=source_type, evidence=evidence), ensure_ascii=False), ConversationOutput)
+                                            source_type=source_type, evidence=coach_evidence,
+                                            verification_notice=run.get("verification_notice", "")), ensure_ascii=False), ConversationOutput)
         with self.store.transaction(sid, rid, rev) as current:
             current["runs"][rid]["learning_concepts"] = output.learning_concepts
         intro = run.get("continuation_intro")
@@ -1110,8 +1123,8 @@ class ConversationHarness(ConditionalTeaching):
             if source.get("type") == "agent_generated" and not source.get("content"):
                 source["content"] = text
                 source["locator"] = f"task:{task['task_id']}" if task else f"run:{rid}"
-        if evidence["state"] in {"insufficient", "conflicting", "outdated"}:
-            text += "\n\n> [!NOTE]\n> " + (evidence["summary"] or "部分内容尚待核实。").replace("\n", "\n> ")
+        if evidence["state"] in {"insufficient", "conflicting", "outdated"} and run.get("verification_notice"):
+            text += "\n\n> [!NOTE]\n> " + run["verification_notice"].replace("\n", "\n> ")
         cited = [source for source in sources if source.get("url") in evidence.get("sources", []) and source["url"] not in text]
         if cited:
             text += render_sources(cited)
@@ -1250,6 +1263,8 @@ class ConversationHarness(ConditionalTeaching):
         key = hashlib.sha256((query + model + strength).encode()).hexdigest()
         if key in run.get("search_results", {}):
             return run["search_results"][key]
+        if web_search_capability()["status"] == "unavailable":
+            raise ModelCallError("UNSUPPORTED", "configured provider ignores built-in web search")
         handle_key = (sid, rid, rev)
         def register(handle):
             with self._worker_lock:

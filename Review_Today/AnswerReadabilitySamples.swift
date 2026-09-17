@@ -2,6 +2,23 @@
 import Foundation
 
 enum AnswerReadabilitySamples {
+    static let punctuationRegression = """
+    不会没用，但**「有用」的地方会换位置**。这轮先只讲清楚换到哪儿去。
+
+    但**「甲」**与**「乙」**都需要保留强调。
+
+    - 列表里也会强调**「关键点」的作用**。
+    - 普通 **加粗**、*斜体*和[来源链接](https://docs.python.org/3/)继续正常显示。
+
+    行内代码：`但**「有用」**`；转义：\\*\\*「原始符号」\\*\\*。
+
+    ```text
+    但**「代码里的符号」**保持原样
+    ```
+
+    > [!NOTE]
+    > 当前网页检索服务不可用，本次内容未完成网页核验；涉及最新信息或争议的结论仍需查证。
+    """
     static let lesson = """
     RAG 在回答前检索外部资料，让模型**结合资料作答**。它提供可参考的依据，但不保证每个答案都正确。
 
@@ -42,6 +59,7 @@ enum AnswerReadabilitySamples {
     """
 
     static let examples: [(String, String)] = [
+        ("中文加粗与核验提示", punctuationRegression),
         ("RAG 长讲解", lesson),
         ("简短追问", "不一定。**检索到资料，只说明有了参考材料。**\n\n资料可能不相关或已过期，模型也可能误读。还要检查资料质量和回答是否忠实于资料。"),
         ("方案对比", """

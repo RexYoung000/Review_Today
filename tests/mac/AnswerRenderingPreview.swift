@@ -79,7 +79,8 @@ struct AnswerRenderingPreview {
             for dark in [false, true] {
                 for width in [340.0, 580.0, 780.0] {
                     let palette = dark ? RunwayPalette.dark : .light
-                    let view = LearningAnswerText(content: AnswerReadabilitySamples.lesson, availableWidth: width)
+                    let regression = ProcessInfo.processInfo.environment["REVIEW_ANSWER_REGRESSION"] == "1"
+                    let view = LearningAnswerText(content: regression ? AnswerReadabilitySamples.punctuationRegression : AnswerReadabilitySamples.lesson, availableWidth: width)
                         .foregroundStyle(palette.ink).frame(width: width).padding(24)
                         .background(palette.canvas).environment(\.runway, palette)
                         .environment(\.colorScheme, dark ? .dark : .light)
@@ -91,7 +92,7 @@ struct AnswerRenderingPreview {
                     host.layoutSubtreeIfNeeded()
                     guard let bitmap = host.bitmapImageRepForCachingDisplay(in: host.bounds) else { fatalError("No native bitmap") }
                     host.cacheDisplay(in: host.bounds, to: bitmap)
-                    let name = "rag-\(Int(width))-\(dark ? "dark" : "light").png"
+                    let name = "\(regression ? "a009" : "rag")-\(Int(width))-\(dark ? "dark" : "light").png"
                     try bitmap.representation(using: .png, properties: [:])!.write(to: directory.appendingPathComponent(name))
                     print("\(name): \(Int(size.width)) × \(Int(size.height)) pt")
                 }

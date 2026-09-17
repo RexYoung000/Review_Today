@@ -88,6 +88,7 @@ def check_model_capabilities() -> None:
 
 @app.get("/healthz")
 def healthz() -> dict[str, object]:
+    from agent_service.openai_client import web_search_capability
     return {
         "status": "ok",
         "key_configured": bool(openai_key()),
@@ -97,6 +98,7 @@ def healthz() -> dict[str, object]:
         "conversation_protocol": 1,
         "response_stream_protocol": 1,
         "model_roles": model_capability_snapshot(),
+        "web_search": web_search_capability(),
     }
 
 

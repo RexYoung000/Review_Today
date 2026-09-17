@@ -1,0 +1,12 @@
+{"input": "什么是 RAG？用两三句话解释。", "status": "completed", "search_state": "unavailable", "evidence": {"state": "insufficient", "summary": "当前网页检索服务不可用，本次内容未完成网页核验；涉及最新信息或争议的结论仍需查证。", "sources": []}, "replies": ["**RAG**（Retrieval-Augmented Generation，检索增强生成）是一种让大模型在回答前先“查资料”的做法。它先从外部知识库（文档、数据库、网页等）中检索出与问题相关的片段，再把这些片段连同问题一起交给模型生成答案。这样可以让回答更贴近特定资料，并在一定程度上减少模型凭记忆胡编的情况。\n\n其中有一个容易忽略的**限制**：RAG 并不保证答案一定正确——检索到的片段若不准、不全或本身有错，生成结果也会跟着出错。\n\n> [!NOTE]\n> 当前网页检索服务不可用，本次内容未完成网页核验；涉及最新信息或争议的结论仍需查证。"], "nodes": ["received", "understanding", "intent", "model_attempt", "intent", "intent_decided", "teaching_preparation", "model_attempt", "teaching_preparation", "search_unavailable", "answer", "model_attempt", "response.started", "response.delta", "response.delta", "response.delta", "response.delta", "response.delta", "response.delta", "response.delta", "response.delta", "response.delta", "answer", "sources", "response.completed", "learning_evidence", "completed"]}
+{"input": "针对刚才的检索再生成，举个生活类比就好。", "status": "completed", "search_state": null, "evidence": null, "replies": ["你最希望学完后能够做什么？例如理解基本原理、在项目中使用，或回答面试题。"], "nodes": ["received", "understanding", "intent", "model_attempt", "intent", "intent_decided", "task_updated", "clarify_goal", "task_updated", "completed"]}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/tests/verification_real_smoke.py", line 45, in <module>
+    if __name__=='__main__': main()
+                             ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/tests/verification_real_smoke.py", line 38, in main
+    assert run['search_state']=='not_called'
+           ~~~^^^^^^^^^^^^^^^^
+KeyError: 'search_state'

@@ -91,5 +91,28 @@ class ParseModelCompatibilityTests(unittest.TestCase):
             self.assertEqual(parse.call_args.kwargs["model"], "configured-role")
 
 
+class WebSearchEvidenceTests(unittest.TestCase):
+    def test_only_completed_tool_and_response_with_text_can_succeed(self):
+        from agent_service import openai_client as llm
+        cases = [
+            ("completed", [], "https://example.org model guess", "UNSUPPORTED"),
+            ("incomplete", [SimpleNamespace(type="web_search_call", status="completed")], "source", "INCOMPLETE"),
+            ("completed", [SimpleNamespace(type="web_search_call", status="failed")], "source", "UNSUPPORTED"),
+            ("completed", [SimpleNamespace(type="web_search_call", status="completed")], "", "EMPTY"),
+            ("completed", [SimpleNamespace(type="web_search_call", status="completed")], "https://example.org real source", None),
+        ]
+        for status, output, text, error in cases:
+            client = Mock()
+            client.responses.create.return_value = SimpleNamespace(status=status, output=output, output_text=text)
+            with self.subTest(error=error), patch.object(llm, "PROVIDER", "openai_compatible"), patch.object(llm, "_client", return_value=client):
+                if error:
+                    with self.assertRaisesRegex(llm.ModelCallError, "RT.MODEL." + error):
+                        llm.web_search_text("public topic")
+                else:
+                    self.assertEqual(llm.web_search_text("public topic", reasoning_effort="high"), text)
+                    self.assertEqual(client.responses.create.call_args.kwargs["reasoning"], {"effort": "high"})
+                self.assertEqual(client.responses.create.call_count, 1)
+
+
 if __name__ == "__main__":
     unittest.main()
