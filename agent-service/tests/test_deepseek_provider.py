@@ -101,12 +101,12 @@ class DeepSeekTransportTests(unittest.TestCase):
         self.assertEqual(params["reasoning"], {"effort": "high"})
         self.assertEqual(params["input"][0]["role"], "system")
 
-    def test_search_unavailable_does_not_call_model_or_reuse_old_provider(self):
+    def test_search_uses_anthropic_adapter_without_old_provider_or_model_switch(self):
         for model in ["deepseek-v4-flash", "deepseek-v4-pro"]:
-            with self.subTest(model=model), patch.object(llm, "_client") as client:
-                self.assertEqual(llm.web_search_capability()["status"], "unavailable")
-                with self.assertRaisesRegex(llm.ModelCallError, "RT.MODEL.UNSUPPORTED"):
-                    llm.web_search_text("public query", model=model)
+            with self.subTest(model=model), patch.object(llm, "_client") as client, patch("agent_service.deepseek_search.web_search_text", return_value="results") as search:
+                self.assertEqual(llm.web_search_capability()["protocol"], "anthropic_messages")
+                self.assertEqual(llm.web_search_text("public query", model=model), "results")
+                search.assert_called_once_with("public query", model=model, reasoning_effort=None, on_cancel_handle=None)
                 client.assert_not_called()
 
     def test_voice_is_not_sent_to_unverified_provider(self):

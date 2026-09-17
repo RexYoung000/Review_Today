@@ -185,21 +185,35 @@ class ConditionalTeaching:
         try:
             search = self._search(sid, rid, rev, query, model)
             search_returned = True
+            # Structured server-search results carry an exact URL allowlist.
+            # A model-selected prefix or a URL mentioned only in a title is not
+            # a returned source. Legacy Responses results remain plain text.
+            search_urls = None
+            selection_input = search
+            try:
+                structured_search = json.loads(search)
+                if isinstance(structured_search, dict) and structured_search.get("protocol") == "anthropic_messages":
+                    search_urls = {item["url"] for item in structured_search["results"]}
+                    selection_input = structured_search["results"]
+            except (ValueError, KeyError, TypeError):
+                pass
             packed = self._call(sid, rid, rev, "source_candidates",
-                                "从实际检索结果中选择直接支持当前知识点的可靠公开来源，优先原始论文、官方文档、专业机构；避免泛泛的面试题汇总或营销转载。最多三条，不凑数量；一条可靠来源也可以足够，没有就返回空 candidates。URL 必须原样出现在检索结果中，不编造。",
-                                json.dumps(dict(query=query, search=search), ensure_ascii=False), SourceList, model)
-            read = []
+                                "从实际检索结果中选择可能直接支持当前知识点、值得读取的可靠公开来源，优先原始论文、官方文档、专业机构；避免泛泛的面试题汇总或营销转载。这一步仅根据标题与 URL 选待读候选，后续才读取全文和判断支持范围；不要因为没有正文摘要或官方页面为其他语言就排除相关候选。最多三条，不凑数量；一条可靠来源也可以足够，没有相关候选才返回空 candidates。URL 必须原样出现在检索结果中，不编造。",
+                                json.dumps(dict(query=query, search=selection_input), ensure_ascii=False), SourceList, model)
+            read, read_failures = [], 0
             for candidate in packed.candidates[:3]:
                 url = looks_like_url(candidate.url)
-                if not url or url not in search:
+                if not url or (url not in search_urls if search_urls is not None else url not in search):
                     continue
                 cached = run.get("source_cache", {}).get(url) or next((s for s in sources if s.get("url") == url and s.get("content")), None)
                 if not cached or decision.refresh_sources:
                     try:
                         title, content = fetch_public_url(url)
                     except (ValueError, OSError) as exc:
+                        read_failures += 1
                         with self.store.transaction(sid, rid, rev) as current:
-                            self.store.event(current, current["runs"][rid], "source_unavailable", "一份网页暂时无法读取", detail=type(exc).__name__)
+                            self.store.event(current, current["runs"][rid], "source_unavailable", "一份网页暂时无法读取",
+                                             detail="public_address_required" if str(exc) == "RT.CAPTURE.SSRF" else type(exc).__name__)
                         continue
                     if title.strip() in {"", "\\N", "null", "undefined"}:
                         title = candidate.title or url
@@ -221,8 +235,9 @@ class ConditionalTeaching:
                 state = "verified" if checked.state in {"supported", "scoped"} else "conflicting" if checked.state == "conflicting" else "insufficient"
                 sources = [s for s in sources if s.get("type") != "public_source"] + read
             else:
-                state = "no_results"
-                evidence["summary"] = "暂未找到可读取的合适资料，先讲基础内容；需要查证的部分会标明。"
+                state = "insufficient" if read_failures else "no_results"
+                evidence["summary"] = ("已检索到相关资料，但网页未能读取，本次尚未完成核验。" if read_failures else
+                                       "暂未找到可读取的合适资料，先讲基础内容；需要查证的部分会标明。")
             self._search_state(sid, rid, rev, state, evidence=evidence, sources=sources)
         except ModelCallError as exc:
             unavailable = not search_returned and exc.code.endswith("UNSUPPORTED")

@@ -16,7 +16,7 @@ def diagnose(error):
     elif "NO_KEY" in str(error): category = "credential_missing"
     elif "TIMEOUT" in code or "Timeout" in name: category = "timeout"
     elif "CONNECTION" in code or "Connection" in name or isinstance(error, OSError): category = "connection"
-    elif code.endswith(("EMPTY", "SCHEMA", "REFUSAL", "INCOMPLETE")): category = code.rsplit(".", 1)[-1].lower()
+    elif code.endswith(("EMPTY", "SCHEMA", "REFUSAL", "INCOMPLETE", "SEARCH_LIMIT", "SEARCH_FAILED")): category = code.rsplit(".", 1)[-1].lower()
     else: category = "provider"
     return dict(category=category, http_status=status, request_id=request_id, retryable=category in {"timeout", "connection", "provider"},
                 diagnostic=f"HTTP {status}" if status else code if code.startswith("RT.") else name,

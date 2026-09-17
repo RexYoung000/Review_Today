@@ -14,6 +14,7 @@ from agent_service.structured_output import schema_repair_instruction
 from agent_service.context_budget import OUTPUT_RESERVE, count_request, policy, prepare as prepare_context
 from agent_service.response_projection import public_preview
 from agent_service.schemas import IntentDecision
+from agent_service.source_links import bound_source_links
 
 def call(self, session_id, run_id, revision, node, system, prompt, schema, model=COACH_MODEL, *, parse_model, configured_window, alternatives, require_model):
     data, run = self._snapshot(session_id, run_id, revision)
@@ -51,8 +52,10 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
     def emit(partial, *, force=False):
         nonlocal last_emit, latest
         # Check even non-public chunks: a stopped generation closes promptly.
-        self._snapshot(session_id, run_id, revision)
+        _, current_run = self._snapshot(session_id, run_id, revision)
         text = public_preview(node, partial)
+        if "allowed_source_urls" in current_run:
+            text = bound_source_links(text, current_run["allowed_source_urls"])
         if not text:
             return
         latest = text

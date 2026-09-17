@@ -277,16 +277,17 @@ def model_is_callable(model: str, *, reasoning_effort: str | None = None) -> boo
 
 
 def web_search_capability() -> dict:
-    # 2026-09-17: the official DeepSeek Responses API ignores built-in tools.
-    # A callable teaching model does not establish search capability.
-    return {"status": "unavailable" if PROVIDER == "deepseek" else "unverified",
-            "provider": PROVIDER,
-            "reason": "built_in_tools_ignored" if PROVIDER == "deepseek" else "requires_completed_search_call"}
+    # Protocol capability is separate from teaching-model readiness. Every
+    # request must still produce actual search proof before we use its sources.
+    return {"status": "unverified", "provider": PROVIDER,
+            "protocol": "anthropic_messages" if PROVIDER == "deepseek" else "responses",
+            "reason": "requires_paired_search_results" if PROVIDER == "deepseek" else "requires_completed_search_call"}
 
 
 def web_search_text(query: str, *, model: str | None = None, reasoning_effort: str | None = None, on_cancel_handle=None) -> str:
-    if web_search_capability()["status"] == "unavailable":
-        raise ModelCallError("UNSUPPORTED", "configured provider ignores built-in web search")
+    if PROVIDER == "deepseek":
+        from agent_service.deepseek_search import web_search_text as deepseek_search
+        return deepseek_search(query, model=model or MODEL, reasoning_effort=reasoning_effort, on_cancel_handle=on_cancel_handle)
     selected_model = model or MODEL
     with budget_scope() as budget:
         client = _client()

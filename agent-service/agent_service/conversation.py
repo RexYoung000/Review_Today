@@ -18,6 +18,7 @@ from agent_service.capture import RISK_RULE, run_capture
 from agent_service.capture.fetch import fetch_public_url, looks_like_url
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL
 from agent_service.answer_style import render_jd, render_sources, with_question
+from agent_service.source_links import bound_source_links
 from agent_service.conversation_prompts import COACH_SYSTEM, EVALUATION_SYSTEM, INTENT_SYSTEM
 from agent_service.conditional_teaching import ConditionalTeaching
 from agent_service.conversation_store import ConversationStore, Superseded, conversation_store
@@ -1108,9 +1109,16 @@ class ConversationHarness(ConditionalTeaching):
                 "本次网页核验未完成，以下先说明基础原理；涉及最新信息或争议的结论仍需查证。",
                 "网页核验暂未完成，先讲基础内容；涉及变化或争议的部分仍需核实。",
                 "网页核验暂未完成，先讲基础内容；需要查证的部分仍待核实。",
+                "已检索到相关资料，但网页未能读取，本次尚未完成核验。",
             }:
                 coach_evidence["summary"] = ""
             instruction += "\n本轮沿用已讲内容，不重复网页检索状态。不要追加‘本次未做网页核验’‘依据通用原理’‘需要另行查证’等通用尾注；只在实际讲到某条具体不确定结论时说明该结论的具体限制。证据不足状态仍保留，不能宣称已核验。"
+        readable_urls = [s["url"] for s in sources if s.get("url") and s.get("content")]
+        instruction += "\n本轮实际已读网页 URL：" + json.dumps(readable_urls, ensure_ascii=False) + "。引用网页只能从此列表原样选取；列表为空时，不得凭记忆补充官方出处、链接或声称已查阅/核对。检索返回候选网页不等于读过网页。"
+        source_policy = run.get("search_state") not in {None, "not_called"}
+        if source_policy:
+            with self.store.transaction(sid, rid, rev) as current:
+                current["runs"][rid]["allowed_source_urls"] = readable_urls
         output = self._call(sid, rid, rev, node, COACH_SYSTEM,
                             json.dumps(dict(instruction=instruction, context=context, sources=sources,
                                             source_type=source_type, evidence=coach_evidence,
@@ -1119,6 +1127,8 @@ class ConversationHarness(ConditionalTeaching):
             current["runs"][rid]["learning_concepts"] = output.learning_concepts
         intro = run.get("continuation_intro")
         text = (intro + "\n\n" if intro else "") + output.message
+        if source_policy:
+            text = bound_source_links(text, readable_urls)
         for source in sources:
             if source.get("type") == "agent_generated" and not source.get("content"):
                 source["content"] = text

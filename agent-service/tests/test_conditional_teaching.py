@@ -63,6 +63,15 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertIn("RAG", preparations[0]["topic"])
         self.assertEqual(preparations[0]["learning_purpose"], "面试想学到")
 
+    def test_structured_search_requires_exact_returned_url_not_prefix_or_title(self):
+        self.decision = intent("question", needs_verification=True)
+        search_data = json.dumps(dict(protocol="anthropic_messages", results=[
+            dict(url="https://example.com/rag/other", title="https://example.com/rag")]))
+        with patch("agent_service.conversation.web_search_text", return_value=search_data), patch("agent_service.conditional_teaching.fetch_public_url") as fetch:
+            accepted = self.send("RAG 是什么")
+        fetch.assert_not_called()
+        self.assertEqual(self.state()["runs"][accepted.run_id]["search_state"], "no_results")
+
     def test_preparation_failure_reuses_safe_intent_query(self):
         base = self.model
         def fail_preparation(system, prompt, schema, **kw):
@@ -153,6 +162,59 @@ class ConditionalTeachingTests(unittest.TestCase):
         with patch("agent_service.conversation.parse_model", side_effect=fail_assessment), patch("agent_service.conversation.web_search_text", return_value="https://example.com/rag"), patch("agent_service.conditional_teaching.fetch_public_url", return_value=("RAG", "检索再生成")):
             result = self.send("RAG 是什么")
         self.assertEqual(self.state()["runs"][result.run_id]["search_state"], "failed")
+
+    def test_search_success_with_blocked_read_is_insufficient_not_empty_search(self):
+        self.decision = intent("question", public_search_query="RAG")
+        prompts = []
+        base = self.model
+        def inspect(system, prompt, schema, **kwargs):
+            prompts.append(prompt)
+            return base(system, prompt, schema, **kwargs)
+        with patch("agent_service.conversation.parse_model", side_effect=inspect), patch("agent_service.conversation.web_search_text", return_value="https://example.com/rag"), patch("agent_service.conditional_teaching.fetch_public_url", side_effect=ValueError("RT.CAPTURE.SSRF")):
+            result = self.send("RAG 是什么")
+        state = self.state(); run = state["runs"][result.run_id]
+        self.assertEqual(run["search_state"], "insufficient")
+        self.assertEqual(run["teaching_evidence"]["sources"], [])
+        self.assertIn("网页未能读取", run["verification_notice"])
+        self.assertTrue(any("本轮实际已读网页 URL：[]" in p for p in prompts))
+        self.assertTrue(any(e.get("detail_summary") == "public_address_required" for e in state["events"]))
+
+    def test_unread_links_are_filtered_in_both_stream_and_final_answer(self):
+        from agent_service.schemas import ConversationOutput
+        base = self.model
+        invented = "说明。\n\n[官方文档](https://unread.example/doc)"
+        def streamed(system, prompt, schema, **kwargs):
+            if schema is ConversationOutput:
+                for end in range(1, len(invented) + 1):
+                    kwargs['on_partial']({'message': invented[:end]})
+                return ConversationOutput(message=invented)
+            return base(system, prompt, schema, **kwargs)
+        self.decision = intent("question", public_search_query="RAG")
+        with patch("agent_service.conversation.parse_model", side_effect=streamed), patch("agent_service.conversation.web_search_text", return_value="https://example.com/rag"), patch("agent_service.conditional_teaching.fetch_public_url", side_effect=ValueError("RT.CAPTURE.SSRF")):
+            result = self.send("RAG 是什么")
+        state = self.state()
+        final = state['messages'][-1]['content']
+        self.assertIn('官方文档（链接未核验）', final)
+        self.assertNotIn('https://unread', final)
+        for event in state['events']:
+            if event['node'].startswith('response.'):
+                self.assertNotIn('https://unread', json.dumps(event))
+
+    def test_anthropic_results_flow_through_fetch_assessment_and_citation(self):
+        import httpx
+        from agent_service import openai_client, deepseek_search
+        self.decision = intent("question", public_search_query="RAG")
+        client = httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"content": [
+            dict(type="server_tool_use", id="s1", name="web_search"),
+            dict(type="web_search_tool_result", tool_use_id="s1", content=[
+                dict(type="web_search_result", title="RAG 原文", url="https://example.com/rag", encrypted_content="PRIVATE")])]})))
+        with patch.object(openai_client, "PROVIDER", "deepseek"), patch.object(deepseek_search, "openai_key", return_value="TEST_KEY"), patch.object(deepseek_search, "_client", return_value=client), patch("agent_service.conditional_teaching.fetch_public_url", return_value=("RAG 原文", "先检索相关片段，再生成回答")) as fetch:
+            result = self.send("RAG 是什么")
+        state = self.state(); run = state["runs"][result.run_id]
+        self.assertEqual(run["search_state"], "verified")
+        fetch.assert_called_once_with("https://example.com/rag")
+        self.assertIn("https://example.com/rag", state["messages"][-1]["content"])
+        self.assertNotIn("PRIVATE", json.dumps(run))
 
     def test_uncertain_empty_question_cannot_execute_save(self):
         self.decision = intent("goal").model_copy(update={"relation": "uncertain"})
