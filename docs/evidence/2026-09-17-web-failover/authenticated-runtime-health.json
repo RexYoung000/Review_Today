@@ -1,0 +1,136 @@
+{
+  "status": "ok",
+  "key_configured": true,
+  "provider": "deepseek",
+  "ca_bundle": true,
+  "harness": "v2",
+  "conversation_protocol": 1,
+  "response_stream_protocol": 1,
+  "model_roles": {
+    "router": {
+      "model": "deepseek-flash",
+      "status": "ready",
+      "error": "",
+      "streaming": "not_applicable",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        }
+      },
+      "checked_at": 1789623860.698326,
+      "elapsed_ms": 1917,
+      "next_probe_at": null
+    },
+    "coach": {
+      "model": "deepseek-v4-flash",
+      "status": "ready",
+      "error": "",
+      "streaming": "ready",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null,
+          "streaming": "ready",
+          "stream_error": "",
+          "stream_retryable": false
+        }
+      },
+      "checked_at": 1789623860.781678,
+      "elapsed_ms": 2001,
+      "stream_error": "",
+      "stream_retryable": false,
+      "next_probe_at": null
+    },
+    "risk": {
+      "model": "deepseek-v4-pro",
+      "status": "ready",
+      "error": "",
+      "streaming": "not_applicable",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        }
+      },
+      "checked_at": 1789623861.8047638,
+      "elapsed_ms": 3024,
+      "next_probe_at": null
+    }
+  },
+  "web_search": {
+    "status": "unverified",
+    "provider": "exa",
+    "reason": "requires_search_result",
+    "protocol": "harness_web_tools_v1",
+    "providers": [
+      {
+        "provider": "exa",
+        "status": "unverified"
+      },
+      {
+        "provider": "tavily",
+        "status": "unverified"
+      }
+    ]
+  },
+  "web_read": {
+    "status": "unverified",
+    "provider": "exa",
+    "reason": "requires_public_page_read",
+    "providers": [
+      {
+        "provider": "exa",
+        "status": "unverified"
+      },
+      {
+        "provider": "tavily",
+        "status": "unverified"
+      }
+    ]
+  },
+  "web_context": {
+    "provider": "none",
+    "status": "unavailable",
+    "reason": "RT.WEB.NOT_CONFIGURED"
+  }
+}

@@ -23,17 +23,22 @@ class Chunks(httpx.SyncByteStream):
 
 class ExaTests(unittest.TestCase):
     def setUp(self):
-        self.config = patch.dict(os.environ, {'REVIEW_TODAY_SEARCH_PROVIDER': 'exa', 'REVIEW_TODAY_READ_PROVIDER': 'exa'})
+        self.config = patch.dict(os.environ, {'REVIEW_TODAY_SEARCH_PROVIDER': 'exa', 'REVIEW_TODAY_READ_PROVIDER': 'exa', 'EXA_API_KEY': '', 'REVIEW_TODAY_SEARCH_FALLBACKS': '', 'REVIEW_TODAY_READ_FALLBACKS': ''})
         self.config.start(); self.addCleanup(self.config.stop)
         self.requests = []
 
-    def transport(self, text=SEARCH, *, sse=True, tool_error=False, status=200, wrong_id=False, rpc_error=False, session=False):
+    def transport(self, text=SEARCH, *, sse=True, tool_error=False, status=200, wrong_id=False, rpc_error=False, session=False, key=''):
         def handler(request):
+            self.assertEqual(str(request.url), exa.ENDPOINT)
+            if key:
+                self.assertEqual(request.headers.get('authorization'), 'Bearer ' + key)
+                self.assertNotIn(key, request.content.decode())
+            else:
+                self.assertNotIn('authorization', request.headers)
+            self.assertNotIn('x-api-key', request.headers)
             if request.method == 'DELETE': return httpx.Response(200)
             body = json.loads(request.content); self.requests.append(body)
             self.assertEqual(str(request.url), exa.ENDPOINT)
-            self.assertNotIn('authorization', request.headers)
-            self.assertNotIn('x-api-key', request.headers)
             if body['method'] == 'notifications/initialized': return httpx.Response(202)
             if body['method'] == 'initialize':
                 result = dict(protocolVersion=exa.VERSION, capabilities={'tools': {}}, serverInfo={'name': 'exa', 'version': 'test'})
@@ -51,6 +56,24 @@ class ExaTests(unittest.TestCase):
                 return httpx.Response(200, headers=headers, stream=Chunks(data))
             return httpx.Response(200, headers=headers, json=payload)
         return patch.object(exa, '_client', side_effect=lambda: httpx.Client(transport=httpx.MockTransport(handler)))
+
+    def test_independent_key_authenticates_search_read_and_session_cleanup(self):
+        key = 'EXA_TEST_SECRET'
+        with patch.dict(os.environ, {'EXA_API_KEY': '  ' + key + '  ', 'DEEPSEEK_API_KEY': 'MODEL_ONLY'}):
+            with self.transport(key=key, session=True):
+                result = web.web_search_text('Python list')
+                self.assertNotIn(key, result)
+                self.assertEqual(json.loads(result)['results'][0]['url'], URL)
+            with self.transport(PAGE, key=key, session=True):
+                self.assertEqual(web.read_public_url(URL)[1], 'ACTUAL page body')
+
+    def test_bad_key_does_not_retry_anonymously_or_leak_upstream_body(self):
+        key = 'SECRET'
+        with patch.dict(os.environ, {'EXA_API_KEY': key}), self.transport(key=key, status=401):
+            with self.assertRaises(WebToolError) as caught:
+                web.web_search_text('Python list')
+            self.assertNotIn(key, str(caught.exception))
+            self.assertEqual(len(self.requests), 3)
 
     def test_sse_and_json_handshake_tool_call_do_not_use_models(self):
         from agent_service import openai_client

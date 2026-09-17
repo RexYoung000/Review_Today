@@ -49,6 +49,28 @@ class FailoverTests(unittest.TestCase):
             self.assertEqual(json.loads(web.web_search_text('topic'))['provider'], 'brave')
             model.assert_not_called()
 
+    def test_exa_auth_failure_uses_tavily_and_disabled_brave_stays_off(self):
+        self.backends['exa'].search.side_effect = WebToolError('PROVIDER', 'HTTP 401')
+        with patch.dict(os.environ, {'REVIEW_TODAY_SEARCH_FALLBACKS': 'tavily',
+                                    'REVIEW_TODAY_CONTEXT_PROVIDER': 'none'}):
+            self.assertEqual(json.loads(web.web_search_text('topic'))['provider'], 'tavily')
+            self.assertGreater(policy.provider_state('exa').until, time.monotonic() + 3500)
+            web.read_public_url(URL)
+            self.backends['exa'].read.assert_not_called()
+            self.backends['tavily'].search.side_effect = WebToolError('RATE_LIMIT')
+            with self.assertRaisesRegex(WebToolError, 'CHAIN_FAILED'):
+                web.web_search_text('another topic')
+            self.assertEqual(web.web_context_capability()['status'], 'unavailable')
+            self.backends['brave'].search.assert_not_called()
+
+    def test_exa_key_change_has_fresh_cooldown_state(self):
+        with patch.dict(os.environ, {'EXA_API_KEY': 'OLD_TEST_KEY'}):
+            old = policy.provider_state('exa')
+            old.until = time.monotonic() + 3600
+        with patch.dict(os.environ, {'EXA_API_KEY': 'NEW_TEST_KEY'}):
+            self.assertIsNot(policy.provider_state('exa'), old)
+            self.assertEqual(policy.provider_state('exa').until, 0)
+
     def test_read_failure_switches_same_url_without_search_or_global_cooldown(self):
         self.backends['exa'].read.side_effect = WebToolError('READ_FAILED')
         web.read_public_url(URL)

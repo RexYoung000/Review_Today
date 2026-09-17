@@ -55,6 +55,9 @@ def _tool_text(result):
 class ExaBackend:
     name = 'exa'
 
+    def __init__(self, key=''):
+        self.key = key.strip()
+
     def _call(self, name, arguments, on_cancel_handle):
         if name not in {'web_search_exa', 'web_fetch_exa'}:
             raise WebToolError('UNSUPPORTED')
@@ -68,6 +71,8 @@ class ExaBackend:
             if on_cancel_handle:
                 on_cancel_handle(cancel)
             headers = {'Accept': 'application/json, text/event-stream'}
+            if self.key:
+                headers['Authorization'] = 'Bearer ' + self.key
 
             def check():
                 if cancelled.is_set():

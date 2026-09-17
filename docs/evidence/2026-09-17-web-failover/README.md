@@ -1,5 +1,17 @@
 # A008：多服务网页搜索与正文备用
 
+## 独立 Key 接入补验（2026-09-17）
+
+当前状态覆盖下方早期的匿名开发配置记录：Rex 已配置 Exa/Tavily Key，因费用暂不启用 Brave。本机搜索/读取均为 Exa → Tavily，Context none；Brave 没有发送请求。Key 仅存于被忽略的本机 `.env`，Exa 用固定 MCP 地址的 Authorization 请求头传递，认证失败不匿名重试。
+
+- 受控：411 tests / 69 subtests 全通过，新增带 Key 的握手/工具/清理、401 不重试与脱敏、认证冷却并切换、Key 更换重置冷却、Brave 关闭场景。见 `authenticated-controlled-summary.txt`。
+- 真实工具：用各自独立 Key 调用 Exa/Tavily 的搜索与指定 Python 官网正文读取，均成功，正文均截取 12,000 字符并包含 append/extend。注入 Exa RATE_LIMIT 后，Tavily 实际执行搜索和同 URL 读取恢复。见 `live-authenticated-providers.jsonl`。该故障由测试注入，不表示 Exa 账户实际耗尽。
+- 完整真实对话：在 agent-service 执行 `.venv/bin/python -m tests.verification_real_smoke --live --scenario official`；自动意图路由、Exa 搜索/读正文、模型核验及引用展示成功；第二轮复用来源，不再次搜索。临时数据库隔离，未改用户聊天。见 `live-authenticated-exa-conversation.jsonl`。
+- App 重启前检查没有运行中的会话；重启后健康接口显示 Exa/Tavily 两路、Context 未配置，模型角色 ready。见 `authenticated-runtime-health.json`。健康信息 unverified 是逐轮内容核验状态，并不抵消上面的实际调用证据。
+- Brave 真实接入暂不验收；未购买套餐或修改任何账户计费设置。Key 调用仍受各自账户额度/计费约束。无 UI 改动，未执行原生视觉验收；Rex 可用文末的两轮问题体验新配置。
+
+认证方式依据 [Exa 官方 MCP 说明](https://github.com/exa-labs/exa-mcp-server#authentication)。
+
 ## 已实现
 
 - 搜索 Exa → Tavily → Brave；读取 Exa → Tavily。Tavily 支持显式匿名模式或独立 Key；Brave 缺 Key 时跳过。正式服务端点直接请求，无新 CLI/MCP 进程依赖。

@@ -8,19 +8,25 @@
 
 ```dotenv
 REVIEW_TODAY_SEARCH_PROVIDER=exa
-REVIEW_TODAY_SEARCH_FALLBACKS=tavily,brave
+REVIEW_TODAY_SEARCH_FALLBACKS=tavily
 REVIEW_TODAY_READ_PROVIDER=exa
 REVIEW_TODAY_READ_FALLBACKS=tavily
-REVIEW_TODAY_CONTEXT_PROVIDER=brave
+REVIEW_TODAY_CONTEXT_PROVIDER=none
 REVIEW_TODAY_TAVILY_KEYLESS=1
+EXA_API_KEY=
+TAVILY_API_KEY=
 BRAVE_API_KEY=
 ```
 
 不填写 Brave Key 时搜索与 Context 都跳过 Brave，不阻塞 Exa/Tavily。若要启用 Brave，将 Key 只写在本机 `.env`，不要贴入聊天或提交 Git；重启服务后配置生效。不自动注册、登录、支付、购买额度或执行供应商返回的支付/奖励指令。
 
+2026-09-17：Rex 已填写 Exa/Tavily Key，因费用暂不启用 Brave。本机搜索和读取使用 Exa → Tavily，Context 关闭；Brave 适配保留，恢复需显式配置备用列表和 Key。
+
+Exa 认证契约：存在独立 `EXA_API_KEY` 时，固定 MCP 端点的握手、工具调用及会话清理均使用 `Authorization: Bearer` 请求头；Key 不进入 URL、工具参数、事件或错误文本。空 Key 保留匿名模式。认证失败遵守既有冷却并切换 Tavily，不降级匿名重试，不使用模型供应商凭据。额度由 Exa 账户管理，接入 Key 不代表无限或永久免费。
+
 ## 服务与凭据
 
-- **Exa**：固定 `https://mcp.exa.ai/mcp`，直接调用 `web_search_exa` / `web_fetch_exa`。匿名限额模式，无需 Key；不依赖 mcporter/本机 skill，不调用 Exa Agent。MCP JSON/SSE、请求 ID、工具错误、URL 和响应格式均校验。支持页面 Published/Author 元数据。匿名公开源码默认每 IP 每天 50 次、每秒 2 次，线上配置可能不同，不能据此计算准确剩余额度。
+- **Exa**：固定 `https://mcp.exa.ai/mcp`，直接调用 `web_search_exa` / `web_fetch_exa`。优先使用 `EXA_API_KEY`，未配置时匿名限额模式；不依赖 mcporter/本机 skill，不调用 Exa Agent。MCP JSON/SSE、请求 ID、工具错误、URL 和响应格式均校验。支持页面 Published/Author 元数据。匿名公开源码默认每 IP 每天 50 次、每秒 2 次，线上配置可能不同，不能据此计算准确剩余额度。
 - **Tavily**：直接调用官方 Search/Extract API。显式 `REVIEW_TODAY_TAVILY_KEYLESS=1` 才允许无 Key，使用官方 keyless 请求模式；存在 `TAVILY_API_KEY` 时优先使用该独立 Key。搜索固定 basic、最多 5 条、关闭生成答案。无需安装 CLI/MCP 进程。匿名模式有公平使用限额，数值不作保证。
 - **Brave**：`BRAVE_API_KEY` 用于官方 `/res/v1/web/search` 和 `/res/v1/llm/context`，不使用 Answers/生成摘要。搜索取最多 5 条；Context 取最多 3 个 URL、约 4096 tokens 总预算。Context 接收公开查询，返回相关正文片段，不能替代指定 URL 读取；没有 Key 不发请求。
 - **Local**：保留现有安全公网读取，DNS、实际连接与重定向保护不变；当前 Fake-IP 环境不保证可读。local-only 配置不会自动切换到远程。

@@ -2,6 +2,12 @@
 
 ## A008 多服务网页工具（2026-09-17，已授权实施）
 
+### Exa 独立 Key 与 Brave 暂停（2026-09-17）
+
+Rex 已填写 Exa/Tavily 独立 Key，因费用暂不启用 Brave。本机搜索/读取均为 Exa → Tavily，Context 关闭；Brave 代码保留。Exa 固定 MCP 端点使用 Authorization 请求头，不将 Key 放 URL 或工具参数；空 Key 保留匿名模式，认证失败直接沿既有冷却/备用链处理，不匿名重试或借用模型凭据。
+
+补充案例：带 Key 的握手、搜索、读取、会话清理；无 Key 匿名兼容；错误不泄露 Key；认证失败转 Tavily；Brave 关闭时无请求；真实 Exa/Tavily 搜索和正文以及故障切换。状态：已实现。411 tests / 69 subtests 通过；Exa/Tavily 带 Key 的真实搜索、正文及模拟 Exa 限额后的真实 Tavily 恢复通过；真实两轮对话 Exa 核验、引用展示和后续来源复用通过。本机已重启生效，Brave 未启用。记录见 [认证验证](evidence/2026-09-17-web-failover/README.md#独立-key-接入补验2026-09-17)。
+
 Rex 确认搜索 Exa → Tavily → Brave，指定 URL 读取 Exa → Tavily；两路正文均不可用时，单独尝试 Brave LLM Context。Brave 片段记录为 `extracted_chunks`，不得冒充指定网页完整读取；实际 URL、官网域名及证据支持范围继续校验。只使用最小公开查询或 URL；不改模型配置，不发送私人对话，不自动登录或购买额度。
 
 - 仓库默认不联网；本机显式启用搜索/读取备用列表及 Tavily keyless。Brave 搜索与 Context 共用独立 BRAVE_API_KEY，未配置时跳过并在健康信息报告，不阻塞其他服务。
