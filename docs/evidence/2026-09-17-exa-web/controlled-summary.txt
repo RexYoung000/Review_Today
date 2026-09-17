@@ -1,0 +1,3 @@
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+384 passed, 2 warnings, 69 subtests passed in 36.60s
+Isolated test database: /tmp/review-today-python-tests.BYWKbM

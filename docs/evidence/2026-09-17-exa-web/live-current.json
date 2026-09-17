@@ -1,0 +1,91 @@
+{
+  "scenario": "current",
+  "passed": true,
+  "turns": [
+    {
+      "fixed_routing": false,
+      "expect_read_blocked": false,
+      "scenario": "current",
+      "search_adapter": {
+        "status": "unverified",
+        "provider": "exa",
+        "protocol": "harness_web_tools_v1",
+        "reason": "requires_search_result"
+      }
+    },
+    {
+      "input": "请核对 Python 官方下载页面，现在最新的稳定版本是什么？只给版本、发布日期和实际来源。",
+      "status": "completed",
+      "search_state": "verified",
+      "evidence": {
+        "state": "supported",
+        "summary": "截至 2026-09-17，Python 官方下载页面显示最新稳定版本为 3.14.7，发布于 2026-08-05。3.15 目前为 pre-release 状态，计划于 2026-10-01 首次发布。",
+        "sources": [
+          "https://www.python.org/getit/",
+          "https://www.python.org/downloads/release/python-3147/"
+        ]
+      },
+      "replies": [
+        "截至核对时（页面抓取时间 2026-09-17），Python 官方下载页显示的最新**稳定版本是 3.14.7**。\n\n- **版本**：Python 3.14.7\n- **发布日期**：2026 年 8 月 5 日（官方发布页写作 Aug. 5, 2026）\n- **来源**：Python 官网下载页 https://www.python.org/getit/ ；对应发布说明页 https://www.python.org/downloads/release/python-3147/\n\n两点需要区分清楚。\n\n第一，下载页的“Active Python releases”表里排最前的是 3.15，但它的状态标注为 **pre-release（预发布）**，首次发布计划在 2026-10-01，所以它不算当前稳定版。稳定版指的是已经正式发布、可用于生产环境的正式版本，也就是 3.14 系列。\n\n第二，你要的是“最新稳定版”，因此答案是 3.14 系列里编号最大的那个维护版本：3.14.7。它属于 **维护性更新**，官方说明这次包含约 499 项 bug 修复、构建改进和文档变更，来自 86 位贡献者，并非功能大版本。\n\n另外，官方下载页给出的版本清单是 3.14.7 之前的各次发布，这是判断“当前最新”的直接依据。如果你实际关心的是能不能升到 3.15，那属于另一回事：它目前只是预发布，一般不建议直接用于正式环境。"
+      ],
+      "read_sources": [
+        {
+          "url": "https://www.python.org/getit/",
+          "title": "Download Python | Python.org",
+          "fetched_at": "2026-09-17T04:18:10.444082+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://www.python.org/downloads/release/python-3147/",
+          "title": "Python Release Python 3.14.7 | Python.org",
+          "fetched_at": "2026-09-17T04:18:12.607242+00:00",
+          "content_chars": 5831
+        }
+      ],
+      "search_calls": 1,
+      "search_attempts": 1,
+      "model_task_nodes": [
+        "intent_decided",
+        "answer",
+        "answer"
+      ]
+    },
+    {
+      "input": "只解释刚才提到的“稳定版本”是什么意思，不需要再查新资料。",
+      "status": "completed",
+      "search_state": "not_called",
+      "evidence": {
+        "state": "supported",
+        "summary": "截至 2026-09-17，Python 官方下载页面显示最新稳定版本为 3.14.7，发布于 2026-08-05。3.15 目前为 pre-release 状态，计划于 2026-10-01 首次发布。",
+        "sources": [
+          "https://www.python.org/getit/",
+          "https://www.python.org/downloads/release/python-3147/"
+        ]
+      },
+      "replies": [
+        "“稳定版本”（stable release）在这里不是指“运行起来不会崩”，而是指**已经正式发布、可长期用于生产环境的那条版本线**。判断依据主要是官方发布状态标签，而不是版本号大小。\n\n## 它和相邻概念的区别\n\n- **稳定版本**：已正式发布，进入 bugfix（修 bug）或 security（只修安全问题）阶段，官方推荐日常使用。\n- **预发布（pre-release）**：如 alpha、beta、rc。功能已定型但仍在测试，可能变，官方一般不建议用于正式环境。\n- **开发版（development / main 分支）**：正在加新功能，最不稳定。\n\n关键点是：**版本号更高 ≠ 更稳定**。比如 3.15 的编号比 3.14 大，但它仍在 pre-release 阶段，所以不算当前稳定版。\n\n## 一条版本线内部也分阶段\n\n同一条稳定线（如 3.14）会经历几个维护阶段：\n\n1. **bugfix**：继续收 bug 修复和较小的改进，还会发新的维护版本（如 3.14.7、3.14.8）。\n2. **security**：只修安全漏洞，不再修一般 bug。\n3. **end-of-life**：停止支持，不再更新。\n\n所以“最新稳定版本”通常既指选对那条线，也指该线上编号最大的那个维护版本。\n\n## 一个容易混淆的地方\n\n稳定版本与“能不能装”无关：预发布版同样有下载文件。区别在于官方对它的支持力度和推荐程度。生产环境通常选稳定版，除非你专门要提前测试新特性。\n\n上面这条线的官方生命周期划分也见 [Python 官方下载页](https://www.python.org/getit/)，它列出了每个版本的状态与首次发布日期。\n\n### 参考资料\n\n- [Python Release Python 3.14.7 | Python.org](https://www.python.org/downloads/release/python-3147/)"
+      ],
+      "read_sources": [
+        {
+          "url": "https://www.python.org/getit/",
+          "title": "Download Python | Python.org",
+          "fetched_at": "2026-09-17T04:18:10.444082+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://www.python.org/downloads/release/python-3147/",
+          "title": "Python Release Python 3.14.7 | Python.org",
+          "fetched_at": "2026-09-17T04:18:12.607242+00:00",
+          "content_chars": 5831
+        }
+      ],
+      "search_calls": 0,
+      "search_attempts": 0,
+      "model_task_nodes": [
+        "intent_decided",
+        "answer",
+        "answer"
+      ]
+    }
+  ]
+}

@@ -14,6 +14,7 @@ def main():
     parser.add_argument('--live', action='store_true', required=True)
     parser.add_argument('--fixed-routing', action='store_true', help='Isolate search/coach from the intent router; preparation, search, reads and answers still run live.')
     parser.add_argument('--expect-read-blocked', action='store_true', help='Verify honest degradation on a network whose public DNS answers are rejected; never counts as verified evidence.')
+    parser.add_argument('--scenario', choices=['official', 'chinese', 'current'], default='official')
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix='review-verification-live-') as directory:
         os.environ['REVIEW_TODAY_HARNESS_DB'] = str(Path(directory) / 'state.sqlite3')
@@ -25,15 +26,21 @@ def main():
         from agent_service.web_tools import web_search_capability
         h = ConversationHarness(ConversationStore(HarnessStore(os.environ['REVIEW_TODAY_HARNESS_DB'])))
         sid = str(uuid.uuid4())
-        print(json.dumps({'fixed_routing': args.fixed_routing, 'expect_read_blocked': args.expect_read_blocked, 'search_adapter': web_search_capability()}), flush=True)
+        print(json.dumps({'fixed_routing': args.fixed_routing, 'expect_read_blocked': args.expect_read_blocked, 'scenario': args.scenario, 'search_adapter': web_search_capability()}), flush=True)
         questions = ['请查阅 Python 官方文档，用两三句话解释列表 append 和 extend 的区别，并附上来源。',
                      '针对刚才 append 和 extend 的区别，举个生活类比就好。']
+        if args.scenario == 'chinese':
+            questions = ['请查阅大学或权威科普资料，用中文简短解释光合作用是什么，并附上实际来源。',
+                         '只针对刚才光合作用的解释，举个生活类比就好。']
+        elif args.scenario == 'current':
+            questions = ['请核对 Python 官方下载页面，现在最新的稳定版本是什么？只给版本、发布日期和实际来源。',
+                         '只解释刚才提到的“稳定版本”是什么意思，不需要再查新资料。']
         for index, text in enumerate(questions):
             def routed(system, user, schema, **kwargs):
                 if schema is IntentDecision:
                     return IntentDecision(intents=['question' if index == 0 else 'example'], scope='conversation',
                                           relation='continuation', answer_only=True, needs_verification=index == 0,
-                                          public_search_query='Python official documentation list append extend', rationale='synthetic verification test route')
+                                          public_search_query={'official':'Python official documentation list append extend','chinese':'光合作用 大学 科普 原理','current':'Python latest stable release official downloads'}[args.scenario], rationale='synthetic verification test route')
                 return parse_model(system, user, schema, **kwargs)
             accepted = h.accept(sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content=text))
             with patch('agent_service.conversation.parse_model', side_effect=routed) if args.fixed_routing else nullcontext():
@@ -62,6 +69,9 @@ def main():
                 assert sources and all(s.get('content') and s.get('fetched_at') for s in sources)
                 urls = run['teaching_evidence']['sources']
                 assert urls and all(u in {s['url'] for s in sources} for u in urls)
+                if args.scenario in {'official', 'current'}:
+                    from urllib.parse import urlsplit
+                    assert all((urlsplit(u).hostname or '') == 'python.org' or (urlsplit(u).hostname or '').endswith('.python.org') for u in urls), 'A mirror title is not proof of official ownership.'
                 assert any(u in replies[-1] for u in urls), 'The answer must display an actually read source.'
             else:
                 assert 'search_attempt' not in nodes and 'public_search' not in nodes

@@ -1,0 +1,27 @@
+{
+  "result": "semantic_failure_despite_old_transport_assertions",
+  "reason": "镜像站被当成官网，抓取日期被当成资料时效；已增加官方域名约束和验收断言。",
+  "input": "请核对 Python 官方下载页面，现在最新的稳定版本是什么？只给版本、发布日期和实际来源。",
+  "evidence": {
+    "state": "supported",
+    "summary": "截至该页面抓取时间（2026 年 9 月 17 日），Python 官方下载页（pythonlang.cn/downloads/）显示发布版本列表中列在最前的是 Python 3.13.9，发布日期为 2025 年 10 月 14 日；但页面顶部的版本状态表显示最新的主要稳定版本为 3.14，维护状态为“错误修复”，首次发布日期为 2025 年 10 月 7 日。Windows 下载子页面则直接标注“最新的 Python 3 版本 - Python 3.14.0”，同时在“稳定版本”一栏将 Python 3.13.9 列为 2025 年 10 月 14 日。因此，页面上同时存在“最新功能版本 3.14.0”与“最新稳定补丁版本 3.13.9”两种表述。",
+    "sources": [
+      "https://pythonlang.cn/downloads/",
+      "https://pythonlang.cn/downloads/windows/"
+    ]
+  },
+  "read_sources": [
+    {
+      "url": "https://pythonlang.cn/downloads/",
+      "title": "下载 Python | Python.org - Python 编程语言",
+      "fetched_at": "2026-09-17T04:15:01.767446+00:00",
+      "content_chars": 10000
+    },
+    {
+      "url": "https://pythonlang.cn/downloads/windows/",
+      "title": "适用于 Windows 的 Python 版本 | Python.org - Python 编程语言",
+      "fetched_at": "2026-09-17T04:15:04.061716+00:00",
+      "content_chars": 10000
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "scenario": "official",
+  "passed": true,
+  "turns": [
+    {
+      "fixed_routing": false,
+      "expect_read_blocked": false,
+      "scenario": "official",
+      "search_adapter": {
+        "status": "unverified",
+        "provider": "exa",
+        "protocol": "harness_web_tools_v1",
+        "reason": "requires_search_result"
+      }
+    },
+    {
+      "input": "请查阅 Python 官方文档，用两三句话解释列表 append 和 extend 的区别，并附上来源。",
+      "status": "completed",
+      "search_state": "verified",
+      "evidence": {
+        "state": "supported",
+        "summary": "Python 官方文档的教程章节对 list.append 与 list.extend 的区别有明确规定，可直接用于学习者理解这两个方法。依据教程“5.1 列表详解/More on Lists”：list.append(x) 是“在列表末尾添加一个元素”，只添加一个对象（该对象本身即为元素，不展开），等价于 a[len(a):] = [x]；list.extend(iterable) 是“用可迭代对象的元素扩展列表”，会把可迭代对象中的元素逐个追加到列表末尾，等价于 a[len(a):] = iterable。因此核心区别在于：append 接收单个值并作为一个元素加入，extend 接收可迭代对象并把其元素展开后逐个加入。教程还提示：a.insert(len(a), x) 等价于 a.append(x)，说明 append 相当于在末尾插入单个元素。注意本证据只来自 Python 教程的 datastructures 章节，未包含官方库参考中关于传入非可迭代对象报错、方法返回 None、extend 与 += 的等价性以及传入自身等边界细节；如需这些细节，应查阅官方库参考相应条目。另需说明：所取页面标题显示了 3.14.7 与 3.10.20 等版本号，但这只是文档版本标识，抓取时间（2026-09-17）仅表示取到文本的时刻，不代表页面最后更新时间。",
+        "sources": [
+          "https://docs.python.org/3/tutorial/datastructures.html",
+          "https://docs.python.org/zh-cn/3.10/tutorial/datastructures.html",
+          "https://docs.python.org/3.10/tutorial/datastructures.html"
+        ]
+      },
+      "replies": [
+        "**append 把一个对象当作单个元素加到末尾，extend 则把可迭代对象里的元素逐个拆开加进去。**\n\n官方教程的表述是：`list.append(x)` 在列表末尾添加**一个元素**，相当于 `a[len(a):] = [x]`；`list.extend(iterable)` 用可迭代对象的元素**扩展列表**，相当于 `a[len(a):] = iterable`。差别就在那个方括号——右侧是否被当作一个整体。\n\n```\n>>> a = [1, 2]\n>>> a.append([3, 4])\n>>> a\n[1, 2, [3, 4]]      # 嵌套了一层\n>>> b = [1, 2]\n>>> b.extend([3, 4])\n>>> b\n[1, 2, 3, 4]        # 展开加入\n```\n\n一个便于记住的说法：如果参数本身想作为一项内容保留就用 append；想把里面的东西“倒出来”逐个加入就用 extend。\n\n来源：Python 官方教程《5. 数据结构 / 5.1 列表详解》 https://docs.python.org/zh-cn/3.10/tutorial/datastructures.html ，及英文版 https://docs.python.org/3/tutorial/datastructures.html 。该页只给出“单个元素 / 可迭代对象元素”这一层定义和上述等价写法；关于传入不可迭代对象时的报错、返回值是否为 None 等边界细节，需要另查库参考，这里没有涉及。\n\n### 参考资料\n\n- [5. Data Structures — Python 3.10.20 documentation](https://docs.python.org/3.10/tutorial/datastructures.html)"
+      ],
+      "read_sources": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.14.7 documentation",
+          "fetched_at": "2026-09-17T04:18:10.314574+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.10/tutorial/datastructures.html",
+          "title": "5. 数据结构 — Python 3.10.20 文档",
+          "fetched_at": "2026-09-17T04:18:12.522734+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://docs.python.org/3.10/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.10.20 documentation",
+          "fetched_at": "2026-09-17T04:18:14.745137+00:00",
+          "content_chars": 10000
+        }
+      ],
+      "search_calls": 1,
+      "search_attempts": 1,
+      "model_task_nodes": [
+        "intent_decided",
+        "answer",
+        "answer"
+      ]
+    },
+    {
+      "input": "针对刚才 append 和 extend 的区别，举个生活类比就好。",
+      "status": "completed",
+      "search_state": "not_called",
+      "evidence": {
+        "state": "supported",
+        "summary": "Python 官方文档的教程章节对 list.append 与 list.extend 的区别有明确规定，可直接用于学习者理解这两个方法。依据教程“5.1 列表详解/More on Lists”：list.append(x) 是“在列表末尾添加一个元素”，只添加一个对象（该对象本身即为元素，不展开），等价于 a[len(a):] = [x]；list.extend(iterable) 是“用可迭代对象的元素扩展列表”，会把可迭代对象中的元素逐个追加到列表末尾，等价于 a[len(a):] = iterable。因此核心区别在于：append 接收单个值并作为一个元素加入，extend 接收可迭代对象并把其元素展开后逐个加入。教程还提示：a.insert(len(a), x) 等价于 a.append(x)，说明 append 相当于在末尾插入单个元素。注意本证据只来自 Python 教程的 datastructures 章节，未包含官方库参考中关于传入非可迭代对象报错、方法返回 None、extend 与 += 的等价性以及传入自身等边界细节；如需这些细节，应查阅官方库参考相应条目。另需说明：所取页面标题显示了 3.14.7 与 3.10.20 等版本号，但这只是文档版本标识，抓取时间（2026-09-17）仅表示取到文本的时刻，不代表页面最后更新时间。",
+        "sources": [
+          "https://docs.python.org/3/tutorial/datastructures.html",
+          "https://docs.python.org/zh-cn/3.10/tutorial/datastructures.html",
+          "https://docs.python.org/3.10/tutorial/datastructures.html"
+        ]
+      },
+      "replies": [
+        "刚才介绍的是教程里的定义：`append` 添加**一个元素**，`extend` 用可迭代对象的元素扩展列表。生活类比可以这样搭：\n\n把列表想成一个**购物袋**，你要往里放东西。\n\n- `append` 像**整个塑料袋一起塞进购物袋**。你手里拎着一袋橘子，`append(那袋橘子)` 之后，购物袋里多的是“那一袋”，不是一个个橘子。\n- `extend` 像**把袋里的橘子一个个倒进购物袋**。同样是那袋橘子，`extend(那袋橘子)` 之后，购物袋里多的是一个个橘子。\n\n对应到代码：\n\n```\n>>> bag = ['苹果']\n>>> bag.append(['橘子', '香蕉'])\n>>> bag\n['苹果', ['橘子', '香蕉']]   # 一袋橘子连袋进去\n\n>>> bag = ['苹果']\n>>> bag.extend(['橘子', '香蕉'])\n>>> bag\n['苹果', '橘子', '香蕉']     # 橘子、香蕉各自进去\n```\n\n不过这个类比有一处会失真：塑料袋在 Python 里对应的是**可迭代对象**（list、字符串、range 等），而不是装橘子的那个物理袋子。`extend` 只认“能被逐个取出元素”的东西，普通数字就没法倒出来，这属于类比照不到的边界。\n\n来源：Python 官方教程《5. 数据结构 / 5.1 列表详解》 https://docs.python.org/zh-cn/3.10/tutorial/datastructures.html 及英文版 https://docs.python.org/3/tutorial/datastructures.html 。\n\n### 参考资料\n\n- [5. Data Structures — Python 3.10.20 documentation](https://docs.python.org/3.10/tutorial/datastructures.html)\n\n---\n\n### 想一想\n\n如果购物袋类比里 `extend` 是“把橘子一个个倒进去”，那 `extend` 收到一个字符串 `'abc'` 时，倒进去的是几个元素？"
+      ],
+      "read_sources": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.14.7 documentation",
+          "fetched_at": "2026-09-17T04:18:10.314574+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.10/tutorial/datastructures.html",
+          "title": "5. 数据结构 — Python 3.10.20 文档",
+          "fetched_at": "2026-09-17T04:18:12.522734+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://docs.python.org/3.10/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.10.20 documentation",
+          "fetched_at": "2026-09-17T04:18:14.745137+00:00",
+          "content_chars": 10000
+        }
+      ],
+      "search_calls": 0,
+      "search_attempts": 0,
+      "model_task_nodes": [
+        "intent_decided",
+        "task_updated",
+        "lesson",
+        "lesson",
+        "task_updated"
+      ]
+    }
+  ]
+}

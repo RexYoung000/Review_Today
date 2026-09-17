@@ -39,6 +39,9 @@ def read_provider():
 
 
 def _backend(provider):
+    if provider == 'exa':
+        from agent_service.exa_tools import ExaBackend
+        return ExaBackend()
     if provider == 'tavily':
         from agent_service.tavily_tools import TavilyBackend
         return TavilyBackend(os.getenv('TAVILY_API_KEY', '').strip())

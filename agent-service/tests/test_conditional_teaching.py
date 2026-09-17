@@ -235,6 +235,53 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertTrue(all('model' not in json.loads(r.content) for r in requests))
         self.assertIn("https://example.com/rag", data["messages"][-1]["content"])
 
+    def test_search_quota_error_is_not_retried_or_presented_as_verified(self):
+        from agent_service.call_errors import WebToolError
+        self.decision = intent("question", public_search_query="RAG")
+        with patch("agent_service.conversation.web_search_text", side_effect=WebToolError("RATE_LIMIT")) as search:
+            accepted = self.send("RAG 是什么")
+        run = self.state()["runs"][accepted.run_id]
+        self.assertEqual(search.call_count, 1)
+        self.assertEqual(run["search_state"], "failed")
+        self.assertIn("使用限额", run["teaching_evidence"]["summary"])
+        self.assertEqual(run["teaching_evidence"]["sources"], [])
+
+    def test_official_domains_exclude_mirrors_despite_misleading_titles(self):
+        self.decision = intent("question", public_search_query="Python official documentation")
+        base = self.model
+        def models(system, prompt, schema, **kw):
+            if schema is TeachingPreparation:
+                return TeachingPreparation(concepts=["Python"], public_query="Python list", official_sources_required=True, source_domains=["python.org"])
+            if schema is SourceList:
+                return SourceList(candidates=[dict(url="https://pythonlang.cn/docs", title="Python.org official"),
+                    dict(url="https://docs.python.org/3/", title="Python"),
+                    dict(url="https://python.org.evil.com/a", title="Python.org")])
+            if schema is EvidenceAssessmentV2:
+                self.assertIn("抓取时间", system)
+                self.assertEqual(json.loads(prompt)["allowed_domains"], ["python.org"])
+                return EvidenceAssessmentV2(state="supported", summary="官方基础内容", sources=["https://docs.python.org/3/"])
+            return base(system,prompt,schema,**kw)
+        results = json.dumps(dict(protocol="harness_web_tools_v1", results=[dict(url=u) for u in ["https://pythonlang.cn/docs","https://docs.python.org/3/","https://python.org.evil.com/a"]]))
+        with patch("agent_service.conversation.parse_model", side_effect=models), patch("agent_service.conversation.web_search_text", return_value=results) as search, patch("agent_service.conditional_teaching.fetch_public_url", return_value=("Python", "正文")) as read:
+            accepted = self.send("请查阅 Python 官方文档")
+        self.assertIn("site:python.org", search.call_args.args[0])
+        read.assert_called_once_with("https://docs.python.org/3/", on_cancel_handle=ANY)
+        self.assertEqual(self.state()["runs"][accepted.run_id]["teaching_evidence"]["sources"], ["https://docs.python.org/3/"])
+
+    def test_unknown_official_domain_cannot_be_inferred_from_search_titles(self):
+        self.decision = intent("question", public_search_query="unknown official release")
+        base = self.model
+        def models(system, prompt, schema, **kw):
+            if schema is TeachingPreparation:
+                return TeachingPreparation(concepts=["产品"], public_query="product", official_sources_required=True)
+            return base(system, prompt, schema, **kw)
+        with patch("agent_service.conversation.parse_model", side_effect=models), patch("agent_service.conversation.web_search_text") as search:
+            accepted = self.send("请核对这个产品的官网资料")
+        search.assert_not_called()
+        run = self.state()["runs"][accepted.run_id]
+        self.assertEqual(run["teaching_evidence"]["state"], "insufficient")
+        self.assertIn("官方来源", run["teaching_evidence"]["summary"])
+
     def test_uncertain_empty_question_cannot_execute_save(self):
         self.decision = intent("goal").model_copy(update={"relation": "uncertain"})
         with patch("agent_service.conversation.web_search_text") as search:

@@ -666,6 +666,8 @@ class ConversationSummary(BaseModel):
 
 
 class TeachingPreparation(BaseModel):
+    official_sources_required: bool = False
+    source_domains: list[str] = Field(default_factory=list, max_length=4)
     concepts: list[str] = Field(default_factory=list, max_length=6)
     public_query: str = Field(default="", max_length=180)
     new_knowledge: bool = True

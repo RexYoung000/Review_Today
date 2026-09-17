@@ -11,7 +11,9 @@ def diagnose(error):
     name = type(error).__name__
     request_id = getattr(error, "request_id", None)
     request_id = request_id if isinstance(request_id, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,160}", request_id) else None
-    if status in (401, 403): category = "access_denied"
+    if status == 429 or code.endswith("RATE_LIMIT"): category = "rate_limit"
+    elif code.endswith(("AUTH_REQUIRED", "CANCELLED", "TOOL_FAILED")): category = code.rsplit(".", 1)[-1].lower()
+    elif status in (401, 403): category = "access_denied"
     elif status in (400, 404, 405, 422) or code.endswith(("UNSUPPORTED", "PROTOCOL", "NOT_CONFIGURED", "INVALID_QUERY")): category = "unsupported"
     elif "NO_KEY" in str(error): category = "credential_missing"
     elif "TIMEOUT" in code or "Timeout" in name: category = "timeout"

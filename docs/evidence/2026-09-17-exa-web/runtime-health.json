@@ -1,0 +1,111 @@
+{
+  "status": "ok",
+  "key_configured": true,
+  "provider": "deepseek",
+  "ca_bundle": true,
+  "harness": "v2",
+  "conversation_protocol": 1,
+  "response_stream_protocol": 1,
+  "model_roles": {
+    "router": {
+      "model": "deepseek-flash",
+      "status": "ready",
+      "error": "",
+      "streaming": "not_applicable",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        }
+      },
+      "checked_at": 1789618894.375135,
+      "elapsed_ms": 1214,
+      "next_probe_at": null
+    },
+    "coach": {
+      "model": "deepseek-v4-flash",
+      "status": "ready",
+      "error": "",
+      "streaming": "ready",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null,
+          "streaming": "ready",
+          "stream_error": "",
+          "stream_retryable": false
+        }
+      },
+      "checked_at": 1789618894.837704,
+      "elapsed_ms": 1676,
+      "stream_error": "",
+      "stream_retryable": false,
+      "next_probe_at": null
+    },
+    "risk": {
+      "model": "deepseek-v4-pro",
+      "status": "ready",
+      "error": "",
+      "streaming": "not_applicable",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        }
+      },
+      "checked_at": 1789618896.1922328,
+      "elapsed_ms": 3031,
+      "next_probe_at": null
+    }
+  },
+  "web_search": {
+    "status": "unverified",
+    "provider": "exa",
+    "protocol": "harness_web_tools_v1",
+    "reason": "requires_search_result"
+  },
+  "web_read": {
+    "status": "unverified",
+    "provider": "exa",
+    "reason": "requires_public_page_read"
+  }
+}

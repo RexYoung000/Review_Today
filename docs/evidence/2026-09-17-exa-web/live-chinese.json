@@ -1,0 +1,105 @@
+{
+  "scenario": "chinese",
+  "passed": true,
+  "turns": [
+    {
+      "fixed_routing": false,
+      "expect_read_blocked": false,
+      "scenario": "chinese",
+      "search_adapter": {
+        "status": "unverified",
+        "provider": "exa",
+        "protocol": "harness_web_tools_v1",
+        "reason": "requires_search_result"
+      }
+    },
+    {
+      "input": "请查阅大学或权威科普资料，用中文简短解释光合作用是什么，并附上实际来源。",
+      "status": "completed",
+      "search_state": "verified",
+      "evidence": {
+        "state": "supported",
+        "summary": "光合作用的科普依据充分，主要原理一致：叶绿体是场所，光反应在类囊体膜上将光能转化为 ATP 和 NADPH 并释放氧气，暗反应即卡尔文循环在叶绿体基质中固碳并生成糖类。需要注意“暗反应”并非只在黑暗中进行，而是不直接依赖光的酶促反应；仅凭“不需要光”就该支持这一通俗表述，但学习时应理解为碳反应阶段。",
+        "sources": [
+          "https://zh.wikipedia.org/wiki/%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8",
+          "http://ibi.zju.edu.cn/bioinplant/jpkc/res/c2.pdf",
+          "https://query.libretexts.org/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/%E8%AF%BE%E6%9C%AC%EF%BC%9A%E7%94%9F%E7%89%A9%E5%AD%A6%E6%A6%82%E5%BF%B5_(OpenStax)/05%3A_%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8/5.03%3A_%E5%8A%A0%E5%B0%94%E6%96%87%E5%BE%AA%E7%8E%AF"
+        ]
+      },
+      "replies": [
+        "## 一句话回答\n\n光合作用是植物、藻类和蓝细菌等生物**利用光能，把二氧化碳和水转变成有机物（主要是糖类）并释放氧气**的过程。它把光能转化成化学能储存在有机物里，是地球上绝大多数生态系统的能量和物质来源。\n\n总反应式（[加尔文循环课本资料](https://query.libretexts.org/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/%E8%AF%BE%E6%9C%AC%EF%BC%9A%E7%94%9F%E7%89%A9%E5%AD%A6%E6%A6%82%E5%BF%B5_(OpenStax)/05%3A_%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8/5.03%3A_%E5%8A%A0%E5%B0%94%E6%96%87%E5%BE%AA%E7%8E%AF)）：\n\n```\n6CO2 + 6H2O → C6H12O6 + 6O2\n```\n\n## 两个阶段\n\n- **光反应**：在叶绿体的类囊体膜上进行，叶绿素吸收光能，分解水产生氧气，同时生成 ATP 和 NADPH 两种“能量货币”。\n- **碳反应（卡尔文循环）**：在叶绿体基质中进行，用 ATP 和 NADPH 的能量固定二氧化碳，最终合成葡萄糖等碳水化合物（[加尔文循环课本资料](https://query.libretexts.org/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/%E8%AF%BE%E6%9C%AC%EF%BC%9A%E7%94%9F%E7%89%A9%E5%AD%A6%E6%A6%82%E5%BF%B5_(OpenStax)/05%3A_%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8/5.03%3A_%E5%8A%A0%E5%B0%94%E6%96%87%E5%BE%AA%E7%8E%AF)），这一步也被俗称为“暗反应”或“暗反应阶段”。\n\n## 容易误解的点\n\n“暗反应”**并不意味着只能在黑暗中发生**。它只是不直接依赖光能，靠光反应提供的 ATP 和 NADPH 驱动；在白天有光时它同样在运转。称“暗反应”只是历史上的习惯说法，更准确的名称是**碳反应**。\n\n## 来源\n\n- [光合作用（维基百科）](https://zh.wikipedia.org/wiki/%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8)\n- [浙江大学《植物生理学》第 2 章 光合作用（PDF）](http://ibi.zju.edu.cn/bioinplant/jpkc/res/c2.pdf)\n- [加尔文循环（LibreTexts 生物学课本）](https://query.libretexts.org/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/%E8%AF%BE%E6%9C%AC%EF%BC%9A%E7%94%9F%E7%89%A9%E5%AD%A6%E6%A6%82%E5%BF%B5_(OpenStax)/05%3A_%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8/5.03%3A_%E5%8A%A0%E5%B0%94%E6%96%87%E5%BE%AA%E7%8E%AF)\n\n> 上述内容依据维基百科、浙江大学植物生理学课程资料和 LibreTexts 生物学课本整理，三者对光合作用总体过程和“暗反应”实质的表述一致。"
+      ],
+      "read_sources": [
+        {
+          "url": "https://zh.wikipedia.org/wiki/%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8",
+          "title": "光合作用",
+          "fetched_at": "2026-09-17T04:19:04.250631+00:00",
+          "content_chars": 8351
+        },
+        {
+          "url": "http://ibi.zju.edu.cn/bioinplant/jpkc/res/c2.pdf",
+          "title": "（3）NADP ATP 被用于光合碳循环（Calvin",
+          "fetched_at": "2026-09-17T04:19:06.685300+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://query.libretexts.org/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/%E8%AF%BE%E6%9C%AC%EF%BC%9A%E7%94%9F%E7%89%A9%E5%AD%A6%E6%A6%82%E5%BF%B5_(OpenStax)/05%3A_%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8/5.03%3A_%E5%8A%A0%E5%B0%94%E6%96%87%E5%BE%AA%E7%8E%AF",
+          "title": "5.3: 加尔文循环 - Global",
+          "fetched_at": "2026-09-17T04:19:08.779910+00:00",
+          "content_chars": 3171
+        }
+      ],
+      "search_calls": 1,
+      "search_attempts": 1,
+      "model_task_nodes": [
+        "intent_decided",
+        "answer",
+        "answer"
+      ]
+    },
+    {
+      "input": "只针对刚才光合作用的解释，举个生活类比就好。",
+      "status": "completed",
+      "search_state": "not_called",
+      "evidence": {
+        "state": "supported",
+        "summary": "光合作用的科普依据充分，主要原理一致：叶绿体是场所，光反应在类囊体膜上将光能转化为 ATP 和 NADPH 并释放氧气，暗反应即卡尔文循环在叶绿体基质中固碳并生成糖类。需要注意“暗反应”并非只在黑暗中进行，而是不直接依赖光的酶促反应；仅凭“不需要光”就该支持这一通俗表述，但学习时应理解为碳反应阶段。",
+        "sources": [
+          "https://zh.wikipedia.org/wiki/%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8",
+          "http://ibi.zju.edu.cn/bioinplant/jpkc/res/c2.pdf",
+          "https://query.libretexts.org/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/%E8%AF%BE%E6%9C%AC%EF%BC%9A%E7%94%9F%E7%89%A9%E5%AD%A6%E6%A6%82%E5%BF%B5_(OpenStax)/05%3A_%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8/5.03%3A_%E5%8A%A0%E5%B0%94%E6%96%87%E5%BE%AA%E7%8E%AF"
+        ]
+      },
+      "replies": [
+        "## 一个类比：植物像一家太阳能工厂\n\n把它想成一家小型工厂，厂房是**叶绿体**，车间分两块：一块装在屋顶，一块在地面。\n\n- **屋顶的光反应**：屋顶铺满太阳能板（叶绿素），白天吸收阳光。它用水做原料，把水“拆开”，放出氧气，同时生产出两种“电池”——ATP 和 NADPH。这一步必须见光，天黑了屋顶就停工。\n- **车间的碳反应**：车间把从气孔飘进来的二氧化碳（相当于**原材料**）抓住，用屋顶送下来的两种电池当动力，把它组装成糖。\n\n这个类比里最要紧的一点是：车间**不是靠阳光直接工作**，它靠的是屋顶送来的电池。\n\n## 为什么“暗反应”这个叫法容易带偏\n\n如果按上面的比喻，“暗反应”听起来像“只在夜里开工的夜班”。其实不是。\n\n屋顶白天产出的电池是**不能长期存放**的，要趁新鲜用掉，所以车间在白天也一直忙。叫它“暗反应”，只是因为这一步**不直接需要光能**；更准确的名称是**碳反应**——它的核心任务就是处理碳。\n\n顺便留意原料的去向：拆开的是**水**，放出的氧气来自水；组成糖的碳来自**二氧化碳**。这正好解释了为什么停止光照后，氧气很快就不出了，而糖的合成还能撑一小会儿——仓库里还有电池。\n\n---\n\n如果这个工厂的比喻对你顺，可以接着看：**为什么这间工厂既是地球上几乎所有食物的源头，也是大气中氧气的来源**。\n\n### 参考资料\n\n- [光合作用](https://zh.wikipedia.org/wiki/%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8)\n- [（3）NADP ATP 被用于光合碳循环（Calvin](http://ibi.zju.edu.cn/bioinplant/jpkc/res/c2.pdf)\n- [5.3: 加尔文循环 - Global](https://query.libretexts.org/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/%E8%AF%BE%E6%9C%AC%EF%BC%9A%E7%94%9F%E7%89%A9%E5%AD%A6%E6%A6%82%E5%BF%B5_(OpenStax)/05%3A_%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8/5.03%3A_%E5%8A%A0%E5%B0%94%E6%96%87%E5%BE%AA%E7%8E%AF)"
+      ],
+      "read_sources": [
+        {
+          "url": "https://zh.wikipedia.org/wiki/%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8",
+          "title": "光合作用",
+          "fetched_at": "2026-09-17T04:19:04.250631+00:00",
+          "content_chars": 8351
+        },
+        {
+          "url": "http://ibi.zju.edu.cn/bioinplant/jpkc/res/c2.pdf",
+          "title": "（3）NADP ATP 被用于光合碳循环（Calvin",
+          "fetched_at": "2026-09-17T04:19:06.685300+00:00",
+          "content_chars": 10000
+        },
+        {
+          "url": "https://query.libretexts.org/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/%E8%AF%BE%E6%9C%AC%EF%BC%9A%E7%94%9F%E7%89%A9%E5%AD%A6%E6%A6%82%E5%BF%B5_(OpenStax)/05%3A_%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8/5.03%3A_%E5%8A%A0%E5%B0%94%E6%96%87%E5%BE%AA%E7%8E%AF",
+          "title": "5.3: 加尔文循环 - Global",
+          "fetched_at": "2026-09-17T04:19:08.779910+00:00",
+          "content_chars": 3171
+        }
+      ],
+      "search_calls": 0,
+      "search_attempts": 0,
+      "model_task_nodes": [
+        "intent_decided",
+        "answer",
+        "answer"
+      ]
+    }
+  ]
+}
