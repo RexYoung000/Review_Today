@@ -14,7 +14,7 @@ import uuid
 from dataclasses import asdict
 from datetime import datetime
 
-from agent_service.capture import RISK_RULE, run_capture
+from agent_service.capture import run_capture
 from agent_service.capture.fetch import looks_like_url
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL
 from agent_service.answer_style import render_jd, render_sources, with_question
@@ -1060,7 +1060,7 @@ class ConversationHarness(ConditionalTeaching):
         return False
 
     def _evidence(self, sid, rid, rev, decision, text):
-        evidence, _ = self._prepare_teaching(sid, rid, rev, decision, force=decision.needs_verification or bool(RISK_RULE.search(text)))
+        evidence, _ = self._prepare_teaching(sid, rid, rev, decision, force=decision.cross_check_sources)
         return evidence
 
     def _respond(self, sid, rid, rev, decision, instruction, *, node, teaching=False, draft=False, generated=False):
@@ -1081,7 +1081,7 @@ class ConversationHarness(ConditionalTeaching):
             data, run = self._snapshot(sid, rid, rev)
             context, last = self._context(data, run)
             task = self._task(data, run)
-        evidence, sources = self._prepare_teaching(sid, rid, rev, decision, force=bool(RISK_RULE.search(last["content"])), instruction=instruction)
+        evidence, sources = self._prepare_teaching(sid, rid, rev, decision, force=decision.cross_check_sources, instruction=instruction)
         data, run = self._snapshot(sid, rid, rev)
         context, last = self._context(data, run)
         task = self._task(data, run)
@@ -1100,8 +1100,8 @@ class ConversationHarness(ConditionalTeaching):
                     if previous and task:
                         self._task(current, current["runs"][rid])["context"].setdefault("source_history", []).append(previous)
             sources = [s for s in sources if s.get("url") != url] + [saved]
-        source_type = "agent_generated" if generated else prior.get("source_type") or ("public_source" if sources else "user_material")
         new_user_material = "material" in decision.intents and not looks_like_url(last["content"])
+        source_type = "agent_generated" if generated else prior.get("source_type") or ("public_source" if sources else "user_material" if new_user_material else "agent_generated")
         if new_user_material:
             material_id = str(uuid.uuid5(uuid.UUID(sid), f"material:{last['message_id']}"))
             if not any(s.get("source_id") == material_id for s in sources):
@@ -1127,13 +1127,12 @@ class ConversationHarness(ConditionalTeaching):
                 "已检索到相关资料，但网页未能读取，本次尚未完成核验。",
             }:
                 coach_evidence["summary"] = ""
-            instruction += "\n本轮沿用已讲内容，不重复网页检索状态。不要追加‘本次未做网页核验’‘依据通用原理’‘需要另行查证’等通用尾注；只在实际讲到某条具体不确定结论时说明该结论的具体限制。证据不足状态仍保留，不能宣称已核验。"
+            instruction += "\n本轮无需新增网页检索，可讲解稳定知识或沿用适用的已有依据，不重复网页检索状态。不要追加‘本次未做网页核验’‘依据通用原理’‘需要另行查证’等通用尾注；只在实际讲到某条具体不确定结论时说明该结论的具体限制。证据不足状态仍保留，不能宣称已核验。"
         readable_urls = [s["url"] for s in sources if s.get("url") and s.get("content")]
         instruction += "\n本轮实际已读网页 URL：" + json.dumps(readable_urls, ensure_ascii=False) + "。引用网页只能从此列表原样选取；列表为空时，不得凭记忆补充官方出处、链接或声称已查阅/核对。检索返回候选网页不等于读过网页。"
-        source_policy = run.get("search_state") not in {None, "not_called"}
-        if source_policy:
-            with self.store.transaction(sid, rid, rev) as current:
-                current["runs"][rid]["allowed_source_urls"] = readable_urls
+        # Only actual read URLs may become citations, including no-search answers.
+        with self.store.transaction(sid, rid, rev) as current:
+            current["runs"][rid]["allowed_source_urls"] = readable_urls
         output = self._call(sid, rid, rev, node, COACH_SYSTEM,
                             json.dumps(dict(instruction=instruction, context=context, sources=sources,
                                             source_type=source_type, evidence=coach_evidence,
@@ -1142,8 +1141,7 @@ class ConversationHarness(ConditionalTeaching):
             current["runs"][rid]["learning_concepts"] = output.learning_concepts
         intro = run.get("continuation_intro")
         text = (intro + "\n\n" if intro else "") + output.message
-        if source_policy:
-            text = bound_source_links(text, readable_urls)
+        text = bound_source_links(text, readable_urls)
         for source in sources:
             if source.get("type") == "agent_generated" and not source.get("content"):
                 source["content"] = text
@@ -1157,6 +1155,10 @@ class ConversationHarness(ConditionalTeaching):
             task = self._task(data, data["runs"][rid])
             data["runs"][rid]["answer_sources"] = sources
             data["runs"][rid]["answer_source_type"] = source_type
+            if not task:
+                saved = data.setdefault("teaching_context", {})
+                saved.update(evidence=evidence, sources=sources)
+                saved["taught_concepts"] = list(dict.fromkeys(saved.get("taught_concepts", []) + output.learning_concepts))[-60:]
             if teaching:
                 data["runs"][rid]["activity_candidate"] = "lesson_step"
             elif node == "answer" and "question" in decision.intents:
@@ -1273,7 +1275,7 @@ class ConversationHarness(ConditionalTeaching):
             data["pending"] = None
         _, run = self._snapshot(sid, rid, rev)
         decision = IntentDecision.model_validate(run["intent"])
-        self._respond(sid, rid, rev, decision, "结合当前主题及用户补充的用途，自动核对公开资料并开始第一段教学。", node="lesson", teaching=True, generated=True)
+        self._respond(sid, rid, rev, decision, "结合当前主题及用户补充的用途，按需核对公开资料并开始第一段教学。", node="lesson", teaching=True, generated=True)
 
     @staticmethod
     def _public_query(value):
@@ -1294,8 +1296,14 @@ class ConversationHarness(ConditionalTeaching):
                 raise
         try:
             self._snapshot(sid, rid, rev)
+            with self.store.transaction(sid, rid, rev) as current:
+                self.store.event(current, current["runs"][rid], "source_read", "正在读取网页正文")
+            started = time.monotonic()
             result = reader(url, on_cancel_handle=register)
             self._snapshot(sid, rid, rev)
+            with self.store.transaction(sid, rid, rev) as current:
+                self.store.event(current, current["runs"][rid], "source_read", "网页内容已读取",
+                                 duration_ms=int((time.monotonic() - started) * 1000))
             return result
         finally:
             with self._worker_lock:

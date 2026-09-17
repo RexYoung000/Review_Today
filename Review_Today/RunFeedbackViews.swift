@@ -60,16 +60,28 @@ struct RunPhaseLine: View {
     private var running: Bool { MascotMotionConfiguration.phase(runStatus: run.status, started: run.startedAt != nil) == .thinking }
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 7) {
-            RunMascotIndicator(active: running, reduced: reduceMotion, color: run.errorCode == nil ? (runway.monochrome && !running ? runway.copy : runway.agent) : .orange)
-            StageSummary(text: run.userSummary, animate: running && !reduceMotion)
-            if running {
-                TimelineView(.periodic(from: .now, by: 1)) { tick in
-                    Text("\(max(0, Int(tick.date.timeIntervalSince(run.startedAt ?? tick.date)))) 秒")
-                        .monospacedDigit().foregroundStyle(.secondary)
+        HStack(alignment: .center, spacing: 12) {
+            RunMascotIndicator(active: running, reduced: reduceMotion,
+                color: run.errorCode == nil ? runway.agent : .orange,
+                size: running ? CGSize(width: 64, height: 56) : CGSize(width: 12, height: 20))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 5) {
+                HStack(alignment: .firstTextBaseline, spacing: 3) {
+                    if running { Text("［").foregroundStyle(.secondary).accessibilityHidden(true) }
+                    StageSummary(text: run.userSummary, animate: running && !reduceMotion)
+                    if running {
+                        LoadingEllipsis(reduced: reduceMotion)
+                        Text("］").foregroundStyle(.secondary).accessibilityHidden(true)
+                    }
                 }
-            } else if run.elapsedMS > 0 {
-                Text(String(format: "%.1f 秒", Double(run.elapsedMS) / 1000)).monospacedDigit().foregroundStyle(.secondary)
+                if running {
+                    TimelineView(.periodic(from: .now, by: 1)) { tick in
+                        Text("\(max(0, Int(tick.date.timeIntervalSince(run.startedAt ?? tick.date)))) 秒")
+                            .monospacedDigit().foregroundStyle(.secondary)
+                    }
+                } else if run.elapsedMS > 0 {
+                    Text(String(format: "%.1f 秒", Double(run.elapsedMS) / 1000)).monospacedDigit().foregroundStyle(.secondary)
+                }
             }
         }
         .font(.caption)
@@ -122,5 +134,18 @@ private struct StageSummary: View {
             }
             .onChange(of: animate) { _, active in if !active { shown = text } }
             .accessibilityLabel(text)
+    }
+}
+
+/// Only the dots change while a real stage is in progress; never invent steps.
+private struct LoadingEllipsis: View {
+    let reduced: Bool
+    @Environment(\.scenePhase) private var scenePhase
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 0.5, paused: reduced || scenePhase != .active)) { tick in
+            let count = reduced ? 3 : Int(tick.date.timeIntervalSinceReferenceDate * 2) % 3 + 1
+            Text(String(repeating: ".", count: count))
+                .monospaced().frame(width: 14, alignment: .leading).foregroundStyle(.secondary)
+        }.accessibilityHidden(true)
     }
 }

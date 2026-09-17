@@ -34,11 +34,16 @@ struct LearningAnswerText: View {
     }
 
     private func inline(_ value: String) -> Text {
-        Text(AnswerInlineMarkdown.parse(value))
+        Text(AnswerLinkStyle.attributed(value))
     }
 
-    private func prose(_ value: String) -> some View {
-        inline(value).font(.body).lineSpacing(5).fixedSize(horizontal: false, vertical: true)
+    @ViewBuilder private func prose(_ value: String) -> some View {
+        if let source = AnswerLinkStyle.reference(value) {
+            AnswerReferenceLink(label: source.label, url: source.url)
+        } else {
+            inline(value).font(.body).lineSpacing(5).fixedSize(horizontal: false, vertical: true)
+                .tint(.blue)
+        }
     }
 
     @ViewBuilder private func blockView(_ kind: AnswerBlock.Kind) -> some View {
@@ -159,6 +164,67 @@ struct LearningAnswerText: View {
                     }
                 }
             }.accessibilityElement(children: .contain)
+        }
+    }
+}
+
+/// Styling leaves the original Markdown and destination untouched for copying.
+enum AnswerLinkStyle {
+    static func attributed(_ value: String) -> AttributedString {
+        var result = AnswerInlineMarkdown.parse(value)
+        for run in result.runs where run.link != nil {
+            result[run.range].foregroundColor = .blue
+            result[run.range].underlineStyle = .single
+        }
+        return result
+    }
+
+    static func reference(_ value: String) -> (label: AttributedString, url: URL)? {
+        var label = AnswerInlineMarkdown.parse(value)
+        guard let url = label.runs.first?.link,
+              label.runs.allSatisfy({ $0.link == url }) else { return nil }
+        label.link = nil
+        return (label, url)
+    }
+}
+
+private struct AnswerReferenceLink: View {
+    let label: AttributedString
+    let url: URL
+    @State private var hovering = false
+    @State private var cursorPushed = false
+    @Environment(\.colorScheme) private var scheme
+    @Environment(\.openURL) private var openURL
+
+    private var styledLabel: AttributedString {
+        var value = label
+        value.link = url
+        value.foregroundColor = hovering ? (scheme == .dark ? .cyan : .indigo) : .blue
+        value.underlineStyle = .single
+        return value
+    }
+
+    var body: some View {
+        Text(styledLabel).font(.body).lineSpacing(5)
+        .fixedSize(horizontal: false, vertical: true)
+        .textSelection(.enabled)
+        .focusable()
+        .onKeyPress(.return) { openURL(url); return .handled }
+        .accessibilityLabel(Text(label))
+        .accessibilityHint("打开参考资料")
+        .accessibilityAction { openURL(url) }
+        .help(url.absoluteString)
+        .onHover { inside in
+            hovering = inside
+            if inside && !cursorPushed { NSCursor.pointingHand.push(); cursorPushed = true }
+            if !inside && cursorPushed { NSCursor.pop(); cursorPushed = false }
+        }
+        .onDisappear { if cursorPushed { NSCursor.pop(); cursorPushed = false } }
+        .contextMenu {
+            Button("复制链接") {
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(url.absoluteString, forType: .string)
+            }
         }
     }
 }

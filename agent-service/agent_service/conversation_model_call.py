@@ -42,7 +42,8 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                          {"intent": "正在理解本轮意图", "evaluate": "正在评价这次独立作答",
                           "answer": "正在准备回答", "lesson": "正在准备讲解", "organize": "正在整理知识关系",
                           "problem_answer": "正在组织基础答案与学习路径", "jd_analysis": "正在拆解岗位要求",
-                          "evidence_assessment": "正在核验回答依据", "session_summary": "正在整理会话摘要"}.get(node, "正在处理当前步骤"), model=model,
+                          "teaching_preparation": "正在梳理当前问题", "memory_selection": "正在关联学习记录",
+                          "source_candidates": "正在选择相关来源", "evidence_assessment": "正在核验回答依据", "session_summary": "正在整理会话摘要"}.get(node, "正在处理当前步骤"), model=model,
                          payload={"context_capacity": capacity})
     intent_context = json.loads(prompt) if schema is IntentDecision else None
     started = time.monotonic()

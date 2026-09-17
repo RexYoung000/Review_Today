@@ -36,8 +36,8 @@ class ConditionalTeachingTests(unittest.TestCase):
             self.decision = intent("goal", workflow="topic_exploration", scope="learning")
             self.send("我想弄懂一个概念：RAG")
             search.assert_not_called()
-            self.decision = intent("answer", workflow="topic_exploration", scope="continue_goal")
-            second = self.send("面试想学到")
+            self.decision = intent("answer", workflow="topic_exploration", scope="continue_goal", needs_verification=True)
+            second = self.send("面试想学到，请核验出处")
             self.decision = intent("continue", workflow="source_learning", scope="continue_goal", direct_teaching=True)
             third = self.send("直接教我")
         self.assertEqual(search.call_count, 1)
@@ -77,7 +77,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         def fail_preparation(system, prompt, schema, **kw):
             if schema is TeachingPreparation: raise ModelCallError("SCHEMA", "json_invalid")
             return base(system, prompt, schema, **kw)
-        self.decision = intent("question", public_search_query="RAG")
+        self.decision = intent("question", needs_verification=True, public_search_query="RAG")
         with patch("agent_service.conversation.parse_model", side_effect=fail_preparation), patch("agent_service.conversation.web_search_text", return_value="https://example.com/rag") as search, patch("agent_service.conditional_teaching.fetch_public_url", return_value=("RAG", "检索再生成")):
             accepted = self.send("我的私人资料怎么理解")
         self.assertEqual(search.call_args.args[0], "RAG")
@@ -99,7 +99,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         def fail_preparation(system, prompt, schema, **kw):
             if schema is TeachingPreparation: raise ModelCallError("SCHEMA", "json_invalid")
             return base(system, prompt, schema, **kw)
-        self.decision = intent("question", public_search_query="")
+        self.decision = intent("question", needs_verification=True, public_search_query="")
         with patch("agent_service.conversation.parse_model", side_effect=fail_preparation), patch("agent_service.conversation.web_search_text") as search:
             accepted = self.send("解释一下我的私人资料")
         search.assert_not_called()
@@ -109,7 +109,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertIn("尚未进行网页核验", self.state()["messages"][-1]["content"])
 
     def test_failed_search_followup_has_no_repeated_notice_but_refresh_and_new_topic_do(self):
-        self.decision = intent("question", public_search_query="RAG")
+        self.decision = intent("question", needs_verification=True, public_search_query="RAG")
         with patch("agent_service.conversation.web_search_text", side_effect=ModelCallError("CONNECTION")) as search:
             first = self.send("RAG 是什么")
             self.assertIn("> [!NOTE]", self.state()["messages"][-1]["content"])
@@ -130,7 +130,7 @@ class ConditionalTeachingTests(unittest.TestCase):
             self.assertIn("> [!NOTE]", self.state()["messages"][-1]["content"])
 
     def test_unavailable_service_has_own_state_and_never_calls_provider(self):
-        self.decision = intent("question", public_search_query="RAG")
+        self.decision = intent("question", needs_verification=True, public_search_query="RAG")
         with patch("agent_service.conversation.web_search_capability", return_value={"status": "unavailable"}), patch("agent_service.conversation.web_search_text") as search:
             result = self.send("RAG 是什么")
         search.assert_not_called()
@@ -140,7 +140,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertFalse(any(e["node"] == "search_attempt" for e in state["events"]))
 
     def test_new_topic_and_its_followup_do_not_reuse_previous_topic_sources(self):
-        self.decision = intent('question', public_search_query='RAG')
+        self.decision = intent('question', needs_verification=True, public_search_query='RAG')
         with patch('agent_service.conversation.web_search_text', return_value='https://example.com/rag'), patch('agent_service.conditional_teaching.fetch_public_url', return_value=('RAG', '检索再生成')):
             self.send('RAG 是什么')
         self.assertTrue(self.state()['teaching_context']['sources'])
@@ -157,7 +157,7 @@ class ConditionalTeachingTests(unittest.TestCase):
                 self.assertNotIn('https://example.com/rag', self.state()['messages'][-1]['content'])
 
     def test_example_stays_plain_answer_and_keeps_same_session_evidence(self):
-        self.decision = intent("question", public_search_query="RAG")
+        self.decision = intent("question", needs_verification=True, public_search_query="RAG")
         with patch("agent_service.conversation.web_search_text", side_effect=ModelCallError("UNSUPPORTED")) as search:
             self.send("RAG 是什么")
             self.assertFalse(self.state()["tasks"])
@@ -175,13 +175,13 @@ class ConditionalTeachingTests(unittest.TestCase):
         def fail_assessment(system, prompt, schema, **kw):
             if schema is EvidenceAssessmentV2: raise ModelCallError("UNSUPPORTED")
             return base(system, prompt, schema, **kw)
-        self.decision = intent("question", public_search_query="RAG")
+        self.decision = intent("question", needs_verification=True, public_search_query="RAG")
         with patch("agent_service.conversation.parse_model", side_effect=fail_assessment), patch("agent_service.conversation.web_search_text", return_value="https://example.com/rag"), patch("agent_service.conditional_teaching.fetch_public_url", return_value=("RAG", "检索再生成")):
             result = self.send("RAG 是什么")
         self.assertEqual(self.state()["runs"][result.run_id]["search_state"], "failed")
 
     def test_search_success_with_blocked_read_is_insufficient_not_empty_search(self):
-        self.decision = intent("question", public_search_query="RAG")
+        self.decision = intent("question", needs_verification=True, public_search_query="RAG")
         prompts = []
         base = self.model
         def inspect(system, prompt, schema, **kwargs):
@@ -206,7 +206,7 @@ class ConditionalTeachingTests(unittest.TestCase):
                     kwargs['on_partial']({'message': invented[:end]})
                 return ConversationOutput(message=invented)
             return base(system, prompt, schema, **kwargs)
-        self.decision = intent("question", public_search_query="RAG")
+        self.decision = intent("question", needs_verification=True, public_search_query="RAG")
         with patch("agent_service.conversation.parse_model", side_effect=streamed), patch("agent_service.conversation.web_search_text", return_value="https://example.com/rag"), patch("agent_service.conditional_teaching.fetch_public_url", side_effect=ValueError("RT.CAPTURE.SSRF")):
             result = self.send("RAG 是什么")
         state = self.state()
@@ -220,7 +220,7 @@ class ConditionalTeachingTests(unittest.TestCase):
     def test_independent_results_flow_through_fetch_assessment_and_citation(self):
         from agent_service.web_tools import SearchResult
         from unittest.mock import Mock
-        self.decision = intent("question", public_search_query="RAG")
+        self.decision = intent("question", needs_verification=True, public_search_query="RAG")
         backend = Mock(name="backend")
         backend.name = "test"
         backend.search.return_value = [SearchResult("https://example.com/rag", "RAG 原文")]
@@ -236,7 +236,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         import os
         import httpx
         from agent_service import tavily_tools
-        self.decision = intent("question", public_search_query="RAG")
+        self.decision = intent("question", needs_verification=True, public_search_query="RAG")
         requests = []
         def transport(request):
             requests.append(request)
@@ -254,7 +254,7 @@ class ConditionalTeachingTests(unittest.TestCase):
 
     def test_search_quota_error_is_not_retried_or_presented_as_verified(self):
         from agent_service.call_errors import WebToolError
-        self.decision = intent("question", public_search_query="RAG")
+        self.decision = intent("question", needs_verification=True, public_search_query="RAG")
         with patch("agent_service.conversation.web_search_text", side_effect=WebToolError("RATE_LIMIT")) as search:
             accepted = self.send("RAG 是什么")
         run = self.state()["runs"][accepted.run_id]
@@ -264,7 +264,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertEqual(run["teaching_evidence"]["sources"], [])
 
     def test_official_domains_exclude_mirrors_despite_misleading_titles(self):
-        self.decision = intent("question", public_search_query="Python official documentation")
+        self.decision = intent("question", needs_verification=True, public_search_query="Python official documentation")
         base = self.model
         def models(system, prompt, schema, **kw):
             if schema is TeachingPreparation:
@@ -286,7 +286,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertEqual(self.state()["runs"][accepted.run_id]["teaching_evidence"]["sources"], ["https://docs.python.org/3/"])
 
     def test_unknown_official_domain_cannot_be_inferred_from_search_titles(self):
-        self.decision = intent("question", public_search_query="unknown official release")
+        self.decision = intent("question", needs_verification=True, public_search_query="unknown official release")
         base = self.model
         def models(system, prompt, schema, **kw):
             if schema is TeachingPreparation:
@@ -375,7 +375,7 @@ class ConditionalTeachingTests(unittest.TestCase):
             if schema is EvidenceAssessmentV2:
                 return EvidenceAssessmentV2(state="conflicting", summary="两种定义的范围不同", sources=["https://example.com/rag"])
             return base(system, prompt, schema, **kw)
-        self.decision = intent("question")
+        self.decision = intent("question", needs_verification=True)
         with patch("agent_service.conversation.parse_model", side_effect=conflicting), patch("agent_service.conversation.web_search_text", return_value="https://example.com/rag"), patch("agent_service.conditional_teaching.fetch_public_url", return_value=("资料", "范围差异")):
             accepted = self.send("RAG 是什么")
         self.assertEqual(self.state()["runs"][accepted.run_id]["search_state"], "conflicting")
@@ -444,7 +444,7 @@ class ConditionalTeachingTests(unittest.TestCase):
             if schema is SourceList:
                 return SourceList(candidates=[])
             return base(system, prompt, schema, **kw)
-        self.decision = intent("question")
+        self.decision = intent("question", needs_verification=True)
         with patch("agent_service.conversation.parse_model", side_effect=missing_query), patch("agent_service.conversation.web_search_text", return_value="无合适结果") as search:
             accepted = self.send("我的私人草稿里的这个技术概念怎么解释")
         self.assertEqual(search.call_args.args[0], "RAG")
@@ -467,7 +467,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         backends['exa'].search.side_effect=WebToolError('RATE_LIMIT')
         backends['tavily'].search.return_value=[SearchResult('https://example.com/rag','RAG')]
         backends['tavily'].read.return_value=('RAG','先检索再生成')
-        self.decision=intent('question',public_search_query='RAG')
+        self.decision=intent('question',needs_verification=True,public_search_query='RAG')
         with patch.dict(os.environ,{'REVIEW_TODAY_SEARCH_PROVIDER':'exa','REVIEW_TODAY_SEARCH_FALLBACKS':'tavily','REVIEW_TODAY_READ_PROVIDER':'exa','REVIEW_TODAY_READ_FALLBACKS':'tavily'}), patch.object(web_resilience,'_states',{}), patch('agent_service.web_tools._backend',side_effect=lambda name:backends[name]):
             result=self.send('RAG 是什么')
         state=self.state();run=state['runs'][result.run_id]
@@ -480,7 +480,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertEqual(public['payload']['web_provider'],'tavily')
 
     def test_brave_chunks_recovery_never_becomes_full_page_evidence(self):
-        self.decision=intent('question',public_search_query='RAG')
+        self.decision=intent('question',needs_verification=True,public_search_query='RAG')
         from agent_service.call_errors import WebToolError
         chunks=[dict(url='https://example.com/rag',title='RAG',content='相关正文片段',provider='brave',content_kind='extracted_chunks')]
         with patch('agent_service.conversation.web_search_text',return_value='https://example.com/rag'), patch('agent_service.conditional_teaching.fetch_public_url',side_effect=WebToolError('CHAIN_FAILED')), patch('agent_service.web_tools.web_context_pages',return_value=chunks) as recovery:

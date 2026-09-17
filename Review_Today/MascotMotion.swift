@@ -250,6 +250,7 @@ struct RunMascotIndicator: View {
     var active: Bool
     var reduced: Bool
     var color: Color = .secondary
+    var size = CGSize(width: 32, height: 28)
     @State private var showing = false
     var body: some View {
         Group {
@@ -257,7 +258,7 @@ struct RunMascotIndicator: View {
                 MascotMotion(phase: active ? .thinking : .idle, reduced: reduced)
             } else { Circle().fill(color).frame(width: 6, height: 6) }
         }
-        .frame(width: 32, height: 28)
+        .frame(width: size.width, height: size.height)
         .task(id: active) {
             if active { showing = true }
             else {

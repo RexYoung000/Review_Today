@@ -1,0 +1,15 @@
+A009: CJK strong emphasis, exact text, code, escapes, links and streaming prefixes passed
+AnswerDocument: blocks, incremental rows/flows, malformed fallbacks, Unicode and question dedup passed; long parse 18 ms
+PASS executable: AnswerDocumentContractTests
+PASS: ancestor-focus guard, rendered single-row focus independent of selection, light/dark/disabled
+PASS executable: InteractionFocusTests
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+Controlled stop save: 0.001132292 seconds; full replay suite: 0.026575042 seconds
+PASS executable: ConversationReplayTests
+SSE frames: 3, span: 0.4501490592956543, delays: [0.021819114685058594, 0.02089095115661621, 0.02319931983947754]
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+Controlled stop save: 0.001011833 seconds; full replay suite: 0.022879 seconds
+PASS: real SSE Unicode transport, incremental delivery, max controlled receive delay 23 ms
+All selected contracts complete: /tmp/review-today-shared-contracts.2msdc3rf
+Debug Apple Development build: BUILD SUCCEEDED
+codesign --verify --deep --strict: passed

@@ -19,6 +19,7 @@ QUEUE_SECONDS = 2
 
 @dataclass
 class WebRound:
+    seconds: float = ROUND_SECONDS
     spent: float = 0
     calls: int = 0
     on_event: object = None
@@ -27,7 +28,7 @@ class WebRound:
     def check(self):
         if self.check_cancel:
             self.check_cancel()
-        if self.spent >= ROUND_SECONDS or self.calls >= ROUND_CALLS:
+        if self.spent >= self.seconds or self.calls >= ROUND_CALLS:
             raise WebToolError('BUDGET_EXHAUSTED')
 
 
@@ -35,11 +36,11 @@ active_round = ContextVar('web_round', default=None)
 
 
 @contextmanager
-def web_round_scope(*, on_event=None, check_cancel=None):
+def web_round_scope(*, on_event=None, check_cancel=None, seconds=ROUND_SECONDS):
     if active_round.get() is not None:
         yield active_round.get()
         return
-    state = WebRound(on_event=on_event, check_cancel=check_cancel)
+    state = WebRound(on_event=on_event, check_cancel=check_cancel, seconds=seconds)
     token = active_round.set(state)
     try:
         yield state
@@ -109,7 +110,7 @@ def route(providers, operation, invoke, *, on_cancel_handle=None):
         on_cancel_handle(cancel)
     with web_round_scope() as state:
         started = time.monotonic()
-        deadline = started + min(CHAIN_SECONDS, ROUND_SECONDS - state.spent)
+        deadline = started + min(CHAIN_SECONDS, state.seconds - state.spent)
         empty_result = None
         empty_searches = 0
         last_error = WebToolError('NOT_CONFIGURED')

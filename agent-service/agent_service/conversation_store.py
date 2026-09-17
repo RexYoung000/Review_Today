@@ -225,7 +225,9 @@ class ConversationStore:
             event["message"] = dict(message_id=message_id or str(uuid.uuid4()), role="coach", content=message, created_at=event["occurred_at"])
             data["messages"].append(dict(event["message"], run_id=run["run_id"], task_id=run.get("task_id")))
         data["events"].append(event)
-        if not stage.startswith("response."):
+        telemetry = stage in {"model_attempt", "model_attempt_failed", "context_capacity", "transport"} or (duration_ms is not None and not error)
+        telemetry = telemetry or (stage == "web_provider" and (payload or {}).get("status") != "started")
+        if not stage.startswith("response.") and not telemetry:
             run.update(stage=stage, user_summary=summary, error_code=error, updated_at=event["occurred_at"])
         return event
 

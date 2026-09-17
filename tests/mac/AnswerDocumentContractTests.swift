@@ -1,8 +1,16 @@
 import Foundation
+import SwiftUI
 
 @main
 struct AnswerDocumentContractTests {
     static func main() {
+        let linked = AnswerLinkStyle.attributed("正文与[来源](https://example.com)及 `代码`")
+        precondition(linked.runs.filter { $0.link != nil }.allSatisfy { $0.foregroundColor == Color.blue && $0.underlineStyle == .single })
+        precondition(linked.runs.filter { $0.link == nil }.allSatisfy { $0.foregroundColor == nil })
+        let reference = AnswerLinkStyle.reference("[官方 **说明**](https://example.com)")!
+        precondition(reference.url.absoluteString == "https://example.com")
+        precondition(String(reference.label.characters) == "官方 说明" && reference.label.runs.allSatisfy { $0.link == nil })
+        precondition(AnswerLinkStyle.reference("正文与[来源](https://example.com)") == nil)
         let originalSentence = "不会没用，但**「有用」的地方会换位置**。这轮先只讲清楚换到哪儿去。"
         let emphasized = AnswerInlineMarkdown.parse(originalSentence)
         precondition(String(emphasized.characters) == "不会没用，但「有用」的地方会换位置。这轮先只讲清楚换到哪儿去。")

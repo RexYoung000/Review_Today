@@ -1,0 +1,17 @@
+{
+  "status": "ok",
+  "conversation_protocol": 1,
+  "response_stream_protocol": 1,
+  "web_search": {
+    "status": "unverified",
+    "provider": "exa"
+  },
+  "web_read": {
+    "status": "unverified",
+    "provider": "exa"
+  },
+  "web_context": {
+    "status": "unavailable",
+    "provider": "none"
+  }
+}

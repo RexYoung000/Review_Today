@@ -593,6 +593,7 @@ class IntentDecision(BaseModel):
     answer_only: bool = False
     is_jd: bool = False
     needs_verification: bool = False
+    cross_check_sources: bool = False
     requested_mode: SessionMode | None = None
     refresh_sources: bool = False
     public_search_query: str = Field(default="", max_length=180)
