@@ -596,6 +596,7 @@ class ConversationHarness(ConditionalTeaching):
         else:
             decision = self._call(sid, rid, rev, "intent", INTENT_SYSTEM,
                                   json.dumps(dialogue_routing.intent_context(context), ensure_ascii=False), IntentDecision, ROUTER_MODEL)
+        decision = dialogue_routing.normalize(data, decision, last)
         if goal_continuation.handle(self, sid, rid, rev, decision, last):
             return
         if dialogue_routing.handle(self, sid, rid, rev, decision, last):
@@ -755,6 +756,17 @@ class ConversationHarness(ConditionalTeaching):
         if decision.clarification:
             self._publish(sid, rid, rev, decision.clarification)
             return
+        if dialogue_routing.ordinary_question(data, decision, last):
+            dialogue_routing.retire_misrouted_task(self, sid, rid, rev)
+            with self.store.transaction(sid, rid, rev) as current:
+                active = current['runs'][rid]
+                if decision.relation == 'new_topic' or not self._task(current, active):
+                    active.update(dialogue_only=True, task_id=None)
+                if not current.get('focus_goal'):
+                    current['focus_goal'] = last['content'][:2000]
+            self._respond(sid, rid, rev, decision,
+                          "直接回答本轮问题；不要求先确定学习目标，不启动课程或检查。普通概念首问用简短定义、核心作用和一个小例子即可，不展开成整篇教程；除非用户明确要求详解，正文尽量控制在 400 个汉字内。追问只补本轮内容，不复述上一轮；要一个例子/类比就只给一个，正文尽量在 250 个汉字内，不附额外类比、路线或测验。术语多义时先简短区分常见含义；没有明确领域依据只能说‘如果你指的是……’，不能说‘从上下文看你指的是……’。", node="answer")
+            return
         # A pending Session boundary is resolved before touching the old learning goal.
         if decision.relation == "new_topic" and (data["active_task_id"] or data.get("focus_goal")):
             with self.store.transaction(sid, rid, rev) as data:
@@ -875,7 +887,8 @@ class ConversationHarness(ConditionalTeaching):
         workflow = decision.workflow or "topic_exploration"
         if data["mode"] != "auto" and not decision.answer_only:
             workflow = data["mode"]
-        full_goal = (decision.scope in {"learning", "continue_goal"} or "goal" in intents or
+        full_goal = ("goal" in intents or (task is not None and decision.scope == "continue_goal") or
+                     (data["mode"] != "auto" and decision.scope == "learning") or decision.direct_teaching or
                      (data["mode"] == "problem_solving" and "question" in intents)) and not decision.answer_only
         if "material" in intents and not task and data["mode"] == "auto":
             workflow = "memory_organization"

@@ -22,6 +22,7 @@ PREPARE = """规划本轮实际要讲解的知识点，不生成正文。只返�
 结合用户目标、当前步骤和补充，给 1–6 个概念/必要前置概念；无实质知识就给空 concepts。
 public_query 仅由公开概念和事实组成，不能包含私人资料、人名、联系方式、凭证、私有地址或整段用户原文。
 查询聚焦当前知识点的原理和适用范围，优先定位原始论文、官方文档或专业机构资料；面试等用途用于调整讲解，不把查询泛化成整套面试题汇总。
+多义术语不能依据猜测缩窄领域。用户单问 harness 时先覆盖通用含义及 Agent/测试语境的区别；用户明确问 Agent harness 才聚焦 Agent。用户本轮明确对象优先于旧 topic，不把前面“我不知道学什么”当作学习计划要求。
 对已讲内容的解释/例子/提示、同知识点续问，new_knowledge=false；新知识点为 true。是否为新知识与网页是否核验成功无关，不能因上次检索失败而把同一概念重复标为新知识。
 '直接教我'是教学要求，沿用当前目标生成公开概念查询，不能把这句话当搜索词。
 用户明确要求官方资料/官网核验时 official_sources_required=true，source_domains 给出该机构/产品已明确知道的官网域名（仅域名，不含协议路径）；须在看到搜索结果前确定，不能由网页标题反推官网。不能确定域名时留空，不能猜测。普通概念检索 official_sources_required=false、source_domains=[]。官方查询优先使用产品原名与英文关键词，避免只搜中文导致镜像站占据结果。
@@ -132,6 +133,11 @@ class ConditionalTeaching:
         context, last = self._context(data, run)
         task = self._task(data, run)
         prior = task["context"] if task else data.get("teaching_context", {})
+        if decision.relation == "new_topic":
+            prior = {}  # An independent question cannot inherit old-topic evidence.
+            if not task:
+                with self.store.transaction(sid, rid, rev) as current:
+                    current['teaching_context'] = {}
         # A plain answer can become a learning task on the next example. Keep
         # that same-session evidence when routing explicitly continues the topic.
         # New/uncertain topics and goals from other sessions never inherit it.

@@ -13,6 +13,9 @@ learning_goal_ready 表示主题和使用目的已足够开始一小段讲解。
 能力范围仅限文字与公开链接的知识整理、资料学习、主题探索、问题攻克及用户确认后的知识与复习；不声称能语音、后台监视或任意操作电脑。
 只要附带知识问题、追问、目标、确认/拒绝、保存/切换/停止等操作或需要澄清，light_reply 必须留空，不用短回答绕过后续检查。
 Auto 普通问题先回答：question + conversation + answer_only=true，不建立训练目标。
+“X 是什么、有什么作用”“再举个例子”“这是什么意思”是普通问题，不是系统学习授权；即使前面说“我不知道学什么”，现在提出具体问题也应直接解释。workflow=null，不追问学习用途。只有明确要求系统学习、课程/计划、练习或攻克目标才标 goal；不能因为知识陌生或需要网页核验就标 learning。
+术语的领域必须有当前用户或有效上下文依据；例如单独问 harness 不得擅自认定测试 harness。无领域时可先给通用含义并简短区分 Agent/测试等含义；有明确 AI Agent 上下文就解释 Agent harness。不要为此询问学习目标。
+“我只是问它是什么”“先回答我的问题”“别问学习目标”等指出流程跑偏时 conversation_repair=true，repair_target_message_id 指向尚未回答的原问题；不是知识纠正，也不是继续课程授权。
 Auto 无用途资料、没有可续接任务：material + organize，用 memory_organization 轻量梳理，不能假定理解或授权保存。
 明确选择 problem_solving 后的新问题默认 learning；用户明确说仅解释/不要训练时 answer_only=true。
 memory_organization 是知识整理：组织知识关系、先交付草稿，不代表用户懂了或授权入库。

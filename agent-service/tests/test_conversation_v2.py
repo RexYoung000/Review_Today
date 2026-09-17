@@ -648,15 +648,15 @@ class ConversationTests(unittest.TestCase):
     def test_confirm_continue_session_answers_stored_question_without_repetition(self):
         self.decision = intent("question", answer_only=True)
         self.send("RAG 是什么")
-        self.decision = intent("question", answer_only=True).model_copy(update={"relation": "new_topic"})
-        self.send("如何学吉他")
+        self.decision = intent("goal", scope="learning", workflow="source_learning").model_copy(update={"relation": "new_topic"})
+        self.send("请带我系统学习吉他")
         pending = self.state()["pending"]
         self.decision = intent("confirm")
         self.send("继续放在这里", operation={"kind":"continue_session", "target_id":pending["target_id"], "version":pending["version"]})
         self.assertIsNone(self.state()["pending"])
-        self.assertEqual(self.state()["focus_goal"], "如何学吉他")
+        self.assertEqual(self.state()["focus_goal"], "请带我系统学习吉他")
         last_coach = [c for schema,c in self.calls if schema is ConversationOutput][-1]
-        self.assertEqual(last_coach["context"]["current_inputs"], ["如何学吉他"])
+        self.assertEqual(last_coach["context"]["current_inputs"], ["请带我系统学习吉他"])
 
     def test_first_direct_teaching_goal_does_not_require_a_nonexistent_confirmation(self):
         self.decision = intent("goal", "skip_check", workflow="source_learning", scope="learning", direct_teaching=True,

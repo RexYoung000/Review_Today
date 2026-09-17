@@ -2,6 +2,51 @@
 from agent_service.schemas import IntentDecision
 
 LEGACY_QUESTION = '你希望继续刚才的内容，还是开始一个新的学习问题？'
+LOCAL_QUESTIONS = {'question', 'followup', 'example', 'hint'}
+
+
+def ordinary_question(data, decision, last):
+    """A workflow/scope suggestion alone cannot authorize a learning task."""
+    return (data['mode'] == 'auto' and bool(decision.intents)
+            and set(decision.intents) <= LOCAL_QUESTIONS
+            and not (last.get('operation') or decision.proposed_actions or decision.requested_mode
+                     or decision.direct_teaching or decision.is_jd or decision.continuation_evidence)
+            and decision.programming_boundary == 'none')
+
+
+def normalize(data, decision, last):
+    if ordinary_question(data, decision, last):
+        return decision.model_copy(update={'scope': 'conversation', 'workflow': None, 'answer_only': True})
+    return decision
+
+
+def retire_misrouted_task(harness, sid, rid, rev):
+    """Retire only a proven pre-teaching Auto question misclassified as a goal."""
+    with harness.store.transaction(sid, rid, rev) as data:
+        run = data['runs'][rid]
+        task = harness._task(data, run)
+        if not task or task['stage'] != 'clarify_goal' or task['status'] != 'awaiting_user':
+            return
+        context = task['context']
+        if any(context.get(k) for k in ('learning_plan', 'sources', 'draft', 'check_question', 'learning_outcome')):
+            return
+        origin = data['runs'].get(context.get('origin_run_id'), {})
+        raw = origin.get('intent')
+        original = next((m for m in data['messages'] if m['message_id'] == task['client_message_id']), None)
+        if not raw or not original or origin.get('decision_mode') != 'auto':
+            return
+        if not ordinary_question({'mode': 'auto'}, IntentDecision.model_validate(raw), original):
+            return
+        task.update(status='cancelled', stage='routing_corrected', required_action=None,
+                    user_summary='已取消误建的学习任务')
+        context['routing_corrected'] = True
+        harness._project_event(data, run, task)
+        if data.get('active_task_id') == task['task_id']:
+            data['active_task_id'] = None
+            if data.get('focus_goal') in {task['content'], original['content']}:
+                data['focus_goal'] = ''
+        if run.get('task_id') == task['task_id']:
+            run['task_id'] = None
 
 
 def intent_context(context):
@@ -28,6 +73,7 @@ def handle(harness, sid, rid, rev, decision, last):
         if not identified and not pending and len(earlier) >= 4 and earlier[-3]['content'] == LEGACY_QUESTION and earlier[-4]['role'] == 'user':
             identified = dict(content=earlier[-4]['content'], message_id=earlier[-4]['message_id'])
         original = identified or pending or next((dict(content=m['content'], message_id=m['message_id']) for m in reversed(earlier) if m['role'] == 'user'), None)
+        retire_misrouted_task(harness, sid, rid, rev)
         with harness.store.transaction(sid, rid, rev) as current:
             active = current['runs'][rid]
             active.update(intent=decision.model_dump(), dialogue_only=True)
@@ -37,7 +83,7 @@ def handle(harness, sid, rid, rev, decision, last):
         local = IntentDecision(intents=['question'], relation='continuation', scope='conversation', answer_only=True,
                                rationale='核对会话反馈，局部回答原问题，不修改学习状态。')
         harness._respond(sid, rid, rev, local,
-            '用户指出了会话上下文判断问题。根据当前会话的实际消息核对并简短纠正此前不成立的前提，再回答 current_inputs 的原问题；没有证据不声称之前聊过。不要重复询问继续还是新话题，不评价知识掌握、不修改计划。', node='answer')
+            '用户指出了会话上下文或流程判断问题。先用一句话纠正误解，再直接回答 current_inputs 的原问题；普通概念简短说明定义、作用和一个例子，正文尽量控制在 400 个汉字内。无领域依据先区分常见含义，不能替用户认定领域。不要再问学习目标或继续/新话题，不评价知识掌握、不修改真实学习计划。', node='answer')
         return True
     # Uncertain state-changing requests need a concrete object before routing.
     if decision.relation == 'uncertain' and (set(decision.intents) & {'goal', 'confirm'} or decision.proposed_actions) and not decision.answer_only and not decision.clarification:

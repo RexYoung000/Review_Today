@@ -139,7 +139,24 @@ class ConditionalTeachingTests(unittest.TestCase):
         self.assertIn("网页检索服务不可用", state["messages"][-1]["content"])
         self.assertFalse(any(e["node"] == "search_attempt" for e in state["events"]))
 
-    def test_example_becoming_learning_task_keeps_same_session_evidence(self):
+    def test_new_topic_and_its_followup_do_not_reuse_previous_topic_sources(self):
+        self.decision = intent('question', public_search_query='RAG')
+        with patch('agent_service.conversation.web_search_text', return_value='https://example.com/rag'), patch('agent_service.conditional_teaching.fetch_public_url', return_value=('RAG', '检索再生成')):
+            self.send('RAG 是什么')
+        self.assertTrue(self.state()['teaching_context']['sources'])
+        base = self.model
+        def no_new_sources(system, user, schema, **kwargs):
+            if schema is TeachingPreparation:
+                return TeachingPreparation(concepts=[], public_query='', new_knowledge=False)
+            return base(system, user, schema, **kwargs)
+        with patch('agent_service.conversation.parse_model', side_effect=no_new_sources):
+            for relation, content in [('new_topic','和弦是什么'), ('continuation','给刚才的和弦举个例子')]:
+                self.decision = intent('question').model_copy(update={'relation':relation})
+                result = self.send(content)
+                self.assertFalse(self.state()['runs'][result.run_id]['teaching_sources'])
+                self.assertNotIn('https://example.com/rag', self.state()['messages'][-1]['content'])
+
+    def test_example_stays_plain_answer_and_keeps_same_session_evidence(self):
         self.decision = intent("question", public_search_query="RAG")
         with patch("agent_service.conversation.web_search_text", side_effect=ModelCallError("UNSUPPORTED")) as search:
             self.send("RAG 是什么")
@@ -148,10 +165,10 @@ class ConditionalTeachingTests(unittest.TestCase):
             result = self.send("追问，举例解释刚才的 RAG")
             self.assertEqual(search.call_count, 1)
         state = self.state()
-        self.assertTrue(state["tasks"])
+        self.assertFalse(state["tasks"])
         self.assertEqual(state["runs"][result.run_id]["search_state"], "not_called")
         self.assertNotIn("[!NOTE]", state["messages"][-1]["content"])
-        self.assertEqual(next(iter(state["tasks"].values()))["context"]["evidence"]["state"], "insufficient")
+        self.assertEqual(state["teaching_context"]["evidence"]["state"], "insufficient")
 
     def test_source_assessment_unsupported_is_failure_not_search_unavailable(self):
         base = self.model
