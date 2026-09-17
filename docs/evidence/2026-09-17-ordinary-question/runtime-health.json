@@ -1,0 +1,45 @@
+{
+  "status": "ok",
+  "provider": "deepseek",
+  "web_search": {
+    "status": "unverified",
+    "provider": "exa",
+    "reason": "requires_search_result",
+    "protocol": "harness_web_tools_v1",
+    "providers": [
+      {
+        "provider": "exa",
+        "status": "unverified"
+      },
+      {
+        "provider": "tavily",
+        "status": "unverified"
+      }
+    ]
+  },
+  "web_read": {
+    "status": "unverified",
+    "provider": "exa",
+    "reason": "requires_public_page_read",
+    "providers": [
+      {
+        "provider": "exa",
+        "status": "unverified"
+      },
+      {
+        "provider": "tavily",
+        "status": "unverified"
+      }
+    ]
+  },
+  "web_context": {
+    "provider": "none",
+    "status": "unavailable",
+    "reason": "RT.WEB.NOT_CONFIGURED"
+  },
+  "model_roles": {
+    "router": "ready",
+    "coach": "ready",
+    "risk": "ready"
+  }
+}
