@@ -167,6 +167,99 @@ class GoalContinuationTests(unittest.TestCase):
         self.f.decision=intent('continue',scope='continue_goal',workflow='source_learning',learning_goal_ready=True)
         self.f.send('继续上次没学完的光合作用')
         self.assertFalse(self.f.state()['tasks']);self.assertIn('没有找到',self.f.state()['messages'][-1]['content'])
+
+    def test_next_topic_content_clarification_does_not_query_old_goals(self):
+        for old_goal in (False, True):
+            for scope in ('conversation', 'continue_goal'):
+                with self.subTest(old_goal=old_goal, scope=scope):
+                    self.f.sid=str(uuid.uuid4())
+                    source=self.seed() if old_goal else None
+                    self.f.decision=intent('question',answer_only=True)
+                    self.f.send('大模型是如何生成回复的？')
+                    answer=self.f.state()['messages'][-1]
+                    history=copy.deepcopy(self.f.state()['messages'])
+                    clarification='好，这一段先到这里。接下来想了解什么？'
+                    self.f.decision=intent('continue',scope=scope,
+                        clarification_kind='content',clarification=clarification,
+                        topic_closure=dict(evidence='好的，先这样吧',title='语言模型生成回复',
+                            message_ids=[answer['message_id']],next_request='我们学下一个内容'))
+                    with patch.object(self.f.harness,'_call',wraps=self.f.harness._call) as calls, \
+                         patch('agent_service.goal_continuation.candidates',wraps=candidates) as query:
+                        result=self.f.send('好的，先这样吧，我们学下一个内容')
+                    state=self.f.state()
+                    self.assertEqual(state['runs'][result.run_id]['status'],'completed')
+                    self.assertEqual(state['messages'][-1]['content'],clarification)
+                    self.assertEqual(state['messages'][:len(history)],history)
+                    self.assertFalse(state['tasks']);self.assertFalse(state.get('capture_offers'))
+                    self.assertEqual([c.args[3] for c in calls.call_args_list],['intent'])
+                    query.assert_not_called();self.f.capture.assert_not_called()
+                    if source:
+                        self.assertTrue(owns(self.f.store.get(source[0])['tasks'][source[1]]))
+
+    def test_local_continue_uses_current_dialogue_without_recovery(self):
+        source,tid=self.seed()
+        self.f.decision=intent('question',answer_only=True)
+        self.f.send('请介绍大模型生成回答的原理')
+        self.f.decision=intent('continue',scope='conversation')
+        with patch.object(self.f.harness,'_call',wraps=self.f.harness._call) as calls:
+            self.f.send('接着解释第二点')
+        self.assertEqual(self.f.state()['messages'][-1]['content'],'这是本轮真实回答。')
+        self.assertFalse(self.f.state()['tasks'])
+        self.assertFalse(any(c.args[3].startswith('continuation_') for c in calls.call_args_list))
+        self.assertTrue(owns(self.f.store.get(source)['tasks'][tid]))
+
+    def test_next_step_preserves_current_plan_and_ownership(self):
+        sid,tid=self.seed()
+        before=copy.deepcopy(self.f.store.get(sid)['tasks'][tid])
+        self.f.decision=intent('continue',scope='continue_goal',target_task_id=tid)
+        with patch.object(self.f.harness,'_call',wraps=self.f.harness._call) as calls:
+            result=self.f.send('好的，先这样吧，我们学下一个内容',sid=sid)
+        data=self.f.store.get(sid);after=data['tasks'][tid]
+        self.assertEqual(data['runs'][result.run_id]['status'],'completed')
+        self.assertEqual(data['active_task_id'],tid);self.assertEqual(len(data['tasks']),1)
+        self.assertEqual(ownership(after),ownership(before))
+        self.assertEqual(after['context']['understanding'],'unknown')
+        self.assertEqual([s['id'] for s in after['context']['learning_plan']['steps']],
+                         [s['id'] for s in before['context']['learning_plan']['steps']])
+        self.assertTrue(any(c.args[3]=='lesson' for c in calls.call_args_list))
+        self.assertFalse(any(c.args[3].startswith('continuation_') for c in calls.call_args_list))
+
+    def test_local_topic_question_in_transferred_history_is_not_redirected(self):
+        sid,tid=self.seed();self.resume()
+        self.f.decision=intent('continue',scope='conversation',clarification_kind='content',
+                              clarification='接下来想了解什么？')
+        self.f.send('我们学下一个内容',sid=sid)
+        data=self.f.store.get(sid)
+        self.assertEqual(data['messages'][-1]['content'],'接下来想了解什么？')
+        self.assertFalse(owns(data['tasks'][tid]))
+
+    def test_negative_recovery_returns_to_current_dialogue(self):
+        self.f.decision=intent('question',answer_only=True)
+        self.f.send('大模型如何生成回答？')
+        self.f.decision=intent('continue',scope='continue_goal',direct_teaching=True,
+                              workflow='source_learning',learning_goal_ready=True)
+        normal=self.f.harness._call
+        def model(*args,**kwargs):
+            if args[3]=='continuation_intent':
+                context=json.loads(args[5])
+                self.assertIn('recent_messages',context)
+                self.assertNotIn('memory_candidates',context)
+                return ContinuationRequest(evidence='',topic='')
+            return normal(*args,**kwargs)
+        with patch.object(self.f.harness,'_call',side_effect=model):
+            self.f.send('接着说')
+        self.assertFalse(self.f.state()['tasks'])
+        self.assertEqual(self.f.state()['messages'][-1]['content'],'这是本轮真实回答。')
+
+    def test_continuation_recovery_does_not_swallow_an_explicit_operation(self):
+        self.f.decision=intent('continue',scope='continue_goal',requested_mode='source_learning',
+            proposed_actions=[dict(kind='set_mode',disposition='request',evidence='切换到资料学习')])
+        with patch.object(self.f.harness,'_call',wraps=self.f.harness._call) as calls:
+            self.f.send('继续之前，先切换到资料学习')
+        self.assertEqual(self.f.state()['mode'],'source_learning')
+        self.assertFalse(self.f.state()['tasks'])
+        self.assertFalse(any(c.args[3].startswith('continuation_') for c in calls.call_args_list))
+
     def test_atomic_failure_keeps_source_owner_and_creates_no_destination(self):
         sid,tid=self.seed()
         with self.f.tasks._connection() as db:

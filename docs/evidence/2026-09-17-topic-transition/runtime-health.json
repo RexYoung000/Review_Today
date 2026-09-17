@@ -1,0 +1,100 @@
+{
+  "old_pid": 84242,
+  "new_pid": 88245,
+  "status": "ok",
+  "provider": "deepseek",
+  "roles": {
+    "router": {
+      "model": "deepseek-flash",
+      "status": "ready",
+      "error": "",
+      "streaming": "not_applicable",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        }
+      },
+      "checked_at": 1789641616.420662,
+      "elapsed_ms": 1930,
+      "next_probe_at": null
+    },
+    "coach": {
+      "model": "deepseek-v4-flash",
+      "status": "ready",
+      "error": "",
+      "streaming": "ready",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null,
+          "streaming": "ready",
+          "stream_error": "",
+          "stream_retryable": false
+        }
+      },
+      "checked_at": 1789641616.13969,
+      "elapsed_ms": 1649,
+      "stream_error": "",
+      "stream_retryable": false,
+      "next_probe_at": null
+    },
+    "risk": {
+      "model": "deepseek-v4-pro",
+      "status": "ready",
+      "error": "",
+      "streaming": "not_applicable",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        }
+      },
+      "checked_at": 1789641617.972836,
+      "elapsed_ms": 3482,
+      "next_probe_at": null
+    }
+  },
+  "idle_before_restart": true,
+  "draft_empty_before_restart": true,
+  "original_session_restored": true
+}

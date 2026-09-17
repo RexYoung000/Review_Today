@@ -11,6 +11,7 @@ from agent_service.schemas import IntentDecision
 from agent_service.learning_progress import current_step
 from agent_service.config import ROUTER_MODEL
 from agent_service.conversation_store import Superseded
+from agent_service.dialogue_routing import intent_context
 
 FINISHED = {'completed', 'cancelled', 'terminal_failed'}
 BUSY = {'accepted', 'queued', 'running', 'committing'}
@@ -152,24 +153,41 @@ def transfer(h, sid, rid, rev, chosen):
 
 
 def handle(h, sid, rid, rev, decision, last):
-    if decision.conversation_repair or decision.programming_boundary != 'none' or last.get('operation') or set(decision.intents) & {'stop','pause','cancel','defer','queue'}: return False
+    if (decision.conversation_repair or decision.programming_boundary != 'none'
+            or last.get('operation') or decision.proposed_actions or decision.requested_mode
+            or set(decision.intents) & {'stop','pause','cancel','defer','queue'}): return False
     data, run = h._snapshot(sid, rid, rev)
     evidence = decision.continuation_evidence
+    # Continuing a conversation is not consent to acquire another session's
+    # goal. In particular, a missing *next topic* is a content clarification,
+    # not a missing resume target. Keep that decision on the local route.
+    if not evidence and (decision.clarification_kind == 'content' or
+            (decision.scope != 'continue_goal' and decision.clarification_kind != 'resume_target')):
+        return False
     moved = [t for t in data['tasks'].values() if not owns(t)]
     if moved and not h._task(data, run) and 'continue' in decision.intents:
         with h.store.transaction(sid,rid,rev) as current:
             current['runs'][rid]['dialogue_only'] = True
         h._publish(sid,rid,rev,'这项学习已在另一会话继续。请从上方的「前往查看」进入当前进度。')
         return True
-    # A missing router field must never turn a continuation into a new course.
+    # Only recover a missing field on the goal-resume route, not every continue.
     if not evidence and 'continue' in decision.intents and not h._task(data, run) and not run.get('paused_entry'):
+        context, _ = h._context(data, run)
         recovered = h._call(sid,rid,rev,'continuation_intent',
-            '只核对本条用户输入是否直接要求接续之前的学习。若是，evidence 逐字摘录续学意愿、topic 提取主题；引用、假设、否定、询问词义不算，两个字段均返回空。不能假设之前实际存在课程。',
-            json.dumps(dict(request=last['content']),ensure_ascii=False), ContinuationRequest, ROUTER_MODEL)
+            '只核对本条用户输入是否明确要求恢复其他会话或上次未完成的学习目标。结合当前对话区分：当前内容的继续、解释下一点、结束这段后学下一个内容，均不是跨会话恢复；这些情况 evidence/topic 返回空。只有明确恢复以前的目标时，evidence 逐字摘录该恢复意愿、topic 提取主题。引用、假设、否定、询问词义不算，两个字段均返回空。不能因当前没有学习任务而推断用户在找旧进度，也不能假设之前实际存在课程。',
+            json.dumps(dict(intent_context(context),request=last['content']),ensure_ascii=False), ContinuationRequest, ROUTER_MODEL)
         evidence = recovered.evidence
         decision = decision.model_copy(update={'continuation_evidence':evidence,'continuation_topic':recovered.topic})
         if not evidence:
-            h._publish(sid,rid,rev,'当前没有可直接继续的学习目标。请告诉我具体主题，我再核对已有进度。')
+            # No resume was requested. Answer from this conversation without
+            # allowing speculative workflow/goal fields to invent a course.
+            local = decision.model_copy(update={'intents':['followup'], 'scope':'conversation',
+                'workflow':None, 'answer_only':True, 'direct_teaching':False,
+                'learning_goal_ready':False, 'target_task_id':'', 'topic_closure':None})
+            with h.store.transaction(sid,rid,rev) as current:
+                current['runs'][rid].update(intent=local.model_dump(), dialogue_only=True, task_id=None)
+            h._respond(sid,rid,rev,local,
+                '用户在当前对话里继续或换到下一内容，没有要求恢复其他会话。已有明确的下一问题或待解释要点就直接回答；没有明确下一内容时，简短承接并只问接下来想了解什么。不查询或提及旧学习进度，不虚构课程，不推断已理解。', node='answer')
             return True
     pending = data.get('continuation_selection')
     if run.get('goal_transfer'):

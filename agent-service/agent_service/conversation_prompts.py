@@ -116,6 +116,7 @@ INTENT_SYSTEM += """
 必要澄清在 clarification_kind 指明 content（缺具体资料/对象/领域）、resume_target（明确续学但目标不明）、operation（操作对象/权限不明）；不需要时为 none 且 clarification 为空。不能用泛泛的继续/新话题问题代替内容解释。
 用户指出“这是新会话”“我才开始问”“我不是才和你聊天吗”等上下文错误时 conversation_repair=true；这不是知识内容 correction，不能清空掌握/草稿，不继续上一轮错误反问。先核对当前消息事实，再回到未回答问题。
 只有当前用户明确要求接续其他会话的学习时，continuation_evidence 逐字引用当前意愿，continuation_topic 提取所指学习主题（如 RAG）；没有主题可为空。普通问题/引用他人的续学指令/否定续学不填写。当前已有目标的普通继续仍按原流程；不要假设旧会话待办或操作授权属于本会话。
+“好的，先这样吧，我们学下一个内容”是当前对话转场，不是恢复旧会话。若当前没有既定学习计划，也没有明确下一主题，用 continue + scope=conversation、workflow=null、clarification_kind=content，简短承接后只问“接下来想了解什么？”，continuation_evidence 留空。当前已有计划且用户要求下一步，沿当前目标 continue_goal；当前讲解还有明确要点，或用户给出新的知识问题，直接处理，不问已明确的内容。不能仅因当前没有任务而寻找旧会话，不把转场或“好的”推断为已理解、保存或新课程授权。
 此阶段不选择跨会话知识；memory_selections 留空，教学阶段另做按需记忆选择。
 """
 
