@@ -21,6 +21,7 @@ from agent_service.answer_style import render_jd, render_sources, with_question
 from agent_service.source_links import bound_source_links
 from agent_service.conversation_prompts import COACH_SYSTEM, EVALUATION_SYSTEM, INTENT_SYSTEM
 from agent_service.conditional_teaching import ConditionalTeaching
+from agent_service import social_dialogue
 from agent_service.conversation_store import ConversationStore, Superseded, conversation_store
 from agent_service.harness import JD_SYSTEM, PROBLEM_SYSTEM, _render_problem
 from agent_service.harness_store import HarnessTaskRecord, now_iso
@@ -591,12 +592,14 @@ class ConversationHarness(ConditionalTeaching):
                                       relation="continuation", workflow=task["mode"] if task else "source_learning",
                                       scope="continue_goal", direct_teaching=True, learning_goal_ready=True,
                                       rationale="用户明确要求继续教学，不是独立作答或保存授权。")
-        elif run.get("intent") and "programming_boundary" in run["intent"] and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"]:
+        elif run.get("intent") and {"programming_boundary", "conversation_kind"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"]:
             decision = IntentDecision.model_validate(run["intent"])
         else:
             decision = self._call(sid, rid, rev, "intent", INTENT_SYSTEM,
                                   json.dumps(dialogue_routing.intent_context(context), ensure_ascii=False), IntentDecision, ROUTER_MODEL)
         decision = dialogue_routing.normalize(data, decision, last)
+        if social_dialogue.handle(self, sid, rid, rev, decision, last):
+            return
         if goal_continuation.handle(self, sid, rid, rev, decision, last):
             return
         if dialogue_routing.handle(self, sid, rid, rev, decision, last):

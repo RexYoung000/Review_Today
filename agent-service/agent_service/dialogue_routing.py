@@ -7,8 +7,9 @@ LOCAL_QUESTIONS = {'question', 'followup', 'example', 'hint'}
 
 def ordinary_question(data, decision, last):
     """A workflow/scope suggestion alone cannot authorize a learning task."""
-    return (data['mode'] == 'auto' and bool(decision.intents)
-            and set(decision.intents) <= LOCAL_QUESTIONS
+    substantive = set(decision.intents) - {'social', 'greeting', 'thanks'}
+    return (data['mode'] == 'auto' and bool(substantive)
+            and substantive <= LOCAL_QUESTIONS
             and not (last.get('operation') or decision.proposed_actions or decision.requested_mode
                      or decision.direct_teaching or decision.is_jd or decision.continuation_evidence)
             and decision.programming_boundary == 'none')

@@ -1,0 +1,2 @@
+444 passed, 2 warnings, 106 subtests passed in 36.57s
+Isolated test database: /tmp/review-today-python-tests.6MTAxp

@@ -564,6 +564,8 @@ class TopicClosure(BaseModel):
 
 
 class IntentDecision(BaseModel):
+    conversation_kind: Literal["ordinary", "social", "companionship", "learning_support"] = Field(
+        default="ordinary", description="Semantic dialogue scope. Social/companionship only for pure social input; mixed knowledge or action requests stay ordinary.")
     clarification_kind: Literal["none", "content", "resume_target", "operation"] = "none"
     conversation_repair: bool = False
     repair_target_message_id: str = ""
@@ -573,7 +575,7 @@ class IntentDecision(BaseModel):
         default="none", description="Semantic product boundary: programming capability enquiry, development delivery request, or ordinary learning. Not a keyword filter.")
     programming_learning_request: str = Field(default="", max_length=2000, description="For mixed_learning only: quote the independent learning request verbatim from current user input, excluding development delivery.")
     intents: list[Literal[
-        "greeting", "thanks", "capabilities", "question", "goal", "material",
+        "greeting", "thanks", "capabilities", "social", "question", "goal", "material",
         "followup", "hint", "example", "answer", "correction", "confirm", "reject",
         "defer", "continue", "skip_check", "self_report", "stop", "pause", "cancel", "queue",
     ]] = Field(min_length=1)
