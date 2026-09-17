@@ -24,6 +24,8 @@ struct SelectionDot: View {
 
 struct RunDetails<Content: View>: View {
     var title = "运行详情"
+    var run: AgentRun? = nil
+    var reducedOverride: Bool? = nil
     @ViewBuilder var content: () -> Content
     @State private var expanded = false
 
@@ -33,7 +35,8 @@ struct RunDetails<Content: View>: View {
                 HStack(spacing: 6) {
                     Image(systemName: expanded ? "chevron.down" : "chevron.right")
                         .font(.system(size: 10, weight: .semibold)).frame(width: 12)
-                    Text(title).font(.caption)
+                    Text(title).font(.caption).fixedSize()
+                    if let run { RunStatusText(run: run, reducedOverride: reducedOverride) }
                     Spacer(minLength: 0)
                 }
                 .foregroundStyle(.secondary)
@@ -43,14 +46,14 @@ struct RunDetails<Content: View>: View {
             }
             .buttonStyle(InteractionButtonStyle(padding: 2))
             .accessibilityLabel(title)
-            .accessibilityValue(expanded ? "已展开" : "已收起")
+            .accessibilityValue((expanded ? "已展开" : "已收起") + (run.map { "，" + $0.userSummary } ?? ""))
             .help(expanded ? "收起运行详情" : "展开运行详情")
             if expanded { content() }
         }
     }
 }
 
-/// Only this small component observes the clock. Transcript layout has no timer.
+/// The mascot stays above the disclosure; stage and clock live in its row.
 struct RunPhaseLine: View {
     var run: AgentRun
     var reducedOverride: Bool? = nil // isolated native motion verification
@@ -60,32 +63,38 @@ struct RunPhaseLine: View {
     private var running: Bool { MascotMotionConfiguration.phase(runStatus: run.status, started: run.startedAt != nil) == .thinking }
 
     var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            RunMascotIndicator(active: running, reduced: reduceMotion,
-                color: run.errorCode == nil ? runway.agent : .orange,
-                size: running ? CGSize(width: 64, height: 56) : CGSize(width: 12, height: 20))
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 5) {
-                HStack(alignment: .firstTextBaseline, spacing: 3) {
-                    if running { Text("［").foregroundStyle(.secondary).accessibilityHidden(true) }
-                    StageSummary(text: run.userSummary, animate: running && !reduceMotion)
-                    if running {
-                        LoadingEllipsis(reduced: reduceMotion)
-                        Text("］").foregroundStyle(.secondary).accessibilityHidden(true)
-                    }
+        RunMascotIndicator(active: running, reduced: reduceMotion,
+            color: run.errorCode == nil ? runway.agent : .orange,
+            size: running ? CGSize(width: 64, height: 56) : CGSize(width: 12, height: 20))
+            .accessibilityHidden(true)
+    }
+}
+
+/// Stage and cumulative duration stay together beside the disclosure title.
+private struct RunStatusText: View {
+    let run: AgentRun
+    var reducedOverride: Bool?
+    @Environment(\.brandReduceMotion) private var systemReduced
+    private var reduced: Bool { reducedOverride ?? systemReduced }
+    private var running: Bool { MascotMotionConfiguration.phase(runStatus: run.status, started: run.startedAt != nil) == .thinking }
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 0) {
+            Text("（")
+            StageSummary(text: run.userSummary, animate: running && !reduced)
+            if running {
+                LoadingEllipsis(reduced: reduced)
+                TimelineView(.periodic(from: .now, by: 1)) { tick in
+                    Text(" \(max(0, Int(tick.date.timeIntervalSince(run.startedAt ?? tick.date)))) 秒")
+                        .monospacedDigit().fixedSize()
                 }
-                if running {
-                    TimelineView(.periodic(from: .now, by: 1)) { tick in
-                        Text("\(max(0, Int(tick.date.timeIntervalSince(run.startedAt ?? tick.date)))) 秒")
-                            .monospacedDigit().foregroundStyle(.secondary)
-                    }
-                } else if run.elapsedMS > 0 {
-                    Text(String(format: "%.1f 秒", Double(run.elapsedMS) / 1000)).monospacedDigit().foregroundStyle(.secondary)
-                }
+            } else if run.elapsedMS > 0 {
+                Text(String(format: " %.1f 秒", Double(run.elapsedMS) / 1000)).monospacedDigit().fixedSize()
             }
+            Text("）")
         }
         .font(.caption)
-        .foregroundStyle(run.errorCode == nil ? runway.ink : .orange)
+        .foregroundStyle(run.errorCode == nil ? Color.secondary : .orange)
     }
 }
 

@@ -85,7 +85,7 @@ struct LearningTaskCard: View {
                 }
             }
 
-            RunDetails() {
+            RunDetails(run: run?.status == "completed" ? nil : run) {
                 VStack(alignment: .leading, spacing: 8) {
                     let sessionEvents = run.map { item in runEvents.filter { $0.runID == item.id } } ?? []
                     if taskEvents.isEmpty && sessionEvents.isEmpty {

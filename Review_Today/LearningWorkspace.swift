@@ -788,7 +788,7 @@ struct LearningWorkspace: View {
                 }
             }
           }
-            RunDetails() {
+            RunDetails(run: run.status == "completed" ? nil : run) {
                 ForEach(runEvents.filter { $0.runID == run.id && $0.stage != "response.delta" }, id: \.id) { event in
                     VStack(alignment: .leading, spacing: 3) {
                         Text(event.summary).font(.caption.weight(.medium))

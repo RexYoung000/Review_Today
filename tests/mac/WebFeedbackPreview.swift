@@ -37,7 +37,7 @@ struct WebFeedbackPreview: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
                     RunPhaseLine(run: run, reducedOverride: reduced)
-                    RunDetails { Text("网页工具详细日志（隔离验证样例）").font(.caption) }
+                    RunDetails(run: run, reducedOverride: reduced) { Text("网页工具详细日志（隔离验证样例）").font(.caption) }
                     LearningAnswerText(content: answer, availableWidth: narrow ? 340 : 680)
                 }.frame(width: narrow ? 340 : 680, alignment: .leading).padding(16)
                     .frame(maxWidth: .infinity)
