@@ -1,0 +1,1 @@
+{"cases": 17, "fixed_scenarios": 31, "result": "VALID", "note": "Offline structure only; no model behavior evaluated."}

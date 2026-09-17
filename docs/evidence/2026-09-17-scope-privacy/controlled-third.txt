@@ -1,0 +1,61 @@
+{"cases": 17, "fixed_scenarios": 31, "result": "VALID", "note": "Offline structure only; no model behavior evaluated."}
+........................................................................ [ 12%]
+...................................................................... [ 25%]
+................................................................. [ 36%]
+................................................................ [ 47%]
+...........................................................................................F......................... [ 68%]
+........................................................................ [ 81%]
+................................... [ 87%]
+......................................................................                                              [100%]
+=================================== FAILURES ===================================
+_ ProgrammingBoundaryTests.test_mixed_learning_preserves_existing_task_and_retries_learning _
+
+self = <test_programming_boundary.ProgrammingBoundaryTests testMethod=test_mixed_learning_preserves_existing_task_and_retries_learning>
+
+    def test_mixed_learning_preserves_existing_task_and_retries_learning(self):
+        from unittest.mock import patch
+        from agent_service.openai_client import ModelCallError
+        self.f.decision = fixtures.intent('question', scope='learning', workflow='problem_solving')
+        self.f.send('学习 RAG', mode='problem_solving')
+        before = copy.deepcopy(self.f.state()['tasks'])
+        self.f.decision = self.decision('mixed_learning', 'goal', programming_learning_request='解释闭包')
+        def fail_answer(system, user, schema, **kwargs):
+            if schema is ConversationOutput:
+                raise ModelCallError('TIMEOUT')
+            return self.f.model(system, user, schema, **kwargs)
+        with patch('agent_service.conversation.parse_model', side_effect=fail_answer):
+            result = self.f.send('解释闭包，再帮我部署项目')
+        self.assertEqual(self.f.state()['runs'][result.run_id]['status'], 'retryable_failed')
+        self.f.control(result.run_id, 'retry')
+        self.f.harness.drain(self.f.sid)
+        state = self.f.state()
+        self.assertEqual(state['runs'][result.run_id]['status'], 'completed')
+        outputs = [p for s, p in self.f.calls if s is ConversationOutput]
+>       self.assertEqual(outputs[-1]['context']['current_inputs'], ['解释闭包'])
+                         ^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests/test_programming_boundary.py:152: IndexError
+=============================== warnings summary ===============================
+agent_service/main.py:82
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:82: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_programming_boundary.py::ProgrammingBoundaryTests::test_mixed_learning_preserves_existing_task_and_retries_learning
+1 failed, 564 passed, 2 warnings, 110 subtests passed in 62.38s (0:01:02)

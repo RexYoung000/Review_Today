@@ -94,6 +94,8 @@ def _is_blocked_ip(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
 
 
 def _public_addresses(url: str):
+    from agent_service.web_privacy import require_public_url
+    require_public_url(url)
     parsed = urlparse(url)
     if parsed.scheme not in {"http", "https"}:
         raise ValueError("RT.CAPTURE.SSRF")

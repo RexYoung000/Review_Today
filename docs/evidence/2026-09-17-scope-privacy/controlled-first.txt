@@ -1,0 +1,46 @@
+{"cases": 17, "fixed_scenarios": 28, "result": "VALID", "note": "Offline structure only; no model behavior evaluated."}
+............................................................F........... [ 12%]
+...................................................................... [ 25%]
+................................................................. [ 36%]
+................................................................ [ 48%]
+..................................................................................................................... [ 69%]
+........................................................................ [ 81%]
+................................... [ 88%]
+...................................................................                                                 [100%]
+=================================== FAILURES ===================================
+_ ClosureRepairTests.test_search_uses_minimal_public_topic_not_private_material _
+
+self = <test_closure_repair.ClosureRepairTests testMethod=test_search_uses_minimal_public_topic_not_private_material>
+
+    def test_search_uses_minimal_public_topic_not_private_material(self):
+        self.decision = intent("question", needs_verification=True, public_search_query="贷款基准利率 官方标准")
+        with patch("agent_service.conversation.web_search_text", return_value="") as search:
+            self.send("私人材料：客户电话 13812345678。请解释当前贷款基准利率。")
+>           self.assertNotIn("13812345678", search.call_args.args[0])
+                                            ^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'NoneType' object has no attribute 'args'
+
+tests/test_closure_repair.py:53: AttributeError
+=============================== warnings summary ===============================
+agent_service/main.py:82
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:82: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_closure_repair.py::ClosureRepairTests::test_search_uses_minimal_public_topic_not_private_material
+1 failed, 561 passed, 2 warnings, 110 subtests passed in 61.21s (0:01:01)

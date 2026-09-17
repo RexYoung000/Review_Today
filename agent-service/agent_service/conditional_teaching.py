@@ -21,6 +21,7 @@ MEMORY_LOOKUP_TIMEOUT = 10
 PREPARE = """规划本轮实际要讲解的知识点，不生成正文。只返回 TeachingPreparation。
 结合用户目标、当前步骤和补充，给 1–6 个概念/必要前置概念；无实质知识就给空 concepts。
 public_query 仅由公开概念和事实组成，不能包含私人资料、人名、联系方式、凭证、私有地址或整段用户原文。
+遇到内部/未发布资料、客户名单或访问凭证时 public_query 留空，不以删掉“内部”等字样后留下项目名、客户身份来检索。用户可继续理解所提供材料，无须外发到搜索/网页读取服务。
 查询聚焦当前知识点的原理和适用范围，优先定位原始论文、官方文档或专业机构资料；面试等用途用于调整讲解，不把查询泛化成整套面试题汇总。
 多义术语不能依据猜测缩窄领域。用户单问 harness 时先覆盖通用含义及 Agent/测试语境的区别；用户明确问 Agent harness 才聚焦 Agent。用户本轮明确对象优先于旧 topic，不把前面“我不知道学什么”当作学习计划要求。
 对已讲内容的解释/例子/提示、同知识点续问，new_knowledge=false；新知识点为 true。是否为新知识与网页是否核验成功无关，不能因上次检索失败而把同一概念重复标为新知识。
@@ -293,7 +294,7 @@ class ConditionalTeaching:
                 from agent_service.web_tools import web_context_pages
                 try:
                     chunks = self._read_page(sid, rid, rev, query,
-                        lambda q, **kw: web_context_pages(q, allowed_domains=domains if official_required else (), **kw))
+                        lambda q, **kw: web_context_pages(q, allowed_domains=domains if official_required else (), **kw), operation='context')
                     for page in chunks[:3 if cross_check else 2]:
                         read.append(dict(page, source_id=str(uuid.uuid5(uuid.UUID(sid), page['url'])),
                                          version=1, type='public_source', fetched_at=now_iso()))
@@ -321,8 +322,12 @@ class ConditionalTeaching:
                                    if unavailable else "本次网页核验未完成，以下先说明基础原理；涉及最新信息或争议的结论仍需查证。")
             if exc.code.endswith("RATE_LIMIT"):
                 evidence["summary"] = "网页检索服务已达到当前使用限额，本次尚未完成核验；稍后可重试。"
-            self._search_state(sid, rid, rev, "unavailable" if unavailable else "failed", evidence=evidence,
-                               sources=sources, detail=exc.code + ": " + exc.diagnostic)
+            private = exc.code.endswith(('PRIVATE_INPUT', 'PRIVATE_QUERY', 'PRIVATE_URL'))
+            if private:
+                evidence['summary'] = '检测到私人资料或访问凭证，本轮未向网页服务发送查询；涉及外部事实的内容尚未核验。'
+            self._search_state(sid, rid, rev, "not_called" if private else "unavailable" if unavailable else "failed", evidence=evidence,
+                               sources=sources, detail=exc.code + ": " + exc.diagnostic,
+                               **({'notice': evidence['summary']} if private else {}))
         with self.store.transaction(sid, rid, rev) as current:
             task = self._task(current, current["runs"][rid])
             saved = task["context"] if task else current.setdefault("teaching_context", {})

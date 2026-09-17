@@ -109,7 +109,7 @@ class ConversationHarness(ConditionalTeaching):
                     # A new supplement may stop/change the earlier mixed request.
                     # Recompute its scope from all current inputs, not a stale
                     # learning-only projection from the superseded attempt.
-                    for key in ("resolved_input", "resource_scope_reply", "programming_scope_reply",
+                    for key in ("resolved_input", "resource_scope_reply", "programming_scope_reply", "request_scope",
                                 "dialogue_only", "social_reply_kind", "activity_candidate", "learning_concepts"):
                         run.pop(key, None)
                     summary = "已收到补充，正在调整"
@@ -544,7 +544,9 @@ class ConversationHarness(ConditionalTeaching):
         basic = bool(intents) and intents <= {"greeting", "thanks", "capabilities"}
         defer = intents == {"defer"}
         if defer and not last.get("operation") and not decision.proposed_actions:
-            reply = decision.light_reply.strip()
+            # Conflicting scope labels may accompany a real deferral. Honor the
+            # deferral without publishing a free-form promise to do the errand.
+            reply = decision.light_reply.strip() if decision.resource_boundary == decision.programming_boundary == 'none' else ''
             return reply if reply and len(reply) <= 100 and not re.search(r"[?？]", reply) else "好的，你慢慢想。准备好后继续。"
         # Runs created before `defer` existed may already have a validated
         # self_report checkpoint. It is only side-effect free without learning
@@ -613,6 +615,9 @@ class ConversationHarness(ConditionalTeaching):
                                   json.dumps(dialogue_routing.intent_context(context), ensure_ascii=False), IntentDecision, ROUTER_MODEL)
         decision = dialogue_routing.normalize(data, decision, last)
         from agent_service import resource_boundary
+        decision = resource_boundary.normalize(data, decision, last)
+        from agent_service import request_scope
+        request_scope.remember(self, sid, rid, rev, decision)
         if resource_boundary.handle(self, sid, rid, rev, decision, last):
             return
         if social_dialogue.handle(self, sid, rid, rev, decision, last):
@@ -626,37 +631,6 @@ class ConversationHarness(ConditionalTeaching):
             decision = decision.model_copy(update={"relation": "continuation", "clarification": ""})
         elif decision.clarification_kind == "resume_target" and not decision.continuation_evidence:
             decision = decision.model_copy(update={"clarification": ""})
-        # Product-scope replies must precede free-form answers, task creation and
-        # topic capture. Bound UI actions and lifecycle controls keep their path.
-        if (decision.programming_boundary != "none" and not last.get("operation")
-                and not set(decision.intents) & {"stop", "pause", "cancel", "defer", "queue"}):
-            reply = ("我是 Review Today 学习教练，可以帮助你理解 coding 相关的知识，比如编程概念、代码逻辑和背后的原理。"
-                     if decision.programming_boundary == "capability_question" else
-                     "Review Today 主要帮助你学习和理解知识，不承接项目代做、修改仓库、实际运行调试或测试、部署上线。可以帮你理解相关代码、报错原理或实现思路。")
-            with self.store.transaction(sid, rid, rev) as current:
-                active = current["runs"][rid]
-                active.update(intent=decision.model_dump(), decision_input_ids=list(active["input_ids"]),
-                              decision_mode=current["mode"], task_id=None, programming_scope_reply=True)
-                self.store.event(current, active, "intent_decided", "已说明编程学习的能力范围",
-                                 model=ROUTER_MODEL, detail=decision.rationale,
-                                 payload={"intent": decision.model_dump()})
-            learning_request = decision.programming_learning_request.strip()
-            original_input = next((m["content"] for m in data["messages"] if m["message_id"] == last["message_id"]), last["content"])
-            if (decision.programming_boundary == "mixed_learning" and learning_request
-                    and learning_request != original_input.strip()
-                    and self._explicit({"evidence": learning_request}, original_input)):
-                # Isolate the expressly requested learning part. Do not route the
-                # unsupported delivery into a new goal, operation or capture.
-                with self.store.transaction(sid, rid, rev) as current:
-                    current["runs"][rid]["resolved_input"] = learning_request
-                local = decision.model_copy(update={"programming_boundary": "none", "scope": "conversation",
-                    "workflow": None, "intents": ["question"], "target_task_id": "", "proposed_actions": [],
-                    "topic_closure": None, "direct_teaching": False, "answer_only": True})
-                self._respond(sid, rid, rev, local,
-                    "先简短说明不执行代做项目、改仓库、运行调试或部署等开发操作；再仅解释 current_inputs 中用户明确提出的学习问题，不创建课程或开发交付物。", node="answer")
-            else:
-                self._publish(sid, rid, rev, reply)
-            return
         if run.get("capture_continuation") and decision.relation == "new_topic":
             # The inline Continue action already chose this conversation. Keep
             # the old task in history while starting the explicitly named topic.
@@ -755,16 +729,7 @@ class ConversationHarness(ConditionalTeaching):
                     return
         if decision.direct_teaching and decision.relation != "uncertain" and (data.get("active_task_id") or data.get("goal_clarification") or decision.target_description):
             decision = decision.model_copy(update={"clarification": "", "learning_goal_ready": True})
-        operation_key = hashlib.sha256(json.dumps([run["input_ids"], decision.model_dump(), last.get("operation")], sort_keys=True).encode()).hexdigest()
-        # An action and an explanatory follow-up may share a turn. Checkpoint the
-        # action separately, so retrying its answer never repeats the confirmed write.
-        completed_operations = run.get("completed_operations", {})
-        if operation_key in completed_operations:
-            handled = completed_operations[operation_key]
-        else:
-            handled = self._handle_operations(sid, rid, rev, decision, last)
-            with self.store.transaction(sid, rid, rev) as data:
-                data["runs"][rid].setdefault("completed_operations", {})[operation_key] = handled
+        handled = self._apply_operations(sid, rid, rev, decision, last)
         if handled:
             if set(decision.intents) & {"followup", "hint", "example"} and not last.get("operation"):
                 self._respond(sid, rid, rev, decision, "受控操作已处理；回答同一输入附带的追问、提示或举例，不重复操作，也不把解释视为检查通过。", node="answer")
@@ -957,6 +922,16 @@ class ConversationHarness(ConditionalTeaching):
             return False
         return not any(evidence in span for span in re.findall(r"https?://\S+|```[\s\S]*?```|“[^”]*”|‘[^’]*’|「[^」]*」|\"[^\"]*\"|^>.*$", text, re.M))
 
+    def _apply_operations(self, sid, rid, rev, decision, last):
+        _, run = self._snapshot(sid, rid, rev)
+        key = hashlib.sha256(json.dumps([run["input_ids"], decision.model_dump(), last.get("operation")], sort_keys=True).encode()).hexdigest()
+        if key in run.get("completed_operations", {}):
+            return run["completed_operations"][key]
+        handled = self._handle_operations(sid, rid, rev, decision, last)
+        with self.store.transaction(sid, rid, rev) as data:
+            data["runs"][rid].setdefault("completed_operations", {})[key] = handled
+        return handled
+
     def _handle_operations(self, sid, rid, rev, decision, last):
         data, run = self._snapshot(sid, rid, rev)
         pending = data["pending"]
@@ -1085,8 +1060,29 @@ class ConversationHarness(ConditionalTeaching):
 
     def _respond(self, sid, rid, rev, decision, instruction, *, node, teaching=False, draft=False, generated=False):
         data, run = self._snapshot(sid, rid, rev)
+        from agent_service import request_scope
+        if not request_scope.allows_answer(run):
+            from agent_service.resource_boundary import REPLY
+            self._publish(sid, rid, rev, REPLY if decision.resource_boundary != 'none' else
+                '这里主要帮助你学习和理解编程知识，不承接项目代做、修改仓库或部署等操作。')
+            return
         context, last = self._context(data, run)
         task = self._task(data, run)
+        from agent_service.web_privacy import require_public_url, sensitive_material
+        if sensitive_material(last['content']):
+            instruction += ('\n私人材料的限制针对外发到网页搜索/读取服务；仍可根据用户已经提供的内容做解释、梳理和知识说明。'
+                '最多一句说明不外发，再回应实际问题；不得泛化为不能分析、概括或理解内部材料，'
+                '不额外要求密级审批或罗列合规建议，不推测未提供的内部事实。材料太少时简短指出缺少的具体信息。')
+        for url in re.findall(r'https?://[^\s<>"\']+', last['content']):
+            try:
+                require_public_url(url)
+            except ValueError as exc:
+                if str(exc) == 'RT.WEB.PRIVATE_URL':
+                    instruction += ('\n当前链接含访问凭证，不能读取，也没有向网页服务发送。若用户要解释链接正文，'
+                        '仅用一两句说明这一具体限制，并请提供公开链接或去除敏感信息后的正文；'
+                        '不要泛化为不能阅读网页，不回显访问参数的值，不猜测正文。'
+                        '若只是询问令牌或链接的知识，正常解释概念，无须读取该链接。')
+                    break
         if teaching and task and not task["context"].get("requires_mastery"):
             with self.store.transaction(sid, rid, rev) as current:
                 live_task = self._task(current, current["runs"][rid])
@@ -1113,7 +1109,13 @@ class ConversationHarness(ConditionalTeaching):
                 continue
             saved = run.get("source_cache", {}).get(url)
             if saved is None:
-                title, body = self._read_page(sid, rid, rev, url, fetch_public_url)
+                try:
+                    title, body = self._read_page(sid, rid, rev, url, fetch_public_url)
+                except (ValueError, WebToolError) as exc:
+                    if str(exc) not in {'RT.WEB.PRIVATE_URL', 'RT.WEB.PRIVATE_INPUT'}:
+                        raise
+                    self._publish(sid, rid, rev, '这份材料包含私人信息或链接访问凭证，未发送给网页服务。可以提供公开链接，或去除敏感信息后的正文来继续理解。')
+                    return
                 saved = dict(source_id=str(uuid.uuid5(uuid.UUID(sid), url)), version=(previous or {}).get("version", 0) + 1, type="public_source", url=url, title=title, content=body[:10000], fetched_at=now_iso())
                 with self.store.transaction(sid, rid, rev) as current:
                     current["runs"][rid].setdefault("source_cache", {})[url] = saved
@@ -1301,12 +1303,12 @@ class ConversationHarness(ConditionalTeaching):
 
     @staticmethod
     def _public_query(value):
-        value = value.strip()
-        if not 2 <= len(value) <= 180 or re.search(r"(?:https?://|\bsk-|\bBearer\b|[^\s]+@[^\s]+|\d{7,}|-----BEGIN|(?:密钥|密码)\s*[:：])", value, re.I):
-            return ""
-        return value
+        from agent_service.web_tools import safe_public_query
+        return safe_public_query(value)
 
-    def _read_page(self, sid, rid, rev, url, reader):
+    def _read_page(self, sid, rid, rev, url, reader, *, operation='read'):
+        from agent_service.request_scope import check_web
+        check_web(self, sid, rid, rev, url, operation=operation)
         handle_key = (sid, rid, rev)
         def register(close):
             with self._worker_lock:
@@ -1331,7 +1333,9 @@ class ConversationHarness(ConditionalTeaching):
             with self._worker_lock:
                 self._cancel_handles.pop(handle_key, None)
 
-    def _search(self, sid, rid, rev, query):
+    def _search(self, sid, rid, rev, query, *, purpose='answer'):
+        from agent_service.request_scope import check_web
+        check_web(self, sid, rid, rev, query, operation='search', purpose=purpose)
         data, run = self._snapshot(sid, rid, rev)
         key = hashlib.sha256((query + json.dumps(web_search_capability(), sort_keys=True)).encode()).hexdigest()
         if key in run.get("search_results", {}):
@@ -1423,7 +1427,7 @@ class ConversationHarness(ConditionalTeaching):
             if not query:
                 return ""
             _, current_run = self._snapshot(sid, rid, rev)
-            result = self._search(sid, rid, rev, query)
+            result = self._search(sid, rid, rev, query, purpose='confirmed_capture')
             with self.store.transaction(sid, rid, rev) as current:
                 current["runs"][rid]["memory_search"] = result
             return result

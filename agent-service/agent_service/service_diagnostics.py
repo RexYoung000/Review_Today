@@ -8,10 +8,13 @@ def diagnose(error):
     if status is None and match:
         status = int(match[1])
     code = str(getattr(error, "code", ""))
+    if not code and str(error) in {'RT.WEB.PRIVATE_URL', 'RT.WEB.INVALID_URL'}:
+        code = str(error)
     name = type(error).__name__
     request_id = getattr(error, "request_id", None)
     request_id = request_id if isinstance(request_id, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,160}", request_id) else None
     if code.startswith("RT.RUN.BUDGET_"): category = "run_budget"
+    elif code.endswith(('PRIVATE_INPUT', 'PRIVATE_QUERY', 'PRIVATE_URL', 'SCOPE_BLOCKED')): category = 'request_boundary'
     elif code == "RT.MODEL.BUSY": category = "capacity_busy"
     elif code.endswith(("CHAIN_FAILED", "BUDGET_EXHAUSTED")): category = "web_unavailable"
     elif status == 429 or code.endswith("RATE_LIMIT"): category = "rate_limit"
@@ -25,5 +28,5 @@ def diagnose(error):
     else: category = "provider"
     return dict(category=category, http_status=status, request_id=request_id, retryable=category in {"timeout", "connection", "provider"},
                 diagnostic=f"HTTP {status}" if status else code if code.startswith("RT.") else name,
-                recovery={"run_budget": "reduce_scope_or_explicit_retry", "capacity_busy": "wait_for_capacity"}.get(category,
+                recovery={"run_budget": "reduce_scope_or_explicit_retry", "capacity_busy": "wait_for_capacity", "request_boundary": "use_public_learning_material"}.get(category,
                     "retry_connection" if category in {"timeout", "connection", "provider"} else "check_configuration"))

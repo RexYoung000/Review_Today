@@ -8,6 +8,7 @@ from dataclasses import asdict, dataclass
 from dotenv import load_dotenv
 from agent_service.call_errors import WebToolError
 from agent_service.execution_policy import budget_scope
+from agent_service.web_privacy import safe_public_query, require_public_query, require_public_url
 
 load_dotenv(Path(__file__).resolve().parent.parent / 'providers' / 'web' / '.env')
 PROTOCOL = 'harness_web_tools_v1'
@@ -103,8 +104,7 @@ def web_context_capability():
 
 
 def web_search_text(query: str, *, on_cancel_handle=None) -> str:
-    if not isinstance(query, str) or not query.strip() or len(query) > 2000:
-        raise WebToolError('INVALID_QUERY')
+    query = require_public_query(query)
     chain = provider_chain('search')
     if len(chain) == 1:
         backend = _backend(chain[0])
@@ -122,6 +122,7 @@ def web_search_text(query: str, *, on_cancel_handle=None) -> str:
 
 
 def read_public_url(url: str, limit: int = 20000, *, on_cancel_handle=None) -> tuple[str, str]:
+    require_public_url(url)
     chain = provider_chain('read')
     if chain == ['local']:
         from agent_service.capture.fetch import fetch_public_url
@@ -141,8 +142,7 @@ def read_public_url(url: str, limit: int = 20000, *, on_cancel_handle=None) -> t
 def web_context_pages(query, *, on_cancel_handle=None, allowed_domains=()):
     """Query-based evidence recovery, explicitly distinct from reading a URL."""
     if os.getenv('REVIEW_TODAY_CONTEXT_PROVIDER', 'none') != 'brave': return []
-    if not isinstance(query, str) or not query.strip() or len(query) > 600:
-        raise WebToolError('INVALID_QUERY')
+    query = require_public_query(query)
     from urllib.parse import urlsplit
     from agent_service.web_resilience import route
     def invoke(provider, backend, register):
@@ -159,6 +159,7 @@ def public_service_url(url):
     import ipaddress
     import re
     from urllib.parse import urlsplit
+    require_public_url(url)
     if not isinstance(url, str) or len(url) > 2048 or any(c.isspace() or ord(c) < 32 for c in url):
         raise ValueError('RT.WEB.INVALID_URL')
     try:
@@ -183,18 +184,11 @@ def public_service_url(url):
 
 
 def assert_readable_url(url):
+    require_public_url(url)
     if read_provider() == 'local':
         from agent_service.capture.fetch import assert_public_http_url
         return assert_public_http_url(url)
     return public_service_url(url)
-
-
-def safe_public_query(value):
-    import re
-    value = value.strip() if isinstance(value, str) else ''
-    if not 2 <= len(value) <= 180 or re.search(r"(?:https?://|\bsk-|\bBearer\b|[^\s]+@[^\s]+|\d{7,}|-----BEGIN|(?:密钥|密码)\s*[:：])", value, re.I):
-        return ''
-    return value
 
 
 def read_search_evidence(search, *, reader=None):
@@ -215,6 +209,7 @@ def read_search_evidence(search, *, reader=None):
             continue
         seen.add(url)
         try:
+            public_service_url(url)
             title, body = reader(url)
             if body.strip():
                 pages.append(dict(url=url, title=title, content=body[:6000]))

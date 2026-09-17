@@ -87,6 +87,7 @@ def facts(record):
     reply = '\n'.join(record['replies'])
     intent = run.get('intent') or {}
     return {
+        'mode': after['mode'],
         **{'intent.' + key: intent.get(key) for key in ('conversation_kind', 'clarification_kind', 'intents', 'resource_boundary')},
         'social_reply_kind': run.get('social_reply_kind'), 'reply': reply, 'reply_length': len(reply),
         'resource_scope_reply': bool(run.get('resource_scope_reply')),

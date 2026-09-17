@@ -40,7 +40,7 @@ class Source(Strict):
 
 
 class Evidence(Strict):
-    layer: Literal['controlled', 'live_flow', 'native']
+    layer: Literal['controlled', 'live_fixed_context', 'live_flow', 'native']
     reference: Text
     limits: Text
 
@@ -125,6 +125,7 @@ class InitialState(Strict):
 
 
 FIELD_TYPES = {
+    'mode': str,
     'intent.conversation_kind': str, 'intent.clarification_kind': str,
     'intent.intents': list, 'social_reply_kind': str, 'reply': str,
     'intent.resource_boundary': str,
