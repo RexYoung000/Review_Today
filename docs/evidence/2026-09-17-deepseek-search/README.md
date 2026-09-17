@@ -1,5 +1,7 @@
 # A008：DeepSeek 搜索协议适配（2026-09-17）
 
+> 历史记录：下述托管搜索已由 [Harness 独立工具修复](../2026-09-17-independent-web/README.md) 替换；本页实测结果只对应原提交，不表示当前线路。
+
 ## 交付与边界
 
 Rex 核对 DeepSeek 的搜索支持后授权实施。此次沿用已有官方域名、DeepSeek 凭证和教学/风险模型，只把搜索从 Responses 改接 Anthropic Messages。没有接入其他检索供应商、修改代理/DNS、关闭公网保护或发布生产版本。

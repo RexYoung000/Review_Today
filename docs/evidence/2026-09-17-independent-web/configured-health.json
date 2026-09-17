@@ -1,0 +1,43 @@
+{
+  "status": "ok",
+  "key_configured": true,
+  "provider": "deepseek",
+  "ca_bundle": true,
+  "harness": "v2",
+  "conversation_protocol": 1,
+  "response_stream_protocol": 1,
+  "model_roles": {
+    "router": {
+      "model": "deepseek-flash",
+      "status": "checking",
+      "error": "",
+      "streaming": "checking",
+      "next_probe_at": null
+    },
+    "coach": {
+      "model": "deepseek-v4-flash",
+      "status": "checking",
+      "error": "",
+      "streaming": "checking",
+      "next_probe_at": null
+    },
+    "risk": {
+      "model": "deepseek-v4-pro",
+      "status": "checking",
+      "error": "",
+      "streaming": "checking",
+      "next_probe_at": null
+    }
+  },
+  "web_search": {
+    "status": "unavailable",
+    "provider": "none",
+    "protocol": "harness_web_tools_v1",
+    "reason": "RT.WEB.NOT_CONFIGURED"
+  },
+  "web_read": {
+    "status": "unverified",
+    "provider": "local",
+    "reason": "requires_public_page_read"
+  }
+}

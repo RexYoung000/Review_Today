@@ -41,10 +41,13 @@ class ConversationTests(unittest.TestCase):
         self.model_patch.start()
         self.capture_patch = patch("agent_service.conversation.run_capture")
         self.capture = self.capture_patch.start()
+        self.web_patch = patch("agent_service.conversation.web_search_capability", return_value={"status": "unverified", "provider": "test"})
+        self.web_patch.start()
 
     def tearDown(self):
         self.model_patch.stop()
         self.capture_patch.stop()
+        self.web_patch.stop()
         self.tmp.cleanup()
 
     def model(self, system, user, schema, **kwargs):

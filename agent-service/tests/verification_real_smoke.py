@@ -21,7 +21,8 @@ def main():
         from agent_service.conversation_store import ConversationStore
         from agent_service.harness_store import HarnessStore
         from agent_service.schemas import SessionMessageRequest, IntentDecision
-        from agent_service.openai_client import web_search_capability, parse_model
+        from agent_service.openai_client import parse_model
+        from agent_service.web_tools import web_search_capability
         h = ConversationHarness(ConversationStore(HarnessStore(os.environ['REVIEW_TODAY_HARNESS_DB'])))
         sid = str(uuid.uuid4())
         print(json.dumps({'fixed_routing': args.fixed_routing, 'expect_read_blocked': args.expect_read_blocked, 'search_adapter': web_search_capability()}), flush=True)

@@ -3,7 +3,7 @@ import threading
 import time
 import uuid
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, ANY
 from pydantic import ValidationError
 from tests import test_conversation_v2 as fixture
 from tests.test_conversation_v2 import intent
@@ -65,7 +65,7 @@ class ConditionalTeachingTests(unittest.TestCase):
 
     def test_structured_search_requires_exact_returned_url_not_prefix_or_title(self):
         self.decision = intent("question", needs_verification=True)
-        search_data = json.dumps(dict(protocol="anthropic_messages", results=[
+        search_data = json.dumps(dict(protocol="harness_web_tools_v1", results=[
             dict(url="https://example.com/rag/other", title="https://example.com/rag")]))
         with patch("agent_service.conversation.web_search_text", return_value=search_data), patch("agent_service.conditional_teaching.fetch_public_url") as fetch:
             accepted = self.send("RAG 是什么")
@@ -200,21 +200,40 @@ class ConditionalTeachingTests(unittest.TestCase):
             if event['node'].startswith('response.'):
                 self.assertNotIn('https://unread', json.dumps(event))
 
-    def test_anthropic_results_flow_through_fetch_assessment_and_citation(self):
-        import httpx
-        from agent_service import openai_client, deepseek_search
+    def test_independent_results_flow_through_fetch_assessment_and_citation(self):
+        from agent_service.web_tools import SearchResult
+        from unittest.mock import Mock
         self.decision = intent("question", public_search_query="RAG")
-        client = httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"content": [
-            dict(type="server_tool_use", id="s1", name="web_search"),
-            dict(type="web_search_tool_result", tool_use_id="s1", content=[
-                dict(type="web_search_result", title="RAG 原文", url="https://example.com/rag", encrypted_content="PRIVATE")])]})))
-        with patch.object(openai_client, "PROVIDER", "deepseek"), patch.object(deepseek_search, "openai_key", return_value="TEST_KEY"), patch.object(deepseek_search, "_client", return_value=client), patch("agent_service.conditional_teaching.fetch_public_url", return_value=("RAG 原文", "先检索相关片段，再生成回答")) as fetch:
+        backend = Mock(name="backend")
+        backend.name = "test"
+        backend.search.return_value = [SearchResult("https://example.com/rag", "RAG 原文")]
+        with patch("agent_service.web_tools._backend", return_value=backend), patch("agent_service.conditional_teaching.fetch_public_url", return_value=("RAG 原文", "先检索相关片段，再生成回答")) as fetch:
             result = self.send("RAG 是什么")
         state = self.state(); run = state["runs"][result.run_id]
         self.assertEqual(run["search_state"], "verified")
-        fetch.assert_called_once_with("https://example.com/rag")
+        fetch.assert_called_once_with("https://example.com/rag", on_cancel_handle=ANY)
         self.assertIn("https://example.com/rag", state["messages"][-1]["content"])
-        self.assertNotIn("PRIVATE", json.dumps(run))
+        self.assertNotIn("model", backend.search.call_args.kwargs)
+
+    def test_direct_search_extract_assessment_and_citation(self):
+        import os
+        import httpx
+        from agent_service import tavily_tools
+        self.decision = intent("question", public_search_query="RAG")
+        requests = []
+        def transport(request):
+            requests.append(request)
+            if request.url.path == "/search":
+                return httpx.Response(200, json={"results": [{"url": "https://example.com/rag", "title": "RAG 原文", "content": "摘要"}]})
+            self.assertEqual(request.url.path, "/extract")
+            return httpx.Response(200, json={"results": [{"url": "https://example.com/rag", "raw_content": "先检索相关片段，再生成回答"}]})
+        with patch.dict(os.environ, {"REVIEW_TODAY_SEARCH_PROVIDER": "tavily", "REVIEW_TODAY_READ_PROVIDER": "tavily", "TAVILY_API_KEY": "WEB_TEST"}), patch.object(tavily_tools, "_client", side_effect=lambda: httpx.Client(transport=httpx.MockTransport(transport))):
+            accepted = self.send("RAG 是什么")
+        data = self.state()
+        self.assertEqual(data["runs"][accepted.run_id]["search_state"], "verified")
+        self.assertEqual([str(r.url) for r in requests], ["https://api.tavily.com/search", "https://api.tavily.com/extract"])
+        self.assertTrue(all('model' not in json.loads(r.content) for r in requests))
+        self.assertIn("https://example.com/rag", data["messages"][-1]["content"])
 
     def test_uncertain_empty_question_cannot_execute_save(self):
         self.decision = intent("goal").model_copy(update={"relation": "uncertain"})

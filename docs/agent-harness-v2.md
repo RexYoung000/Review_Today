@@ -106,8 +106,9 @@ Rex 在核对旧线路仍为 `api.aijws.com` 后明确要求接入已提供的 D
 - 官方宣称支持 schema 不能代替实测：曾接受格式参数却返回代码围栏/普通正文。适配层补充明确的单一 JSON 对象输出要求，不自动剥围栏或把普通正文编造为结构；最终校验不通过仍诚实失败。公网查证必须取得真实搜索调用完成记录，不能将普通模型回答当作已检索证据。
 - 智能模式显式采用非思考调用，深入思考采用 `high`；已有会话强度不重置、不静默降档。结构化和流式能力按两种强度分别验证；实际模型如实进入开发诊断。
 - 只投影 `output_text` 白名单正文，忽略推理文本；最终 schema 校验成功后才推进目标、理解和入库状态。空响应、截断、拒绝、403、超时分别失败，不放松守卫。
-- 公开查证沿用当前服务端搜索/公网抓取边界。单独验证 DeepSeek 的 `web_search`；不支持时诚实报告，不退回旧服务、伪造来源或绕过核验。语音本轮不接通。
-- 2026-09-17 复核与续修：Responses 接口忽略内置 web_search，但 [DeepSeek 官方 Claude Code 接入说明](https://api-docs.deepseek.com/zh-cn/quick_start/agent_integrations/claude_code/)与实际请求确认 Anthropic 兼容接口支持搜索。Rex 已授权使用 `https://api.deepseek.com/anthropic/v1/messages`，保持原模型与 DeepSeek 凭证。以成对 server_tool_use(web_search) / web_search_tool_result 为搜索证据，仅保存真实结果 title/url；最终回答仍须公网读取和证据评估。工具结果部分成功时可使用已有结果，限额不触发无限续调；正文 URL、HTTP 200 或教学模型 ready 都不能证明检索成功。healthz 明示搜索协议及尚未实测状态；步骤总时限、取消、最多两次网络请求沿用既有预算。其他供应商保留 Responses 路径，不自动回退旧服务。同主题普通追问不重复旧服务提示，新的核验、风险/时效结论仍说明限制。案例 A008。
+- 历史公开查证曾验证 DeepSeek 的托管 `web_search`；当前已按下面独立工具架构替换。任何路径均不得伪造来源或绕过核验。语音本轮不接通。
+- 2026-09-17 历史适配：曾验证 DeepSeek Anthropic 的托管搜索并接入，证据见 A008。这属于模型供应商托管工具，不等于 Harness 独立搜索；已由下面的职责修订覆盖。
+- 2026-09-17 Rex 确认独立工具架构并授权实施：Harness 决定何时搜索、执行搜索/网页读取、控制预算/取消/缓存/来源追踪；模型只提供查询准备、资料判断和回答。搜索接口不接收模型名/思考强度，不调用模型生成端点或任何供应商内置搜索，换教学模型不改变工具。所有会话、选材、入库核验与兼容入口统一通过独立工具层，禁止旧托管搜索静默回退。搜索与读取各自配置、报告能力和失败；未配置独立服务时诚实报告，不假装联网。原教学模型与密钥不变，不将模型密钥提供给搜索服务。独立服务选型与凭证尚未确认；通用工具层及可选 Tavily Search/Extract 适配器已实现，但默认未启用。配置与数据边界见 `agent-service/providers/web/README.md`，真实联网仍待接通验收。
 - 配置修改后核对/刷新真实本地服务的有效 provider；已有失败回复仍由用户重试，停止/归档不自动恢复。验收使用隔离数据库，保留用户原数据。
 
 参考：已读取 [官方模型说明](https://api-docs.deepseek.com/quick_start/pricing/)、[Responses 兼容与流式](https://api-docs.deepseek.com/guides/responses_api/)及[思考强度](https://api-docs.deepseek.com/guides/thinking_mode/)。模型列表 200 仅证明鉴权与可见 ID，不代替结构化、流式及真实 Harness 验收。

@@ -18,7 +18,7 @@ class AttemptBudget:
     expired: bool = False
 
     def remaining(self):
-        from agent_service.openai_client import ModelCallError
+        from agent_service.call_errors import ModelCallError
         remaining = self.seconds - (time.monotonic() - self.started)
         if remaining <= 0 or self.expired:
             raise ModelCallError("TIMEOUT", "step deadline exceeded")
@@ -37,7 +37,7 @@ class AttemptBudget:
             except Exception: pass  # cancellation must not conceal the original error
 
     def take(self):
-        from agent_service.openai_client import ModelCallError
+        from agent_service.call_errors import ModelCallError
         if self.attempts >= self.limit:
             raise ModelCallError("ATTEMPTS_EXHAUSTED")
         remaining = self.remaining()

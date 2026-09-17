@@ -4,7 +4,9 @@ import json
 import time
 import uuid
 
-from agent_service.capture.fetch import fetch_public_url, looks_like_url
+from agent_service.capture.fetch import looks_like_url
+from agent_service.web_tools import read_public_url as fetch_public_url
+from agent_service.call_errors import CallError, WebToolError
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL
 from agent_service.conversation_store import Superseded
 from agent_service.harness_store import now_iso
@@ -183,16 +185,16 @@ class ConditionalTeaching:
         model = RISK_MODEL if decision.needs_verification else COACH_MODEL
         search_returned = False
         try:
-            search = self._search(sid, rid, rev, query, model)
+            search = self._search(sid, rid, rev, query)
             search_returned = True
-            # Structured server-search results carry an exact URL allowlist.
+            # Structured independent-search results carry an exact URL allowlist.
             # A model-selected prefix or a URL mentioned only in a title is not
-            # a returned source. Legacy Responses results remain plain text.
+            # a returned source.
             search_urls = None
             selection_input = search
             try:
                 structured_search = json.loads(search)
-                if isinstance(structured_search, dict) and structured_search.get("protocol") == "anthropic_messages":
+                if isinstance(structured_search, dict) and structured_search.get("protocol") == "harness_web_tools_v1":
                     search_urls = {item["url"] for item in structured_search["results"]}
                     selection_input = structured_search["results"]
             except (ValueError, KeyError, TypeError):
@@ -208,8 +210,8 @@ class ConditionalTeaching:
                 cached = run.get("source_cache", {}).get(url) or next((s for s in sources if s.get("url") == url and s.get("content")), None)
                 if not cached or decision.refresh_sources:
                     try:
-                        title, content = fetch_public_url(url)
-                    except (ValueError, OSError) as exc:
+                        title, content = self._read_page(sid, rid, rev, url, fetch_public_url)
+                    except (ValueError, OSError, WebToolError) as exc:
                         read_failures += 1
                         with self.store.transaction(sid, rid, rev) as current:
                             self.store.event(current, current["runs"][rid], "source_unavailable", "一份网页暂时无法读取",
@@ -239,8 +241,8 @@ class ConditionalTeaching:
                 evidence["summary"] = ("已检索到相关资料，但网页未能读取，本次尚未完成核验。" if read_failures else
                                        "暂未找到可读取的合适资料，先讲基础内容；需要查证的部分会标明。")
             self._search_state(sid, rid, rev, state, evidence=evidence, sources=sources)
-        except ModelCallError as exc:
-            unavailable = not search_returned and exc.code.endswith("UNSUPPORTED")
+        except CallError as exc:
+            unavailable = not search_returned and exc.code.endswith(("UNSUPPORTED", "NOT_CONFIGURED", "NO_KEY"))
             evidence["summary"] = ("当前网页检索服务不可用，本次内容未完成网页核验；涉及最新信息或争议的结论仍需查证。"
                                    if unavailable else "本次网页核验未完成，以下先说明基础原理；涉及最新信息或争议的结论仍需查证。")
             self._search_state(sid, rid, rev, "unavailable" if unavailable else "failed", evidence=evidence,

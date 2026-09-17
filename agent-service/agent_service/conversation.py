@@ -15,7 +15,7 @@ from dataclasses import asdict
 from datetime import datetime
 
 from agent_service.capture import RISK_RULE, run_capture
-from agent_service.capture.fetch import fetch_public_url, looks_like_url
+from agent_service.capture.fetch import looks_like_url
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL
 from agent_service.answer_style import render_jd, render_sources, with_question
 from agent_service.source_links import bound_source_links
@@ -24,7 +24,9 @@ from agent_service.conditional_teaching import ConditionalTeaching
 from agent_service.conversation_store import ConversationStore, Superseded, conversation_store
 from agent_service.harness import JD_SYSTEM, PROBLEM_SYSTEM, _render_problem
 from agent_service.harness_store import HarnessTaskRecord, now_iso
-from agent_service.openai_client import ModelCallError, parse_model, web_search_text, web_search_capability
+from agent_service.openai_client import ModelCallError, parse_model
+from agent_service.call_errors import CallError, WebToolError
+from agent_service.web_tools import web_search_text, web_search_capability, read_public_url as fetch_public_url
 from agent_service.model_capabilities import require_model
 from agent_service.service_diagnostics import diagnose
 from agent_service.learning_progress import set_plan, current_step, record_understanding, advance, outcome
@@ -371,7 +373,7 @@ class ConversationHarness(ConditionalTeaching):
                 try:
                     with self.store.transaction(session_id, run_id, revision) as data:
                         run = data["runs"][run_id]
-                        code = exc.code if isinstance(exc, ModelCallError) else (
+                        code = exc.code if isinstance(exc, CallError) else (
                             str(exc) if str(exc).startswith("RT.") else "RT.RUN.EXECUTION_FAILED")
                         if code == "RT.PLAN.INVALID_STEP_REFERENCE":
                             run["steps"] = {key: value for key, value in run["steps"].items() if not isinstance(value, dict) or "learning_plan" not in value}
@@ -1078,7 +1080,7 @@ class ConversationHarness(ConditionalTeaching):
                 continue
             saved = run.get("source_cache", {}).get(url)
             if saved is None:
-                title, body = fetch_public_url(url)
+                title, body = self._read_page(sid, rid, rev, url, fetch_public_url)
                 saved = dict(source_id=str(uuid.uuid5(uuid.UUID(sid), url)), version=(previous or {}).get("version", 0) + 1, type="public_source", url=url, title=title, content=body[:10000], fetched_at=now_iso())
                 with self.store.transaction(sid, rid, rev) as current:
                     current["runs"][rid].setdefault("source_cache", {})[url] = saved
@@ -1267,14 +1269,32 @@ class ConversationHarness(ConditionalTeaching):
             return ""
         return value
 
-    def _search(self, sid, rid, rev, query, model):
+    def _read_page(self, sid, rid, rev, url, reader):
+        handle_key = (sid, rid, rev)
+        def register(close):
+            with self._worker_lock:
+                self._cancel_handles[handle_key] = close
+            try:
+                self._snapshot(sid, rid, rev)
+            except Superseded:
+                close()
+                raise
+        try:
+            self._snapshot(sid, rid, rev)
+            result = reader(url, on_cancel_handle=register)
+            self._snapshot(sid, rid, rev)
+            return result
+        finally:
+            with self._worker_lock:
+                self._cancel_handles.pop(handle_key, None)
+
+    def _search(self, sid, rid, rev, query):
         data, run = self._snapshot(sid, rid, rev)
-        strength = run.get("thinking_strength", data.get("thinking_strength", "smart"))
-        key = hashlib.sha256((query + model + strength).encode()).hexdigest()
+        key = hashlib.sha256((query + json.dumps(web_search_capability(), sort_keys=True)).encode()).hexdigest()
         if key in run.get("search_results", {}):
             return run["search_results"][key]
         if web_search_capability()["status"] == "unavailable":
-            raise ModelCallError("UNSUPPORTED", "configured provider ignores built-in web search")
+            raise WebToolError("NOT_CONFIGURED", "independent search service unavailable")
         handle_key = (sid, rid, rev)
         def register(handle):
             with self._worker_lock:
@@ -1286,23 +1306,21 @@ class ConversationHarness(ConditionalTeaching):
                 raise
         started = time.monotonic()
         try:
-            require_model(model)
             with budget_scope() as budget:
                 for attempt in range(1, 3):
                     try:
                         with self.store.transaction(sid, rid, rev) as current:
-                            event = self.store.event(current, current["runs"][rid], "search_attempt", "正在查找公开资料", payload={"step_attempt": attempt}, model=model)
+                            event = self.store.event(current, current["runs"][rid], "search_attempt", "正在查找公开资料", payload={"step_attempt": attempt, "web_provider": web_search_capability()["provider"]})
                             event["attempt"] = attempt
-                        result = web_search_text(query, model=model, reasoning_effort="high" if strength == "deep" else None,
-                                                 on_cancel_handle=register)
+                        result = web_search_text(query, on_cancel_handle=register)
                         break
-                    except ModelCallError as error:
+                    except CallError as error:
                         if attempt == 2 or budget.attempts >= budget.limit or not diagnose(error)["retryable"]:
                             raise
                         self._snapshot(sid, rid, rev)
             with self.store.transaction(sid, rid, rev) as current:
                 current["runs"][rid].setdefault("search_results", {})[key] = result
-                self.store.event(current, current["runs"][rid], "public_search", "公开资料检索已返回", model=model,
+                self.store.event(current, current["runs"][rid], "public_search", "公开资料检索已返回", payload={"web_provider": web_search_capability()["provider"]},
                                  duration_ms=int((time.monotonic() - started) * 1000))
             return result
         finally:
@@ -1357,14 +1375,12 @@ class ConversationHarness(ConditionalTeaching):
         def memory_model(system, prompt, schema, *, model=None):
             return self._call(sid, rid, rev, "memory_" + schema.__name__, system, prompt, schema, model or COACH_MODEL)
 
-        def memory_search(_private_query, *, model=None):
+        def memory_search(_private_query):
             query = self._public_query(draft.get("public_search_query", ""))
             if not query:
                 return ""
             _, current_run = self._snapshot(sid, rid, rev)
-            if "memory_search" in current_run:
-                return current_run["memory_search"]
-            result = self._search(sid, rid, rev, query, model or RISK_MODEL)
+            result = self._search(sid, rid, rev, query)
             with self.store.transaction(sid, rid, rev) as current:
                 current["runs"][rid]["memory_search"] = result
             return result

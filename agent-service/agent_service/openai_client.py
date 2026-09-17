@@ -12,6 +12,7 @@ from pydantic import BaseModel, ValidationError
 from agent_service.config import BASE_URL, MODEL, PROVIDER, MODEL_PROBE_TIMEOUT_SECONDS, MODEL_TIMEOUT_SECONDS, openai_key
 from agent_service.execution_policy import budget_scope, current_budget
 from agent_service.structured_output import schema_diagnostic
+from agent_service.call_errors import ModelCallError
 
 
 def _client(*, timeout: float = MODEL_TIMEOUT_SECONDS) -> OpenAI:
@@ -111,13 +112,6 @@ def parse_model(
     except json.JSONDecodeError:
         raise ModelCallError("SCHEMA", "JSONDecodeError") from None
 
-
-class ModelCallError(RuntimeError):
-    def __init__(self, kind: str, diagnostic: str = "", request_id: str | None = None):
-        self.code = f"RT.MODEL.{kind}"
-        self.diagnostic = diagnostic  # allowlisted class/status/schema fields; never raw input, provider body or credentials
-        self.request_id = request_id if isinstance(request_id, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,160}", request_id) else None
-        super().__init__(self.code)
 
 
 def _validate_output(schema, raw, response):
@@ -274,54 +268,6 @@ def model_is_callable(model: str, *, reasoning_effort: str | None = None) -> boo
     result = parse_model("Return ready=true in the required schema.", "Check structured output.",
                          Probe, model=model, timeout=MODEL_PROBE_TIMEOUT_SECONDS, reasoning_effort=reasoning_effort)
     return result.ready is True
-
-
-def web_search_capability() -> dict:
-    # Protocol capability is separate from teaching-model readiness. Every
-    # request must still produce actual search proof before we use its sources.
-    return {"status": "unverified", "provider": PROVIDER,
-            "protocol": "anthropic_messages" if PROVIDER == "deepseek" else "responses",
-            "reason": "requires_paired_search_results" if PROVIDER == "deepseek" else "requires_completed_search_call"}
-
-
-def web_search_text(query: str, *, model: str | None = None, reasoning_effort: str | None = None, on_cancel_handle=None) -> str:
-    if PROVIDER == "deepseek":
-        from agent_service.deepseek_search import web_search_text as deepseek_search
-        return deepseek_search(query, model=model or MODEL, reasoning_effort=reasoning_effort, on_cancel_handle=on_cancel_handle)
-    selected_model = model or MODEL
-    with budget_scope() as budget:
-        client = _client()
-        if on_cancel_handle:
-            on_cancel_handle(client.close)
-        for tool in ({"type": "web_search"}, {"type": "web_search_preview"}):
-            try:
-                search_input = query
-                # Forcing web_search on every continuation can yield only tool
-                # items. Allow the final answer, but require completed search proof.
-                response = client.responses.create(model=selected_model, tools=[tool], input=search_input, timeout=budget.take(),
-                    **_reasoning(reasoning_effort))
-                budget.remaining()
-                if getattr(response, "status", None) != "completed":
-                    raise ModelCallError("INCOMPLETE", "search response not completed")
-                if not any(getattr(item, "type", "") == "web_search_call" and getattr(item, "status", "") == "completed"
-                           for item in getattr(response, "output", [])):
-                    raise ModelCallError("UNSUPPORTED", "provider did not execute web search")
-                text = getattr(response, "output_text", "") or ""
-                if text.strip():
-                    return text.strip()[:8000]
-                raise ModelCallError("EMPTY", "search completed without an answer")
-            except APIStatusError as exc:
-                # Only an explicitly unsupported tool permits the compatibility
-                # form. Access denial, rate limits and outages are not retried
-                # behind a different tool name or hidden as "no sources".
-                description = str(exc).lower()
-                if exc.status_code not in {400, 404, 422, 501} or not any(v in description for v in ("web_search", "unsupported tool", "unknown tool")):
-                    raise ModelCallError("PROVIDER", f"HTTP {exc.status_code}", getattr(exc, "request_id", None)) from None
-            except (APITimeoutError, httpx.TimeoutException):
-                raise ModelCallError("TIMEOUT") from None
-            except (APIConnectionError, httpx.TransportError):
-                raise ModelCallError("CONNECTION") from None
-    raise ModelCallError("UNSUPPORTED", "provider rejected web search tools")
 
 
 def transcribe_audio(data: bytes, filename: str) -> str:
