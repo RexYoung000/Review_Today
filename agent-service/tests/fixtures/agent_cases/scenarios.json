@@ -1,0 +1,1218 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "A001-defer-active",
+      "case_id": "A001",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。 当前任务的已讲步骤关联到显式请求该计划并讲解第一步的合成消息；不以普通概念回答充当步骤完成证据。",
+      "source_reference": "docs/evidence/2026-09-15-topic-capture/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "我想系统学习 RAG，按资料切分与建立索引、检索与重排、基于证据生成答案这三步来，先讲第一步。",
+            "coach": "我们按这三步学习。第一步是资料切分与建立索引：把长文档按内容边界切成片段，再将片段转为便于检索的索引。可以想成给参考书分章节并做目录。第一步先讲到这里，后面还有检索与重排、基于证据生成答案。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": {
+          "title": "理解 RAG 的基本流程",
+          "mode": "source_learning",
+          "steps": [
+            {
+              "title": "资料切分与建立索引",
+              "state": "explained",
+              "understanding": "unknown"
+            },
+            {
+              "title": "检索与重排",
+              "state": "pending",
+              "understanding": "unknown"
+            },
+            {
+              "title": "基于证据生成答案",
+              "state": "pending",
+              "understanding": "unknown"
+            }
+          ],
+          "current_step": 0,
+          "understanding": "unknown"
+        },
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": 0
+      },
+      "input": "算了，晚点再学吧",
+      "checks": [
+        {
+          "field": "intent.intents",
+          "op": "contains",
+          "value": "defer"
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "lesson"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "plan_ids_unchanged",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        }
+      ],
+      "manual_review": [
+        "简短收尾，保留进度",
+        "不应出现：继续讲解、追问或主动录入"
+      ]
+    },
+    {
+      "id": "A005-coding-capability",
+      "case_id": "A005",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-16-programming-boundary/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "你有 coding 的能力吗",
+      "checks": [
+        {
+          "field": "reply",
+          "op": "contains",
+          "value": "理解"
+        },
+        {
+          "field": "reply",
+          "op": "contains",
+          "value": "知识"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "说明帮助理解编程知识、概念和原理",
+        "不应出现：承诺项目交付或列举开发工具能力"
+      ]
+    },
+    {
+      "id": "A006-new-question",
+      "case_id": "A006",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-dialogue-continuation/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "什么叫 harness",
+      "checks": [
+        {
+          "field": "intent.intents",
+          "op": "contains",
+          "value": "question"
+        },
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "answer"
+        },
+        {
+          "field": "reply_length",
+          "op": "gte",
+          "value": 40
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "直接回答独立问题；纠错时回到未回答问题",
+        "不应出现：无依据引入旧话题或重复会话选择"
+      ]
+    },
+    {
+      "id": "A006-repair-question",
+      "case_id": "A006",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-dialogue-continuation/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "什么叫 harness",
+            "coach": "你希望继续刚才的内容，还是开始一个新的学习问题？",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "我不是才和你聊天吗",
+      "checks": [
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "answer"
+        },
+        {
+          "field": "reply",
+          "op": "excludes",
+          "value": "还是接着之前的话题"
+        },
+        {
+          "field": "reply",
+          "op": "contains",
+          "value": "harness"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "直接回答独立问题；纠错时回到未回答问题",
+        "不应出现：无依据引入旧话题或重复会话选择"
+      ]
+    },
+    {
+      "id": "A007-resume-unique",
+      "case_id": "A007",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-dialogue-continuation/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [
+          {
+            "title": "理解 RAG 的基本流程",
+            "mode": "source_learning",
+            "steps": [
+              {
+                "title": "资料切分与建立索引",
+                "state": "explained",
+                "understanding": "unknown"
+              },
+              {
+                "title": "检索与重排",
+                "state": "pending",
+                "understanding": "unknown"
+              },
+              {
+                "title": "基于证据生成答案",
+                "state": "pending",
+                "understanding": "unknown"
+              }
+            ],
+            "current_step": 0,
+            "understanding": "unknown"
+          }
+        ],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "继续上次没学完的 RAG",
+      "checks": [
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 1
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        }
+      ],
+      "manual_review": [
+        "唯一目标接续；无目标如实说明；不继承保存授权",
+        "不应出现：复制进度或无记录编造课程"
+      ]
+    },
+    {
+      "id": "A007-resume-missing",
+      "case_id": "A007",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-dialogue-continuation/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "继续上次没学完的光合作用",
+      "checks": [
+        {
+          "field": "intent.intents",
+          "op": "contains",
+          "value": "continue"
+        },
+        {
+          "field": "reply",
+          "op": "contains",
+          "value": "没有找到"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "唯一目标接续；无目标如实说明；不继承保存授权",
+        "不应出现：复制进度或无记录编造课程"
+      ]
+    },
+    {
+      "id": "A010-question-after-greeting",
+      "case_id": "A010",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-ordinary-question/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "你好",
+            "coach": "你好，想了解什么？",
+            "social_reply_kind": "social"
+          },
+          {
+            "user": "我不知道",
+            "coach": "可以从最近想弄明白的问题开始。",
+            "social_reply_kind": "social"
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "harness是什么，它有什么作用",
+      "checks": [
+        {
+          "field": "intent.intents",
+          "op": "contains",
+          "value": "question"
+        },
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "answer"
+        },
+        {
+          "field": "reply_length",
+          "op": "gte",
+          "value": 40
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "Auto 普通问题和局部追问直接解答",
+        "不应出现：未授权启动课程、追问学习用途"
+      ]
+    },
+    {
+      "id": "A010-local-example",
+      "case_id": "A010",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-ordinary-question/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "RAG 是什么？",
+            "coach": "RAG 是检索增强生成。先从资料中找到相关片段，再让模型依据这些片段回答，好比先查参考书再解释问题。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "针对刚才的检索再生成，举个生活类比就好",
+      "checks": [
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "answer"
+        },
+        {
+          "field": "reply_length",
+          "op": "gte",
+          "value": 40
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "Auto 普通问题和局部追问直接解答",
+        "不应出现：未授权启动课程、追问学习用途"
+      ]
+    },
+    {
+      "id": "A011-stable-concept",
+      "case_id": "A011",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-selective-web/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "harness是什么意思",
+      "checks": [
+        {
+          "field": "intent.intents",
+          "op": "contains",
+          "value": "question"
+        },
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "answer"
+        },
+        {
+          "field": "reply_length",
+          "op": "gte",
+          "value": 40
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "基础知识直接答；明确核验才执行；证据够用即停",
+        "不应出现：强制搜索、虚构来源或以工具日志覆盖阶段"
+      ]
+    },
+    {
+      "id": "A012-greeting",
+      "case_id": "A012",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-social-boundary/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "你好",
+      "checks": [
+        {
+          "field": "social_reply_kind",
+          "op": "eq",
+          "value": "social"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "有限接应、当前请求优先；混合知识问题仍回答",
+        "不应出现：主动经营泛聊或解释不相关的记忆限制"
+      ]
+    },
+    {
+      "id": "A012-companionship",
+      "case_id": "A012",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-social-boundary/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "你可以陪我说说话吗",
+      "checks": [
+        {
+          "field": "social_reply_kind",
+          "op": "eq",
+          "value": "companionship"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "有限接应、当前请求优先；混合知识问题仍回答",
+        "不应出现：主动经营泛聊或解释不相关的记忆限制"
+      ]
+    },
+    {
+      "id": "A012-repeat-companionship",
+      "case_id": "A012",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-social-boundary/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "你可以陪我说说话吗",
+            "coach": "我在。可以聊聊学习中遇到的困惑，或者最近想弄明白的事。",
+            "social_reply_kind": "companionship"
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "就随便聊聊嘛",
+      "checks": [
+        {
+          "field": "social_reply_kind",
+          "op": "eq",
+          "value": "companionship"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "有限接应、当前请求优先；混合知识问题仍回答",
+        "不应出现：主动经营泛聊或解释不相关的记忆限制"
+      ]
+    },
+    {
+      "id": "A012-rest",
+      "case_id": "A012",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-social-boundary/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "今天不想学，只想随便聊",
+      "checks": [
+        {
+          "field": "social_reply_kind",
+          "op": "eq",
+          "value": "companionship"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "有限接应、当前请求优先；混合知识问题仍回答",
+        "不应出现：主动经营泛聊或解释不相关的记忆限制"
+      ]
+    },
+    {
+      "id": "A012-learning-support",
+      "case_id": "A012",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。 当前任务的已讲步骤关联到显式请求该计划并讲解第一步的合成消息；不以普通概念回答充当步骤完成证据。",
+      "source_reference": "docs/evidence/2026-09-17-social-boundary/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "我想系统学习 RAG，按资料切分与建立索引、检索与重排、基于证据生成答案这三步来，先讲第一步。",
+            "coach": "我们按这三步学习。第一步是资料切分与建立索引：把长文档按内容边界切成片段，再将片段转为便于检索的索引。可以想成给参考书分章节并做目录。第一步先讲到这里，后面还有检索与重排、基于证据生成答案。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": {
+          "title": "理解 RAG 的基本流程",
+          "mode": "source_learning",
+          "steps": [
+            {
+              "title": "资料切分与建立索引",
+              "state": "explained",
+              "understanding": "unknown"
+            },
+            {
+              "title": "检索与重排",
+              "state": "pending",
+              "understanding": "unknown"
+            },
+            {
+              "title": "基于证据生成答案",
+              "state": "pending",
+              "understanding": "unknown"
+            }
+          ],
+          "current_step": 0,
+          "understanding": "unknown"
+        },
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": 0
+      },
+      "input": "我学不进去，有点挫败，不要改学习计划，只给点调整状态的建议",
+      "checks": [
+        {
+          "field": "social_reply_kind",
+          "op": "eq",
+          "value": "learning_support"
+        },
+        {
+          "field": "tasks_unchanged",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        }
+      ],
+      "manual_review": [
+        "有限接应、当前请求优先；混合知识问题仍回答",
+        "不应出现：主动经营泛聊或解释不相关的记忆限制"
+      ]
+    },
+    {
+      "id": "A012-mixed-question",
+      "case_id": "A012",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-social-boundary/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "今天很烦，顺便解释一下 RAG",
+      "checks": [
+        {
+          "field": "intent.intents",
+          "op": "contains",
+          "value": "question"
+        },
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "answer"
+        },
+        {
+          "field": "reply_length",
+          "op": "gte",
+          "value": 40
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "有限接应、当前请求优先；混合知识问题仍回答",
+        "不应出现：主动经营泛聊或解释不相关的记忆限制"
+      ]
+    },
+    {
+      "id": "A012-history-to-companion",
+      "case_id": "A012",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-social-boundary/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "我上一次说了什么",
+            "coach": "当前这段对话没有更早的消息。",
+            "social_reply_kind": null
+          },
+          {
+            "user": "真的吗",
+            "coach": "在当前可见记录里没有更早的提问。",
+            "social_reply_kind": null
+          },
+          {
+            "user": "你再看看",
+            "coach": "我能看到你刚才询问了之前说过什么，但更早的记录不在当前上下文里。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "你可以陪我说说话吗",
+      "checks": [
+        {
+          "field": "social_reply_kind",
+          "op": "eq",
+          "value": "companionship"
+        },
+        {
+          "field": "reply",
+          "op": "excludes",
+          "value": "记录"
+        },
+        {
+          "field": "reply",
+          "op": "excludes",
+          "value": "记忆"
+        },
+        {
+          "field": "reply",
+          "op": "excludes",
+          "value": "吐槽"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "有限接应、当前请求优先；混合知识问题仍回答",
+        "不应出现：主动经营泛聊或解释不相关的记忆限制"
+      ]
+    },
+    {
+      "id": "A013-local-transition",
+      "case_id": "A013",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-topic-transition/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "大模型是怎么生成回复的？简单讲一下原理。",
+            "coach": "大模型根据已有文本预测下一个 token，再把它追加到上下文，重复这个过程形成回答。它从训练中学到语言和知识模式，仍可能生成不准确的内容。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "好的，先这样吧，我们学下一个内容",
+      "checks": [
+        {
+          "field": "intent.clarification_kind",
+          "op": "eq",
+          "value": "content"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "reply",
+          "op": "excludes",
+          "value": "没有找到可接续"
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "continuation_intent"
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "continuation_match"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "manual_review": [
+        "无计划问下个主题，有计划按当前步骤继续",
+        "不应出现：无证据查询旧目标、推断掌握或保存授权"
+      ]
+    },
+    {
+      "id": "A013-foreign-goal-transition",
+      "case_id": "A013",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。",
+      "source_reference": "docs/evidence/2026-09-17-topic-transition/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "大模型是怎么生成回复的？简单讲一下原理。",
+            "coach": "大模型根据已有文本预测下一个 token，再把它追加到上下文，重复这个过程形成回答。它从训练中学到语言和知识模式，仍可能生成不准确的内容。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": null,
+        "other_goals": [
+          {
+            "title": "理解 RAG 的基本流程",
+            "mode": "source_learning",
+            "steps": [
+              {
+                "title": "资料切分与建立索引",
+                "state": "explained",
+                "understanding": "unknown"
+              },
+              {
+                "title": "检索与重排",
+                "state": "pending",
+                "understanding": "unknown"
+              },
+              {
+                "title": "基于证据生成答案",
+                "state": "pending",
+                "understanding": "unknown"
+              }
+            ],
+            "current_step": 0,
+            "understanding": "unknown"
+          }
+        ],
+        "pending": null,
+        "draft": null,
+        "task_history_index": null
+      },
+      "input": "好的，先这样吧，我们学下一个内容",
+      "checks": [
+        {
+          "field": "intent.clarification_kind",
+          "op": "eq",
+          "value": "content"
+        },
+        {
+          "field": "reply_length",
+          "op": "lte",
+          "value": 160
+        },
+        {
+          "field": "reply",
+          "op": "excludes",
+          "value": "没有找到可接续"
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "continuation_intent"
+        },
+        {
+          "field": "stages",
+          "op": "excludes",
+          "value": "continuation_match"
+        },
+        {
+          "field": "task_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        },
+        {
+          "field": "old_goals_unchanged",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "manual_review": [
+        "无计划问下个主题，有计划按当前步骤继续",
+        "不应出现：无证据查询旧目标、推断掌握或保存授权"
+      ]
+    },
+    {
+      "id": "A013-current-plan-next",
+      "case_id": "A013",
+      "provenance": "synthetic_reconstruction",
+      "provenance_note": "依据已确认案例制作最小合成前文和状态；触发句可来自用户报告，不声称还原原始完整会话。 当前任务的已讲步骤关联到显式请求该计划并讲解第一步的合成消息；不以普通概念回答充当步骤完成证据。",
+      "source_reference": "docs/evidence/2026-09-17-topic-transition/README.md",
+      "initial": {
+        "mode": "auto",
+        "thinking_strength": "smart",
+        "history": [
+          {
+            "user": "我想系统学习 RAG，按资料切分与建立索引、检索与重排、基于证据生成答案这三步来，先讲第一步。",
+            "coach": "我们按这三步学习。第一步是资料切分与建立索引：把长文档按内容边界切成片段，再将片段转为便于检索的索引。可以想成给参考书分章节并做目录。第一步先讲到这里，后面还有检索与重排、基于证据生成答案。",
+            "social_reply_kind": null
+          }
+        ],
+        "summary": "",
+        "paused": false,
+        "current_task": {
+          "title": "理解 RAG 的基本流程",
+          "mode": "source_learning",
+          "steps": [
+            {
+              "title": "资料切分与建立索引",
+              "state": "explained",
+              "understanding": "unknown"
+            },
+            {
+              "title": "检索与重排",
+              "state": "pending",
+              "understanding": "unknown"
+            },
+            {
+              "title": "基于证据生成答案",
+              "state": "pending",
+              "understanding": "unknown"
+            }
+          ],
+          "current_step": 0,
+          "understanding": "unknown"
+        },
+        "other_goals": [],
+        "pending": null,
+        "draft": null,
+        "task_history_index": 0
+      },
+      "input": "好的，先这样吧，我们学下一个内容",
+      "checks": [
+        {
+          "field": "stages",
+          "op": "contains",
+          "value": "lesson"
+        },
+        {
+          "field": "plan_ids_unchanged",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "field": "goal_transfer",
+          "op": "eq",
+          "value": false
+        },
+        {
+          "field": "current_understanding",
+          "op": "eq",
+          "value": "unknown"
+        },
+        {
+          "field": "capture_offer_count",
+          "op": "eq",
+          "value": 0
+        }
+      ],
+      "manual_review": [
+        "无计划问下个主题，有计划按当前步骤继续",
+        "不应出现：无证据查询旧目标、推断掌握或保存授权"
+      ]
+    }
+  ]
+}

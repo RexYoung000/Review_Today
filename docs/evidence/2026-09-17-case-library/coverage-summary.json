@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "cases_registered": 13,
+  "fixed_scenarios": 19,
+  "fixture_sha256": "49c7350f1f46b8f6ed3aca84bae43c59384cf2052564a92e2ff88034edfd6ded",
+  "reports": [
+    {
+      "file": "live-fixed-context-corrected.jsonl",
+      "sha256": "8199870493f064c6bb11f4496b4790aa57a38b91e7b99793ef9fb8f979ad09e5",
+      "result": "PASS"
+    },
+    {
+      "file": "live-fixed-remaining.jsonl",
+      "sha256": "f881cbb32c39a519acca64df308eca19caa2f28521499e8f078d0e8f6339871c",
+      "result": "PASS"
+    },
+    {
+      "file": "live-fixed-current-format.jsonl",
+      "sha256": "377afe0994d4fe9d8c108e56e5a6c6de1b4dece357398afa9e179b627bea477c",
+      "result": "PASS"
+    }
+  ],
+  "coverage": {
+    "A001-defer-active": {
+      "report": "live-fixed-context-corrected.jsonl",
+      "scenario_sha256": "812211029e6e70ba0184e6765e86e0908547100fa028e14eaa4147696c5d6f0f",
+      "result": "PASS"
+    },
+    "A012-learning-support": {
+      "report": "live-fixed-context-corrected.jsonl",
+      "scenario_sha256": "385f5b6387dabac6b9085d3b1cb12ed1046d9ebdede6c9cdd8c20db49392cd56",
+      "result": "PASS"
+    },
+    "A013-current-plan-next": {
+      "report": "live-fixed-context-corrected.jsonl",
+      "scenario_sha256": "4655c66267304c94540a24a5a0942dee1517e3239155f1433f181bcde5922c5a",
+      "result": "PASS"
+    },
+    "A007-resume-unique": {
+      "report": "live-fixed-remaining.jsonl",
+      "scenario_sha256": "77de39061912d93ee5d199db6511407ea7f24490a24ae34ccbc6e6538d8aabce",
+      "result": "PASS"
+    },
+    "A007-resume-missing": {
+      "report": "live-fixed-remaining.jsonl",
+      "scenario_sha256": "9fe01c9eba5f3a11871efb770282e4e0a108bea9bd04df80c8f0b842a6738d33",
+      "result": "PASS"
+    },
+    "A010-local-example": {
+      "report": "live-fixed-remaining.jsonl",
+      "scenario_sha256": "3400f264b625c166c39ae01782feb831ed1ceed3a5ee4b1e1821b7a8a542741d",
+      "result": "PASS"
+    },
+    "A011-stable-concept": {
+      "report": "live-fixed-remaining.jsonl",
+      "scenario_sha256": "47cce65fee80cfed6343d75db9b627bf3a32e34f517eb2fdd597bab2ea8bdec3",
+      "result": "PASS"
+    },
+    "A012-greeting": {
+      "report": "live-fixed-remaining.jsonl",
+      "scenario_sha256": "5a1e090299c63f742aeda30865043ba7cbf7ed4694add0000f1012c34e6efb1e",
+      "result": "PASS"
+    },
+    "A012-companionship": {
+      "report": "live-fixed-remaining.jsonl",
+      "scenario_sha256": "1a389d7b93009ecfe2b08cc687a0e82a4deb30e1aa710ce4ccd211c0c46480b5",
+      "result": "PASS"
+    },
+    "A012-repeat-companionship": {
+      "report": "live-fixed-remaining.jsonl",
+      "scenario_sha256": "7c5e941d527b07bef98e92f076d9f55d46b2e69c6b2407754ce7ca3d78eb86bb",
+      "result": "PASS"
+    },
+    "A012-rest": {
+      "report": "live-fixed-remaining.jsonl",
+      "scenario_sha256": "63ce0ff4e46e07adde1ea57784a2b92df8453f3dab7030b80d7f2521e6e5b8fe",
+      "result": "PASS"
+    },
+    "A012-mixed-question": {
+      "report": "live-fixed-remaining.jsonl",
+      "scenario_sha256": "197dc84d87d9b693842f4215a0538f2731668f1236c51ea06fe9fa95569f8a32",
+      "result": "PASS"
+    },
+    "A005-coding-capability": {
+      "report": "live-fixed-current-format.jsonl",
+      "scenario_sha256": "854b1477b8fb53f2d269f56bd5d5a42d167d070589904bb22ec216caab7089db",
+      "result": "PASS"
+    },
+    "A006-new-question": {
+      "report": "live-fixed-current-format.jsonl",
+      "scenario_sha256": "389d0e95815e2292b785432889cdc4856fb3ea15c51220359a149720252db96e",
+      "result": "PASS"
+    },
+    "A006-repair-question": {
+      "report": "live-fixed-current-format.jsonl",
+      "scenario_sha256": "74e1e60dbc1605e3554938dc21e294344f72959d807683d938d5c2bd3ac6edb5",
+      "result": "PASS"
+    },
+    "A010-question-after-greeting": {
+      "report": "live-fixed-current-format.jsonl",
+      "scenario_sha256": "40a0346212996de3e93b2d85caa11226bf368572cf599def9417acca211b0e1c",
+      "result": "PASS"
+    },
+    "A012-history-to-companion": {
+      "report": "live-fixed-current-format.jsonl",
+      "scenario_sha256": "e530e53750654f2af57e57fd0949ace3773e3540a03a1b1cd430151be70e6500",
+      "result": "PASS"
+    },
+    "A013-local-transition": {
+      "report": "live-fixed-current-format.jsonl",
+      "scenario_sha256": "9abb99dc7690bdc633107635bfd89572e87d65006f563e2cdda65367495f5466",
+      "result": "PASS"
+    },
+    "A013-foreign-goal-transition": {
+      "report": "live-fixed-current-format.jsonl",
+      "scenario_sha256": "adf7a72362ed1f277d30e7617be740350a7bfaa95a299e5ada8764ceca0c9973",
+      "result": "PASS"
+    }
+  },
+  "generated_flow": {
+    "file": "live-generated-flow.jsonl",
+    "turns": 9,
+    "automatic_result": "PASS"
+  },
+  "preserved_initial_failure": {
+    "file": "live-fixed.jsonl",
+    "failed": [
+      "A013-current-plan-next"
+    ],
+    "assessment": "合成任务标记已讲资料切分，但前文只有 RAG 定义，测试前提不一致。修正前文与消息关联后重测；原记录不作为产品回归结论。"
+  },
+  "controlled": {
+    "tests": 490,
+    "subtests": 110,
+    "file": "controlled-complete.log"
+  },
+  "language_review": "manual review notes in README; not a semantic accuracy pass",
+  "rex_acceptance": "pending"
+}

@@ -1,0 +1,656 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "A001",
+      "title": "明确暂缓后仍继续教学",
+      "domain": "dialogue",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-15-topic-capture/README.md",
+        "inputs": [
+          "算了，晚点再学吧"
+        ],
+        "actual": "回复理解后继续讲解 JD 并追问。",
+        "context_status": "partial",
+        "known_context": [
+          "前文给出 AI 产品经理准备框架",
+          "用户明确暂停学习"
+        ],
+        "missing_context": [
+          "现场完整前文及当时任务、待保存状态未保留"
+        ]
+      },
+      "expected": [
+        "简短收尾，保留进度"
+      ],
+      "forbidden": [
+        "继续讲解、追问或主动录入"
+      ],
+      "controlled": [
+        "agent-service/tests/test_topic_capture.py::TopicCaptureTests::test_real_defer_with_continue_goal_is_short_and_does_not_teach"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-15-topic-capture/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "agent-service/tests/topic_capture_real_smoke.py",
+          "limits": "新生成的多轮前文，不是固定现场重放。A012/A013 已接新报告；其余保留旧格式和原验证边界。"
+        }
+      ],
+      "fixed_scenarios": [
+        "A001-defer-active"
+      ],
+      "fixed_scope": "固定合成当前计划下的暂缓",
+      "remaining_gap": "原始完整会话未知；待保存/录入组合由既有受控测试覆盖",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A002",
+      "title": "核验提示与回答正文混淆",
+      "domain": "native",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-15-topic-capture/README.md",
+        "inputs": [
+          "网页核验暂未完成，先讲基础内容；涉及变化或争议的部分仍需核实。"
+        ],
+        "actual": "限制提示按普通正文显示。",
+        "context_status": "not_applicable",
+        "known_context": [
+          "截图显示回答末尾限制说明"
+        ],
+        "missing_context": []
+      },
+      "expected": [
+        "提示缩小、置灰并与正文区分"
+      ],
+      "forbidden": [
+        "把提示渲染成普通问题或正文"
+      ],
+      "controlled": [
+        "tests/mac/AnswerDocumentContractTests.swift"
+      ],
+      "evidence": [
+        {
+          "layer": "native",
+          "reference": "docs/evidence/2026-09-15-topic-capture/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "native",
+          "reference": "tests/mac/AnswerDocumentContractTests.swift",
+          "limits": "原生契约执行入口；文件存在不等于本轮已执行或 Rex 已验收。"
+        }
+      ],
+      "fixed_scenarios": [],
+      "fixed_scope": "不适用：这是原生渲染案例",
+      "remaining_gap": "原生视觉与 Rex 验收仍需单独完成",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A003",
+      "title": "生成途中自动播放知识录入动画",
+      "domain": "mixed",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-15-topic-capture/README.md",
+        "inputs": [
+          "内容仍在生成时出现录入动画"
+        ],
+        "actual": "内部知识整理阶段直接触发动画。",
+        "context_status": "partial",
+        "known_context": [
+          "用户未点击录入",
+          "回答尚未完成"
+        ],
+        "missing_context": [
+          "截图没有完整节点日志和录入状态"
+        ]
+      },
+      "expected": [
+        "显式录入动作与实际结果驱动反馈"
+      ],
+      "forbidden": [
+        "节点变化或回答生成自动触发录入动画"
+      ],
+      "controlled": [
+        "tests/mac/KnowledgeIngestionTests.swift",
+        "agent-service/tests/test_topic_capture.py::TopicCaptureTests::test_save_waits_for_real_receipt_and_duplicate_ack_does_not_reteach"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-15-topic-capture/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "native",
+          "reference": "tests/mac/KnowledgeIngestionTests.swift",
+          "limits": "原生契约执行入口；文件存在不等于本轮已执行或 Rex 已验收。"
+        }
+      ],
+      "fixed_scenarios": [],
+      "fixed_scope": "不适用：动作绑定、结果回执与原生动画组合",
+      "remaining_gap": "不能用纯文本回放证明动画正确；需专项受控与原生验证",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A004",
+      "title": "每轮回答结束都提示知识录入",
+      "domain": "mixed",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-15-topic-capture/README.md",
+        "inputs": [
+          "现在似乎每段话结束后都在提示录入知识"
+        ],
+        "actual": "回答完成就出现录入入口，话题尚未闭环。",
+        "context_status": "partial",
+        "known_context": [
+          "用户报告每轮触发；该输入是问题报告，不是可执行的触发句。"
+        ],
+        "missing_context": [
+          "所有当时话题、来源、理解和授权状态未保留"
+        ]
+      },
+      "expected": [
+        "按话题闭环及录入资格显示入口，点击后执行"
+      ],
+      "forbidden": [
+        "把回答结束、稍后或继续当保存授权"
+      ],
+      "controlled": [
+        "agent-service/tests/test_topic_capture.py::TopicCaptureTests::test_answer_completion_alone_never_offers_capture",
+        "agent-service/tests/test_topic_capture.py::TopicCaptureTests::test_user_closure_creates_offer_without_teaching_next",
+        "agent-service/tests/test_topic_capture.py::TopicCaptureTests::test_stale_action_never_writes"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-15-topic-capture/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "agent-service/tests/topic_capture_real_smoke.py",
+          "limits": "新生成的多轮前文，不是固定现场重放。A012/A013 已接新报告；其余保留旧格式和原验证边界。"
+        }
+      ],
+      "fixed_scenarios": [],
+      "fixed_scope": "尚不纳入简单固定对话回放",
+      "remaining_gap": "收尾对象、版本及延后录入保留既有事务型测试；需要独立动作场景支持",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A005",
+      "title": "编程能力介绍变成开发助手",
+      "domain": "dialogue",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-16-programming-boundary/README.md",
+        "inputs": [
+          "你能帮我 coding 嘛",
+          "你有 coding 的能力吗"
+        ],
+        "actual": "承诺写代码、修项目和项目整合，修复初版仍像 coding 助手。",
+        "context_status": "partial",
+        "known_context": [
+          "用户询问产品能力"
+        ],
+        "missing_context": [
+          "完整原始会话及内部任务状态未知"
+        ]
+      },
+      "expected": [
+        "说明帮助理解编程知识、概念和原理"
+      ],
+      "forbidden": [
+        "承诺项目交付或列举开发工具能力"
+      ],
+      "controlled": [
+        "agent-service/tests/test_programming_boundary.py::ProgrammingBoundaryTests::test_capability_question_cannot_publish_unbounded_model_promise",
+        "agent-service/tests/test_programming_boundary.py::ProgrammingBoundaryTests::test_learning_examples_explanations_and_quoted_requests_still_reach_coach"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-16-programming-boundary/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "agent-service/tests/programming_boundary_real_smoke.py",
+          "limits": "新生成的多轮前文，不是固定现场重放。A012/A013 已接新报告；其余保留旧格式和原验证边界。"
+        }
+      ],
+      "fixed_scenarios": [
+        "A005-coding-capability"
+      ],
+      "fixed_scope": "空会话能力介绍",
+      "remaining_gap": "混合开发/教学、否定、引用和已有任务由专项测试覆盖",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A006",
+      "title": "新问题误问是否继续旧话题且不纠错",
+      "domain": "dialogue",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-17-dialogue-continuation/README.md",
+        "inputs": [
+          "什么叫 harness",
+          "我不是才和你聊天吗"
+        ],
+        "actual": "新会话反问继续刚才还是新话题，纠正后仍重复。",
+        "context_status": "partial",
+        "known_context": [
+          "新会话首问",
+          "截图包含错误反问和用户纠正"
+        ],
+        "missing_context": [
+          "当时模型完整输入和记忆候选未知"
+        ]
+      },
+      "expected": [
+        "直接回答独立问题；纠错时回到未回答问题"
+      ],
+      "forbidden": [
+        "无依据引入旧话题或重复会话选择"
+      ],
+      "controlled": [
+        "agent-service/tests/test_dialogue_routing.py::DialogueRoutingTests::test_independent_question_uncertain_relation_still_answers",
+        "agent-service/tests/test_dialogue_routing.py::DialogueRoutingTests::test_conversation_repair_returns_to_unanswered_question"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-17-dialogue-continuation/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "agent-service/tests/dialogue_routing_real_smoke.py",
+          "limits": "新生成的多轮前文，不是固定现场重放。A012/A013 已接新报告；其余保留旧格式和原验证边界。"
+        }
+      ],
+      "fixed_scenarios": [
+        "A006-new-question",
+        "A006-repair-question"
+      ],
+      "fixed_scope": "空会话首问与固定错误反问后的修复",
+      "remaining_gap": "跨会话记忆污染及旧任务撤销由专项测试覆盖",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A007",
+      "title": "跨会话继续学习缺乏可靠归属",
+      "domain": "dialogue",
+      "source": {
+        "kind": "test_discovery",
+        "reference": "docs/evidence/2026-09-17-dialogue-continuation/README.md",
+        "inputs": [
+          "继续上次没学完的 RAG"
+        ],
+        "actual": "续学无匹配时曾凭空建立课程，目标归属需要保证。",
+        "context_status": "partial",
+        "known_context": [
+          "对齐新会话也可能明确继续旧学习",
+          "既有合成回放发现无记录时新建课程"
+        ],
+        "missing_context": [
+          "没有唯一的原始现场数据库"
+        ]
+      },
+      "expected": [
+        "唯一目标接续；无目标如实说明；不继承保存授权"
+      ],
+      "forbidden": [
+        "复制进度或无记录编造课程"
+      ],
+      "controlled": [
+        "agent-service/tests/test_goal_continuation.py::GoalContinuationTests::test_unique_goal_moves_owner_preserves_plan_not_consent",
+        "agent-service/tests/test_goal_continuation.py::GoalContinuationTests::test_multiple_and_none_do_not_create_progress"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-17-dialogue-continuation/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "agent-service/tests/goal_continuation_real_smoke.py",
+          "limits": "新生成的多轮前文，不是固定现场重放。A012/A013 已接新报告；其余保留旧格式和原验证边界。"
+        }
+      ],
+      "fixed_scenarios": [
+        "A007-resume-unique",
+        "A007-resume-missing"
+      ],
+      "fixed_scope": "唯一合成目标与不存在目标两个语义起点",
+      "remaining_gap": "并发、版本、删除和授权保留事务测试；不等于原生跨会话验收",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A008",
+      "title": "网页工具失效与核验状态不实",
+      "domain": "tool",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-17-web-failover/README.md",
+        "inputs": [
+          "为什么没有网页核验"
+        ],
+        "actual": "模型托管搜索/服务配置失败，后续回答重复旧核验提示。",
+        "context_status": "partial",
+        "known_context": [
+          "历经独立工具拆分和 Exa/Tavily 备用接入",
+          "Brave 未配置真实 Key"
+        ],
+        "missing_context": [
+          "各历史失败时刻的完整外部服务状态不能恢复"
+        ]
+      },
+      "expected": [
+        "独立工具执行、有限备用、读取来源后判断支持范围"
+      ],
+      "forbidden": [
+        "用模型记忆或搜索摘录冒充已读网页"
+      ],
+      "controlled": [
+        "agent-service/tests/test_web_tools.py::IndependentWebTests::test_search_is_direct_and_model_independent",
+        "agent-service/tests/test_web_failover.py::FailoverTests::test_429_search_switches_and_cooldown_is_shared_with_reads"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-17-web-failover/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "agent-service/tests/selective_web_real_smoke.py",
+          "limits": "新生成的多轮前文，不是固定现场重放。A012/A013 已接新报告；其余保留旧格式和原验证边界。"
+        }
+      ],
+      "fixed_scenarios": [],
+      "fixed_scope": "不适用：需要可控故障/真实外部服务的专项回放",
+      "remaining_gap": "Brave 真实验证待 Key；旧 fixed-routing 记录仅是真实回答层，不是完整真实路由",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A009",
+      "title": "中文相邻 Markdown 加粗原样显示",
+      "domain": "native",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-17-verification-rendering/README.md",
+        "inputs": [
+          "不会没用，但**「有用」的地方会换位置**。这轮先只讲清楚换到哪儿去。"
+        ],
+        "actual": "完整加粗的星号被作为普通文字。",
+        "context_status": "not_applicable",
+        "known_context": [
+          "原始待渲染文本足以复现解析边界"
+        ],
+        "missing_context": []
+      },
+      "expected": [
+        "中文加粗正常渲染，复制和保存保持原文"
+      ],
+      "forbidden": [
+        "破坏代码、转义、链接或流式不完整语法"
+      ],
+      "controlled": [
+        "tests/mac/AnswerDocumentContractTests.swift"
+      ],
+      "evidence": [
+        {
+          "layer": "native",
+          "reference": "docs/evidence/2026-09-17-verification-rendering/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "native",
+          "reference": "tests/mac/AnswerDocumentContractTests.swift",
+          "limits": "原生契约执行入口；文件存在不等于本轮已执行或 Rex 已验收。"
+        }
+      ],
+      "fixed_scenarios": [],
+      "fixed_scope": "不适用：固定渲染文本由原生契约执行",
+      "remaining_gap": "浅深色、窗口尺寸和交互验收不由对话模型结果代替",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A010",
+      "title": "普通概念问答误建学习任务",
+      "domain": "dialogue",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-17-ordinary-question/README.md",
+        "inputs": [
+          "harness是什么，它有什么作用",
+          "针对刚才的检索再生成，举个生活类比就好"
+        ],
+        "actual": "普通问题被要求明确学习目标。",
+        "context_status": "partial",
+        "known_context": [
+          "你好→我不知道→harness 问题",
+          "另有合成同主题类比追问"
+        ],
+        "missing_context": [
+          "现场完整前文、路由输入和旧任务未全部入库"
+        ]
+      },
+      "expected": [
+        "Auto 普通问题和局部追问直接解答"
+      ],
+      "forbidden": [
+        "未授权启动课程、追问学习用途"
+      ],
+      "controlled": [
+        "agent-service/tests/test_dialogue_routing.py::DialogueRoutingTests::test_auto_question_scope_conflict_after_greeting_cannot_create_task",
+        "agent-service/tests/test_dialogue_routing.py::DialogueRoutingTests::test_plain_followup_also_unblocks_legacy_question_task"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-17-ordinary-question/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "agent-service/tests/ordinary_question_real_smoke.py",
+          "limits": "新生成的多轮前文，不是固定现场重放。A012/A013 已接新报告；其余保留旧格式和原验证边界。"
+        }
+      ],
+      "fixed_scenarios": [
+        "A010-question-after-greeting",
+        "A010-local-example"
+      ],
+      "fixed_scope": "固定问候前文与局部类比",
+      "remaining_gap": "非 Auto、旧误建任务撤销及真实目标保护保留受控测试",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A011",
+      "title": "稳定知识强制搜索与运行反馈不清",
+      "domain": "mixed",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-17-selective-web/README.md",
+        "inputs": [
+          "harness是什么意思"
+        ],
+        "actual": "不需核验也搜索并顺序读取多页；来源不显眼，阶段被日志覆盖。",
+        "context_status": "partial",
+        "known_context": [
+          "基础概念问句",
+          "已有实测记录阶段及耗时"
+        ],
+        "missing_context": [
+          "当时完整外部网页结果和模型服务时延不能重建"
+        ]
+      },
+      "expected": [
+        "基础知识直接答；明确核验才执行；证据够用即停"
+      ],
+      "forbidden": [
+        "强制搜索、虚构来源或以工具日志覆盖阶段"
+      ],
+      "controlled": [
+        "agent-service/tests/test_selective_web.py::SelectiveWebTests::test_new_concept_and_stray_public_query_do_not_force_search",
+        "agent-service/tests/test_selective_web.py::SelectiveWebTests::test_first_supported_source_stops_additional_reads",
+        "agent-service/tests/test_selective_web.py::SelectiveWebTests::test_telemetry_retains_current_phase_but_remains_in_details",
+        "tests/mac/MrBPresentationTests.swift"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-17-selective-web/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "agent-service/tests/selective_web_real_smoke.py",
+          "limits": "新生成的多轮前文，不是固定现场重放。A012/A013 已接新报告；其余保留旧格式和原验证边界。"
+        },
+        {
+          "layer": "native",
+          "reference": "tests/mac/MrBPresentationTests.swift",
+          "limits": "原生契约执行入口；文件存在不等于本轮已执行或 Rex 已验收。"
+        }
+      ],
+      "fixed_scenarios": [
+        "A011-stable-concept"
+      ],
+      "fixed_scope": "基础首问不搜索",
+      "remaining_gap": "真实搜索、预算、来源链接和动效继续各层验证",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A012",
+      "title": "陪聊扩大边界并重复旧记忆解释",
+      "domain": "dialogue",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-17-social-boundary/README.md",
+        "inputs": [
+          "你可以陪我说说话吗"
+        ],
+        "actual": "邀请吐槽泛聊，同时重复此前记忆范围限制。",
+        "context_status": "partial",
+        "known_context": [
+          "用户此前询问我上一次说了什么、真的吗、你再看看"
+        ],
+        "missing_context": [
+          "更早完整历史及内部任务状态未知"
+        ]
+      },
+      "expected": [
+        "有限接应、当前请求优先；混合知识问题仍回答"
+      ],
+      "forbidden": [
+        "主动经营泛聊或解释不相关的记忆限制"
+      ],
+      "controlled": [
+        "agent-service/tests/test_social_dialogue.py::SocialDialogueTests::test_history_remains_but_does_not_leak_into_companionship",
+        "agent-service/tests/test_social_dialogue.py::SocialDialogueTests::test_social_label_cannot_swallow_control_confirmation_resume_or_actual_answer"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-17-social-boundary/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "agent-service/tests/social_dialogue_real_smoke.py",
+          "limits": "新生成的多轮前文，不是固定现场重放。A012/A013 已接新报告；其余保留旧格式和原验证边界。"
+        }
+      ],
+      "fixed_scenarios": [
+        "A012-greeting",
+        "A012-companionship",
+        "A012-repeat-companionship",
+        "A012-rest",
+        "A012-learning-support",
+        "A012-mixed-question",
+        "A012-history-to-companion"
+      ],
+      "fixed_scope": "问候/重复陪聊/休息/学习支持/混合问题/历史转场固定场景",
+      "remaining_gap": "保存和停止等真实操作的绑定与版本继续专项测试；自然度仍人工评审",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    },
+    {
+      "id": "A013",
+      "title": "当前话题转场被误当旧目标恢复",
+      "domain": "dialogue",
+      "source": {
+        "kind": "user_report",
+        "reference": "docs/evidence/2026-09-17-topic-transition/README.md",
+        "inputs": [
+          "好的，先这样吧，我们学下一个内容"
+        ],
+        "actual": "回复没有找到可接续的有效学习进度。",
+        "context_status": "partial",
+        "known_context": [
+          "前文在讲大模型如何生成回复",
+          "调查确认当前会话没有学习任务",
+          "识别为当前内容澄清后，被旧目标补判覆盖"
+        ],
+        "missing_context": [
+          "截图之前的完整对话未入库"
+        ]
+      },
+      "expected": [
+        "无计划问下个主题，有计划按当前步骤继续"
+      ],
+      "forbidden": [
+        "无证据查询旧目标、推断掌握或保存授权"
+      ],
+      "controlled": [
+        "agent-service/tests/test_goal_continuation.py::GoalContinuationTests::test_next_topic_content_clarification_does_not_query_old_goals",
+        "agent-service/tests/test_goal_continuation.py::GoalContinuationTests::test_next_step_preserves_current_plan_and_ownership"
+      ],
+      "evidence": [
+        {
+          "layer": "controlled",
+          "reference": "docs/evidence/2026-09-17-topic-transition/README.md",
+          "limits": "历史分层记录；保留当时失败、未验证项及旧格式，不能倒填缺失元数据。"
+        },
+        {
+          "layer": "live_flow",
+          "reference": "agent-service/tests/topic_transition_real_smoke.py",
+          "limits": "新生成的多轮前文，不是固定现场重放。A012/A013 已接新报告；其余保留旧格式和原验证边界。"
+        }
+      ],
+      "fixed_scenarios": [
+        "A013-local-transition",
+        "A013-foreign-goal-transition",
+        "A013-current-plan-next"
+      ],
+      "fixed_scope": "同一句话分别放在无计划、其他目标、当前计划三个固定起点",
+      "remaining_gap": "不代表所有自然表达覆盖；授权与并发仍由专项测试负责",
+      "acceptance": "pending",
+      "acceptance_reference": null
+    }
+  ]
+}

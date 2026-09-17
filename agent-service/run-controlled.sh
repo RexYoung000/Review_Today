@@ -16,6 +16,7 @@ export REVIEW_TODAY_SEARCH_PROVIDER='none'
 export REVIEW_TODAY_READ_PROVIDER='local'
 export REVIEW_TODAY_LLM_PROVIDER='openai_compatible'
 python_bin="${REVIEW_TODAY_TEST_PYTHON:-.venv/bin/python}"
+"$python_bin" tests/run_case_library.py
 # pytest also collects unittest.TestCase. unittest alone silently omits the
 # parameterized dictation tests even when their modules import successfully.
 "$python_bin" -m pytest tests -q
