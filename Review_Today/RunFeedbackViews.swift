@@ -32,7 +32,7 @@ struct RunDetails<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Button { expanded.toggle() } label: {
-                HStack(spacing: 6) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Image(systemName: expanded ? "chevron.down" : "chevron.right")
                         .font(.system(size: 10, weight: .semibold)).frame(width: 12)
                     Text(title).font(.caption).fixedSize()
@@ -153,8 +153,14 @@ private struct LoadingEllipsis: View {
     var body: some View {
         TimelineView(.animation(minimumInterval: 0.5, paused: reduced || scenePhase != .active)) { tick in
             let count = reduced ? 3 : Int(tick.date.timeIntervalSinceReferenceDate * 2) % 3 + 1
-            Text(String(repeating: ".", count: count))
-                .monospaced().frame(width: 14, alignment: .leading).foregroundStyle(.secondary)
+            // Reserve the intrinsic width of all three dots at the effective font.
+            // A fixed point width can wrap the third dot and change the row height.
+            Text("...")
+                .hidden()
+                .overlay(alignment: .leading) {
+                    Text(String(repeating: ".", count: count)).fixedSize()
+                }
+                .monospaced().fixedSize().foregroundStyle(.secondary)
         }.accessibilityHidden(true)
     }
 }

@@ -9,7 +9,7 @@ struct WebFeedbackPreview: View {
     @State private var draft = ""
     @State private var phase = 0
     @State private var opened = ""
-    private let stages = ["正在梳理当前问题", "正在检索公开资料", "正在读取网页正文", "正在核验回答依据", "正在准备回答"]
+    private let stages = ["正在理解本轮意图", "正在检索公开资料", "正在读取网页正文", "正在核验回答依据", "正在准备回答"]
     private let answer = """
     **Harness** 是模型周围负责工具、上下文和执行流程的支撑系统。
 
