@@ -1,0 +1,67 @@
+{
+  "checked_at": "2026-09-20",
+  "unit": "USD per million tokens",
+  "sources": {
+    "jev": "https://docs.typesafe.ai/models",
+    "deepseek": "https://api-docs.deepseek.com/quick_start/pricing/"
+  },
+  "rates": {
+    "jev-1.13.0": {
+      "input": [
+        0.042,
+        0.042
+      ],
+      "cached": [
+        0.042,
+        0.042
+      ],
+      "output": [
+        0,
+        0
+      ]
+    },
+    "deepseek-flash": {
+      "input": [
+        0.15,
+        0.3
+      ],
+      "cached": [
+        0.003,
+        0.006
+      ],
+      "output": [
+        0.6,
+        1.2
+      ]
+    },
+    "deepseek-v4-flash": {
+      "input": [
+        0.15,
+        0.3
+      ],
+      "cached": [
+        0.003,
+        0.006
+      ],
+      "output": [
+        0.6,
+        1.2
+      ]
+    },
+    "deepseek-v4-pro": {
+      "input": [
+        0.66,
+        1.32
+      ],
+      "cached": [
+        0.022,
+        0.044
+      ],
+      "output": [
+        1.98,
+        3.96
+      ]
+    }
+  },
+  "note": "采用官方英文模型表；费用显示闲时/高峰边界，不是已扣款账单。未知缓存用量按全命中到全未命中计范围；缺失输入/输出用量则保持未知。"
+}

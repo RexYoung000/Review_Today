@@ -1,0 +1,367 @@
+{
+  "schema_version": 1,
+  "scenarios_sha256": "50b18dd91700aaa65ece0addb1e0ca00cc618a8890b61f63faa47c2b4493dab6",
+  "provenance": "人工依据现有契约标注的局部语义判断，不使用任何模型输出作答案。",
+  "sources": [
+    "docs/agent-iteration.md",
+    "agent-service/agent_service/conversation_prompts.py",
+    "agent-service/tests/fixtures/agent_cases/scenarios.json"
+  ],
+  "questions": {
+    "conversation_kind": {
+      "type": "choice",
+      "instructions": "判断本轮对话类型。当前请求优先于旧话题；同时包含具体知识问题、真实操作或产品能力问题时选 ordinary。",
+      "criteria": {
+        "ordinary": "知识/资料解释、真实控制或操作、产品能力咨询；以及混合实质请求。",
+        "social": "仅问候、感谢或简短社交，没有具体知识问题、操作或陪聊要求。",
+        "companionship": "只想陪伴/随便聊聊，包括今天不想学习只聊天，没有其他实质请求。",
+        "learning_support": "针对学不进去、挫败等学习困难求建议，不要求讲知识或改变计划。",
+        "unsure": "材料不足或无法区分，不猜测。"
+      }
+    },
+    "knowledge_request": {
+      "type": "choice",
+      "instructions": "本轮是否有具体知识解释、材料理解请求，或要求纠正误解并回答前文未答的具体知识问题？仅产品能力询问、请求下一主题/推进计划/恢复旧课、陪聊或学习状态建议不算。",
+      "criteria": {
+        "yes": "存在独立的具体知识/材料解释请求，含混合请求中的知识部分与会话纠错后仍待回答的原问题。",
+        "no": "没有上述请求；仅控制、选择下一主题、恢复/推进课程、能力咨询、资源代办或社交。",
+        "unsure": "材料不足或无法区分，不猜测。"
+      }
+    },
+    "progress": {
+      "type": "choice",
+      "instructions": "只判断本轮对学习进度的要求。依据当前任务是否存在区分当前计划下一步与未指明的新主题；其他会话的目标不能补成当前计划。",
+      "criteria": {
+        "none": "本轮未要求暂缓、推进、恢复学习或选下一主题。",
+        "defer": "明确今天先不学、晚点再学、暂缓；与其他请求同时出现也保留此要求。",
+        "resume_prior": "明确继续上次/之前未完成的目标；即使记录不存在也仍是恢复请求。",
+        "next_current": "明确要求下一步/下一个内容，且当前会话已有明确学习计划。",
+        "clarify_next": "要求学下一个内容，但当前会话没有计划、也没指定下一知识主题，不自动接走其他会话目标。",
+        "unsure": "材料不足或无法区分，不猜测。"
+      }
+    },
+    "programming_boundary": {
+      "type": "choice",
+      "instructions": "只判断编程开发交付边界。普通编程知识解释不属于开发交付。",
+      "criteria": {
+        "none": "无编程交付或编程能力咨询，或仅理解编程知识。",
+        "capability_question": "询问是否具备 coding/编程开发能力。",
+        "development_delivery": "要求开发或交付项目、代码成品。",
+        "mixed_learning": "编程交付与独立知识理解请求并存。",
+        "unsure": "材料不足或无法区分，不猜测。"
+      }
+    },
+    "resource_boundary": {
+      "type": "choice",
+      "instructions": "判断本轮原始输入的资源代办边界，尚未执行混合请求拆分。引用、否定找资源/下载的句子和知识解释不是代办；继续要承接真实前文。",
+      "criteria": {
+        "none": "没有资源代办/能力咨询，或只是解释引用、下载技术，或已否定代办只问知识。",
+        "capability_question": "询问是否能找资源、下载或执行外部代办。",
+        "resource_delivery": "要求找下载链接/下载等资源代办，或承接前文继续代办；附带切模式/暂缓仍属于此类。",
+        "mixed_learning": "原始输入同时要求资源代办及独立明确的知识解释。",
+        "unsure": "材料不足或无法区分，不猜测。"
+      }
+    },
+    "conversation_repair": {
+      "type": "choice",
+      "instructions": "用户本轮是否指出刚才的会话理解/流程错误，需要回到前文未答的原始问题？",
+      "criteria": {
+        "yes": "本轮在纠正助手对会话或原始问题的误解。",
+        "no": "没有这种会话纠错要求。",
+        "unsure": "材料不足或无法区分，不猜测。"
+      }
+    },
+    "web_scope": {
+      "type": "choice",
+      "instructions": "根据本轮材料与需求判断网页工具的适用范围，不生成查询词。资源代办超出产品范围，不能因用户说找链接就搜索；内部材料或带访问凭证的 URL 优先标为受限。",
+      "criteria": {
+        "no_need": "稳定基础知识、普通解释/类比、社交、控制、恢复学习或范围外的代办，无须公开网页检索。",
+        "public_lookup": "明确核实公开事实/官方出处、最新信息且输入没有外发限制。",
+        "private_material": "本轮提供内部/未发布材料；不能把这些内容外发到公开网页工具。",
+        "credential_url": "要求读取带 token 等访问凭证的链接，不能直接发出。",
+        "unsure": "材料不足或无法区分，不猜测。"
+      }
+    }
+  },
+  "expected": {
+    "A001-defer-active": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "defer",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A005-coding-capability": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "none",
+      "programming_boundary": "capability_question",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A006-new-question": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A006-repair-question": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "yes",
+      "web_scope": "no_need"
+    },
+    "A007-resume-unique": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "resume_prior",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A007-resume-missing": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "resume_prior",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A010-question-after-greeting": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A010-local-example": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A011-stable-concept": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A012-greeting": {
+      "conversation_kind": "social",
+      "knowledge_request": "no",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A012-companionship": {
+      "conversation_kind": "companionship",
+      "knowledge_request": "no",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A012-repeat-companionship": {
+      "conversation_kind": "companionship",
+      "knowledge_request": "no",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A012-rest": {
+      "conversation_kind": "companionship",
+      "knowledge_request": "no",
+      "progress": "defer",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A012-learning-support": {
+      "conversation_kind": "learning_support",
+      "knowledge_request": "no",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A012-mixed-question": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A012-history-to-companion": {
+      "conversation_kind": "companionship",
+      "knowledge_request": "no",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A013-local-transition": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "clarify_next",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A013-foreign-goal-transition": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "clarify_next",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A013-current-plan-next": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "next_current",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A015-capability": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "capability_question",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A015-links-after-promise": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "resource_delivery",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A015-continue-errand": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "resource_delivery",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A015-download-knowledge": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A015-quoted-request": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A015-negated-errand": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A015-mixed-knowledge": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "mixed_learning",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A015-mode-and-errand": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "resource_delivery",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A015-defer-and-errand": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "no",
+      "progress": "defer",
+      "programming_boundary": "none",
+      "resource_boundary": "resource_delivery",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    },
+    "A017-internal-material": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "private_material"
+    },
+    "A017-credential-link": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "credential_url"
+    },
+    "A017-public-privacy-concept": {
+      "conversation_kind": "ordinary",
+      "knowledge_request": "yes",
+      "progress": "none",
+      "programming_boundary": "none",
+      "resource_boundary": "none",
+      "conversation_repair": "no",
+      "web_scope": "no_need"
+    }
+  }
+}
