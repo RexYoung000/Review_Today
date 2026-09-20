@@ -15,6 +15,7 @@ def code_version():
     files = sorted((ROOT / 'agent-service/tests/judgment_comparison').glob('*.py'))
     files += [ROOT / 'agent-service/tests/run_judgment_comparison.py',
               ROOT / 'agent-service/tests/run_jev_calibration.py',
+              ROOT / 'agent-service/tests/run_jev_boundaries.py',
               ROOT / 'agent-service/agent_service/config.py',
               ROOT / 'agent-service/agent_service/conversation_prompts.py']
     files += sorted(FIXTURES.glob('*.json'))

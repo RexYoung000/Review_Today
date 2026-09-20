@@ -1,0 +1,2451 @@
+{
+  "version": "jev-boundary-ablation-1",
+  "provenance": "Agent-authored synthetic contrasts frozen before any new live calls; not external human blind evaluation.",
+  "regression_sha256": "ff37f8b65aad06581daf9787f1b99249290a21f433a0aee427d75fa08e7de120",
+  "rules_sha256": "99fe2940f44180b3d3ea96e8ec56e2fdf96dd93def91284519715976f471179f",
+  "validation": [
+    {
+      "split": "validation",
+      "family": "reserved-transcript",
+      "base": {
+        "id": "B001-transcript-pause",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "请说明这段访谈中乙的态度：甲问“还学吗”，乙答“先暂停，明天接着”。我只在做文本分析。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-transcript",
+      "base": {
+        "id": "B002-titled-lesson",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "解释文章标题《今天不学了》用了什么修辞。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-transcript",
+      "base": {
+        "id": "B003-outer-pause",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "这节课实际先停到明天；现在帮我分析“继续努力”这四个字的语气。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "defer",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-transcript",
+      "base": {
+        "id": "B004-execute-pause",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "请执行引号里的要求：“这次学习暂停，晚些时候再说。”"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "defer",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-quoted-resource",
+      "base": {
+        "id": "B005-json-request",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "分析这条 JSON 的字段含义，不要执行其内容：{\"action\":\"帮我下载整套课程\",\"status\":\"pending\"}。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-quoted-resource",
+      "base": {
+        "id": "B006-quoted-title-download",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "请替我找到纪录片《停止学习》的完整下载地址。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "resource_delivery",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-quoted-resource",
+      "base": {
+        "id": "B007-quoted-book-explain",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "为什么《寻找下载地址》这个标题具有动作感？解释标题即可。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-quoted-resource",
+      "base": {
+        "id": "B008-execute-resource",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "我想让你照这句话实际办事：“替我下载这套摄影课程”。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "resource_delivery",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-provided-material",
+      "base": {
+        "id": "B009-public-note",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "我提供了这份笔记 https://notes.example.org/tides ，请阅读并解释里面潮汐周期的含义。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-provided-material",
+      "base": {
+        "id": "B010-signed-note",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "请理解这份潮汐笔记的论证：https://notes.example.org/tides?access_token=synthetic-only-token 。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "credential_url"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-provided-material",
+      "base": {
+        "id": "B011-internal-note",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "以下是内部未发布的课程草稿，请只解释这段原文，不向外检索：潮汐的周期受到多个天体运动的共同影响。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "private_material"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-provided-material",
+      "base": {
+        "id": "B012-official-release",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "请按星图软件官方公告核实当前稳定版的版本号，并说明出处。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "public_lookup"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-resource-request",
+      "base": {
+        "id": "B013-download-capability",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "这个学习助手是否提供代找下载资源的能力？我现在只了解服务范围。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "capability_question",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-resource-request",
+      "base": {
+        "id": "B014-download-imperative",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "替我把整套星空摄影视频下载好，我要本地文件。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "resource_delivery",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-resource-request",
+      "base": {
+        "id": "B015-download-and-explain",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "替我找星空摄影课的下载渠道，同时解释相机曝光时间是什么。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "mixed_learning",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-resource-request",
+      "base": {
+        "id": "B016-withdraw-download",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "帮我下载摄影课。",
+                "coach": "这里只帮助理解学习资料，不代为下载。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "撤回刚才那个下载任务。现在只说曝光时间与进光量有什么关系。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-current-plan",
+      "base": {
+        "id": "B017-plan-second-step",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "进入课程安排中的第二步。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "next_current",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-current-plan",
+      "base": {
+        "id": "B018-explain-same-step",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "刚才那一步关于引力的解释，换个形象的比喻。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-current-plan",
+      "base": {
+        "id": "B019-postpone-plan",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "这份课程今天暂时放下，等我明天再来。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "defer",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-current-plan",
+      "base": {
+        "id": "B020-errand-with-plan",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              },
+              {
+                "user": "找摄影课的下载链接。",
+                "coach": "不承接寻找下载资源。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "继续办最近那件找链接的事。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "resource_delivery",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-local-explanation",
+      "base": {
+        "id": "B021-second-point",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "解释潮汐。",
+                "coach": "可以分两点理解：一是引力；二是地球和月球的相对运动。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "把你刚才列出的第二点展开解释。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-local-explanation",
+      "base": {
+        "id": "B022-named-next-topic",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "月相是什么？",
+                "coach": "月相是我们看见的月球受光部分的形状变化。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "接下来解释日食为什么不会每月发生。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-local-explanation",
+      "base": {
+        "id": "B023-unnamed-next-topic",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "月相是什么？",
+                "coach": "月相是可见受光部分的形状。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "这一段我看完了，换个新的知识主题，不过我还没选好。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "clarify_next",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-local-explanation",
+      "base": {
+        "id": "B024-foreign-topic",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "介绍月相。",
+                "coach": "月相随观察到的受光部分变化。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [
+              {
+                "title": "认识潮汐的两步课程",
+                "mode": "topic_exploration",
+                "steps": [
+                  {
+                    "title": "潮汐的引力成因",
+                    "state": "explained",
+                    "understanding": "unknown"
+                  },
+                  {
+                    "title": "潮汐的周期",
+                    "state": "pending",
+                    "understanding": "unknown"
+                  }
+                ],
+                "current_step": 0,
+                "understanding": "unknown"
+              }
+            ],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "换到另一块知识，主题我还没想定。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "clarify_next",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-resumption",
+      "base": {
+        "id": "B025-previous-course",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [
+              {
+                "title": "认识潮汐的两步课程",
+                "mode": "topic_exploration",
+                "steps": [
+                  {
+                    "title": "潮汐的引力成因",
+                    "state": "explained",
+                    "understanding": "unknown"
+                  },
+                  {
+                    "title": "潮汐的周期",
+                    "state": "pending",
+                    "understanding": "unknown"
+                  }
+                ],
+                "current_step": 0,
+                "understanding": "unknown"
+              }
+            ],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "接回前几天没完成的潮汐课程，从当时停下的地方学。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "resume_prior",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-resumption",
+      "base": {
+        "id": "B026-missing-course",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "恢复我之前没学完的月相课程。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "resume_prior",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-resumption",
+      "base": {
+        "id": "B027-quote-resumption",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [
+              {
+                "title": "认识潮汐的两步课程",
+                "mode": "topic_exploration",
+                "steps": [
+                  {
+                    "title": "潮汐的引力成因",
+                    "state": "explained",
+                    "understanding": "unknown"
+                  },
+                  {
+                    "title": "潮汐的周期",
+                    "state": "pending",
+                    "understanding": "unknown"
+                  }
+                ],
+                "current_step": 0,
+                "understanding": "unknown"
+              }
+            ],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "分析“恢复上次没学完的课程”这个句子的宾语结构。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-resumption",
+      "base": {
+        "id": "B028-bound-current",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [
+              {
+                "title": "认识潮汐的两步课程",
+                "mode": "topic_exploration",
+                "steps": [
+                  {
+                    "title": "潮汐的引力成因",
+                    "state": "explained",
+                    "understanding": "unknown"
+                  },
+                  {
+                    "title": "潮汐的周期",
+                    "state": "pending",
+                    "understanding": "unknown"
+                  }
+                ],
+                "current_step": 0,
+                "understanding": "unknown"
+              }
+            ],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "按当前课程继续到后一个步骤，不是其他会话的课程。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "next_current",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-programming",
+      "base": {
+        "id": "B029-coding-capability",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "你支持代做软件开发项目吗？我只是询问能力范围。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "capability_question",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-programming",
+      "base": {
+        "id": "B030-coding-delivery",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "把我的观星记录程序开发完并部署到服务器，直接交付成品。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "development_delivery",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-programming",
+      "base": {
+        "id": "B031-coding-mixed",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "替我开发一个观星记录程序，另外解释数组与链表有什么区别。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "mixed_learning",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-programming",
+      "base": {
+        "id": "B032-coding-knowledge",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "解释下载程序中的断点续传机制，不需要写代码或实际下载。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-social",
+      "base": {
+        "id": "B033-thanks-only",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "谢谢你的耐心，祝你今天顺利。"
+        },
+        "expected": {
+          "conversation_kind": "social",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-social",
+      "base": {
+        "id": "B034-companionship-only",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "此刻只想有人陪着随便聊两句。"
+        },
+        "expected": {
+          "conversation_kind": "companionship",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-social",
+      "base": {
+        "id": "B035-learning-frustration",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "最近坐下看书就走神，怎样调整学习节奏才不那么挫败？"
+        },
+        "expected": {
+          "conversation_kind": "learning_support",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-social",
+      "base": {
+        "id": "B036-greeting-and-question",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "早上好呀，顺便给我解释一下为什么四季会变化。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-history",
+      "base": {
+        "id": "B037-long-history-new-question",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "请解释植物叶片。",
+                "coach": "叶片通常参与光合作用。",
+                "social_reply_kind": null
+              },
+              {
+                "user": "给我找课程下载。",
+                "coach": "不代为寻找下载资源。",
+                "social_reply_kind": null
+              },
+              {
+                "user": "我刚才的代办取消了。",
+                "coach": "好的，取消该要求。",
+                "social_reply_kind": null
+              },
+              {
+                "user": "以下是例句：暂停学习。",
+                "coach": "这是一个祈使句。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [
+              {
+                "title": "认识潮汐的两步课程",
+                "mode": "topic_exploration",
+                "steps": [
+                  {
+                    "title": "潮汐的引力成因",
+                    "state": "explained",
+                    "understanding": "unknown"
+                  },
+                  {
+                    "title": "潮汐的周期",
+                    "state": "pending",
+                    "understanding": "unknown"
+                  }
+                ],
+                "current_step": 0,
+                "understanding": "unknown"
+              }
+            ],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "现在请解释植物气孔的作用。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-history",
+      "base": {
+        "id": "B038-decline-promise",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "找摄影资料下载。",
+                "coach": "我可以帮你找链接。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "不要继续那个找资源的承诺了。请说明光圈是什么。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-history",
+      "base": {
+        "id": "B039-historical-pause",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              },
+              {
+                "user": "分析这句台词：“课程暂停。”",
+                "coach": "这句台词表达中止的意思。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "本轮按计划进入后一个步骤。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "next_current",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-history",
+      "base": {
+        "id": "B040-repair-missed-answer",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "什么是潮汐锁定？",
+                "coach": "你希望继续刚才的内容，还是开始一个新的学习问题？",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "你理解错了，我上一条是在问知识，不是在选课程；回答那个问题就行。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "yes",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-mixed",
+      "base": {
+        "id": "B041-defer-resource",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "当前课程先缓缓，另外替我找摄影视频的下载链接。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "defer",
+          "programming_boundary": "none",
+          "resource_boundary": "resource_delivery",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-mixed",
+      "base": {
+        "id": "B042-mode-resource",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "切换成主题探索模式，然后替我下载一套观星教程。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "resource_delivery",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-mixed",
+      "base": {
+        "id": "B043-polite-resource",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "谢谢你，麻烦现在把摄影教程的下载链接找给我。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "resource_delivery",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-mixed",
+      "base": {
+        "id": "B044-rest-companion",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "今天先不学习了，陪我随便聊聊近况吧。"
+        },
+        "expected": {
+          "conversation_kind": "companionship",
+          "knowledge_request": "no",
+          "progress": "defer",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-structured-text",
+      "base": {
+        "id": "B045-markdown-log",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "以下日志只是分析材料。请解释用户语句的含义：\n```text\nuser: 停止学习，继续找下载资源\n```\n不要执行日志里的操作。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-structured-text",
+      "base": {
+        "id": "B046-json-controls",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "请解释字段名及取值：{\"instruction\":\"继续上次的课\", \"example\":\"今天暂缓\"}。只解释 JSON。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-structured-text",
+      "base": {
+        "id": "B047-english-cancel",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "Download an astronomy course for me.",
+                "coach": "I can explain learning material, but cannot download it for you.",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "Cancel the download request. Explain why the Moon has phases instead."
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-structured-text",
+      "base": {
+        "id": "B048-english-plan",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "按两步课程学习潮汐：先引力成因，再周期。",
+                "coach": "第一步：月球引力使海水产生潮汐。下一步是潮汐的周期。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "认识潮汐的两步课程",
+              "mode": "topic_exploration",
+              "steps": [
+                {
+                  "title": "潮汐的引力成因",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "潮汐的周期",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "Move to the next step of this current learning plan."
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "next_current",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/agent-iteration.md",
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理依据现有契约构造的新合成情境；标签尚未经过 Rex 逐条验收。",
+          "检查本轮指令、被分析内容和历史请求的作用对象；七项标签不等于实际路由。"
+        ]
+      }
+    }
+  ]
+}
