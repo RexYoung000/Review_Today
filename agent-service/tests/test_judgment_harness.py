@@ -15,8 +15,8 @@ from agent_service.conversation import ConversationHarness
 from agent_service.conversation_store import Superseded
 from agent_service.jev_client import JevClient
 from agent_service.judgments import JudgmentEngine
-from agent_service.judgment_types import MODEL, JudgmentRequest, question
-from agent_service.judgment_nodes import (IntentRemainder, OWNED, entry_request, select, assess_evidence,
+from agent_service.judgment_types import MODEL, JudgmentRequest, JudgmentResult, question
+from agent_service.judgment_nodes import (IntentRemainder, OWNED, entry_request, resolve_entry, select, assess_evidence,
                                           TeachingPreparationWithClaims)
 from agent_service.judgment_grading import (ScoredConversationOutput, ScoredProblemCoachBundle, ScoredMasteryEvaluation, JudgmentFeedback,
     bind_standard, standard_for, grading_request)
@@ -109,6 +109,7 @@ class HarnessJudgmentTests(unittest.TestCase):
                        "needs_verification": "no", "cross_check_sources": "no", "refresh_sources": "no",
                        "misconception": "absent"}
         self.replacement = None
+        self.updates = {}
         self.http_calls, self.records = [], []
         self.http = httpx.Client(transport=httpx.MockTransport(self.transport))
         self.engine = JudgmentEngine(JevClient("synthetic-key", client=self.http), observer=self.records.append)
@@ -138,7 +139,7 @@ class HarnessJudgmentTests(unittest.TestCase):
         if schema is IntentRemainder:
             self.calls.append((schema, json.loads(user)))
             fields = self.decision.model_dump(exclude=OWNED)
-            return IntentRemainder(**fields, replacement=self.replacement)
+            return IntentRemainder(**fields, replacement=self.replacement, updates=self.updates)
         if schema is TeachingPreparationWithClaims:
             self.calls.append((schema, json.loads(user)))
             return TeachingPreparationWithClaims(concepts=[], public_query=self.decision.public_search_query)
@@ -201,6 +202,160 @@ class HarnessJudgmentTests(unittest.TestCase):
         self.assertTrue(any(s is IntentDecision for s, _ in self.calls))
         self.assertIn("question", run["intent"]["intents"])
 
+    def test_empty_session_relation_is_program_owned_and_not_asked_of_jev(self):
+        self.enable()
+        self.decision = legacy.intent("question", answer_only=True)
+        self.updates = {"relation": {"value": "continuation", "reason": "模型错误地想延续不存在的前文"}}
+        self.send("harness 是什么")
+        run = next(iter(self.state()["runs"].values()))
+        self.assertEqual(run["intent"]["relation"], "new_topic")
+        self.assertNotIn("relation", self.http_calls[0]["questions"])
+        self.assertEqual(run["judgments"][0]["field_decisions"]["relation"]["source"], "program")
+
+    def test_existing_context_does_not_force_new_topic(self):
+        for key, value in [("task", {"context": {}}), ("session_goal", "理解 RAG"),
+                           ("summary", "已讲解检索"), ("recent_messages", [{"content": "RAG"}])]:
+            with self.subTest(key=key):
+                request = entry_request({"current_inputs": ["举个例子"], key: value})
+                self.assertIn("relation", request.questions)
+                self.assertNotIn("relation", request.state["program_fields"])
+
+    def test_uncertain_tool_field_is_filled_without_discarding_main_intent(self):
+        self.enable()
+        self.decision = legacy.intent("question", answer_only=True)
+        self.labels["refresh_sources"] = "unsure"
+        self.updates = {"refresh_sources": {"value": "no", "reason": "原话没有更新来源要求"}}
+        self.send("RAG 是什么")
+        run = next(iter(self.state()["runs"].values()))
+        judgment = run["judgments"][0]
+        self.assertTrue(judgment["applied"])
+        self.assertEqual(judgment["status"], "uncertain")
+        self.assertEqual(judgment["answers"]["refresh_sources"]["choice"], "unsure")
+        self.assertEqual(judgment["field_decisions"]["intent"]["source"], "jev")
+        self.assertEqual(judgment["field_decisions"]["refresh_sources"]["source"], "llm")
+        payload = next(p for s, p in self.calls if s is IntentRemainder)
+        self.assertEqual(payload["pending_fields"], ["refresh_sources"])
+        self.assertEqual(sum(s is IntentRemainder for s, _ in self.calls), 1)
+        self.assertFalse(any(s is IntentDecision for s, _ in self.calls))
+
+    def test_uncertain_intent_uses_llm_for_that_field_only(self):
+        self.enable()
+        self.labels["intent"] = "unsure"
+        self.decision = legacy.intent("question", answer_only=True)
+        self.updates = {"intent": {"value": "question", "reason": "用户明确询问概念"}}
+        self.send("RAG 是什么")
+        run = next(iter(self.state()["runs"].values()))
+        self.assertEqual(run["intent"]["intents"], ["question"])
+        self.assertEqual(run["judgments"][0]["field_decisions"]["intent"]["source"], "llm")
+        self.assertEqual(run["judgments"][0]["field_decisions"]["needs_verification"]["source"], "jev")
+        self.assertFalse(any(s is IntentDecision for s, _ in self.calls))
+
+    def test_unresolved_tool_need_is_not_converted_to_no(self):
+        self.enable()
+        self.labels["refresh_sources"] = "unsure"
+        self.decision = legacy.intent("question", answer_only=True)
+        self.send("解释 RAG")
+        judgment = next(iter(self.state()["runs"].values()))["judgments"][0]
+        self.assertFalse(judgment["applied"])
+        self.assertTrue(any(s is IntentDecision for s, _ in self.calls))
+        self.assertEqual(judgment["field_decisions"]["refresh_sources"]["reason"], "incomplete_local_resolution")
+
+    def test_relation_conflict_preserves_knowledge_intent_after_greeting(self):
+        self.send("你好")
+        self.calls.clear()
+        self.enable()
+        self.decision = legacy.intent("question", answer_only=True)
+        self.updates = {"relation": {"value": "new_topic", "reason": "前文仅为寒暄，此次首次提出知识主题"}}
+        self.send("harness 是什么")
+        run = list(self.state()["runs"].values())[-1]
+        self.assertEqual(run["intent"]["relation"], "new_topic")
+        self.assertEqual(run["judgments"][0]["field_decisions"]["intent"]["source"], "jev")
+        self.assertEqual(run["judgments"][0]["field_decisions"]["relation"]["source"], "llm")
+        self.assertFalse(self.state()["tasks"])
+        self.assertFalse(any(s is IntentDecision for s, _ in self.calls))
+
+    def test_tool_conflict_is_corrected_without_replacing_other_fields(self):
+        self.enable()
+        self.labels["needs_verification"] = "yes"
+        self.decision = legacy.intent("question", answer_only=True)
+        self.updates = {"needs_verification": {"value": "no", "reason": "用户说不需要联网，且为稳定概念"}}
+        self.send("解释 API Key，不需要联网")
+        run = next(iter(self.state()["runs"].values()))
+        self.assertFalse(run["intent"]["needs_verification"])
+        self.assertEqual(run["judgments"][0]["field_decisions"]["needs_verification"]["raw_choice"], "yes")
+        self.assertEqual(run["judgments"][0]["field_decisions"]["intent"]["source"], "jev")
+        self.assertFalse(any(s is IntentDecision for s, _ in self.calls))
+
+    def test_full_replacement_agreement_is_not_counted_as_jev_adoption(self):
+        self.enable()
+        self.decision = legacy.intent("question", answer_only=True)
+        self.replacement = self.decision
+        self.send("解释 RAG")
+        judgment = next(iter(self.state()["runs"].values()))["judgments"][0]
+        self.assertFalse(judgment["applied"])
+        self.assertEqual({v["source"] for v in judgment["field_decisions"].values()}, {"llm"})
+
+    def test_cross_session_replacement_cannot_be_overruled_by_program_new_topic(self):
+        self.enable()
+        rid, rev = self.active_run()
+        self.replacement = legacy.intent("continue", scope="continue_goal", continuation_evidence="继续上次没学完的 RAG")
+        out = resolve_entry(self.harness, self.sid, rid, rev,
+            {"current_inputs": ["继续上次没学完的 RAG"], "task": None}, "受控测试", "router")
+        self.assertEqual(out.intents, ["continue"])
+        self.assertEqual(out.scope, "continue_goal")
+        self.assertEqual(out.continuation_evidence, "继续上次没学完的 RAG")
+        self.assertFalse(self.state()["runs"][rid]["judgments"][0]["applied"])
+
+    def test_social_with_unresolved_tool_conflict_requires_full_decision(self):
+        self.enable()
+        self.labels.update(intent="greeting", needs_verification="yes")
+        self.decision = legacy.intent("greeting", "question", answer_only=True)
+        self.send("你好，解释 RAG")
+        run = next(iter(self.state()["runs"].values()))
+        self.assertIn("question", run["intent"]["intents"])
+        self.assertFalse(run["judgments"][0]["applied"])
+        self.assertEqual(run["judgments"][0]["reason"], "social_tool_conflict")
+
+    def test_entry_cache_invalidation_includes_rule_version_and_old_records_are_readable(self):
+        self.enable()
+        rid, rev = self.active_run()
+        request = entry_request({"current_inputs": ["解释 RAG"]})
+        first = self.engine.judge(self.harness, self.sid, rid, rev, request)
+        self.engine.judge(self.harness, self.sid, rid, rev, request.model_copy(update={"version": "future-rule"}))
+        self.assertEqual(len(self.http_calls), 2)
+        old = first.model_dump(exclude={"field_decisions"})
+        self.assertEqual(JudgmentResult.model_validate(old).field_decisions, {})
+
+    def test_late_llm_patch_cannot_commit_after_revision_changes(self):
+        self.enable()
+        rid, rev = self.active_run()
+        self.labels["refresh_sources"] = "unsure"
+        remainder = IntentRemainder(**legacy.intent("question", answer_only=True).model_dump(exclude=OWNED),
+            updates={"refresh_sources": {"value": "no", "reason": "无刷新要求"}})
+        def late(*args, **kwargs):
+            with self.store.transaction(self.sid) as data:
+                data["runs"][rid]["revision"] += 1
+            return remainder
+        with patch.object(self.harness, "_call", side_effect=late), self.assertRaises(Superseded):
+            resolve_entry(self.harness, self.sid, rid, rev, {"current_inputs": ["解释 RAG"]}, "受控测试", "router")
+        judgment = self.state()["runs"][rid]["judgments"][0]
+        self.assertFalse(judgment["applied"])
+        self.assertFalse(judgment["field_decisions"])
+
+    def test_report_separates_field_adoption_from_full_llm_agreement_and_legacy(self):
+        from tests.judgment_comparison.harness_integration import entry_composition
+        fields = {"intent": {"source": "jev", "value": "question", "raw_choice": "question"},
+                  "relation": {"source": "program", "value": "new_topic"},
+                  "refresh_sources": {"source": "llm", "value": "no", "raw_choice": "unsure"}}
+        partial = dict(node="entry", status="uncertain", applied=True, field_decisions=fields)
+        replacement = dict(node="entry", status="ok", applied=False, field_decisions={
+            key: dict(value, source="llm") for key, value in fields.items()})
+        legacy_record = dict(node="entry", status="ok", applied=True)
+        result = entry_composition([dict(id=str(i), kind="dialogue", variant="jev", run={"judgments": [j]})
+            for i, j in enumerate([partial, replacement, legacy_record])])
+        self.assertEqual(result["categories"], {"partial_jev": 1, "full_llm": 1, "legacy_without_field_trace": 1})
+        self.assertEqual(result["field_sources"]["intent"], {"jev": 1, "llm": 1})
+
     def test_explicit_mode_is_not_replaced_with_auto_answer_only(self):
         self.enable()
         self.decision = legacy.intent("question", workflow="problem_solving", scope="learning")
@@ -208,6 +363,7 @@ class HarnessJudgmentTests(unittest.TestCase):
         data = self.state()
         self.assertEqual(data["tasks"][data["active_task_id"]]["mode"], "problem_solving")
         self.assertTrue(any(s is ScoredProblemCoachBundle for s, _ in self.calls))
+        self.assertNotIn("workflow", self.http_calls[0]["questions"])
 
     def test_companionship_retains_existing_bounded_reply(self):
         self.enable()

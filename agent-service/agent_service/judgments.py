@@ -97,18 +97,21 @@ class JudgmentEngine:
             self.observer(dict(session_id=sid, run_id=rid, revision=rev,
                                request=request.model_dump(), result=result.model_dump(), raw_response=raw))
 
-    def disposition(self, h, sid, rid, rev, result, *, applied, reason=""):
+    def disposition(self, h, sid, rid, rev, result, *, applied, reason="", field_decisions=None):
         if result is None:
             return
         # Keep transport/validation/uncertainty causes when a caller records
         # the subsequent LLM fallback; the fallback must not erase the fault.
         result.applied, result.reason = applied, result.reason or reason
+        if field_decisions is not None:
+            result.field_decisions = field_decisions
+        fields = {k: v.model_dump() for k, v in result.field_decisions.items()}
         with h.store.transaction(sid, rid, rev) as data:
             records = data["runs"][rid].get("judgments", [])
             for item in reversed(records):
                 if item["input_hash"] == result.input_hash:
-                    item.update(applied=applied, reason=result.reason)
+                    item.update(applied=applied, reason=result.reason, field_decisions=fields)
                     break
         if self.observer:
             self.observer(dict(type="disposition", session_id=sid, run_id=rid, revision=rev,
-                               input_hash=result.input_hash, applied=applied, reason=result.reason))
+                               input_hash=result.input_hash, applied=applied, reason=result.reason, field_decisions=fields))

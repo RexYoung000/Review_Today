@@ -1,7 +1,7 @@
 """Synthetic node probes through production Harness methods, plus honest metrics."""
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import asdict
 import json
 from pathlib import Path
@@ -158,6 +158,41 @@ def selection_outcome(case, selected):
                 content_selection_passed=not (false or missed or duplicates))
 
 
+def partial_adoption(judgment):
+    fields = judgment.get("field_decisions", {})
+    if fields:
+        return judgment.get("applied", False) and {"jev", "llm"} <= {v["source"] for v in fields.values()}
+    return judgment.get("applied", False) and (judgment["status"] == "uncertain" or judgment.get("reason") == "llm_point_fallback")
+
+
+def entry_composition(results):
+    records, field_sources = [], defaultdict(Counter)
+    for row in results:
+        if row.get("kind") != "dialogue" or row.get("variant") != "jev":
+            continue
+        for judgment in row.get("run", {}).get("judgments", []):
+            if judgment["node"] != "entry":
+                continue
+            fields = judgment.get("field_decisions", {})
+            for key, value in fields.items():
+                field_sources[key][value["source"]] += 1
+            if judgment["status"] not in {"ok", "uncertain"}:
+                category = "unavailable"
+            elif not fields:
+                category = "legacy_without_field_trace"
+            elif not judgment.get("applied", False):
+                category = "full_llm"
+            elif partial_adoption(judgment):
+                category = "partial_jev"
+            else:
+                category = "retained_jev_with_program_fields"
+            records.append(dict(id=row["id"], category=category, status=judgment["status"],
+                reason=judgment.get("reason", ""), fields=fields))
+    return dict(categories=dict(Counter(r["category"] for r in records)),
+                field_sources={k: dict(v) for k, v in field_sources.items()}, records=records,
+                note="字段来源只表示实际采用，不是正确率；程序确定项不计 Jev 成功，完整 LLM 替换不因标签相同计采用。")
+
+
 def summary(path):
     rows = [json.loads(x) for x in Path(path).read_text().splitlines()]
     header = rows[0]
@@ -191,8 +226,8 @@ def summary(path):
             known_cost_usd=[round(sum(p[i] for p in prices if p), 9) for i in (0, 1)] if any(prices) else None,
             cost_complete=sum(p is not None for p in prices) == sum(c["transport_requests"] for c in calls),
             judgments=len(judgments), applied=sum(j.get("applied", False) for j in judgments),
-            partial_adoption=sum(j.get("applied", False) and (j["status"] == "uncertain" or j.get("reason") == "llm_point_fallback") for j in judgments),
-            fallback=sum(not j.get("applied", False) or j["status"] == "uncertain" or j.get("reason") == "llm_point_fallback" for j in judgments),
+            partial_adoption=sum(partial_adoption(j) for j in judgments),
+            fallback=sum(not j.get("applied", False) or partial_adoption(j) for j in judgments),
             reasons=dict(__import__("collections").Counter(j["reason"] for j in judgments if j.get("reason"))),
             content_selections_passed=sum(r["content_selection_passed"] for r in selections),
             false_selected=sum(len(r["false_selected"]) for r in selections),
@@ -202,6 +237,7 @@ def summary(path):
     return dict(experiment="jev-harness-integration-1", planned=len(header["planned"]), executed=len(results),
                 missing=[i for i in header["planned"] if i not in ids], groups=metrics,
                 node_semantics=local_semantics(header, results),
+                entry_composition=entry_composition(results),
                 limitations=header["fixture"]["limitations"],
                 result="PASS" if len(results) == len(header["planned"]) and all(r["automatic_result"] == "PASS" for r in results) else "FAIL")
 

@@ -3,33 +3,61 @@ from __future__ import annotations
 
 from copy import deepcopy
 import json
+from typing import Literal
 from urllib.parse import urlsplit
 
-from pydantic import BaseModel, Field, create_model
+from pydantic import BaseModel, ConfigDict, Field, create_model
 
-from agent_service.judgment_types import JudgmentRequest, question
+from agent_service.judgment_types import JudgmentFieldDecision, JudgmentRequest, question
 from agent_service.schemas import (IntentDecision, MemoryChoice, MemorySelection,
                                   SourceList, SourceCandidate, EvidenceAssessmentV2, TeachingPreparation)
 
 OWNED = {"conversation_kind", "intents", "relation", "workflow", "needs_verification",
          "cross_check_sources", "refresh_sources"}
-# The remainder cannot silently replace Jev-owned fields. Reserved/complex
-# routes explicitly return a complete replacement, with provenance recorded.
+ENTRY_VERSION = "jev-entry-2"
+ENTRY_CHOICES = {
+    "intent": ("greeting", "thanks", "social", "companionship", "learning_support", "question",
+               "followup", "hint", "example", "goal", "material", "mixed", "other"),
+    "workflow": ("none", "topic_exploration", "source_learning", "problem_solving", "memory_organization"),
+    "relation": ("continuation", "related_subtopic", "new_topic", "uncertain"),
+    **{key: ("yes", "no") for key in ("needs_verification", "cross_check_sources", "refresh_sources")},
+}
+# Independently typed patches need a reason. Missing booleans cannot become
+# "no"; raw model choices and probabilities stay unchanged for later review.
+EntryUpdates = create_model("EntryUpdates", __config__=ConfigDict(extra="forbid"), **{
+    key: (create_model("EntryUpdate_" + key, __config__=ConfigDict(extra="forbid"),
+                       value=(Literal[values], ...), reason=(str, Field(min_length=1))) | None, None)
+    for key, values in ENTRY_CHOICES.items()})
 IntentRemainder = create_model("IntentRemainder",
     **{k: (field.annotation, deepcopy(field)) for k, field in IntentDecision.model_fields.items() if k not in OWNED},
+    updates=(EntryUpdates, Field(default_factory=EntryUpdates)),
     replacement=(IntentDecision | None, Field(default=None, description="Only reserved, mixed, unsafe-to-compose or ambiguous routes need a complete LLM decision.")))
 
 REMAINDER_RULE = """
 本次输出 IntentRemainder，不输出顶层 intents/conversation_kind/workflow/relation 或网页布尔字段。
 jev_proposal 是未授权的局部判断，context 是实际会话。补齐其余字段。
+program_fields 是程序已确定的结构事实（如空白会话为新话题、明确手动模式）；不要重新判断或修改。
+pending_fields 中的每一项必须在 updates 中按原文补判，填写 value 和具体 reason，不能把缺失项默认当否。
+对已有 Jev 选择，仅在发现原文/上下文冲突时填写对应 updates 项及 reason，其余为 null。
+普通单一请求的局部分歧（例如新话题/延续、是否联网）使用 updates，不完整替换。
 自然语言停止/暂缓/继续、确认/拒绝/保存/切模式、作答/自述理解/跳过检查、
 对话修复、话题收尾、跨会话续学、开发或资源边界、紧急危险、混合请求、
-引用指令被当实际请求、以及无法与实际上下文一致组合的提议，均属于保留路径：
+引用指令被当实际请求、以及无法安全逐项组合的提议，均属于保留路径：
 在 replacement 中返回完整、依实际原文判断的 IntentDecision；不得为了接受提议忽略实际请求。
-其他单一普通请求 replacement=null，只填剩余内容与必要对象。Jev 的问候不等于没有附带知识问题。
+其他单一普通请求 replacement=null，填写必要的 updates 和剩余内容。Jev 的问候不等于没有附带知识问题。
+保留路径使用 replacement 时忽略 updates；不要为提高 Jev 采用率强行拆开完整控制或边界决策。
 普通 Auto 问答 scope=conversation、answer_only=true，不建任务；用户手动模式仍优先。
 不要仅因分类概率高而认定授权、掌握或证据已核实。
 """
+
+
+def entry_program_fields(context):
+    fields = {}
+    if not any(context.get(key) for key in ("task", "session_goal", "summary", "recent_messages", "pending", "draft")):
+        fields["relation"] = "new_topic"
+    if context.get("mode", "auto") != "auto":
+        fields["workflow"] = context["mode"]
+    return fields
 
 
 def entry_request(context):
@@ -60,8 +88,9 @@ def entry_request(context):
             "source_learning": "学习已有资料。", "problem_solving": "围绕具体问题开展攻克训练。",
             "memory_organization": "整理已有知识和资料。"}),
         "relation": question("仅判断当前会话范围内的关系；恢复其他会话或对象含糊选 unsure。", {
-            "continuation": "承接当前对话的内容；没有旧内容可承接的首次请求也可选此项。",
-            "related_subtopic": "当前话题的相关子问题。", "new_topic": "明确提出另一个不同主题。"}),
+            "continuation": "承接当前会话已经存在的实质内容，不包括首次知识问题。",
+            "related_subtopic": "当前实质话题的相关子问题。",
+            "new_topic": "新的知识主题，包括前文仅为寒暄后首次提出知识问题。"}),
     }
     for key, instruction in {
         "needs_verification": "是否需要网页核验：明确搜索/出处、时效问题、实际高风险建议或知识不确定才需要；稳定概念和举例不自动联网。",
@@ -69,37 +98,83 @@ def entry_request(context):
         "refresh_sources": "是否明确需要更新已有来源，不把同主题追问自动当刷新。",
     }.items():
         qs[key] = question(instruction, {"yes": "需要。", "no": "不需要。"})
-    return JudgmentRequest(node="entry", state=state, questions=qs,
+    state["program_fields"] = entry_program_fields(context)
+    for key in state["program_fields"]:
+        qs.pop(key)
+    return JudgmentRequest(node="entry", version=ENTRY_VERSION, state=state, questions=qs,
                            sources=[{"kind": "current_session", "message_ids": [m.get("message_id") for m in state.get("recent_messages", [])]}])
+
+
+def entry_has_reserved_fields(fields):
+    return (fields["programming_boundary"] != "none" or fields["resource_boundary"] != "none" or
+        fields["proposed_actions"] or fields["requested_mode"] or fields["continuation_evidence"] or
+        fields["conversation_repair"] or fields["topic_closure"] or fields["answer_evidence"] or
+        fields["understanding"] != "unknown" or fields["direct_teaching"] or fields["is_jd"] or
+        fields["scope"] == "continue_goal" or fields["clarification_kind"] in {"resume_target", "operation"})
+
+
+def entry_decision_values(decision):
+    main = decision.intents[0] if len(decision.intents) == 1 else "mixed"
+    if main == "social" and decision.conversation_kind in {"companionship", "learning_support"}:
+        main = decision.conversation_kind
+    return dict(intent=main if main in ENTRY_CHOICES["intent"] else "other",
+                workflow=decision.workflow or "none", relation=decision.relation,
+                **{key: "yes" if getattr(decision, key) else "no"
+                   for key in ("needs_verification", "cross_check_sources", "refresh_sources")})
 
 
 def resolve_entry(h, sid, rid, rev, context, system, model):
     engine = h.judgments
     result = engine.judge(h, sid, rid, rev, entry_request(context))
-    if result.status != "ok" or result.labels["intent"] in {"mixed", "other"}:
-        engine.disposition(h, sid, rid, rev, result, applied=False, reason=result.reason or "reserved_or_mixed")
-        return h._call(sid, rid, rev, "intent", system, json.dumps(context, ensure_ascii=False), IntentDecision, model)
-    proposal = result.labels
+
+    def full_decision(reason, decision=None):
+        if decision is None:
+            decision = h._call(sid, rid, rev, "intent", system, json.dumps(context, ensure_ascii=False), IntentDecision, model)
+        # Agreement with a full replacement isn't Jev adoption. Preserve both
+        # values so the report can distinguish disagreement from handoff.
+        provenance = {key: JudgmentFieldDecision(source="llm", value=value,
+            raw_choice=result.labels.get(key), reason=reason) for key, value in entry_decision_values(decision).items()}
+        engine.disposition(h, sid, rid, rev, result, applied=False, reason=reason, field_decisions=provenance)
+        return decision
+
+    if result.status not in {"ok", "uncertain"}:
+        return full_decision(result.reason or "jev_unavailable")
+    if result.labels["intent"] in {"mixed", "other"}:
+        return full_decision("reserved_or_mixed")
+
+    program = entry_program_fields(context)
+    proposal = {key: value for key, value in result.labels.items() if value != "unsure"}
+    pending = [key for key in ENTRY_CHOICES if key not in proposal and key not in program]
     remainder = h._call(sid, rid, rev, "intent", system + REMAINDER_RULE,
-                        json.dumps(dict(context=context, jev_proposal=proposal), ensure_ascii=False), IntentRemainder, model)
+        json.dumps(dict(context=context, jev_proposal=proposal, program_fields=program, pending_fields=pending),
+                   ensure_ascii=False), IntentRemainder, model)
     if remainder.replacement is not None:
-        engine.disposition(h, sid, rid, rev, result, applied=False, reason="llm_reserved_or_conflict")
         task_context = (context.get("task") or {}).get("context", {})
         current = context.get("current_inputs", [])
         replacement = remainder.replacement
         if ("answer" in replacement.intents and task_context.get("check_question") and
                 (not replacement.answer_evidence.strip() or not current or replacement.answer_evidence not in current[-1])):
-            return h._call(sid, rid, rev, "intent", system, json.dumps(context, ensure_ascii=False), IntentDecision, model)
-        return remainder.replacement
-    fields = remainder.model_dump(exclude={"replacement"})
-    reserved = (fields["programming_boundary"] != "none" or fields["resource_boundary"] != "none" or
-        fields["proposed_actions"] or fields["requested_mode"] or fields["continuation_evidence"] or
-        fields["conversation_repair"] or fields["topic_closure"] or fields["answer_evidence"] or
-        fields["understanding"] != "unknown" or fields["direct_teaching"] or fields["is_jd"] or
-        fields["scope"] == "continue_goal" or fields["clarification_kind"] in {"resume_target", "operation"})
-    if reserved:
-        engine.disposition(h, sid, rid, rev, result, applied=False, reason="incomplete_reserved_replacement")
-        return h._call(sid, rid, rev, "intent", system, json.dumps(context, ensure_ascii=False), IntentDecision, model)
+            return full_decision("invalid_replacement_answer_evidence")
+        return full_decision("llm_reserved_or_conflict", replacement)
+    fields = remainder.model_dump(exclude={"replacement", "updates"})
+    if entry_has_reserved_fields(fields):
+        return full_decision("incomplete_reserved_replacement")
+
+    provenance = {key: JudgmentFieldDecision(source="jev", value=value, raw_choice=value)
+                  for key, value in proposal.items()}
+    for key, update in remainder.updates:
+        if update is not None and key not in program and update.value != proposal.get(key):
+            provenance[key] = JudgmentFieldDecision(source="llm", value=update.value,
+                raw_choice=result.labels.get(key), reason=update.reason)
+            proposal[key] = update.value
+    for key, value in program.items():
+        proposal[key] = value
+        provenance[key] = JudgmentFieldDecision(source="program", value=value,
+            raw_choice=result.labels.get(key), reason="empty_session" if key == "relation" else "explicit_mode")
+    if set(proposal) != set(ENTRY_CHOICES):
+        return full_decision("incomplete_local_resolution")
+    if proposal["intent"] in {"mixed", "other"}:
+        return full_decision("reserved_local_resolution")
     main = proposal["intent"]
     kind = "social" if main in {"greeting", "thanks", "social"} else main if main in {"learning_support", "companionship"} else "ordinary"
     fields.update(conversation_kind=kind, intents=["social" if main in {"learning_support", "companionship"} else main],
@@ -111,10 +186,18 @@ def resolve_entry(h, sid, rid, rev, context, system, model):
     elif context.get("mode", "auto") != "auto":
         fields["workflow"] = context["mode"] if not fields["answer_only"] else None
     if kind != "ordinary" and any(fields[k] for k in ("needs_verification", "cross_check_sources", "refresh_sources")):
-        engine.disposition(h, sid, rid, rev, result, applied=False, reason="social_tool_conflict")
-        return h._call(sid, rid, rev, "intent", system, json.dumps(context, ensure_ascii=False), IntentDecision, model)
+        return full_decision("social_tool_conflict")
     decision = IntentDecision.model_validate(fields)
-    engine.disposition(h, sid, rid, rev, result, applied=True)
+    # Record structural workflow guards even when their value agrees with Jev;
+    # they cannot be claimed as semantic model successes.
+    if (main not in {"goal", "material"} and (context.get("mode", "auto") == "auto" or kind != "ordinary")
+            or context.get("mode", "auto") != "auto"):
+        provenance["workflow"] = JudgmentFieldDecision(source="program", value=decision.workflow or "none",
+            raw_choice=result.labels.get("workflow"), reason="ordinary_or_explicit_mode")
+    engine.disposition(h, sid, rid, rev, result,
+        applied=any(item.source == "jev" for item in provenance.values()),
+        reason="partial_field_resolution" if any(item.source == "llm" for item in provenance.values()) else "",
+        field_decisions=provenance)
     return decision
 
 

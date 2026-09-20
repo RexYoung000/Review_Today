@@ -50,6 +50,13 @@ class JudgmentRequest(BaseModel):
                     questions={k: q.model_dump() for k, q in self.questions.items()})
 
 
+class JudgmentFieldDecision(BaseModel):
+    source: Literal["jev", "llm", "program"]
+    value: str
+    raw_choice: str | None = None
+    reason: str = ""
+
+
 class JudgmentResult(BaseModel):
     node: str
     version: str = VERSION
@@ -63,6 +70,9 @@ class JudgmentResult(BaseModel):
     reason: str = ""
     cached: bool = False
     sources: list[dict[str, Any]] = Field(default_factory=list)
+    # Optional provenance keeps old checkpoints readable. Values use the bounded
+    # question vocabulary, including fields supplied by the program or LLM.
+    field_decisions: dict[str, JudgmentFieldDecision] = Field(default_factory=dict)
 
     @property
     def labels(self):

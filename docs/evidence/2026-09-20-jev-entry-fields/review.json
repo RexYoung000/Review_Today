@@ -1,0 +1,55 @@
+{
+  "reviewer": "Codex agent; not user acceptance or independent calibration",
+  "rule_version": "jev-entry-2",
+  "raw_file": "live.jsonl",
+  "raw_preserved": true,
+  "scope": "Existing 31 synthetic scenarios, production entry composition, temporary isolated databases",
+  "adoption_is_accuracy": false,
+  "engineering_result": "PASS",
+  "production_enablement": "OFF",
+  "speed_or_cost_reduction_proven": false,
+  "reviews": [
+    {
+      "id": "A012-greeting/jev",
+      "finding": "refresh_sources=unsure resolved by LLM to no; Jev greeting retained; one entry LLM call, no task",
+      "classification": "partial_adoption_verified"
+    },
+    {
+      "id": "A017-internal-material/jev",
+      "finding": "LLM changes needs_verification=yes to no while retaining Jev question; no web call or task",
+      "classification": "partial_adoption_verified",
+      "remaining_issue": "Generated reply says processing can happen locally; actual models are external. Only web-tool non-disclosure was established."
+    },
+    {
+      "id": "A017-credential-link/jev",
+      "finding": "LLM changes question to material; program URL gate blocks external web access; no task",
+      "classification": "partial_adoption_verified"
+    },
+    {
+      "id": "A006-repair-question/jev",
+      "finding": "Raw Jev social misclassifies conversation repair; full LLM replacement restores original question",
+      "classification": "semantic_error_retained_and_overridden"
+    },
+    {
+      "id": "A015-links-after-promise/jev",
+      "finding": "Jev timeout; LLM handles resource boundary. Late usage is reported; late decision was not applied.",
+      "classification": "transport_failure_retained"
+    },
+    {
+      "id": "A015-mode-and-errand/jev",
+      "finding": "Jev timeout with missing usage; LLM retains mode control and resource boundary",
+      "classification": "transport_failure_retained"
+    },
+    {
+      "id": "A013-current-plan-next/baseline",
+      "finding": "Intent correctly continues current learning plan, but lesson model output fails RT.MODEL.SCHEMA; no reply",
+      "classification": "baseline_generation_failure_retained",
+      "jev_benefit_proven": false
+    },
+    {
+      "id": "A013-current-plan-next/jev",
+      "finding": "Final lesson overstates retrieval and reranking as guarantees of completeness/quality; entry uses full LLM",
+      "classification": "generation_quality_issue_outside_entry_fix"
+    }
+  ]
+}

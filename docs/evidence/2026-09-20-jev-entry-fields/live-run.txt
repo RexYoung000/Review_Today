@@ -1,0 +1,1553 @@
+{"case": "A001-defer-active", "variant": "baseline", "result": "PASS"}
+{"case": "A001-defer-active", "variant": "jev", "result": "PASS"}
+{"case": "A005-coding-capability", "variant": "jev", "result": "PASS"}
+{"case": "A005-coding-capability", "variant": "baseline", "result": "PASS"}
+{"case": "A006-new-question", "variant": "baseline", "result": "PASS"}
+{"case": "A006-new-question", "variant": "jev", "result": "PASS"}
+{"case": "A006-repair-question", "variant": "jev", "result": "PASS"}
+{"case": "A006-repair-question", "variant": "baseline", "result": "PASS"}
+{"case": "A007-resume-unique", "variant": "baseline", "result": "PASS"}
+{"case": "A007-resume-unique", "variant": "jev", "result": "PASS"}
+{"case": "A007-resume-missing", "variant": "jev", "result": "PASS"}
+{"case": "A007-resume-missing", "variant": "baseline", "result": "PASS"}
+{"case": "A010-question-after-greeting", "variant": "baseline", "result": "PASS"}
+{"case": "A010-question-after-greeting", "variant": "jev", "result": "PASS"}
+{"case": "A010-local-example", "variant": "jev", "result": "PASS"}
+{"case": "A010-local-example", "variant": "baseline", "result": "PASS"}
+{"case": "A011-stable-concept", "variant": "baseline", "result": "PASS"}
+{"case": "A011-stable-concept", "variant": "jev", "result": "PASS"}
+{"case": "A012-greeting", "variant": "jev", "result": "PASS"}
+{"case": "A012-greeting", "variant": "baseline", "result": "PASS"}
+{"case": "A012-companionship", "variant": "baseline", "result": "PASS"}
+{"case": "A012-companionship", "variant": "jev", "result": "PASS"}
+{"case": "A012-repeat-companionship", "variant": "jev", "result": "PASS"}
+{"case": "A012-repeat-companionship", "variant": "baseline", "result": "PASS"}
+{"case": "A012-rest", "variant": "baseline", "result": "PASS"}
+{"case": "A012-rest", "variant": "jev", "result": "PASS"}
+{"case": "A012-learning-support", "variant": "jev", "result": "PASS"}
+{"case": "A012-learning-support", "variant": "baseline", "result": "PASS"}
+{"case": "A012-mixed-question", "variant": "baseline", "result": "PASS"}
+{"case": "A012-mixed-question", "variant": "jev", "result": "PASS"}
+{"case": "A012-history-to-companion", "variant": "jev", "result": "PASS"}
+{"case": "A012-history-to-companion", "variant": "baseline", "result": "PASS"}
+{"case": "A013-local-transition", "variant": "baseline", "result": "PASS"}
+{"case": "A013-local-transition", "variant": "jev", "result": "PASS"}
+{"case": "A013-foreign-goal-transition", "variant": "jev", "result": "PASS"}
+{"case": "A013-foreign-goal-transition", "variant": "baseline", "result": "PASS"}
+{"case": "A013-current-plan-next", "variant": "baseline", "result": "FAIL"}
+{"case": "A013-current-plan-next", "variant": "jev", "result": "PASS"}
+{"case": "A015-capability", "variant": "jev", "result": "PASS"}
+{"case": "A015-capability", "variant": "baseline", "result": "PASS"}
+{"case": "A015-links-after-promise", "variant": "baseline", "result": "PASS"}
+{"case": "A015-links-after-promise", "variant": "jev", "result": "PASS"}
+{"case": "A015-continue-errand", "variant": "jev", "result": "PASS"}
+{"case": "A015-continue-errand", "variant": "baseline", "result": "PASS"}
+{"case": "A015-download-knowledge", "variant": "baseline", "result": "PASS"}
+{"case": "A015-download-knowledge", "variant": "jev", "result": "PASS"}
+{"case": "A015-quoted-request", "variant": "jev", "result": "PASS"}
+{"case": "A015-quoted-request", "variant": "baseline", "result": "PASS"}
+{"case": "A015-negated-errand", "variant": "baseline", "result": "PASS"}
+{"case": "A015-negated-errand", "variant": "jev", "result": "PASS"}
+{"case": "A015-mixed-knowledge", "variant": "jev", "result": "PASS"}
+{"case": "A015-mixed-knowledge", "variant": "baseline", "result": "PASS"}
+{"case": "A015-mode-and-errand", "variant": "baseline", "result": "PASS"}
+{"case": "A015-mode-and-errand", "variant": "jev", "result": "PASS"}
+{"case": "A015-defer-and-errand", "variant": "jev", "result": "PASS"}
+{"case": "A015-defer-and-errand", "variant": "baseline", "result": "PASS"}
+{"case": "A017-internal-material", "variant": "baseline", "result": "PASS"}
+{"case": "A017-internal-material", "variant": "jev", "result": "PASS"}
+{"case": "A017-credential-link", "variant": "jev", "result": "PASS"}
+{"case": "A017-credential-link", "variant": "baseline", "result": "PASS"}
+{"case": "A017-public-privacy-concept", "variant": "baseline", "result": "PASS"}
+{"case": "A017-public-privacy-concept", "variant": "jev", "result": "PASS"}
+{
+  "experiment": "jev-harness-integration-1",
+  "planned": 62,
+  "executed": 62,
+  "missing": [],
+  "groups": {
+    "dialogue/baseline": {
+      "count": 31,
+      "passed": 30,
+      "failed": [
+        "A013-current-plan-next/baseline"
+      ],
+      "median_ms": 2389.401,
+      "range_ms": [
+        1424.126,
+        6908.687
+      ],
+      "logical_calls": 62,
+      "http_requests": 62,
+      "jev_http_requests": 0,
+      "reported_usages": 62,
+      "calls_missing_usage": 0,
+      "input_tokens": 266933,
+      "output_tokens": 15684,
+      "known_cost_usd": [
+        0.012101178,
+        0.024202356
+      ],
+      "cost_complete": true,
+      "judgments": 0,
+      "applied": 0,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "dialogue/jev": {
+      "count": 31,
+      "passed": 31,
+      "failed": [],
+      "median_ms": 6321.26,
+      "range_ms": [
+        2870.522,
+        10942.771
+      ],
+      "logical_calls": 93,
+      "http_requests": 93,
+      "jev_http_requests": 31,
+      "reported_usages": 92,
+      "calls_missing_usage": 1,
+      "input_tokens": 370253,
+      "output_tokens": 28600,
+      "known_cost_usd": [
+        0.017539374,
+        0.032877402
+      ],
+      "cost_complete": false,
+      "judgments": 31,
+      "applied": 14,
+      "partial_adoption": 3,
+      "fallback": 20,
+      "reasons": {
+        "reserved_or_mixed": 10,
+        "uncertain_judgment": 4,
+        "llm_reserved_or_conflict": 2,
+        "timeout": 2,
+        "partial_field_resolution": 2
+      },
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    }
+  },
+  "node_semantics": [],
+  "entry_composition": {
+    "categories": {
+      "full_llm": 15,
+      "retained_jev_with_program_fields": 11,
+      "partial_jev": 3,
+      "unavailable": 2
+    },
+    "field_sources": {
+      "intent": {
+        "llm": 18,
+        "jev": 13
+      },
+      "workflow": {
+        "llm": 17,
+        "program": 13,
+        "jev": 1
+      },
+      "relation": {
+        "llm": 17,
+        "program": 9,
+        "jev": 5
+      },
+      "needs_verification": {
+        "llm": 18,
+        "jev": 13
+      },
+      "cross_check_sources": {
+        "llm": 17,
+        "jev": 14
+      },
+      "refresh_sources": {
+        "llm": 18,
+        "jev": 13
+      }
+    },
+    "records": [
+      {
+        "id": "A001-defer-active/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "reserved_or_mixed",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "other",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "continuation",
+            "raw_choice": "continuation",
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A005-coding-capability/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "reserved_or_mixed",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "other",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A006-new-question/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "question",
+            "raw_choice": "question",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "relation": {
+            "source": "program",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "empty_session"
+          }
+        }
+      },
+      {
+        "id": "A006-repair-question/jev",
+        "category": "full_llm",
+        "status": "uncertain",
+        "reason": "uncertain_judgment",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "mixed",
+            "raw_choice": "social",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "continuation",
+            "raw_choice": "continuation",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "unsure",
+            "reason": "llm_reserved_or_conflict"
+          }
+        }
+      },
+      {
+        "id": "A007-resume-unique/jev",
+        "category": "full_llm",
+        "status": "uncertain",
+        "reason": "uncertain_judgment",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "other",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "source_learning",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "continuation",
+            "raw_choice": null,
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "unsure",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "unsure",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A007-resume-missing/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "reserved_or_mixed",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "other",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "topic_exploration",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "continuation",
+            "raw_choice": null,
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A010-question-after-greeting/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "question",
+            "raw_choice": "question",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "relation": {
+            "source": "jev",
+            "value": "new_topic",
+            "raw_choice": "new_topic",
+            "reason": ""
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          }
+        }
+      },
+      {
+        "id": "A010-local-example/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "example",
+            "raw_choice": "example",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "relation": {
+            "source": "jev",
+            "value": "continuation",
+            "raw_choice": "continuation",
+            "reason": ""
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          }
+        }
+      },
+      {
+        "id": "A011-stable-concept/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "question",
+            "raw_choice": "question",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "relation": {
+            "source": "program",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "empty_session"
+          }
+        }
+      },
+      {
+        "id": "A012-greeting/jev",
+        "category": "partial_jev",
+        "status": "uncertain",
+        "reason": "uncertain_judgment",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "greeting",
+            "raw_choice": "greeting",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "unsure",
+            "reason": "未要求刷新已有公开资料。"
+          },
+          "relation": {
+            "source": "program",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "empty_session"
+          }
+        }
+      },
+      {
+        "id": "A012-companionship/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "companionship",
+            "raw_choice": "companionship",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "relation": {
+            "source": "program",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "empty_session"
+          }
+        }
+      },
+      {
+        "id": "A012-repeat-companionship/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "llm_reserved_or_conflict",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "companionship",
+            "raw_choice": "companionship",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "continuation",
+            "raw_choice": "continuation",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          }
+        }
+      },
+      {
+        "id": "A012-rest/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "llm_reserved_or_conflict",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "companionship",
+            "raw_choice": "companionship",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "llm_reserved_or_conflict"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          }
+        }
+      },
+      {
+        "id": "A012-learning-support/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "learning_support",
+            "raw_choice": "learning_support",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "source_learning",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "relation": {
+            "source": "jev",
+            "value": "continuation",
+            "raw_choice": "continuation",
+            "reason": ""
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          }
+        }
+      },
+      {
+        "id": "A012-mixed-question/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "reserved_or_mixed",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "mixed",
+            "raw_choice": "mixed",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A012-history-to-companion/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "companionship",
+            "raw_choice": "companionship",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "relation": {
+            "source": "jev",
+            "value": "continuation",
+            "raw_choice": "continuation",
+            "reason": ""
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          }
+        }
+      },
+      {
+        "id": "A013-local-transition/jev",
+        "category": "full_llm",
+        "status": "uncertain",
+        "reason": "uncertain_judgment",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "other",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "continuation",
+            "raw_choice": "continuation",
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "unsure",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A013-foreign-goal-transition/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "reserved_or_mixed",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "other",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "new_topic",
+            "raw_choice": "continuation",
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A013-current-plan-next/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "reserved_or_mixed",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "other",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "source_learning",
+            "raw_choice": "source_learning",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "continuation",
+            "raw_choice": "continuation",
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A015-capability/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "reserved_or_mixed",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "other",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "new_topic",
+            "raw_choice": "related_subtopic",
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A015-links-after-promise/jev",
+        "category": "unavailable",
+        "status": "failed",
+        "reason": "timeout",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": null,
+            "reason": "timeout"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": null,
+            "reason": "timeout"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "continuation",
+            "raw_choice": null,
+            "reason": "timeout"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": null,
+            "reason": "timeout"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": null,
+            "reason": "timeout"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": null,
+            "reason": "timeout"
+          }
+        }
+      },
+      {
+        "id": "A015-continue-errand/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "reserved_or_mixed",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "other",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "continuation",
+            "raw_choice": "continuation",
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A015-download-knowledge/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "question",
+            "raw_choice": "question",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "relation": {
+            "source": "program",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "empty_session"
+          }
+        }
+      },
+      {
+        "id": "A015-quoted-request/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "question",
+            "raw_choice": "question",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "relation": {
+            "source": "program",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "empty_session"
+          }
+        }
+      },
+      {
+        "id": "A015-negated-errand/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "question",
+            "raw_choice": "question",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "relation": {
+            "source": "jev",
+            "value": "related_subtopic",
+            "raw_choice": "related_subtopic",
+            "reason": ""
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          }
+        }
+      },
+      {
+        "id": "A015-mixed-knowledge/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "reserved_or_mixed",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "question",
+            "raw_choice": "mixed",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "new_topic",
+            "raw_choice": "related_subtopic",
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A015-mode-and-errand/jev",
+        "category": "unavailable",
+        "status": "failed",
+        "reason": "timeout",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": null,
+            "reason": "timeout"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": null,
+            "reason": "timeout"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "continuation",
+            "raw_choice": null,
+            "reason": "timeout"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": null,
+            "reason": "timeout"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": null,
+            "reason": "timeout"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": null,
+            "reason": "timeout"
+          }
+        }
+      },
+      {
+        "id": "A015-defer-and-errand/jev",
+        "category": "full_llm",
+        "status": "ok",
+        "reason": "reserved_or_mixed",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "other",
+            "reason": "reserved_or_mixed"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "reserved_or_mixed"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "new_topic",
+            "raw_choice": "continuation",
+            "reason": "reserved_or_mixed"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "yes",
+            "reason": "reserved_or_mixed"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "reserved_or_mixed"
+          }
+        }
+      },
+      {
+        "id": "A017-internal-material/jev",
+        "category": "partial_jev",
+        "status": "ok",
+        "reason": "partial_field_resolution",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "question",
+            "raw_choice": "question",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "yes",
+            "reason": "内容是未发布内部资料，不应转为外部检索，也没有可安全外发的公开查询主题。"
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "relation": {
+            "source": "program",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "empty_session"
+          }
+        }
+      },
+      {
+        "id": "A017-credential-link/jev",
+        "category": "partial_jev",
+        "status": "ok",
+        "reason": "partial_field_resolution",
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "material",
+            "raw_choice": "question",
+            "reason": "用户提供具体 URL 并要求阅读、解释网页正文，属于 material 而非普通知识问答。"
+          },
+          "workflow": {
+            "source": "jev",
+            "value": "source_learning",
+            "raw_choice": "source_learning",
+            "reason": ""
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "yes",
+            "raw_choice": "yes",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "relation": {
+            "source": "program",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "empty_session"
+          }
+        }
+      },
+      {
+        "id": "A017-public-privacy-concept/jev",
+        "category": "retained_jev_with_program_fields",
+        "status": "ok",
+        "reason": "",
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "question",
+            "raw_choice": "question",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "relation": {
+            "source": "program",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "empty_session"
+          }
+        }
+      }
+    ],
+    "note": "字段来源只表示实际采用，不是正确率；程序确定项不计 Jev 成功，完整 LLM 替换不因标签相同计采用。"
+  },
+  "limitations": [
+    "合成材料与临时数据库；日常 App 未启用。",
+    "对话分支的真实网页与知识写入被阻断；节点探针冻结非焦点准备和网页数据，不代表真实联网成功。",
+    "节点与整轮耗时分开统计；入口保留 LLM 检查，不预设提速。",
+    "已知回归样例，不是独立校准或生产置信度阈值验证。"
+  ],
+  "result": "FAIL"
+}
