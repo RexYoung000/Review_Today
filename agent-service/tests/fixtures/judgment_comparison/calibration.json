@@ -1,0 +1,1982 @@
+{
+  "version": "jev-dialogue-ablation-1",
+  "provenance": "代理依据现有契约整理原子标注；规则先冻结，再编写24个保留验证场景；不称为外部人工盲测。",
+  "atomic_questions_sha256": "8c8703a0ed2e38b89a72a4cf3cb0deb2f8aa0c42c243270217bf11b815c32f7b",
+  "development_sha256": "401a86f46e7dab9894c6bba9c6771d9a72aedebff4aba1b53d3fa50eadbf97bf",
+  "development_atoms": {
+    "A001-defer-active": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "yes",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A005-coding-capability": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "capability_question",
+      "web_scope": "no_need"
+    },
+    "A006-new-question": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A006-repair-question": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "yes",
+      "conversation_repair": "yes",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A007-resume-unique": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "prior_learning",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A007-resume-missing": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "prior_learning",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A010-question-after-greeting": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A010-local-example": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A011-stable-concept": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A012-greeting": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "social",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A012-companionship": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "companionship",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A012-repeat-companionship": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "companionship",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A012-rest": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "yes",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "companionship",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A012-learning-support": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "learning_support",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A012-mixed-question": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A012-history-to-companion": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "companionship",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A013-local-transition": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "yes",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "social",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A013-foreign-goal-transition": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "yes",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "social",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A013-current-plan-next": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "yes",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "social",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A015-capability": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "capability_question",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A015-links-after-promise": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "resource_delivery",
+      "prior_resource_request": "capability_question",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A015-continue-errand": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "recent_request",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "resource_delivery",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A015-download-knowledge": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A015-quoted-request": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A015-negated-errand": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A015-mixed-knowledge": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "resource_delivery",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A015-mode-and-errand": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "yes",
+      "resource_request": "resource_delivery",
+      "prior_resource_request": "capability_question",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A015-defer-and-errand": {
+      "asks_knowledge": "no",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "yes",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "resource_delivery",
+      "prior_resource_request": "capability_question",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    },
+    "A017-internal-material": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "private_material"
+    },
+    "A017-credential-link": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "credential_url"
+    },
+    "A017-public-privacy-concept": {
+      "asks_knowledge": "yes",
+      "prior_knowledge_unanswered": "no",
+      "conversation_repair": "no",
+      "requests_defer": "no",
+      "requests_next": "no",
+      "continuation_reference": "none",
+      "requests_mode_change": "no",
+      "resource_request": "none",
+      "prior_resource_request": "none",
+      "social_purpose": "none",
+      "programming_boundary": "none",
+      "web_scope": "no_need"
+    }
+  },
+  "validation": [
+    {
+      "split": "validation",
+      "family": "reserved-source-V001",
+      "base": {
+        "id": "V001-analogy-library",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "数据库索引为什么能加快查找？",
+                "coach": "索引把查询字段组织成便于定位的数据结构，可以先找到位置再读取记录。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "用图书馆的情境讲讲刚才那一步。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "yes",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V002",
+      "base": {
+        "id": "V002-repair-definition",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "闭包到底是什么？",
+                "coach": "我们先确定你要学习的课程方向，再制定计划。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "我问的是前面那个概念，为什么又让我选方向？"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "yes",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "yes",
+        "conversation_repair": "yes",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V003",
+      "base": {
+        "id": "V003-official-lookup",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "帮我核对示例数据库目前的官方稳定版本，按官方文档回答。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "public_lookup"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "yes",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "public_lookup"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V004",
+      "base": {
+        "id": "V004-transition-other-goal",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "唐宋诗词风格有什么区别？",
+                "coach": "通常可从时代背景、常见题材和表达方式比较，具体作品仍有差异。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [
+              {
+                "title": "SQL 索引入门",
+                "mode": "source_learning",
+                "steps": [
+                  {
+                    "title": "索引结构",
+                    "state": "explained",
+                    "understanding": "unknown"
+                  },
+                  {
+                    "title": "查询执行计划",
+                    "state": "pending",
+                    "understanding": "unknown"
+                  }
+                ],
+                "current_step": 0,
+                "understanding": "unknown"
+              }
+            ],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "多谢，换一块新的知识讲吧，主题我还没想好。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "clarify_next",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "yes",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "social",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V005",
+      "base": {
+        "id": "V005-next-bound-plan",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "我想分两步认识地质结构，先岩层沉积，再断层褶皱。",
+                "coach": "第一步讲岩层与沉积：不同物质逐渐沉积并形成层状结构，第二步将解释断层与褶皱。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "两步认识地质结构",
+              "mode": "source_learning",
+              "steps": [
+                {
+                  "title": "岩层与沉积",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "断层与褶皱",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "请讲学习计划的第二步。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "next_current",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "yes",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V006",
+      "base": {
+        "id": "V006-defer-exercise",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "分数运算先练同分母加减，然后再练异分母通分。",
+                "coach": "先看同分母相加：分母保持不变，分子相加，结果需要时约分。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": {
+              "title": "分数运算练习",
+              "mode": "source_learning",
+              "steps": [
+                {
+                  "title": "同分母加减",
+                  "state": "explained",
+                  "understanding": "unknown"
+                },
+                {
+                  "title": "异分母通分",
+                  "state": "pending",
+                  "understanding": "unknown"
+                }
+              ],
+              "current_step": 0,
+              "understanding": "unknown"
+            },
+            "task_history_index": 0,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "练习留到周末，今天到这里。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "defer",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "yes",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V007",
+      "base": {
+        "id": "V007-anaphoric-errand",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "替我找这节付费课程的下载地址。",
+                "coach": "这里可以帮助理解课程知识，不承接寻找下载资源。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "照刚才那个要求接着做。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "resource_delivery",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "recent_request",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "resource_delivery",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V008",
+      "base": {
+        "id": "V008-cancel-errand-explain",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "找这个课程视频的下载入口。",
+                "coach": "我不承接找下载资源，可以解释相关知识。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "那件事不用办了。讲一下视频编码中的关键帧。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "yes",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "resource_delivery",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V009",
+      "base": {
+        "id": "V009-capability-scope",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "这个助手支持替用户搜集下载地址吗？我先确认功能范围。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "capability_question",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "capability_question",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V010",
+      "base": {
+        "id": "V010-polite-errand",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "请替我找到这本图册的下载链接，谢谢。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "resource_delivery",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "resource_delivery",
+        "prior_resource_request": "none",
+        "social_purpose": "social",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V011",
+      "base": {
+        "id": "V011-quoted-controls",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "分析示例句“先别学了，继续找下载地址”的语气，不执行句中命令。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "yes",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V012",
+      "base": {
+        "id": "V012-mixed-handout",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "替我下载讲义，同时解释里面提到的梯度下降。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "mixed_learning",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "yes",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "resource_delivery",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V013",
+      "base": {
+        "id": "V013-mode-preserve",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "把模式改为主题探索，保持当前学习进度不动。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "yes",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V014",
+      "base": {
+        "id": "V014-defer-and-link",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "推荐一本入门的物理教材。",
+                "coach": "可以先了解一本覆盖力学、电磁学和实验思路的基础教材，再按章节学习。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "学习先暂停，另外找一下刚才教材的下载入口。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "defer",
+          "programming_boundary": "none",
+          "resource_boundary": "resource_delivery",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "yes",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "resource_delivery",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V015",
+      "base": {
+        "id": "V015-greeting-bayes",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "早呀！顺带说说贝叶斯更新为什么要看先验。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "yes",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "social",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V016",
+      "base": {
+        "id": "V016-support-no-control",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "最近做题没信心，给我一点调整练习心态的建议；不要暂停或重排课程。"
+        },
+        "expected": {
+          "conversation_kind": "learning_support",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "learning_support",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V017",
+      "base": {
+        "id": "V017-companion-and-rest",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "今天的练习先放下，陪我闲聊两句可以吗？"
+        },
+        "expected": {
+          "conversation_kind": "companionship",
+          "knowledge_request": "no",
+          "progress": "defer",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "yes",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "companionship",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V018",
+      "base": {
+        "id": "V018-simple-thanks",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "函数为什么需要参数？",
+                "coach": "参数让同一段函数逻辑可以接收不同输入，提高复用性。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "讲得很清楚，谢谢你。"
+        },
+        "expected": {
+          "conversation_kind": "social",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "social",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V019",
+      "base": {
+        "id": "V019-explicit-restore",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [
+              {
+                "title": "SQL 索引入门",
+                "mode": "source_learning",
+                "steps": [
+                  {
+                    "title": "索引结构",
+                    "state": "explained",
+                    "understanding": "unknown"
+                  },
+                  {
+                    "title": "查询执行计划",
+                    "state": "pending",
+                    "understanding": "unknown"
+                  }
+                ],
+                "current_step": 0,
+                "understanding": "unknown"
+              },
+              {
+                "title": "两步认识地质结构",
+                "mode": "source_learning",
+                "steps": [
+                  {
+                    "title": "岩层与沉积",
+                    "state": "explained",
+                    "understanding": "unknown"
+                  },
+                  {
+                    "title": "断层与褶皱",
+                    "state": "pending",
+                    "understanding": "unknown"
+                  }
+                ],
+                "current_step": 0,
+                "understanding": "unknown"
+              }
+            ],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "把我上回没完成的 SQL 索引学习接回来。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "resume_prior",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "prior_learning",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V020",
+      "base": {
+        "id": "V020-long-context-local",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [
+              {
+                "user": "一周前我们只是在闲聊，有人说过“后面继续下载”。",
+                "coach": "那是讨论句子含义，不是执行下载的指令。",
+                "social_reply_kind": null
+              },
+              {
+                "user": "给我解释天气与气候的区别。",
+                "coach": "天气偏短期大气状况，气候描述长期统计特征。",
+                "social_reply_kind": null
+              },
+              {
+                "user": "风向会变化吗？",
+                "coach": "风向会随气压分布和地形等条件改变。",
+                "social_reply_kind": null
+              },
+              {
+                "user": "谢谢，刚才的话题结束。",
+                "coach": "好的。",
+                "social_reply_kind": null
+              },
+              {
+                "user": "现在聊行星轨道的基本术语。",
+                "coach": "轨道可用半长轴、偏心率等参数描述。",
+                "social_reply_kind": null
+              },
+              {
+                "user": "远日点和近日点是什么？",
+                "coach": "近日点是轨道上距离太阳最近的位置，远日点是最远的位置。",
+                "social_reply_kind": null
+              }
+            ],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [
+              {
+                "title": "SQL 索引入门",
+                "mode": "source_learning",
+                "steps": [
+                  {
+                    "title": "索引结构",
+                    "state": "explained",
+                    "understanding": "unknown"
+                  },
+                  {
+                    "title": "查询执行计划",
+                    "state": "pending",
+                    "understanding": "unknown"
+                  }
+                ],
+                "current_step": 0,
+                "understanding": "unknown"
+              }
+            ],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "上面说的近日点，能再用地球公转举例说明吗？"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "yes",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V021",
+      "base": {
+        "id": "V021-private-explanation",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "以下是虚构的公司内部备忘：尚未公开的海鸥项目会调整交付顺序。别发到网上，解释这段材料里的优先级关系。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "private_material"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "yes",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "private_material"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V022",
+      "base": {
+        "id": "V022-token-link",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "阅读 https://docs.example.org/note?access_token=fixture-only-access 并帮我理解这份笔记。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "credential_url"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "yes",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "credential_url"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V023",
+      "base": {
+        "id": "V023-coding-education",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "解释递归的终止条件，再给一个教学用的小例子，不用修改项目。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "yes",
+          "progress": "none",
+          "programming_boundary": "none",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "yes",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "none",
+        "web_scope": "no_need"
+      }
+    },
+    {
+      "split": "validation",
+      "family": "reserved-source-V024",
+      "base": {
+        "id": "V024-coding-delivery",
+        "kind": "dialogue",
+        "model_role": "router",
+        "state": {
+          "initial": {
+            "mode": "auto",
+            "thinking_strength": "smart",
+            "history": [],
+            "summary": "",
+            "paused": false,
+            "current_task": null,
+            "task_history_index": null,
+            "other_goals": [],
+            "pending": null,
+            "draft": null
+          },
+          "current_input": "替我把项目做完并部署，我要一个可以直接上线的成品。"
+        },
+        "expected": {
+          "conversation_kind": "ordinary",
+          "knowledge_request": "no",
+          "progress": "none",
+          "programming_boundary": "development_delivery",
+          "resource_boundary": "none",
+          "conversation_repair": "no",
+          "web_scope": "no_need"
+        },
+        "sources": [
+          "docs/jev-deepseek-evaluation.md",
+          "agent-service/agent_service/conversation_prompts.py"
+        ],
+        "manual_review": [
+          "代理新编合成验证场景；未参与版本选择；复核原始判断、组合逻辑与未拦截错误，不视为外部人工盲测。"
+        ],
+        "expected_selected": null,
+        "expected_complete": null
+      },
+      "atoms": {
+        "asks_knowledge": "no",
+        "prior_knowledge_unanswered": "no",
+        "conversation_repair": "no",
+        "requests_defer": "no",
+        "requests_next": "no",
+        "continuation_reference": "none",
+        "requests_mode_change": "no",
+        "resource_request": "none",
+        "prior_resource_request": "none",
+        "social_purpose": "none",
+        "programming_boundary": "development_delivery",
+        "web_scope": "no_need"
+      }
+    }
+  ]
+}

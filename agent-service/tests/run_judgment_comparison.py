@@ -21,7 +21,7 @@ def write_row(file, row):
     file.flush()
 
 
-def run(cases, adapters, models, output):
+def run(cases, adapters, models, output, *, experiment=None):
     from tests.judgment_comparison.adapters import SYSTEM
     header = dict(type='header', schema_version=1, layer='paired_component_judgment',
         started_at=datetime.now(timezone.utc).isoformat(), code=code_version(),
@@ -30,6 +30,8 @@ def run(cases, adapters, models, output):
         prices=json.loads((FIXTURES / 'prices.json').read_text()),
         isolation='fixed synthetic text only; no App, database, web tool or knowledge write',
         order='alternate provider order per case; serial calls; pooled connection per provider')
+    if experiment is not None:
+        header['experiment'] = experiment
     rows, interrupted = [], False
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
