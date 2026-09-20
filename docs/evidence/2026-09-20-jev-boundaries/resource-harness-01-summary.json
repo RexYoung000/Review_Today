@@ -1,0 +1,409 @@
+{
+  "result": {
+    "type": "summary",
+    "automatic_result": "FAIL",
+    "executed": 62,
+    "planned": 62,
+    "missing": [],
+    "failed": [
+      "A001-defer-active/deepseek",
+      "A015-capability/resource"
+    ],
+    "error_type": null,
+    "language_review": "pending",
+    "rex_acceptance": "pending",
+    "layer": "live_fixed_context"
+  },
+  "groups": {
+    "deepseek": {
+      "planned": 31,
+      "recorded": 31,
+      "passed": 30,
+      "semantic_calls": 62,
+      "transport_requests": 62,
+      "usage_records": 61,
+      "input_tokens": 259678,
+      "output_tokens": 15632,
+      "usage_complete": false,
+      "known_cost_usd_range": [
+        0.012016608,
+        0.024033216
+      ],
+      "assertions": 317,
+      "assertions_passed": 314,
+      "scope_audit_scored": 30,
+      "scope_audit_passed": 30,
+      "scope_audit_failed": [],
+      "combined_passed": 30,
+      "median_ms": 4644.25,
+      "min_ms": 2108.991,
+      "max_ms": 90057.976,
+      "applied": 0,
+      "changed": 0,
+      "fallback": 0,
+      "failed": [
+        "A001-defer-active/deepseek"
+      ]
+    },
+    "resource": {
+      "planned": 31,
+      "recorded": 31,
+      "passed": 30,
+      "semantic_calls": 63,
+      "transport_requests": 63,
+      "usage_records": 63,
+      "input_tokens": 274003,
+      "output_tokens": 16983,
+      "usage_complete": true,
+      "known_cost_usd_range": [
+        0.013338966,
+        0.026677932
+      ],
+      "assertions": 317,
+      "assertions_passed": 316,
+      "scope_audit_scored": 31,
+      "scope_audit_passed": 30,
+      "scope_audit_failed": [
+        "A005-coding-capability/resource"
+      ],
+      "combined_passed": 29,
+      "median_ms": 5136.343,
+      "min_ms": 2016.567,
+      "max_ms": 24480.042,
+      "applied": 29,
+      "changed": 2,
+      "fallback": 2,
+      "failed": [
+        "A015-capability/resource"
+      ]
+    }
+  },
+  "paired": {
+    "fixed": [
+      "A001-defer-active"
+    ],
+    "regressed": [
+      "A015-capability"
+    ]
+  },
+  "scope_audits": {
+    "A001-defer-active/deepseek": {
+      "scored": false,
+      "passed": false,
+      "errors": [
+        "execution_incomplete"
+      ]
+    },
+    "A001-defer-active/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A005-coding-capability/resource": {
+      "scored": true,
+      "passed": false,
+      "errors": [
+        "wrong_resource_reply",
+        "missing_programming_reply"
+      ]
+    },
+    "A005-coding-capability/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A006-new-question/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A006-new-question/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A006-repair-question/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A006-repair-question/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A007-resume-unique/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A007-resume-unique/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A007-resume-missing/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A007-resume-missing/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A010-question-after-greeting/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A010-question-after-greeting/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A010-local-example/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A010-local-example/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A011-stable-concept/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A011-stable-concept/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-greeting/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-greeting/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-companionship/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-companionship/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-repeat-companionship/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-repeat-companionship/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-rest/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-rest/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-learning-support/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-learning-support/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-mixed-question/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-mixed-question/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-history-to-companion/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A012-history-to-companion/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A013-local-transition/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A013-local-transition/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A013-foreign-goal-transition/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A013-foreign-goal-transition/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A013-current-plan-next/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A013-current-plan-next/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-capability/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-capability/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-links-after-promise/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-links-after-promise/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-continue-errand/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-continue-errand/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-download-knowledge/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-download-knowledge/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-quoted-request/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-quoted-request/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-negated-errand/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-negated-errand/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-mixed-knowledge/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-mixed-knowledge/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-mode-and-errand/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-mode-and-errand/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-defer-and-errand/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A015-defer-and-errand/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A017-internal-material/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A017-internal-material/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A017-credential-link/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A017-credential-link/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A017-public-privacy-concept/deepseek": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    },
+    "A017-public-privacy-concept/resource": {
+      "scored": true,
+      "passed": true,
+      "errors": []
+    }
+  },
+  "new_jev_requests": 0,
+  "timing_includes_fresh_jev": false,
+  "product_integrated": false
+}

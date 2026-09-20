@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from tests.judgment_comparison.resource_replay import load_cache, project, summarize_harness
+from tests.judgment_comparison.resource_replay import bind_interceptor, load_cache, summarize_harness
 from tests.judgment_comparison.cases import FIXTURES
 from tests.case_library.schema import load
 
@@ -31,7 +31,7 @@ def main(argv=None):
                 parser.error('--report cannot be combined with execution')
             result = summarize_harness(args.report)
             print(json.dumps(result, ensure_ascii=False))
-            return 0 if result['result']['automatic_result'] == 'PASS' else 1
+            return 0 if result['audited_result'] == 'PASS' else 1
         if not args.selection or not args.validation:
             parser.error('requires frozen selection and validation evidence')
         cache, experiment = load_cache(args.selection, args.validation)
@@ -64,13 +64,8 @@ def main(argv=None):
                     # The parent observer records the actual DeepSeek response first.
                     # Intervention is applied AFTER observation, never relabelled as model output.
                     observed_parse = conversation.parse_model
-                    def intercept(system, user, schema, **kwargs):
-                        value = observed_parse(system, user, schema, **kwargs)
-                        if self.variant == 'resource' and schema.__name__ == 'IntentDecision' and not self.interventions:
-                            event = project(value.model_dump(), cache[self.identity])
-                            self.interventions.append(event)
-                            return schema.model_validate(event['after'])
-                        return value
+                    intercept = bind_interceptor(observed_parse, lambda: dict(
+                        variant=self.variant, cached=cache[self.identity], events=self.interventions))
                     self.stack.enter_context(patch('agent_service.conversation.parse_model', side_effect=intercept))
                     return self
 
@@ -104,7 +99,7 @@ def main(argv=None):
                             recorded=any(r['id'] == scenario.id + '/' + variant for r in report.records))), flush=True)
             result = summarize_harness(args.output)
             print(json.dumps(result, ensure_ascii=False))
-            return 0 if result['result']['automatic_result'] == 'PASS' else 1
+            return 0 if result['audited_result'] == 'PASS' else 1
     except (ValueError, OSError, KeyError) as exc:
         parser.error(str(exc))
     return 1
