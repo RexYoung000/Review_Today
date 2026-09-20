@@ -1,0 +1,507 @@
+{
+  "schema_version": 1,
+  "reviewer": "Codex",
+  "reviewed_at": "2026-09-20T13:49:11.584887+00:00",
+  "rex_acceptance": "pending",
+  "evidence_sha256": {
+    "live.jsonl": "4e24ff5210658cf33733ad689361e2484fa0fb9872a98d6070078de73d500d45",
+    "smoke.jsonl": "99ff978f26dd2693100357d80485ab82d4032f80671eb7f24ef9dd4039b2f4d8",
+    "binding-flow.jsonl": "b112908d490438012cb481b34b26247ab0980048a2c7a7ba40314620cf06b177"
+  },
+  "raw_failures": [
+    {
+      "id": "A017-internal-material/baseline",
+      "original_checks": {
+        "5:resource_scope_reply:eq": false,
+        "scope": false
+      },
+      "original_result": "FAIL",
+      "review": "CONFIRMED_SEMANTIC_ERROR",
+      "reason": "错误拒绝内部材料分析"
+    },
+    {
+      "id": "memory-duplicates/jev",
+      "original_checks": {
+        "selection": false
+      },
+      "original_result": "FAIL",
+      "review": "PASS_FOR_CONTENT_SELECTION",
+      "reason": "m1 与 m2 具有相同 canonical_id 和文本，实际只选 m2；原 ID 断言过严。",
+      "recomputed": {
+        "selected": [
+          "m2"
+        ],
+        "false_selected": [],
+        "missed_selected": [],
+        "duplicate_selected": 0,
+        "exact_ids_match": false,
+        "content_selection_passed": true
+      }
+    },
+    {
+      "id": "memory-disambiguation/baseline",
+      "original_checks": {
+        "selection": false
+      },
+      "original_result": "FAIL",
+      "review": "CONFIRMED_SEMANTIC_ERROR",
+      "reason": "多选了无关的物理线束记录"
+    }
+  ],
+  "raw_jev_error_causes": [
+    {
+      "trial": "A007-resume-unique/jev",
+      "run_id": "c1659c21-2a02-490d-ba85-53837936df1c",
+      "node": "entry",
+      "status": "uncertain",
+      "cause": "uncertain_judgment"
+    },
+    {
+      "trial": "A007-resume-missing/jev",
+      "run_id": "66126bfa-c933-4f9a-8621-c3b1e3506e0b",
+      "node": "entry",
+      "status": "uncertain",
+      "cause": "uncertain_judgment"
+    },
+    {
+      "trial": "A012-greeting/jev",
+      "run_id": "d98a99d1-fecc-4c3b-b64f-49d4654d7639",
+      "node": "entry",
+      "status": "failed",
+      "cause": "timeout"
+    },
+    {
+      "trial": "A012-companionship/jev",
+      "run_id": "277cbf6f-7de7-4395-ae65-a41e2cc4d1d3",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A012-repeat-companionship/jev",
+      "run_id": "2e8133e3-3dcc-48c3-b02d-75608c2fb66c",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A012-rest/jev",
+      "run_id": "61e1519b-8cfa-475d-94f7-c9e2cb0bdd4e",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A012-learning-support/jev",
+      "run_id": "34cdd797-4f51-4752-b5f0-dde97d1a0181",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A012-mixed-question/jev",
+      "run_id": "706c66a2-e0bf-46bd-8539-e864e2244c09",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A012-history-to-companion/jev",
+      "run_id": "70493f33-a957-4884-896c-1907b19ffd56",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A013-local-transition/jev",
+      "run_id": "ae280cf9-9f70-49a6-ac7e-2db6ef780646",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A013-foreign-goal-transition/jev",
+      "run_id": "3b6b859f-22ac-4387-afa4-f02138c0e900",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A013-current-plan-next/jev",
+      "run_id": "55826c13-3cfe-4e96-92ca-79ff6cdf9831",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A015-capability/jev",
+      "run_id": "7453c25f-41b3-4d4d-9c6d-5d71d16bc917",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A015-links-after-promise/jev",
+      "run_id": "e09a2c34-a101-4214-b384-6a6edee612ec",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A015-continue-errand/jev",
+      "run_id": "df73e50a-2fe2-4497-9d18-8e5fe91c6380",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A015-download-knowledge/jev",
+      "run_id": "0cb57c17-0fb1-4486-9563-a7e13ef43d8e",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A015-quoted-request/jev",
+      "run_id": "2319f0a5-2b52-438e-be9a-f3645889efc2",
+      "node": "entry",
+      "status": "failed",
+      "cause": "connection_failed"
+    },
+    {
+      "trial": "A017-internal-material/jev",
+      "run_id": "d2cb22f0-0b22-472c-b15f-df1465b6dc76",
+      "node": "entry",
+      "status": "uncertain",
+      "cause": "uncertain_judgment"
+    },
+    {
+      "trial": "grade-photosynthesis-wrong/jev",
+      "run_id": "664703df-bb47-4cc1-ae8e-1911a6773eaa",
+      "node": "answer_points",
+      "status": "failed",
+      "cause": "timeout"
+    },
+    {
+      "trial": "grade-rag-omission/jev",
+      "run_id": "341618dd-fc0c-46c9-b653-ff1693831c92",
+      "node": "answer_points",
+      "status": "failed",
+      "cause": "timeout"
+    }
+  ],
+  "critical_cases": [
+    {
+      "id": "A001-defer-active/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "0:intent.intents:contains": true,
+        "1:stages:excludes": true,
+        "2:reply_length:lte": true,
+        "3:plan_ids_unchanged:eq": true,
+        "4:capture_offer_count:eq": true,
+        "history_preserved": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true,
+        "scope": true
+      },
+      "judgments": [
+        {
+          "node": "entry",
+          "status": "ok",
+          "applied": false,
+          "reason": "reserved_or_mixed"
+        }
+      ]
+    },
+    {
+      "id": "A005-coding-capability/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "0:reply:contains": true,
+        "1:reply:contains": true,
+        "2:task_count:eq": true,
+        "3:capture_offer_count:eq": true,
+        "4:goal_transfer:eq": true,
+        "history_preserved": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true,
+        "scope": true
+      },
+      "judgments": [
+        {
+          "node": "entry",
+          "status": "ok",
+          "applied": false,
+          "reason": "reserved_or_mixed"
+        }
+      ]
+    },
+    {
+      "id": "A012-mixed-question/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "0:intent.intents:contains": true,
+        "1:stages:contains": true,
+        "2:reply_length:gte": true,
+        "3:task_count:eq": true,
+        "4:capture_offer_count:eq": true,
+        "5:goal_transfer:eq": true,
+        "history_preserved": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true,
+        "scope": true
+      },
+      "judgments": [
+        {
+          "node": "entry",
+          "status": "failed",
+          "applied": false,
+          "reason": "connection_failed"
+        }
+      ]
+    },
+    {
+      "id": "A013-foreign-goal-transition/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "0:intent.clarification_kind:eq": true,
+        "1:reply_length:lte": true,
+        "2:reply:excludes": true,
+        "3:stages:excludes": true,
+        "4:stages:excludes": true,
+        "5:task_count:eq": true,
+        "6:capture_offer_count:eq": true,
+        "7:goal_transfer:eq": true,
+        "8:old_goals_unchanged:eq": true,
+        "history_preserved": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true,
+        "scope": true
+      },
+      "judgments": [
+        {
+          "node": "entry",
+          "status": "failed",
+          "applied": false,
+          "reason": "connection_failed"
+        }
+      ]
+    },
+    {
+      "id": "memory-none/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "selection": true
+      },
+      "judgments": [
+        {
+          "node": "memory_selection",
+          "status": "ok",
+          "applied": true,
+          "reason": ""
+        }
+      ]
+    },
+    {
+      "id": "memory-injection/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "selection": true
+      },
+      "judgments": [
+        {
+          "node": "memory_selection",
+          "status": "ok",
+          "applied": true,
+          "reason": ""
+        }
+      ]
+    },
+    {
+      "id": "source-none/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "selection": true
+      },
+      "judgments": [
+        {
+          "node": "source_candidates",
+          "status": "ok",
+          "applied": true,
+          "reason": ""
+        }
+      ]
+    },
+    {
+      "id": "source-official/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "selection": true
+      },
+      "judgments": [
+        {
+          "node": "source_candidates",
+          "status": "ok",
+          "applied": true,
+          "reason": ""
+        }
+      ]
+    },
+    {
+      "id": "grade-photosynthesis-mixed/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "passed": true
+      },
+      "judgments": [
+        {
+          "node": "answer_points",
+          "status": "ok",
+          "applied": true,
+          "reason": ""
+        }
+      ]
+    },
+    {
+      "id": "grade-rag-mixed/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "passed": true
+      },
+      "judgments": [
+        {
+          "node": "answer_points",
+          "status": "ok",
+          "applied": true,
+          "reason": ""
+        }
+      ]
+    }
+  ],
+  "additional_findings": [
+    {
+      "id": "A006-repair-question/jev",
+      "finding": "Jev 将真实会话纠错判为 social；LLM 返回完整替代判断并回答原问题。",
+      "status": "CORRECTED_BY_RESERVED_LLM"
+    },
+    {
+      "id": "A017-internal-material/jev",
+      "finding": "自动断言通过，但“只在本地整理”表述不准确。内容仍由配置的外部 LLM 处理，仅网页工具未收到材料。",
+      "status": "NEEDS_WORDING_CALIBRATION"
+    },
+    {
+      "ids": [
+        "A007-resume-unique/jev",
+        "A013-current-plan-next/jev"
+      ],
+      "finding": "首批生成标准的引文改写导致未绑定。程序改为绑定实际参考原文，并单独验证后续实际作答；原记录不修改。",
+      "status": "FIXED_AND_VERIFIED_IN_BINDING_FLOW"
+    }
+  ],
+  "binding_flow": [
+    {
+      "id": "A013-current-plan-next/baseline",
+      "automatic_result": "PASS",
+      "checks": {
+        "0:stages:contains": true,
+        "1:plan_ids_unchanged:eq": true,
+        "2:goal_transfer:eq": true,
+        "3:current_understanding:eq": true,
+        "4:capture_offer_count:eq": true,
+        "history_preserved": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true,
+        "scope": true
+      },
+      "point_evaluation": null
+    },
+    {
+      "id": "A013-current-plan-next/generated-answer/baseline",
+      "automatic_result": "PASS",
+      "checks": {
+        "completed": true,
+        "evaluated": true,
+        "no_blocked_tool_attempt": true
+      },
+      "point_evaluation": null
+    },
+    {
+      "id": "A013-current-plan-next/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "0:stages:contains": true,
+        "1:plan_ids_unchanged:eq": true,
+        "2:goal_transfer:eq": true,
+        "3:current_understanding:eq": true,
+        "4:capture_offer_count:eq": true,
+        "history_preserved": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true,
+        "scope": true,
+        "standard_bound_before_answer": true
+      },
+      "point_evaluation": null
+    },
+    {
+      "id": "A013-current-plan-next/generated-answer/jev",
+      "automatic_result": "PASS",
+      "checks": {
+        "completed": true,
+        "evaluated": true,
+        "no_blocked_tool_attempt": true,
+        "same_frozen_standard": true,
+        "next_question_bound": true
+      },
+      "point_evaluation": {
+        "labels": {
+          "point_0": "covered",
+          "point_1": "missing",
+          "point_2": "covered",
+          "misconception": "absent"
+        },
+        "passed": false,
+        "effective_passed": false,
+        "standard_fingerprint": "0dc96d703364374e1dd35e38288015e8e9bffd513a7ed2afd7d0d176f64784b1",
+        "llm_fallback_items": []
+      }
+    }
+  ],
+  "controlled": {
+    "tests_passed": 668,
+    "subtests_passed": 306,
+    "log": "controlled-final-delivery.txt",
+    "new_judgment_tests": 35
+  },
+  "totals": {
+    "executions": 128,
+    "model_http_requests": 249,
+    "jev_http_requests": 65,
+    "calls_missing_usage": 15,
+    "known_cost_usd": [
+      0.047830088,
+      0.092549026
+    ]
+  },
+  "limitations": [
+    "固定回归材料不是独立校准集。",
+    "入口仅原始标签及完整路由分别复核，没有同体系精细金标。",
+    "候选的关系细分类无金标，只评价相关性、来源限制和去重。",
+    "网页搜索和正文为合成输入；没有真实联网或原生 App 验收。",
+    "生成式绑定检查的两方问题可能不同，不计入固定题准确率。",
+    "15 次用量缺失，不得把已知费用区间作为账单总额。"
+  ],
+  "code_changes_since_binding_flow": {
+    "agent-service/agent_service/jev_client.py": "05fcef9b380590e86fb8048bf515a5ef74eb41d67efee8014ad231ae7c4e3607",
+    "agent-service/agent_service/judgment_types.py": "0e1a1d5be336a7716f41e31d3b4e4b19f7450e135fa20b2a5ff318aeec8cce58",
+    "agent-service/tests/run_jev_harness.py": "3d39d60c3f5043b655eac197ff809d748d09b1b92af02e77a6f77101bd62c2f9",
+    "agent-service/tests/test_judgment_harness.py": "2478ced7e3d841f7a88230069845a7636b883b5c13e8ba558c8728a0050a709e"
+  },
+  "code_changes_since_binding_flow_note": "只补非法数值/脱敏处理、对应受控测试和实验执行器的失败行身份记录；有效判断语义、出题和绑定逻辑未再改变。"
+}

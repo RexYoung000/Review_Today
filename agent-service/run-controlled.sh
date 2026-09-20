@@ -21,6 +21,7 @@ python_bin="${REVIEW_TODAY_TEST_PYTHON:-.venv/bin/python}"
 "$python_bin" tests/run_judgment_comparison.py
 "$python_bin" tests/run_jev_calibration.py
 "$python_bin" tests/run_jev_boundaries.py
+"$python_bin" tests/run_jev_harness.py
 # pytest also collects unittest.TestCase. unittest alone silently omits the
 # parameterized dictation tests even when their modules import successfully.
 "$python_bin" -m pytest tests -q

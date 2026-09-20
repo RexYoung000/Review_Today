@@ -1,0 +1,148 @@
+{
+  "experiment": "jev-harness-integration-1",
+  "planned": 4,
+  "executed": 4,
+  "missing": [],
+  "groups": {
+    "dialogue/baseline": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 6712.375,
+      "range_ms": [
+        6712.375,
+        6712.375
+      ],
+      "logical_calls": 3,
+      "http_requests": 3,
+      "jev_http_requests": 0,
+      "reported_usages": 3,
+      "calls_missing_usage": 0,
+      "input_tokens": 11365,
+      "output_tokens": 895,
+      "known_cost_usd": [
+        0.000661206,
+        0.001322412
+      ],
+      "cost_complete": true,
+      "judgments": 0,
+      "applied": 0,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "binding_flow/baseline": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 4441.466,
+      "range_ms": [
+        4441.466,
+        4441.466
+      ],
+      "logical_calls": 2,
+      "http_requests": 2,
+      "jev_http_requests": 0,
+      "reported_usages": 2,
+      "calls_missing_usage": 0,
+      "input_tokens": 9511,
+      "output_tokens": 722,
+      "known_cost_usd": [
+        0.000787338,
+        0.001574676
+      ],
+      "cost_complete": true,
+      "judgments": 0,
+      "applied": 0,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "dialogue/jev": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 12380.655,
+      "range_ms": [
+        12380.655,
+        12380.655
+      ],
+      "logical_calls": 6,
+      "http_requests": 6,
+      "jev_http_requests": 2,
+      "reported_usages": 6,
+      "calls_missing_usage": 0,
+      "input_tokens": 23947,
+      "output_tokens": 2360,
+      "known_cost_usd": [
+        0.001474038,
+        0.002743746
+      ],
+      "cost_complete": true,
+      "judgments": 2,
+      "applied": 0,
+      "partial_adoption": 0,
+      "fallback": 2,
+      "reasons": {
+        "reserved_or_mixed": 2
+      },
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "binding_flow/jev": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 10612.2,
+      "range_ms": [
+        10612.2,
+        10612.2
+      ],
+      "logical_calls": 4,
+      "http_requests": 4,
+      "jev_http_requests": 2,
+      "reported_usages": 4,
+      "calls_missing_usage": 0,
+      "input_tokens": 17109,
+      "output_tokens": 1898,
+      "known_cost_usd": [
+        0.001697766,
+        0.003137652
+      ],
+      "cost_complete": true,
+      "judgments": 2,
+      "applied": 1,
+      "partial_adoption": 0,
+      "fallback": 1,
+      "reasons": {
+        "reserved_or_mixed": 1
+      },
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    }
+  },
+  "node_semantics": [],
+  "limitations": [
+    "合成材料与临时数据库；日常 App 未启用。",
+    "对话分支的真实网页与知识写入被阻断；节点探针冻结非焦点准备和网页数据，不代表真实联网成功。",
+    "节点与整轮耗时分开统计；入口保留 LLM 检查，不预设提速。",
+    "已知回归样例，不是独立校准或生产置信度阈值验证。"
+  ],
+  "result": "PASS"
+}

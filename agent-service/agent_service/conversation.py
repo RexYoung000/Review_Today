@@ -52,7 +52,10 @@ def _new_run(session_id: str, message_id: str, status: str) -> dict:
 
 
 class ConversationHarness(ConditionalTeaching):
-    def __init__(self, store: ConversationStore = conversation_store):
+    def __init__(self, store: ConversationStore = conversation_store, *, judgments=None):
+        if judgments is not None:
+            judgments.check_isolation(store)
+        self.judgments = judgments
         self.store = store
         self._workers: set[str] = set()
         self._worker_lock = threading.Lock()
@@ -269,7 +272,7 @@ class ConversationHarness(ConditionalTeaching):
             return
         candidate = foreground if foreground and foreground["status"] in {"accepted", "queued"} else next(r for r in data["runs"].values() if r["status"] in {"accepted", "queued"})
         last = next((m for m in data["messages"] if m["message_id"] == candidate["input_ids"][-1]), {})
-        cached_intent = candidate.get("intent") and {"programming_boundary", "resource_boundary"} <= candidate["intent"].keys() and candidate.get("decision_input_ids") == candidate["input_ids"] and candidate.get("decision_mode") == data["mode"]
+        cached_intent = candidate.get("intent") and {"programming_boundary", "resource_boundary"} <= candidate["intent"].keys() and candidate.get("decision_input_ids") == candidate["input_ids"] and candidate.get("decision_mode") == data["mode"] and self._intent_policy_matches(candidate)
         if not last.get("operation") and not cached_intent and snapshot()["router"]["status"] != "ready":
             return
         with self._worker_lock:
@@ -608,11 +611,18 @@ class ConversationHarness(ConditionalTeaching):
                                       relation="continuation", workflow=task["mode"] if task else "source_learning",
                                       scope="continue_goal", direct_teaching=True, learning_goal_ready=True,
                                       rationale="用户明确要求继续教学，不是独立作答或保存授权。")
-        elif run.get("intent") and {"programming_boundary", "conversation_kind", "resource_boundary"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"]:
+        elif run.get("intent") and {"programming_boundary", "conversation_kind", "resource_boundary"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"] and self._intent_policy_matches(run):
             decision = IntentDecision.model_validate(run["intent"])
+        elif self.judgments is not None:
+            from agent_service.judgment_nodes import resolve_entry
+            decision = resolve_entry(self, sid, rid, rev, dialogue_routing.intent_context(context), INTENT_SYSTEM, ROUTER_MODEL)
         else:
             decision = self._call(sid, rid, rev, "intent", INTENT_SYSTEM,
                                   json.dumps(dialogue_routing.intent_context(context), ensure_ascii=False), IntentDecision, ROUTER_MODEL)
+        if self.judgments is not None or run.get("judgment_policy"):
+            from agent_service.judgment_types import VERSION
+            with self.store.transaction(sid, rid, rev) as current:
+                current["runs"][rid]["judgment_policy"] = VERSION if self.judgments is not None else None
         decision = dialogue_routing.normalize(data, decision, last)
         from agent_service import resource_boundary
         decision = resource_boundary.normalize(data, decision, last)
@@ -911,6 +921,10 @@ class ConversationHarness(ConditionalTeaching):
         else:
             self._respond(sid, rid, rev, decision, "直接回答本轮问题，深入学习可选；不要强制进入完整训练。", node="answer")
 
+    def _intent_policy_matches(self, run):
+        from agent_service.judgment_types import VERSION
+        return run.get("judgment_policy") == (VERSION if self.judgments is not None else None)
+
     @staticmethod
     def _explicit(operation, text):
         evidence = operation.get("evidence", "")
@@ -1157,10 +1171,14 @@ class ConversationHarness(ConditionalTeaching):
             current["runs"][rid]["allowed_source_urls"] = readable_urls
         from agent_service.source_projection import answer_sources
         instruction += "\n标有 content_excerpted 的网页仅向本次回答提供节选；结合 evidence 的核验范围回答，不补写未见原文或声称节选是全文。"
-        output = self._call(sid, rid, rev, node, COACH_SYSTEM,
+        output_schema, output_system = ConversationOutput, COACH_SYSTEM
+        if self.judgments is not None and teaching:
+            from agent_service.judgment_grading import ScoredConversationOutput, RUBRIC_RULE
+            output_schema, output_system = ScoredConversationOutput, COACH_SYSTEM + RUBRIC_RULE
+        output = self._call(sid, rid, rev, node, output_system,
                             json.dumps(dict(instruction=instruction, context=context, sources=answer_sources(sources),
                                             source_type=source_type, evidence=coach_evidence,
-                                            verification_notice=run.get("verification_notice", "")), ensure_ascii=False), ConversationOutput)
+                                            verification_notice=run.get("verification_notice", "")), ensure_ascii=False), output_schema)
         with self.store.transaction(sid, rid, rev) as current:
             current["runs"][rid]["learning_concepts"] = output.learning_concepts
         intro = run.get("continuation_intro")
@@ -1202,6 +1220,9 @@ class ConversationHarness(ConditionalTeaching):
                     task["context"]["lesson_index"] = task["context"].get("lesson_index", 0) + 1
                 if sources:
                     task["context"]["sources"] = sources
+                if self.judgments is not None and teaching:
+                    from agent_service.judgment_grading import bind_standard
+                    bind_standard(task, output.check_question, output.check_scoring_spec)
             self.store.event(data, data["runs"][rid], "sources", "来源类型已记录", payload={"sources": sources, "source_type": source_type})
         required = {"type": "submit_answer", "prompt": output.check_question, "options": []} if output.check_question else None
         if teaching:
@@ -1224,8 +1245,12 @@ class ConversationHarness(ConditionalTeaching):
             self._publish(sid, rid, rev, text, stage="jd_analysis", required={"type": "choose_question", "prompt": "先攻克哪一道？", "options": output.prioritized_questions})
             return
         evidence = self._evidence(sid, rid, rev, decision, task["content"])
-        output = self._call(sid, rid, rev, "problem_answer", PROBLEM_SYSTEM,
-                            json.dumps(dict(question=task["content"], evidence=evidence, context=task["context"]), ensure_ascii=False), ProblemCoachBundle)
+        output_schema, output_system = ProblemCoachBundle, PROBLEM_SYSTEM
+        if self.judgments is not None:
+            from agent_service.judgment_grading import ScoredProblemCoachBundle, RUBRIC_RULE
+            output_schema, output_system = ScoredProblemCoachBundle, PROBLEM_SYSTEM + RUBRIC_RULE
+        output = self._call(sid, rid, rev, "problem_answer", output_system,
+                            json.dumps(dict(question=task["content"], evidence=evidence, context=task["context"]), ensure_ascii=False), output_schema)
         if output.answer.confidence == "low" and not decision.needs_verification:
             evidence = self._evidence(sid, rid, rev, decision.model_copy(update={"needs_verification": True}), task["content"])
         with self.store.transaction(sid, rid, rev) as data:
@@ -1235,6 +1260,11 @@ class ConversationHarness(ConditionalTeaching):
                                     evidence=evidence, calibration_question=output.analysis.calibration_question)
             set_plan(task, output.learning_plan.steps + ["独立作答", "迁移追问"], output.learning_plan.success_check,
                      (output.learning_plan.step_ids or [""] * len(output.learning_plan.steps)) + ["", ""])
+            if self.judgments is not None:
+                from agent_service.judgment_grading import bind_standard
+                bind_standard(task, output.analysis.calibration_question, output.analysis.check_scoring_spec)
+                if task["context"].get("check_standard"):
+                    task["context"]["check_question"] = output.analysis.calibration_question
         text = with_question(_render_problem(output, compact=True), output.analysis.calibration_question, "先确认一点")
         if evidence["state"] != "unverified":
             text += "\n\n" + evidence["summary"]
@@ -1244,9 +1274,17 @@ class ConversationHarness(ConditionalTeaching):
     def _evaluate(self, sid, rid, rev, decision, last):
         data, run = self._snapshot(sid, rid, rev)
         task = self._task(data, run)
-        result = self._call(sid, rid, rev, "evaluate", EVALUATION_SYSTEM,
+        result = None
+        evaluation_schema, evaluation_system = MasteryEvaluation, EVALUATION_SYSTEM
+        if self.judgments is not None:
+            from agent_service.judgment_grading import evaluate, ScoredMasteryEvaluation, FOLLOWUP_RULE
+            result = evaluate(self, sid, rid, rev, task, last["content"], EVALUATION_SYSTEM)
+            evaluation_schema, evaluation_system = ScoredMasteryEvaluation, EVALUATION_SYSTEM + FOLLOWUP_RULE
+        if result is None:
+            result = self._call(sid, rid, rev, "evaluate", evaluation_system,
                             json.dumps(dict(question=task["context"].get("check_question") or task["content"],
-                                            reference=task["context"].get("reference_answer", ""), answer=last["content"]), ensure_ascii=False), MasteryEvaluation)
+                                            reference=task["context"].get("reference_answer", "") or (task["context"].get("last_lesson", "") if self.judgments else ""),
+                                            answer=last["content"]), ensure_ascii=False), evaluation_schema)
         with self.store.transaction(sid, rid, rev) as data:
             task = self._task(data, data["runs"][rid])
             ctx = task["context"]
@@ -1281,6 +1319,9 @@ class ConversationHarness(ConditionalTeaching):
             if ctx.get("requires_mastery"):
                 record_understanding(task, ctx.get("understanding", "unknown"))
             ctx["check_question"] = result.followup_question or "请换一个应用场景，解释你的判断与局限。"
+            if self.judgments is not None:
+                from agent_service.judgment_grading import bind_standard
+                bind_standard(task, ctx["check_question"], result.followup_scoring_spec if result.followup_question else None)
         if mastered:
             self._publish(sid, rid, rev, result.feedback + "\n\n这次理解检查已通过。",
                           stage="mastered", task_status="completed", draft=True,

@@ -1,0 +1,587 @@
+{
+  "experiment": "jev-harness-integration-1",
+  "planned": 116,
+  "executed": 116,
+  "missing": [],
+  "groups": {
+    "dialogue/baseline": {
+      "count": 31,
+      "passed": 30,
+      "failed": [
+        "A017-internal-material/baseline"
+      ],
+      "median_ms": 2487.601,
+      "range_ms": [
+        1555.385,
+        8361.673
+      ],
+      "logical_calls": 63,
+      "http_requests": 63,
+      "jev_http_requests": 0,
+      "reported_usages": 63,
+      "calls_missing_usage": 0,
+      "input_tokens": 273895,
+      "output_tokens": 15876,
+      "known_cost_usd": [
+        0.012489222,
+        0.024978444
+      ],
+      "cost_complete": true,
+      "judgments": 0,
+      "applied": 0,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "dialogue/jev": {
+      "count": 31,
+      "passed": 31,
+      "failed": [],
+      "median_ms": 4763.92,
+      "range_ms": [
+        1644.533,
+        11216.075
+      ],
+      "logical_calls": 93,
+      "http_requests": 93,
+      "jev_http_requests": 31,
+      "reported_usages": 78,
+      "calls_missing_usage": 15,
+      "input_tokens": 313672,
+      "output_tokens": 24377,
+      "known_cost_usd": [
+        0.016658256,
+        0.032126442
+      ],
+      "cost_complete": false,
+      "judgments": 31,
+      "applied": 1,
+      "partial_adoption": 0,
+      "fallback": 30,
+      "reasons": {
+        "reserved_or_mixed": 5,
+        "llm_reserved_or_conflict": 7,
+        "uncertain_judgment": 3,
+        "timeout": 1,
+        "connection_failed": 14
+      },
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "memory/jev": {
+      "count": 6,
+      "passed": 5,
+      "failed": [
+        "memory-duplicates/jev"
+      ],
+      "median_ms": 1548.858,
+      "range_ms": [
+        1255.187,
+        2915.062
+      ],
+      "logical_calls": 6,
+      "http_requests": 6,
+      "jev_http_requests": 6,
+      "reported_usages": 6,
+      "calls_missing_usage": 0,
+      "input_tokens": 6832,
+      "output_tokens": 947,
+      "known_cost_usd": [
+        0.000286944,
+        0.000286944
+      ],
+      "cost_complete": true,
+      "judgments": 6,
+      "applied": 6,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 6,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "memory/baseline": {
+      "count": 6,
+      "passed": 5,
+      "failed": [
+        "memory-disambiguation/baseline"
+      ],
+      "median_ms": 661.297,
+      "range_ms": [
+        393.199,
+        1193.205
+      ],
+      "logical_calls": 6,
+      "http_requests": 6,
+      "jev_http_requests": 0,
+      "reported_usages": 6,
+      "calls_missing_usage": 0,
+      "input_tokens": 2686,
+      "output_tokens": 98,
+      "known_cost_usd": [
+        0.000424068,
+        0.000848136
+      ],
+      "cost_complete": true,
+      "judgments": 0,
+      "applied": 0,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 5,
+      "false_selected": 1,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "source/jev": {
+      "count": 6,
+      "passed": 6,
+      "failed": [],
+      "median_ms": 1865.921,
+      "range_ms": [
+        1379.87,
+        2307.382
+      ],
+      "logical_calls": 6,
+      "http_requests": 6,
+      "jev_http_requests": 6,
+      "reported_usages": 6,
+      "calls_missing_usage": 0,
+      "input_tokens": 5780,
+      "output_tokens": 606,
+      "known_cost_usd": [
+        0.00024276,
+        0.00024276
+      ],
+      "cost_complete": true,
+      "judgments": 6,
+      "applied": 6,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 6,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "source/baseline": {
+      "count": 6,
+      "passed": 6,
+      "failed": [],
+      "median_ms": 1498.408,
+      "range_ms": [
+        1062.353,
+        1646.214
+      ],
+      "logical_calls": 6,
+      "http_requests": 6,
+      "jev_http_requests": 0,
+      "reported_usages": 6,
+      "calls_missing_usage": 0,
+      "input_tokens": 3113,
+      "output_tokens": 262,
+      "known_cost_usd": [
+        0.001593372,
+        0.003186744
+      ],
+      "cost_complete": true,
+      "judgments": 0,
+      "applied": 0,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 6,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "grading/jev": {
+      "count": 12,
+      "passed": 12,
+      "failed": [],
+      "median_ms": 5382.313,
+      "range_ms": [
+        4156.863,
+        9120.251
+      ],
+      "logical_calls": 26,
+      "http_requests": 26,
+      "jev_http_requests": 12,
+      "reported_usages": 26,
+      "calls_missing_usage": 0,
+      "input_tokens": 28314,
+      "output_tokens": 8832,
+      "known_cost_usd": [
+        0.005545704,
+        0.010412646
+      ],
+      "cost_complete": true,
+      "judgments": 12,
+      "applied": 10,
+      "partial_adoption": 0,
+      "fallback": 2,
+      "reasons": {
+        "llm_point_fallback": 2
+      },
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "grading/baseline": {
+      "count": 12,
+      "passed": 12,
+      "failed": [],
+      "median_ms": 2006.895,
+      "range_ms": [
+        1418.32,
+        2858.891
+      ],
+      "logical_calls": 12,
+      "http_requests": 12,
+      "jev_http_requests": 0,
+      "reported_usages": 12,
+      "calls_missing_usage": 0,
+      "input_tokens": 14504,
+      "output_tokens": 3081,
+      "known_cost_usd": [
+        0.00251892,
+        0.00503784
+      ],
+      "cost_complete": true,
+      "judgments": 0,
+      "applied": 0,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "evidence/jev": {
+      "count": 3,
+      "passed": 3,
+      "failed": [],
+      "median_ms": 1518.692,
+      "range_ms": [
+        1337.327,
+        2209.975
+      ],
+      "logical_calls": 3,
+      "http_requests": 3,
+      "jev_http_requests": 2,
+      "reported_usages": 3,
+      "calls_missing_usage": 0,
+      "input_tokens": 2013,
+      "output_tokens": 221,
+      "known_cost_usd": [
+        0.000492994,
+        0.000926306
+      ],
+      "cost_complete": true,
+      "judgments": 2,
+      "applied": 2,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    },
+    "evidence/baseline": {
+      "count": 3,
+      "passed": 3,
+      "failed": [],
+      "median_ms": 2020.229,
+      "range_ms": [
+        1698.613,
+        2421.658
+      ],
+      "logical_calls": 3,
+      "http_requests": 3,
+      "jev_http_requests": 0,
+      "reported_usages": 3,
+      "calls_missing_usage": 0,
+      "input_tokens": 1544,
+      "output_tokens": 267,
+      "known_cost_usd": [
+        0.001057716,
+        0.002115432
+      ],
+      "cost_complete": true,
+      "judgments": 0,
+      "applied": 0,
+      "partial_adoption": 0,
+      "fallback": 0,
+      "reasons": {},
+      "content_selections_passed": 0,
+      "false_selected": 0,
+      "missed_selected": 0,
+      "duplicate_selected": 0,
+      "false_mastery": 0
+    }
+  },
+  "node_semantics": [
+    {
+      "id": "memory-direct/jev",
+      "node": "memory_selection",
+      "status": "ok",
+      "scored": 2,
+      "correct": 2,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "memory-weak/jev",
+      "node": "memory_selection",
+      "status": "ok",
+      "scored": 2,
+      "correct": 2,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "memory-none/jev",
+      "node": "memory_selection",
+      "status": "ok",
+      "scored": 2,
+      "correct": 2,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "memory-duplicates/jev",
+      "node": "memory_selection",
+      "status": "ok",
+      "scored": 3,
+      "correct": 3,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "memory-injection/jev",
+      "node": "memory_selection",
+      "status": "ok",
+      "scored": 2,
+      "correct": 2,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "memory-disambiguation/jev",
+      "node": "memory_selection",
+      "status": "ok",
+      "scored": 3,
+      "correct": 3,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "source-direct/jev",
+      "node": "source_candidates",
+      "status": "ok",
+      "scored": 2,
+      "correct": 2,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "source-weak/jev",
+      "node": "source_candidates",
+      "status": "ok",
+      "scored": 2,
+      "correct": 2,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "source-none/jev",
+      "node": "source_candidates",
+      "status": "ok",
+      "scored": 2,
+      "correct": 2,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "source-duplicates/jev",
+      "node": "source_candidates",
+      "status": "ok",
+      "scored": 3,
+      "correct": 3,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "source-injection/jev",
+      "node": "source_candidates",
+      "status": "ok",
+      "scored": 2,
+      "correct": 2,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "source-official/jev",
+      "node": "source_candidates",
+      "status": "ok",
+      "scored": 3,
+      "correct": 3,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "grade-photosynthesis-correct/jev",
+      "node": "answer_points",
+      "status": "ok",
+      "scored": 5,
+      "correct": 5,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "grade-photosynthesis-paraphrase/jev",
+      "node": "answer_points",
+      "status": "ok",
+      "scored": 5,
+      "correct": 5,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "grade-photosynthesis-omission/jev",
+      "node": "answer_points",
+      "status": "ok",
+      "scored": 5,
+      "correct": 5,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "grade-photosynthesis-wrong/jev",
+      "node": "answer_points",
+      "status": "failed",
+      "scored": 0,
+      "correct": 0,
+      "uncertain": 0,
+      "errors": [],
+      "reason": "llm_point_fallback"
+    },
+    {
+      "id": "grade-photosynthesis-mixed/jev",
+      "node": "answer_points",
+      "status": "ok",
+      "scored": 5,
+      "correct": 5,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "grade-photosynthesis-self-report/jev",
+      "node": "answer_points",
+      "status": "ok",
+      "scored": 5,
+      "correct": 5,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "grade-rag-correct/jev",
+      "node": "answer_points",
+      "status": "ok",
+      "scored": 4,
+      "correct": 4,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "grade-rag-paraphrase/jev",
+      "node": "answer_points",
+      "status": "ok",
+      "scored": 4,
+      "correct": 4,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "grade-rag-omission/jev",
+      "node": "answer_points",
+      "status": "failed",
+      "scored": 0,
+      "correct": 0,
+      "uncertain": 0,
+      "errors": [],
+      "reason": "llm_point_fallback"
+    },
+    {
+      "id": "grade-rag-wrong/jev",
+      "node": "answer_points",
+      "status": "ok",
+      "scored": 4,
+      "correct": 4,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "grade-rag-mixed/jev",
+      "node": "answer_points",
+      "status": "ok",
+      "scored": 4,
+      "correct": 4,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "grade-rag-self-report/jev",
+      "node": "answer_points",
+      "status": "ok",
+      "scored": 4,
+      "correct": 4,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "evidence-supported/jev",
+      "node": "evidence_assessment",
+      "status": "ok",
+      "scored": 1,
+      "correct": 1,
+      "uncertain": 0,
+      "errors": []
+    },
+    {
+      "id": "evidence-insufficient/jev",
+      "node": "evidence_assessment",
+      "status": "ok",
+      "scored": 1,
+      "correct": 1,
+      "uncertain": 0,
+      "errors": []
+    }
+  ],
+  "limitations": [
+    "合成材料与临时数据库；日常 App 未启用。",
+    "对话分支的真实网页与知识写入被阻断；节点探针冻结非焦点准备和网页数据，不代表真实联网成功。",
+    "节点与整轮耗时分开统计；入口保留 LLM 检查，不预设提速。",
+    "已知回归样例，不是独立校准或生产置信度阈值验证。"
+  ],
+  "result": "FAIL"
+}

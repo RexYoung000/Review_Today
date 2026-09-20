@@ -1,0 +1,251 @@
+{"case": "A012-greeting", "variant": "baseline", "result": "PASS"}
+{"case": "A012-greeting", "variant": "jev", "result": "PASS"}
+{"case": "memory-direct", "variant": "jev", "result": "PASS"}
+{"case": "memory-direct", "variant": "baseline", "result": "PASS"}
+{"case": "grade-rag-correct", "variant": "baseline", "result": "PASS"}
+{"case": "grade-rag-correct", "variant": "jev", "result": "PASS"}
+{"case": "evidence-supported", "variant": "jev", "result": "PASS"}
+{"case": "evidence-supported", "variant": "baseline", "result": "FAIL"}
+{
+  "experiment": "jev-harness-integration-1",
+  "planned": 8,
+  "executed": 8,
+  "missing": [],
+  "groups": {
+    "dialogue/baseline": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 1751.506,
+      "range_ms": [
+        1751.506,
+        1751.506
+      ],
+      "logical_calls": 1,
+      "http_requests": 1,
+      "jev_http_requests": 0,
+      "reported_usages": 1,
+      "calls_missing_usage": 0,
+      "input_tokens": 6585,
+      "output_tokens": 293,
+      "known_cost_usd": [
+        0.00022275,
+        0.0004455
+      ],
+      "judgments": 0,
+      "applied": 0,
+      "fallback": 0,
+      "reasons": {},
+      "false_selected": 0,
+      "missed_selected": 0,
+      "false_mastery": 0
+    },
+    "dialogue/jev": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 4103.132,
+      "range_ms": [
+        4103.132,
+        4103.132
+      ],
+      "logical_calls": 2,
+      "http_requests": 2,
+      "jev_http_requests": 1,
+      "reported_usages": 2,
+      "calls_missing_usage": 0,
+      "input_tokens": 8101,
+      "output_tokens": 613,
+      "known_cost_usd": [
+        0.000267822,
+        0.000471972
+      ],
+      "judgments": 1,
+      "applied": 0,
+      "fallback": 1,
+      "reasons": {
+        "uncertain_judgment": 1
+      },
+      "false_selected": 0,
+      "missed_selected": 0,
+      "false_mastery": 0
+    },
+    "memory/jev": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 2392.2,
+      "range_ms": [
+        2392.2,
+        2392.2
+      ],
+      "logical_calls": 1,
+      "http_requests": 1,
+      "jev_http_requests": 1,
+      "reported_usages": 1,
+      "calls_missing_usage": 0,
+      "input_tokens": 1022,
+      "output_tokens": 133,
+      "known_cost_usd": [
+        4.2924e-05,
+        4.2924e-05
+      ],
+      "judgments": 1,
+      "applied": 1,
+      "fallback": 0,
+      "reasons": {},
+      "false_selected": 0,
+      "missed_selected": 0,
+      "false_mastery": 0
+    },
+    "memory/baseline": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 710.17,
+      "range_ms": [
+        710.17,
+        710.17
+      ],
+      "logical_calls": 1,
+      "http_requests": 1,
+      "jev_http_requests": 0,
+      "reported_usages": 1,
+      "calls_missing_usage": 0,
+      "input_tokens": 426,
+      "output_tokens": 17,
+      "known_cost_usd": [
+        7.41e-05,
+        0.0001482
+      ],
+      "judgments": 0,
+      "applied": 0,
+      "fallback": 0,
+      "reasons": {},
+      "false_selected": 0,
+      "missed_selected": 0,
+      "false_mastery": 0
+    },
+    "grading/baseline": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 2536.91,
+      "range_ms": [
+        2536.91,
+        2536.91
+      ],
+      "logical_calls": 1,
+      "http_requests": 1,
+      "jev_http_requests": 0,
+      "reported_usages": 1,
+      "calls_missing_usage": 0,
+      "input_tokens": 1068,
+      "output_tokens": 298,
+      "known_cost_usd": [
+        0.000339,
+        0.000678
+      ],
+      "judgments": 0,
+      "applied": 0,
+      "fallback": 0,
+      "reasons": {},
+      "false_selected": 0,
+      "missed_selected": 0,
+      "false_mastery": 0
+    },
+    "grading/jev": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 6001.266,
+      "range_ms": [
+        6001.266,
+        6001.266
+      ],
+      "logical_calls": 2,
+      "http_requests": 2,
+      "jev_http_requests": 1,
+      "reported_usages": 2,
+      "calls_missing_usage": 0,
+      "input_tokens": 2167,
+      "output_tokens": 867,
+      "known_cost_usd": [
+        0.000592482,
+        0.001130532
+      ],
+      "judgments": 1,
+      "applied": 1,
+      "fallback": 0,
+      "reasons": {},
+      "false_selected": 0,
+      "missed_selected": 0,
+      "false_mastery": 0
+    },
+    "evidence/jev": {
+      "count": 1,
+      "passed": 1,
+      "failed": [],
+      "median_ms": 1398.843,
+      "range_ms": [
+        1398.843,
+        1398.843
+      ],
+      "logical_calls": 1,
+      "http_requests": 1,
+      "jev_http_requests": 1,
+      "reported_usages": 1,
+      "calls_missing_usage": 0,
+      "input_tokens": 707,
+      "output_tokens": 57,
+      "known_cost_usd": [
+        2.9694e-05,
+        2.9694e-05
+      ],
+      "judgments": 1,
+      "applied": 1,
+      "fallback": 0,
+      "reasons": {},
+      "false_selected": 0,
+      "missed_selected": 0,
+      "false_mastery": 0
+    },
+    "evidence/baseline": {
+      "count": 1,
+      "passed": 0,
+      "failed": [
+        "evidence-supported/baseline"
+      ],
+      "median_ms": 1994.779,
+      "range_ms": [
+        1994.779,
+        1994.779
+      ],
+      "logical_calls": 1,
+      "http_requests": 1,
+      "jev_http_requests": 0,
+      "reported_usages": 1,
+      "calls_missing_usage": 0,
+      "input_tokens": 473,
+      "output_tokens": 92,
+      "known_cost_usd": [
+        0.000331012,
+        0.000662024
+      ],
+      "judgments": 0,
+      "applied": 0,
+      "fallback": 0,
+      "reasons": {},
+      "false_selected": 0,
+      "missed_selected": 0,
+      "false_mastery": 0
+    }
+  },
+  "limitations": [
+    "合成材料与临时数据库；日常 App 未启用。",
+    "对话分支的真实网页与知识写入被阻断；节点探针冻结非焦点准备和网页数据，不代表真实联网成功。",
+    "节点与整轮耗时分开统计；入口保留 LLM 检查，不预设提速。",
+    "已知回归样例，不是独立校准或生产置信度阈值验证。"
+  ],
+  "result": "FAIL"
+}
