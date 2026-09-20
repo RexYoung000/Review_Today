@@ -1,0 +1,44 @@
+{
+  "version": "jev-boundary-ablation-1",
+  "candidate": "resource",
+  "eligible_single_factors": [
+    "resource"
+  ],
+  "evidence": [
+    {
+      "path": "docs/evidence/2026-09-20-jev-boundaries/regression-01.jsonl",
+      "sha256": "3435661c0fb091ee76200a92ec018db1f15c71a16c6a6b40dda1191c03d2eace"
+    }
+  ],
+  "rules_sha256": "99fe2940f44180b3d3ea96e8ec56e2fdf96dd93def91284519715976f471179f",
+  "validation_sha256": "2b0ca638d68d3433048893e0d9a940b62397046157c6191cb201c9d57338e0ac",
+  "validation_status": "not_run",
+  "candidate_regression": {
+    "planned": 55,
+    "valid": 55,
+    "exact": 45,
+    "label_errors": 11,
+    "errors_by_field": {
+      "conversation_kind": 2,
+      "conversation_repair": 0,
+      "knowledge_request": 3,
+      "programming_boundary": 0,
+      "progress": 3,
+      "resource_boundary": 3,
+      "web_scope": 0
+    },
+    "risk_cases": 8,
+    "review_required": 2,
+    "unflagged_wrong": 8,
+    "unflagged_risk_cases": 6,
+    "requests": 55,
+    "median_ms": 386.711,
+    "min_ms": 305.45,
+    "max_ms": 613.342,
+    "input_tokens": 123650,
+    "output_tokens": 20137,
+    "cost_complete": true,
+    "known_cost_usd": 0.0051933
+  },
+  "reason": "Apply frozen target-error, exact-case, total-error and no-new-risk criteria; no confidence threshold."
+}
