@@ -136,6 +136,10 @@ class HarnessJudgmentTests(unittest.TestCase):
                                              usage={"input_tokens": 10, "output_tokens": 5}))
 
     def model(self, system, user, schema, **kwargs):
+        if schema.__name__ == "QuestionQualityReview":
+            self.calls.append((schema, json.loads(user)))
+            return schema(minimum_answer="检索资料，再用于生成。", issues=[], **{
+                k: "pass" for k in schema.model_fields if k not in {"minimum_answer", "issues"}})
         if schema is IntentRemainder:
             self.calls.append((schema, json.loads(user)))
             fields = self.decision.model_dump(exclude=OWNED)

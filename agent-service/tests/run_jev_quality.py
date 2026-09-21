@@ -61,6 +61,7 @@ def main(argv=None):
     parser.add_argument("--jev-key-stdin", action="store_true")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--case", action="append", default=[], help="Run only these fixed nodes; omit generated flows.")
+    parser.add_argument("--review", action="store_true", help="Exercise the mandatory LLM review with two previous misses and a good control.")
     args = parser.parse_args(argv)
     if args.live and (not args.output or args.output.exists()):
         parser.error("live requires a new output file")
@@ -70,13 +71,25 @@ def main(argv=None):
         os.environ["REVIEW_TODAY_HARNESS_DB"] = str(Path(directory) / "unused.sqlite3")
         os.environ["REVIEW_TODAY_JEV_TEST"] = "0"
         cases = fixtures()
+        if args.review:
+            cases = [c for c in cases if c["id"] in {"question-good", "question-unasked-materials"}]
+            from agent_service.schemas import ScoringSpec
+            cases.append(dict(id="question-native-rag", kind="question",
+                source="RAG 先检索与问题相关的资料，再将资料作为上下文提供给模型生成回答。资料质量合适时可能提高准确性，但不能保证答案一定正确。",
+                question="按这段笔记，RAG 的两个核心动作分别是什么？先后顺序是怎样的？",
+                spec=ScoringSpec(learning_goal="确认能否说出 RAG 的两个核心动作及其固定先后顺序",
+                    must_cover=["两个核心动作是检索和生成", "顺序是先检索、后生成", "检索到的是与问题相关的资料，并被作为上下文提供给模型"],
+                    common_misconceptions=["认为先生成回答再检索资料"], evidence="RAG 先检索与问题相关的资料，再将资料作为上下文提供给模型生成回答。",
+                    order_rules="必须体现先检索、后生成").model_dump(), failure="required_2"))
         if len(args.case) != len(set(args.case)) or set(args.case) - {c["id"] for c in cases}:
             parser.error("unknown or duplicate case")
         if args.case:
             cases = [c for c in cases if c["id"] in args.case]
-        flow_ids = [] if args.case else ["flow-capture", "flow-question-repair", "flow-teaching"]
+        flow_ids = [] if args.case or args.review else ["flow-capture", "flow-question-repair", "flow-teaching"]
+        planned = (1 if args.review else 2) * len(cases) + len(flow_ids)
         if not args.live:
-            print(json.dumps(dict(result="VALID", cases=len(cases), paired_nodes=2 * len(cases), flows=len(flow_ids))))
+            print(json.dumps(dict(result="VALID", cases=len(cases), paired_nodes=0 if args.review else 2 * len(cases),
+                                  flows=len(cases) if args.review else len(flow_ids))))
             return 0
         key = sys.stdin.readline().strip() if args.jev_key_stdin else os.getenv("TYPESAFE_API_KEY", "").strip()
         if not key:
@@ -90,7 +103,8 @@ def main(argv=None):
         from agent_service.harness_store import HarnessStore
         from agent_service.judgments import JudgmentEngine
         from agent_service.jev_client import JevClient
-        from agent_service.judgment_quality import (capture_request, capture_quality, question_request, checked_question, QUALITY_VERSION, UNTRUSTED)
+        from agent_service.judgment_quality import (capture_request, capture_quality, question_request, checked_question,
+                                                   QUALITY_VERSION, QUESTION_QUALITY_VERSION, UNTRUSTED)
         from agent_service.judgment_grading import standard_for
         from agent_service.schemas import ExtractPayload, ScoringSpec, SessionMessageRequest
         from tests.case_library.recording import code_version
@@ -106,11 +120,13 @@ def main(argv=None):
                 with lock:
                     file.write(json.dumps(row, ensure_ascii=False) + "\n")
                     file.flush()
-            write(dict(type="header", version=QUALITY_VERSION, cases=cases, code=code_version(), prices=prices,
+            write(dict(type="header", version=QUESTION_QUALITY_VERSION if args.review else QUALITY_VERSION,
+                       question_version=QUESTION_QUALITY_VERSION, mode="independent_review" if args.review else "comparison",
+                       cases=cases, code=code_version(), prices=prices,
                        started_at=datetime.now(timezone.utc).isoformat(),
                        models=dict(provider=config.PROVIDER, coach=config.COACH_MODEL),
                        limitations=["Synthetic temporary databases; no native persistence, no mastery/schedule changes.",
-                                    "Paired atomic checks use the same material and criteria; not a daily-App speed comparison.",
+                                    "The comparison mode pairs identical materials/criteria; --review exercises the actual combined gate. Neither is a daily-App speed comparison.",
                                     "The full suite includes three production check/repair flows; --case omits them. Capture has no native acknowledgement."]))
             def setup(identity, enabled=True):
                 client = JevClient(key) if enabled else None
@@ -152,16 +168,26 @@ def main(argv=None):
                 write(row)
                 print(identity, row["automatic_result"], row["elapsed_ms"], flush=True)
             for i, case in enumerate(cases):
-                for variant in (("llm", "jev") if i % 2 == 0 else ("jev", "llm")):
+                for variant in (("review",) if args.review else (("llm", "jev") if i % 2 == 0 else ("jev", "llm"))):
                     identity = case["id"] + "-" + variant
-                    h, sid, client = setup(identity, variant == "jev")
+                    h, sid, client = setup(identity, variant != "llm")
                     started, checks, extra = time.perf_counter(), {}, {}
                     try:
                         args_run = active(h, sid)
                         request = (capture_request(case["source"], ExtractPayload.model_validate(case["draft"]), "zh", task_id="synthetic", repaired=False)
                             if case["kind"] == "capture" else question_request(case["question"], ScoringSpec.model_validate(case["spec"]), case["source"], owner="synthetic"))
                         with patch.object(conversation, "parse_model", side_effect=observed(identity)):
-                            if variant == "jev":
+                            if variant == "review":
+                                text, spec = checked_question(*args_run, case["question"], ScoringSpec.model_validate(case["spec"]),
+                                                              case["source"], owner="synthetic-review")
+                                run = h.store.get(sid)["runs"][args_run[2]]
+                                quality = run["quality_checks"]
+                                labels = quality[0]["labels"]
+                                checks = dict(review_executed=any(c["node"] == "question_quality_review" for c in run["model_calls"]),
+                                    final_passed=quality[-1]["passed"],
+                                    original_expected=labels.get(case["failure"]) == "needs_fix" if case["failure"] else all(v == "pass" for v in labels.values()))
+                                extra = dict(request=request.model_dump(), question=text, scoring_spec=spec.model_dump())
+                            elif variant == "jev":
                                 result = h.judgments.judge(*args_run, request)
                                 labels, valid = result.labels, result.status == "ok"
                             else:
@@ -169,10 +195,11 @@ def main(argv=None):
                                 result = h._call(*args_run[1:], "quality_comparison", UNTRUSTED + "\n逐项回答指定检查，不修正材料。",
                                     json.dumps(request.payload(), ensure_ascii=False), schema)
                                 labels, valid = result.model_dump(), "unsure" not in result.model_dump().values()
-                        checks = dict(valid=valid, semantic_match=valid and (labels.get(case["failure"]) == "needs_fix" if case["failure"] else all(v == "pass" for v in labels.values())))
-                        extra = dict(request=request.model_dump(), labels=labels)
+                        if variant != "review":
+                            checks = dict(valid=valid, semantic_match=valid and (labels.get(case["failure"]) == "needs_fix" if case["failure"] else all(v == "pass" for v in labels.values())))
+                            extra = dict(request=request.model_dump(), labels=labels)
                     except Exception as exc:
-                        extra = dict(error_type=type(exc).__name__, code=getattr(exc, "code", "unavailable"))
+                        extra = dict(error_type=type(exc).__name__, code=getattr(exc, "code", str(exc) if str(exc).startswith("RT.") else "unavailable"))
                     finally:
                         finish(identity, h, sid, started, checks, extra)
                         if client:
@@ -210,7 +237,7 @@ def main(argv=None):
                 finally:
                     finish(identity, h, sid, started, checks, extra)
                     client.close()
-            summary = dict(type="summary", planned=2 * len(cases) + len(flow_ids), recorded=len(rows),
+            summary = dict(type="summary", planned=planned, recorded=len(rows),
                 passed=sum(r["automatic_result"] == "PASS" for r in rows), http_requests=sum(r["http_requests"] for r in rows),
                 missing_usage=sum(r["missing_usage"] for r in rows),
                 known_cost_usd=[round(sum(r["known_cost_usd"][i] for r in rows), 9) for i in (0, 1)])

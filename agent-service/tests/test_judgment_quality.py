@@ -11,7 +11,8 @@ from agent_service import conversation
 from agent_service.capture import run_capture, semantic_validate_node
 from agent_service.conversation_store import Superseded
 from agent_service.judgment_grading import ScoredConversationOutput, ScoredProblemCoachBundle, standard_for
-from agent_service.judgment_quality import capture_quality, checked_question, RepairedQuestion, question_request
+from agent_service.judgment_quality import (capture_quality, checked_question, RepairedQuestion, question_request,
+    QuestionQualityOverview, QUESTION_QUALITY_VERSION)
 from agent_service.schemas import ExtractPayload, SemanticVerdict, RiskVerdict
 
 SOURCE = "植物利用光能，把二氧化碳和水转化为有机物，并释放氧气。"
@@ -27,6 +28,7 @@ class QualityTests(unittest.TestCase):
         self.bad = self.good.model_copy(deep=True)
         self.bad.knowledge[0].explanation = "1. 植物直接从土壤吸收有机物。\n2. 植物不需要光能。"
         self.repair_good, self.extract_bad, self.fallback_unsure = True, False, False
+        self.review_labels = {}
         self.extra_calls = []
         patched = patch.object(conversation, "parse_model", side_effect=self.model)
         patched.start()
@@ -41,13 +43,18 @@ class QualityTests(unittest.TestCase):
             return self.bad if self.extract_bad else self.good
         if schema is SemanticVerdict:
             return SemanticVerdict(ok=True)
+        if schema is QuestionQualityOverview:
+            return QuestionQualityOverview(ok=True, minimum_answer="检索后生成")
         if schema is RiskVerdict:
             return RiskVerdict(risk=False, reason="合成稳定知识")
-        if schema.__name__ == "QualityJudgmentFallback":
-            return schema(**{k: "unsure" if self.fallback_unsure else "pass" for k in schema.model_fields})
+        if schema.__name__ == "QuestionQualityReview":
+            return schema(minimum_answer="检索相关资料，再作为上下文用于生成。", issues=[], **{
+                k: "unsure" if self.fallback_unsure else self.review_labels.get(k, "pass")
+                for k in schema.model_fields if k not in {"minimum_answer", "issues"}})
         if schema is RepairedQuestion:
             if self.repair_good:
                 self.f.labels["scope"] = "pass"
+                self.review_labels.clear()
             return RepairedQuestion(question="请解释 RAG 的两个主要步骤。", scoring_spec=fixtures.rubric())
         return self.f.model(system, user, schema, **kwargs)
 
@@ -107,14 +114,55 @@ class QualityTests(unittest.TestCase):
         self.assertEqual(len(prompts), 1)
         self.assertIn("原文", prompts[0])
 
-    def test_question_partial_fallback_asks_only_unsure_fields(self):
+    def test_question_review_also_covers_passed_fields_without_a_second_fallback(self):
         args = self.active()
         self.f.labels["scope"] = "unsure"
         text, spec = checked_question(*args, "RAG 如何工作？", fixtures.rubric(), fixtures.LESSON, owner="a")
-        pending = next(json.loads(p) for s, p in self.extra_calls if s.__name__ == "QualityJudgmentFallback")
-        self.assertEqual(list(pending["questions"]), ["scope"])
+        reviews = [json.loads(p) for s, p in self.extra_calls if s.__name__ == "QuestionQualityReview"]
+        self.assertEqual(len(reviews), 1)
+        self.assertEqual(set(reviews[0]["questions"]), {"answerable", "scope", "grounded", "required_0", "required_1"})
+        self.assertNotIn("jev", reviews[0])
+        self.assertNotIn("probabilities", json.dumps(reviews))
         self.assertEqual(text, "RAG 如何工作？")
         self.assertEqual(spec, fixtures.rubric())
+
+    def test_jev_pass_cannot_skip_llm_rejection_and_repaired_question_is_rechecked(self):
+        self.review_labels["scope"] = "needs_fix"
+        task = self.f.teach()
+        run = next(iter(self.f.state()["runs"].values()))
+        checks = run["quality_checks"]
+        self.assertEqual(run["status"], "completed")
+        self.assertEqual([q["passed"] for q in checks], [False, True])
+        self.assertTrue(all(v == "pass" for v in checks[0]["review"]["jev"].values()))
+        self.assertEqual(checks[0]["review"]["llm"]["scope"], "needs_fix")
+        self.assertEqual(sum(s.__name__ == "QuestionQualityReview" for s, _ in self.extra_calls), 2)
+        self.assertEqual(sum(s is RepairedQuestion for s, _ in self.extra_calls), 1)
+        self.assertEqual(task["context"]["check_question"], "请解释 RAG 的两个主要步骤。")
+        self.assertTrue(all(q["version"] == QUESTION_QUALITY_VERSION for q in checks))
+
+    def test_llm_uncertainty_blocks_publication_even_when_jev_passes(self):
+        self.fallback_unsure = True
+        self.f.teach()
+        data = self.f.state()
+        run = next(iter(data["runs"].values()))
+        self.assertEqual(run["error_code"], "RT.QUESTION.QUALITY_UNRESOLVED")
+        self.assertFalse(any(m["role"] == "coach" for m in data["messages"]))
+        self.assertFalse(any(q["passed"] for q in run["quality_checks"]))
+
+    def test_llm_failure_never_falls_back_to_jev_only_publication(self):
+        from agent_service.call_errors import ModelCallError
+        def fail_review(system, user, schema, **kw):
+            if schema.__name__ == "QuestionQualityReview":
+                raise ModelCallError("AUTH")
+            return self.model(system, user, schema, **kw)
+        with patch.object(conversation, "parse_model", side_effect=fail_review):
+            self.f.teach()
+        data = self.f.state()
+        run = next(iter(data["runs"].values()))
+        self.assertEqual(run["status"], "retryable_failed")
+        self.assertFalse(any(m["role"] == "coach" for m in data["messages"]))
+        self.assertNotIn("check_standard", data["tasks"][data["active_task_id"]]["context"])
+        self.assertFalse(run.get("quality_checks"))
 
     def test_question_failure_and_budget_skip_use_llm_not_pass_or_negative(self):
         for reason in ("authentication", "budget"):
@@ -161,6 +209,19 @@ class QualityTests(unittest.TestCase):
         self.assertFalse(any(m["role"] == "coach" for m in data["messages"]))
         self.assertNotIn("check_standard", data["tasks"][data["active_task_id"]]["context"])
         self.assertEqual(sum(s is RepairedQuestion for s, _ in self.extra_calls), 1)
+        self.assertTrue(all(q["review"]["llm"]["scope"] == "pass"
+                            and q["review"]["jev"]["scope"] == "needs_fix" for q in run["quality_checks"]))
+
+    def test_exhausted_review_budget_does_not_release_a_question(self):
+        from agent_service.run_accounting import RunBudgetError, MODEL_ATTEMPTS, begin
+        args = self.active()
+        with self.f.store.transaction(self.f.sid) as data:
+            begin(data["runs"][args[2]])
+            data["runs"][args[2]]["execution_budget"]["attempts"] = MODEL_ATTEMPTS
+        with self.assertRaises(RunBudgetError):
+            checked_question(*args, "RAG 如何工作？", fixtures.rubric(), fixtures.LESSON, owner="a")
+        run = self.f.state()["runs"][args[2]]
+        self.assertFalse(run.get("quality_checks") or self.extra_calls or self.f.http_calls)
 
     def test_old_or_open_question_does_not_create_a_new_rubric(self):
         args = self.active()
@@ -205,8 +266,8 @@ class QualityTests(unittest.TestCase):
         spec = fixtures.rubric().model_copy(update={"must_cover": ["检索"] * 126})
         checked_question(*args, "RAG 如何工作？", spec, fixtures.LESSON, owner="a")
         self.assertFalse(self.f.http_calls)
-        prompt = next(json.loads(p) for s, p in self.extra_calls if s is SemanticVerdict)
-        self.assertEqual(len(prompt["scoring_spec"]["must_cover"]), 126)
+        prompt = next(json.loads(p) for s, p in self.extra_calls if s is QuestionQualityOverview)
+        self.assertEqual(len(prompt["state"]["scoring_spec"]["must_cover"]), 126)
         self.assertEqual(self.f.state()["runs"][args[2]]["quality_checks"][-1]["reason"], "question_limit")
 
     def test_retry_repeats_failed_repair_instead_of_replaying_bad_cached_repair(self):
@@ -257,6 +318,39 @@ class QualityTests(unittest.TestCase):
         run = self.f.state()["runs"][args[2]]
         self.assertFalse(self.extra_calls or run.get("quality_checks") or run.get("judgments"))
 
+    def test_cancel_during_independent_review_drops_late_pass_and_does_not_repair(self):
+        args = self.active()
+        reviewing = threading.Event()
+        def delayed_review(system, user, schema, **kw):
+            if schema.__name__ == "QuestionQualityReview":
+                reviewing.set()
+                time.sleep(.15)
+            return self.model(system, user, schema, **kw)
+        stopper = threading.Thread(target=lambda: (reviewing.wait(1), self.f.control(args[2], "stop")))
+        stopper.start()
+        try:
+            with patch.object(conversation, "parse_model", side_effect=delayed_review):
+                with self.assertRaises(Superseded):
+                    checked_question(*args, "RAG 如何工作？", fixtures.rubric(), fixtures.LESSON, owner="a")
+        finally:
+            stopper.join()
+            time.sleep(.18)
+        run = self.f.state()["runs"][args[2]]
+        self.assertFalse(run.get("quality_checks"))
+        self.assertFalse(any(s is RepairedQuestion for s, _ in self.extra_calls))
+
+    def test_review_cache_binds_all_inputs_rule_version_and_owner(self):
+        args = self.active()
+        variants = [dict(text="RAG 如何工作？", spec=fixtures.rubric(), reference=fixtures.LESSON, owner="a")]
+        variants += [dict(variants[0]), dict(variants[0], text="说明流程"),
+                     dict(variants[0], reference=fixtures.LESSON + "补充"), dict(variants[0], owner="b"),
+                     dict(variants[0], spec=fixtures.rubric().model_copy(update={"must_cover": ["检索"]}))]
+        for value in variants:
+            checked_question(*args, **value)
+        with patch("agent_service.judgment_quality.QUESTION_QUALITY_VERSION", "next-review"):
+            checked_question(*args, **variants[0])
+        self.assertEqual(sum(s.__name__ == "QuestionQualityReview" for s, _ in self.extra_calls), 6)
+
     def test_answer_followup_checked_without_sending_student_answer_to_quality(self):
         self.f.teach()
         self.f.labels["misconception"] = "present"
@@ -268,6 +362,9 @@ class QualityTests(unittest.TestCase):
         quality_inputs = [p["state"] for p in self.f.http_calls if "question" in p["state"] and "reference" in p["state"]]
         self.assertTrue(quality_inputs)
         self.assertNotIn(answer, json.dumps(quality_inputs, ensure_ascii=False))
+        review_inputs = [p for s, p in self.extra_calls if s.__name__ == "QuestionQualityReview"]
+        self.assertTrue(review_inputs)
+        self.assertNotIn(answer, "\n".join(review_inputs))
         task = self.f.state()["tasks"][self.f.state()["active_task_id"]]
         self.assertIsNotNone(standard_for(task, task["context"]["check_question"]))
 

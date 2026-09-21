@@ -1,0 +1,1396 @@
+{
+  "recorded_at": "2026-09-21T15:18:20.873966+00:00",
+  "note": "New synthetic native session only; original seven sessions are represented only by unchanged message hashes. No native card commit or formal review writes in this batch.",
+  "source_sha256": {
+    "agent-service/agent_service/judgment_quality.py": "7ce5bdab4604b12718ed53c3f2b247e5f17d966a542f120f44158b0f6d1948b5",
+    "agent-service/agent_service/conversation.py": "54ed8853a4700f70008017e2dd241b52d209a5bf661cdf13304a742f4f3bdb39"
+  },
+  "checks": {
+    "old_messages_unchanged": true,
+    "review_before_publication": true,
+    "independent_review_called": true,
+    "jev_pass_also_reviewed": true,
+    "minimal_answer_passed": true,
+    "exactly_two_required_points": true,
+    "bound_standard_used": true,
+    "no_unused_next_question_review": true
+  },
+  "old_history_sha256": {
+    "bb78635c-8777-48e2-b0b7-8cd284fea279": "1598d62259abad5cd06de0ecfa4bf162742fb98816d0ab48a2eeffc82c1e88d6",
+    "781376d1-caee-4a36-b1b0-886b9fc08c81": "151ce11e172ce2e6cf187f9019a301cb0ffc28dcf000dfbeff0e1c77790fd770",
+    "4f0a3204-c1ad-437b-825f-c25187a41222": "e79371c3a11215c1bd4f820b9f21958218027d580976c7292cbd7eb6d2dca7f1",
+    "c3b6c7bc-af04-46b3-877c-1d1cd2aa6e24": "4d5d8d6aecd667245a46fd90a4d85c7d1ee9ff88e27b7e8bebe79c93da9953d0",
+    "63f5bbad-532d-479e-b613-b2cfe44c6b81": "fc26b4f52562ff91fb1ab2812770457974795265843e6065b6b54a26cff3de1e",
+    "9cad9b4d-1b05-4463-8aac-2e3894760e13": "83ef182eb07f2cb3c6d948de333ac5eba08cc36b7ba27c2f648e81e37bdf72d4",
+    "3218f0ae-c153-49cb-852a-3b0a8095b707": "f785c7e832c0da300c9c2884faf81360c5a75539c72f031d466c983da840ffff"
+  },
+  "round_metrics": [
+    {
+      "run_id": "d0e7053b-26cd-4cc4-a7a0-ce74a2535ce2",
+      "elapsed_ms": 20474,
+      "http_requests": 8,
+      "calls_by_node": {
+        "jev_entry": 1,
+        "intent": 1,
+        "teaching_preparation": 1,
+        "jev_memory_selection": 1,
+        "memory_selection": 1,
+        "lesson": 1,
+        "jev_question_quality": 1,
+        "question_quality_review": 1
+      },
+      "known_cost_usd": [
+        0.002006622,
+        0.003747048
+      ],
+      "review_durations_ms": [
+        1008
+      ],
+      "review_known_cost_usd": [
+        0.000282102,
+        0.000564204
+      ],
+      "missing_usage": 1
+    },
+    {
+      "run_id": "6b7c267f-6b9f-42a1-8b04-125d35c71ee2",
+      "elapsed_ms": 10974,
+      "http_requests": 4,
+      "calls_by_node": {
+        "jev_entry": 1,
+        "intent": 1,
+        "jev_answer_points": 1,
+        "evaluate": 1
+      },
+      "known_cost_usd": [
+        0.00130329,
+        0.002351514
+      ],
+      "review_durations_ms": [],
+      "review_known_cost_usd": [
+        0,
+        0
+      ],
+      "missing_usage": 0
+    }
+  ],
+  "session": {
+    "session_id": "69374da3-08c4-4997-a007-c0f3dcdf781c",
+    "mode": "auto",
+    "paused": false,
+    "active_task_id": "876ff347-ae2b-43c2-bf30-31aa8a52446d",
+    "messages": [
+      {
+        "message_id": "cf528486-6399-45b7-82d2-2c24fc8c546a",
+        "role": "user",
+        "content": "请直接教我下面这段 RAG 笔记，并出一道理解检查题。检查题只问两个核心动作和先后顺序。只用给定材料，不要联网：RAG 先检索与问题相关的资料，再将资料作为上下文提供给模型生成回答。资料质量合适时可能提高准确性，但不能保证答案一定正确。",
+        "content_type": "text",
+        "created_at": "2026-09-21T15:15:33.163588+00:00",
+        "run_id": "d0e7053b-26cd-4cc4-a7a0-ce74a2535ce2",
+        "task_id": null,
+        "context": {
+          "continuation_candidates": [
+            {
+              "owner_version": 1,
+              "content_version": 2,
+              "policy_version": 0,
+              "task_id": "b4c5976f-f249-4d90-93d2-5645c98b2766",
+              "session_id": "63f5bbad-532d-479e-b613-b2cfe44c6b81"
+            },
+            {
+              "owner_version": 1,
+              "task_id": "fe4b01c9-25c7-4fb0-be72-cdbe2ef88980",
+              "policy_version": 0,
+              "session_id": "3218f0ae-c153-49cb-852a-3b0a8095b707",
+              "content_version": 0
+            }
+          ],
+          "summary": "",
+          "recent_messages": [],
+          "knowledge_summaries": [],
+          "handoff": null,
+          "memory_lookup_available": true,
+          "memory_candidates": [
+            {
+              "excerpt": "## 学习地图\n\n这段 RAG 笔记可以拆成三个要点：\n\n1. **动作与顺序**：先检索与问题相关的资料，再把资料作为上下文提供给模型，然后生成回答。\n2. **检索资料的角色**：资料不是答案本身，而是提供给模型的上下文。\n3. **效果的边界**：资料质量合适时可能提高准确性，但不能保证答案一定正确。\n\n这一步先讲第 1 点：动作与顺序。\n\n## 先检索，再生成\n\nRAG 里两个核心动作是**检索**和**生成**，它们有固定先后：检索在前，生成在后。中间的连接环节是把检索到的资料作为上下文交给模型。\n\n可以用一个顺序来记：\n\n~~~mermaid\nflowchart LR\nA[\"检索相关资料\"] --> B[\"资料作为上下文\"] --> C[\"模型生成回答\"]\n~~~\n\n把这三步压成一句就是：**先检索与问题相关的资料，再将资料作为上下文提供给模型生成回答**。\n\n这里有两个容易含混的地方。\n\n- **资料必须是“与问题相关的”**：不是随便找一批资料塞进去。检索这一步本身就带着问题这个目标，找的是跟当前问题相关的资料。\n- **资料是“作为上下文”提供，不是直接当作答案**：资料进入的是模型生成回答时的上下文，最终回答仍由模型生成。所以资料和回答不是同一层东西。\n\n顺序反过来会怎样？如果先生成、再检索，那检索结果就没法在这轮生成时作为上下文使用了，这就不是笔记描述的那套流程。因此“先检索、后生成”不是形式上的排列，而是这个机制能起作用的前提。\n\n需要提醒的是，这一步只说明流程怎么走，还没有说明这样做的效果好坏——那正是笔记第三句要讲的部分。\n\n---\n\n### 想一想\n\n按这段笔记，RAG 的两个核心动作分别是什么？先后顺序是怎样的？",
+              "concepts": [
+                "RAG 的检索与生成",
+                "检索资料的上下文角色",
+                "检索与生成的先后顺序"
+              ],
+              "hint_used": false,
+              "evidence_message_ids": [
+                "050f45e2-02ba-4f27-ae30-bf612f371f5c"
+              ],
+              "message_id": "050f45e2-02ba-4f27-ae30-bf612f371f5c",
+              "source_ids": [
+                "b4093555-6544-5c22-91fa-5c42cc086606",
+                "f7311ccc-8d97-5945-bdb8-e843e24debae"
+              ],
+              "kind": "explained",
+              "revision": 1,
+              "policy_version": 0,
+              "step_id": "ffe3235e-f1e2-4d34-a6e2-769dd2b3c977",
+              "content_version": 0,
+              "run_id": "d57d5c8f-5aa1-4a4f-8093-8e17aed8a7e0",
+              "id": "050f45e2-02ba-4f27-ae30-bf612f371f5c",
+              "concept": "讲清 RAG 的两个核心动作及其先后顺序，以及资料作为上下文交给模型这一连接环节",
+              "dependencies": [
+                {
+                  "concepts": [
+                    "RAG 的检索—生成顺序",
+                    "检索资料的上下文角色",
+                    "准确性提升的可能性与正确性保证的区别"
+                  ],
+                  "id": "8495801f-435b-403b-a47c-1e1d8eb449bc",
+                  "content_version": 2,
+                  "excerpt": "你这次答对了一半：**“生成前把检索到的资料作为上下文提供给模型”这半句是准确的**，顺序也对——先检索、再把资料作为上下文交给模型，然后才生成回答。\n\n需要纠正的是后半句。材料说的是“资料质量合适时**可能**提高准确性，但**不能保证**答案一定正确”，而不是“就一定正确”。差别在两点：\n\n- **“可能”不等于“必然”**：资料质量合适只是提高准确性的一个前提，不是必然带来好结果。\n- **“不能保证”是明确写出的边界**：即使检索到的资料不错、也确实作为上下文交给了模型，最终回答仍不排除出错。\n\n所以这句应改成：**资料质量合适时可能提高准确性，但不能保证答案一定正确**。\n\n这一处正好是刚才那个容易混点的反面：检索到资料、并且把它交给模型，跟“回答正确”并不是同一件事。",
+                  "evidence_message_ids": [
+                    "85505e2f-ea8a-4119-952a-195b083ea661"
+                  ],
+                  "source_ids": [
+                    "2e566f3c-28df-550f-bc81-3467c32e92b7",
+                    "dbd49073-9a93-5c32-8bb5-b9db6b081145"
+                  ],
+                  "policy_version": 0,
+                  "revision": 1,
+                  "step_id": "b2b8ab75-e50a-4df2-8666-819f93aaae03",
+                  "run_id": "4cd42c53-325e-4b4a-b4a7-3eeff14ddfcc",
+                  "occurred_at": "2026-09-21T13:58:44.714626+00:00",
+                  "concept": "说出 RAG 的两个核心动作及其先后顺序",
+                  "task_id": "b4c5976f-f249-4d90-93d2-5645c98b2766",
+                  "relation": "contrast",
+                  "hint_used": false,
+                  "dependencies": [],
+                  "session_id": "63f5bbad-532d-479e-b613-b2cfe44c6b81",
+                  "kind": "self_reported",
+                  "message_id": "8495801f-435b-403b-a47c-1e1d8eb449bc"
+                }
+              ],
+              "occurred_at": "2026-09-21T14:05:22.708240+00:00",
+              "session_id": "3218f0ae-c153-49cb-852a-3b0a8095b707",
+              "task_id": "fe4b01c9-25c7-4fb0-be72-cdbe2ef88980"
+            },
+            {
+              "run_id": "4cd42c53-325e-4b4a-b4a7-3eeff14ddfcc",
+              "id": "8495801f-435b-403b-a47c-1e1d8eb449bc",
+              "session_id": "63f5bbad-532d-479e-b613-b2cfe44c6b81",
+              "step_id": "b2b8ab75-e50a-4df2-8666-819f93aaae03",
+              "excerpt": "你这次答对了一半：**“生成前把检索到的资料作为上下文提供给模型”这半句是准确的**，顺序也对——先检索、再把资料作为上下文交给模型，然后才生成回答。\n\n需要纠正的是后半句。材料说的是“资料质量合适时**可能**提高准确性，但**不能保证**答案一定正确”，而不是“就一定正确”。差别在两点：\n\n- **“可能”不等于“必然”**：资料质量合适只是提高准确性的一个前提，不是必然带来好结果。\n- **“不能保证”是明确写出的边界**：即使检索到的资料不错、也确实作为上下文交给了模型，最终回答仍不排除出错。\n\n所以这句应改成：**资料质量合适时可能提高准确性，但不能保证答案一定正确**。\n\n这一处正好是刚才那个容易混点的反面：检索到资料、并且把它交给模型，跟“回答正确”并不是同一件事。",
+              "content_version": 2,
+              "hint_used": false,
+              "dependencies": [],
+              "source_ids": [
+                "2e566f3c-28df-550f-bc81-3467c32e92b7",
+                "dbd49073-9a93-5c32-8bb5-b9db6b081145"
+              ],
+              "kind": "self_reported",
+              "task_id": "b4c5976f-f249-4d90-93d2-5645c98b2766",
+              "concepts": [
+                "RAG 的检索—生成顺序",
+                "检索资料的上下文角色",
+                "准确性提升的可能性与正确性保证的区别"
+              ],
+              "occurred_at": "2026-09-21T13:58:44.714626+00:00",
+              "revision": 1,
+              "concept": "说出 RAG 的两个核心动作及其先后顺序",
+              "message_id": "8495801f-435b-403b-a47c-1e1d8eb449bc",
+              "evidence_message_ids": [
+                "85505e2f-ea8a-4119-952a-195b083ea661"
+              ],
+              "policy_version": 0
+            }
+          ],
+          "invalid_memory_run_ids": []
+        },
+        "operation": null
+      },
+      {
+        "message_id": "5c92a9f3-b8f5-43f0-8384-5a1bda45dbec",
+        "role": "coach",
+        "content": "先给一个简短学习地图，再讲第一段。\n\n## 学习地图\n\n1. **第一步：检索**——先找到与当前问题相关的资料。\n2. **第二步：生成**——把检索到的资料作为上下文提供给模型，让模型用这些资料来生成回答。\n3. **效果边界**——资料质量合适时，准确性**可能**提高，但**不能保证**答案一定正确。\n\n## 第一段：两个核心动作\n\nRAG 的第一个动作是**检索**，也就是“先找资料”，找到的是与问题相关的内容；第二个动作是**生成**，也就是“再把资料交给模型”，由模型据此产出回答。这里有两个容易被顺口带过的限定：检索到的资料要是**与问题相关**的，否则它作为上下文提供也没有意义；“作为上下文提供”意味着资料是给模型参考的输入，而不是直接当成最终答案。\n\n两个动作的先后顺序是固定的：**先检索，后生成**。换句话说，资料是在模型开始生成回答之前，就已经被找出来并放进上下文的。如果顺序反过来——“先生成再看资料”——那就不是这段笔记描述的 RAG 流程了。\n\n还有一个边界要一起记住：这套流程在资料质量合适时**可能**提高准确性，但这只是“可能”，不等于“必然正确”。检索到资料、并且把它作为上下文交给模型，和“回答一定正确”是两件事。\n\n检查题会只问这两个核心动作和它们的先后顺序。\n\n---\n\n### 想一想\n\nRAG 的两个核心动作分别是什么？它们的先后顺序是怎样的？",
+        "created_at": "2026-09-21T15:15:53.607099+00:00",
+        "run_id": "d0e7053b-26cd-4cc4-a7a0-ce74a2535ce2",
+        "task_id": "876ff347-ae2b-43c2-bf30-31aa8a52446d"
+      },
+      {
+        "message_id": "43a4240a-5ce0-4bd9-9635-d1f242a1c0ff",
+        "role": "user",
+        "content": "这是我的作答：两个核心动作是检索和生成，先检索，后生成。",
+        "content_type": "text",
+        "created_at": "2026-09-21T15:16:15.440664+00:00",
+        "run_id": "6b7c267f-6b9f-42a1-8b04-125d35c71ee2",
+        "task_id": null,
+        "context": {
+          "continuation_candidates": [
+            {
+              "policy_version": 0,
+              "session_id": "63f5bbad-532d-479e-b613-b2cfe44c6b81",
+              "task_id": "b4c5976f-f249-4d90-93d2-5645c98b2766",
+              "owner_version": 1,
+              "content_version": 2
+            },
+            {
+              "task_id": "fe4b01c9-25c7-4fb0-be72-cdbe2ef88980",
+              "session_id": "3218f0ae-c153-49cb-852a-3b0a8095b707",
+              "owner_version": 1,
+              "policy_version": 0,
+              "content_version": 0
+            }
+          ],
+          "summary": "",
+          "recent_messages": [
+            {
+              "role": "user",
+              "content": "请直接教我下面这段 RAG 笔记，并出一道理解检查题。检查题只问两个核心动作和先后顺序。只用给定材料，不要联网：RAG 先检索与问题相关的资料，再将资料作为上下文提供给模型生成回答。资料质量合适时可能提高准确性，但不能保证答案一定正确。"
+            },
+            {
+              "role": "coach",
+              "content": "先给一个简短学习地图，再讲第一段。\n\n## 学习地图\n\n1. **第一步：检索**——先找到与当前问题相关的资料。\n2. **第二步：生成**——把检索到的资料作为上下文提供给模型，让模型用这些资料来生成回答。\n3. **效果边界**——资料质量合适时，准确性**可能**提高，但**不能保证**答案一定正确。\n\n## 第一段：两个核心动作\n\nRAG 的第一个动作是**检索**，也就是“先找资料”，找到的是与问题相关的内容；第二个动作是**生成**，也就是“再把资料交给模型”，由模型据此产出回答。这里有两个容易被顺口带过的限定：检索到的资料要是**与问题相关**的，否则它作为上下文提供也没有意义；“作为上下文提供”意味着资料是给模型参考的输入，而不是直接当成最终答案。\n\n两个动作的先后顺序是固定的：**先检索，后生成**。换句话说，资料是在模型开始生成回答之前，就已经被找出来并放进上下文的。如果顺序反过来——“先生成再看资料”——那就不是这段笔记描述的 RAG 流程了。\n\n还有一个边界要一起记住：这套流程在资料质量合适时**可能**提高准确性，但这只是“可能”，不等于“必然正确”。检索到资料、并且把它作为上下文交给模型，和“回答一定正确”是两件事。\n\n检查题会只问这两个核心动作和它们的先后顺序。\n\n---\n\n### 想一想\n\nRAG 的两个核心动作分别是什么？它们的先后顺序是怎样的？"
+            }
+          ],
+          "knowledge_summaries": [],
+          "handoff": null,
+          "memory_lookup_available": true,
+          "memory_candidates": [
+            {
+              "policy_version": 0,
+              "source_ids": [
+                "b4093555-6544-5c22-91fa-5c42cc086606",
+                "f7311ccc-8d97-5945-bdb8-e843e24debae"
+              ],
+              "concept": "讲清 RAG 的两个核心动作及其先后顺序，以及资料作为上下文交给模型这一连接环节",
+              "run_id": "d57d5c8f-5aa1-4a4f-8093-8e17aed8a7e0",
+              "task_id": "fe4b01c9-25c7-4fb0-be72-cdbe2ef88980",
+              "evidence_message_ids": [
+                "050f45e2-02ba-4f27-ae30-bf612f371f5c"
+              ],
+              "id": "050f45e2-02ba-4f27-ae30-bf612f371f5c",
+              "kind": "explained",
+              "concepts": [
+                "RAG 的检索与生成",
+                "检索资料的上下文角色",
+                "检索与生成的先后顺序"
+              ],
+              "revision": 1,
+              "occurred_at": "2026-09-21T14:05:22.708240+00:00",
+              "step_id": "ffe3235e-f1e2-4d34-a6e2-769dd2b3c977",
+              "excerpt": "## 学习地图\n\n这段 RAG 笔记可以拆成三个要点：\n\n1. **动作与顺序**：先检索与问题相关的资料，再把资料作为上下文提供给模型，然后生成回答。\n2. **检索资料的角色**：资料不是答案本身，而是提供给模型的上下文。\n3. **效果的边界**：资料质量合适时可能提高准确性，但不能保证答案一定正确。\n\n这一步先讲第 1 点：动作与顺序。\n\n## 先检索，再生成\n\nRAG 里两个核心动作是**检索**和**生成**，它们有固定先后：检索在前，生成在后。中间的连接环节是把检索到的资料作为上下文交给模型。\n\n可以用一个顺序来记：\n\n~~~mermaid\nflowchart LR\nA[\"检索相关资料\"] --> B[\"资料作为上下文\"] --> C[\"模型生成回答\"]\n~~~\n\n把这三步压成一句就是：**先检索与问题相关的资料，再将资料作为上下文提供给模型生成回答**。\n\n这里有两个容易含混的地方。\n\n- **资料必须是“与问题相关的”**：不是随便找一批资料塞进去。检索这一步本身就带着问题这个目标，找的是跟当前问题相关的资料。\n- **资料是“作为上下文”提供，不是直接当作答案**：资料进入的是模型生成回答时的上下文，最终回答仍由模型生成。所以资料和回答不是同一层东西。\n\n顺序反过来会怎样？如果先生成、再检索，那检索结果就没法在这轮生成时作为上下文使用了，这就不是笔记描述的那套流程。因此“先检索、后生成”不是形式上的排列，而是这个机制能起作用的前提。\n\n需要提醒的是，这一步只说明流程怎么走，还没有说明这样做的效果好坏——那正是笔记第三句要讲的部分。\n\n---\n\n### 想一想\n\n按这段笔记，RAG 的两个核心动作分别是什么？先后顺序是怎样的？",
+              "message_id": "050f45e2-02ba-4f27-ae30-bf612f371f5c",
+              "hint_used": false,
+              "session_id": "3218f0ae-c153-49cb-852a-3b0a8095b707",
+              "content_version": 0,
+              "dependencies": [
+                {
+                  "concepts": [
+                    "RAG 的检索—生成顺序",
+                    "检索资料的上下文角色",
+                    "准确性提升的可能性与正确性保证的区别"
+                  ],
+                  "id": "8495801f-435b-403b-a47c-1e1d8eb449bc",
+                  "content_version": 2,
+                  "excerpt": "你这次答对了一半：**“生成前把检索到的资料作为上下文提供给模型”这半句是准确的**，顺序也对——先检索、再把资料作为上下文交给模型，然后才生成回答。\n\n需要纠正的是后半句。材料说的是“资料质量合适时**可能**提高准确性，但**不能保证**答案一定正确”，而不是“就一定正确”。差别在两点：\n\n- **“可能”不等于“必然”**：资料质量合适只是提高准确性的一个前提，不是必然带来好结果。\n- **“不能保证”是明确写出的边界**：即使检索到的资料不错、也确实作为上下文交给了模型，最终回答仍不排除出错。\n\n所以这句应改成：**资料质量合适时可能提高准确性，但不能保证答案一定正确**。\n\n这一处正好是刚才那个容易混点的反面：检索到资料、并且把它交给模型，跟“回答正确”并不是同一件事。",
+                  "evidence_message_ids": [
+                    "85505e2f-ea8a-4119-952a-195b083ea661"
+                  ],
+                  "source_ids": [
+                    "2e566f3c-28df-550f-bc81-3467c32e92b7",
+                    "dbd49073-9a93-5c32-8bb5-b9db6b081145"
+                  ],
+                  "policy_version": 0,
+                  "revision": 1,
+                  "step_id": "b2b8ab75-e50a-4df2-8666-819f93aaae03",
+                  "run_id": "4cd42c53-325e-4b4a-b4a7-3eeff14ddfcc",
+                  "occurred_at": "2026-09-21T13:58:44.714626+00:00",
+                  "concept": "说出 RAG 的两个核心动作及其先后顺序",
+                  "task_id": "b4c5976f-f249-4d90-93d2-5645c98b2766",
+                  "relation": "contrast",
+                  "hint_used": false,
+                  "dependencies": [],
+                  "session_id": "63f5bbad-532d-479e-b613-b2cfe44c6b81",
+                  "kind": "self_reported",
+                  "message_id": "8495801f-435b-403b-a47c-1e1d8eb449bc"
+                }
+              ]
+            },
+            {
+              "message_id": "8495801f-435b-403b-a47c-1e1d8eb449bc",
+              "session_id": "63f5bbad-532d-479e-b613-b2cfe44c6b81",
+              "run_id": "4cd42c53-325e-4b4a-b4a7-3eeff14ddfcc",
+              "id": "8495801f-435b-403b-a47c-1e1d8eb449bc",
+              "concept": "说出 RAG 的两个核心动作及其先后顺序",
+              "source_ids": [
+                "2e566f3c-28df-550f-bc81-3467c32e92b7",
+                "dbd49073-9a93-5c32-8bb5-b9db6b081145"
+              ],
+              "step_id": "b2b8ab75-e50a-4df2-8666-819f93aaae03",
+              "kind": "self_reported",
+              "occurred_at": "2026-09-21T13:58:44.714626+00:00",
+              "content_version": 2,
+              "excerpt": "你这次答对了一半：**“生成前把检索到的资料作为上下文提供给模型”这半句是准确的**，顺序也对——先检索、再把资料作为上下文交给模型，然后才生成回答。\n\n需要纠正的是后半句。材料说的是“资料质量合适时**可能**提高准确性，但**不能保证**答案一定正确”，而不是“就一定正确”。差别在两点：\n\n- **“可能”不等于“必然”**：资料质量合适只是提高准确性的一个前提，不是必然带来好结果。\n- **“不能保证”是明确写出的边界**：即使检索到的资料不错、也确实作为上下文交给了模型，最终回答仍不排除出错。\n\n所以这句应改成：**资料质量合适时可能提高准确性，但不能保证答案一定正确**。\n\n这一处正好是刚才那个容易混点的反面：检索到资料、并且把它交给模型，跟“回答正确”并不是同一件事。",
+              "policy_version": 0,
+              "task_id": "b4c5976f-f249-4d90-93d2-5645c98b2766",
+              "concepts": [
+                "RAG 的检索—生成顺序",
+                "检索资料的上下文角色",
+                "准确性提升的可能性与正确性保证的区别"
+              ],
+              "dependencies": [],
+              "hint_used": false,
+              "revision": 1,
+              "evidence_message_ids": [
+                "85505e2f-ea8a-4119-952a-195b083ea661"
+              ]
+            }
+          ],
+          "invalid_memory_run_ids": []
+        },
+        "operation": null
+      },
+      {
+        "message_id": "45d364b1-c9d4-4990-98c0-43dc09a2ad28",
+        "role": "coach",
+        "content": "你的作答正确：RAG 的两个核心动作是检索和生成，并且顺序是先检索、后生成。也就是说，先找到与问题相关的资料，再把资料作为上下文提供给模型，让模型据此生成回答。\n\n注意，本题只检查这两个动作和先后顺序，你已经答到要点。关于“资料质量合适时可能提高准确性，但不能保证答案一定正确”这一边界，本次没有要求作答，因此尚不能据此验证你是否掌握。\n\n这一节的理解检查已通过。你可以继续下一节，也可以继续追问。",
+        "created_at": "2026-09-21T15:16:26.400701+00:00",
+        "run_id": "6b7c267f-6b9f-42a1-8b04-125d35c71ee2",
+        "task_id": "876ff347-ae2b-43c2-bf30-31aa8a52446d"
+      }
+    ],
+    "foreground": null,
+    "runs": [
+      {
+        "run_id": "d0e7053b-26cd-4cc4-a7a0-ce74a2535ce2",
+        "status": "completed",
+        "revision": 1,
+        "task_id": "876ff347-ae2b-43c2-bf30-31aa8a52446d",
+        "input_ids": [
+          "cf528486-6399-45b7-82d2-2c24fc8c546a"
+        ],
+        "intent": {
+          "conversation_kind": "ordinary",
+          "clarification_kind": "none",
+          "conversation_repair": false,
+          "reply_feedback": "none",
+          "repair_target_message_id": "",
+          "continuation_evidence": "",
+          "continuation_topic": "",
+          "programming_boundary": "none",
+          "programming_learning_request": "",
+          "resource_boundary": "none",
+          "resource_learning_request": "",
+          "intents": [
+            "goal",
+            "material"
+          ],
+          "target_task_id": "",
+          "target_description": "直接教学 RAG 笔记并出一道理解检查题（仅问两个核心动作及先后顺序）",
+          "relation": "new_topic",
+          "workflow": "source_learning",
+          "scope": "learning",
+          "proposed_actions": [],
+          "clarification": "",
+          "rationale": "用户明确要求直接教给定 RAG 笔记并出理解检查题，主题与用途清晰，使用 source_learning 直接教学，作用域限定给定材料、不联网。",
+          "understanding": "unknown",
+          "answer_evidence": "",
+          "topic_closure": null,
+          "learning_goal_ready": true,
+          "direct_teaching": true,
+          "answer_only": false,
+          "is_jd": false,
+          "needs_verification": false,
+          "cross_check_sources": false,
+          "requested_mode": null,
+          "refresh_sources": false,
+          "public_search_query": "",
+          "light_reply": "",
+          "session_tags": [
+            "RAG",
+            "检索增强生成"
+          ],
+          "handoff_source_ids": [],
+          "handoff_step_ids": [],
+          "memory_selections": []
+        },
+        "steps": {
+          "3c926b00c08d099a87fe14adf96a01afd932b40a793f1bafcc1a1cdd943a2e48": {
+            "conversation_kind": "ordinary",
+            "clarification_kind": "none",
+            "conversation_repair": false,
+            "reply_feedback": "none",
+            "repair_target_message_id": "",
+            "continuation_evidence": "",
+            "continuation_topic": "",
+            "programming_boundary": "none",
+            "programming_learning_request": "",
+            "resource_boundary": "none",
+            "resource_learning_request": "",
+            "intents": [
+              "goal",
+              "material"
+            ],
+            "target_task_id": "",
+            "target_description": "直接教学 RAG 笔记并出一道理解检查题（仅问两个核心动作及先后顺序）",
+            "relation": "new_topic",
+            "workflow": "source_learning",
+            "scope": "learning",
+            "proposed_actions": [],
+            "clarification": "",
+            "rationale": "用户明确要求直接教给定 RAG 笔记并出理解检查题，主题与用途清晰，使用 source_learning 直接教学，作用域限定给定材料、不联网。",
+            "understanding": "unknown",
+            "answer_evidence": "",
+            "topic_closure": null,
+            "learning_goal_ready": true,
+            "direct_teaching": true,
+            "answer_only": false,
+            "is_jd": false,
+            "needs_verification": false,
+            "cross_check_sources": false,
+            "requested_mode": null,
+            "refresh_sources": false,
+            "public_search_query": "",
+            "light_reply": "",
+            "session_tags": [
+              "RAG",
+              "检索增强生成"
+            ],
+            "handoff_source_ids": [],
+            "handoff_step_ids": [],
+            "memory_selections": []
+          },
+          "8aa9a81fe04b27827043abf65b56a3c6b05c25ae578576c7263e43e193083e37": {
+            "official_sources_required": false,
+            "source_domains": [],
+            "concepts": [
+              "RAG（检索增强生成）",
+              "检索阶段：按问题检索相关资料",
+              "生成阶段：把资料作为上下文交给模型生成回答",
+              "两阶段先后顺序：先检索后生成",
+              "RAG 的效果边界：可能提高准确性但不保证正确"
+            ],
+            "public_query": "",
+            "new_knowledge": true,
+            "verification_claims": []
+          },
+          "82b24abebb4694d362192b6f2952e652aad4906f1acab03e8fbc618dea05406f": {
+            "selections": [
+              {
+                "id": "8495801f-435b-403b-a47c-1e1d8eb449bc",
+                "relation": "contrast"
+              }
+            ]
+          },
+          "1c0b8ebb70098490c8ecec3c1719a0bf347ddebe73a9f535223ba76a45508c4a": {
+            "message": "先给一个简短学习地图，再讲第一段。\n\n## 学习地图\n\n1. **第一步：检索**——先找到与当前问题相关的资料。\n2. **第二步：生成**——把检索到的资料作为上下文提供给模型，让模型用这些资料来生成回答。\n3. **效果边界**——资料质量合适时，准确性**可能**提高，但**不能保证**答案一定正确。\n\n## 第一段：两个核心动作\n\nRAG 的第一个动作是**检索**，也就是“先找资料”，找到的是与问题相关的内容；第二个动作是**生成**，也就是“再把资料交给模型”，由模型据此产出回答。这里有两个容易被顺口带过的限定：检索到的资料要是**与问题相关**的，否则它作为上下文提供也没有意义；“作为上下文提供”意味着资料是给模型参考的输入，而不是直接当成最终答案。\n\n两个动作的先后顺序是固定的：**先检索，后生成**。换句话说，资料是在模型开始生成回答之前，就已经被找出来并放进上下文的。如果顺序反过来——“先生成再看资料”——那就不是这段笔记描述的 RAG 流程了。\n\n还有一个边界要一起记住：这套流程在资料质量合适时**可能**提高准确性，但这只是“可能”，不等于“必然正确”。检索到资料、并且把它作为上下文交给模型，和“回答一定正确”是两件事。\n\n检查题会只问这两个核心动作和它们的先后顺序。",
+            "check_question": "RAG 的两个核心动作分别是什么？它们的先后顺序是怎样的？",
+            "evidence_state": "unverified",
+            "learning_plan": {
+              "goal": "理解 RAG 笔记：先检索与问题相关的资料，再将资料作为上下文提供给模型生成回答；资料质量合适时可能提高准确性，但不能保证答案一定正确",
+              "steps": [
+                "说出 RAG 的两个核心动作：检索与生成",
+                "说明两个动作的先后顺序：先检索，再作为上下文提供并生成回答",
+                "说明检索资料的角色：与问题相关，并作为上下文提供给模型",
+                "说明效果边界：资料质量合适时可能提高准确性，但不能保证答案一定正确"
+              ],
+              "success_check": "能准确说出两个核心动作及其先后顺序，并说明资料的作用和“可能提高准确性但不保证正确”的边界",
+              "step_ids": [
+                "",
+                "",
+                "",
+                ""
+              ]
+            },
+            "learning_concepts": [
+              "RAG 的检索动作",
+              "RAG 的生成动作",
+              "检索与生成的先后顺序",
+              "检索资料的上下文角色",
+              "准确性提升的可能性与正确性保证的区别"
+            ],
+            "check_scoring_spec": {
+              "learning_goal": "检查是否掌握 RAG 的两个核心动作及其先后顺序",
+              "must_cover": [
+                "两个核心动作是检索和生成",
+                "顺序是先检索、后生成（先将资料作为上下文提供给模型，再生成回答）"
+              ],
+              "acceptable_paraphrases": [
+                "先找与问题相关的资料，再把它作为上下文交给模型生成回答",
+                "检索相关资料，然后让模型基于这些资料生成回答"
+              ],
+              "common_misconceptions": [
+                "先说生成、后说检索，或认为两者顺序无关",
+                "把“检索”说成“直接生成答案”，或把“生成”说成“先输出再找资料”",
+                "认为检索到资料就保证答案正确"
+              ],
+              "evidence": "RAG 先检索与问题相关的资料，再将资料作为上下文提供给模型生成回答。资料质量合适时可能提高准确性，但不能保证答案一定正确。",
+              "order_rules": "必须先检索、后生成；若回答颠倒顺序或声称顺序无关，视为不符合。"
+            }
+          },
+          "96de5cc4532edd3ef42008c4279a1f9036c12724801b445f546afd0e267b4b6b": {
+            "minimum_answer": "两个核心动作是检索和生成；顺序是先检索、后生成。",
+            "issues": [],
+            "answerable": "pass",
+            "scope": "pass",
+            "grounded": "pass",
+            "required_0": "pass",
+            "required_1": "pass"
+          }
+        },
+        "created_at": "2026-09-21T15:15:33.163571+00:00",
+        "updated_at": "2026-09-21T15:15:53.642010+00:00",
+        "elapsed_ms": 20474,
+        "judgments": [
+          {
+            "node": "entry",
+            "version": "jev-entry-2",
+            "model": null,
+            "input_hash": "8ad7061f61106273da030c707cf11af6c45fe5a2a2cfc0c00349664cd60caac8",
+            "status": "failed",
+            "answers": {},
+            "elapsed_ms": 5006.543,
+            "usage": null,
+            "applied": false,
+            "reason": "timeout",
+            "cached": false,
+            "sources": [
+              {
+                "kind": "current_session",
+                "message_ids": []
+              }
+            ],
+            "field_decisions": {
+              "intent": {
+                "source": "llm",
+                "value": "mixed",
+                "raw_choice": null,
+                "reason": "timeout"
+              },
+              "workflow": {
+                "source": "llm",
+                "value": "source_learning",
+                "raw_choice": null,
+                "reason": "timeout"
+              },
+              "relation": {
+                "source": "llm",
+                "value": "new_topic",
+                "raw_choice": null,
+                "reason": "timeout"
+              },
+              "needs_verification": {
+                "source": "llm",
+                "value": "no",
+                "raw_choice": null,
+                "reason": "timeout"
+              },
+              "cross_check_sources": {
+                "source": "llm",
+                "value": "no",
+                "raw_choice": null,
+                "reason": "timeout"
+              },
+              "refresh_sources": {
+                "source": "llm",
+                "value": "no",
+                "raw_choice": null,
+                "reason": "timeout"
+              }
+            }
+          },
+          {
+            "node": "memory_selection",
+            "version": "jev-harness-1",
+            "model": null,
+            "input_hash": "3bb0d5246ec6415eacc93fd7b225cfd2b3f3e60b86d9269a51b2b5316a0f2c18",
+            "status": "failed",
+            "answers": {},
+            "elapsed_ms": 5003.412,
+            "usage": null,
+            "applied": false,
+            "reason": "timeout",
+            "cached": false,
+            "sources": [
+              {
+                "candidate_id": "050f45e2-02ba-4f27-ae30-bf612f371f5c",
+                "version": null,
+                "url": null
+              },
+              {
+                "candidate_id": "8495801f-435b-403b-a47c-1e1d8eb449bc",
+                "version": null,
+                "url": null
+              }
+            ],
+            "field_decisions": {}
+          },
+          {
+            "node": "question_quality",
+            "version": "jev-question-quality-4",
+            "model": "jev-1.13.0",
+            "input_hash": "f30695956a6736058b0392c505a910e8d0de4dcaaea833af5ed74989ae0dadb1",
+            "status": "ok",
+            "answers": {
+              "answerable": {
+                "type": "choice",
+                "choice": "pass",
+                "confidence": 0.69,
+                "probabilities": {
+                  "unsure": 0.01,
+                  "pass": 0.8,
+                  "needs_fix": 0.19
+                }
+              },
+              "scope": {
+                "type": "choice",
+                "choice": "pass",
+                "confidence": 0.83,
+                "probabilities": {
+                  "unsure": 0.01,
+                  "pass": 0.88,
+                  "needs_fix": 0.11
+                }
+              },
+              "grounded": {
+                "type": "choice",
+                "choice": "pass",
+                "confidence": 0.77,
+                "probabilities": {
+                  "unsure": 0.04,
+                  "pass": 0.84,
+                  "needs_fix": 0.12
+                }
+              },
+              "required_0": {
+                "type": "choice",
+                "choice": "pass",
+                "confidence": 0.58,
+                "probabilities": {
+                  "unsure": 0.01,
+                  "pass": 0.72,
+                  "needs_fix": 0.27
+                }
+              },
+              "required_1": {
+                "type": "choice",
+                "choice": "pass",
+                "confidence": 0.66,
+                "probabilities": {
+                  "unsure": 0.01,
+                  "pass": 0.77,
+                  "needs_fix": 0.22
+                }
+              }
+            },
+            "elapsed_ms": 736.072,
+            "usage": {
+              "input_tokens": 2463,
+              "output_tokens": 197
+            },
+            "applied": true,
+            "reason": "independent_llm_review",
+            "cached": false,
+            "sources": [
+              {
+                "owner": "876ff347-ae2b-43c2-bf30-31aa8a52446d",
+                "question_hash": "27473e2ee29815798ec7517e6679e452606d8c084a82c8cbdbfb1b1f1e356f12"
+              }
+            ],
+            "field_decisions": {}
+          }
+        ],
+        "quality_checks": [
+          {
+            "node": "question_quality",
+            "version": "jev-question-quality-4",
+            "input_hash": "0a30d7351ab8f4c470346f442642a64cb3a6d9ea1e3261db413d84a28682fe2f",
+            "labels": {
+              "answerable": "pass",
+              "scope": "pass",
+              "grounded": "pass",
+              "required_0": "pass",
+              "required_1": "pass"
+            },
+            "issues": [],
+            "passed": true,
+            "reason": "independent_llm_review",
+            "review": {
+              "jev": {
+                "answerable": "pass",
+                "scope": "pass",
+                "grounded": "pass",
+                "required_0": "pass",
+                "required_1": "pass"
+              },
+              "llm": {
+                "minimum_answer": "两个核心动作是检索和生成；顺序是先检索、后生成。",
+                "issues": [],
+                "answerable": "pass",
+                "scope": "pass",
+                "grounded": "pass",
+                "required_0": "pass",
+                "required_1": "pass"
+              }
+            }
+          }
+        ],
+        "model_calls": [
+          {
+            "id": "223db5f5-2da5-4bc1-b1b6-7099bf819e67",
+            "budget_id": "ce604b92-2fef-49b4-adfe-2a4968fd33c9",
+            "revision": 1,
+            "background": false,
+            "node": "jev_entry",
+            "model": "jev-1.13.0",
+            "estimated_input_tokens": 3326,
+            "transport_requests": 1,
+            "usage_state": "unavailable",
+            "usage": [],
+            "status": "failed"
+          },
+          {
+            "id": "7267831b-c8b9-492e-b777-4c8acc7bd3a7",
+            "budget_id": "ce604b92-2fef-49b4-adfe-2a4968fd33c9",
+            "revision": 1,
+            "background": false,
+            "node": "intent",
+            "model": "deepseek-flash",
+            "estimated_input_tokens": 16462,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "07802505-aaef-4d56-bf7d-39abfa83f70b",
+                "input_tokens": 7668,
+                "output_tokens": 338,
+                "total_tokens": 8006,
+                "cached_input_tokens": 7424,
+                "reasoning_output_tokens": 0
+              }
+            ],
+            "status": "returned"
+          },
+          {
+            "id": "58917992-960d-4bc1-a7a5-8eeca6bdc1bb",
+            "budget_id": "ce604b92-2fef-49b4-adfe-2a4968fd33c9",
+            "revision": 1,
+            "background": false,
+            "node": "teaching_preparation",
+            "model": "deepseek-flash",
+            "estimated_input_tokens": 2073,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "304f177e-01e4-4f2b-8ecc-00c4676e376d",
+                "input_tokens": 1051,
+                "output_tokens": 97,
+                "total_tokens": 1148,
+                "cached_input_tokens": 640,
+                "reasoning_output_tokens": 0
+              }
+            ],
+            "status": "returned"
+          },
+          {
+            "id": "2acf318b-f7f6-4043-8efe-7097b7955ee6",
+            "budget_id": "ce604b92-2fef-49b4-adfe-2a4968fd33c9",
+            "revision": 1,
+            "background": false,
+            "node": "jev_memory_selection",
+            "model": "jev-1.13.0",
+            "estimated_input_tokens": 8254,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "input_tokens": 3875,
+                "output_tokens": 193
+              }
+            ],
+            "status": "late_return"
+          },
+          {
+            "id": "f774d17b-1d32-431e-a36c-2493eafd8dd7",
+            "budget_id": "ce604b92-2fef-49b4-adfe-2a4968fd33c9",
+            "revision": 1,
+            "background": false,
+            "node": "memory_selection",
+            "model": "deepseek-flash",
+            "estimated_input_tokens": 3726,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "8333afc1-0c01-41dd-a712-0e16265f76b8",
+                "input_tokens": 2310,
+                "output_tokens": 37,
+                "total_tokens": 2347,
+                "cached_input_tokens": 0,
+                "reasoning_output_tokens": 0
+              }
+            ],
+            "status": "returned"
+          },
+          {
+            "id": "a19e66f0-78d3-4c6d-92e9-0a275fc53dd4",
+            "budget_id": "ce604b92-2fef-49b4-adfe-2a4968fd33c9",
+            "revision": 1,
+            "background": false,
+            "node": "lesson",
+            "model": "deepseek-v4-flash",
+            "estimated_input_tokens": 8838,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "d208a4ce-7cf2-476c-a068-797ea20f8f01",
+                "input_tokens": 4481,
+                "output_tokens": 778,
+                "total_tokens": 5259,
+                "cached_input_tokens": 2944,
+                "reasoning_output_tokens": 0
+              }
+            ],
+            "status": "returned"
+          },
+          {
+            "id": "2e500e8c-b314-4caa-b100-9bc5def99ae9",
+            "budget_id": "ce604b92-2fef-49b4-adfe-2a4968fd33c9",
+            "revision": 1,
+            "background": false,
+            "node": "jev_question_quality",
+            "model": "jev-1.13.0",
+            "estimated_input_tokens": 6326,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "input_tokens": 2463,
+                "output_tokens": 197
+              }
+            ],
+            "status": "ok"
+          },
+          {
+            "id": "870f1e47-1f1d-4bb8-94f4-119143b1b382",
+            "budget_id": "ce604b92-2fef-49b4-adfe-2a4968fd33c9",
+            "revision": 1,
+            "background": false,
+            "node": "question_quality_review",
+            "model": "deepseek-v4-flash",
+            "estimated_input_tokens": 4127,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "543823b1-31db-4af1-881f-bff1338d77b3",
+                "input_tokens": 2013,
+                "output_tokens": 61,
+                "total_tokens": 2074,
+                "cached_input_tokens": 384,
+                "reasoning_output_tokens": 0
+              }
+            ],
+            "status": "returned"
+          }
+        ],
+        "error_code": null
+      },
+      {
+        "run_id": "6b7c267f-6b9f-42a1-8b04-125d35c71ee2",
+        "status": "completed",
+        "revision": 1,
+        "task_id": "876ff347-ae2b-43c2-bf30-31aa8a52446d",
+        "input_ids": [
+          "43a4240a-5ce0-4bd9-9635-d1f242a1c0ff"
+        ],
+        "intent": {
+          "conversation_kind": "ordinary",
+          "clarification_kind": "none",
+          "conversation_repair": false,
+          "reply_feedback": "none",
+          "repair_target_message_id": "",
+          "continuation_evidence": "",
+          "continuation_topic": "",
+          "programming_boundary": "none",
+          "programming_learning_request": "",
+          "resource_boundary": "none",
+          "resource_learning_request": "",
+          "intents": [
+            "answer"
+          ],
+          "target_task_id": "876ff347-ae2b-43c2-bf30-31aa8a52446d",
+          "target_description": "回答 RAG 检查题：两个核心动作及先后顺序",
+          "relation": "continuation",
+          "workflow": null,
+          "scope": "continue_goal",
+          "proposed_actions": [],
+          "clarification": "",
+          "rationale": "用户本轮是对当前检查题（RAG 两个核心动作及其顺序）的作答，语义上直接回答问题，属于 answer，交评价节点判定；不添加 correction 或追问。",
+          "understanding": "unknown",
+          "answer_evidence": "两个核心动作是检索和生成，先检索，后生成。",
+          "topic_closure": null,
+          "learning_goal_ready": true,
+          "direct_teaching": false,
+          "answer_only": false,
+          "is_jd": false,
+          "needs_verification": false,
+          "cross_check_sources": false,
+          "requested_mode": null,
+          "refresh_sources": false,
+          "public_search_query": "",
+          "light_reply": "",
+          "session_tags": [],
+          "handoff_source_ids": [],
+          "handoff_step_ids": [],
+          "memory_selections": []
+        },
+        "steps": {
+          "58a0f9d6d5c8776a834feebb8b20a6ad23296f103e873c7f530c9841f79856af": {
+            "conversation_kind": "ordinary",
+            "clarification_kind": "none",
+            "conversation_repair": false,
+            "reply_feedback": "none",
+            "repair_target_message_id": "",
+            "continuation_evidence": "",
+            "continuation_topic": "",
+            "programming_boundary": "none",
+            "programming_learning_request": "",
+            "resource_boundary": "none",
+            "resource_learning_request": "",
+            "intents": [
+              "answer"
+            ],
+            "target_task_id": "876ff347-ae2b-43c2-bf30-31aa8a52446d",
+            "target_description": "回答 RAG 检查题：两个核心动作及先后顺序",
+            "relation": "continuation",
+            "workflow": null,
+            "scope": "continue_goal",
+            "proposed_actions": [],
+            "clarification": "",
+            "rationale": "用户本轮是对当前检查题（RAG 两个核心动作及其顺序）的作答，语义上直接回答问题，属于 answer，交评价节点判定；不添加 correction 或追问。",
+            "understanding": "unknown",
+            "answer_evidence": "两个核心动作是检索和生成，先检索，后生成。",
+            "topic_closure": null,
+            "learning_goal_ready": true,
+            "direct_teaching": false,
+            "answer_only": false,
+            "is_jd": false,
+            "needs_verification": false,
+            "cross_check_sources": false,
+            "requested_mode": null,
+            "refresh_sources": false,
+            "public_search_query": "",
+            "light_reply": "",
+            "session_tags": [],
+            "handoff_source_ids": [],
+            "handoff_step_ids": [],
+            "memory_selections": []
+          },
+          "de8c8bbf6307da2a5bd639b2c5083166b48df11c12eed6564b5ff1dca188c0f9": {
+            "correctness": "回答正确。两个核心动作是检索和生成，顺序是先检索、后生成，与给定材料一致。",
+            "completeness": "回答覆盖了两个核心动作及其先后顺序这两个必需点，没有遗漏。",
+            "expression": "表达简洁清楚，直接给出了动作和顺序。",
+            "transfer": "本题只要求识别两个核心动作和先后顺序，回答已满足该理解检查目标；未涉及资料质量、准确性边界等其他内容，不属于本题必答范围。",
+            "feedback": "你的作答正确：RAG 的两个核心动作是检索和生成，并且顺序是先检索、后生成。也就是说，先找到与问题相关的资料，再把资料作为上下文提供给模型，让模型据此生成回答。\n\n注意，本题只检查这两个动作和先后顺序，你已经答到要点。关于“资料质量合适时可能提高准确性，但不能保证答案一定正确”这一边界，本次没有要求作答，因此尚不能据此验证你是否掌握。",
+            "followup_question": "",
+            "followup_scoring_spec": null
+          }
+        },
+        "created_at": "2026-09-21T15:16:15.440650+00:00",
+        "updated_at": "2026-09-21T15:16:26.422965+00:00",
+        "elapsed_ms": 10974,
+        "judgments": [
+          {
+            "node": "entry",
+            "version": "jev-entry-2",
+            "model": null,
+            "input_hash": "a14fb16accb44791350cfd70714a59f921a61e9645852338f30451025aa4b14d",
+            "status": "failed",
+            "answers": {},
+            "elapsed_ms": 5030.062,
+            "usage": null,
+            "applied": false,
+            "reason": "timeout",
+            "cached": false,
+            "sources": [
+              {
+                "kind": "current_session",
+                "message_ids": [
+                  "cf528486-6399-45b7-82d2-2c24fc8c546a",
+                  "5c92a9f3-b8f5-43f0-8384-5a1bda45dbec"
+                ]
+              }
+            ],
+            "field_decisions": {
+              "intent": {
+                "source": "llm",
+                "value": "other",
+                "raw_choice": null,
+                "reason": "timeout"
+              },
+              "workflow": {
+                "source": "llm",
+                "value": "none",
+                "raw_choice": null,
+                "reason": "timeout"
+              },
+              "relation": {
+                "source": "llm",
+                "value": "continuation",
+                "raw_choice": null,
+                "reason": "timeout"
+              },
+              "needs_verification": {
+                "source": "llm",
+                "value": "no",
+                "raw_choice": null,
+                "reason": "timeout"
+              },
+              "cross_check_sources": {
+                "source": "llm",
+                "value": "no",
+                "raw_choice": null,
+                "reason": "timeout"
+              },
+              "refresh_sources": {
+                "source": "llm",
+                "value": "no",
+                "raw_choice": null,
+                "reason": "timeout"
+              }
+            }
+          },
+          {
+            "node": "answer_points",
+            "version": "jev-harness-1",
+            "model": "jev-1.13.0",
+            "input_hash": "2765dffb70c67c232592c85b256eefd91be6edea409ec6f078ce468a03942b81",
+            "status": "ok",
+            "answers": {
+              "point_0": {
+                "type": "choice",
+                "choice": "covered",
+                "confidence": 1.0,
+                "probabilities": {
+                  "contradicted": 0.0,
+                  "unsure": 0.0,
+                  "covered": 1.0,
+                  "missing": 0.0
+                }
+              },
+              "point_1": {
+                "type": "choice",
+                "choice": "covered",
+                "confidence": 0.97,
+                "probabilities": {
+                  "contradicted": 0.0,
+                  "unsure": 0.0,
+                  "covered": 0.98,
+                  "missing": 0.02
+                }
+              },
+              "misconception": {
+                "type": "choice",
+                "choice": "absent",
+                "confidence": 1.0,
+                "probabilities": {
+                  "absent": 1.0,
+                  "unsure": 0.0,
+                  "present": 0.0
+                }
+              },
+              "order": {
+                "type": "choice",
+                "choice": "satisfied",
+                "confidence": 1.0,
+                "probabilities": {
+                  "unsure": 0.0,
+                  "violated": 0.0,
+                  "satisfied": 1.0
+                }
+              }
+            },
+            "elapsed_ms": 1905.885,
+            "usage": {
+              "input_tokens": 1902,
+              "output_tokens": 181
+            },
+            "applied": true,
+            "reason": "",
+            "cached": false,
+            "sources": [
+              {
+                "question_fingerprint": "50278f775d333c2829b24d1f58fc33a91d9e6c9057f7e67df00fbdd6f4b7ce43",
+                "question_version": 1,
+                "step_id": "2db05bab-b0ea-45f4-bee9-6d70ad6d646f"
+              }
+            ],
+            "field_decisions": {}
+          }
+        ],
+        "point_evaluation": {
+          "labels": {
+            "point_0": "covered",
+            "point_1": "covered",
+            "misconception": "absent",
+            "order": "satisfied"
+          },
+          "passed": true,
+          "effective_passed": true,
+          "standard_fingerprint": "50278f775d333c2829b24d1f58fc33a91d9e6c9057f7e67df00fbdd6f4b7ce43",
+          "llm_fallback_items": []
+        },
+        "model_calls": [
+          {
+            "id": "37700fe2-6adc-4631-a683-3b3bfd58b0f0",
+            "budget_id": "e72eb2df-2ed4-4e12-b1cc-55a90d2c449b",
+            "revision": 1,
+            "background": false,
+            "node": "jev_entry",
+            "model": "jev-1.13.0",
+            "estimated_input_tokens": 10130,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "input_tokens": 4171,
+                "output_tokens": 359
+              }
+            ],
+            "status": "late_return"
+          },
+          {
+            "id": "80335d24-c110-4cfe-9996-532e74170b1c",
+            "budget_id": "e72eb2df-2ed4-4e12-b1cc-55a90d2c449b",
+            "revision": 1,
+            "background": false,
+            "node": "intent",
+            "model": "deepseek-flash",
+            "estimated_input_tokens": 22243,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "10b33344-923f-487c-8507-0be61c40c4b4",
+                "input_tokens": 10727,
+                "output_tokens": 356,
+                "total_tokens": 11083,
+                "cached_input_tokens": 7424,
+                "reasoning_output_tokens": 0
+              }
+            ],
+            "status": "returned"
+          },
+          {
+            "id": "36aa6c44-c19b-48a6-9b4c-e2e1301f1a6d",
+            "budget_id": "e72eb2df-2ed4-4e12-b1cc-55a90d2c449b",
+            "revision": 1,
+            "background": false,
+            "node": "jev_answer_points",
+            "model": "jev-1.13.0",
+            "estimated_input_tokens": 4652,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "input_tokens": 1902,
+                "output_tokens": 181
+              }
+            ],
+            "status": "ok"
+          },
+          {
+            "id": "921fc24a-99f7-40f2-b8f5-251fd7eba208",
+            "budget_id": "e72eb2df-2ed4-4e12-b1cc-55a90d2c449b",
+            "revision": 1,
+            "background": false,
+            "node": "evaluate",
+            "model": "deepseek-v4-flash",
+            "estimated_input_tokens": 3195,
+            "transport_requests": 1,
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "6a23d7ac-789f-4598-9042-82dbeb13981e",
+                "input_tokens": 1593,
+                "output_tokens": 224,
+                "total_tokens": 1817,
+                "cached_input_tokens": 384,
+                "reasoning_output_tokens": 0
+              }
+            ],
+            "status": "returned"
+          }
+        ],
+        "error_code": null
+      }
+    ]
+  },
+  "task": {
+    "task_id": "876ff347-ae2b-43c2-bf30-31aa8a52446d",
+    "session_id": "69374da3-08c4-4997-a007-c0f3dcdf781c",
+    "status": "awaiting_user",
+    "stage": "lesson_checked",
+    "user_summary": "等你继续",
+    "context": {
+      "understanding": "unknown",
+      "check_question": "RAG 的两个核心动作分别是什么？它们的先后顺序是怎样的？",
+      "check_standard": {
+        "question": "RAG 的两个核心动作分别是什么？它们的先后顺序是怎样的？",
+        "scoring_spec": {
+          "learning_goal": "检查是否掌握 RAG 的两个核心动作及其先后顺序",
+          "must_cover": [
+            "两个核心动作是检索和生成",
+            "顺序是先检索、后生成（先将资料作为上下文提供给模型，再生成回答）"
+          ],
+          "acceptable_paraphrases": [
+            "先找与问题相关的资料，再把它作为上下文交给模型生成回答",
+            "检索相关资料，然后让模型基于这些资料生成回答"
+          ],
+          "common_misconceptions": [
+            "先说生成、后说检索，或认为两者顺序无关",
+            "把“检索”说成“直接生成答案”，或把“生成”说成“先输出再找资料”",
+            "认为检索到资料就保证答案正确"
+          ],
+          "evidence": "先给一个简短学习地图，再讲第一段。\n\n## 学习地图\n\n1. **第一步：检索**——先找到与当前问题相关的资料。\n2. **第二步：生成**——把检索到的资料作为上下文提供给模型，让模型用这些资料来生成回答。\n3. **效果边界**——资料质量合适时，准确性**可能**提高，但**不能保证**答案一定正确。\n\n## 第一段：两个核心动作\n\nRAG 的第一个动作是**检索**，也就是“先找资料”，找到的是与问题相关的内容；第二个动作是**生成**，也就是“再把资料交给模型”，由模型据此产出回答。这里有两个容易被顺口带过的限定：检索到的资料要是**与问题相关**的，否则它作为上下文提供也没有意义；“作为上下文提供”意味着资料是给模型参考的输入，而不是直接当成最终答案。\n\n两个动作的先后顺序是固定的：**先检索，后生成**。换句话说，资料是在模型开始生成回答之前，就已经被找出来并放进上下文的。如果顺序反过来——“先生成再看资料”——那就不是这段笔记描述的 RAG 流程了。\n\n还有一个边界要一起记住：这套流程在资料质量合适时**可能**提高准确性，但这只是“可能”，不等于“必然正确”。检索到资料、并且把它作为上下文交给模型，和“回答一定正确”是两件事。\n\n检查题会只问这两个核心动作和它们的先后顺序。\n请直接教我下面这段 RAG 笔记，并出一道理解检查题。检查题只问两个核心动作和先后顺序。只用给定材料，不要联网：RAG 先检索与问题相关的资料，再将资料作为上下文提供给模型生成回答。资料质量合适时可能提高准确性，但不能保证答案一定正确。",
+          "order_rules": "必须先检索、后生成；若回答颠倒顺序或声称顺序无关，视为不符合。"
+        },
+        "step_id": "2db05bab-b0ea-45f4-bee9-6d70ad6d646f",
+        "reference_stamp": "f941e1aa46739327654ecbfa0d15008e1ead3ed2d36dac7f241b463e10f4a8de",
+        "fingerprint": "50278f775d333c2829b24d1f58fc33a91d9e6c9057f7e67df00fbdd6f4b7ce43",
+        "version": 1
+      },
+      "learning_plan": {
+        "id": "876ff347-ae2b-43c2-bf30-31aa8a52446d",
+        "version": 1,
+        "goal": "直接教学 RAG 笔记并出一道理解检查题（仅问两个核心动作及先后顺序）",
+        "steps": [
+          {
+            "id": "2db05bab-b0ea-45f4-bee9-6d70ad6d646f",
+            "state": "verified",
+            "understanding": "verified",
+            "message_ids": [
+              "5c92a9f3-b8f5-43f0-8384-5a1bda45dbec",
+              "45d364b1-c9d4-4990-98c0-43dc09a2ad28"
+            ],
+            "completion_condition": "能准确说出两个核心动作及其先后顺序，并说明资料的作用和“可能提高准确性但不保证正确”的边界",
+            "title": "说出 RAG 的两个核心动作：检索与生成"
+          },
+          {
+            "id": "c837ac10-2ce1-4c85-a4e6-946ed6a15054",
+            "state": "pending",
+            "understanding": "unknown",
+            "message_ids": [],
+            "completion_condition": "能准确说出两个核心动作及其先后顺序，并说明资料的作用和“可能提高准确性但不保证正确”的边界",
+            "title": "说明两个动作的先后顺序：先检索，再作为上下文提供并生成回答"
+          },
+          {
+            "id": "4e02de4e-a075-4d96-b4c6-225a93316480",
+            "state": "pending",
+            "understanding": "unknown",
+            "message_ids": [],
+            "completion_condition": "能准确说出两个核心动作及其先后顺序，并说明资料的作用和“可能提高准确性但不保证正确”的边界",
+            "title": "说明检索资料的角色：与问题相关，并作为上下文提供给模型"
+          },
+          {
+            "id": "0a222a60-f85d-475a-8dd1-fdcd83aedab9",
+            "state": "pending",
+            "understanding": "unknown",
+            "message_ids": [],
+            "completion_condition": "能准确说出两个核心动作及其先后顺序，并说明资料的作用和“可能提高准确性但不保证正确”的边界",
+            "title": "说明效果边界：资料质量合适时可能提高准确性，但不能保证答案一定正确"
+          }
+        ],
+        "current_step_id": "2db05bab-b0ea-45f4-bee9-6d70ad6d646f",
+        "success_check": "能准确说出两个核心动作及其先后顺序，并说明资料的作用和“可能提高准确性但不保证正确”的边界"
+      },
+      "understanding_by_lesson": {
+        "0": "unknown"
+      },
+      "hint_used": false,
+      "practice": [
+        {
+          "message_id": "43a4240a-5ce0-4bd9-9635-d1f242a1c0ff",
+          "hint_used": false,
+          "evaluation": {
+            "passed": true,
+            "correctness": "回答正确。两个核心动作是检索和生成，顺序是先检索、后生成，与给定材料一致。",
+            "completeness": "回答覆盖了两个核心动作及其先后顺序这两个必需点，没有遗漏。",
+            "expression": "表达简洁清楚，直接给出了动作和顺序。",
+            "transfer": "本题只要求识别两个核心动作和先后顺序，回答已满足该理解检查目标；未涉及资料质量、准确性边界等其他内容，不属于本题必答范围。",
+            "feedback": "你的作答正确：RAG 的两个核心动作是检索和生成，并且顺序是先检索、后生成。也就是说，先找到与问题相关的资料，再把资料作为上下文提供给模型，让模型据此生成回答。\n\n注意，本题只检查这两个动作和先后顺序，你已经答到要点。关于“资料质量合适时可能提高准确性，但不能保证答案一定正确”这一边界，本次没有要求作答，因此尚不能据此验证你是否掌握。",
+            "followup_question": "",
+            "followup_scoring_spec": null
+          }
+        }
+      ]
+    }
+  },
+  "prices": {
+    "checked_at": "2026-09-21",
+    "unit": "USD per million tokens",
+    "sources": {
+      "jev": "https://docs.typesafe.ai/models",
+      "deepseek": "https://api-docs.deepseek.com/quick_start/pricing/"
+    },
+    "rates": {
+      "jev-1.13.0": {
+        "input": [
+          0.042,
+          0.042
+        ],
+        "cached": [
+          0.042,
+          0.042
+        ],
+        "output": [
+          0,
+          0
+        ]
+      },
+      "deepseek-flash": {
+        "input": [
+          0.15,
+          0.3
+        ],
+        "cached": [
+          0.003,
+          0.006
+        ],
+        "output": [
+          0.6,
+          1.2
+        ]
+      },
+      "deepseek-v4-flash": {
+        "input": [
+          0.15,
+          0.3
+        ],
+        "cached": [
+          0.003,
+          0.006
+        ],
+        "output": [
+          0.6,
+          1.2
+        ]
+      },
+      "deepseek-v4-pro": {
+        "input": [
+          0.66,
+          1.32
+        ],
+        "cached": [
+          0.022,
+          0.044
+        ],
+        "output": [
+          1.98,
+          3.96
+        ]
+      }
+    },
+    "note": "采用官方英文模型表；费用显示闲时/高峰边界，不是已扣款账单。未知缓存用量按全命中到全未命中计范围；缺失输入/输出用量则保持未知。"
+  }
+}

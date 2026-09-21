@@ -1,0 +1,65 @@
+[
+  {
+    "file": "live-01.jsonl",
+    "summary": {
+      "type": "summary",
+      "planned": 3,
+      "recorded": 3,
+      "passed": 1,
+      "http_requests": 10,
+      "missing_usage": 1,
+      "known_cost_usd": [
+        0.00258774,
+        0.004926
+      ]
+    },
+    "round_median_ms": 6998.39,
+    "round_range_ms": [
+      3790.965,
+      12991.922
+    ],
+    "review_http": 5,
+    "review_node_durations_ms": [
+      1979,
+      1966,
+      1869,
+      2881
+    ],
+    "review_known_cost_usd": [
+      0.00211491,
+      0.00422982
+    ]
+  },
+  {
+    "file": "live-02.jsonl",
+    "summary": {
+      "type": "summary",
+      "planned": 3,
+      "recorded": 3,
+      "passed": 3,
+      "http_requests": 12,
+      "missing_usage": 1,
+      "known_cost_usd": [
+        0.00194265,
+        0.00357576
+      ]
+    },
+    "round_median_ms": 8525.791,
+    "round_range_ms": [
+      6409.273,
+      8831.248
+    ],
+    "review_http": 5,
+    "review_node_durations_ms": [
+      1367,
+      570,
+      782,
+      1444,
+      804
+    ],
+    "review_known_cost_usd": [
+      0.001307574,
+      0.002615148
+    ]
+  }
+]

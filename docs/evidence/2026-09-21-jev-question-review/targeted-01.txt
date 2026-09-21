@@ -1,0 +1,49 @@
+.........F............................................... [ 77%]
+.................                                                        [100%]
+=================================== FAILURES ===================================
+____ QualityTests.test_exhausted_review_budget_does_not_release_a_question _____
+
+self = <test_judgment_quality.QualityTests testMethod=test_exhausted_review_budget_does_not_release_a_question>
+
+    def test_exhausted_review_budget_does_not_release_a_question(self):
+        from agent_service.run_accounting import RunBudgetError, MODEL_ATTEMPTS
+        args = self.active()
+        with self.f.store.transaction(self.f.sid) as data:
+>           data["runs"][args[2]]["execution_budget"]["attempts"] = MODEL_ATTEMPTS
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'execution_budget'
+
+tests/test_judgment_quality.py:220: KeyError
+=============================== warnings summary ===============================
+agent_service/main.py:82
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:82: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:109
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:109: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_judgment_quality.py::QualityTests::test_exhausted_review_budget_does_not_release_a_question
+1 failed, 73 passed, 4 warnings, 15 subtests passed in 11.68s
