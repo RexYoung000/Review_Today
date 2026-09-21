@@ -56,6 +56,8 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
         nonlocal last_emit, latest
         # Check even non-public chunks: a stopped generation closes promptly.
         _, current_run = self._snapshot(session_id, run_id, revision)
+        if getattr(schema, "defer_public_preview", False):
+            return  # Quality-gated questions may also appear inside the prose.
         text = public_preview(node, partial)
         if "allowed_source_urls" in current_run:
             text = bound_source_links(text, current_run["allowed_source_urls"])

@@ -61,6 +61,8 @@ class CaptureState(TypedDict, total=False):
     risk_model: str | None
     model_runner: Callable | None
     search_runner: Callable | None
+    quality_runner: Callable | None
+    semantic_issues: list[str]
     confirmed_content: bool
 
 
@@ -281,19 +283,25 @@ def semantic_validate_node(state: CaptureState) -> dict[str, Any]:
         return updates
     try:
         extracted = ExtractPayload.model_validate(state["extracted"])
-        verdict = _parse_capture_model(
-            SEMANTIC_SYSTEM,
-            f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n"
-            f"{_source_text(state)}\n\n整理结果：\n{dump(extracted)}",
-            SemanticVerdict,
-            model=state.get("model"),
-            runner=state.get("model_runner"),
-        )
+        quality_runner = state.get("quality_runner")
+        verdict = quality_runner(_source_text(state), extracted, state.get("primary_language", "zh"),
+                                 repaired=state.get("repair_used", False)) if quality_runner else None
+        if verdict is None:
+            from agent_service.judgment_quality import CAPTURE_RULE
+            verdict = _parse_capture_model(
+                SEMANTIC_SYSTEM + (CAPTURE_RULE if quality_runner else ""),
+                f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n"
+                f"{_source_text(state)}\n\n整理结果：\n{dump(extracted)}",
+                SemanticVerdict,
+                model=state.get("model"),
+                runner=state.get("model_runner"),
+            )
         payload = SemanticVerdict.model_validate(verdict.model_dump())
         payload.issues.extend(_language_drift_issues(extracted, state.get("primary_language", "zh")))
         payload.issues.extend(source_fidelity_issues(extracted, _source_text(state)))
         if payload.issues:
             payload.ok = False
+        updates["semantic_issues"] = payload.issues
         if payload.ok:
             updates.update(_event({**state, **updates}, "node_success", "semantic_validate"))
             updates["semantic_ok"] = True
@@ -323,7 +331,9 @@ def repair_node(state: CaptureState) -> dict[str, Any]:
     try:
         parsed = _parse_capture_model(
             EXTRACT_SYSTEM + "\n上一稿未通过语义校验，请只根据原文修正，不要引入新的外部事实。",
-            f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n{_source_text(state)}\n\n上一稿：\n{dump(ExtractPayload.model_validate(state['extracted']))}",
+            f"用户主语言：{state.get('primary_language', 'zh')}\n\n原文：\n{_source_text(state)}\n\n上一稿：\n{dump(ExtractPayload.model_validate(state['extracted']))}" +
+            ("\n检查不符合项（只修正这些问题并保留原文依据）：\n" + json.dumps(state.get("semantic_issues", []), ensure_ascii=False)
+             if state.get("quality_runner") else ""),
             ExtractPayload,
             model=state.get("model"),
             runner=state.get("model_runner"),
@@ -541,6 +551,7 @@ def run_capture(
     risk_model: str | None = None,
     model_runner=None,
     search_runner=None,
+    quality_runner=None,
     confirmed_content: bool = False,
 ) -> CaptureState:
     return capture_graph.invoke(
@@ -558,6 +569,7 @@ def run_capture(
             "risk_model": risk_model,
             "model_runner": model_runner,
             "search_runner": search_runner,
+            "quality_runner": quality_runner,
             "confirmed_content": confirmed_content,
         }
     )

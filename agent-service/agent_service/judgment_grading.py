@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import json
-from typing import Literal
+from typing import ClassVar, Literal
 
 from pydantic import BaseModel, Field, create_model
 
@@ -13,6 +13,7 @@ from agent_service.schemas import (ScoringSpec, ConversationOutput, QuestionAnal
 
 
 class ScoredConversationOutput(ConversationOutput):
+    defer_public_preview: ClassVar[bool] = True
     check_scoring_spec: ScoringSpec | None = None
 
 
@@ -21,14 +22,17 @@ class ScoredQuestionAnalysis(QuestionAnalysis):
 
 
 class ScoredProblemCoachBundle(ProblemCoachBundle):
+    defer_public_preview: ClassVar[bool] = True
     analysis: ScoredQuestionAnalysis
 
 
 class ScoredMasteryEvaluation(MasteryEvaluation):
+    defer_public_preview: ClassVar[bool] = True
     followup_scoring_spec: ScoringSpec | None = None
 
 
 class JudgmentFeedback(BaseModel):
+    defer_public_preview: ClassVar[bool] = True
     correctness: str
     completeness: str
     expression: str
@@ -42,12 +46,14 @@ RUBRIC_RULE = """
 出知识检查题时同时生成 check_scoring_spec：learning_goal、must_cover 必需要点、
 acceptable_paraphrases 同义表达、common_misconceptions 核心误解、evidence 逐字摘录本轮讲解或已有参考材料。
 标准仅包含本题必需内容，不把未问内容作为必需要点；order_rules 仅在顺序影响正确性时填写。
+检查题只写在专用题目字段，不在 message、direct_answer 或 feedback 正文重复题目。
 开放式用途/偏好澄清或没有检查题时标准为 null。标准在看到用户答案前固定。
 """
 
 FOLLOWUP_RULE = """
 生成 followup_question 时同时给 followup_scoring_spec，包含该题的必需要点、允许同义表达和核心误解；
 evidence 逐字取本次给出的教学参考材料。没有足够材料制定标准时返回 null，不猜测。
+追问题目只写在 followup_question，不在 feedback 中重复题目。
 """
 
 

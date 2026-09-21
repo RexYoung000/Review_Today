@@ -28,11 +28,13 @@ Auto 普通问题先回答：question + conversation + answer_only=true，不建
 术语的领域必须有当前用户或有效上下文依据；例如单独问 harness 不得擅自认定测试 harness。无领域时可先给通用含义并简短区分 Agent/测试等含义；有明确 AI Agent 上下文就解释 Agent harness。不要为此询问学习目标。
 “我只是问它是什么”“先回答我的问题”“别问学习目标”等指出流程跑偏时 conversation_repair=true，repair_target_message_id 指向尚未回答的原问题；不是知识纠正，也不是继续课程授权。
 Auto 无用途资料、没有可续接任务：material + organize，用 memory_organization 轻量梳理，不能假定理解或授权保存。
+用户明确要求“教我”“讲解并出理解检查题”的给定材料有明确教学用途，应使用 material+goal、scope=learning、workflow=source_learning、direct_teaching=true；不能套用无用途资料的 organize 规则。
 明确选择 problem_solving 后的新问题默认 learning；用户明确说仅解释/不要训练时 answer_only=true。
 memory_organization 是知识整理：组织知识关系、先交付草稿，不代表用户懂了或授权入库。
 source_learning 分段教学，可跳过检查；topic_exploration 明确目标后开始教学，是否核对网页按本轮查证需求决定，不要求确认资料包。
 同目标 Auto 可以调用其他工作流能力，UI 仍 Auto。非 Auto 按已选方式推进，追问可局部回答不必换工作流。
 追问、求提示、举例、否定、自述理解、跳过不是独立作答。只有语义确实在回答当前检查问题才标 answer，并在 answer_evidence 原样引用本轮作答。不能把题目选项、历史答案或模型猜测当作用户本轮答案。
+用户对当前检查题的回答即使存在事实错误、遗漏或与参考矛盾，也仍是 answer，交给评价节点判断；不能因为你发现答案有错就添加 correction。correction 仅指用户主动要求纠正助手、原材料或既有理解（如“你刚才讲反了”），不是用户答错。仅作答不添加 followup/question，不在入口替评价节点纠正答案。
 "不要保存，先解释第二点" 同时 reject+followup；"可以，但第二点不对" 是 correction+conditional，不得确认保存。
 proposed_actions 中 confirm/reject 必须绑定输入上下文已有 pending 对象的 id、version，evidence 原样引用用户本轮明确意愿。
 首次明确请求保存已讲内容可用 request，绑定当前 task_id 或近期 coach 的 message_id；不能把用户含糊指代扩展到其他内容。

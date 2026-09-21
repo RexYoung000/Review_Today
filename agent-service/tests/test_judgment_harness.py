@@ -131,7 +131,7 @@ class HarnessJudgmentTests(unittest.TestCase):
         for key, q in body["questions"].items():
             if key not in labels:
                 labels[key] = ("covered" if key.startswith("point_") else "supported" if key.startswith("claim_")
-                               else "irrelevant" if "irrelevant" in q["criteria"] else "unsure")
+                               else "irrelevant" if "irrelevant" in q["criteria"] else "pass" if "pass" in q["criteria"] else "unsure")
         return httpx.Response(200, json=dict(model=MODEL, answers=raw_answers(body, labels),
                                              usage={"input_tokens": 10, "output_tokens": 5}))
 
