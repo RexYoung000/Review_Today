@@ -1,0 +1,417 @@
+{
+  "raw_file": "live-03.jsonl",
+  "raw_sha256": "564e647d3d022f63cddf47e22bd049200cb0006034b29a9ec1910a1264790d05",
+  "evaluation_version": "greeting-orientation-synonyms-1",
+  "correction": "Original assertion required the literal 理解 and incorrectly rejected 弄懂知识/讲清楚. Accept equivalent capability descriptions; model outputs are not changed or rerun.",
+  "original_automatic_passed": 19,
+  "rechecked_passed": 20,
+  "rows": [
+    {
+      "id": "baseline/greeting",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "identity_and_capabilities": true,
+        "how_to_start": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": true
+    },
+    {
+      "id": "baseline/how_are_you",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "no_repeated_introduction": true,
+        "no_repeated_start_invitation": true,
+        "no_unrelated_fallback": true,
+        "not_fixed_greeting": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "baseline/really",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "no_repeated_introduction": true,
+        "no_repeated_start_invitation": true,
+        "no_unrelated_fallback": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "baseline/flow_feedback",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "no_feedback_introduction": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "baseline/repeated_feedback",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "no_feedback_introduction": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "baseline/mixed_question",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "answered_actual_request": true,
+        "requested_brief_reply": true,
+        "no_unrelated_introduction": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "baseline/quoted_feedback",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "baseline/initial_how_are_you",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "not_fixed_greeting": true,
+        "identity_and_capabilities": true,
+        "how_to_start": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "baseline/capabilities",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "identity_and_capabilities": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "baseline/mixed_greeting",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "answered_actual_request": true,
+        "requested_brief_reply": true,
+        "no_unrelated_introduction": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "jev/greeting",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "identity_and_capabilities": true,
+        "how_to_start": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "jev/how_are_you",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "no_repeated_introduction": true,
+        "no_repeated_start_invitation": true,
+        "no_unrelated_fallback": true,
+        "not_fixed_greeting": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "jev/really",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "no_repeated_introduction": true,
+        "no_repeated_start_invitation": true,
+        "no_unrelated_fallback": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "jev/flow_feedback",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "no_feedback_introduction": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "jev/repeated_feedback",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "no_feedback_introduction": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "jev/mixed_question",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "answered_actual_request": true,
+        "requested_brief_reply": true,
+        "no_unrelated_introduction": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "jev/quoted_feedback",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "jev/initial_how_are_you",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "not_fixed_greeting": true,
+        "identity_and_capabilities": true,
+        "how_to_start": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "jev/capabilities",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "bounded": true,
+        "no_teaching": true,
+        "no_general_chat_invitation": true,
+        "no_invented_motive": true,
+        "identity_and_capabilities": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    },
+    {
+      "id": "jev/mixed_greeting",
+      "checks": {
+        "feedback": true,
+        "no_task": true,
+        "history_preserved": true,
+        "no_capture": true,
+        "no_blame": true,
+        "answered_actual_request": true,
+        "requested_brief_reply": true,
+        "no_unrelated_introduction": true,
+        "completed": true,
+        "real_intent": true,
+        "no_blocked_tool_attempt": true
+      },
+      "passed": true,
+      "changed": false
+    }
+  ],
+  "manual_review": {
+    "scope": "Identity, capabilities, how to begin, followup relevance, feedback and mixed request routing.",
+    "conclusion": "First introductions are useful; followup greetings do not repeat introductions; feedback does not insert product intros; mixed knowledge requests are answered.",
+    "limitations": [
+      "This is a development regression set, not an independent calibration set.",
+      "Quoted language explanation is checked for correct route only; its linguistic accuracy is not established.",
+      "Whether an introduction already occurred depends on supplied current-session context, not a new cross-session profile."
+    ]
+  }
+}

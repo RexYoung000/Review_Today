@@ -1,0 +1,12 @@
+{
+  "sessions": [
+    {
+      "session_id": "bb78635c-8777-48e2-b0b7-8cd284fea279",
+      "messages": 4,
+      "history_sha256": "907a37ee4072221a254e1a8e07ff7baa2fc7752e6b7c7dab83430efc4006663d"
+    }
+  ],
+  "service_pid_before": 98143,
+  "app_pid": 96066,
+  "port": 56739
+}

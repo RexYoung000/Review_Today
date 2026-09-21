@@ -13,7 +13,7 @@ SUPPORT_INTENTS = {"social", "question", "followup", "defer"}
 # Filter generated acknowledgements, never classify user requests by keywords.
 # Keep a usable sentence instead of discarding it together with an invitation.
 _UNSUITABLE_ACK = re.compile(
-    r"学习教练|随便.*聊|随时.*(?:说|聊|找我|问我|告诉我)|"
+    r"随便.*聊|随时.*(?:说|聊|找我|问我|告诉我|发给我|发我)|"
     r"(?:想|要不要).*(?:聊|学什么|了解什么|梳理哪)|准备好.*继续|"
     r"(?:你|您|用户).*(?:没给|没提供|没说清|没有信息量|没有具体内容)|"
     r"提示词|系统(?:规定|设置)|内部(?:机制|设置)|路由|模型限制|没必要.*闲聊|偷懒|故意敷衍",
@@ -21,11 +21,15 @@ _UNSUITABLE_ACK = re.compile(
 )
 
 
-def bounded_reply(reply, fallback):
+def bounded_reply(reply, fallback, *, allow_introduction=False):
     reply = reply.strip()
     if not reply or len(reply) > 120:
         return fallback
-    sentences = re.findall(r"[^。！？.!?\n]+[。！？.!?]?", reply)
+    # Greetings/capability questions can carry useful orientation. A response
+    # complaint or simple thanks must not turn into another product pitch.
+    if not allow_introduction and re.search(r"学习教练|Review\s*Today", reply, re.I):
+        return fallback
+    sentences = re.findall(r"[^。！？.!?；;～~\n]+[。！？.!?；;～~]?", reply)
     kept = [sentence for sentence in sentences
             if not re.search(r"[?？]", sentence) and not _UNSUITABLE_ACK.search(sentence)]
     return "".join(kept).strip() or fallback
@@ -59,7 +63,8 @@ def short_reply(data, decision, kind):
             return "今天不想学也没关系，可以先歇一歇。这里主要围绕学习和理解知识，想继续时再来就好。"
         return "我在。可以聊聊学习中遇到的困惑，或者最近想弄明白的事。"
     fallback = "不客气。" if "thanks" in decision.intents else "你好。" if "greeting" in decision.intents else "嗯，按自己的节奏来就好。"
-    return bounded_reply(decision.light_reply, fallback)
+    return bounded_reply(decision.light_reply, fallback,
+                         allow_introduction=bool(set(decision.intents) & {"greeting", "capabilities"}))
 
 
 def handle(h, sid, rid, rev, decision, last):

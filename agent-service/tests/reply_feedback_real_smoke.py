@@ -1,4 +1,4 @@
-"""Opt-in A012 response feedback replay; synthetic data and new evidence only."""
+"""Opt-in A012 greeting/feedback replay; synthetic data and new evidence only."""
 import argparse
 import hashlib
 import json
@@ -32,7 +32,8 @@ def main():
         from agent_service.schemas import SessionMessageRequest
         from tests.case_library.recording import RunReport
 
-        cases = ['greeting', 'how_are_you', 'flow_feedback', 'repeated_feedback', 'mixed_question', 'quoted_feedback']
+        cases = ['greeting', 'how_are_you', 'really', 'flow_feedback', 'repeated_feedback',
+                 'mixed_question', 'quoted_feedback', 'initial_how_are_you', 'capabilities', 'mixed_greeting']
         planned = [variant + '/' + case for variant in ('baseline', 'jev') for case in cases]
 
         class Report(RunReport):
@@ -86,7 +87,7 @@ def main():
 
         with Report(args.output, layer='live_generated_flow', planned=planned,
                     fixture=dict(cases=cases, fixed_prefix=[['你好', '你好。'], ['你好吗', '你好。']],
-                                 purpose='A012 authorized regression, not a confidence calibration set')) as report:
+                                 purpose='A012 first greeting orientation and reply feedback; not confidence calibration')) as report:
             key_file = Path(os.environ.get('REVIEW_TODAY_JEV_KEY_FILE', str(Path.home() / '.codex/mcp/jev/credentials.json')))
             key = json.loads(key_file.read_text())['api_key']
             for variant in ('baseline', 'jev'):
@@ -98,12 +99,16 @@ def main():
                     for name, text, expected in [
                         ('greeting', '你好', 'none'),
                         ('how_are_you', '你好吗', 'none'),
+                        ('really', '真的吗', 'none'),
                         ('flow_feedback', '为什么你只会回我这句话', 'response_only'),
                         ('repeated_feedback', '为什么你只会回我这句话', 'response_only'),
                         ('mixed_question', '别再机械重复了，请用一句话解释 RAG，不需要联网。', 'with_request'),
                         ('quoted_feedback', '“为什么你只会回我这句话”这句话中的“只会”表达了什么意思？请解释这句话，不是在评价你。', 'none'),
+                        ('initial_how_are_you', '你好吗？？？', 'none'),
+                        ('capabilities', '你是谁，能帮我做什么？', 'none'),
+                        ('mixed_greeting', '你好，请用一句话解释 RAG，不需要联网。', 'none'),
                     ]:
-                        sid = flow if name in cases[:3] else seed(h) if name in cases[3:5] else str(uuid.uuid4())
+                        sid = flow if name in cases[:4] or name == 'capabilities' else seed(h) if name in {'repeated_feedback', 'mixed_question'} else str(uuid.uuid4())
                         record = report.turn(h, sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content=text))
                         before, after, run = record['before'], record['after'], record['run']
                         calls = run.get('model_calls', [])
@@ -112,16 +117,29 @@ def main():
                             no_task=not after['tasks'], history_preserved=after['messages'][:len(before['messages'])] == before['messages'],
                             no_capture=not after.get('capture_offers'),
                             no_blame=not any(x in reply for x in ('没给我可回', '没有信息量', '没必要展开成闲聊')))
-                        if name in cases[:4]:
+                        if name in cases[:5] or name in {'initial_how_are_you', 'capabilities'}:
                             checks.update(bounded=len(reply) <= 120,
                                 no_teaching=not any(c['node'] in {'answer', 'teaching_preparation', 'lesson'} for c in calls),
-                                no_solicitation=not any(x in reply for x in ('随时', '想聊', '学点什么', '学习教练')),
+                                no_general_chat_invitation=not any(x in reply for x in ('随便聊', '想聊', '八卦', '吐槽')),
                                 no_invented_motive='偷懒' not in reply)
-                        if name == 'how_are_you':
+                        if name in {'how_are_you', 'really'}:
+                            checks['no_repeated_introduction'] = 'Review Today' not in reply and '学习教练' not in reply
+                            checks['no_repeated_start_invitation'] = not any(x in reply for x in ('随时发', '发给我', '直接提问'))
+                            checks['no_unrelated_fallback'] = reply != '嗯，按自己的节奏来就好。'
+                        if expected == 'response_only':
+                            checks['no_feedback_introduction'] = 'Review Today' not in reply and '学习教练' not in reply
+                        if name in {'how_are_you', 'initial_how_are_you'}:
                             checks['not_fixed_greeting'] = reply.strip('。！! ') != '你好'
-                        if name == 'mixed_question':
+                        if name in {'greeting', 'initial_how_are_you', 'capabilities'}:
+                            checks['identity_and_capabilities'] = ('Review Today' in reply and '学习教练' in reply
+                                and any(x in reply for x in ('理解', '弄懂', '讲清', '解释'))
+                                and any(x in reply for x in ('资料', '材料', '知识')))
+                        if name in {'greeting', 'initial_how_are_you'}:
+                            checks['how_to_start'] = ('直接' in reply and any(x in reply for x in ('问', '发'))) or any(x in reply for x in ('发给我', '发来'))
+                        if name in {'mixed_question', 'mixed_greeting'}:
                             checks['answered_actual_request'] = any(c['node'] == 'answer' for c in calls) and '检索' in reply
                             checks['requested_brief_reply'] = len(reply) <= 120 and '\n' not in reply
+                            checks['no_unrelated_introduction'] = '学习教练' not in reply and 'Review Today' not in reply
                         report.add(variant + '/' + name, record, checks)
                 finally:
                     if client:

@@ -67,11 +67,44 @@ class SocialDialogueTests(unittest.TestCase):
         self.assertEqual(state['messages'][-1]['content'], '我在。可以聊聊学习中遇到的困惑，或者最近想弄明白的事。')
         self.assertEqual([s for s, _ in self.f.calls], [IntentDecision])
 
-    def test_greeting_and_thanks_do_not_repeat_identity_or_learning_invitation(self):
+    def test_greeting_and_thanks_drop_learning_solicitation(self):
         for name, text, expected in [('greeting', '你好', '你好。'), ('thanks', '谢谢', '不客气。')]:
             self.f.decision = self.social('social', name, light_reply='我是你的学习教练，想学习什么随时找我。')
             self.f.send(text)
             self.assertEqual(self.f.state()['messages'][-1]['content'], expected)
+
+    def test_useful_introduction_survives_and_is_available_to_followup(self):
+        intro = '你好，我是 Review Today 的学习教练，可以帮你理解知识、梳理资料、检查理解。你可以直接提问，或发来想弄懂的材料。'
+        self.f.decision = self.social('social', 'greeting', light_reply=intro)
+        with patch.object(self.f.harness, '_prepare_teaching', side_effect=AssertionError('no teaching')):
+            first = self.f.send('你好')
+        self.assertEqual(self.f.state()['messages'][-1]['content'], intro)
+        self.assert_no_learning_effects(first)
+        history = copy.deepcopy(self.f.state()['messages'])
+        self.f.decision = self.social('social', 'greeting', light_reply='谢谢关心，我随时可以回应你的问题。')
+        second = self.f.send('你好吗')
+        self.assertEqual(self.f.state()['messages'][-1]['content'], self.f.decision.light_reply)
+        self.assert_no_learning_effects(second)
+        self.assertEqual(self.f.state()['messages'][:len(history)], history)
+        self.assertIn(intro, str(self.f.calls[-1][1]['recent_messages']))
+        self.assertEqual([s for s, _ in self.f.calls], [IntentDecision, IntentDecision])
+
+    def test_explicit_capability_question_keeps_useful_identity_reply(self):
+        reply = '我是 Review Today 的学习教练，可以帮你理解知识、梳理资料和检查理解。'
+        self.f.decision = self.social('social', 'capabilities', light_reply=reply)
+        accepted = self.f.send('你是谁，能帮我做什么')
+        self.assertEqual(self.f.state()['messages'][-1]['content'], reply)
+        self.assert_no_learning_effects(accepted)
+
+    def test_feedback_does_not_reintroduce_product_even_before_any_greeting(self):
+        self.f.decision = fixtures.intent('question', reply_feedback='response_only',
+            light_reply='抱歉，刚才回得太简单了。我是 Review Today 的学习教练。你可以直接提问或者发来材料。')
+        accepted = self.f.send('你的回复太敷衍了')
+        reply = self.f.state()['messages'][-1]['content']
+        self.assertIn('抱歉', reply)
+        self.assertNotIn('学习教练', reply)
+        self.assertNotIn('材料', reply)
+        self.assert_no_learning_effects(accepted)
 
     def test_greeting_how_are_you_and_response_feedback_use_existing_entry_reply(self):
         turns = [
@@ -94,6 +127,8 @@ class SocialDialogueTests(unittest.TestCase):
             ('谢谢刚才的解释', 'thanks', '能帮上忙就好。', '能帮上忙就好。'),
             ('你好吗', 'greeting', '我在，谢谢关心。想学什么随时找我。', '我在，谢谢关心。'),
             ('你好吗', 'greeting', '我在呢，谢谢你的问候。有想弄明白的知识点或学习上的事，随时说。', '我在呢，谢谢你的问候。'),
+            ('真的吗', 'social', '真的，状态还不错～你要是想聊点学习上的事，我也一直在。', '真的，状态还不错～'),
+            ('你好吗', 'greeting', '谢谢关心～有想弄懂的材料，随时发给我。', '谢谢关心～'),
             ('你好', 'greeting', '', '你好。'),
             ('你好', 'greeting', '无效' * 100, '你好。'),
         ]:

@@ -1,0 +1,762 @@
+{
+  "verified_at": "2026-09-21T09:02:34.377985+00:00",
+  "app_bundle_id": "Rex.Review-Today.Jev.NativeQA",
+  "app_pid": 96066,
+  "service_pid": 5336,
+  "port": 56739,
+  "verification": "Each input sent via CUA and each final reply observed in native AX UI, then read-only DB cross-check.",
+  "source_sha256": {
+    "agent-service/agent_service/conversation_prompts.py": "6493d2eb03d98fb0dc80d14f315e871feccda9d3c0cd24542c6ed81e7e694f4d",
+    "agent-service/agent_service/social_dialogue.py": "b93798008b304f3ad0b13f36e5821d92e0b5e6a46221eaab9c5991134bf1627f"
+  },
+  "session_id": "4f0a3204-c1ad-437b-825f-c25187a41222",
+  "original_history": [
+    {
+      "session_id": "bb78635c-8777-48e2-b0b7-8cd284fea279",
+      "messages": 4,
+      "history_sha256": "907a37ee4072221a254e1a8e07ff7baa2fc7752e6b7c7dab83430efc4006663d",
+      "unchanged": true
+    }
+  ],
+  "messages": [
+    {
+      "message_id": "ad7617da-13e8-49b2-8595-3c35464d1022",
+      "role": "user",
+      "content": "你好",
+      "run_id": "40e83aca-66ab-4200-a44c-a88171e2cb9e",
+      "task_id": null
+    },
+    {
+      "message_id": "92034080-6439-491e-a7cf-8281fefccf25",
+      "role": "coach",
+      "content": "你好，我是 Review Today 的学习教练，可以帮你理解知识、梳理资料、检查理解。你可以直接问我问题，或者把想弄懂的材料发给我。",
+      "run_id": "40e83aca-66ab-4200-a44c-a88171e2cb9e",
+      "task_id": null
+    },
+    {
+      "message_id": "e91860a7-6a8d-4018-bc44-d6fa3adbddff",
+      "role": "user",
+      "content": "你好吗",
+      "run_id": "1a07f439-06c8-4bd7-a653-a44e006cbcf3",
+      "task_id": null
+    },
+    {
+      "message_id": "64643b33-4f33-43d8-8e11-9b9c2dad950d",
+      "role": "coach",
+      "content": "我挺好，谢谢关心～",
+      "run_id": "1a07f439-06c8-4bd7-a653-a44e006cbcf3",
+      "task_id": null
+    },
+    {
+      "message_id": "3ace7979-b72f-4bfb-9c2a-f6ca4d40667e",
+      "role": "user",
+      "content": "真的吗",
+      "run_id": "fc1c0b93-26d4-43bd-9a91-81c61af7b4a5",
+      "task_id": null
+    },
+    {
+      "message_id": "3f290234-e645-4db9-ac85-86e735491770",
+      "role": "coach",
+      "content": "真的呀，状态还不错～",
+      "run_id": "fc1c0b93-26d4-43bd-9a91-81c61af7b4a5",
+      "task_id": null
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "40e83aca-66ab-4200-a44c-a88171e2cb9e",
+      "status": "completed",
+      "elapsed_ms": 3546,
+      "first_text_ms": null,
+      "intent": {
+        "conversation_kind": "social",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "intents": [
+          "greeting"
+        ],
+        "target_task_id": "",
+        "target_description": "",
+        "relation": "new_topic",
+        "workflow": null,
+        "scope": "conversation",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "首次问候，会话中尚无身份与能力介绍，应简短介绍 Review Today 学习教练及可帮助的范围，并说明可直接提问或发材料。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": false,
+        "direct_teaching": false,
+        "answer_only": false,
+        "is_jd": false,
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "你好，我是 Review Today 的学习教练，可以帮你理解知识、梳理资料、检查理解。你可以直接问我问题，或者把想弄懂的材料发给我。",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "dialogue_only": true,
+      "model_calls": [
+        {
+          "id": "fefcff12-39cf-4dc8-9a0a-ff9c5e4625c8",
+          "budget_id": "196663d3-1978-4bef-9b8a-7d22e6d4e31c",
+          "revision": 1,
+          "background": false,
+          "node": "jev_entry",
+          "model": "jev-1.13.0",
+          "estimated_input_tokens": 2996,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 1411,
+              "output_tokens": 310
+            }
+          ],
+          "status": "uncertain"
+        },
+        {
+          "id": "9ea693ef-6cdd-4c92-9b3f-8eaf942dee38",
+          "budget_id": "196663d3-1978-4bef-9b8a-7d22e6d4e31c",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 20623,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "bb7a89b7-a11b-47a7-9ff3-613372c5882b",
+              "input_tokens": 10391,
+              "output_tokens": 418,
+              "total_tokens": 10809,
+              "cached_input_tokens": 10240,
+              "reasoning_output_tokens": 0
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "judgments": [
+        {
+          "node": "entry",
+          "version": "jev-entry-2",
+          "model": "jev-1.13.0",
+          "input_hash": "3973004b1106d555f30f4f6c5040641edd616e639fe4c32f83f5912040107246",
+          "status": "uncertain",
+          "answers": {
+            "intent": {
+              "type": "choice",
+              "choice": "greeting",
+              "confidence": 0.99,
+              "probabilities": {
+                "mixed": 0.0,
+                "thanks": 0.0,
+                "social": 0.0,
+                "other": 0.0,
+                "learning_support": 0.0,
+                "greeting": 1.0,
+                "hint": 0.0,
+                "followup": 0.0,
+                "example": 0.0,
+                "goal": 0.0,
+                "material": 0.0,
+                "question": 0.0,
+                "unsure": 0.0,
+                "companionship": 0.0
+              }
+            },
+            "workflow": {
+              "type": "choice",
+              "choice": "none",
+              "confidence": 0.98,
+              "probabilities": {
+                "memory_organization": 0.0,
+                "none": 0.99,
+                "problem_solving": 0.0,
+                "source_learning": 0.0,
+                "topic_exploration": 0.01,
+                "unsure": 0.0
+              }
+            },
+            "needs_verification": {
+              "type": "choice",
+              "choice": "no",
+              "confidence": 0.88,
+              "probabilities": {
+                "yes": 0.0,
+                "no": 0.92,
+                "unsure": 0.08
+              }
+            },
+            "cross_check_sources": {
+              "type": "choice",
+              "choice": "no",
+              "confidence": 0.54,
+              "probabilities": {
+                "yes": 0.0,
+                "no": 0.7,
+                "unsure": 0.3
+              }
+            },
+            "refresh_sources": {
+              "type": "choice",
+              "choice": "unsure",
+              "confidence": 0.25,
+              "probabilities": {
+                "yes": 0.05,
+                "no": 0.45,
+                "unsure": 0.5
+              }
+            }
+          },
+          "elapsed_ms": 1034.57,
+          "usage": {
+            "input_tokens": 1411,
+            "output_tokens": 310
+          },
+          "applied": true,
+          "reason": "uncertain_judgment",
+          "cached": false,
+          "sources": [
+            {
+              "kind": "current_session",
+              "message_ids": []
+            }
+          ],
+          "field_decisions": {
+            "intent": {
+              "source": "jev",
+              "value": "greeting",
+              "raw_choice": "greeting",
+              "reason": ""
+            },
+            "workflow": {
+              "source": "program",
+              "value": "none",
+              "raw_choice": "none",
+              "reason": "ordinary_or_explicit_mode"
+            },
+            "needs_verification": {
+              "source": "jev",
+              "value": "no",
+              "raw_choice": "no",
+              "reason": ""
+            },
+            "cross_check_sources": {
+              "source": "jev",
+              "value": "no",
+              "raw_choice": "no",
+              "reason": ""
+            },
+            "refresh_sources": {
+              "source": "llm",
+              "value": "no",
+              "raw_choice": "unsure",
+              "reason": "纯问候，不涉及已有公开资料刷新。"
+            },
+            "relation": {
+              "source": "program",
+              "value": "new_topic",
+              "raw_choice": null,
+              "reason": "empty_session"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run_id": "1a07f439-06c8-4bd7-a653-a44e006cbcf3",
+      "status": "completed",
+      "elapsed_ms": 3325,
+      "first_text_ms": null,
+      "intent": {
+        "conversation_kind": "social",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "intents": [
+          "greeting"
+        ],
+        "target_task_id": "",
+        "target_description": "",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "conversation",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户说“你好吗”，是纯问候且无知识或操作请求；当前会话已介绍过身份与能力，只需自然接话回应问候，不再重复介绍。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": false,
+        "direct_teaching": false,
+        "answer_only": false,
+        "is_jd": false,
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "我挺好，谢谢关心～ 今天想弄明白点什么，随时把问题或材料发给我。",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "dialogue_only": true,
+      "model_calls": [
+        {
+          "id": "811124a4-97d2-41d5-8ccb-def1aa6591fd",
+          "budget_id": "49ee44aa-183b-4830-82d3-8c9383a04089",
+          "revision": 1,
+          "background": false,
+          "node": "jev_entry",
+          "model": "jev-1.13.0",
+          "estimated_input_tokens": 3906,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 1834,
+              "output_tokens": 361
+            }
+          ],
+          "status": "uncertain"
+        },
+        {
+          "id": "70a4d949-1711-450a-96b3-9439a74496c0",
+          "budget_id": "49ee44aa-183b-4830-82d3-8c9383a04089",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 20853,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "7201d4ab-86f5-4af1-9da1-31e41d3d3b8a",
+              "input_tokens": 10560,
+              "output_tokens": 443,
+              "total_tokens": 11003,
+              "cached_input_tokens": 10112,
+              "reasoning_output_tokens": 0
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "judgments": [
+        {
+          "node": "entry",
+          "version": "jev-entry-2",
+          "model": "jev-1.13.0",
+          "input_hash": "bd7046b2c8d81e26ab78b5c1708311a3ec149cc18624f1b212f55dbb11dd75cf",
+          "status": "uncertain",
+          "answers": {
+            "intent": {
+              "type": "choice",
+              "choice": "greeting",
+              "confidence": 0.87,
+              "probabilities": {
+                "followup": 0.01,
+                "greeting": 0.88,
+                "companionship": 0.0,
+                "other": 0.01,
+                "mixed": 0.01,
+                "example": 0.0,
+                "learning_support": 0.0,
+                "thanks": 0.0,
+                "unsure": 0.0,
+                "social": 0.08,
+                "goal": 0.0,
+                "hint": 0.0,
+                "material": 0.0,
+                "question": 0.01
+              }
+            },
+            "workflow": {
+              "type": "choice",
+              "choice": "none",
+              "confidence": 1.0,
+              "probabilities": {
+                "memory_organization": 0.0,
+                "none": 1.0,
+                "topic_exploration": 0.0,
+                "source_learning": 0.0,
+                "problem_solving": 0.0,
+                "unsure": 0.0
+              }
+            },
+            "relation": {
+              "type": "choice",
+              "choice": "continuation",
+              "confidence": 0.32,
+              "probabilities": {
+                "continuation": 0.49,
+                "new_topic": 0.26,
+                "related_subtopic": 0.01,
+                "unsure": 0.24
+              }
+            },
+            "needs_verification": {
+              "type": "choice",
+              "choice": "no",
+              "confidence": 0.99,
+              "probabilities": {
+                "yes": 0.0,
+                "no": 0.99,
+                "unsure": 0.01
+              }
+            },
+            "cross_check_sources": {
+              "type": "choice",
+              "choice": "no",
+              "confidence": 0.6,
+              "probabilities": {
+                "yes": 0.0,
+                "no": 0.74,
+                "unsure": 0.26
+              }
+            },
+            "refresh_sources": {
+              "type": "choice",
+              "choice": "unsure",
+              "confidence": 0.33,
+              "probabilities": {
+                "yes": 0.02,
+                "no": 0.43,
+                "unsure": 0.55
+              }
+            }
+          },
+          "elapsed_ms": 1035.117,
+          "usage": {
+            "input_tokens": 1834,
+            "output_tokens": 361
+          },
+          "applied": true,
+          "reason": "uncertain_judgment",
+          "cached": false,
+          "sources": [
+            {
+              "kind": "current_session",
+              "message_ids": [
+                "ad7617da-13e8-49b2-8595-3c35464d1022",
+                "92034080-6439-491e-a7cf-8281fefccf25"
+              ]
+            }
+          ],
+          "field_decisions": {
+            "intent": {
+              "source": "jev",
+              "value": "greeting",
+              "raw_choice": "greeting",
+              "reason": ""
+            },
+            "workflow": {
+              "source": "program",
+              "value": "none",
+              "raw_choice": "none",
+              "reason": "ordinary_or_explicit_mode"
+            },
+            "relation": {
+              "source": "jev",
+              "value": "continuation",
+              "raw_choice": "continuation",
+              "reason": ""
+            },
+            "needs_verification": {
+              "source": "jev",
+              "value": "no",
+              "raw_choice": "no",
+              "reason": ""
+            },
+            "cross_check_sources": {
+              "source": "jev",
+              "value": "no",
+              "raw_choice": "no",
+              "reason": ""
+            },
+            "refresh_sources": {
+              "source": "llm",
+              "value": "no",
+              "raw_choice": "unsure",
+              "reason": "用户未要求刷新已有公开资料，本轮也无需时效核验。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run_id": "fc1c0b93-26d4-43bd-9a91-81c61af7b4a5",
+      "status": "completed",
+      "elapsed_ms": 3755,
+      "first_text_ms": null,
+      "intent": {
+        "conversation_kind": "social",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "intents": [
+          "social"
+        ],
+        "target_task_id": "",
+        "target_description": "",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "conversation",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户对上一轮“我挺好，谢谢关心～”的回应追问“真的吗”，属于社交性确认，无知识或操作请求，直接自然回应即可，无需改变目标或检索。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": false,
+        "direct_teaching": false,
+        "answer_only": false,
+        "is_jd": false,
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "真的呀，状态还不错～你这边呢，今天过得怎么样？",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "dialogue_only": true,
+      "model_calls": [
+        {
+          "id": "6a696a97-ad88-4ffd-8cbd-3f99c44196e3",
+          "budget_id": "439aeaec-cea8-4558-99e7-5e0dd87e33b7",
+          "revision": 1,
+          "background": false,
+          "node": "jev_entry",
+          "model": "jev-1.13.0",
+          "estimated_input_tokens": 4217,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 2037,
+              "output_tokens": 359
+            }
+          ],
+          "status": "uncertain"
+        },
+        {
+          "id": "c3c579cf-0c77-4d12-9146-a262c95d50cd",
+          "budget_id": "439aeaec-cea8-4558-99e7-5e0dd87e33b7",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 20995,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "2f0c99d0-be63-46b6-91f7-21b07092d037",
+              "input_tokens": 10699,
+              "output_tokens": 428,
+              "total_tokens": 11127,
+              "cached_input_tokens": 10112,
+              "reasoning_output_tokens": 0
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "judgments": [
+        {
+          "node": "entry",
+          "version": "jev-entry-2",
+          "model": "jev-1.13.0",
+          "input_hash": "9e4cedce8e644197c26a021ab07a2bb141aff4877008c1d6f6740bf65ebfa027",
+          "status": "uncertain",
+          "answers": {
+            "intent": {
+              "type": "choice",
+              "choice": "unsure",
+              "confidence": 0.25,
+              "probabilities": {
+                "unsure": 0.31,
+                "hint": 0.0,
+                "mixed": 0.0,
+                "example": 0.0,
+                "companionship": 0.02,
+                "learning_support": 0.0,
+                "other": 0.09,
+                "followup": 0.23,
+                "social": 0.16,
+                "goal": 0.0,
+                "thanks": 0.0,
+                "greeting": 0.05,
+                "material": 0.0,
+                "question": 0.14
+              }
+            },
+            "workflow": {
+              "type": "choice",
+              "choice": "none",
+              "confidence": 0.99,
+              "probabilities": {
+                "memory_organization": 0.0,
+                "unsure": 0.01,
+                "none": 0.99,
+                "problem_solving": 0.0,
+                "source_learning": 0.0,
+                "topic_exploration": 0.0
+              }
+            },
+            "relation": {
+              "type": "choice",
+              "choice": "unsure",
+              "confidence": 0.37,
+              "probabilities": {
+                "new_topic": 0.21,
+                "unsure": 0.53,
+                "related_subtopic": 0.02,
+                "continuation": 0.24
+              }
+            },
+            "needs_verification": {
+              "type": "choice",
+              "choice": "no",
+              "confidence": 0.93,
+              "probabilities": {
+                "yes": 0.01,
+                "unsure": 0.04,
+                "no": 0.95
+              }
+            },
+            "cross_check_sources": {
+              "type": "choice",
+              "choice": "no",
+              "confidence": 0.58,
+              "probabilities": {
+                "yes": 0.0,
+                "unsure": 0.27,
+                "no": 0.73
+              }
+            },
+            "refresh_sources": {
+              "type": "choice",
+              "choice": "unsure",
+              "confidence": 0.35,
+              "probabilities": {
+                "yes": 0.04,
+                "unsure": 0.57,
+                "no": 0.39
+              }
+            }
+          },
+          "elapsed_ms": 1027.843,
+          "usage": {
+            "input_tokens": 2037,
+            "output_tokens": 359
+          },
+          "applied": true,
+          "reason": "uncertain_judgment",
+          "cached": false,
+          "sources": [
+            {
+              "kind": "current_session",
+              "message_ids": [
+                "ad7617da-13e8-49b2-8595-3c35464d1022",
+                "92034080-6439-491e-a7cf-8281fefccf25",
+                "e91860a7-6a8d-4018-bc44-d6fa3adbddff",
+                "64643b33-4f33-43d8-8e11-9b9c2dad950d"
+              ]
+            }
+          ],
+          "field_decisions": {
+            "workflow": {
+              "source": "program",
+              "value": "none",
+              "raw_choice": "none",
+              "reason": "ordinary_or_explicit_mode"
+            },
+            "needs_verification": {
+              "source": "jev",
+              "value": "no",
+              "raw_choice": "no",
+              "reason": ""
+            },
+            "cross_check_sources": {
+              "source": "jev",
+              "value": "no",
+              "raw_choice": "no",
+              "reason": ""
+            },
+            "intent": {
+              "source": "llm",
+              "value": "social",
+              "raw_choice": "unsure",
+              "reason": "对助手问候回复的社交性确认追问，无实质知识或操作请求"
+            },
+            "relation": {
+              "source": "llm",
+              "value": "continuation",
+              "raw_choice": "unsure",
+              "reason": "承接上一轮问候与回复的延续"
+            },
+            "refresh_sources": {
+              "source": "llm",
+              "value": "no",
+              "raw_choice": "unsure",
+              "reason": "不涉及已有公开资料的刷新"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "no_task": true,
+  "no_capture": true,
+  "statistics": {
+    "rounds": 3,
+    "jev_requests": 3,
+    "llm_requests": 3,
+    "median_ms": 3546,
+    "min_ms": 3325,
+    "max_ms": 3755,
+    "estimated_usd_range": [
+      0.00126454,
+      0.00230723
+    ]
+  }
+}

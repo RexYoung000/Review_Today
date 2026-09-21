@@ -1,0 +1,262 @@
+{
+  "price_snapshot": {
+    "checked_at": "2026-09-20",
+    "unit": "USD per million tokens",
+    "sources": {
+      "jev": "https://docs.typesafe.ai/models",
+      "deepseek": "https://api-docs.deepseek.com/quick_start/pricing/"
+    },
+    "rates": {
+      "jev-1.13.0": {
+        "input": [
+          0.042,
+          0.042
+        ],
+        "cached": [
+          0.042,
+          0.042
+        ],
+        "output": [
+          0,
+          0
+        ]
+      },
+      "deepseek-flash": {
+        "input": [
+          0.15,
+          0.3
+        ],
+        "cached": [
+          0.003,
+          0.006
+        ],
+        "output": [
+          0.6,
+          1.2
+        ]
+      },
+      "deepseek-v4-flash": {
+        "input": [
+          0.15,
+          0.3
+        ],
+        "cached": [
+          0.003,
+          0.006
+        ],
+        "output": [
+          0.6,
+          1.2
+        ]
+      },
+      "deepseek-v4-pro": {
+        "input": [
+          0.66,
+          1.32
+        ],
+        "cached": [
+          0.022,
+          0.044
+        ],
+        "output": [
+          1.98,
+          3.96
+        ]
+      }
+    },
+    "note": "采用官方英文模型表；费用显示闲时/高峰边界，不是已扣款账单。未知缓存用量按全命中到全未命中计范围；缺失输入/输出用量则保持未知。"
+  },
+  "note": "Prices are the existing 2026-09-20 snapshot, not a fresh check or billed cost; capability probes are excluded.",
+  "batches": {
+    "live-01.jsonl": {
+      "original_automatic_passed": 16,
+      "total": 20,
+      "original_failed_checks": {
+        "baseline/greeting": [
+          "how_to_start"
+        ],
+        "jev/greeting": [
+          "how_to_start"
+        ],
+        "jev/mixed_question": [
+          "requested_brief_reply"
+        ],
+        "jev/initial_how_are_you": [
+          "how_to_start"
+        ]
+      },
+      "groups": {
+        "baseline": {
+          "rounds": 10,
+          "median_ms": 2352.0,
+          "min_ms": 1993,
+          "max_ms": 6120,
+          "transport_requests": 16,
+          "requests_by_model": {
+            "deepseek-flash": 13,
+            "deepseek-v4-flash": 3
+          },
+          "requests_by_node": {
+            "answer": 3,
+            "intent": 10,
+            "teaching_preparation": 3
+          },
+          "input_tokens": 88745,
+          "output_tokens": 3766,
+          "cost_complete": true,
+          "estimated_usd_range": [
+            0.00448873,
+            0.00897745
+          ]
+        },
+        "jev": {
+          "rounds": 10,
+          "median_ms": 3251.5,
+          "min_ms": 2212,
+          "max_ms": 6531,
+          "transport_requests": 26,
+          "requests_by_model": {
+            "deepseek-flash": 13,
+            "deepseek-v4-flash": 3,
+            "jev-1.13.0": 10
+          },
+          "requests_by_node": {
+            "answer": 3,
+            "intent": 10,
+            "jev_entry": 10,
+            "teaching_preparation": 3
+          },
+          "input_tokens": 128066,
+          "output_tokens": 7992,
+          "cost_complete": true,
+          "estimated_usd_range": [
+            0.00547318,
+            0.01017099
+          ]
+        }
+      }
+    },
+    "live-02.jsonl": {
+      "original_automatic_passed": 18,
+      "total": 20,
+      "original_failed_checks": {
+        "jev/initial_how_are_you": [
+          "how_to_start"
+        ],
+        "jev/capabilities": [
+          "bounded",
+          "no_teaching"
+        ]
+      },
+      "groups": {
+        "baseline": {
+          "rounds": 10,
+          "median_ms": 2396.5,
+          "min_ms": 1672,
+          "max_ms": 6688,
+          "transport_requests": 17,
+          "requests_by_model": {
+            "deepseek-flash": 14,
+            "deepseek-v4-flash": 3
+          },
+          "requests_by_node": {
+            "answer": 3,
+            "intent": 11,
+            "teaching_preparation": 3
+          },
+          "input_tokens": 97437,
+          "output_tokens": 4293,
+          "cost_complete": true,
+          "estimated_usd_range": [
+            0.00492332,
+            0.00984664
+          ]
+        },
+        "jev": {
+          "rounds": 10,
+          "median_ms": 3638.5,
+          "min_ms": 2320,
+          "max_ms": 8428,
+          "transport_requests": 28,
+          "requests_by_model": {
+            "deepseek-flash": 14,
+            "deepseek-v4-flash": 4,
+            "jev-1.13.0": 10
+          },
+          "requests_by_node": {
+            "answer": 4,
+            "intent": 10,
+            "jev_entry": 10,
+            "teaching_preparation": 4
+          },
+          "input_tokens": 133078,
+          "output_tokens": 8769,
+          "cost_complete": true,
+          "estimated_usd_range": [
+            0.00620335,
+            0.01163235
+          ]
+        }
+      }
+    },
+    "live-03.jsonl": {
+      "original_automatic_passed": 19,
+      "total": 20,
+      "original_failed_checks": {
+        "baseline/greeting": [
+          "identity_and_capabilities"
+        ]
+      },
+      "groups": {
+        "baseline": {
+          "rounds": 10,
+          "median_ms": 2031.5,
+          "min_ms": 1476,
+          "max_ms": 6712,
+          "transport_requests": 17,
+          "requests_by_model": {
+            "deepseek-flash": 14,
+            "deepseek-v4-flash": 3
+          },
+          "requests_by_node": {
+            "answer": 3,
+            "intent": 11,
+            "teaching_preparation": 3
+          },
+          "input_tokens": 96773,
+          "output_tokens": 4315,
+          "cost_complete": true,
+          "estimated_usd_range": [
+            0.00395257,
+            0.00790513
+          ]
+        },
+        "jev": {
+          "rounds": 10,
+          "median_ms": 2861.5,
+          "min_ms": 2112,
+          "max_ms": 6497,
+          "transport_requests": 26,
+          "requests_by_model": {
+            "deepseek-flash": 13,
+            "deepseek-v4-flash": 3,
+            "jev-1.13.0": 10
+          },
+          "requests_by_node": {
+            "answer": 3,
+            "intent": 10,
+            "jev_entry": 10,
+            "teaching_preparation": 3
+          },
+          "input_tokens": 128465,
+          "output_tokens": 8203,
+          "cost_complete": true,
+          "estimated_usd_range": [
+            0.00478709,
+            0.00880366
+          ]
+        }
+      }
+    }
+  }
+}
