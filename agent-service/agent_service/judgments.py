@@ -19,9 +19,10 @@ class JudgmentEngine:
             raise ValueError("Jev timeout must be at most five seconds")
         self.client, self.timeout, self.observer = client, timeout, observer
 
-    def check_isolation(self, store):
-        # No production flag/env configuration in this phase. Explicit injection
-        # additionally requires a database in the OS temporary directory.
+    @staticmethod
+    def check_isolation(store):
+        # Both explicit injection and native test activation require a database
+        # in the OS temporary directory; daily stores cannot enable Jev.
         path = Path(store.tasks.path).resolve()
         if not any(path.is_relative_to(root.resolve()) for root in (Path(tempfile.gettempdir()), Path("/tmp"))):
             raise ValueError("Jev experiment requires a temporary database")

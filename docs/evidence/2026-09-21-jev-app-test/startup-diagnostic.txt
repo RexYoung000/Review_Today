@@ -1,0 +1,50 @@
+Only the Jev test App desktop authorization and interpreter startup evidence is included.
+
+2026-09-21 10:58:31.464 I  tccd[958:54fad0] [com.apple.TCC:access] Handling access request to kTCCServiceSystemPolicyDesktopFolder, from Sub:{Rex.Review-Today.Jev.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.Jev.NativeQA, pid=96066, auid=501, euid=501, responsible_path=/private/tmp/review-today-jev-native-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/Review_Today, binary_path=/private/tmp/review-today-jev-native-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/Review_Today}, ReqResult(Auth Right: Unknown (None), promptType: 1,DB Action:None, UpdateVerifierData)
+
+Analysis of sampling Python (pid 96204) every 1 millisecond
+Process:         Python [96204]
+Path:            /opt/homebrew/*/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python
+Load Address:    0x1020d4000
+Identifier:      org.python.python
+Version:         3.13.3 (3.13.3)
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  Review_Today [96066]
+Target Type:     live task
+
+Date/Time:       2026-09-21 11:02:09.616 +0800
+Launch Time:     2026-09-21 11:01:40.887 +0800
+OS Version:      macOS 27.0 (26A428)
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint:         3568K
+Physical footprint (peak):  3568K
+Idle exit:                  untracked
+----
+
+Call graph:
+    886 Thread_5573035   DispatchQueue_1: com.apple.main-thread  (serial)
+      886 start  (in dyld) + 6688  [0x19900fe80]
+        886 Py_BytesMain  (in Python) + 40  [0x102a3efe4]
+          886 pymain_main  (in Python) + 260  [0x102a3ef18]
+            886 Py_InitializeFromConfig  (in Python) + 760  [0x102a10888]
+              886 pyinit_main  (in Python) + 52  [0x102a10a34]
+                886 init_interp_main  (in Python) + 80  [0x102a1344c]
+                  886 config_init_import  (in Python) + 52  [0x1029fb318]
+                    886 _PyConfig_InitPathConfig  (in Python) + 1660  [0x102ab59a0]
+                      886 PyEval_EvalCode  (in Python) + 200  [0x1029aaa78]
+                        886 _PyEval_EvalFrameDefault  (in Python) + 6876  [0x1029ac7d0]
+                          886 _PyObject_MakeTpCall  (in Python) + 124  [0x102883664]
+                            886 cfunction_call  (in Python) + 116  [0x1028e1324]
+                              886 getpath_readlines  (in Python) + 88  [0x102ab6c74]
+                                886 _Py_wfopen  (in Python) + 152  [0x102a3cd78]
+                                  886 fopen$DARWIN_EXTSN  (in libsystem_c.dylib) + 220  [0x1992e6810]
+                                    886 open$NOCANCEL  (in libsystem_kernel.dylib) + 64  [0x1993b6024]
+                                      886 __open_nocancel  (in libsystem_kernel.dylib) + 8  [0x1993a193c]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        __open_nocancel  (in libsystem_kernel.dylib)        886

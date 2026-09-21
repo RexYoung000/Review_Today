@@ -89,6 +89,7 @@ def check_model_capabilities() -> None:
 @app.get("/healthz")
 def healthz() -> dict[str, object]:
     from agent_service.web_tools import web_search_capability, web_read_capability, web_context_capability
+    from agent_service.jev_runtime import runtime_status
     return {
         "status": "ok",
         "key_configured": bool(openai_key()),
@@ -97,11 +98,18 @@ def healthz() -> dict[str, object]:
         "harness": "v2",
         "conversation_protocol": 1,
         "response_stream_protocol": 1,
+        "jev": runtime_status(conversation_harness.judgments),
         "model_roles": model_capability_snapshot(),
         "web_search": web_search_capability(),
         "web_read": web_read_capability(),
         "web_context": web_context_capability(),
     }
+
+
+@app.on_event("shutdown")
+def close_judgment_client() -> None:
+    if conversation_harness.judgments is not None:
+        conversation_harness.judgments.client.close()
 
 
 @app.post("/v2/capabilities/probe")

@@ -1,0 +1,145 @@
+2026-09-21 10:58:14.632 xcodebuild[95858:5567993] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00008142-000925D20109401C, name:My Mac }
+{ platform:macOS, arch:x86_64, id:00008142-000925D20109401C, name:My Mac }
+{ platform:macOS, name:Any Mac }
+error: the following command failed with exit code 0 but produced no further output
+SwiftCompile normal arm64 (in target 'Review_Today' from project 'Review_Today')
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+620 |
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+622 |     private var synth = NSSpeechSynthesizer()
+    |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+623 |     private var onFinish: (() -> Void)?
+624 |
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+639 |     }
+640 |
+641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+    |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+642 |         let done = onFinish
+643 |         onFinish = nil
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+619 | }
+620 |
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+    |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+622 |     private var synth = NSSpeechSynthesizer()
+623 |     private var onFinish: (() -> Void)?
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+error: the following command failed with exit code 0 but produced no further output
+SwiftCompile normal arm64 /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ReviewView.swift (in target 'Review_Today' from project 'Review_Today')
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+620 |
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+622 |     private var synth = NSSpeechSynthesizer()
+    |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+623 |     private var onFinish: (() -> Void)?
+624 |
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+639 |     }
+640 |
+641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+    |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+642 |         let done = onFinish
+643 |         onFinish = nil
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+619 | }
+620 |
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+    |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+622 |     private var synth = NSSpeechSynthesizer()
+623 |     private var onFinish: (() -> Void)?
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:627:15: warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+625 |     override init() {
+626 |         super.init()
+627 |         synth.delegate = self
+    |               `- warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+628 |     }
+629 |
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:633:15: warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+631 |         stop()
+632 |         self.onFinish = onFinish
+633 |         synth.startSpeaking(text)
+    |               `- warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+634 |     }
+635 |
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:637:15: warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+635 |
+636 |     func stop() {
+637 |         synth.stopSpeaking()
+    |               `- warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+638 |         onFinish = nil
+639 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+error: the following command failed with exit code 0 but produced no further output
+SwiftCompile normal arm64 /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ContextCapacityIndicator.swift (in target 'Review_Today' from project 'Review_Today')
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ContextCapacityIndicator.swift:27:75: warning: call to main actor-isolated static method 'compact' in a synchronous nonisolated context [#ActorIsolatedCall]
+ 25 |     var headline: String {
+ 26 |         guard let used else { return String(localized: "尚无请求") }
+ 27 |         return String(localized: "约 \(Self.compact(used)) / \(limit.map(Self.compact) ?? String(localized: "上限未知"))")
+    |                                                                         `- warning: call to main actor-isolated static method 'compact' in a synchronous nonisolated context [#ActorIsolatedCall]
+ 28 |     }
+ 29 |     var detail: String {
+    :
+ 39 |         return lines.joined(separator: "\n")
+ 40 |     }
+ 41 |     static func compact(_ value: Int) -> String {
+    |                 `- note: calls to static method 'compact' from outside of its actor context are implicitly asynchronous
+ 42 |         if value >= 1_000_000 { return String(format: "%.1fM", Double(value) / 1_000_000) }
+ 43 |         if value >= 1_000 { return value % 1_000 == 0 ? "\(value / 1_000)K" : String(format: "%.1fK", Double(value) / 1_000) }
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+error: the following command failed with exit code 0 but produced no further output
+SwiftCompile normal arm64 /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/TodayActivitySource.swift (in target 'Review_Today' from project 'Review_Today')
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayActivitySource.swift:97:31: warning: reference to captured var 'self' in concurrently-executing code; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 95 |             } onChange: { [weak self] in
+ 96 |                 Task { @MainActor in
+ 97 |                     guard let self, self.generation == current else { return }
+    |                               `- warning: reference to captured var 'self' in concurrently-executing code; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 98 |                     self.scheduleRefresh()
+ 99 |                 }
+
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+error: the following command failed with exit code 0 but produced no further output
+SwiftCompile normal arm64 /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/LibraryInboxSettings.swift (in target 'Review_Today' from project 'Review_Today')
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:182:13: warning: result of 'try?' is unused [#NoUsage]
+180 |             task.updatedAt = .now
+181 |             try? modelContext.save()
+182 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#NoUsage]
+183 |             return
+184 |         }
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+177 |
+178 |     private static func isWeak(_ text: String) -> Bool {
+179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+180 |         if value.count < 2 { return true }
+181 |         if genericTitles.contains(value) { return true }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:219:18: warning: call to main actor-isolated static method 'parseLine' in a synchronous nonisolated context [#ActorIsolatedCall]
+217 |             .map { $0.trimmingCharacters(in: .whitespaces) }
+218 |             .filter { !$0.isEmpty }
+219 |             .map(parseLine)
+    |                  `- warning: call to main actor-isolated static method 'parseLine' in a synchronous nonisolated context [#ActorIsolatedCall]
+220 |     }
+221 |
+222 |     private static func parseLine(_ line: String) -> ExplanationPiece {
+    |                         `- note: calls to static method 'parseLine' from outside of its actor context are implicitly asynchronous
+223 |         // A dot immediately followed by a digit may be a decimal or a version.
+224 |         // Only explicit list markers become rows; prose keeps its text intact.
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>

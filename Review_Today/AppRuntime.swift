@@ -6,6 +6,7 @@ struct AppRuntime: Equatable {
     let mode: Mode
     var validationDirectory: URL? = nil
     var port = 8742
+    var isJevTest = false
     var isPreview: Bool { mode == .preview }
     var isPerformanceQA: Bool {
 #if PERFORMANCE_QA
@@ -21,7 +22,7 @@ struct AppRuntime: Equatable {
         switch mode {
         case .normal: return ""
         case .preview: return " · 界面预览（不可发送）"
-        case .modelValidation: return " · 真实模型隔离验收"
+        case .modelValidation: return isJevTest ? " · Jev 测试" : " · 真实模型隔离验收"
         }
     }
 
@@ -40,6 +41,8 @@ struct AppRuntime: Equatable {
     enum ConfigurationError: Error { case invalidIsolation }
     static func resolve(_ environment: [String: String], bundleID: String) throws -> AppRuntime {
         let fixture = environment["REVIEW_TODAY_M1_UI_FIXTURE"]
+        let jevFlag = environment["REVIEW_TODAY_JEV_TEST"] ?? "0"
+        guard ["0", "1"].contains(jevFlag) else { throw ConfigurationError.invalidIsolation }
         if let directory = environment["REVIEW_TODAY_NATIVE_TEST_DIR"] {
             let url = URL(fileURLWithPath: directory, isDirectory: true).standardizedFileURL
             guard fixture == nil, bundleID.hasSuffix(".NativeQA"),
@@ -47,8 +50,9 @@ struct AppRuntime: Equatable {
                   url.path.hasPrefix("/tmp/") || url.path.hasPrefix("/private/tmp/") || url.path.hasPrefix(NSTemporaryDirectory()),
                   let port = Int(environment["REVIEW_TODAY_NATIVE_TEST_PORT"] ?? "18742"),
                   (1024...65535).contains(port), port != 8742 else { throw ConfigurationError.invalidIsolation }
-            return AppRuntime(mode: .modelValidation, validationDirectory: url, port: port)
+            return AppRuntime(mode: .modelValidation, validationDirectory: url, port: port, isJevTest: jevFlag == "1")
         }
+        guard jevFlag == "0" else { throw ConfigurationError.invalidIsolation }
         if let fixture {
             guard ["1", "invalid", "review", "retry", "learning", "today"].contains(fixture) else {
                 throw ConfigurationError.invalidIsolation

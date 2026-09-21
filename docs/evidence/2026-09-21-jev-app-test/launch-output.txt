@@ -1,0 +1,2 @@
+{"app": "/tmp/review-today-jev-native-build/Build/Products/Debug/Review_Today.app", "directory": "/tmp/review-today-jev-app-m1hmroih", "port": 56739, "bundle_id": "Rex.Review-Today.Jev.NativeQA"}
+已请求打开 Jev 测试 App。底部显示‘Jev 测试已启用’后可输入；关闭该窗口所属 App 即结束本次测试。

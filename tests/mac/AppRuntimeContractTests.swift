@@ -19,8 +19,25 @@ struct AppRuntimeContractTests {
         let validation = try AppRuntime.resolve(environment, bundleID: "com.rexyoung.ReviewToday.NativeQA")
         precondition(validation.mode == .modelValidation && validation.validationDirectory?.path == directory.standardizedFileURL.path)
         precondition(validation.serviceURL.absoluteString == "http://127.0.0.1:18742")
+        let jevEnvironment = environment.merging(["REVIEW_TODAY_JEV_TEST": "1"]) { _, new in new }
+        let jev = try AppRuntime.resolve(jevEnvironment, bundleID: "Rex.Review-Today.Jev.NativeQA")
+        precondition(jev.isJevTest && jev.windowSuffix.contains("Jev 测试") && !normal.isJevTest && !validation.isJevTest)
+        let legacyHealth = try JSONDecoder().decode(HealthResponse.self, from: Data(#"{"status":"ok","key_configured":true,"model_roles":{}}"#.utf8))
+        precondition(!legacyHealth.supportsJevTest, "old services remain compatible but cannot pretend to enable Jev")
+        for (status, model, supported) in [("enabled", "jev-1.13.0", true), ("authentication_disabled", "jev-1.13.0", true),
+                                          ("off", "jev-1.13.0", false), ("enabled", "jev-latest", false)] {
+            let payload: [String: Any] = ["status": "ok", "key_configured": true, "model_roles": [:],
+                "jev": ["status": status, "model": model, "entry_rule": "jev-entry-2"]]
+            let health = try JSONDecoder().decode(HealthResponse.self, from: JSONSerialization.data(withJSONObject: payload))
+            precondition(health.supportsJevTest == supported, "test identity must match the real service; auth failure remains explicit fallback")
+        }
+        let wrongRule = try JSONDecoder().decode(HealthResponse.self, from: Data(#"{"status":"ok","key_configured":true,"model_roles":{},"jev":{"status":"enabled","model":"jev-1.13.0","entry_rule":"jev-entry-1"}}"#.utf8))
+        precondition(!wrongRule.supportsJevTest, "a stale entry contract must not be labelled ready")
         for (values, bundle) in [
             (environment, "Rex.Review-Today"),
+            (["REVIEW_TODAY_JEV_TEST": "1"], "Rex.Review-Today"),
+            (["REVIEW_TODAY_JEV_TEST": "1", "REVIEW_TODAY_M1_UI_FIXTURE": "learning"], "Rex.Review-Today.Jev.NativeQA"),
+            (environment.merging(["REVIEW_TODAY_JEV_TEST": "yes"]) { _, new in new }, "Rex.Review-Today.Jev.NativeQA"),
             (["REVIEW_TODAY_M1_UI_FIXTURE": "typo"], "com.rexyoung.ReviewToday.NativeQA"),
             (["REVIEW_TODAY_NATIVE_TEST_DIR": "/"], "com.rexyoung.ReviewToday.NativeQA"),
             (environment.merging(["REVIEW_TODAY_NATIVE_TEST_PORT": "8742"]) { _, new in new }, "com.rexyoung.ReviewToday.NativeQA"),

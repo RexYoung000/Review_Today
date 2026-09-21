@@ -1553,4 +1553,7 @@ class ConversationHarness(ConditionalTeaching):
         return {key: value for key, value in run.items() if key not in {"steps", "action_ids"}}
 
 
-conversation_harness = ConversationHarness()
+from agent_service.config import PORT
+from agent_service.jev_runtime import configured_judgments
+
+conversation_harness = ConversationHarness(judgments=configured_judgments(conversation_store, port=PORT))

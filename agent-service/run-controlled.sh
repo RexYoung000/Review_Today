@@ -6,6 +6,7 @@ export REVIEW_TODAY_HARNESS_DB="$test_dir/checkpoints.sqlite3"
 export OPENAI_API_KEY=''
 export DEEPSEEK_API_KEY=''
 export TYPESAFE_API_KEY=''
+export REVIEW_TODAY_JEV_TEST='0'
 export EXA_API_KEY=''
 export TAVILY_API_KEY=''
 export BRAVE_API_KEY=''

@@ -1,0 +1,17 @@
+{
+  "app": "/tmp/review-today-jev-native-build/Build/Products/Debug/Review_Today.app",
+  "directory": "/tmp/review-today-jev-app-m1hmroih",
+  "port": 56739,
+  "bundle_id": "Rex.Review-Today.Jev.NativeQA",
+  "status": "native_startup_blocked",
+  "build_exit_code": 0,
+  "codesign_verified": true,
+  "health_reachable": false,
+  "gui_observed": {
+    "window": "Agent · Jev 测试",
+    "notice": "Jev 测试 · 学习服务尚未连接",
+    "startup": "本地学习服务未能启动；你的输入仍保存在本机"
+  },
+  "new_model_requests": 0,
+  "permission_changes_by_agent": false
+}

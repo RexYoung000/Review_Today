@@ -9,6 +9,15 @@ enum AgentConnectionState: Equatable {
 }
 
 struct HealthResponse: Decodable {
+    struct Jev: Decodable {
+        let status: String
+        let model: String?
+        let entryRule: String?
+        enum CodingKeys: String, CodingKey {
+            case status, model
+            case entryRule = "entry_rule"
+        }
+    }
     struct ModelRole: Decodable {
         let model: String
         let status: String
@@ -23,6 +32,12 @@ struct HealthResponse: Decodable {
     let modelRoles: [String: ModelRole]
     let conversationProtocol: Int?
     let responseStreamProtocol: Int?
+    let jev: Jev?
+
+    var supportsJevTest: Bool {
+        jev?.model == "jev-1.13.0" && jev?.entryRule == "jev-entry-2"
+            && ["enabled", "authentication_disabled"].contains(jev?.status ?? "")
+    }
 
     enum CodingKeys: String, CodingKey {
         case status
@@ -30,6 +45,7 @@ struct HealthResponse: Decodable {
         case modelRoles = "model_roles"
         case conversationProtocol = "conversation_protocol"
         case responseStreamProtocol = "response_stream_protocol"
+        case jev
     }
 }
 
@@ -92,6 +108,7 @@ final class AgentServiceMonitor {
     private(set) var capabilityNotice = ""
     private(set) var canSubmitMessages = false
     private(set) var technicalDetail = ""
+    private(set) var jevTestNotice = "Jev 测试 · 正在检查服务状态"
     private(set) var deliveringMessageIDs = Set<UUID>()
 
     func beginDelivery(_ id: UUID) { deliveringMessageIDs.insert(id) }
@@ -209,6 +226,19 @@ final class AgentServiceMonitor {
             } else { streamNotice = "" }
             keyConfigured = health.keyConfigured
             canSubmitMessages = health.keyConfigured && health.modelRoles["router"]?.status == "ready"
+            if AppRuntime.current.isJevTest {
+                guard health.supportsJevTest else {
+                    canSubmitMessages = false
+                    connection = .unavailable
+                    launchStatus = "Jev 测试未启用"
+                    launchDetail = "当前服务未启用匹配的 Jev 判断，请用测试入口重新打开。"
+                    jevTestNotice = "Jev 测试未启用 · 请重新打开测试 App"
+                    return
+                }
+                jevTestNotice = health.jev?.status == "authentication_disabled"
+                    ? "Jev 测试 · 认证失败，已回退现有模型 · 独立测试数据"
+                    : "Jev 测试已启用 · 独立数据 · 内容会发送给 Jev 和现有模型"
+            }
             technicalDetail = health.modelRoles.sorted(by: { $0.key < $1.key }).map { "\($0.key) · \($0.value.model) · \($0.value.category ?? $0.value.status) · \($0.value.diagnostic ?? "")" }.joined(separator: "\n")
             if !conversationSupported {
                 connection = .unavailable
@@ -264,6 +294,7 @@ final class AgentServiceMonitor {
     }
 
     private func markUnavailable() {
+        if AppRuntime.current.isJevTest { jevTestNotice = "Jev 测试 · 学习服务尚未连接" }
         canSubmitMessages = false
         serviceReachable = false
         conversationSupported = false
@@ -334,6 +365,7 @@ final class AgentServiceMonitor {
             "LANG": inherited["LANG"] ?? "zh_CN.UTF-8",
             "PYTHONUNBUFFERED": "1",
             "PYTHONPATH": serviceRoot.path,
+            "REVIEW_TODAY_JEV_TEST": AppRuntime.current.isJevTest ? "1" : "0",
         ]
         for key in ["USER", "LOGNAME", "SSL_CERT_FILE", "REQUESTS_CA_BUNDLE"] {
             if let value = inherited[key] { environment[key] = value }
@@ -341,6 +373,9 @@ final class AgentServiceMonitor {
         if let directory = AppRuntime.current.validationDirectory {
             environment["REVIEW_TODAY_HARNESS_DB"] = directory.appendingPathComponent("checkpoint.sqlite3").path
             environment["REVIEW_TODAY_SERVICE_PORT"] = String(AppRuntime.current.port)
+            if AppRuntime.current.isJevTest, let path = inherited["REVIEW_TODAY_JEV_KEY_FILE"] {
+                environment["REVIEW_TODAY_JEV_KEY_FILE"] = path
+            }
         }
         process.environment = environment
         process.standardOutput = pipe

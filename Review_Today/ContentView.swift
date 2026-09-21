@@ -125,7 +125,7 @@ struct ContentView: View {
         .toolbar(removing: .sidebarToggle)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if AppRuntime.current.mode != .normal {
-                Text(AppRuntime.current.isPerformanceQA ? "性能隔离验收 · 独立测试库，不连接模型" : AppRuntime.current.isPreview ? "界面预览 · 仅内存数据，不连接模型" : "真实模型隔离验收 · 独立数据，不写入日常知识库")
+                Text(AppRuntime.current.isPerformanceQA ? "性能隔离验收 · 独立测试库，不连接模型" : AppRuntime.current.isPreview ? "界面预览 · 仅内存数据，不连接模型" : AppRuntime.current.isJevTest ? monitor.jevTestNotice : "真实模型隔离验收 · 独立数据，不写入日常知识库")
                     .font(.caption2).foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity).padding(.vertical, 4)
                     .background(PaperSurface())
