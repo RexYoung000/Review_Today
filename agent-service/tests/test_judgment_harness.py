@@ -295,6 +295,20 @@ class HarnessJudgmentTests(unittest.TestCase):
         self.assertFalse(judgment["applied"])
         self.assertEqual({v["source"] for v in judgment["field_decisions"].values()}, {"llm"})
 
+    def test_response_feedback_is_reserved_for_llm_even_if_jev_says_greeting(self):
+        self.enable()
+        self.labels["intent"] = "greeting"
+        self.decision = legacy.intent("question", reply_feedback="response_only",
+                                      light_reply="抱歉，刚才的回应太机械了。我会回应你具体问的内容。")
+        self.replacement = self.decision
+        with patch.object(self.harness, "_prepare_teaching", side_effect=AssertionError("no teaching")):
+            accepted = self.send("为什么你只会回我这句话")
+        run = self.state()["runs"][accepted.run_id]
+        self.assertTrue(run["reply_feedback_handled"])
+        self.assertFalse(run["judgments"][0]["applied"])
+        self.assertEqual([s for s, _ in self.calls], [IntentRemainder])
+        self.assertEqual(self.state()["messages"][-1]["content"], self.decision.light_reply)
+
     def test_cross_session_replacement_cannot_be_overruled_by_program_new_topic(self):
         self.enable()
         rid, rev = self.active_run()

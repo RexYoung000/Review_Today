@@ -1,5 +1,6 @@
 """Bounded social acknowledgement; never a learning task or an operation grant."""
 import json
+import re
 
 from agent_service.config import ROUTER_MODEL
 from agent_service.conversation_prompts import COACH_SYSTEM
@@ -9,13 +10,33 @@ from agent_service.source_links import bound_source_links
 SOCIAL_INTENTS = {"social", "greeting", "thanks", "capabilities", "defer"}
 SUPPORT_INTENTS = {"social", "question", "followup", "defer"}
 
+# Filter generated acknowledgements, never classify user requests by keywords.
+# Keep a usable sentence instead of discarding it together with an invitation.
+_UNSUITABLE_ACK = re.compile(
+    r"学习教练|随便.*聊|随时.*(?:说|聊|找我|问我|告诉我)|"
+    r"(?:想|要不要).*(?:聊|学什么|了解什么|梳理哪)|准备好.*继续|"
+    r"(?:你|您|用户).*(?:没给|没提供|没说清|没有信息量|没有具体内容)|"
+    r"提示词|系统(?:规定|设置)|内部(?:机制|设置)|路由|模型限制|没必要.*闲聊|偷懒|故意敷衍",
+    re.I,
+)
+
+
+def bounded_reply(reply, fallback):
+    reply = reply.strip()
+    if not reply or len(reply) > 120:
+        return fallback
+    sentences = re.findall(r"[^。！？.!?\n]+[。！？.!?]?", reply)
+    kept = [sentence for sentence in sentences
+            if not re.search(r"[?？]", sentence) and not _UNSUITABLE_ACK.search(sentence)]
+    return "".join(kept).strip() or fallback
+
 
 def kind_for(decision, last):
     # A social label alone cannot suppress a mixed request, a bound action,
     # conversation repair, real teaching/resume, or the programming boundary.
     if (last.get("operation") or decision.proposed_actions or decision.requested_mode
             or decision.direct_teaching or decision.continuation_evidence
-            or decision.conversation_repair or decision.clarification
+            or decision.conversation_repair or decision.reply_feedback != "none" or decision.clarification
             or decision.is_jd or decision.programming_boundary != "none" or decision.resource_boundary != "none"):
         return None
     intents = set(decision.intents)
@@ -37,14 +58,8 @@ def short_reply(data, decision, kind):
         if "defer" in decision.intents:
             return "今天不想学也没关系，可以先歇一歇。这里主要围绕学习和理解知识，想继续时再来就好。"
         return "我在。可以聊聊学习中遇到的困惑，或者最近想弄明白的事。"
-    if "thanks" in decision.intents:
-        return "不客气。"
-    if "greeting" in decision.intents:
-        return "你好。"
-    reply = decision.light_reply.strip()
-    if reply and len(reply) <= 120:
-        return reply
-    return "嗯，按自己的节奏来就好。"
+    fallback = "不客气。" if "thanks" in decision.intents else "你好。" if "greeting" in decision.intents else "嗯，按自己的节奏来就好。"
+    return bounded_reply(decision.light_reply, fallback)
 
 
 def handle(h, sid, rid, rev, decision, last):

@@ -1,6 +1,8 @@
 # Jev 原生 App 测试入口（2026-09-21）
 
-用户要求现在在 App 中亲自测试。已接通独立 Debug 测试版，服务与 Mac 契约通过；原生窗口已打开，当前自托管服务仍等待系统文件访问授权，尚未发送真实问题。不能把构建成功或开关存在当作本批真实调用已生效。
+用户要求现在在 App 中亲自测试。已接通独立 Debug 测试版，服务与 Mac 契约通过；本启动批次结束时原生窗口已打开，但自托管服务等待系统文件访问授权，尚未发送真实问题。不能把构建成功或开关存在当作本批真实调用已生效。
+
+后续状态：本机授权已恢复，Rex 已实际发送；回复反馈修复后完成三轮原生验证，真实 Jev 调用及采用记录已核对，原会话未改写。见 [后续验证](../2026-09-21-reply-feedback/README.md)。下方零调用与阻塞诊断保留为首次启动的历史记录。
 
 ## 使用
 
@@ -17,7 +19,7 @@
 - [Debug NativeQA 构建](native-build.txt) exit 0，`codesign --verify --deep --strict` 通过。保留原有 Swift 并发等警告；不是发布构建。
 - 通过 Computer Use 打开实际测试 App、进入 Agent，观察到专属窗口标题和「学习服务尚未连接」状态。没有向日常 App 输入或写入数据。
 
-## 当前原生阻塞
+## 首次启动的原生阻塞（后续已恢复）
 
 应用身份 `Rex.Review-Today.Jev.NativeQA`，本次端口和临时库见 [runtime.json](runtime.json)。服务四次有限启动后停止；health 未响应，Python 采样停在初始化阶段的 `getpath_readlines → fopen → open`，尚未进入 Harness。系统日志同时记录此应用的桌面文件夹访问状态为 Unknown，见 [限定启动诊断](startup-diagnostic.txt)。没有证据表明 Jev API 或 DeepSeek 请求失败，也不能由 AllFiles 预检推断需要完整磁盘访问。
 

@@ -272,7 +272,7 @@ class ConversationHarness(ConditionalTeaching):
             return
         candidate = foreground if foreground and foreground["status"] in {"accepted", "queued"} else next(r for r in data["runs"].values() if r["status"] in {"accepted", "queued"})
         last = next((m for m in data["messages"] if m["message_id"] == candidate["input_ids"][-1]), {})
-        cached_intent = candidate.get("intent") and {"programming_boundary", "resource_boundary"} <= candidate["intent"].keys() and candidate.get("decision_input_ids") == candidate["input_ids"] and candidate.get("decision_mode") == data["mode"] and self._intent_policy_matches(candidate)
+        cached_intent = candidate.get("intent") and {"programming_boundary", "resource_boundary", "reply_feedback"} <= candidate["intent"].keys() and candidate.get("decision_input_ids") == candidate["input_ids"] and candidate.get("decision_mode") == data["mode"] and self._intent_policy_matches(candidate)
         if not last.get("operation") and not cached_intent and snapshot()["router"]["status"] != "ready":
             return
         with self._worker_lock:
@@ -611,7 +611,7 @@ class ConversationHarness(ConditionalTeaching):
                                       relation="continuation", workflow=task["mode"] if task else "source_learning",
                                       scope="continue_goal", direct_teaching=True, learning_goal_ready=True,
                                       rationale="用户明确要求继续教学，不是独立作答或保存授权。")
-        elif run.get("intent") and {"programming_boundary", "conversation_kind", "resource_boundary"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"] and self._intent_policy_matches(run):
+        elif run.get("intent") and {"programming_boundary", "conversation_kind", "resource_boundary", "reply_feedback"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"] and self._intent_policy_matches(run):
             decision = IntentDecision.model_validate(run["intent"])
         elif self.judgments is not None:
             from agent_service.judgment_nodes import resolve_entry
@@ -1083,6 +1083,7 @@ class ConversationHarness(ConditionalTeaching):
         context, last = self._context(data, run)
         task = self._task(data, run)
         from agent_service.web_privacy import require_public_url, sensitive_material
+        instruction += "\n本轮原话明确要求的长度、句数与表达形式优先于默认讲解模板；例如只要一句话，就不额外追加例子、背景或邀请。"
         if sensitive_material(last['content']):
             instruction += ('\n私人材料的限制针对外发到网页搜索/读取服务；仍可根据用户已经提供的内容做解释、梳理和知识说明。'
                 '最多一句说明不外发，再回应实际问题；不得泛化为不能分析、概括或理解内部材料，'

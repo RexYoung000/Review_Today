@@ -1,0 +1,799 @@
+{
+  "price_snapshot": {
+    "checked_at": "2026-09-20",
+    "unit": "USD per million tokens",
+    "sources": {
+      "jev": "https://docs.typesafe.ai/models",
+      "deepseek": "https://api-docs.deepseek.com/quick_start/pricing/"
+    },
+    "rates": {
+      "jev-1.13.0": {
+        "input": [
+          0.042,
+          0.042
+        ],
+        "cached": [
+          0.042,
+          0.042
+        ],
+        "output": [
+          0,
+          0
+        ]
+      },
+      "deepseek-flash": {
+        "input": [
+          0.15,
+          0.3
+        ],
+        "cached": [
+          0.003,
+          0.006
+        ],
+        "output": [
+          0.6,
+          1.2
+        ]
+      },
+      "deepseek-v4-flash": {
+        "input": [
+          0.15,
+          0.3
+        ],
+        "cached": [
+          0.003,
+          0.006
+        ],
+        "output": [
+          0.6,
+          1.2
+        ]
+      },
+      "deepseek-v4-pro": {
+        "input": [
+          0.66,
+          1.32
+        ],
+        "cached": [
+          0.022,
+          0.044
+        ],
+        "output": [
+          1.98,
+          3.96
+        ]
+      }
+    },
+    "note": "采用官方英文模型表；费用显示闲时/高峰边界，不是已扣款账单。未知缓存用量按全命中到全未命中计范围；缺失输入/输出用量则保持未知。"
+  },
+  "price_note": "Uses existing 2026-09-20 snapshot; estimated range, not billed charges or freshly checked pricing. Capability probes excluded.",
+  "batches": {
+    "live-01.jsonl": {
+      "automatic_passed": 12,
+      "automatic_scope": "Checks recorded in each raw row; initial batch did not include final language and brevity checks.",
+      "groups": {
+        "baseline": {
+          "rounds": 6,
+          "median_ms": 1787.0,
+          "min_ms": 1396,
+          "max_ms": 4919,
+          "transport_requests": 10,
+          "requests_by_node": {
+            "answer": 2,
+            "intent": 6,
+            "teaching_preparation": 2
+          },
+          "requests_by_model": {
+            "deepseek-flash": 8,
+            "deepseek-v4-flash": 2
+          },
+          "input_tokens": 51703,
+          "output_tokens": 2257,
+          "usage_records": 10,
+          "cost_complete": true,
+          "estimated_cost_usd_range": [
+            0.00256168,
+            0.00512336
+          ]
+        },
+        "jev": {
+          "rounds": 6,
+          "median_ms": 2780.0,
+          "min_ms": 2124,
+          "max_ms": 6929,
+          "transport_requests": 17,
+          "requests_by_node": {
+            "answer": 2,
+            "intent": 7,
+            "jev_entry": 6,
+            "teaching_preparation": 2
+          },
+          "requests_by_model": {
+            "deepseek-flash": 9,
+            "deepseek-v4-flash": 2,
+            "jev-1.13.0": 6
+          },
+          "input_tokens": 81827,
+          "output_tokens": 5299,
+          "usage_records": 17,
+          "cost_complete": true,
+          "estimated_cost_usd_range": [
+            0.00401599,
+            0.00758274
+          ]
+        }
+      },
+      "jev_adoption": [
+        {
+          "id": "jev/greeting",
+          "judgments": [
+            {
+              "status": "uncertain",
+              "applied": true,
+              "reason": "uncertain_judgment",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "jev",
+                  "value": "greeting",
+                  "raw_choice": "greeting",
+                  "reason": ""
+                },
+                "workflow": {
+                  "source": "program",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "ordinary_or_explicit_mode"
+                },
+                "needs_verification": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "cross_check_sources": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "refresh_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "unsure",
+                  "reason": "用户未要求刷新已有资料，也不涉及时效信息。"
+                },
+                "relation": {
+                  "source": "program",
+                  "value": "new_topic",
+                  "raw_choice": null,
+                  "reason": "empty_session"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "jev/how_are_you",
+          "judgments": [
+            {
+              "status": "uncertain",
+              "applied": true,
+              "reason": "uncertain_judgment",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "jev",
+                  "value": "greeting",
+                  "raw_choice": "greeting",
+                  "reason": ""
+                },
+                "workflow": {
+                  "source": "program",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "ordinary_or_explicit_mode"
+                },
+                "relation": {
+                  "source": "jev",
+                  "value": "continuation",
+                  "raw_choice": "continuation",
+                  "reason": ""
+                },
+                "needs_verification": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "cross_check_sources": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "refresh_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "unsure",
+                  "reason": "未要求刷新已有公开资料。"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "jev/flow_feedback",
+          "judgments": [
+            {
+              "status": "uncertain",
+              "applied": false,
+              "reason": "uncertain_judgment",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "llm",
+                  "value": "question",
+                  "raw_choice": "other",
+                  "reason": "reserved_or_mixed"
+                },
+                "workflow": {
+                  "source": "llm",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "reserved_or_mixed"
+                },
+                "relation": {
+                  "source": "llm",
+                  "value": "continuation",
+                  "raw_choice": "continuation",
+                  "reason": "reserved_or_mixed"
+                },
+                "needs_verification": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "reserved_or_mixed"
+                },
+                "cross_check_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "reserved_or_mixed"
+                },
+                "refresh_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "unsure",
+                  "reason": "reserved_or_mixed"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "jev/repeated_feedback",
+          "judgments": [
+            {
+              "status": "uncertain",
+              "applied": false,
+              "reason": "uncertain_judgment",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "llm",
+                  "value": "question",
+                  "raw_choice": "other",
+                  "reason": "reserved_or_mixed"
+                },
+                "workflow": {
+                  "source": "llm",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "reserved_or_mixed"
+                },
+                "relation": {
+                  "source": "llm",
+                  "value": "continuation",
+                  "raw_choice": "continuation",
+                  "reason": "reserved_or_mixed"
+                },
+                "needs_verification": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "reserved_or_mixed"
+                },
+                "cross_check_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "reserved_or_mixed"
+                },
+                "refresh_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "unsure",
+                  "reason": "reserved_or_mixed"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "jev/mixed_question",
+          "judgments": [
+            {
+              "status": "ok",
+              "applied": false,
+              "reason": "incomplete_reserved_replacement",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "llm",
+                  "value": "question",
+                  "raw_choice": "question",
+                  "reason": "incomplete_reserved_replacement"
+                },
+                "workflow": {
+                  "source": "llm",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "incomplete_reserved_replacement"
+                },
+                "relation": {
+                  "source": "llm",
+                  "value": "new_topic",
+                  "raw_choice": "new_topic",
+                  "reason": "incomplete_reserved_replacement"
+                },
+                "needs_verification": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "incomplete_reserved_replacement"
+                },
+                "cross_check_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "incomplete_reserved_replacement"
+                },
+                "refresh_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "incomplete_reserved_replacement"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "jev/quoted_feedback",
+          "judgments": [
+            {
+              "status": "ok",
+              "applied": true,
+              "reason": "",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "jev",
+                  "value": "question",
+                  "raw_choice": "question",
+                  "reason": ""
+                },
+                "workflow": {
+                  "source": "program",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "ordinary_or_explicit_mode"
+                },
+                "needs_verification": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "cross_check_sources": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "refresh_sources": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "relation": {
+                  "source": "program",
+                  "value": "new_topic",
+                  "raw_choice": null,
+                  "reason": "empty_session"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "live-02.jsonl": {
+      "automatic_passed": 12,
+      "automatic_scope": "Checks recorded in each raw row; initial batch did not include final language and brevity checks.",
+      "groups": {
+        "baseline": {
+          "rounds": 6,
+          "median_ms": 1724.0,
+          "min_ms": 1531,
+          "max_ms": 4406,
+          "transport_requests": 10,
+          "requests_by_node": {
+            "answer": 2,
+            "intent": 6,
+            "teaching_preparation": 2
+          },
+          "requests_by_model": {
+            "deepseek-flash": 8,
+            "deepseek-v4-flash": 2
+          },
+          "input_tokens": 52451,
+          "output_tokens": 2276,
+          "usage_records": 10,
+          "cost_complete": true,
+          "estimated_cost_usd_range": [
+            0.00251594,
+            0.00503188
+          ]
+        },
+        "jev": {
+          "rounds": 6,
+          "median_ms": 2857.0,
+          "min_ms": 2059,
+          "max_ms": 6113,
+          "transport_requests": 16,
+          "requests_by_node": {
+            "answer": 2,
+            "intent": 6,
+            "jev_entry": 6,
+            "teaching_preparation": 2
+          },
+          "requests_by_model": {
+            "deepseek-flash": 8,
+            "deepseek-v4-flash": 2,
+            "jev-1.13.0": 6
+          },
+          "input_tokens": 74822,
+          "output_tokens": 5052,
+          "usage_records": 16,
+          "cost_complete": true,
+          "estimated_cost_usd_range": [
+            0.00376573,
+            0.00708484
+          ]
+        }
+      },
+      "jev_adoption": [
+        {
+          "id": "jev/greeting",
+          "judgments": [
+            {
+              "status": "uncertain",
+              "applied": true,
+              "reason": "uncertain_judgment",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "jev",
+                  "value": "greeting",
+                  "raw_choice": "greeting",
+                  "reason": ""
+                },
+                "workflow": {
+                  "source": "program",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "ordinary_or_explicit_mode"
+                },
+                "needs_verification": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "cross_check_sources": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "refresh_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "unsure",
+                  "reason": "问候语不涉及资料刷新。"
+                },
+                "relation": {
+                  "source": "program",
+                  "value": "new_topic",
+                  "raw_choice": null,
+                  "reason": "empty_session"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "jev/how_are_you",
+          "judgments": [
+            {
+              "status": "ok",
+              "applied": true,
+              "reason": "",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "jev",
+                  "value": "greeting",
+                  "raw_choice": "greeting",
+                  "reason": ""
+                },
+                "workflow": {
+                  "source": "program",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "ordinary_or_explicit_mode"
+                },
+                "relation": {
+                  "source": "jev",
+                  "value": "continuation",
+                  "raw_choice": "continuation",
+                  "reason": ""
+                },
+                "needs_verification": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "cross_check_sources": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "refresh_sources": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "jev/flow_feedback",
+          "judgments": [
+            {
+              "status": "uncertain",
+              "applied": false,
+              "reason": "uncertain_judgment",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "llm",
+                  "value": "question",
+                  "raw_choice": "other",
+                  "reason": "reserved_or_mixed"
+                },
+                "workflow": {
+                  "source": "llm",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "reserved_or_mixed"
+                },
+                "relation": {
+                  "source": "llm",
+                  "value": "continuation",
+                  "raw_choice": "continuation",
+                  "reason": "reserved_or_mixed"
+                },
+                "needs_verification": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "reserved_or_mixed"
+                },
+                "cross_check_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "reserved_or_mixed"
+                },
+                "refresh_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "unsure",
+                  "reason": "reserved_or_mixed"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "jev/repeated_feedback",
+          "judgments": [
+            {
+              "status": "ok",
+              "applied": false,
+              "reason": "reserved_or_mixed",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "llm",
+                  "value": "question",
+                  "raw_choice": "other",
+                  "reason": "reserved_or_mixed"
+                },
+                "workflow": {
+                  "source": "llm",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "reserved_or_mixed"
+                },
+                "relation": {
+                  "source": "llm",
+                  "value": "continuation",
+                  "raw_choice": "continuation",
+                  "reason": "reserved_or_mixed"
+                },
+                "needs_verification": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "reserved_or_mixed"
+                },
+                "cross_check_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "reserved_or_mixed"
+                },
+                "refresh_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "reserved_or_mixed"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "jev/mixed_question",
+          "judgments": [
+            {
+              "status": "ok",
+              "applied": false,
+              "reason": "llm_reserved_or_conflict",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "llm",
+                  "value": "mixed",
+                  "raw_choice": "question",
+                  "reason": "llm_reserved_or_conflict"
+                },
+                "workflow": {
+                  "source": "llm",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "llm_reserved_or_conflict"
+                },
+                "relation": {
+                  "source": "llm",
+                  "value": "new_topic",
+                  "raw_choice": "new_topic",
+                  "reason": "llm_reserved_or_conflict"
+                },
+                "needs_verification": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "llm_reserved_or_conflict"
+                },
+                "cross_check_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "llm_reserved_or_conflict"
+                },
+                "refresh_sources": {
+                  "source": "llm",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": "llm_reserved_or_conflict"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "jev/quoted_feedback",
+          "judgments": [
+            {
+              "status": "ok",
+              "applied": true,
+              "reason": "",
+              "adoption": null,
+              "field_decisions": {
+                "intent": {
+                  "source": "jev",
+                  "value": "question",
+                  "raw_choice": "question",
+                  "reason": ""
+                },
+                "workflow": {
+                  "source": "program",
+                  "value": "none",
+                  "raw_choice": "none",
+                  "reason": "ordinary_or_explicit_mode"
+                },
+                "needs_verification": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "cross_check_sources": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "refresh_sources": {
+                  "source": "jev",
+                  "value": "no",
+                  "raw_choice": "no",
+                  "reason": ""
+                },
+                "relation": {
+                  "source": "program",
+                  "value": "new_topic",
+                  "raw_choice": null,
+                  "reason": "empty_session"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "native": {
+    "rounds": 3,
+    "median_ms": 2940,
+    "min_ms": 2785,
+    "max_ms": 3827,
+    "transport_requests": 6,
+    "requests_by_node": {
+      "intent": 3,
+      "jev_entry": 3
+    },
+    "requests_by_model": {
+      "deepseek-flash": 3,
+      "jev-1.13.0": 3
+    },
+    "input_tokens": 33112,
+    "output_tokens": 2328,
+    "usage_records": 6,
+    "cost_complete": true,
+    "estimated_cost_usd_range": [
+      0.00121464,
+      0.00221096
+    ]
+  }
+}

@@ -104,7 +104,7 @@ class DialogueRoutingTests(unittest.TestCase):
         # Emulate the legacy incorrect clarification shown in the actual screenshot.
         with self.f.store.transaction(self.f.sid) as d:
             d['messages'][-1]['content']='你希望继续刚才的内容，还是开始一个新的学习问题？'
-        self.f.decision=f.intent('correction').model_copy(update={'conversation_repair':True})
+        self.f.decision=f.intent('correction', reply_feedback='with_request').model_copy(update={'conversation_repair':True})
         before=copy.deepcopy(self.f.state()['tasks'])
         self.f.send('我不是才和你聊天吗')
         answers=[p for s,p in self.f.calls if s is ConversationOutput]

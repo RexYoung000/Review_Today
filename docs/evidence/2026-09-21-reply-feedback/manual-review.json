@@ -1,0 +1,52 @@
+{
+  "review_scope": "Maintainer review for A012 reply handling, tone, actual request preservation. Not a global model quality evaluation.",
+  "live_01": {
+    "accepted": false,
+    "automatic_checks": "12/12 passed older routing-only assertions; insufficient for acceptance.",
+    "failures": [
+      {
+        "ids": [
+          "jev/greeting",
+          "jev/how_are_you"
+        ],
+        "issue": "Added learning solicitation after greeting."
+      },
+      {
+        "ids": [
+          "jev/flow_feedback"
+        ],
+        "issue": "Invented motive and incorrect repeated opening: 偷懒; 连着两次都从你好起头."
+      },
+      {
+        "ids": [
+          "baseline/mixed_question",
+          "jev/mixed_question"
+        ],
+        "issue": "Ignored explicit one-sentence request and appended example/explanation."
+      }
+    ]
+  },
+  "live_02": {
+    "accepted_for_this_fix": true,
+    "automatic_checks": "12/12 final assertions passed.",
+    "findings": [
+      "Greeting/how-are-you replies differ; feedback is short and does not blame the user or invent internal causes.",
+      "Mixed RAG request was answered concisely; quoted feedback entered ordinary answer, not response-only handling.",
+      "Quoted phrase answers still contain overgeneralized language about the phrase and evaluation intent. Routing passes; this is not a claim that all linguistic content is correct."
+    ]
+  },
+  "native": {
+    "accepted_for_this_fix": true,
+    "observed_replies": [
+      "你好，我在。",
+      "我在，谢谢你的问候。",
+      "抱歉，刚才回得太干巴了。"
+    ],
+    "original_history_preserved": true
+  },
+  "limitations": [
+    "One repeat of a small synthetic set; no confidence threshold or daily Jev activation recommendation.",
+    "Generated-reply filter handles observed invalid sentences; it is not a complete semantic safety or language-quality check.",
+    "Final naturalness acceptance remains with Rex."
+  ]
+}

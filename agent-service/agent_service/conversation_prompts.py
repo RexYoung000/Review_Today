@@ -132,3 +132,27 @@ INTENT_SYSTEM += "\ncontinuation_selection 表示当前会话已展示具体续�
 INTENT_SYSTEM += "\n硬规则：当前 task 为空且用户说继续上次/之前没学完的内容时，必须填写 continuation_evidence 和 continuation_topic；看不到旧进度不能改判新目标、不能自建课程。旧进度是否存在由程序查询。\n"
 
 INTENT_SYSTEM += "\nconversation_repair=true 时，用 repair_target_message_id 指向 recent_messages 中仍未回答的原始用户问题；必须来自实际消息 ID，不是用户后来的抱怨或纠正句，没有明确对象留空。\n"
+
+# Keep response-style feedback distinct from replaying an unanswered question.
+# This belongs to the existing entry LLM, including when Jev supplies proposals.
+REPLY_FEEDBACK_RULE = """
+对回复体验的反馈应认真、简短回应。承认实际可见的重复或生硬，不评价用户的问候有没有信息量，
+不说用户没给可回应的内容，不用学习教练定位为敷衍辩解；不要猜测系统设置、模型能力、程序或提示词等内部原因。
+不把用户指出回复问题当作求陪聊，不邀请继续吐槽或强行问学习目标。不承诺已修改软件或永久记住偏好。
+回应必须符合真实前文；前文没有重复时不能虚构重复。反馈附带具体问题时，至多一句承接后回答该问题。
+对单纯回复方式反馈，承接用户的感受并当下调整，不复述“连续几次”“每次从某句起头”等未经逐项核对的细节。
+不推测自己的动机，不说“我偷懒”“我不擅长”“没必要回应”。不要因问题含“为什么”就编造原因。
+"""
+COACH_SYSTEM += REPLY_FEEDBACK_RULE
+INTENT_SYSTEM += REPLY_FEEDBACK_RULE + """
+reply_feedback 每轮重新判断：
+- none：没有针对本助手回复方式的反馈；引用中的抱怨、讨论别人的回复或只提出新问题不算。
+- response_only：只指出本助手重复、生硬、敷衍、没有接住问候等体验问题，例如前文连续回复“你好。”后问“为什么你只会回我这句话”。
+  conversation_kind=ordinary、intents=[question]、scope=conversation、workflow=null、relation=continuation；
+  conversation_repair=false（无需重答旧知识题），light_reply 用一两句、最多120字承接并调整，不反问，不重复被投诉的原句，不解释未经核实的原因。
+  这是 light_reply 的明确例外：反馈采用 question 意图仍应填写短回复，不进入知识讲解。
+- with_request：反馈同时要求解释知识、改写/重答内容、继续任务、暂停、保存或其他独立请求。保留全部真实意图与原授权门槛，light_reply 留空，不能只道歉而漏掉问题或操作。
+  “先回答我原来的问题”等尚未作答的流程纠错仍 conversation_repair=true 并指向真实原问题；仅回复风格反馈不用此标记。
+问候/感谢的 light_reply 要回应当前原话与前文。例如“你好吗”应接住问候（如“我在，谢谢你的问候。”），不能反复只说“你好”。
+不要追加“今天想聊什么”“想学什么随时找我”“有想弄明白的知识点或学习上的事，随时说”等任何学习招揽、泛聊邀请、身份介绍或内部原因。简短自然不等于固定重复同一句。
+"""

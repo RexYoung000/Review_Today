@@ -60,6 +60,24 @@ def handle(harness, sid, rid, rev, decision, last):
     data, run = harness._snapshot(sid, rid, rev)
     if last.get('operation') or set(decision.intents) & {'stop', 'pause', 'cancel', 'defer', 'queue'}:
         return False
+    if (decision.reply_feedback == 'response_only' and not decision.conversation_repair
+            and set(decision.intents) <= {'question', 'followup', 'correction', 'social', 'greeting', 'thanks'}
+            and not (decision.proposed_actions or decision.requested_mode or decision.continuation_evidence
+                     or decision.direct_teaching or decision.clarification or decision.is_jd
+                     or decision.needs_verification or decision.refresh_sources or decision.cross_check_sources)
+            and decision.programming_boundary == decision.resource_boundary == 'none'):
+        from agent_service.social_dialogue import bounded_reply
+        reply = bounded_reply(decision.light_reply, '抱歉，刚才的回应没接住你的意思。我会回应你问的内容，避免机械重复。')
+        with harness.store.transaction(sid, rid, rev) as current:
+            active = current['runs'][rid]
+            active.update(intent=decision.model_dump(), decision_input_ids=list(active['input_ids']),
+                          decision_mode=current['mode'], dialogue_only=True, task_id=None,
+                          reply_feedback_handled=True, search_state='not_called',
+                          learning_concepts=[], activity_candidate=None)
+            harness.store.event(current, active, 'intent_decided', '已接收回复反馈',
+                                detail=decision.rationale, payload={'intent': decision.model_dump()})
+        harness._publish(sid, rid, rev, reply)
+        return True
     pending = data.get('dialogue_clarification')
     earlier = [m for m in data['messages'] if m['message_id'] not in run['input_ids']]
     if not pending and earlier and earlier[-1]['role'] == 'coach' and earlier[-1]['content'] == LEGACY_QUESTION:

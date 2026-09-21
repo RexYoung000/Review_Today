@@ -568,6 +568,8 @@ class IntentDecision(BaseModel):
         default="ordinary", description="Semantic dialogue scope. Social/companionship only for pure social input; mixed knowledge or action requests stay ordinary.")
     clarification_kind: Literal["none", "content", "resume_target", "operation"] = "none"
     conversation_repair: bool = False
+    reply_feedback: Literal["none", "response_only", "with_request"] = Field(
+        default="none", description="Feedback on repetitive, curt or otherwise unhelpful replies. response_only has no independent knowledge or action request; with_request must retain that request. Not a keyword match or a learning outcome.")
     repair_target_message_id: str = ""
     continuation_evidence: str = ""
     continuation_topic: str = ""
