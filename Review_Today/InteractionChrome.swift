@@ -58,11 +58,12 @@ struct InteractionButtonStyle: ButtonStyle {
     var hoverFeedback = true
     // Owned by the control, not inherited from a focusable list/container.
     var focused = false
+    var hoverBackground: Color? = nil
     var padding: CGFloat = 6
     var outline: InteractionOutline = .rounded(9)
 
     func makeBody(configuration: Configuration) -> some View {
-        Feedback(configuration: configuration, selected: selected, hoverFeedback: hoverFeedback, focused: focused, padding: padding, outline: outline)
+        Feedback(configuration: configuration, selected: selected, hoverFeedback: hoverFeedback, focused: focused, hoverBackground: hoverBackground, padding: padding, outline: outline)
     }
 
     private struct Feedback: View {
@@ -70,6 +71,7 @@ struct InteractionButtonStyle: ButtonStyle {
         let selected: Bool
         let hoverFeedback: Bool
         let focused: Bool
+        let hoverBackground: Color?
         let padding: CGFloat
         let outline: InteractionOutline
         @State private var hovering = false
@@ -84,7 +86,7 @@ struct InteractionButtonStyle: ButtonStyle {
                 .padding(padding)
                 .background(background, in: outline.shape)
                 .overlay(outline.shape
-                    .fill(hoverFeedback && hovering && enabled ? runway.hoverWash.opacity(0.035) : .clear)
+                    .fill(hoverFeedback && hovering && enabled && hoverBackground == nil ? runway.hoverWash.opacity(0.035) : .clear)
                     .allowsHitTesting(false))
                 .overlay(outline.shape
                     .strokeBorder(focused && inputMode.keyboardNavigation && enabled && controlState == .key ? runway.agent : .clear, lineWidth: 1.5))
@@ -99,6 +101,7 @@ struct InteractionButtonStyle: ButtonStyle {
         private var background: Color {
             guard enabled else { return .clear }
             if configuration.isPressed { return runway.ink.opacity(0.12) }
+            if hoverFeedback && hovering, let hoverBackground { return hoverBackground }
             if selected { return runway.monochrome ? runway.agent.opacity(0.10) : runway.field }
             return hoverFeedback && hovering ? runway.field.opacity(0.7) : .clear
         }
@@ -245,7 +248,8 @@ private struct ChoiceMenuContent: View {
                             .opacity(selectedID == item.id ? 1 : 0).frame(width: 14)
                     }.padding(9).contentShape(Rectangle())
                 }
-                .buttonStyle(InteractionButtonStyle(selected: selectedID == item.id, focused: focus == item.id, padding: 0))
+                .buttonStyle(InteractionButtonStyle(selected: selectedID == item.id, focused: focus == item.id,
+                                                   hoverBackground: runway.navigationSelection, padding: 0))
                 .focusable().focusEffectDisabled()
                 .focused($focus, equals: item.id)
                 .accessibilityAddTraits(selectedID == item.id ? [.isSelected] : [])
