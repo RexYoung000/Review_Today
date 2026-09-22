@@ -1464,17 +1464,7 @@ class ConversationHarness(ConditionalTeaching):
         if not draft or draft.get("invalidated"):
             self._publish(sid, rid, rev, "整理内容已变化，请先重新确认修订版，旧版本不会入库。", complete=False)
             return
-        capture_offer = data.get("capture_offers", {}).get(run.get("capture_offer_id"))
-        save_context = capture_offer if capture_offer else (task or {}).get("context", {})
-        understood = draft["understanding"]
-        if decision.understanding == "self_reported":
-            understood = "self_reported"
-        if understood == "unknown" or (save_context.get("requires_mastery") and not save_context.get("transfer_passed")):
-            with self.store.transaction(sid, rid, rev) as data:
-                if data.get("pending"):
-                    data["pending"]["consent_received"] = True
-            self._publish(sid, rid, rev, "已收到保存意愿，但理解条件还未满足。请先确认是否理解；问题攻克还需要独立作答和追问通过。", complete=False)
-            return
+        # Explicit source-qualified saving is independent of learning assessment.
         with self.store.transaction(sid, rid, rev) as data:
             run = data["runs"][rid]
             capture_offer = topic_capture.adopt_explicit(self, data, run, draft, task)

@@ -6,7 +6,7 @@ python3 - "$qa_dir" <<'PY'
 import pathlib, subprocess, plistlib, shutil, sys
 root=pathlib.Path.cwd(); app=pathlib.Path(sys.argv[1])/'TopicCaptureQA.app'; contents=app/'Contents'; binary=contents/'MacOS/TopicCaptureQA'; binary.parent.mkdir(parents=True)
 sources=[str(p) for p in (root/'Review_Today').glob('*.swift') if p.name!='Review_TodayApp.swift']+[str(root/'tests/mac/TopicCaptureNativeQA.swift'),str(root/'tests/mac/KnowledgeIngestionFixture.swift')]
-subprocess.run(['xcrun','swiftc','-parse-as-library','-D','DEBUG','-swift-version','5','-default-isolation','MainActor','-enable-upcoming-feature','MemberImportVisibility',*sources,'-o',str(binary)],check=True)
+subprocess.run(['tests/mac/swift-with-fsrs.py','-parse-as-library','-D','DEBUG','-swift-version','5','-default-isolation','MainActor','-enable-upcoming-feature','MemberImportVisibility',*sources,'-o',str(binary)],check=True)
 r=contents/'Resources'; r.mkdir()
 for p in (root/'Review_Today').glob('*.html'): shutil.copy(p,r/p.name)
 for p in (root/'Review_Today/Fonts').glob('*'):

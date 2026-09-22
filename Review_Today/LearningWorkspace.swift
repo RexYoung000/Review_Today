@@ -350,11 +350,13 @@ struct LearningWorkspace: View {
                             TopicCapturePanel(offer: offer, focused: captureDestination == offer.id,
                                 enabled: selectedSession?.status == "active" && runtime.allowsSending && !dictation.busy,
                                 persistenceError: sessionTasks.first(where: { $0.id == offer.saveTaskID && !$0.memoryCommitted })?.errorCode,
-                                deliveryError: sessionMessages.last(where: { ConversationProcessor.object($0.operationJSON)?["target_id"] as? String == offer.id.uuidString.lowercased() })?.lastDeliveryError, onAction: { kind in
+                                deliveryError: sessionMessages.last(where: { ConversationProcessor.object($0.operationJSON)?["target_id"] as? String == offer.id.uuidString.lowercased() })?.lastDeliveryError, onAction: { rawKind in
+                                    let enrollReview = rawKind == "capture_save_review"
+                                    let kind = enrollReview ? "capture_save" : rawKind
                                     if kind == "capture_save" { followsLatest = false; activeCaptureID = offer.id }
                                     else { activeCaptureID = nil }
                                     sendBound(kind, title: kind == "capture_save" ? "录入这段知识" : kind == "capture_later" ? "稍后录入" : "跳过录入",
-                                              target: offer.id.uuidString.lowercased(), version: offer.version)
+                                              target: offer.id.uuidString.lowercased(), version: offer.version, reviewRequested: enrollReview)
                                     if kind == "capture_save", localError == nil {
                                         Task { @MainActor in await Task.yield(); proxy.scrollTo(offer.id, anchor: .top) }
                                     }
@@ -693,7 +695,7 @@ struct LearningWorkspace: View {
         sendMessage(content)
     }
 
-    private func sendMessage(_ content: String, operation: [String: Any]? = nil) {
+    private func sendMessage(_ content: String, operation: [String: Any]? = nil, reviewRequested: Bool = false) {
         guard !dictation.busy else { return }
         guard runtime.allowsSending else { localError = "界面预览不发送消息，输入仅用于排版检查。"; return }
         let started = Date.now
@@ -729,6 +731,7 @@ struct LearningWorkspace: View {
         message.clientMessageID = message.id
         message.deliveryMode = queueInput ? "queue" : "steer"
         message.operationJSON = operation.map(ConversationProcessor.json)
+        message.reviewRequested = reviewRequested
         modelContext.insert(message)
         if !queueInput, let active = runs.last(where: { $0.sessionID == session.id && ["running", "accepted", "adjusting"].contains($0.status) }) {
             active.status = "adjusting"
@@ -844,8 +847,8 @@ struct LearningWorkspace: View {
         }
     }
 
-    private func sendBound(_ kind: String, title: String, target: String, version: Int, selection: [String] = []) {
-        sendMessage(title, operation: ["kind": kind, "target_id": target, "version": version, "selection": selection])
+    private func sendBound(_ kind: String, title: String, target: String, version: Int, selection: [String] = [], reviewRequested: Bool = false) {
+        sendMessage(title, operation: ["kind": kind, "target_id": target, "version": version, "selection": selection], reviewRequested: reviewRequested)
     }
 
     private func saveDraft() {

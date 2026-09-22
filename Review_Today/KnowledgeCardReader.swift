@@ -98,6 +98,9 @@ private struct DeckItem: Identifiable {
 }
 
 private struct KnowledgeDepthCard: View {
+    @Environment(\.modelContext) private var reviewContext
+    @State private var reviewError: String?
+
     var item: Knowledge
     var siblings: [Knowledge]
     var resolvedTitle: String
@@ -194,8 +197,17 @@ private struct KnowledgeDepthCard: View {
                         .foregroundStyle(Color.orange)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+                if item.lifecycle == "active" {
+                    Toggle("已学过，参与间隔复习", isOn: Binding(get: { item.participatesInReview }, set: { enabled in
+                        let before = (item.reviewEnrollment, item.studiedAt, item.dueAt)
+                        item.setReviewParticipation(enabled)
+                        do { try reviewContext.save(); reviewError = nil }
+                        catch { reviewContext.rollback(); item.reviewEnrollment = before.0; item.studiedAt = before.1; item.dueAt = before.2; reviewError = "复习设置未保存，请重试。" }
+                    })).toggleStyle(.checkbox)
+                    if let reviewError { Text(reviewError).font(.caption).foregroundStyle(.orange) }
+                }
                 HStack(alignment: .center, spacing: Runway.space) {
-                    Text(item.lifecycle == "soft_deleted" ? "已移到回收站" : "下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
+                    Text(item.lifecycle == "soft_deleted" ? "已移到回收站" : !item.participatesInReview ? "仅保存资料 · 未参与复习" : "下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer()

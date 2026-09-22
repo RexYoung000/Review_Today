@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+        F60000000000000000000001 /* FSRS in Frameworks */ = {isa = PBXBuildFile; productRef = F60000000000000000000002; };
+/* End PBXBuildFile section */
+/* Begin XCLocalSwiftPackageReference section */
+        F60000000000000000000003 = {isa = XCLocalSwiftPackageReference; relativePath = Vendor/SwiftFSRS; };
+/* End XCLocalSwiftPackageReference section */
+/* Begin XCSwiftPackageProductDependency section */
+        F60000000000000000000002 = {isa = XCSwiftPackageProductDependency; productName = FSRS; package = F60000000000000000000003; };
+/* End XCSwiftPackageProductDependency section */
 /* Begin PBXFileReference section */
 		7A38F09B302B704900946192 /* Review_Today.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Review_Today.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+                F60000000000000000000001,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,8 +87,7 @@
 				7A38F09D302B704900946192 /* Review_Today */,
 			);
 			name = Review_Today;
-			packageProductDependencies = (
-			);
+			packageProductDependencies = (F60000000000000000000002);
 			productName = Review_Today;
 			productReference = 7A38F09B302B704900946192 /* Review_Today.app */;
 			productType = "com.apple.product-type.application";
@@ -107,6 +116,7 @@
 				"zh-Hans",
 			);
 			mainGroup = 7A38F092302B704900946192;
+            packageReferences = (F60000000000000000000003);
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7A38F09C302B704900946192 /* Products */;

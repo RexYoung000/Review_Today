@@ -18,7 +18,7 @@ DEFAULT_TESTS = [
     "ConversationReplayTests", "LearningMemoryContractTests", "SessionDeletionContractTests",
     "SessionListSelectionTests", "SessionOrganizationContractTests", "IndependentSessionContractTests",
     "LibraryManagementContractTests", "KnowledgeDeckNavigationTests", "KnowledgeIngestionTests",
-    "DictationContractTests", "TopicCaptureContractTests", "LearningGoalContinuityTests",
+    "DictationContractTests", "TopicCaptureContractTests", "LearningGoalContinuityTests", "ReviewFlowContractTests", "ReviewControllerContractTests", "ReviewMigrationContractTests",
 ]
 names = sys.argv[1:] or DEFAULT_TESTS
 for name in names:
@@ -28,6 +28,9 @@ for name in names:
 build = pathlib.Path(tempfile.mkdtemp(prefix="review-today-shared-contracts.", dir="/tmp"))
 print(f"Isolated contract directory: {build}", flush=True)
 flags = ["-parse-as-library", "-D", "DEBUG", "-swift-version", "5", "-default-isolation", "MainActor", "-enable-upcoming-feature", "MemberImportVisibility"]
+fsrs_sources = [str(p) for p in sorted((ROOT / "Vendor/SwiftFSRS/Sources").rglob("*.swift"))]
+subprocess.run(["xcrun", "swiftc", "-parse-as-library", "-swift-version", "5", "-emit-library", "-emit-module", "-module-name", "FSRS", "-emit-module-path", str(build / "FSRS.swiftmodule"), *fsrs_sources, "-o", str(build / "libFSRS.dylib")], check=True)
+flags += ["-I", str(build), "-L", str(build), "-lFSRS", "-Xlinker", "-rpath", "-Xlinker", str(build)]
 sources = [str(p) for p in sorted((ROOT / "Review_Today").glob("*.swift")) if p.name != "Review_TodayApp.swift"]
 subprocess.run([
     "xcrun", "swiftc", *flags, "-enable-testing", "-emit-library", "-emit-module",

@@ -50,6 +50,7 @@ import SwiftData
         _ = try HarnessProcessor.persistMemory(payload, sourceText: "测试原文", task: task, context: c)
         precondition(receipts == 1 && state.saved && state.knowledgeIDs.count == 2 && state.presented)
         let cards = try c.fetch(FetchDescriptor<Knowledge>())
+        precondition(cards.allSatisfy { !$0.participatesInReview }, "saving alone does not enroll or certify learning")
         precondition(cards.allSatisfy { $0.originTaskID == task.id && $0.originSessionID == session.id })
         require(try c.fetch(FetchDescriptor<KnowledgeReference>()).count == 2)
         var changed = payload; changed.knowledge[0].title = "不应泄漏的失败修改"
@@ -107,6 +108,17 @@ import SwiftData
         let reopened = try ModelContainer(for: M1DebugFixture.schema, configurations: ModelConfiguration(url: url))
         require(try reopened.mainContext.fetch(FetchDescriptor<Knowledge>()).count == 2)
         require(try reopened.mainContext.fetch(FetchDescriptor<Source>()).first?.rawText == "测试原文")
+        let enrolledContainer = try ModelContainer(for: M1DebugFixture.schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let ec = enrolledContainer.mainContext
+        let es = AgentSession(title: "已学过后加入复习")
+        let em = AgentMessage(sessionID: es.id, role: "user", content: "保存，并加入复习")
+        em.reviewRequested = true
+        let et = LearningTask(sessionID: es.id, inputMessageID: em.id)
+        ec.insert(es); ec.insert(em); ec.insert(et); try ec.save()
+        let start = Date.now
+        _ = try HarnessProcessor.persistMemory(KnowledgeIngestionFixture.payload([UUID()]), sourceText: "合成资料", task: et, context: ec)
+        let enrolled = try ec.fetch(FetchDescriptor<Knowledge>()).first!
+        precondition(enrolled.participatesInReview && enrolled.studiedAt != nil && enrolled.dueAt.timeIntervalSince(start) >= 7200 && enrolled.dueAt.timeIntervalSince(start) < 7210)
         print("PASS: atomic disk save/rollback and post-save receipt; references/ownership; duplicate and ACK retry; immediate results; read-only replay; close/history/background/modal/navigation; failure/needs-attention; natural-message gating; first-full preference; reopened store")
     }
 }

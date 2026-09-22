@@ -14,12 +14,21 @@ struct ModelMigrationTests {
 #endif
         let schema = Schema(models)
         let url = URL(fileURLWithPath: CommandLine.arguments[2])
+#if NEW_SCHEMA
+        try ReviewMigration.backupIfNeeded(url)
+        let marker = url.appendingPathExtension("review-v2-backup")
+        precondition(FileManager.default.fileExists(atPath: marker.path))
+#endif
         let container = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: url))
         let context = container.mainContext
         if CommandLine.arguments[1] == "seed" {
             let source = Source(rawText: "迁移测试资料：检索再生成")
             let knowledge = Knowledge(learningGoal: "解释 RAG", knowledgeType: "concept", theme: "RAG", contentLanguage: "zh", questionLanguage: "zh", answerLanguage: "zh", evidenceExcerpt: "检索再生成", evidenceLocator: "paragraph:1")
             knowledge.source = source
+            knowledge.dueAt = Date(timeIntervalSince1970: 1_790_000_000)
+            let state = FsrsState(knowledgeId: knowledge.id, dueAt: knowledge.dueAt)
+            state.stability = 900; state.reps = 3
+            context.insert(state)
             let session = AgentSession(title: "迁移前会话")
             session.composerDraft = "未发送草稿"
             let task = LearningTask(sessionID: session.id, inputMessageID: UUID())
@@ -36,6 +45,11 @@ struct ModelMigrationTests {
             precondition(knowledge.count == 1 && knowledge[0].source?.rawText == "迁移测试资料：检索再生成")
             precondition(reviews.count == 1 && reviews[0].acked && reviews[0].effectiveGrade == "good")
 #if NEW_SCHEMA
+            precondition(knowledge[0].reviewEnrollment == nil && knowledge[0].participatesInReview)
+            precondition(knowledge[0].dueAt == Date(timeIntervalSince1970: 1_790_000_000))
+            let fsrs = try context.fetch(FetchDescriptor<FsrsState>()).first!
+            precondition(fsrs.schedulerJSON == nil && fsrs.stability == 900 && fsrs.reps == 3)
+            precondition(reviews[0].correctionRevision == 0 && reviews[0].rubricJSON == "")
             precondition(sessions[0].folderID == nil)
             precondition(sessions[0].lifecycleRevision == 0 && sessions[0].lifecycleActionsJSON == "[]")
             precondition(sessions[0].memoryUseAllowed && sessions[0].memoryPolicyRevision == 0 && sessions[0].learningEvidenceJSON == "[]")

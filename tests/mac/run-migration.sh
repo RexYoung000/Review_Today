@@ -10,8 +10,8 @@ done
 for file in Review_Today/*.swift; do
   case "$file" in */Review_TodayApp.swift) ;; *) new_sources+=("$file");; esac
 done
-xcrun swiftc -parse-as-library -D DEBUG -swift-version 5 -default-isolation MainActor "${old_sources[@]}" tests/mac/ModelMigrationTests.swift -o "$migration_dir/seed"
+tests/mac/swift-with-fsrs.py -parse-as-library -D DEBUG -swift-version 5 -default-isolation MainActor "${old_sources[@]}" tests/mac/ModelMigrationTests.swift -o "$migration_dir/seed"
 "$migration_dir/seed" seed "$migration_dir/test.store"
-xcrun swiftc -parse-as-library -D DEBUG -D NEW_SCHEMA -swift-version 5 -default-isolation MainActor "${new_sources[@]}" tests/mac/ModelMigrationTests.swift -o "$migration_dir/check"
+tests/mac/swift-with-fsrs.py -parse-as-library -D DEBUG -D NEW_SCHEMA -swift-version 5 -default-isolation MainActor "${new_sources[@]}" tests/mac/ModelMigrationTests.swift -o "$migration_dir/check"
 "$migration_dir/check" check "$migration_dir/test.store"
 printf 'Isolated migration fixture: %s\n' "$migration_dir"

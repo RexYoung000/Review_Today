@@ -193,6 +193,16 @@ class TopicCaptureTests(unittest.TestCase):
         self.assertEqual(len(self.f.state()['capture_offers']), 1)
         self.assertEqual(self.f.state()['capture_offers'][offer['id']]['status'], 'saved')
 
+    def test_save_reference_without_claiming_understanding(self):
+        answer = self.teach()
+        self.f.capture.return_value = committing_result(answer['content'])
+        self.f.decision = intent('confirm', understanding='unknown', proposed_actions=[dict(kind='save', disposition='request', evidence='先保存')])
+        self.f.send('我还没学，先保存资料。')
+        self.f.capture.assert_called_once()
+        offer = list(self.f.state()['capture_offers'].values())[-1]
+        self.ack(offer)
+        self.assertEqual(self.f.state()['capture_offers'][offer['id']]['status'], 'saved')
+
     def test_invalidated_source_has_terminal_panel_and_never_saves(self):
         offer = self.close()
         with self.f.store.transaction(self.f.sid) as data:

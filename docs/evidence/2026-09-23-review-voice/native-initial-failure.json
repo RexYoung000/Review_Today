@@ -1,0 +1,8 @@
+{
+  "failure": "pause/resume asynchronous sync captured mutable revision with an old binding",
+  "completed_before_failure": 1,
+  "skipped": 1,
+  "current_index": 2,
+  "close_saved_pause": true,
+  "fix": "immutable SessionSnapshot before dispatch; corrections also advance binding revision"
+}

@@ -1,0 +1,335 @@
+//
+//  FSRSAlgorithm.swift
+//
+//  Created by nkq on 10/14/24.
+//
+
+import Foundation
+/**
+ * @see https://github.com/open-spaced-repetition/fsrs4anki/wiki/The-Algorithm#fsrs-45
+ *
+ * Immutable after `init`. All stored state is `let`; per-call randomness (the
+ * fuzz seed) is threaded through method parameters rather than held as
+ * instance state. This lets a single instance be shared across tasks/actors
+ * without data races — see `FSRSAlgorithm: @unchecked Sendable` below.
+ */
+public class FSRSAlgorithm: @unchecked Sendable {
+    /// Algorithm version inferred from the length of the active `w` vector.
+    /// Drives version-dispatched formulas (decay, factor, S_MIN, init difficulty
+    /// clamp location, short-term stability shape).
+    public var version: FSRSAlgorithmVersion {
+        FSRSAlgorithmVersion.detect(parameters.w)
+    }
+
+    /// Lower bound for stability. v5 = 0.01, v6 = 0.001 (matches upstream).
+    var sMin: Double {
+        switch version {
+        case .v5: return FSRSDefaults.S_MIN
+        case .v6: return FSRSDefaults.S_MIN_V6
+        }
+    }
+
+    /**
+     * @default DECAY = -0.5 for v5 ; -w[20] for v6
+     */
+    var decay: Double {
+        switch version {
+        case .v5: return -0.5
+        case .v6: return -parameters.w[20]
+        }
+    }
+    /**
+     * FACTOR = Math.pow(0.9, 1 / DECAY) - 1
+     *
+     * $$\text{FACTOR} = \frac{19}{81}$$ for v5 (decay = -0.5); derived from
+     * `w[20]` for v6.
+     */
+    var factor: Double {
+        switch version {
+        case .v5: return 19.0 / 81.0
+        case .v6: return (exp(log(0.9) / decay) - 1.0).toFixedNumber(8)
+        }
+    }
+
+    let defaults = FSRSDefaults()
+
+    public let parameters: FSRSParameters
+
+    /// Read-only accessor preserved for test ergonomics. Parameters are now
+    /// immutable — to change them, construct a new `FSRS` instance.
+    public var params: FSRSParameters { parameters }
+
+    let intervalModifier: Double
+
+    init(parameters: FSRSParameters) {
+        // Migrate / clamp the input once. Subsequent reads of `self.parameters`
+        // see the canonical, post-`generatorParameters` form.
+        let migrated = FSRSDefaults().generatorParameters(props: parameters)
+        self.parameters = migrated
+        // Compute intervalModifier from the migrated parameters. We need the
+        // version-dependent `decay` / `factor` here, which read `parameters`
+        // via the computed properties — hence the temporary instance below.
+        self.intervalModifier = Self.computeIntervalModifier(parameters: migrated)
+    }
+
+    private static func computeIntervalModifier(parameters: FSRSParameters) -> Double {
+        let r = parameters.requestRetention
+        guard r.isFinite, r > 0, r <= 1 else {
+            // Preserve the prior behavior: invalid retention falls through to
+            // the default identity modifier and is logged.
+            if !r.isFinite {
+                return 1
+            }
+            print("Requested retention rate should be in the range (0,1]")
+            return 1
+        }
+        // Mirror `decay` / `factor` getter logic without an instance.
+        let decay: Double
+        let factor: Double
+        if FSRSAlgorithmVersion.detect(parameters.w) == .v6 {
+            decay = -parameters.w[20]
+            factor = (exp(log(0.9) / decay) - 1.0).toFixedNumber(8)
+        } else {
+            decay = -0.5
+            factor = 19.0 / 81.0
+        }
+        let result = (pow(r, 1 / decay) - 1.0) / factor
+        return result.toFixedNumber(8)
+    }
+
+    /**
+     * The formula used is :
+     * $$ S_0(G) = w_{G-1}$$
+     * $$S_0 = \max \lbrace S_0,0.1\rbrace $$
+
+     * @param g Grade (rating at Anki) [1.again,2.hard,3.good,4.easy]
+     * @return Stability (interval when R=90%)
+     */
+    func initStability(g: Rating) -> Double {
+        max(parameters.w[g.rawValue - 1], 0.1)
+    }
+
+    /**
+     * The formula used is :
+     * $$D_0(G) = w_4 - e^{(G-1) \cdot w_5} + 1 $$
+     * $$D_0 = \min \lbrace \max \lbrace D_0(G),1 \rbrace,10 \rbrace$$
+     * where the $$D_0(1)=w_4$$ when the first rating is good.
+     *
+     * @param {Grade} g Grade (rating at Anki) [1.again,2.hard,3.good,4.easy]
+     * @return {number} Difficulty $$D \in [1,10]$$
+     */
+    /// Initial difficulty, clamped to `[1, 10]`. Used as the canonical entry
+    /// point — both v5 and v6 callers see clamped values here.
+    func initDifficulty(_ grade: Rating) -> Double {
+        constrainDifficulty(
+            r: parameters.w[4] - exp((Double(grade.rawValue) - 1) * parameters.w[5]) + 1
+        )
+    }
+
+    /// Raw, unclamped initial difficulty as defined by FSRS-6's
+    /// `init_difficulty`. Used by v6's `nextDifficulty` for mean reversion,
+    /// where the unclamped Easy-init value matters.
+    func initDifficultyRaw(_ grade: Rating) -> Double {
+        (parameters.w[4] - exp(Double(grade.rawValue - 1) * parameters.w[5]) + 1).toFixedNumber(8)
+    }
+
+    func constrainDifficulty(r: Double) -> Double {
+        min(max(r.toFixedNumber(8), 1.0), 10.0)
+    }
+
+    /**
+     * If fuzzing is disabled or ivl is less than 2.5, it returns the original interval.
+     * - Parameters:
+     *   - ivl: The interval to be fuzzed.
+     *   - elapsedDays: t days since the last review.
+     *   - seed: Per-call PRNG seed produced by the scheduler. Threading it as
+     *     a parameter (rather than a stored property) keeps the algorithm
+     *     instance immutable across concurrent calls.
+     */
+    func applyFuzz(ivl: Double, elapsedDays: Double, seed: String?) -> Int {
+        guard parameters.enableFuzz && ivl >= 2.5 else { return Int(round(ivl)) }
+        let genetaor = alea(seed: seed)
+        let fuzzFactor = genetaor.next()
+        let ivls = FSRSHelper.getFuzzRange(
+            interval: ivl,
+            elapsedDays: elapsedDays,
+            maximumInterval: parameters.maximumInterval
+        )
+        return Int(floor(fuzzFactor * (ivls.maxIvl - ivls.minIvl + 1) + ivls.minIvl))
+    }
+
+    /**
+     * - Parameters:
+     *   - s: Stability (interval when R=90%).
+     *   - elapsedDays: t days since the last review.
+     *   - seed: Per-call PRNG seed (forwarded to `applyFuzz`).
+     */
+    func nextInterval(s: Double, elapsedDays: Double, seed: String?) -> Int {
+        let newInterval = min(max(1, round(s * intervalModifier)), parameters.maximumInterval)
+        return applyFuzz(ivl: newInterval, elapsedDays: elapsedDays, seed: seed)
+    }
+
+    /**
+     * @see https://github.com/open-spaced-repetition/fsrs4anki/issues/697
+     */
+    func linearDamping(deltaD: Double, oldD: Double) -> Double {
+        (deltaD * (10 - oldD) / 9).toFixedNumber(8)
+    }
+    
+    /**
+     * The formula used is :
+     * $$\text{delta}_d = -w_6 \cdot (g - 3)$$
+     * $$\text{next}_d = D + \text{linear damping}(\text{delta}_d , D)$$
+     * $$D^\prime(D,R) = w_7 \cdot D_0(4) +(1 - w_7) \cdot \text{next}_d$$
+     * @param {number} d Difficulty $$D \in [1,10]$$
+     * @param {Grade} g Grade (rating at Anki) [1.again,2.hard,3.good,4.easy]
+     * @return {number} $$\text{next}_D$$
+     */
+    func nextDifficulty(d: Double, g: Rating) -> Double {
+        let deltaD = -(parameters.w[6] * Double(g.rawValue - 3))
+        let nextD = d + linearDamping(deltaD: deltaD, oldD: d)
+        // v5 mean-reverts toward the *clamped* easy-init value; v6 mean-reverts
+        // toward the *raw* easy-init value (this is part of v6's clamp-at-caller
+        // refactor and changes outputs even when w is otherwise comparable).
+        let initEasy: Double
+        switch version {
+        case .v5: initEasy = initDifficulty(.easy)
+        case .v6: initEasy = initDifficultyRaw(.easy)
+        }
+        return constrainDifficulty(r: meanReversion(initValue: initEasy, current: nextD))
+    }
+    
+    /**
+     * The formula used is :
+     * $$w_7 \cdot \text{init} +(1 - w_7) \cdot \text{current}$$
+     * @param {number} init $$w_2 : D_0(3) = w_2 + (R-2) \cdot w_3= w_2$$
+     * @param {number} current $$D - w_6 \cdot (R - 2)$$
+     * @return {number} difficulty
+     */
+    func meanReversion(initValue: Double, current: Double) -> Double {
+        (parameters.w[7] * initValue + (1 - parameters.w[7]) * current).toFixedNumber(8)
+    }
+
+    func nextRecallStability(d: Double, s: Double, r: Double, g: Rating) -> Double {
+        let hardPenalty = g == .hard ? parameters.w[15] : 1
+        let easyBound = g == .easy ? parameters.w[16] : 1
+        return FSRSHelper.clamp(
+            s * (
+                1 + exp(parameters.w[8]) * (11 - d) * pow(s, -(parameters.w[9])) *
+                (exp((1 - r) * parameters.w[10]) - 1) * hardPenalty * easyBound
+            ),
+            sMin,
+            36500
+        )
+        .toFixedNumber(8)
+    }
+
+    /**
+     * The formula used is :
+     * $$S^\prime_f(D,S,R) = w_{11}\cdot D^{-w_{12}}\cdot ((S+1)^{w_{13}}-1) \cdot e^{w_{14}\cdot(1-R)}$$
+     * enable_short_term = true : $$S^\prime_f \in \min \lbrace \max \lbrace S^\prime_f,0.01\rbrace, \frac{S}{e^{w_{17} \cdot w_{18}}} \rbrace$$
+     * enable_short_term = false : $$S^\prime_f \in \min \lbrace \max \lbrace S^\prime_f,0.01\rbrace, S \rbrace$$
+     * @param {number} d Difficulty D \in [1,10]
+     * @param {number} s Stability (interval when R=90%)
+     * @param {number} r Retrievability (probability of recall)
+     * @return {number} S^\prime_f new stability after forgetting
+     */
+    func nextForgetStability(d: Double, s: Double, r: Double) -> Double {
+        let p1 = pow(d, -(parameters.w[12]))
+        let p2 = pow(s + 1, parameters.w[13]) - 1
+        let p3 = exp((1 - r) * parameters.w[14])
+        return FSRSHelper.clamp(
+            parameters.w[11] * p1 * p2 * p3,
+            sMin,
+            36500
+        ).toFixedNumber(8)
+    }
+
+    /**
+     * The formula used is :
+     * $$S^\prime_s(S,G) = S \cdot e^{w_{17} \cdot (G-3+w_{18})}$$
+     * @param {number} s Stability (interval when R=90%)
+     * @param {Grade} g Grade (Rating[0.again,1.hard,2.good,3.easy])
+     */
+    func nextShortTermStability(s: Double, g: Rating) -> Double {
+        let part = Double(g.rawValue) - 3 + parameters.w[18]
+        switch version {
+        case .v5:
+            return FSRSHelper.clamp(
+                s * exp(parameters.w[17] * part),
+                sMin,
+                36500
+            ).toFixedNumber(8)
+        case .v6:
+            // v6 introduces an extra `s^-w[19]` factor and a Hard/Easy floor:
+            // when sinc < 1 for grade ≥ Hard, snap it to 1 so non-Again grades
+            // never *shrink* stability under short-term scheduling.
+            let sinc = pow(s, -parameters.w[19]) * exp(parameters.w[17] * part)
+            let masked = g.rawValue >= Rating.hard.rawValue ? max(sinc, 1.0) : sinc
+            return FSRSHelper.clamp(
+                s * masked,
+                sMin,
+                36500
+            ).toFixedNumber(8)
+        }
+    }
+
+    /**
+     * The formula used is :
+     * $$R(t,S) = (1 + \text{FACTOR} \times \frac{t}{9 \cdot S})^{\text{DECAY}}$$
+     * @param {number} elapsed_days t days since the last review
+     * @param {number} stability Stability (interval when R=90%)
+     * @return {number} r Retrievability (probability of recall)
+     */
+    func forgettingCurve(elapsedDays: Double, stability: Double) -> Double {
+        pow(1 + ((factor * elapsedDays) / stability), decay).toFixedNumber(8)
+    }
+    
+    /**
+      * Calculates the next state of memory based on the current state, time elapsed, and grade.
+      *
+      * @param memory_state - The current state of memory, which can be null.
+      * @param t - The time elapsed since the last review.
+      * @param {Rating} g Grade (Rating[0.Manual,1.Again,2.Hard,3.Good,4.Easy])
+      * @returns The next state of memory with updated difficulty and stability.
+      */
+    func nextState(memoryState: FSRSState?, t: Double, g: Rating) throws -> FSRSState {
+        let difficulty = memoryState?.difficulty ?? 0.0
+        let stability = memoryState?.stability ?? 0.0
+        if t < 0 {
+            throw FSRSError.init(.invalidDeltaT)
+        }
+        if difficulty == 0 && stability == 0 {
+            return FSRSState(stability: initStability(g: g), difficulty: initDifficulty(g))
+        }
+        if g == .manual {
+            return FSRSState(stability: stability, difficulty: difficulty)
+        }
+        if difficulty < 1 || stability < sMin {
+            throw FSRSError(.invalidParam)
+        }
+        let r = forgettingCurve(elapsedDays: t, stability: stability)
+        let sAfterSuccess = nextRecallStability(d: difficulty, s: stability, r: r, g: g)
+        let sAfterFail = nextForgetStability(d: difficulty, s: stability, r: r)
+        let sAfterShortTerm = nextShortTermStability(s: stability, g: g)
+        var newS = sAfterSuccess
+
+        if g == .again {
+            var w17 = 0.0
+            var w18 = 0.0
+            if params.enableShortTerm {
+                w17 = params.w[17]
+                w18 = params.w[18]
+            }
+            let nextSMin = stability / exp(w17 * w18)
+            newS = FSRSHelper.clamp(nextSMin, sMin, sAfterFail)
+        }
+
+        if t == 0 && params.enableShortTerm {
+            newS = sAfterShortTerm
+        }
+
+        let newD = nextDifficulty(d: difficulty, g: g)
+        return FSRSState(stability: newS, difficulty: newD)
+    }
+}

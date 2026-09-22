@@ -42,6 +42,7 @@ enum M1DebugFixture {
 
     static func makeValidationContainer(_ directory: URL) throws -> ModelContainer {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        try ReviewMigration.backupIfNeeded(directory.appendingPathComponent("app.store"))
         return try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: directory.appendingPathComponent("app.store")))
     }
 
@@ -75,6 +76,7 @@ enum M1DebugFixture {
             title: "光合作用",
             explanation: "1. 植物利用光能。\n2. 二氧化碳和水转化为有机物。\n3. 这个过程会释放氧气。"
         )
+        item.reviewEnrollment = "enrolled"
         item.source = source
 
         let spec = AgentAPI.ScoringSpec(

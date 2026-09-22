@@ -1,0 +1,764 @@
+{
+  "timestamp": "2026-09-23T01:15:45+0800",
+  "model": "deepseek-v4-flash",
+  "cases": [
+    {
+      "name": "synonym",
+      "input": {
+        "event_id": "e7a418ef-4387-4439-9fbc-50ed9ae6ac5e",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "3951f448-8851-453d-af0f-a26abd9f9729",
+          "knowledge_id": "78db6f5b-9ce4-4791-8670-674e83364a83",
+          "knowledge_version": 1,
+          "question_id": "b0a8027b-1ae6-449e-ac68-0d7148f86112",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "光驱动植物把二氧化碳和水变成糖类，并放出氧气。",
+        "action": "utterance",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "answer",
+      "expected_grade": "good",
+      "status": 200,
+      "output": {
+        "intent": "answer",
+        "coverage": [
+          "met",
+          "met"
+        ],
+        "misconceptions": [
+          "absent"
+        ],
+        "explicit_recall_difficulty": false,
+        "feedback": "完全正确：你抓住了“光能驱动”，也把原料（二氧化碳和水）与产物（有机物/糖类、氧气）对应清楚了。",
+        "clarification_reveals_answer": false,
+        "grade": "good",
+        "event_id": "e7a418ef-4387-4439-9fbc-50ed9ae6ac5e",
+        "attempt_id": "3951f448-8851-453d-af0f-a26abd9f9729",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "79702e53-aed3-4453-9660-1e690df741e4",
+            "input_tokens": 1123,
+            "output_tokens": 75,
+            "total_tokens": 1198,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 910
+      },
+      "total_ms": 913,
+      "matches": true
+    },
+    {
+      "name": "missing",
+      "input": {
+        "event_id": "703a6748-2f67-49df-b9e9-3ca7feab88fb",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "9fd1dd44-8c14-4748-b026-a6d85663937f",
+          "knowledge_id": "d8d07cb5-3389-4273-99db-9cc66bcca455",
+          "knowledge_version": 1,
+          "question_id": "a50a4e65-f9de-4aaa-9213-a2b34582fe61",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "植物利用光能。",
+        "action": "utterance",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "answer",
+      "expected_grade": "again",
+      "status": 200,
+      "output": {
+        "intent": "answer",
+        "coverage": [
+          "met",
+          "missing"
+        ],
+        "misconceptions": [
+          "absent"
+        ],
+        "explicit_recall_difficulty": false,
+        "feedback": "你答对了“利用光能”这一半。还差后半段：光合作用的原料和产物各是什么，也就是它把什么变成了什么、又释放出什么？再想一下补充完整。",
+        "clarification_reveals_answer": false,
+        "grade": "again",
+        "event_id": "703a6748-2f67-49df-b9e9-3ca7feab88fb",
+        "attempt_id": "9fd1dd44-8c14-4748-b026-a6d85663937f",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "8a498d7f-27d5-406e-b8aa-b198061805e3",
+            "input_tokens": 1111,
+            "output_tokens": 87,
+            "total_tokens": 1198,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 1002
+      },
+      "total_ms": 1005,
+      "matches": true
+    },
+    {
+      "name": "mixed_error",
+      "input": {
+        "event_id": "c455adf2-c0b1-4211-866c-1f7d20a74816",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "0d525943-f855-4a85-b9df-cc2f764d4ff3",
+          "knowledge_id": "d6e54f0a-519f-4962-a8ed-63f9b7aac06d",
+          "knowledge_version": 1,
+          "question_id": "562e3346-d050-4ba1-9794-35eb268bda7c",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "植物利用光能吸收氧气，消耗水，生产有机物。",
+        "action": "utterance",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "answer",
+      "expected_grade": "again",
+      "status": 200,
+      "output": {
+        "intent": "answer",
+        "coverage": [
+          "met",
+          "missing"
+        ],
+        "misconceptions": [
+          "present"
+        ],
+        "explicit_recall_difficulty": false,
+        "feedback": "你答对了能量来源：植物利用光能。但原料和产物部分有问题——你提到“吸收氧气”，氧气其实是产物而不是原料，原料应该是二氧化碳和水；另外产物除了有机物还应释放氧气。能再想想原料和产物分别是什么吗？",
+        "clarification_reveals_answer": false,
+        "grade": "again",
+        "event_id": "c455adf2-c0b1-4211-866c-1f7d20a74816",
+        "attempt_id": "0d525943-f855-4a85-b9df-cc2f764d4ff3",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "821f876b-d2ad-4e32-a45e-388171c276c0",
+            "input_tokens": 1124,
+            "output_tokens": 104,
+            "total_tokens": 1228,
+            "cached_input_tokens": 512,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 783
+      },
+      "total_ms": 790,
+      "matches": true
+    },
+    {
+      "name": "forgot",
+      "input": {
+        "event_id": "5c66efe9-e4ad-4c68-a5ae-b5e5c2db7163",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "8712777a-d181-4221-bb74-a66cffa23e2a",
+          "knowledge_id": "9a1173db-920e-4df8-be6f-28c5e88e90dc",
+          "knowledge_version": 1,
+          "question_id": "2ed17eaf-defc-4486-a4af-1860132afbd0",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "想不起来了。",
+        "action": "utterance",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "forgot",
+      "expected_grade": "again",
+      "status": 200,
+      "output": {
+        "intent": "forgot",
+        "coverage": [],
+        "misconceptions": [],
+        "explicit_recall_difficulty": false,
+        "feedback": "没关系，这道题先放下回忆。要不要我给个提示、直接讲解，或者跳过这题？",
+        "clarification_reveals_answer": false,
+        "grade": "again",
+        "event_id": "5c66efe9-e4ad-4c68-a5ae-b5e5c2db7163",
+        "attempt_id": "8712777a-d181-4221-bb74-a66cffa23e2a",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "f8cbc92c-dfcb-417e-acb6-a3a3507d7162",
+            "input_tokens": 1111,
+            "output_tokens": 61,
+            "total_tokens": 1172,
+            "cached_input_tokens": 512,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 764
+      },
+      "total_ms": 768,
+      "matches": true
+    },
+    {
+      "name": "clarify",
+      "input": {
+        "event_id": "5eecc146-5bf8-464e-bd00-a27e43fa9dfb",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "a1c6381c-a766-42ec-b76d-598c1972791d",
+          "knowledge_id": "983bb4ce-215b-4045-9218-6b056df1e10b",
+          "knowledge_version": 1,
+          "question_id": "aa35f877-af6a-4273-ba79-824b58af8b4d",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "这里的原料和产物指什么？换个问法。",
+        "action": "clarify",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "clarify",
+      "expected_grade": null,
+      "status": 200,
+      "output": {
+        "intent": "clarify",
+        "coverage": [],
+        "misconceptions": [],
+        "explicit_recall_difficulty": false,
+        "feedback": "“原料”指光合作用消耗掉、用来合成新物质的东西（即输入/反应物）；“产物”指光合作用新生成的物质（即输出/生成物）。换个问法：植物进行光合作用时，需要哪些物质参与、又生成了什么、同时放出什么气体？你按“输入—输出”的方向来想就行。",
+        "clarification_reveals_answer": false,
+        "grade": null,
+        "event_id": "5eecc146-5bf8-464e-bd00-a27e43fa9dfb",
+        "attempt_id": "a1c6381c-a766-42ec-b76d-598c1972791d",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "11a2da7d-dd02-4329-be59-bfb5d7eb1e0a",
+            "input_tokens": 1117,
+            "output_tokens": 114,
+            "total_tokens": 1231,
+            "cached_input_tokens": 512,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 986
+      },
+      "total_ms": 994,
+      "matches": true
+    },
+    {
+      "name": "hint",
+      "input": {
+        "event_id": "ff5f5035-86b4-4a16-877a-c644526fde46",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "6d87f01d-20d8-4c6d-b51e-aaa387d7f844",
+          "knowledge_id": "f5e0064f-857a-4056-85fc-be0fbb1d573c",
+          "knowledge_version": 1,
+          "question_id": "c4019452-e5e6-416d-b83e-9581491d267e",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "给一点提示。",
+        "action": "hint",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "hint",
+      "expected_grade": null,
+      "status": 200,
+      "output": {
+        "intent": "hint",
+        "coverage": [],
+        "misconceptions": [],
+        "explicit_recall_difficulty": false,
+        "feedback": "提示：想想植物「吃」什么、「喝」什么来制造养分——一种是空气里的气体，另一种是根从土里吸收的；推动这个过程的是来自太阳的什么？",
+        "clarification_reveals_answer": false,
+        "grade": null,
+        "event_id": "ff5f5035-86b4-4a16-877a-c644526fde46",
+        "attempt_id": "6d87f01d-20d8-4c6d-b51e-aaa387d7f844",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "9e9aa61b-1f41-4308-8e51-5f7065e19dbb",
+            "input_tokens": 1113,
+            "output_tokens": 78,
+            "total_tokens": 1191,
+            "cached_input_tokens": 512,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 948
+      },
+      "total_ms": 952,
+      "matches": true
+    },
+    {
+      "name": "explain",
+      "input": {
+        "event_id": "215e036c-ef5d-454c-a4d9-941fc3f01f94",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "edbae68c-180a-47c2-bc07-b70b776ff994",
+          "knowledge_id": "fa145d04-6870-45c0-b2cd-584ec652034e",
+          "knowledge_version": 1,
+          "question_id": "f5f70567-2978-42ea-baea-f26d9d1c1e95",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "我忘了，请直接重新讲解。",
+        "action": "explain",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "explain",
+      "expected_grade": null,
+      "status": 200,
+      "output": {
+        "intent": "explain",
+        "coverage": [],
+        "misconceptions": [],
+        "explicit_recall_difficulty": false,
+        "feedback": "好，我来把光合作用完整讲一遍。\n\n光合作用是植物利用**光能**，把**二氧化碳和水**转化成**有机物**（主要是糖类），同时**释放氧气**的过程。\n\n可以这样记这条“原料→产物”的线索：\n- 能量来源：光能（不是化学能，也不是从土壤里“吃”到的能量）\n- 原料：二氧化碳 + 水\n- 产物：有机物 + 氧气\n\n容易搞反的一点是：氧气是产物，不是原料。植物并不是“吸氧气来制造有机物”，而是把水中的氧最终以氧气形式释放出去。\n\n一句话概括：**植物用光能，把二氧化碳和水造成有机物，并放出氧气。**\n\n你可以对照这条线索再顺一遍：能量来源是什么、进去的是什么、出来的是什么。想继续的话，告诉我你想再听一遍哪一部分，或者直接说说你的理解，我帮你看看。",
+        "clarification_reveals_answer": false,
+        "grade": null,
+        "event_id": "215e036c-ef5d-454c-a4d9-941fc3f01f94",
+        "attempt_id": "edbae68c-180a-47c2-bc07-b70b776ff994",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "11177726-59eb-45da-8c1e-56da03cb8df2",
+            "input_tokens": 1113,
+            "output_tokens": 243,
+            "total_tokens": 1356,
+            "cached_input_tokens": 512,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 1727
+      },
+      "total_ms": 1734,
+      "matches": true
+    },
+    {
+      "name": "understood",
+      "input": {
+        "event_id": "4f59dc20-7a38-4ee7-b28b-601b167540f5",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "c369d836-b87d-4240-8bf1-f774bf33d493",
+          "knowledge_id": "f929c97d-eeb3-41ab-b908-a9b0d9b38e86",
+          "knowledge_version": 1,
+          "question_id": "48f945e3-6875-49c6-a0c7-6d44132b9a87",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "懂了。",
+        "action": "utterance",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "understood",
+      "expected_grade": null,
+      "status": 200,
+      "output": {
+        "intent": "understood",
+        "coverage": [],
+        "misconceptions": [],
+        "explicit_recall_difficulty": false,
+        "feedback": "好的，那这道先到这里。想继续下一题时告诉我就行。",
+        "clarification_reveals_answer": false,
+        "grade": null,
+        "event_id": "4f59dc20-7a38-4ee7-b28b-601b167540f5",
+        "attempt_id": "c369d836-b87d-4240-8bf1-f774bf33d493",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "b1310a69-b7b7-4287-a809-43aae9701256",
+            "input_tokens": 1111,
+            "output_tokens": 56,
+            "total_tokens": 1167,
+            "cached_input_tokens": 512,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 894
+      },
+      "total_ms": 898,
+      "matches": true
+    },
+    {
+      "name": "correction",
+      "input": {
+        "event_id": "08376d7f-5d35-4ada-a4d3-7dd765de3eb0",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "b5a15f31-0491-41f1-be03-d8579b704659",
+          "knowledge_id": "74a741df-53fa-418e-8ed4-ddbc08c03baa",
+          "knowledge_version": 1,
+          "question_id": "562657df-f403-499a-b596-fc0e8c1e9fc7",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "刚才语音转写错了，我要重新说。",
+        "action": "utterance",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "correction",
+      "expected_grade": null,
+      "status": 200,
+      "output": {
+        "intent": "correction",
+        "coverage": [],
+        "misconceptions": [],
+        "explicit_recall_difficulty": false,
+        "feedback": "好的，刚才那条转写不算数。你重新说一遍光合作用利用什么能量、原料和产物是什么，我按这次的内容来评。",
+        "clarification_reveals_answer": false,
+        "grade": null,
+        "event_id": "08376d7f-5d35-4ada-a4d3-7dd765de3eb0",
+        "attempt_id": "b5a15f31-0491-41f1-be03-d8579b704659",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "53b5c820-06d0-4345-a382-ef20d75ce079",
+            "input_tokens": 1115,
+            "output_tokens": 76,
+            "total_tokens": 1191,
+            "cached_input_tokens": 512,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 1031
+      },
+      "total_ms": 1036,
+      "matches": true
+    },
+    {
+      "name": "difficult_correct",
+      "input": {
+        "event_id": "a8cd1149-cac0-41bc-ab84-a73dfced00c9",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "154b9fd2-5fb0-4ef2-94d6-82b94c248995",
+          "knowledge_id": "b317c9b3-86cc-498b-a983-3a9699fac037",
+          "knowledge_version": 1,
+          "question_id": "8f4d582e-128a-4e99-aeaa-3b79135be27a",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "回忆起来很吃力。植物利用光能，把二氧化碳和水转化为有机物，释放氧气。",
+        "action": "utterance",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "answer",
+      "expected_grade": "hard",
+      "status": 200,
+      "output": {
+        "intent": "answer",
+        "coverage": [
+          "met",
+          "met"
+        ],
+        "misconceptions": [
+          "absent"
+        ],
+        "explicit_recall_difficulty": true,
+        "feedback": "答对了，两个要点都说到：利用光能；二氧化碳和水转成有机物并释放氧气。你提到回忆起来很吃力，这很正常，多练几次会越来越熟。想再巩固一下或换个问法继续，都可以告诉我。",
+        "clarification_reveals_answer": false,
+        "grade": "hard",
+        "event_id": "a8cd1149-cac0-41bc-ab84-a73dfced00c9",
+        "attempt_id": "154b9fd2-5fb0-4ef2-94d6-82b94c248995",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "c2f17214-0339-44a8-951d-535636edda78",
+            "input_tokens": 1126,
+            "output_tokens": 96,
+            "total_tokens": 1222,
+            "cached_input_tokens": 512,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 973
+      },
+      "total_ms": 978,
+      "matches": true
+    },
+    {
+      "name": "skip",
+      "input": {
+        "event_id": "f4fb868c-b915-4cb9-b749-344b1e0f1051",
+        "revision": 0,
+        "binding": {
+          "attempt_id": "5222a0be-f83c-4c1a-bade-148549de473e",
+          "knowledge_id": "1bdd8fd1-609d-4e20-a54d-f92d0da36e64",
+          "knowledge_version": 1,
+          "question_id": "a89f55e5-e0c8-4698-a42a-2793e26d4413",
+          "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+          "prompt": "光合作用利用什么能量，原料和产物是什么？",
+          "scoring_spec": {
+            "learning_goal": "解释光合作用",
+            "must_cover": [
+              "利用光能",
+              "二氧化碳和水生成有机物并释放氧气"
+            ],
+            "acceptable_paraphrases": [
+              "光驱动制造糖"
+            ],
+            "common_misconceptions": [
+              "将氧气作为主要原料"
+            ],
+            "evidence": "植物利用光能，将二氧化碳和水转为有机物，并释放氧气。",
+            "order_rules": ""
+          },
+          "rubric_json": "{\"learning_goal\": \"解释光合作用\", \"must_cover\": [\"利用光能\", \"二氧化碳和水生成有机物并释放氧气\"], \"acceptable_paraphrases\": [\"光驱动制造糖\"], \"common_misconceptions\": [\"将氧气作为主要原料\"], \"evidence\": \"植物利用光能，将二氧化碳和水转为有机物，并释放氧气。\", \"order_rules\": \"\"}"
+        },
+        "text": "这一题先跳过。",
+        "action": "utterance",
+        "dialogue": [],
+        "assistance_used": false,
+        "correcting": false
+      },
+      "expected_intent": "skip",
+      "expected_grade": null,
+      "status": 200,
+      "output": {
+        "intent": "skip",
+        "coverage": [],
+        "misconceptions": [],
+        "explicit_recall_difficulty": false,
+        "feedback": "好，这题先跳过。你可以继续下一题，或者想先听讲解、要个提示都可以。",
+        "clarification_reveals_answer": false,
+        "grade": null,
+        "event_id": "f4fb868c-b915-4cb9-b749-344b1e0f1051",
+        "attempt_id": "5222a0be-f83c-4c1a-bade-148549de473e",
+        "spec_version": "615d24f553f26173df7fddf0496ad0289312b9e65877ce98d91d6512bc559eb0",
+        "rule_version": "review-independent-recall-1",
+        "model": "deepseek-v4-flash",
+        "usage": [
+          {
+            "response_id": "42e1778f-dd68-4c45-a2cb-b28a6c39672b",
+            "input_tokens": 1114,
+            "output_tokens": 62,
+            "total_tokens": 1176,
+            "cached_input_tokens": 512,
+            "reasoning_output_tokens": 0
+          }
+        ],
+        "actual_calls": 1,
+        "duration_ms": 955
+      },
+      "total_ms": 962,
+      "matches": true
+    }
+  ],
+  "matched": 11
+}

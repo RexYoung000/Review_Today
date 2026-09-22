@@ -1,42 +1,70 @@
 import Foundation
+import FSRS
 
+/// The app owns dates and event history; the model only supplies recall evidence.
 enum Fsrs {
-    static let algorithmVersion = "fsrs-4.5-demo"
-    static let parameterVersion = "1"
+    static let algorithmVersion = "fsrs-6.0"
+    static let parameterVersion = "v6-default-r90-10m-no-fuzz-1"
+    static var scheduler: FSRS {
+        FSRS(parameters: .init(requestRetention: 0.9, w: FSRSDefaults.defaultWv6,
+                              enableFuzz: false, enableShortTerm: true,
+                              learningSteps: ["10m"], relearningSteps: ["10m"]))
+    }
 
-    static func apply(grade: String, to state: FsrsState, now: Date = .now) {
-        let g = grade.lowercased()
-        state.reps += 1
-        state.lastEffectiveGrade = g
-        switch g {
-        case "again":
-            state.lapses += 1
-            state.stability = max(0.3, state.stability * 0.5)
-            state.difficulty = min(10, state.difficulty + 0.8)
-            state.dueAt = now.addingTimeInterval(10 * 60)
-        case "hard":
-            state.stability = max(0.5, state.stability * 1.2)
-            state.difficulty = min(10, state.difficulty + 0.15)
-            state.dueAt = now.addingTimeInterval(max(state.stability, 0.5) * 24 * 60 * 60)
-        case "easy":
-            state.stability = max(2, state.stability * 3)
-            state.difficulty = max(1, state.difficulty - 0.3)
-            state.dueAt = now.addingTimeInterval(state.stability * 24 * 60 * 60)
-        default:
-            state.stability = max(1, state.stability * 2.5)
-            state.difficulty = max(1, state.difficulty - 0.15)
-            state.dueAt = now.addingTimeInterval(state.stability * 24 * 60 * 60)
+    static func apply(grade: String, to state: FsrsState, now: Date = .now) throws {
+        let rating: Rating
+        switch grade {
+        case "again": rating = .again
+        case "hard": rating = .hard
+        case "good": rating = .good
+        case "easy": rating = .easy
+        default: throw ReviewFlowError.invalidResult
         }
+        let card: Card
+        if state.algorithmVersion == algorithmVersion, let raw = state.schedulerJSON {
+            card = try JSONDecoder().decode(Card.self, from: Data(raw.utf8))
+        } else {
+            // Demo S/D values are not valid FSRS observations. Preserve them in
+            // the before snapshot, and bootstrap only at the next real review.
+            card = Card(due: state.dueAt)
+        }
+        let next = try scheduler.next(card: card, now: now, grade: rating).card
+        state.schedulerJSON = String(decoding: try JSONEncoder().encode(next), as: UTF8.self)
+        state.dueAt = next.due
+        state.stability = next.stability
+        state.difficulty = next.difficulty
+        state.reps = next.reps
+        state.lapses = next.lapses
+        state.lastEffectiveGrade = grade
         state.algorithmVersion = algorithmVersion
         state.parameterVersion = parameterVersion
     }
 }
 
+extension Knowledge {
+    var participatesInReview: Bool { reviewEnrollment == nil || reviewEnrollment == "enrolled" }
+    func setReviewParticipation(_ enabled: Bool, now: Date = .now) {
+        if enabled && reviewEnrollment == "reference" && studiedAt == nil {
+            studiedAt = now
+            dueAt = now.addingTimeInterval(2 * 3600)
+        }
+        if !enabled && reviewEnrollment == "reference" { return }
+        reviewEnrollment = enabled ? "enrolled" : "paused"
+    }
+}
+
 enum ReviewQueue {
     static func isDue(_ item: Knowledge, developerMode: Bool, now: Date = .now) -> Bool {
-        guard item.lifecycle == "active" else { return false }
+        guard item.lifecycle == "active", item.participatesInReview else { return false }
         if developerMode && item.forceDue { return true }
         if developerMode && item.skipTwoHourWait { return now >= item.createdAt }
         return now >= item.dueAt
+    }
+    static func ordered(_ items: [Knowledge], developerMode: Bool = false, now: Date = .now) -> [Knowledge] {
+        items.filter { isDue($0, developerMode: developerMode, now: now) }.sorted {
+            if $0.dueAt != $1.dueAt { return $0.dueAt < $1.dueAt }
+            if $0.createdAt != $1.createdAt { return $0.createdAt < $1.createdAt }
+            return $0.id.uuidString < $1.id.uuidString
+        }
     }
 }

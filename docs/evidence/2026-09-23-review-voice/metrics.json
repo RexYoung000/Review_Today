@@ -1,0 +1,36 @@
+{
+  "text": {
+    "actual_calls": 49,
+    "input_tokens": 60195,
+    "output_tokens": 4285,
+    "cached_input_tokens": 26752,
+    "estimated_cny_off_peak": 0.05111804,
+    "duration_ms_median": 937,
+    "duration_ms_range": [
+      563,
+      1831
+    ],
+    "final_semantic_cases_matched": 13,
+    "final_semantic_cases_total": 13,
+    "native_calls": 13,
+    "final_text_rule_version": "review-independent-recall-3",
+    "native_success_rule_version": "review-independent-recall-2",
+    "sources": [
+      "text-live-01.json",
+      "text-live-02.json",
+      "text-live-03.json",
+      "native-http-trace.json"
+    ]
+  },
+  "voice_final": {
+    "actual_responses": 3,
+    "responses_with_usage": 2,
+    "known_usage_estimated_cny": 0.0038415,
+    "incomplete_usage": true,
+    "ready_ms": 298,
+    "first_playable_audio_ms": 1306,
+    "transcription_after_commit_ms": 370,
+    "earlier_debug_calls_not_fully_metered": true,
+    "all_probe_generated_responses_lower_bound": 10
+  }
+}

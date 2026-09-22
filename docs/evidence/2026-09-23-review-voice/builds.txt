@@ -1,0 +1,12 @@
+Final source verification, 2026-09-23
+
+Debug: BUILD SUCCEEDED
+Log: /tmp/review-today-voice-debug-final.log
+Release: BUILD SUCCEEDED
+Log: /tmp/review-today-voice-release-final.log
+Isolated native QA: BUILD SUCCEEDED
+Log: /tmp/review-today-native-qa-final-build.log
+
+Debug/Release: unsigned xcodebuild with CODE_SIGNING_ALLOWED=NO.
+Native QA: ad-hoc signed, build-only; latest binary not launched while Mac locked.
+No daily App replacement or production-data migration.

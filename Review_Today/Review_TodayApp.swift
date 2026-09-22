@@ -19,6 +19,7 @@ struct Review_TodayApp: App {
                 return
             }
 #endif
+            try ReviewMigration.backupIfNeeded(ModelConfiguration().url)
             container = try ModelContainer(
                 for: Source.self,
                 Knowledge.self,
@@ -55,7 +56,7 @@ struct Review_TodayApp: App {
         .defaultSize(width: 1280, height: 820)
         .windowResizability(.contentMinSize)
 
-        WindowGroup(String(localized: "复习"), id: "review") {
+        Window(String(localized: "复习"), id: "review") {
             ReviewView(coordinator: coordinator)
                 .modelContainer(container)
                 .runwayAppearance()

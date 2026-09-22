@@ -142,13 +142,16 @@ def _report_usage(response, callback):
     outputs = choose(get(usage, 'output_tokens'), get(usage, 'completion_tokens'))
     if inputs is None and outputs is None:
         return
-    callback(dict(response_id=getattr(response, 'id', None),
+    value = dict(response_id=getattr(response, 'id', None),
         input_tokens=inputs, output_tokens=outputs, total_tokens=number(get(usage, 'total_tokens')),
         cached_input_tokens=choose(get(get(usage, 'input_tokens_details'), 'cached_tokens'),
                                   get(get(usage, 'prompt_tokens_details'), 'cached_tokens'),
                                   get(usage, 'prompt_cache_hit_tokens')),
         reasoning_output_tokens=choose(get(get(usage, 'output_tokens_details'), 'reasoning_tokens'),
-                                       get(get(usage, 'completion_tokens_details'), 'reasoning_tokens'))))
+                                       get(get(usage, 'completion_tokens_details'), 'reasoning_tokens')))
+    reported_model = getattr(response, 'model', None)
+    if isinstance(reported_model, str): value['reported_model'] = reported_model
+    callback(value)
 
 
 def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_transport, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None, on_usage=None, on_request=None):

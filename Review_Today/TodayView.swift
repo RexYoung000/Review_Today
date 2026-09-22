@@ -28,7 +28,7 @@ struct TodayView: View {
     private var dueItems: [Knowledge] {
         let developerMode = developerMode
         let now = Date.now
-        return knowledge.filter { ReviewQueue.isDue($0, developerMode: developerMode, now: now) }
+        return ReviewQueue.ordered(knowledge, developerMode: developerMode, now: now)
     }
 
     var body: some View {
@@ -89,8 +89,8 @@ struct TodayView: View {
                         .foregroundStyle(runway.ink)
                 }
                 Spacer(minLength: 8)
-                if dueCount > 0 {
-                    RunwayPrimaryButton(title: String(localized: "现在开始")) {
+                if dueCount > 0 || reviewSessions.contains(where: { $0.protocolVersion == 2 && $0.mode == "formal" && $0.endedAt == nil }) {
+                    RunwayPrimaryButton(title: String(localized: "开始或继续复习")) {
                         coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
                         openWindow(id: "review")
                     }
@@ -105,7 +105,7 @@ struct TodayView: View {
                 StatCell(
                     id: "due",
                     value: "\(dueCount)",
-                    title: String(localized: "今晚复习"),
+                    title: String(localized: "到期复习"),
                     action: dueCount == 0 ? nil : {
                         coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
                         openWindow(id: "review")

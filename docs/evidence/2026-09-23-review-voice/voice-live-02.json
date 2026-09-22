@@ -1,0 +1,15 @@
+{
+  "model": "qwen3.8-omni-flash-realtime",
+  "timestamp": "2026-09-23T01:13:35+0800",
+  "audio_retained": false,
+  "synthetic_input": "植物利用光能，把二氧化碳和水转化为有机物，同时释放氧气。",
+  "input_audio_seconds": 6.4418125,
+  "ready_ms": 280,
+  "first_audio_ms": 673,
+  "output_audio_seconds": 4.48,
+  "spoken_text": "光合作用利用什么能量，原料和产物是什么？",
+  "transcript": "植物利用光能，把二氧化碳和水转化为有机物，同时释放氧气。",
+  "transcription_after_commit_ms": 330,
+  "passed": false,
+  "error": "RuntimeError: RT.REVIEW.VOICE_PROVIDER_ERROR: unknown"
+}

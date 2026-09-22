@@ -74,6 +74,10 @@ from agent_service.dictation import router as dictation_router
 
 app = FastAPI(title="Review Today Agent", docs_url=None, redoc_url=None)
 app.include_router(dictation_router)
+from agent_service.review_sessions import router as review_router
+app.include_router(review_router)
+from agent_service.review_voice import router as review_voice_router
+app.include_router(review_voice_router)
 _grade_results: dict[str, GradeResult] = {}
 _grade_acks: set[str] = set()
 _grade_lock = threading.Lock()

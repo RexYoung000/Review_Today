@@ -14,7 +14,7 @@ binary.parent.mkdir(parents=True, exist_ok=True)
 resources.mkdir(parents=True, exist_ok=True)
 sources = sorted(str(p) for p in pathlib.Path('Review_Today').glob('*.swift') if p.name != 'Review_TodayApp.swift')
 commands = [
-    ['xcrun', 'swiftc', '-parse-as-library', '-D', 'DEBUG', '-swift-version', '5', '-default-isolation', 'MainActor',
+    ['tests/mac/swift-with-fsrs.py', '-parse-as-library', '-D', 'DEBUG', '-swift-version', '5', '-default-isolation', 'MainActor',
      '-target', 'arm64-apple-macos26.5', *sources, 'tests/mac/GlassMaterialPreview.swift', '-o', str(binary)],
     ['xcrun', 'actool', 'Review_Today/Assets.xcassets', '--compile', str(resources), '--platform', 'macosx',
      '--minimum-deployment-target', '26.5', '--target-device', 'mac', '--app-icon', 'AppIcon',

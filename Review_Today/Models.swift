@@ -57,6 +57,9 @@ final class Knowledge {
     var dueAt: Date
     var forceDue: Bool
     var skipTwoHourWait: Bool
+    // nil is the legacy enrolled state. New saves explicitly start as reference material.
+    var reviewEnrollment: String? = nil
+    var studiedAt: Date? = nil
     var source: Source?
     @Relationship(deleteRule: .cascade, inverse: \Question.knowledge)
     var questions: [Question]
@@ -95,6 +98,7 @@ final class Knowledge {
         self.dueAt = dueAt ?? createdAt.addingTimeInterval(2 * 60 * 60)
         self.forceDue = false
         self.skipTwoHourWait = false
+        self.reviewEnrollment = "reference"
         self.questions = []
     }
 }
@@ -159,6 +163,8 @@ final class CaptureTask {
 
 @Model
 final class AppSettings {
+    var reviewGoal: String = "due"
+    var reviewGoalValue: Int = 5
     var dailyReminderMinutes: Int
     var reviewLanguageOverride: String
     var developerMode: Bool
@@ -191,6 +197,7 @@ final class AppSettings {
 
 @Model
 final class FsrsState {
+    var schedulerJSON: String? = nil
     @Attribute(.unique) var knowledgeId: UUID
     var dueAt: Date
     var stability: Double
@@ -216,6 +223,14 @@ final class FsrsState {
 
 @Model
 final class ReviewSession {
+    var protocolVersion: Int = 1
+    var currentIndex: Int = 0
+    var goal: String = "due"
+    var goalValue: Int = 5
+    var activeSeconds: Double = 0
+    var activeSince: Date? = nil
+    var revision: Int = 0
+    var recordsJSON: String = "[]"
     @Attribute(.unique) var id: UUID
     var mode: String
     var startedAt: Date
@@ -238,6 +253,21 @@ final class ReviewSession {
 
 @Model
 final class ReviewAttempt {
+    var rubricJSON: String = ""
+    var promptSnapshot: String = ""
+    var rubricVersion: String = ""
+    var originalAnswer: String = ""
+    var correctedAnswer: String? = nil
+    var independentGrade: String = ""
+    var feedbackText: String = ""
+    var assistanceJSON: String = "[]"
+    var dialogJSON: String = "[]"
+    var evaluationJSON: String = "{}"
+    var schedulerBeforeJSON: String? = nil
+    var schedulerAfterJSON: String? = nil
+    var judgedAt: Date? = nil
+    var correctionRevision: Int = 0
+    var serviceCommitPending: Bool = false
     @Attribute(.unique) var attemptId: UUID
     var sessionId: UUID
     var knowledgeId: UUID
@@ -394,6 +424,7 @@ extension AgentSession {
 
 @Model
 final class AgentMessage {
+    var reviewRequested: Bool = false
     @Attribute(.unique) var id: UUID
     var clientMessageID: UUID?
     var sessionID: UUID

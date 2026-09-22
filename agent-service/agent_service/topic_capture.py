@@ -57,8 +57,7 @@ def maybe_offer(h, sid, rid, rev, decision, last):
         task = data['tasks'].get(decision.target_task_id or data.get('active_task_id'))
         ctx = (task or {}).get('context', {})
         understood = decision.understanding if decision.understanding == 'self_reported' else ctx.get('understanding', 'unknown')
-        if understood == 'unknown' or (ctx.get('requires_mastery') and not ctx.get('transfer_passed')):
-            return False
+        # Saving reference material does not certify understanding.
         ids = list(dict.fromkeys(closure.message_ids))
         messages = [m for m in data['messages'] if m['message_id'] in ids and m['role'] == 'coach']
         if not ids or len(messages) != len(ids):

@@ -7,6 +7,6 @@ sources=()
 for file in Review_Today/*.swift; do
   case "$file" in */Review_TodayApp.swift) ;; *) sources+=("$file");; esac
 done
-xcrun swiftc -parse-as-library -D DEBUG -swift-version 5 -default-isolation MainActor \
+tests/mac/swift-with-fsrs.py -parse-as-library -D DEBUG -swift-version 5 -default-isolation MainActor \
   "${sources[@]}" tests/mac/KnowledgeIngestionFixture.swift tests/mac/KnowledgeIngestionTests.swift -o "$folder/contracts"
 "$folder/contracts"

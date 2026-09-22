@@ -1,0 +1,68 @@
+{
+  "session": {
+    "Z_PK": 1,
+    "Z_ENT": 13,
+    "Z_OPT": 12,
+    "ZCURRENTINDEX": 3,
+    "ZGOALVALUE": 5,
+    "ZPAUSED": 0,
+    "ZPROTOCOLVERSION": 2,
+    "ZREVISION": 7,
+    "ZACTIVESECONDS": 4.561563014984131,
+    "ZACTIVESINCE": null,
+    "ZENDEDAT": 811790928.390612,
+    "ZSTARTEDAT": 811790923.828035,
+    "ZWINDOWSTARTEDAT": 811790923.83282,
+    "ZENDREASON": "queue_finished",
+    "ZGOAL": "due",
+    "ZMODE": "formal",
+    "ZRECORDSJSON": "[]",
+    "ZSNAPSHOTJSON": "[{\"title\":\"解释光合作用的原料与产物\",\"prompt\":\"光合作用利用什么能量，原料和产物是什么？\",\"questionID\":\"57CCE789-A816-41E8-AF36-C84214A27D71\",\"rubricJSON\":\"{\\\"evidence\\\":\\\"植物利用光能，把二氧化碳和水转化为有机物，并释放氧气。\\\",\\\"learning_goal\\\":\\\"解释光合作用的原料与产物\\\",\\\"must_cover\\\":[\\\"利用光能\\\",\\\"二氧化碳和水生成有机物并释放氧气\\\"],\\\"acceptable_paraphrases\\\":[],\\\"common_misconceptions\\\":[\\\"以氧气作为主要原料\\\"],\\\"order_rules\\\":\\\"\\\"}\",\"knowledgeID\":\"080182CF-D21D-4B76-B091-040327F3C345\",\"attemptID\":\"C4983C9E-A2EC-4FF9-9E47-E91C84EDB923\",\"knowledgeVersion\":1,\"rubricVersion\":\"6557ecc814946a3c3615875523837cd4deafbbd83b0b320d9abf5bae8d6b88f0\"},{\"title\":\"解释 RAG 的基本过程\",\"prompt\":\"RAG 怎样帮助模型回答问题？\",\"questionID\":\"E5E76C49-FB0E-4E30-A47B-B19756FB9B32\",\"rubricJSON\":\"{\\\"evidence\\\":\\\"RAG 先检索相关资料，再基于检索到的上下文生成回答。\\\",\\\"learning_goal\\\":\\\"解释 RAG 的基本过程\\\",\\\"must_cover\\\":[\\\"检索相关资料\\\",\\\"依据检索结果生成回答\\\"],\\\"acceptable_paraphrases\\\":[],\\\"common_misconceptions\\\":[\\\"RAG 就是训练模型权重\\\"],\\\"order_rules\\\":\\\"\\\"}\",\"knowledgeID\":\"5780FE9E-2735-4653-A237-07F27B5E5F29\",\"attemptID\":\"CD0F4CA7-0BCD-4B94-AEC7-744D51100850\",\"knowledgeVersion\":1,\"rubricVersion\":\"0f03d6763993be5f0a5ca7e1c92159b52494ce2e4b2907f90b9f7e6b2fde87cb\"},{\"title\":\"解释光合作用的原料与产物\",\"prompt\":\"光合作用利用什么能量，原料和产物是什么？\",\"questionID\":\"5EDD33B5-663F-400F-92CC-E328728F8345\",\"rubricJSON\":\"{\\\"evidence\\\":\\\"植物利用光能，把二氧化碳和水转化为有机物，并释放氧气。\\\",\\\"learning_goal\\\":\\\"解释光合作用的原料与产物\\\",\\\"must_cover\\\":[\\\"利用光能\\\",\\\"二氧化碳和水生成有机物并释放氧气\\\"],\\\"acceptable_paraphrases\\\":[],\\\"common_misconceptions\\\":[\\\"以氧气作为主要原料\\\"],\\\"order_rules\\\":\\\"\\\"}\",\"knowledgeID\":\"3F1AC2FA-3DAC-4472-97CD-C939F670FCFE\",\"attemptID\":\"B46CE394-DBE4-4CD4-9AAC-A961323E61AB\",\"knowledgeVersion\":1,\"rubricVersion\":\"6557ecc814946a3c3615875523837cd4deafbbd83b0b320d9abf5bae8d6b88f0\"}]",
+    "ZID": "430e0e35-0e0e-4f4f-ad5f-f738428cbbe2"
+  },
+  "attempts": [
+    {
+      "ZATTEMPTID": "c4983c9e-a2ec-4ff9-9e47-e91c84edb923",
+      "ZORIGINALANSWER": "植物利用光能。",
+      "ZCORRECTEDANSWER": "植物利用光能，把二氧化碳和水转化为有机物，并释放氧气。",
+      "ZHINTUSED": 1,
+      "ZEFFECTIVEGRADE": "good",
+      "ZACKED": 1,
+      "ZCORRECTIONREVISION": 1,
+      "ZSCHEDULERBEFOREJSON": "{\"forceDue\":false,\"algorithmVersion\":\"fsrs-4.5-demo\",\"dueAt\":-978307200,\"reps\":0,\"stability\":0.4,\"difficulty\":5,\"parameterVersion\":\"1\",\"lapses\":0,\"itemDueAt\":-978307200,\"lastEffectiveGrade\":\"\"}",
+      "ZSCHEDULERAFTERJSON": "{\"schedulerJSON\":\"{\\\"difficulty\\\":2.11810397,\\\"learningSteps\\\":0,\\\"stability\\\":2.3065,\\\"lastReview\\\":811790925.476405,\\\"due\\\":811963725.4764051,\\\"lapses\\\":0,\\\"elapsedDays\\\":0,\\\"state\\\":2,\\\"scheduledDays\\\":2,\\\"reps\\\":1}\",\"difficulty\":2.11810397,\"parameterVersion\":\"v6-default-r90-10m-no-fuzz-1\",\"stability\":2.3065,\"algorithmVersion\":\"fsrs-6.0\",\"lapses\":0,\"dueAt\":811963725.4764051,\"lastEffectiveGrade\":\"good\",\"reps\":1,\"itemDueAt\":811963725.4764051,\"forceDue\":false}",
+      "ZSERVICECOMMITPENDING": 0,
+      "ZREVIEWSTATE": "completed",
+      "ZDIALOGJSON": "[{\"kind\":\"question\",\"role\":\"assistant\",\"text\":\"光合作用利用什么能量，原料和产物是什么？\",\"date\":811790923.951716,\"id\":\"61EA5C81-2C92-490F-9FE6-4F8F02248FF3\"},{\"kind\":\"utterance\",\"role\":\"user\",\"text\":\"植物利用光能。\",\"date\":811790923.951857,\"id\":\"C75A1068-59C9-4339-95F5-BFDE38709B97\"},{\"kind\":\"answer\",\"role\":\"assistant\",\"text\":\"能量部分答对了：植物利用光能。还缺原料和产物这一半——再想想：光合作用把哪两种原料变成了什么，同时释放出什么？你可以继续补充，也可以让我给提示或直接讲解。\",\"date\":811790925.476339,\"id\":\"91DA3000-7FCA-48F4-B28F-D7EE8D0A7676\"},{\"kind\":\"hint\",\"role\":\"user\",\"text\":\"请给一点提示。\",\"date\":811790925.535459,\"id\":\"C1EAB82D-5C41-445F-BDE8-5AF45C5FD517\"},{\"kind\":\"hint\",\"role\":\"assistant\",\"text\":\"想想植物“吃”进去的是什么、又“吐”出来的是什么：空气中有一种气体是原料，根部吸收的水也是原料；产物是有机物，同时还有一种气体被释放出来。围绕“两种原料 → 有机物 + 一种气体”来补全即可。\",\"date\":811790926.514171,\"id\":\"415EB0B7-9DBF-4EDB-994D-833D6592E7BF\"},{\"kind\":\"utterance\",\"role\":\"user\",\"text\":\"植物利用光能，把二氧化碳和水转化为有机物，释放氧气。\",\"date\":811790926.566751,\"id\":\"B6FD76C0-EDEC-4527-82BC-E37DECD43CF5\"},{\"kind\":\"answer\",\"role\":\"assistant\",\"text\":\"这次完整了：光能、二氧化碳和水这两种原料，转化为有机物并释放氧气，都答到了。\",\"date\":811790927.30848,\"id\":\"8C933FBC-BB1E-4672-A189-94ACB0A066BD\"},{\"kind\":\"correction\",\"role\":\"user\",\"text\":\"植物利用光能，把二氧化碳和水转化为有机物，并释放氧气。\",\"date\":811790928.434325,\"id\":\"C0DDC921-2620-4AB2-8D70-A430E655986A\"},{\"kind\":\"answer\",\"role\":\"assistant\",\"text\":\"这次完整正确：光能作为能量来源，二氧化碳和水作为原料，生成有机物并释放氧气，全部答到了。\",\"date\":811790929.162767,\"id\":\"D1E4063E-C21F-45A9-AE85-C0560C2F1E36\"}]"
+    },
+    {
+      "ZATTEMPTID": "cd0f4ca7-0bcd-4b94-aec7-744d51100850",
+      "ZORIGINALANSWER": "",
+      "ZCORRECTEDANSWER": null,
+      "ZHINTUSED": 0,
+      "ZEFFECTIVEGRADE": "",
+      "ZACKED": 0,
+      "ZCORRECTIONREVISION": 0,
+      "ZSCHEDULERBEFOREJSON": null,
+      "ZSCHEDULERAFTERJSON": null,
+      "ZSERVICECOMMITPENDING": 0,
+      "ZREVIEWSTATE": "skipped",
+      "ZDIALOGJSON": "[{\"id\":\"D3BF64C6-EE9A-48A2-94BD-F13E652683ED\",\"text\":\"RAG 怎样帮助模型回答问题？\",\"kind\":\"question\",\"date\":811790927.391775,\"role\":\"assistant\"},{\"id\":\"0C924963-8C0C-403C-B789-71AF33101A09\",\"text\":\"跳过\",\"kind\":\"skip\",\"date\":811790927.391832,\"role\":\"user\"}]"
+    },
+    {
+      "ZATTEMPTID": "b46ce394-dbe4-4cd4-9aac-a961323e61ab",
+      "ZORIGINALANSWER": "利用太阳光，将二氧化碳和水变成糖类，并放出氧气。",
+      "ZCORRECTEDANSWER": null,
+      "ZHINTUSED": 0,
+      "ZEFFECTIVEGRADE": "good",
+      "ZACKED": 1,
+      "ZCORRECTIONREVISION": 0,
+      "ZSCHEDULERBEFOREJSON": "{\"dueAt\":-978307198,\"stability\":0.4,\"lapses\":0,\"reps\":0,\"forceDue\":false,\"lastEffectiveGrade\":\"\",\"algorithmVersion\":\"fsrs-4.5-demo\",\"itemDueAt\":-978307198,\"difficulty\":5,\"parameterVersion\":\"1\"}",
+      "ZSCHEDULERAFTERJSON": "{\"dueAt\":811963728.390017,\"stability\":2.3065,\"lapses\":0,\"reps\":1,\"forceDue\":false,\"lastEffectiveGrade\":\"good\",\"algorithmVersion\":\"fsrs-6.0\",\"itemDueAt\":811963728.390017,\"difficulty\":2.11810397,\"parameterVersion\":\"v6-default-r90-10m-no-fuzz-1\",\"schedulerJSON\":\"{\\\"elapsedDays\\\":0,\\\"due\\\":811963728.390017,\\\"stability\\\":2.3065,\\\"lapses\\\":0,\\\"lastReview\\\":811790928.390017,\\\"reps\\\":1,\\\"scheduledDays\\\":2,\\\"learningSteps\\\":0,\\\"difficulty\\\":2.11810397,\\\"state\\\":2}\"}",
+      "ZSERVICECOMMITPENDING": 0,
+      "ZREVIEWSTATE": "completed",
+      "ZDIALOGJSON": "[{\"role\":\"assistant\",\"id\":\"9FCAA4A3-6209-4A62-B1B2-4BFBED098688\",\"text\":\"光合作用利用什么能量，原料和产物是什么？\",\"kind\":\"question\",\"date\":811790927.400929},{\"role\":\"user\",\"id\":\"4797DD50-2B6A-4A7C-A263-7112D24532A1\",\"text\":\"利用太阳光，将二氧化碳和水变成糖类，并放出氧气。\",\"kind\":\"utterance\",\"date\":811790927.400967},{\"role\":\"assistant\",\"id\":\"00CF8C91-A751-4551-A7A8-A65374E50767\",\"text\":\"完全正确。你准确说明了利用太阳光能、以二氧化碳和水为原料、生成有机物（糖类）并放出氧气，理解到位。\",\"kind\":\"answer\",\"date\":811790928.389934}]"
+    }
+  ],
+  "database": "/tmp/review-today-native-voice-85BC0B06-98B3-43CA-89C5-260EDA3EB241/app.store"
+}

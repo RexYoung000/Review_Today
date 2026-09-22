@@ -40,6 +40,7 @@ struct TopicCapturePanel: View {
     @Environment(\.brandReduceMotion) private var reduced
     @Environment(\.runway) private var runway
     @State private var expanded = false
+    @State private var enrollReview = false
     @State private var initiated = false
     @State private var token = 0
     @State private var receivedIDs: [UUID] = []
@@ -101,6 +102,7 @@ struct TopicCapturePanel: View {
                 Text(offer.error ?? "请在新的话题收尾处确认内容。").font(.caption).foregroundStyle(.secondary)
             } else if offer.status == "offered" || offer.status == "failed" || (expanded && ["deferred", "dismissed"].contains(offer.status)) {
                 if let error = deliveryError ?? (offer.status == "failed" ? offer.error : nil) { Text(error).font(.caption).foregroundStyle(.secondary) }
+                Toggle("已学过，加入复习", isOn: $enrollReview).toggleStyle(.checkbox).disabled(!enabled)
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 12) { actions }
                     VStack(alignment: .leading, spacing: 10) { actions }
@@ -126,7 +128,7 @@ struct TopicCapturePanel: View {
     @ViewBuilder private var actions: some View {
         Button(offer.status == "failed" ? "重试录入" : offer.hasNext ? "录入并继续" : "录入知识") {
             token += 1; resourceFailed = false
-            initiated = onAction("capture_save")
+            initiated = onAction(enrollReview ? "capture_save_review" : "capture_save")
         }.buttonStyle(.borderedProminent).tint(runway.ink)
         if offer.status != "deferred" {
             Button("稍后录入") { _ = onAction("capture_later") }

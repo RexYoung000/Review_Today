@@ -309,10 +309,12 @@ enum HarnessProcessor {
         let restores: [() -> Void] = try context.fetch(FetchDescriptor<Knowledge>()).filter { affected.contains($0.id) }.map { card in
             let values = fields.map { card[keyPath: $0] }
             let source = card.source, questions = card.questions
+            let enrollment = card.reviewEnrollment, studied = card.studiedAt, due = card.dueAt
             let questionValues = questions.map { ($0, $0.knowledgeVersion, $0.promptText, $0.scoringSpecJSON) }
             return {
                 for (field, value) in zip(fields, values) { card[keyPath: field] = value }
                 card.source = source; card.questions = questions
+                card.reviewEnrollment = enrollment; card.studiedAt = studied; card.dueAt = due
                 for (question, version, prompt, spec) in questionValues {
                     question.knowledgeVersion = version; question.promptText = prompt; question.scoringSpecJSON = spec
                 }
@@ -341,6 +343,12 @@ enum HarnessProcessor {
             for card in try context.fetch(FetchDescriptor<Knowledge>()) where ids.contains(card.id) && !priorIDs.contains(card.id) {
                 card.originSessionID = task.sessionID
                 card.originTaskID = task.id
+            }
+            let input = try context.fetch(FetchDescriptor<AgentMessage>()).first { $0.id == task.inputMessageID }
+            if input?.reviewRequested == true {
+                for card in try context.fetch(FetchDescriptor<Knowledge>()) where ids.contains(card.id) && !card.participatesInReview {
+                    card.setReviewParticipation(true)
+                }
             }
             task.memoryCommitted = true
             task.errorCode = nil

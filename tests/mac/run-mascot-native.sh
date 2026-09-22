@@ -10,7 +10,7 @@ folder=pathlib.Path(sys.argv[1]);app=folder/'MascotMotionQA.app';contents=app/'C
 # sources as the other isolated contract runners, excluding the main App.
 sources=[str(p) for p in pathlib.Path('Review_Today').glob('*.swift') if p.name!='Review_TodayApp.swift']+['tests/mac/MascotMotionNativeTests.swift']
 with (folder/'build.log').open('w') as log:
- result=subprocess.run(['xcrun','swiftc','-parse-as-library','-D','DEBUG','-swift-version','5','-default-isolation','MainActor',*sources,'-o',str(binary)],stdout=log,stderr=subprocess.STDOUT)
+ result=subprocess.run(['tests/mac/swift-with-fsrs.py','-parse-as-library','-D','DEBUG','-swift-version','5','-default-isolation','MainActor',*sources,'-o',str(binary)],stdout=log,stderr=subprocess.STDOUT)
 if result.returncode: print((folder/'build.log').read_text());raise SystemExit(result.returncode)
 (contents/'Resources').mkdir();shutil.copy('Review_Today/MascotMotion.html',contents/'Resources/MascotMotion.html')
 with (contents/'Info.plist').open('wb') as f:plistlib.dump(dict(CFBundleIdentifier='Rex.Review-Today.MascotMotionQA',CFBundleName='MascotMotionQA',CFBundleExecutable=binary.name,CFBundlePackageType='APPL'),f)

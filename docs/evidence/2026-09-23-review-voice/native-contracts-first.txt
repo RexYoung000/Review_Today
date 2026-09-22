@@ -1,0 +1,114 @@
+Isolated contract directory: /tmp/review-today-shared-contracts.0l6j0i56
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+177 | 
+178 |     private static func isWeak(_ text: String) -> Bool {
+179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+180 |         if value.count < 2 { return true }
+181 |         if genericTitles.contains(value) { return true }
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:182:13: warning: result of 'try?' is unused [#NoUsage]
+180 |             task.updatedAt = .now
+181 |             try? modelContext.save()
+182 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#NoUsage]
+183 |             return
+184 |         }
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewController.swift:244:26: warning: immutable value 'context' was never used; consider replacing with '_' or removing it [#NoUsage]
+242 |     }
+243 |     func beginCorrection(_ selected: ReviewQueueEntry? = nil) {
+244 |         guard !busy, let context else { return }
+    |                          `- warning: immutable value 'context' was never used; consider replacing with '_' or removing it [#NoUsage]
+245 |         let target = selected ?? (currentAttempt?.independentGrade.isEmpty == false ? entry : entries.last(where: { entry in completed.contains { $0.attemptId == entry.attemptID } }))
+246 |         guard let target else { errorText = "可以直接重新说出完整回答，当前还没有计入的结果。"; return }
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:72:16: warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 70 |         self.converter = converter
+ 71 |         engine.attach(player)
+ 72 |         engine.connect(player, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: 24000, channels: 1))
+    |                `- warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 73 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: input) { [weak self, converter] buffer, _ in
+ 74 |             guard let sample = converter.convert(buffer) else { return }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:73:26: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 71 |         engine.attach(player)
+ 72 |         engine.connect(player, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: 24000, channels: 1))
+ 73 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: input) { [weak self, converter] buffer, _ in
+    |                          `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 74 |             guard let sample = converter.convert(buffer) else { return }
+ 75 |             Task { @MainActor [weak self] in
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:81:36: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 79 |         }
+ 80 |         self.engine = engine
+ 81 |         try engine.start(); player.play()
+    |                                    `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 82 |         status = "正在聆听"
+ 83 |     }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:87:31: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 85 |     func say(_ text: String) {
+ 86 |         guard connected else { return }
+ 87 |         player.stop(); player.play()
+    |                               `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 88 |         let id = UUID(); speechID = id
+ 89 |         status = "正在播报 · 可以打断"
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:94:47: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 92 |     func interrupt() {
+ 93 |         speechID = nil; player.stop()
+ 94 |         if engine?.isRunning == true { player.play() }
+    |                                               `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 95 |         if connected { enqueue(["type": "interrupt"]); status = muted ? "已静音" : "正在聆听" }
+ 96 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/tmp/review-today-shared-contracts.0l6j0i56/ReviewFlowContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'ReviewFlowContractTests/ReviewFlowContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/ReviewFlowContractTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'ReviewFlowContractTests/ReviewFlowContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.0l6j0i56/ReviewFlowContractTests.swift'
+ 3 | import Foundation
+ 4 | import SwiftData
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.0l6j0i56' ignored
+PASS: reference/enrollment, first due, FSRS6, rotation, deadline commit, skip, duplicate, correction, failed-save rollback, cancellation, version fences, legacy bootstrap
+PASS executable: ReviewFlowContractTests
+/tmp/review-today-shared-contracts.0l6j0i56/ReviewControllerContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'ReviewControllerContractTests/ReviewControllerContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/ReviewControllerContractTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'ReviewControllerContractTests/ReviewControllerContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.0l6j0i56/ReviewControllerContractTests.swift'
+ 3 | import Foundation
+ 4 | import SwiftData
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.0l6j0i56' ignored
+PASS: controller auto-advance, first-recall preservation, hint, clarify, understood, pure skip/error-skip, correction once, failure, late cancellation, frozen resume, replace round
+PASS executable: ReviewControllerContractTests
+/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/LibraryManagementContractTests.swift:7:168: warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+  7 | struct LibraryManagementContractTests {
+  8 |     enum Disk: Error { case failed }
+  9 |     static func require(_ value: Bool, _ message: String = "Contract failed", file: StaticString = #filePath, line: UInt = #line) { precondition(value, message, file: file, line: line) }
+    |                                                                                                    |                                                                   |- warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+    |                                                                                                    |                                                                   `- note: add parentheses to silence this warning
+    |                                                                                                    `- note: did you mean for parameter 'file' to default to '#file'?
+ 10 |     @MainActor static func main() throws {
+ 11 |         let container = try ModelContainer(for: M1DebugFixture.schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+
+Swift.precondition.file:1:1: note: 'file' declared here
+1 | file: StaticString
+  | `- note: 'file' declared here
+
+/tmp/review-today-shared-contracts.0l6j0i56/LibraryManagementContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'LibraryManagementContractTests/LibraryManagementContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/LibraryManagementContractTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'LibraryManagementContractTests/LibraryManagementContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.0l6j0i56/LibraryManagementContractTests.swift'
+  3 | import Foundation
+  4 | import SwiftData
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.0l6j0i56' ignored
+PASS: scoped knowledge selection, atomic lifecycle rollback, recycle/undo, permanent-delete revalidation, shared source retention, question/review cleanup, continuous locator and stale motion
+PASS executable: LibraryManagementContractTests
+All selected contracts complete: /tmp/review-today-shared-contracts.0l6j0i56
