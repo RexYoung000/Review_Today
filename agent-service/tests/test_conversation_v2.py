@@ -16,7 +16,9 @@ from agent_service.schemas import (ConversationOutput, IntentDecision, MasteryEv
                                    RunActionRequest, SessionMessageRequest, IntentOperation, ConversationSummary, JDAnalysis, SourceCandidate)
 
 
-def intent(*names, workflow=None, scope="conversation", **kw):
+def intent(*names, workflow=None, scope=None, **kw):
+    if scope is None:
+        scope = "learning" if "goal" in names else "conversation"
     return IntentDecision(intents=list(names), workflow=workflow, scope=scope, relation="continuation", rationale="受控测试意图", **kw)
 
 
@@ -646,8 +648,8 @@ class ConversationTests(unittest.TestCase):
         self.assertFalse(self.state()["tasks"])
 
     def test_confirm_continue_session_answers_stored_question_without_repetition(self):
-        self.decision = intent("question", answer_only=True)
-        self.send("RAG 是什么")
+        self.decision = intent("goal", scope="learning", workflow="source_learning", direct_teaching=True)
+        self.send("带我系统学习 RAG")
         self.decision = intent("goal", scope="learning", workflow="source_learning").model_copy(update={"relation": "new_topic"})
         self.send("请带我系统学习吉他")
         pending = self.state()["pending"]

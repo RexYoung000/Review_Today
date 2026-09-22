@@ -3,6 +3,24 @@ from agent_service.schemas import IntentDecision
 
 LEGACY_QUESTION = '你希望继续刚才的内容，还是开始一个新的学习问题？'
 LOCAL_QUESTIONS = {'question', 'followup', 'example', 'hint'}
+POLICY_VERSION = 'dialogue-goals-1'
+
+
+def current_learning_goal(data):
+    """Legacy focus_goal may contain a chat question, not a learning commitment."""
+    task = data.get('tasks', {}).get(data.get('active_task_id'))
+    if task and task.get('status') not in {'cancelled', 'terminal_failed'}:
+        return task['content']
+    return (data.get('goal_clarification') or {}).get('goal', '')
+
+
+def conversational_goal(decision):
+    return (set(decision.intents) <= {'goal', 'social', 'greeting', 'thanks'}
+            and 'goal' in decision.intents and decision.scope == 'conversation'
+            and not (decision.workflow or decision.direct_teaching or decision.proposed_actions
+                     or decision.requested_mode or decision.continuation_evidence or decision.answer_evidence)
+            and decision.understanding == 'unknown'
+            and decision.programming_boundary == decision.resource_boundary == 'none')
 
 
 def ordinary_question(data, decision, last):
@@ -16,13 +34,19 @@ def ordinary_question(data, decision, last):
 
 
 def normalize(data, decision, last):
+    if conversational_goal(decision) and not last.get('operation') and not (
+            decision.needs_verification or decision.refresh_sources or decision.cross_check_sources
+            or decision.conversation_repair or decision.reply_feedback != 'none' or decision.topic_closure):
+        # A goal label cannot overrule the LLM's explicit conversation-only scope.
+        return decision.model_copy(update={'conversation_kind': 'background', 'intents': ['social'],
+            'target_task_id': '', 'workflow': None, 'answer_only': True, 'session_tags': [], 'memory_selections': []})
     if ordinary_question(data, decision, last):
         return decision.model_copy(update={'scope': 'conversation', 'workflow': None, 'answer_only': True})
     return decision
 
 
 def retire_misrouted_task(harness, sid, rid, rev):
-    """Retire only a proven pre-teaching Auto question misclassified as a goal."""
+    """Retire only proven conversation-only misroutes with no learning progress."""
     with harness.store.transaction(sid, rid, rev) as data:
         run = data['runs'][rid]
         task = harness._task(data, run)
@@ -36,7 +60,10 @@ def retire_misrouted_task(harness, sid, rid, rev):
         original = next((m for m in data['messages'] if m['message_id'] == task['client_message_id']), None)
         if not raw or not original or origin.get('decision_mode') != 'auto':
             return
-        if not ordinary_question({'mode': 'auto'}, IntentDecision.model_validate(raw), original):
+        prior = IntentDecision.model_validate(raw)
+        location_only = (conversational_goal(prior) and origin.get('resolved_input') == task['content']
+                         and (original.get('operation') or {}).get('kind') == 'continue_session')
+        if not (ordinary_question({'mode': 'auto'}, prior, original) or location_only):
             return
         task.update(status='cancelled', stage='routing_corrected', required_action=None,
                     user_summary='已取消误建的学习任务')

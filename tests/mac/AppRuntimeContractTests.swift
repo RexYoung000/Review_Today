@@ -27,11 +27,11 @@ struct AppRuntimeContractTests {
         for (status, model, supported) in [("enabled", "jev-1.13.0", true), ("authentication_disabled", "jev-1.13.0", true),
                                           ("off", "jev-1.13.0", false), ("enabled", "jev-latest", false)] {
             let payload: [String: Any] = ["status": "ok", "key_configured": true, "model_roles": [:],
-                "jev": ["status": status, "model": model, "entry_rule": "jev-entry-2"]]
+                "jev": ["status": status, "model": model, "entry_rule": "jev-entry-3"]]
             let health = try JSONDecoder().decode(HealthResponse.self, from: JSONSerialization.data(withJSONObject: payload))
             precondition(health.supportsJevTest == supported, "test identity must match the real service; auth failure remains explicit fallback")
         }
-        let wrongRule = try JSONDecoder().decode(HealthResponse.self, from: Data(#"{"status":"ok","key_configured":true,"model_roles":{},"jev":{"status":"enabled","model":"jev-1.13.0","entry_rule":"jev-entry-1"}}"#.utf8))
+        let wrongRule = try JSONDecoder().decode(HealthResponse.self, from: Data(#"{"status":"ok","key_configured":true,"model_roles":{},"jev":{"status":"enabled","model":"jev-1.13.0","entry_rule":"jev-entry-2"}}"#.utf8))
         precondition(!wrongRule.supportsJevTest, "a stale entry contract must not be labelled ready")
         for (values, bundle) in [
             (environment, "Rex.Review-Today"),

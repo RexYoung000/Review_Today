@@ -45,6 +45,9 @@ def kind_for(decision, last):
         return None
     intents = set(decision.intents)
     kind = decision.conversation_kind
+    if kind == 'background' and intents == {'social'} and decision.scope == 'conversation' and not (
+            decision.workflow or decision.needs_verification or decision.refresh_sources or decision.cross_check_sources):
+        return kind
     if kind in {"social", "companionship"} and intents <= SOCIAL_INTENTS:
         return kind
     if kind == "learning_support" and intents <= SUPPORT_INTENTS and intents != {"defer"} and not (
@@ -84,7 +87,20 @@ def handle(h, sid, rid, rev, decision, last):
         h.store.event(current, active, "intent_decided",
                       "已识别为学习支持" if kind == "learning_support" else "已识别为轻量对话",
                       model=ROUTER_MODEL, detail=decision.rationale, payload={"intent": decision.model_dump()})
-    if kind == "learning_support":
+    if kind == 'background':
+        reply = decision.light_reply.strip()
+        if not reply or len(reply) > 240:
+            context = {k: v for k, v in context.items() if k not in {
+                'memory_candidates', 'related_knowledge', 'related_learning', 'continuation_candidates'}}
+            output = h._call(sid, rid, rev, 'answer', COACH_SYSTEM, json.dumps(dict(context=context,
+                instruction='用户仅补充背景、经验或用途。用一两句自然承接，可以问一个尚未说明、具体且有助于下一步的问题。'
+                    '已知在准备面试时，不再问学完要做什么；可以询问想聚焦的面试内容。'
+                    '没有开始课程或切换目标的授权，不创建学习计划、不出题、不评价掌握。'
+                    '不重复身份介绍或旧的记忆限制说明，check_question、learning_plan、learning_concepts 留空。'),
+                ensure_ascii=False), ConversationOutput, ROUTER_MODEL)
+            reply = output.message
+        h._publish(sid, rid, rev, bound_source_links(reply, []))
+    elif kind == "learning_support":
         context = {k: v for k, v in context.items() if k not in {
             "memory_candidates", "related_knowledge", "related_learning", "continuation_candidates"}}
         output = h._call(sid, rid, rev, "answer", COACH_SYSTEM, json.dumps(dict(context=context,

@@ -205,7 +205,8 @@ def context(self, data, run):
     recent = [dict(message_id=m["message_id"], role=m["role"], run_id=m.get("run_id"), content=m["content"]) for m in eligible
               if m["message_id"] not in summarized_ids]
     external = last.get("context", {})
-    return dict(continuation_selection=data.get("continuation_selection"), mode=data["mode"], session_goal=data.get("focus_goal", ""),
+    from agent_service.dialogue_routing import current_learning_goal
+    return dict(continuation_selection=data.get("continuation_selection"), mode=data["mode"], session_goal=current_learning_goal(data),
                 capture_continuation=bool(run.get("capture_continuation")),
                 current_inputs=[run["resolved_input"]] if run.get("resolved_input") else [m["content"] for m in selected], task=task_context,
                 pending=data["pending"], draft=None if data.get("draft", {}) and data["draft"].get("invalidated") else data["draft"],

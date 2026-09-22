@@ -564,7 +564,7 @@ class TopicClosure(BaseModel):
 
 
 class IntentDecision(BaseModel):
-    conversation_kind: Literal["ordinary", "social", "companionship", "learning_support"] = Field(
+    conversation_kind: Literal["ordinary", "social", "companionship", "learning_support", "background"] = Field(
         default="ordinary", description="Semantic dialogue scope. Social/companionship only for pure social input; mixed knowledge or action requests stay ordinary.")
     clarification_kind: Literal["none", "content", "resume_target", "operation"] = "none"
     conversation_repair: bool = False
@@ -590,7 +590,7 @@ class IntentDecision(BaseModel):
     workflow: ResolvedMode | None = None
     scope: Literal["conversation", "organize", "learning", "continue_goal"]
     proposed_actions: list[IntentOperation] = Field(default_factory=list)
-    clarification: str = ""
+    clarification: str = Field(default="", description="只问一个必要的缺失项；不重问已知用途，不一次索取多项背景")
     rationale: str = Field(min_length=1)
     understanding: Literal["unknown", "self_reported"] = "unknown"
     answer_evidence: str = Field(default="", description="For answer intent, copy the exact text of the current user answer; never copy options or a prior message.")

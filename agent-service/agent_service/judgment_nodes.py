@@ -14,9 +14,9 @@ from agent_service.schemas import (IntentDecision, MemoryChoice, MemorySelection
 
 OWNED = {"conversation_kind", "intents", "relation", "workflow", "needs_verification",
          "cross_check_sources", "refresh_sources"}
-ENTRY_VERSION = "jev-entry-2"
+ENTRY_VERSION = "jev-entry-3"
 ENTRY_CHOICES = {
-    "intent": ("greeting", "thanks", "social", "companionship", "learning_support", "question",
+    "intent": ("greeting", "thanks", "social", "companionship", "learning_support", "background", "question",
                "followup", "hint", "example", "goal", "material", "mixed", "other"),
     "workflow": ("none", "topic_exploration", "source_learning", "problem_solving", "memory_organization"),
     "relation": ("continuation", "related_subtopic", "new_topic", "uncertain"),
@@ -47,6 +47,9 @@ pending_fields 中的每一项必须在 updates 中按原文补判，填写 valu
 其他单一普通请求 replacement=null，填写必要的 updates 和剩余内容。Jev 的问候不等于没有附带知识问题。
 保留路径使用 replacement 时忽略 updates；不要为提高 Jev 采用率强行拆开完整控制或边界决策。
 普通 Auto 问答 scope=conversation、answer_only=true，不建任务；用户手动模式仍优先。
+background 是仅补充个人背景/经验/用途，不是建立目标；goal 必须有明确开展学习的意愿且 scope=learning/continue_goal。
+若你认为当前仅补充背景，但 Jev 提议 goal，必须 updates.intent=background 并说明原因；不能一边保留 goal 一边写仅对话的依据。
+询问是否认识用户或记忆能力应由完整 capabilities 判断回应；不能把看不到身份信息解释成完全没有跨会话学习记忆。
 不要仅因分类概率高而认定授权、掌握或证据已核实。
 """
 
@@ -76,10 +79,11 @@ def entry_request(context):
             "social": "简单社交或情绪接应，不含陪聊、实际知识或操作要求。",
             "companionship": "明确只想有人陪伴或随便聊聊，没有知识问题和其他操作要求。",
             "learning_support": "学习节奏、困惑等方法支持，没有修改计划的操作。",
+            "background": "仅说明自身背景、经验、偏好或准备面试等用途，未提出知识问题或要求开始学习；不包括回答已有任务的澄清问题。",
             "question": "具体知识问题、解释或材料分析，不要求开始学习计划。",
             "followup": "追问当前会话已讲内容，不是继续任务或代办。",
             "hint": "仅要求当前知识题的提示。", "example": "仅要求知识例子或类比。",
-            "goal": "明确建立学习目标或开展一段学习。",
+            "goal": "明确要求开始讲解、规划、练习或系统学习；仅介绍在准备面试等背景不算。",
             "material": "提供材料要求学习或整理，非包含材料的其他操作。",
             "mixed": "含多个不同请求，如寒暄加知识问题、知识加操作。",
             "other": "控制、作答、纠错、授权、续学、服务范围问题或不属于上述范围。"}),
@@ -115,7 +119,7 @@ def entry_has_reserved_fields(fields):
 
 def entry_decision_values(decision):
     main = decision.intents[0] if len(decision.intents) == 1 else "mixed"
-    if main == "social" and decision.conversation_kind in {"companionship", "learning_support"}:
+    if main == "social" and decision.conversation_kind in {"companionship", "learning_support", "background"}:
         main = decision.conversation_kind
     return dict(intent=main if main in ENTRY_CHOICES["intent"] else "other",
                 workflow=decision.workflow or "none", relation=decision.relation,
@@ -176,8 +180,13 @@ def resolve_entry(h, sid, rid, rev, context, system, model):
     if proposal["intent"] in {"mixed", "other"}:
         return full_decision("reserved_local_resolution")
     main = proposal["intent"]
-    kind = "social" if main in {"greeting", "thanks", "social"} else main if main in {"learning_support", "companionship"} else "ordinary"
-    fields.update(conversation_kind=kind, intents=["social" if main in {"learning_support", "companionship"} else main],
+    if main == 'goal' and fields['scope'] not in {'learning', 'continue_goal'}:
+        return full_decision('goal_scope_conflict')
+    if main == 'background' and (fields['scope'] != 'conversation' or proposal['workflow'] != 'none'
+            or any(proposal[key] == 'yes' for key in ('needs_verification', 'cross_check_sources', 'refresh_sources'))):
+        return full_decision('background_scope_conflict')
+    kind = "social" if main in {"greeting", "thanks", "social"} else main if main in {"learning_support", "companionship", "background"} else "ordinary"
+    fields.update(conversation_kind=kind, intents=["social" if main in {"learning_support", "companionship", "background"} else main],
                   relation=proposal["relation"],
                   workflow=None if proposal["workflow"] == "none" else proposal["workflow"],
                   **{key: proposal[key] == "yes" for key in ("needs_verification", "cross_check_sources", "refresh_sources")})

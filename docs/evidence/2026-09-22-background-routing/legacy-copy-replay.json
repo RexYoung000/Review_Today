@@ -1,0 +1,25 @@
+{
+  "layer": "controlled replay on a read-only snapshot copied into a temporary database",
+  "source_session": "398183f8-81ba-4c3d-a9f2-60400c459e3c",
+  "source_messages": 8,
+  "before": {
+    "status": "awaiting_user",
+    "stage": "clarify_goal"
+  },
+  "after": {
+    "status": "cancelled",
+    "stage": "routing_corrected"
+  },
+  "checks": {
+    "misrouted_task_cancelled": true,
+    "cleared_active_task": true,
+    "no_new_task": true,
+    "history_preserved": true,
+    "no_new_learning_activity": true,
+    "completed": true
+  },
+  "replies": [
+    "了解，你是在补充面试背景。想先了解哪方面？"
+  ],
+  "original_database_modified": false
+}

@@ -585,6 +585,7 @@ class ConversationHarness(ConditionalTeaching):
         return candidate if candidate in {"knowledge_answer", "lesson_step"} else None
 
     def _execute(self, sid, rid, rev):
+        dialogue_routing.retire_misrouted_task(self, sid, rid, rev)
         data, run = self._snapshot(sid, rid, rev)
         context, last = self._context(data, run)
         if topic_capture.handle_action(self, sid, rid, rev, last):
@@ -609,11 +610,11 @@ class ConversationHarness(ConditionalTeaching):
                                       target_task_id=task["task_id"] if task else "", relation="continuation",
                                       workflow=task["mode"] if task and task["mode"] != "auto" else None,
                                       scope="continue_goal", rationale="用户点击了绑定对象与内容版本的操作；由程序检查执行条件。")
-        elif last["content"].strip().rstrip("。！？!?") in {"直接教我", "请直接教我", "直接讲解", "继续讲解"} and (task or data.get("focus_goal") or data.get("goal_clarification")):
+        elif last["content"].strip().rstrip("。！？!?") in {"直接教我", "请直接教我", "直接讲解", "继续讲解"} and (task or dialogue_routing.current_learning_goal(data)):
             # Exact, whole-message teaching controls have no grading/write meaning.
             # Quoted text, pasted material and longer requests still use the model.
             decision = IntentDecision(intents=["continue"], target_task_id=task["task_id"] if task else "",
-                                      target_description=task["content"] if task else data.get("focus_goal") or data["goal_clarification"]["goal"],
+                                      target_description=task["content"] if task else dialogue_routing.current_learning_goal(data),
                                       relation="continuation", workflow=task["mode"] if task else "source_learning",
                                       scope="continue_goal", direct_teaching=True, learning_goal_ready=True,
                                       rationale="用户明确要求继续教学，不是独立作答或保存授权。")
@@ -630,6 +631,8 @@ class ConversationHarness(ConditionalTeaching):
             with self.store.transaction(sid, rid, rev) as current:
                 current["runs"][rid]["judgment_policy"] = VERSION if self.judgments is not None else None
         decision = dialogue_routing.normalize(data, decision, last)
+        with self.store.transaction(sid, rid, rev) as current:
+            current['runs'][rid]['dialogue_policy'] = dialogue_routing.POLICY_VERSION
         from agent_service import resource_boundary
         decision = resource_boundary.normalize(data, decision, last)
         from agent_service import request_scope
@@ -653,7 +656,7 @@ class ConversationHarness(ConditionalTeaching):
             with self.store.transaction(sid, rid, rev) as current:
                 current["active_task_id"] = None
                 current["runs"][rid]["task_id"] = None
-                current["focus_goal"] = last["content"][:2000]
+                current["focus_goal"] = ""
                 current["pending"] = None
                 current["draft"] = None
             decision = decision.model_copy(update={"relation": "continuation", "target_task_id": ""})
@@ -763,13 +766,12 @@ class ConversationHarness(ConditionalTeaching):
                 active = current['runs'][rid]
                 if decision.relation == 'new_topic' or not self._task(current, active):
                     active.update(dialogue_only=True, task_id=None)
-                if not current.get('focus_goal'):
-                    current['focus_goal'] = last['content'][:2000]
             self._respond(sid, rid, rev, decision,
                           "直接回答本轮问题；不要求先确定学习目标，不启动课程或检查。普通概念首问用简短定义、核心作用和一个小例子即可，不展开成整篇教程；除非用户明确要求详解，正文尽量控制在 400 个汉字内。追问只补本轮内容，不复述上一轮；要一个例子/类比就只给一个，正文尽量在 250 个汉字内，不附额外类比、路线或测验。术语多义时先简短区分常见含义；没有明确领域依据只能说‘如果你指的是……’，不能说‘从上下文看你指的是……’。", node="answer")
             return
         # A pending Session boundary is resolved before touching the old learning goal.
-        if decision.relation == "new_topic" and (data["active_task_id"] or data.get("focus_goal")):
+        if (decision.relation == "new_topic" and dialogue_routing.current_learning_goal(data)
+                and decision.scope in {"learning", "continue_goal"} and not decision.answer_only):
             with self.store.transaction(sid, rid, rev) as data:
                 data["pending"] = dict(kind="new_session", target_id=rid, version=rev, content=last["content"],
                                        decision=decision.model_dump())
@@ -777,9 +779,6 @@ class ConversationHarness(ConditionalTeaching):
                                  message="这个目标与当前学习内容不同。要新建学习会话，还是继续放在这里？原目标和进度都会保留。",
                                  payload={"pending": data["pending"]})
             return
-        if not data.get("focus_goal") and set(decision.intents) & {"goal", "question", "material"}:
-            with self.store.transaction(sid, rid, rev) as data:
-                data["focus_goal"] = last["content"][:2000]
         task = self._task(data, run)
         intents = set(decision.intents)
         if task and task["context"].get("memory_invalidated") and intents & {"question", "material", "goal"} and not intents & {"followup", "answer", "continue", "hint", "example"}:
@@ -888,7 +887,7 @@ class ConversationHarness(ConditionalTeaching):
         workflow = decision.workflow or "topic_exploration"
         if data["mode"] != "auto" and not decision.answer_only:
             workflow = data["mode"]
-        full_goal = ("goal" in intents or (task is not None and decision.scope == "continue_goal") or
+        full_goal = (("goal" in intents and decision.scope in {"learning", "continue_goal"}) or (task is not None and decision.scope == "continue_goal") or
                      (data["mode"] != "auto" and decision.scope == "learning") or decision.direct_teaching or
                      (data["mode"] == "problem_solving" and "question" in intents)) and not decision.answer_only
         if "material" in intents and not task and data["mode"] == "auto" and not full_goal:
@@ -906,6 +905,7 @@ class ConversationHarness(ConditionalTeaching):
                                        "requires_mastery": workflow == "problem_solving", "origin_run_id": rid}))
                 data["tasks"][task["task_id"]] = task
                 data["active_task_id"] = task["task_id"]
+                data['focus_goal'] = task['content'][:2000]
                 run["task_id"] = task["task_id"]
                 self._project_event(data, run, task)
         elif not full_goal and not task:
@@ -919,8 +919,14 @@ class ConversationHarness(ConditionalTeaching):
             if decision.learning_goal_ready or data.get("goal_clarification") and decision.relation != "uncertain":
                 self._sources(sid, rid, rev, decision.target_description or last["content"])
             else:
-                self._publish(sid, rid, rev, "你最希望学完后能够做什么？例如理解基本原理、在项目中使用，或回答面试题。",
-                              stage="clarify_goal", required={"type": "respond", "prompt": "明确一个学习目标", "options": []})
+                context, _ = self._context(data, run)
+                output = self._call(sid, rid, rev, 'clarify_goal', COACH_SYSTEM,
+                    json.dumps(dict(context=context, instruction='用户已明确要开始学习。先承接其已给出的目标与用途，只问一个仍缺少且会影响下一步的具体问题。'
+                        '已经说明面试、工作应用等用途时不得再问学完要做什么；主题过宽可问最想聚焦哪个具体部分。'
+                        '不要讲课或生成检查题，learning_plan、check_question、learning_concepts 留空，通常一两句即可。'), ensure_ascii=False),
+                    ConversationOutput, ROUTER_MODEL)
+                self._publish(sid, rid, rev, output.message, stage="clarify_goal",
+                              required={"type": "respond", "prompt": "补充学习方向", "options": []})
         elif full_goal and workflow in {"source_learning", "topic_exploration"}:
             self._respond(sid, rid, rev, decision, "按目标分段教学，先给学习地图和第一段讲解；检查可选。", node="lesson", teaching=True,
                           generated=decision.direct_teaching or "material" not in intents)
@@ -929,7 +935,8 @@ class ConversationHarness(ConditionalTeaching):
 
     def _intent_policy_matches(self, run):
         from agent_service.judgment_types import VERSION
-        return run.get("judgment_policy") == (VERSION if self.judgments is not None else None)
+        return (run.get('dialogue_policy') == dialogue_routing.POLICY_VERSION
+                and run.get("judgment_policy") == (VERSION if self.judgments is not None else None))
 
     @staticmethod
     def _explicit(operation, text):
@@ -1043,7 +1050,7 @@ class ConversationHarness(ConditionalTeaching):
                         return True
                     data["active_task_id"] = None
                     data["runs"][rid]["task_id"] = None
-                    data["focus_goal"] = pending["content"][:2000]
+                    data["focus_goal"] = ""
                     data["runs"][rid]["resolved_input"] = pending["content"]
                     data["runs"][rid]["intent"] = dict(pending["decision"], relation="continuation", target_task_id="")
                 self._execute(sid, rid, rev)

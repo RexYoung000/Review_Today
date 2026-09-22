@@ -206,6 +206,55 @@ class HarnessJudgmentTests(unittest.TestCase):
         self.assertTrue(any(s is IntentDecision for s, _ in self.calls))
         self.assertIn("question", run["intent"]["intents"])
 
+    def test_goal_scope_conflict_falls_back_and_cannot_create_a_course(self):
+        self.enable()
+        self.labels['intent'] = 'goal'
+        self.decision = legacy.intent('goal', scope='conversation')
+        accepted = self.send('我在准备 AI 产品经理面试')
+        state = self.state()
+        run = state['runs'][accepted.run_id]
+        self.assertEqual(run['judgments'][0]['reason'], 'goal_scope_conflict')
+        self.assertFalse(run['judgments'][0]['applied'])
+        self.assertTrue(any(s is IntentRemainder for s, _ in self.calls))
+        self.assertTrue(any(s is IntentDecision for s, _ in self.calls))
+        self.assertEqual(run['intent']['conversation_kind'], 'background')
+        self.assertFalse(state['tasks'])
+        self.assertIsNone(state['pending'])
+
+    def test_background_result_participates_without_a_second_answer_call(self):
+        self.enable()
+        self.labels['intent'] = 'background'
+        self.decision = legacy.intent('social', conversation_kind='background',
+            light_reply='了解，你在准备 AI 产品经理面试。想先聚焦哪一部分？')
+        accepted = self.send('我在准备 AI 产品经理面试')
+        run = self.state()['runs'][accepted.run_id]
+        self.assertTrue(run['judgments'][0]['applied'])
+        self.assertEqual(run['social_reply_kind'], 'background')
+        self.assertEqual([s for s, _ in self.calls], [IntentRemainder])
+        self.assertFalse(self.state()['tasks'])
+
+    def test_llm_can_correct_goal_to_background_in_the_existing_remainder(self):
+        self.enable()
+        self.labels['intent'] = 'goal'
+        self.decision = legacy.intent('social', conversation_kind='background', light_reply='了解你的面试背景。')
+        self.updates = {'intent': {'value': 'background', 'reason': '只是补充背景，没有开始学习要求'}}
+        accepted = self.send('我在准备 AI 产品经理面试')
+        judgment = self.state()['runs'][accepted.run_id]['judgments'][0]
+        self.assertTrue(judgment['applied'])
+        self.assertEqual(judgment['field_decisions']['intent']['source'], 'llm')
+        self.assertFalse(any(s is IntentDecision for s, _ in self.calls))
+        self.assertFalse(self.state()['tasks'])
+
+    def test_background_conflicting_with_learning_scope_keeps_explicit_teaching(self):
+        self.enable()
+        self.labels['intent'] = 'background'
+        self.decision = legacy.intent('goal', scope='learning', workflow='source_learning')
+        accepted = self.send('我在准备面试，请带我学习 RAG 原理')
+        run = self.state()['runs'][accepted.run_id]
+        self.assertEqual(run['judgments'][0]['reason'], 'background_scope_conflict')
+        self.assertFalse(run['judgments'][0]['applied'])
+        self.assertEqual(len(self.state()['tasks']), 1)
+
     def test_empty_session_relation_is_program_owned_and_not_asked_of_jev(self):
         self.enable()
         self.decision = legacy.intent("question", answer_only=True)

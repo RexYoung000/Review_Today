@@ -1,0 +1,333 @@
+{
+  "prices": {
+    "checked_at": "2026-09-20",
+    "unit": "USD per million tokens",
+    "sources": {
+      "jev": "https://docs.typesafe.ai/models",
+      "deepseek": "https://api-docs.deepseek.com/quick_start/pricing/"
+    },
+    "rates": {
+      "jev-1.13.0": {
+        "input": [
+          0.042,
+          0.042
+        ],
+        "cached": [
+          0.042,
+          0.042
+        ],
+        "output": [
+          0,
+          0
+        ]
+      },
+      "deepseek-flash": {
+        "input": [
+          0.15,
+          0.3
+        ],
+        "cached": [
+          0.003,
+          0.006
+        ],
+        "output": [
+          0.6,
+          1.2
+        ]
+      },
+      "deepseek-v4-flash": {
+        "input": [
+          0.15,
+          0.3
+        ],
+        "cached": [
+          0.003,
+          0.006
+        ],
+        "output": [
+          0.6,
+          1.2
+        ]
+      },
+      "deepseek-v4-pro": {
+        "input": [
+          0.66,
+          1.32
+        ],
+        "cached": [
+          0.022,
+          0.044
+        ],
+        "output": [
+          1.98,
+          3.96
+        ]
+      }
+    },
+    "note": "采用官方英文模型表；费用显示闲时/高峰边界，不是已扣款账单。未知缓存用量按全命中到全未命中计范围；缺失输入/输出用量则保持未知。"
+  },
+  "note": "Historical repository price snapshot, not a current quote or bill. Transport requests count provider calls; availability probes excluded.",
+  "batches": {
+    "live-01": {
+      "baseline": {
+        "turns": 8,
+        "structural_passed": 8,
+        "requests_by_model": {
+          "deepseek-flash": 10,
+          "deepseek-v4-flash": 2
+        },
+        "median_ms": 2278.5,
+        "range_ms": [
+          1741,
+          9254
+        ],
+        "usage_records": 12,
+        "missing_usage": 0,
+        "estimated_usd": [
+          0.005811696,
+          0.011623392
+        ],
+        "cost_complete": true,
+        "judgments": 0,
+        "applied": 0,
+        "reasons": {}
+      },
+      "jev": {
+        "turns": 8,
+        "structural_passed": 0,
+        "requests_by_model": {
+          "deepseek-flash": 10,
+          "jev-1.13.0": 8
+        },
+        "median_ms": 2929.0,
+        "range_ms": [
+          1790,
+          5388
+        ],
+        "usage_records": 18,
+        "missing_usage": 0,
+        "estimated_usd": [
+          0.005875308,
+          0.011105118
+        ],
+        "cost_complete": true,
+        "judgments": 8,
+        "applied": 6,
+        "reasons": {
+          "uncertain_judgment": 2,
+          "llm_reserved_or_conflict": 1,
+          "partial_field_resolution": 1,
+          "incomplete_reserved_replacement": 1
+        }
+      }
+    },
+    "live-02": {
+      "baseline": {
+        "turns": 8,
+        "structural_passed": 8,
+        "requests_by_model": {
+          "deepseek-flash": 12,
+          "deepseek-v4-flash": 2
+        },
+        "median_ms": 2906.0,
+        "range_ms": [
+          1641,
+          8201
+        ],
+        "usage_records": 14,
+        "missing_usage": 0,
+        "estimated_usd": [
+          0.007649562,
+          0.015299124
+        ],
+        "cost_complete": true,
+        "judgments": 0,
+        "applied": 0,
+        "reasons": {}
+      },
+      "jev": {
+        "turns": 8,
+        "structural_passed": 8,
+        "requests_by_model": {
+          "deepseek-flash": 15,
+          "deepseek-v4-flash": 3,
+          "jev-1.13.0": 8
+        },
+        "median_ms": 5595.5,
+        "range_ms": [
+          3169,
+          10986
+        ],
+        "usage_records": 26,
+        "missing_usage": 0,
+        "estimated_usd": [
+          0.010640004,
+          0.020265498
+        ],
+        "cost_complete": true,
+        "judgments": 8,
+        "applied": 3,
+        "reasons": {
+          "uncertain_judgment": 3,
+          "partial_field_resolution": 1,
+          "incomplete_reserved_replacement": 3
+        }
+      }
+    }
+  },
+  "native": {
+    "turns": 3,
+    "requests_by_model": {
+      "deepseek-flash": 3,
+      "jev-1.13.0": 3
+    },
+    "median_ms": 4565,
+    "range_ms": [
+      4451,
+      5965
+    ],
+    "estimated_usd": [
+      0.001699914,
+      0.003163452
+    ],
+    "cost_complete": true,
+    "missing_usage": 0,
+    "judgments": [
+      {
+        "intents": [
+          "greeting"
+        ],
+        "reason": "uncertain_judgment",
+        "applied": false,
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "greeting",
+            "raw_choice": "greeting",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "new_topic",
+            "raw_choice": null,
+            "reason": "llm_reserved_or_conflict"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "unsure",
+            "reason": "llm_reserved_or_conflict"
+          }
+        }
+      },
+      {
+        "intents": [
+          "capabilities"
+        ],
+        "reason": "uncertain_judgment",
+        "applied": false,
+        "fields": {
+          "intent": {
+            "source": "llm",
+            "value": "other",
+            "raw_choice": "social",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "workflow": {
+            "source": "llm",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "relation": {
+            "source": "llm",
+            "value": "new_topic",
+            "raw_choice": "new_topic",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "needs_verification": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "cross_check_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": "llm_reserved_or_conflict"
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "unsure",
+            "reason": "llm_reserved_or_conflict"
+          }
+        }
+      },
+      {
+        "intents": [
+          "social"
+        ],
+        "reason": "uncertain_judgment",
+        "applied": true,
+        "fields": {
+          "intent": {
+            "source": "jev",
+            "value": "background",
+            "raw_choice": "background",
+            "reason": ""
+          },
+          "workflow": {
+            "source": "program",
+            "value": "none",
+            "raw_choice": "none",
+            "reason": "ordinary_or_explicit_mode"
+          },
+          "relation": {
+            "source": "jev",
+            "value": "new_topic",
+            "raw_choice": "new_topic",
+            "reason": ""
+          },
+          "needs_verification": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "cross_check_sources": {
+            "source": "jev",
+            "value": "no",
+            "raw_choice": "no",
+            "reason": ""
+          },
+          "refresh_sources": {
+            "source": "llm",
+            "value": "no",
+            "raw_choice": "unsure",
+            "reason": "用户未要求刷新或核验已有公开资料。"
+          }
+        }
+      }
+    ]
+  }
+}

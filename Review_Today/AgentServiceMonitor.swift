@@ -35,7 +35,7 @@ struct HealthResponse: Decodable {
     let jev: Jev?
 
     var supportsJevTest: Bool {
-        jev?.model == "jev-1.13.0" && jev?.entryRule == "jev-entry-2"
+        jev?.model == "jev-1.13.0" && jev?.entryRule == "jev-entry-3"
             && ["enabled", "authentication_disabled"].contains(jev?.status ?? "")
     }
 
