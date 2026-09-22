@@ -3,7 +3,18 @@ from agent_service.schemas import IntentDecision
 
 LEGACY_QUESTION = '你希望继续刚才的内容，还是开始一个新的学习问题？'
 LOCAL_QUESTIONS = {'question', 'followup', 'example', 'hint'}
-POLICY_VERSION = 'dialogue-goals-1'
+POLICY_VERSION = 'dialogue-context-3'
+
+
+def pure_conversational_reply(decision, last):
+    return (not last.get('operation') and decision.scope == 'conversation'
+        and not decision.workflow and bool(decision.intents)
+        and set(decision.intents) <= {'question', 'followup', 'capabilities', 'greeting', 'thanks'}
+        and not (decision.proposed_actions or decision.requested_mode or decision.continuation_evidence
+                 or decision.direct_teaching or decision.answer_evidence or decision.clarification
+                 or decision.conversation_repair or decision.reply_feedback != 'none' or decision.is_jd
+                 or decision.needs_verification or decision.refresh_sources or decision.cross_check_sources
+                 or decision.topic_closure or decision.programming_learning_request or decision.resource_learning_request))
 
 
 def current_learning_goal(data):
@@ -34,6 +45,10 @@ def ordinary_question(data, decision, last):
 
 
 def normalize(data, decision, last):
+    if (decision.reply_purpose == 'product_information' and pure_conversational_reply(decision, last)
+            and decision.programming_boundary == decision.resource_boundary == 'none'):
+        return decision.model_copy(update=dict(intents=['capabilities'], conversation_kind='ordinary',
+            target_task_id='', answer_only=True))
     if conversational_goal(decision) and not last.get('operation') and not (
             decision.needs_verification or decision.refresh_sources or decision.cross_check_sources
             or decision.conversation_repair or decision.reply_feedback != 'none' or decision.topic_closure):

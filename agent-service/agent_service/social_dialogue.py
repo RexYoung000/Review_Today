@@ -104,7 +104,9 @@ def handle(h, sid, rid, rev, decision, last):
         context = {k: v for k, v in context.items() if k not in {
             "memory_candidates", "related_knowledge", "related_learning", "continuation_candidates"}}
         output = h._call(sid, rid, rev, "answer", COACH_SYSTEM, json.dumps(dict(context=context,
-            instruction="回应当前学习困难：先简短接住感受，再给一两个可尝试的小建议，通常150–250字以内。"
+            instruction="结合最近对话回应当前学习困难，不重复已经给过的建议。没有最低字数，也不要求每次给建议。"
+                        "用户嫌建议复杂、拒绝继续听建议或只想停一下时，用一两句接住，停止追加任务、步骤或反问。"
+                        "用户确实在求办法时，先回答当前障碍，再给至多一个低负担的小建议，通常150字以内。"
                         "必要时只问一个与学习障碍直接相关的问题，不追问泛泛近况、不诊断心理状态。"
                         "这是局部支持，不是开始课程或修改计划；不宣称掌握，不检查作答，不追加保存或来源。"
                         "check_question、learning_plan、learning_concepts 留空。当前用户没有问记忆时，不复述旧的记忆范围说明。"),

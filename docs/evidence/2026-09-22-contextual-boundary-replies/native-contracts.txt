@@ -1,0 +1,127 @@
+Isolated contract directory: /tmp/review-today-shared-contracts.ehbq6fgt
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+620 | 
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+622 |     private var synth = NSSpeechSynthesizer()
+    |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+623 |     private var onFinish: (() -> Void)?
+624 | 
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+639 |     }
+640 | 
+641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+    |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+642 |         let done = onFinish
+643 |         onFinish = nil
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+619 | }
+620 | 
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+    |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+622 |     private var synth = NSSpeechSynthesizer()
+623 |     private var onFinish: (() -> Void)?
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+177 | 
+178 |     private static func isWeak(_ text: String) -> Bool {
+179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+180 |         if value.count < 2 { return true }
+181 |         if genericTitles.contains(value) { return true }
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:182:13: warning: result of 'try?' is unused [#NoUsage]
+180 |             task.updatedAt = .now
+181 |             try? modelContext.save()
+182 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#NoUsage]
+183 |             return
+184 |         }
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:622:25: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+620 | 
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+622 |     private var synth = NSSpeechSynthesizer()
+    |                         `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+623 |     private var onFinish: (() -> Void)?
+624 | 
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:641:38: warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+639 |     }
+640 | 
+641 |     func speechSynthesizer(_ sender: NSSpeechSynthesizer, didFinishSpeaking finishedSpeaking: Bool) {
+    |                                      `- warning: 'NSSpeechSynthesizer' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+642 |         let done = onFinish
+643 |         onFinish = nil
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:621:46: warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+619 | }
+620 | 
+621 | private final class SpeechSpeaker: NSObject, NSSpeechSynthesizerDelegate {
+    |                                              `- warning: 'NSSpeechSynthesizerDelegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+622 |     private var synth = NSSpeechSynthesizer()
+623 |     private var onFinish: (() -> Void)?
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:627:15: warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+625 |     override init() {
+626 |         super.init()
+627 |         synth.delegate = self
+    |               `- warning: 'delegate' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+628 |     }
+629 | 
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:633:15: warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+631 |         stop()
+632 |         self.onFinish = onFinish
+633 |         synth.startSpeaking(text)
+    |               `- warning: 'startSpeaking' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+634 |     }
+635 | 
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift:637:15: warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+635 | 
+636 |     func stop() {
+637 |         synth.stopSpeaking()
+    |               `- warning: 'stopSpeaking()' was deprecated in macOS 14.0: Use AVSpeechSynthesizer in AVFoundation instead [#DeprecatedDeclaration]
+638 |         onFinish = nil
+639 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/tmp/review-today-shared-contracts.ehbq6fgt/AppRuntimeContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'AppRuntimeContractTests/AppRuntimeContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/AppRuntimeContractTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'AppRuntimeContractTests/AppRuntimeContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.ehbq6fgt/AppRuntimeContractTests.swift'
+  3 | import AppKit
+  4 | import SwiftData
+PASS: runtime/storage/network identity, preview submit guard, durable isolation, invalid acceptance and stable retry, delivery feedback, bounded static samples
+PASS executable: AppRuntimeContractTests
+/tmp/review-today-shared-contracts.ehbq6fgt/AgentServiceMonitorContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'AgentServiceMonitorContractTests/AgentServiceMonitorContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/AgentServiceMonitorContractTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'AgentServiceMonitorContractTests/AgentServiceMonitorContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.ehbq6fgt/AgentServiceMonitorContractTests.swift'
+ 3 | import Foundation
+ 4 | 
+PASS: 90s cold startup, 10s sustained outage, recovery resets timer, monotonic startup diagnostics, single termination
+PASS: capability probing is background state; partial capability is compact; all unavailable blocks
+PASS executable: AgentServiceMonitorContractTests
+/tmp/review-today-shared-contracts.ehbq6fgt/ConversationReplayTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'ConversationReplayTests/ConversationReplayTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/ConversationReplayTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'ConversationReplayTests/ConversationReplayTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.ehbq6fgt/ConversationReplayTests.swift'
+  3 | import Foundation
+  4 | import SwiftData
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+Controlled stop save: 0.001153375 seconds; full replay suite: 0.024111792 seconds
+PASS executable: ConversationReplayTests
+SSE frames: 3, span: 0.4578489065170288, delays: [0.023341894149780273, 0.024074077606201172, 0.02491593360900879]
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+Controlled stop save: 0.000954458 seconds; full replay suite: 0.020147334 seconds
+PASS: real SSE Unicode transport, incremental delivery, max controlled receive delay 24 ms
+All selected contracts complete: /tmp/review-today-shared-contracts.ehbq6fgt

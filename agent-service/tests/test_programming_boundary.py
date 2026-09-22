@@ -3,6 +3,7 @@ import copy
 import unittest
 from tests import test_conversation_v2 as fixtures
 from agent_service.schemas import IntentDecision, ConversationOutput
+from agent_service.scope_reply import ScopeReply
 
 
 class ProgrammingBoundaryTests(unittest.TestCase):
@@ -22,11 +23,11 @@ class ProgrammingBoundaryTests(unittest.TestCase):
         self.f.decision = self.decision('capability_question', light_reply='可以，我能替你写完整项目并运行调试。')
         result = self.f.send('你能帮我 coding 嘛')
         state = self.f.state()
-        self.assertIn('学习教练，可以帮助你理解 coding 相关的知识', state['messages'][-1]['content'])
+        self.assertIn('不能直接替你完成', state['messages'][-1]['content'])
         self.assertNotIn('？', state['messages'][-1]['content'])
         self.assertNotIn('运行调试', state['messages'][-1]['content'])
         self.assertEqual(state['runs'][result.run_id]['status'], 'completed')
-        self.assertEqual([s for s, _ in self.f.calls], [IntentDecision])
+        self.assertEqual([s for s, _ in self.f.calls], [IntentDecision, ScopeReply])
         self.assertFalse(state['tasks'])
         self.assertFalse(state.get('capture_offers'))
         self.f.capture.assert_not_called()
@@ -43,8 +44,8 @@ class ProgrammingBoundaryTests(unittest.TestCase):
                 self.assertFalse(state['tasks'])
                 self.assertFalse(state.get('focus_goal'))
                 self.assertFalse(state.get('pending'))
-                self.assertIn('不承接项目代做', state['messages'][-1]['content'])
-                self.assertEqual([s for s, _ in self.f.calls[before:]], [IntentDecision])
+                self.assertIn('不能直接替你完成', state['messages'][-1]['content'])
+                self.assertEqual([s for s, _ in self.f.calls[before:]], [IntentDecision, ScopeReply])
 
     def test_boundary_keeps_existing_progress_and_pending_state(self):
         self.f.decision = fixtures.intent('question', scope='learning', workflow='problem_solving')
@@ -88,8 +89,8 @@ class ProgrammingBoundaryTests(unittest.TestCase):
             old.pop('programming_boundary', None)
             run.update(intent=old, decision_input_ids=list(run['input_ids']), decision_mode=data['mode'])
         self.f.harness.drain(self.f.sid)
-        self.assertIn('学习教练，可以帮助你理解 coding 相关的知识', self.f.state()['messages'][-1]['content'])
-        self.assertEqual([s for s, _ in self.f.calls], [IntentDecision])
+        self.assertIn('不能直接替你完成', self.f.state()['messages'][-1]['content'])
+        self.assertEqual([s for s, _ in self.f.calls], [IntentDecision, ScopeReply])
 
     def test_deferred_capture_survives_capability_question(self):
         self.f.decision = fixtures.intent('question')
@@ -127,7 +128,7 @@ class ProgrammingBoundaryTests(unittest.TestCase):
             self.f.decision = self.decision('mixed_learning', 'goal', programming_learning_request=excerpt)
             before = len(self.f.calls)
             self.f.send('解释闭包并部署')
-            self.assertEqual([s for s, _ in self.f.calls[before:]], [IntentDecision])
+            self.assertEqual([s for s, _ in self.f.calls[before:]], [IntentDecision, ScopeReply])
             self.assertFalse(self.f.state()['tasks'])
 
     def test_mixed_learning_preserves_existing_task_and_retries_learning(self):

@@ -1,0 +1,766 @@
+{
+  "price_snapshot": {
+    "checked_at": "2026-09-20",
+    "unit": "USD per million tokens",
+    "sources": {
+      "jev": "https://docs.typesafe.ai/models",
+      "deepseek": "https://api-docs.deepseek.com/quick_start/pricing/"
+    },
+    "rates": {
+      "jev-1.13.0": {
+        "input": [
+          0.042,
+          0.042
+        ],
+        "cached": [
+          0.042,
+          0.042
+        ],
+        "output": [
+          0,
+          0
+        ]
+      },
+      "deepseek-flash": {
+        "input": [
+          0.15,
+          0.3
+        ],
+        "cached": [
+          0.003,
+          0.006
+        ],
+        "output": [
+          0.6,
+          1.2
+        ]
+      },
+      "deepseek-v4-flash": {
+        "input": [
+          0.15,
+          0.3
+        ],
+        "cached": [
+          0.003,
+          0.006
+        ],
+        "output": [
+          0.6,
+          1.2
+        ]
+      },
+      "deepseek-v4-pro": {
+        "input": [
+          0.66,
+          1.32
+        ],
+        "cached": [
+          0.022,
+          0.044
+        ],
+        "output": [
+          1.98,
+          3.96
+        ]
+      }
+    },
+    "note": "采用官方英文模型表；费用显示闲时/高峰边界，不是已扣款账单。未知缓存用量按全命中到全未命中计范围；缺失输入/输出用量则保持未知。"
+  },
+  "reports": {
+    "live-v1.jsonl": {
+      "total": {
+        "turns": 20,
+        "passed": 15,
+        "failed": [
+          {
+            "id": "baseline/model",
+            "checks": [
+              "no_learning_activity",
+              "actual_model_configuration"
+            ]
+          },
+          {
+            "id": "baseline/mixed",
+            "checks": [
+              "isolated_learning"
+            ]
+          },
+          {
+            "id": "baseline/support",
+            "checks": [
+              "no_learning_activity"
+            ]
+          },
+          {
+            "id": "jev/model",
+            "checks": [
+              "no_learning_activity",
+              "actual_model_configuration"
+            ]
+          },
+          {
+            "id": "jev/mixed",
+            "checks": [
+              "no_learning_activity"
+            ]
+          }
+        ],
+        "requests": 43,
+        "jev_requests": 10,
+        "by_node": {
+          "intent": 21,
+          "teaching_preparation": 4,
+          "answer": 5,
+          "scope_reply": 3,
+          "jev_entry": 10
+        },
+        "scope_reply_sources": {
+          "regenerated": 3,
+          "entry": 8
+        },
+        "missing_usage_requests": 0,
+        "input_tokens": 243533,
+        "output_tokens": 13005,
+        "known_cost_usd_range": [
+          0.01199206,
+          0.02309095
+        ],
+        "median_ms": 2612.0,
+        "range_ms": [
+          1662,
+          8261
+        ]
+      },
+      "variants": {
+        "baseline": {
+          "turns": 10,
+          "passed": 7,
+          "failed": [
+            {
+              "id": "baseline/model",
+              "checks": [
+                "no_learning_activity",
+                "actual_model_configuration"
+              ]
+            },
+            {
+              "id": "baseline/mixed",
+              "checks": [
+                "isolated_learning"
+              ]
+            },
+            {
+              "id": "baseline/support",
+              "checks": [
+                "no_learning_activity"
+              ]
+            }
+          ],
+          "requests": 16,
+          "jev_requests": 0,
+          "by_node": {
+            "intent": 10,
+            "teaching_preparation": 2,
+            "answer": 2,
+            "scope_reply": 2
+          },
+          "scope_reply_sources": {
+            "regenerated": 2,
+            "entry": 4
+          },
+          "missing_usage_requests": 0,
+          "input_tokens": 99135,
+          "output_tokens": 3693,
+          "known_cost_usd_range": [
+            0.00504381,
+            0.01008762
+          ],
+          "median_ms": 1981.5,
+          "range_ms": [
+            1662,
+            4031
+          ]
+        },
+        "jev": {
+          "turns": 10,
+          "passed": 8,
+          "failed": [
+            {
+              "id": "jev/model",
+              "checks": [
+                "no_learning_activity",
+                "actual_model_configuration"
+              ]
+            },
+            {
+              "id": "jev/mixed",
+              "checks": [
+                "no_learning_activity"
+              ]
+            }
+          ],
+          "requests": 27,
+          "jev_requests": 10,
+          "by_node": {
+            "jev_entry": 10,
+            "intent": 11,
+            "teaching_preparation": 2,
+            "answer": 3,
+            "scope_reply": 1
+          },
+          "scope_reply_sources": {
+            "entry": 4,
+            "regenerated": 1
+          },
+          "missing_usage_requests": 0,
+          "input_tokens": 144398,
+          "output_tokens": 9312,
+          "known_cost_usd_range": [
+            0.00694825,
+            0.01300333
+          ],
+          "median_ms": 3632.0,
+          "range_ms": [
+            2018,
+            8261
+          ]
+        }
+      }
+    },
+    "live-v2.jsonl": {
+      "total": {
+        "turns": 20,
+        "passed": 19,
+        "failed": [
+          {
+            "id": "jev/mixed",
+            "checks": [
+              "isolated_learning",
+              "answers_concept"
+            ]
+          }
+        ],
+        "requests": 40,
+        "jev_requests": 10,
+        "by_node": {
+          "intent": 21,
+          "teaching_preparation": 2,
+          "answer": 3,
+          "jev_entry": 10,
+          "scope_reply": 4
+        },
+        "scope_reply_sources": {
+          "entry": 7,
+          "regenerated": 3,
+          "fallback": 1
+        },
+        "missing_usage_requests": 0,
+        "input_tokens": 247830,
+        "output_tokens": 12546,
+        "known_cost_usd_range": [
+          0.011796,
+          0.02272096
+        ],
+        "median_ms": 2749.0,
+        "range_ms": [
+          1564,
+          7138
+        ]
+      },
+      "variants": {
+        "baseline": {
+          "turns": 10,
+          "passed": 10,
+          "failed": [],
+          "requests": 14,
+          "jev_requests": 0,
+          "by_node": {
+            "intent": 10,
+            "teaching_preparation": 2,
+            "answer": 2
+          },
+          "scope_reply_sources": {
+            "entry": 5
+          },
+          "missing_usage_requests": 0,
+          "input_tokens": 102112,
+          "output_tokens": 4181,
+          "known_cost_usd_range": [
+            0.00540684,
+            0.01081368
+          ],
+          "median_ms": 1796.0,
+          "range_ms": [
+            1564,
+            7138
+          ]
+        },
+        "jev": {
+          "turns": 10,
+          "passed": 9,
+          "failed": [
+            {
+              "id": "jev/mixed",
+              "checks": [
+                "isolated_learning",
+                "answers_concept"
+              ]
+            }
+          ],
+          "requests": 26,
+          "jev_requests": 10,
+          "by_node": {
+            "jev_entry": 10,
+            "intent": 11,
+            "scope_reply": 4,
+            "answer": 1
+          },
+          "scope_reply_sources": {
+            "regenerated": 3,
+            "entry": 2,
+            "fallback": 1
+          },
+          "missing_usage_requests": 0,
+          "input_tokens": 145718,
+          "output_tokens": 8365,
+          "known_cost_usd_range": [
+            0.00638916,
+            0.01190728
+          ],
+          "median_ms": 3120.0,
+          "range_ms": [
+            2398,
+            5288
+          ]
+        }
+      }
+    },
+    "live-v3.jsonl": {
+      "total": {
+        "turns": 20,
+        "passed": 19,
+        "failed": [
+          {
+            "id": "jev/model",
+            "checks": [
+              "no_learning_activity"
+            ]
+          }
+        ],
+        "requests": 41,
+        "jev_requests": 10,
+        "by_node": {
+          "intent": 22,
+          "teaching_preparation": 3,
+          "answer": 5,
+          "jev_entry": 10,
+          "scope_reply": 1
+        },
+        "scope_reply_sources": {
+          "entry": 9,
+          "regenerated": 1
+        },
+        "missing_usage_requests": 0,
+        "input_tokens": 266212,
+        "output_tokens": 12968,
+        "known_cost_usd_range": [
+          0.01171466,
+          0.02256304
+        ],
+        "median_ms": 2240.0,
+        "range_ms": [
+          1418,
+          7634
+        ]
+      },
+      "variants": {
+        "baseline": {
+          "turns": 10,
+          "passed": 10,
+          "failed": [],
+          "requests": 13,
+          "jev_requests": 0,
+          "by_node": {
+            "intent": 10,
+            "teaching_preparation": 1,
+            "answer": 2
+          },
+          "scope_reply_sources": {
+            "entry": 5
+          },
+          "missing_usage_requests": 0,
+          "input_tokens": 102460,
+          "output_tokens": 3551,
+          "known_cost_usd_range": [
+            0.00391445,
+            0.0078289
+          ],
+          "median_ms": 1832.0,
+          "range_ms": [
+            1418,
+            4082
+          ]
+        },
+        "jev": {
+          "turns": 10,
+          "passed": 9,
+          "failed": [
+            {
+              "id": "jev/model",
+              "checks": [
+                "no_learning_activity"
+              ]
+            }
+          ],
+          "requests": 28,
+          "jev_requests": 10,
+          "by_node": {
+            "jev_entry": 10,
+            "intent": 12,
+            "teaching_preparation": 2,
+            "answer": 3,
+            "scope_reply": 1
+          },
+          "scope_reply_sources": {
+            "entry": 4,
+            "regenerated": 1
+          },
+          "missing_usage_requests": 0,
+          "input_tokens": 163752,
+          "output_tokens": 9417,
+          "known_cost_usd_range": [
+            0.00780022,
+            0.01473414
+          ],
+          "median_ms": 3382.0,
+          "range_ms": [
+            2004,
+            7634
+          ]
+        }
+      }
+    },
+    "live-v4.jsonl": {
+      "total": {
+        "turns": 20,
+        "passed": 20,
+        "failed": [],
+        "requests": 40,
+        "jev_requests": 10,
+        "by_node": {
+          "intent": 23,
+          "teaching_preparation": 3,
+          "answer": 4,
+          "jev_entry": 10
+        },
+        "scope_reply_sources": {
+          "entry": 10
+        },
+        "missing_usage_requests": 0,
+        "input_tokens": 268825,
+        "output_tokens": 12012,
+        "known_cost_usd_range": [
+          0.00909575,
+          0.01732156
+        ],
+        "median_ms": 2209.0,
+        "range_ms": [
+          1529,
+          4746
+        ]
+      },
+      "variants": {
+        "baseline": {
+          "turns": 10,
+          "passed": 10,
+          "failed": [],
+          "requests": 14,
+          "jev_requests": 0,
+          "by_node": {
+            "intent": 10,
+            "teaching_preparation": 2,
+            "answer": 2
+          },
+          "scope_reply_sources": {
+            "entry": 5
+          },
+          "missing_usage_requests": 0,
+          "input_tokens": 103984,
+          "output_tokens": 3730,
+          "known_cost_usd_range": [
+            0.00342254,
+            0.00684509
+          ],
+          "median_ms": 1860.0,
+          "range_ms": [
+            1529,
+            4325
+          ]
+        },
+        "jev": {
+          "turns": 10,
+          "passed": 10,
+          "failed": [],
+          "requests": 26,
+          "jev_requests": 10,
+          "by_node": {
+            "jev_entry": 10,
+            "intent": 13,
+            "teaching_preparation": 1,
+            "answer": 2
+          },
+          "scope_reply_sources": {
+            "entry": 5
+          },
+          "missing_usage_requests": 0,
+          "input_tokens": 164841,
+          "output_tokens": 8282,
+          "known_cost_usd_range": [
+            0.00567321,
+            0.01047647
+          ],
+          "median_ms": 3388.5,
+          "range_ms": [
+            1884,
+            4746
+          ]
+        }
+      }
+    },
+    "live-v5.jsonl": {
+      "total": {
+        "turns": 20,
+        "passed": 20,
+        "failed": [],
+        "requests": 41,
+        "jev_requests": 10,
+        "by_node": {
+          "intent": 22,
+          "teaching_preparation": 3,
+          "answer": 4,
+          "scope_reply": 2,
+          "jev_entry": 10
+        },
+        "scope_reply_sources": {
+          "entry": 8,
+          "regenerated": 2
+        },
+        "missing_usage_requests": 0,
+        "input_tokens": 266575,
+        "output_tokens": 11743,
+        "known_cost_usd_range": [
+          0.01027499,
+          0.01968118
+        ],
+        "median_ms": 2312.0,
+        "range_ms": [
+          1695,
+          4724
+        ]
+      },
+      "variants": {
+        "baseline": {
+          "turns": 10,
+          "passed": 10,
+          "failed": [],
+          "requests": 15,
+          "jev_requests": 0,
+          "by_node": {
+            "intent": 10,
+            "teaching_preparation": 2,
+            "answer": 2,
+            "scope_reply": 1
+          },
+          "scope_reply_sources": {
+            "entry": 4,
+            "regenerated": 1
+          },
+          "missing_usage_requests": 0,
+          "input_tokens": 106884,
+          "output_tokens": 3569,
+          "known_cost_usd_range": [
+            0.00396792,
+            0.00793584
+          ],
+          "median_ms": 1988.0,
+          "range_ms": [
+            1695,
+            4379
+          ]
+        },
+        "jev": {
+          "turns": 10,
+          "passed": 10,
+          "failed": [],
+          "requests": 26,
+          "jev_requests": 10,
+          "by_node": {
+            "jev_entry": 10,
+            "intent": 12,
+            "scope_reply": 1,
+            "teaching_preparation": 1,
+            "answer": 2
+          },
+          "scope_reply_sources": {
+            "regenerated": 1,
+            "entry": 4
+          },
+          "missing_usage_requests": 0,
+          "input_tokens": 159691,
+          "output_tokens": 8174,
+          "known_cost_usd_range": [
+            0.00630707,
+            0.01174534
+          ],
+          "median_ms": 3232.5,
+          "range_ms": [
+            2035,
+            4724
+          ]
+        }
+      }
+    }
+  },
+  "development_total": {
+    "turns": 100,
+    "passed": 93,
+    "failed": [
+      {
+        "id": "baseline/model",
+        "checks": [
+          "no_learning_activity",
+          "actual_model_configuration"
+        ]
+      },
+      {
+        "id": "baseline/mixed",
+        "checks": [
+          "isolated_learning"
+        ]
+      },
+      {
+        "id": "baseline/support",
+        "checks": [
+          "no_learning_activity"
+        ]
+      },
+      {
+        "id": "jev/model",
+        "checks": [
+          "no_learning_activity",
+          "actual_model_configuration"
+        ]
+      },
+      {
+        "id": "jev/mixed",
+        "checks": [
+          "no_learning_activity"
+        ]
+      },
+      {
+        "id": "jev/mixed",
+        "checks": [
+          "isolated_learning",
+          "answers_concept"
+        ]
+      },
+      {
+        "id": "jev/model",
+        "checks": [
+          "no_learning_activity"
+        ]
+      }
+    ],
+    "requests": 205,
+    "jev_requests": 50,
+    "by_node": {
+      "intent": 109,
+      "teaching_preparation": 15,
+      "answer": 21,
+      "scope_reply": 10,
+      "jev_entry": 50
+    },
+    "scope_reply_sources": {
+      "regenerated": 9,
+      "entry": 42,
+      "fallback": 1
+    },
+    "missing_usage_requests": 0,
+    "input_tokens": 1292975,
+    "output_tokens": 62274,
+    "known_cost_usd_range": [
+      0.05487347,
+      0.10537769
+    ],
+    "median_ms": 2336.5,
+    "range_ms": [
+      1418,
+      8261
+    ]
+  },
+  "native": {
+    "native-v1.json": {
+      "turns": 3,
+      "passed": 2,
+      "failed": [
+        {
+          "id": "native-v1/3",
+          "checks": [
+            "scope_path"
+          ]
+        }
+      ],
+      "requests": 9,
+      "jev_requests": 3,
+      "by_node": {
+        "jev_entry": 3,
+        "intent": 4,
+        "teaching_preparation": 1,
+        "answer": 1
+      },
+      "scope_reply_sources": {
+        "entry": 2
+      },
+      "missing_usage_requests": 0,
+      "input_tokens": 51134,
+      "output_tokens": 2532,
+      "known_cost_usd_range": [
+        0.00279067,
+        0.00534224
+      ],
+      "median_ms": 3187,
+      "range_ms": [
+        3176,
+        7975
+      ]
+    },
+    "native-v2.json": {
+      "turns": 6,
+      "passed": 6,
+      "failed": [],
+      "requests": 14,
+      "jev_requests": 6,
+      "by_node": {
+        "jev_entry": 6,
+        "intent": 7,
+        "answer": 1
+      },
+      "scope_reply_sources": {
+        "entry": 3
+      },
+      "missing_usage_requests": 0,
+      "input_tokens": 96243,
+      "output_tokens": 5226,
+      "known_cost_usd_range": [
+        0.00353378,
+        0.00649064
+      ],
+      "median_ms": 4819.0,
+      "range_ms": [
+        3836,
+        5957
+      ]
+    }
+  },
+  "note": "Known usage only; missing usage is not zero. Excludes model capability probes. Paired order is not a controlled latency benchmark; no savings claim."
+}

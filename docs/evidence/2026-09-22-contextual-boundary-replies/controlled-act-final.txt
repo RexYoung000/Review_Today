@@ -1,0 +1,47 @@
+{"cases": 17, "fixed_scenarios": 31, "result": "VALID", "note": "Offline structure only; no model behavior evaluated."}
+{"result": "VALID", "cases": 55, "judgments": 299, "kinds": {"dialogue": 31, "memory": 6, "source": 6, "grading": 12}, "note": "Offline structure only; no provider/config/database access."}
+{"result": "VALID", "scenarios": 55, "trials": 165, "questions": 1430, "note": "Offline only; no provider configuration, model call or database."}
+{"result": "VALID", "scenarios": 103, "trials": 515, "questions": 3605, "variants": ["v0", "v1", "scope", "resource", "progress"], "note": "Offline only; default is structure inventory, not an execution authorization."}
+{"result": "VALID", "dialogues": 31, "node_cases": 27, "paired_runs": 116, "note": "Offline inventory only; no providers or stores imported."}
+.................................................................... [  8%]
+...................................................................... [ 18%]
+................................................................... [ 26%]
+...................................................................... [ 35%]
+................................................................................................................................................................... [ 57%]
+................................................. [ 63%]
+.......................................................... [ 71%]
+............................................................. [ 79%]
+...................................................................... [ 88%]
+........................................................................................                                                          [100%]
+=============================== warnings summary ===============================
+agent_service/main.py:82
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:82: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:109
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:109: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+764 passed, 4 warnings, 331 subtests passed in 124.50s (0:02:04)
+Isolated test database: /tmp/review-today-python-tests.j7ujbq

@@ -1,0 +1,12 @@
+{
+  "718c27e7-e8e0-436b-9ccd-ceec0ca330ef": {
+    "before": {
+      "message_count": 12,
+      "messages_sha256": "5395904f4231afa6fd317d5defaf8c5328a0de5bbb9427cd64328a57174a42b0",
+      "foreground": null
+    },
+    "after_message_count": 12,
+    "original_prefix_sha256": "5395904f4231afa6fd317d5defaf8c5328a0de5bbb9427cd64328a57174a42b0",
+    "preserved": true
+  }
+}

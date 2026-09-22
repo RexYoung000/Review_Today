@@ -1,7 +1,7 @@
 """Conversation history projection and fenced compaction; no public endpoints."""
 from __future__ import annotations
 import json
-from agent_service.config import ROUTER_MODEL
+from agent_service.config import ROUTER_MODEL, COACH_MODEL
 from agent_service.conversation_prompts import INTENT_SYSTEM
 from agent_service.conversation_store import Superseded
 from agent_service.harness_store import now_iso
@@ -206,7 +206,12 @@ def context(self, data, run):
               if m["message_id"] not in summarized_ids]
     external = last.get("context", {})
     from agent_service.dialogue_routing import current_learning_goal
+    previous = next((m for m in reversed(eligible) if m['role'] == 'coach'), {})
+    previous_run = data['runs'].get(previous.get('run_id'), {})
+    recent_scope = {domain: True for domain in ('resource', 'programming') if previous_run.get(domain + '_scope_reply')}
     return dict(continuation_selection=data.get("continuation_selection"), mode=data["mode"], session_goal=current_learning_goal(data),
+                runtime_models=dict(short_reply=ROUTER_MODEL, teaching=COACH_MODEL),
+                recent_scope_reply=dict(message_id=previous['message_id'], **recent_scope) if recent_scope else None,
                 capture_continuation=bool(run.get("capture_continuation")),
                 current_inputs=[run["resolved_input"]] if run.get("resolved_input") else [m["content"] for m in selected], task=task_context,
                 pending=data["pending"], draft=None if data.get("draft", {}) and data["draft"].get("invalidated") else data["draft"],

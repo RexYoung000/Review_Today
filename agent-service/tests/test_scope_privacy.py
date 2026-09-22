@@ -7,6 +7,7 @@ import pytest
 
 from tests import test_conversation_v2 as fixtures
 from tests.test_m1_capture_contract import committing_result
+from agent_service.scope_reply import ScopeReply
 from agent_service.schemas import ConversationOutput, IntentDecision, TeachingPreparation
 from agent_service.call_errors import WebToolError
 from agent_service import web_tools as web
@@ -40,7 +41,7 @@ def test_controls_do_not_grant_errand_tool_or_goal_permission(f, control):
     state = f.state(); run = state['runs'][ack.run_id]
     assert run['status'] == 'completed' and run.get('resource_scope_reply')
     assert state['mode'] == ('source_learning' if control == 'mode' else 'auto')
-    assert [s for s, _ in f.calls] == [IntentDecision]
+    assert [s for s, _ in f.calls] == [IntentDecision, ScopeReply]
     assert not state['tasks'] and not state.get('capture_offers') and not run.get('activity_kind')
     assert 'learning_evidence' not in [e['stage'] for e in state['events']]
     search.assert_not_called(); f.capture.assert_not_called()
@@ -51,8 +52,8 @@ def test_defer_label_alone_does_not_hide_its_attached_errand(f):
         light_reply='可以，我继续查找', needs_verification=True, public_search_query='小说下载链接')
     ack = f.send('今天先不学，帮我找上面书的下载链接')
     assert f.state()['runs'][ack.run_id]['resource_scope_reply']
-    assert '不承接' in f.state()['messages'][-1]['content']
-    assert [s for s, _ in f.calls] == [IntentDecision]
+    assert '不能替你完成' in f.state()['messages'][-1]['content']
+    assert [s for s, _ in f.calls] == [IntentDecision, ScopeReply]
 
 
 def test_bare_continue_carries_last_blocked_scope_but_named_learning_does_not(f):
@@ -72,8 +73,8 @@ def test_existing_programming_boundary_uses_same_control_gate(f):
     with patch('agent_service.conversation.web_search_text') as search:
         f.send('今天先不学，直接帮我部署项目')
     assert not f.state()['tasks']
-    assert '不承接项目代做' in f.state()['messages'][-1]['content']
-    assert [s for s, _ in f.calls] == [IntentDecision]
+    assert '不能直接替你完成' in f.state()['messages'][-1]['content']
+    assert [s for s, _ in f.calls] == [IntentDecision, ScopeReply]
     search.assert_not_called()
 
 
@@ -111,7 +112,7 @@ def test_bound_save_or_rejection_survives_errand_without_authorizing_search(f, d
         ack = f.send('保存这版，另外帮我找书籍下载链接')
     state = f.state(); run = state['runs'][ack.run_id]
     assert run['status'] == 'completed'
-    assert '不承接寻找下载资源' in state['messages'][-1]['content']
+    assert '这项资源获取或代办操作我不能替你完成' in state['messages'][-1]['content']
     if disposition == 'confirm':
         f.capture.assert_called_once()
         assert search.call_args.args == ('RAG 原理',)

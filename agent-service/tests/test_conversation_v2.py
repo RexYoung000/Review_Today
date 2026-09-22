@@ -56,6 +56,10 @@ class ConversationTests(unittest.TestCase):
         self.calls.append((schema, json.loads(user) if user.startswith("{") else user))
         from agent_service.schemas import TeachingPreparation, MemoryChoice, SourceList, EvidenceAssessmentV2
         from agent_service.goal_continuation import ContinuationRequest
+        from agent_service.scope_reply import ScopeReply
+        if schema is ScopeReply:
+            programming = json.loads(user)['boundary']['domain'] == 'programming'
+            return ScopeReply(message='这项开发交付我不能直接替你完成。' if programming else '这项资源获取或代办操作我不能替你完成。')
         if schema is ContinuationRequest:
             text = json.loads(user)["request"]
             return ContinuationRequest(evidence=text if text.startswith("继续") else "", topic="")

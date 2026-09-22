@@ -570,15 +570,19 @@ class IntentDecision(BaseModel):
     conversation_repair: bool = False
     reply_feedback: Literal["none", "response_only", "with_request"] = Field(
         default="none", description="Feedback on repetitive, curt or otherwise unhelpful replies. response_only has no independent knowledge or action request; with_request must retain that request. Not a keyword match or a learning outcome.")
+    reply_purpose: Literal['none', 'product_information', 'boundary_confirmation'] = Field(default='none',
+        description='Pure conversation only: product_information asks about this assistant identity, capabilities, memory or configured model; boundary_confirmation only confirms the immediately preceding product limit. Any independent knowledge question or operation must use none.')
     repair_target_message_id: str = ""
     continuation_evidence: str = ""
     continuation_topic: str = ""
     programming_boundary: Literal["none", "capability_question", "development_delivery", "mixed_learning"] = Field(
         default="none", description="Semantic product boundary: programming capability enquiry, development delivery request, or ordinary learning. Not a keyword filter.")
-    programming_learning_request: str = Field(default="", max_length=2000, description="For mixed_learning only: quote the independent learning request verbatim from current user input, excluding development delivery.")
+    programming_learning_request: str = Field(default="", max_length=2000, description="For mixed_learning only: quote a smaller, independent learning excerpt verbatim, never the full input or the development request. Example: '解释闭包，再部署项目' -> '解释闭包'.")
     resource_boundary: Literal["none", "capability_question", "resource_delivery", "mixed_learning"] = Field(
         default="none", description="Product scope for resource acquisition and external errands, not a download keyword filter. Knowledge/source study stays none.")
     resource_learning_request: str = Field(default="", max_length=2000, description="For mixed_learning quote only the independent knowledge request from current inputs; search flags/query must refer only to that request.")
+    learning_reply_sentence_limit: int | None = Field(default=None, ge=1, le=10,
+        description="Only for mixed_learning: an explicit user sentence limit for the knowledge explanation, e.g. 一句话 -> 1. Never invent a limit. Keep this separate from the exact learning excerpt.")
     intents: list[Literal[
         "greeting", "thanks", "capabilities", "social", "question", "goal", "material",
         "followup", "hint", "example", "answer", "correction", "confirm", "reject",

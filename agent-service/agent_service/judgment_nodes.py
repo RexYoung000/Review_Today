@@ -41,7 +41,7 @@ pending_fields 中的每一项必须在 updates 中按原文补判，填写 valu
 对已有 Jev 选择，仅在发现原文/上下文冲突时填写对应 updates 项及 reason，其余为 null。
 普通单一请求的局部分歧（例如新话题/延续、是否联网）使用 updates，不完整替换。
 自然语言停止/暂缓/继续、确认/拒绝/保存/切模式、作答/自述理解/跳过检查、
-对话修复、回复体验反馈（reply_feedback 非 none）、话题收尾、跨会话续学、开发或资源边界、紧急危险、混合请求、
+对话修复、回复体验反馈（reply_feedback 非 none）、产品信息或限制确认（reply_purpose 非 none）、话题收尾、跨会话续学、开发或资源边界、紧急危险、混合请求、
 引用指令被当实际请求、以及无法安全逐项组合的提议，均属于保留路径：
 在 replacement 中返回完整、依实际原文判断的 IntentDecision；不得为了接受提议忽略实际请求。
 其他单一普通请求 replacement=null，填写必要的 updates 和剩余内容。Jev 的问候不等于没有附带知识问题。
@@ -66,7 +66,7 @@ def entry_program_fields(context):
 def entry_request(context):
     state = deepcopy({k: v for k, v in context.items() if k not in {
         "memory_candidates", "related_knowledge", "related_learning", "continuation_candidates",
-        "continuation_selection", "handoff"}})
+        "continuation_selection", "handoff", "runtime_models", "recent_scope_reply"}})
     if state.get("task"):
         state["task"]["context"] = {k: v for k, v in state["task"]["context"].items() if k in {
             "learning_plan", "learning_goal", "check_question", "understanding", "requires_mastery",
@@ -111,6 +111,7 @@ def entry_request(context):
 
 def entry_has_reserved_fields(fields):
     return (fields["programming_boundary"] != "none" or fields["resource_boundary"] != "none" or
+        fields['reply_purpose'] != 'none' or
         fields["proposed_actions"] or fields["requested_mode"] or fields["continuation_evidence"] or
         fields["conversation_repair"] or fields["reply_feedback"] != "none" or fields["topic_closure"] or fields["answer_evidence"] or
         fields["understanding"] != "unknown" or fields["direct_teaching"] or fields["is_jd"] or

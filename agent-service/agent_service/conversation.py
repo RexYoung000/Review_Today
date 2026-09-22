@@ -1091,7 +1091,7 @@ class ConversationHarness(ConditionalTeaching):
         if not request_scope.allows_answer(run):
             from agent_service.resource_boundary import REPLY
             self._publish(sid, rid, rev, REPLY if decision.resource_boundary != 'none' else
-                '这里主要帮助你学习和理解编程知识，不承接项目代做、修改仓库或部署等操作。')
+                '这项开发交付我不能直接替你完成。')
             return
         context, last = self._context(data, run)
         task = self._task(data, run)

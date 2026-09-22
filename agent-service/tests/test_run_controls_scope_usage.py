@@ -10,6 +10,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from tests import test_conversation_v2 as fixtures
+from agent_service.scope_reply import ScopeReply
 from agent_service.schemas import SessionMessageRequest, RunActionRequest, ConversationOutput, IntentDecision
 from agent_service import run_accounting as accounting
 from agent_service.execution_policy import budget_scope
@@ -137,8 +138,8 @@ def test_resource_delivery_never_reaches_tools_goals_capture_or_learning(f, kind
         ack = f.send(text)
     state = f.state(); run = state['runs'][ack.run_id]
     assert run['status'] == 'completed'
-    assert '不承接寻找下载资源' in state['messages'][-1]['content']
-    assert [s for s, _ in f.calls] == [IntentDecision]
+    assert '这项资源获取或代办操作我不能替你完成' in state['messages'][-1]['content']
+    assert [s for s, _ in f.calls] == [IntentDecision, ScopeReply]
     assert not state['tasks'] and not state.get('capture_offers') and not run['activity_kind']
     assert 'learning_evidence' not in [e['stage'] for e in state['events']]
     search.assert_not_called(); f.capture.assert_not_called()
