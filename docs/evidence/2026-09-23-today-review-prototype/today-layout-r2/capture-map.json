@@ -1,0 +1,20 @@
+{
+  "native-1790160589569.png": "today-due.png",
+  "native-1790160620072.png": "recent-http-destination.png",
+  "native-1790160626395.png": "recent-and-heatmap.png",
+  "native-1790160637048.png": "heatmap-details.png",
+  "native-1790160643685.png": "knowledge-preview.png",
+  "native-1790160677886.png": "today-finished-first.png",
+  "native-1790160701936.png": "today-finished.png",
+  "native-1790160705252.png": "today-paused.png",
+  "native-1790160717907.png": "today-empty.png",
+  "native-1790160732514.png": "today-unenrolled.png",
+  "native-1790160735376.png": "today-scheduled.png",
+  "native-1790160749832.png": "minimum-finished.png",
+  "native-1790160763067.png": "minimum-dark-reduced.png",
+  "native-1790160764973.png": "minimum-dark-records.png",
+  "native-1790160795075.png": "keyboard-learning-dark.png",
+  "native-interaction-1790160650.mp4": "01-recent-heatmap-navigation.mp4",
+  "native-interaction-1790160736.mp4": "02-today-states.mp4",
+  "native-interaction-1790160812.mp4": "03-keyboard-reflow-reduced.mp4"
+}

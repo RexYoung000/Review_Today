@@ -1,0 +1,32 @@
+[
+  {
+    "file": "01-recent-heatmap-navigation.mp4",
+    "duration_seconds": 41.465,
+    "width": 1160,
+    "height": 852,
+    "average_frame_rate": "8625/311",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": ""
+  },
+  {
+    "file": "02-today-states.mp4",
+    "duration_seconds": 33.803333,
+    "width": 1160,
+    "height": 852,
+    "average_frame_rate": "289200/10141",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": ""
+  },
+  {
+    "file": "03-keyboard-reflow-reduced.mp4",
+    "duration_seconds": 29.323333,
+    "width": 1160,
+    "height": 852,
+    "average_frame_rate": "167600/5871",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": ""
+  }
+]
