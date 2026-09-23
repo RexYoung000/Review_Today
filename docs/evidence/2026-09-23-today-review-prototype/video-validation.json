@@ -1,0 +1,109 @@
+[
+  {
+    "file": "01-exam-selection.mp4",
+    "duration_seconds": 15.141667,
+    "width": 1160,
+    "height": 852,
+    "average_frame_rate": "52800/1817",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "initial_null_muxer_timestamp_warnings": 7,
+    "decode_timestamp_mode": "passthrough, demux time base"
+  },
+  {
+    "file": "02-answer-help-summary.mp4",
+    "duration_seconds": 29.388333,
+    "width": 860,
+    "height": 852,
+    "average_frame_rate": "165600/5881",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "initial_null_muxer_timestamp_warnings": 33,
+    "decode_timestamp_mode": "passthrough, demux time base"
+  },
+  {
+    "file": "03-close-resume.mp4",
+    "duration_seconds": 22.145,
+    "width": 860,
+    "height": 852,
+    "average_frame_rate": "12460/443",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "initial_null_muxer_timestamp_warnings": 5,
+    "decode_timestamp_mode": "passthrough, demux time base"
+  },
+  {
+    "file": "04-complete-ending.mp4",
+    "duration_seconds": 27.925,
+    "width": 860,
+    "height": 852,
+    "average_frame_rate": "32600/1117",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "initial_null_muxer_timestamp_warnings": 17,
+    "decode_timestamp_mode": "passthrough, demux time base"
+  },
+  {
+    "file": "05-explain-interrupt.mp4",
+    "duration_seconds": 16.715,
+    "width": 860,
+    "height": 852,
+    "average_frame_rate": "36525/1256",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "initial_null_muxer_timestamp_warnings": 7,
+    "decode_timestamp_mode": "passthrough, demux time base"
+  },
+  {
+    "file": "iterations/01-home-state-raw.mp4",
+    "duration_seconds": 90.063333,
+    "width": 1160,
+    "height": 852,
+    "average_frame_rate": "526600/18017",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "initial_null_muxer_timestamp_warnings": 64,
+    "decode_timestamp_mode": "passthrough, demux time base"
+  },
+  {
+    "file": "iterations/02-early-flow-raw.mp4",
+    "duration_seconds": 90.093333,
+    "width": 860,
+    "height": 852,
+    "average_frame_rate": "156720/5407",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "initial_null_muxer_timestamp_warnings": 43,
+    "decode_timestamp_mode": "passthrough, demux time base"
+  },
+  {
+    "file": "iterations/03-failure-raw.mp4",
+    "duration_seconds": 90.038333,
+    "width": 860,
+    "height": 852,
+    "average_frame_rate": "1582800/54023",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "initial_null_muxer_timestamp_warnings": 50,
+    "decode_timestamp_mode": "passthrough, demux time base"
+  },
+  {
+    "file": "06-keyboard-help-answer.mp4",
+    "duration_seconds": 28.813333,
+    "width": 860,
+    "height": 852,
+    "average_frame_rate": "62700/2161",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "decode_timestamp_mode": "passthrough, demux time base"
+  }
+]
