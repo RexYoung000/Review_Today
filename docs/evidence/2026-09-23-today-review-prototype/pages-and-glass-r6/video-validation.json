@@ -1,0 +1,122 @@
+[
+  {
+    "file": "01-glass-light-and-exam.mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 1160,
+          "height": 852,
+          "avg_frame_rate": "11425/396"
+        }
+      ],
+      "format": {
+        "duration": "47.516667"
+      }
+    },
+    "decodeExit": 0,
+    "decodeOutput": ""
+  },
+  {
+    "file": "02-glass-dark-and-learning.mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 1160,
+          "height": 852,
+          "avg_frame_rate": "681000/23491"
+        }
+      ],
+      "format": {
+        "duration": "39.141667"
+      }
+    },
+    "decodeExit": 0,
+    "decodeOutput": ""
+  },
+  {
+    "file": "03-preparation-text-pause.mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 860,
+          "height": 852,
+          "avg_frame_rate": "935400/32401"
+        }
+      ],
+      "format": {
+        "duration": "54.001667"
+      }
+    },
+    "decodeExit": 0,
+    "decodeOutput": ""
+  },
+  {
+    "file": "04-summary-replay-resize.mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 980,
+          "height": 912,
+          "avg_frame_rate": "36840/1267"
+        }
+      ],
+      "format": {
+        "duration": "52.773333"
+      }
+    },
+    "decodeExit": 0,
+    "decodeOutput": ""
+  },
+  {
+    "file": "05-final-glass-loop.mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 1160,
+          "height": 852,
+          "avg_frame_rate": "112700/3889"
+        }
+      ],
+      "format": {
+        "duration": "38.873333"
+      }
+    },
+    "decodeExit": 0,
+    "decodeOutput": ""
+  },
+  {
+    "file": "06-final-summary-spine.mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 980,
+          "height": 912,
+          "avg_frame_rate": "164850/5797"
+        }
+      ],
+      "format": {
+        "duration": "38.618333"
+      }
+    },
+    "decodeExit": 0,
+    "decodeOutput": ""
+  }
+]

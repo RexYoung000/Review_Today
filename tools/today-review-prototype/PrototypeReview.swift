@@ -29,39 +29,7 @@ struct PrototypeReview: View {
         .onChange(of: model.text) { _, _ in model.inputChanged() }
         .onKeyPress(.escape) { if model.correcting { model.cancelCorrection() } else if model.phase != .preparation && model.phase != .summary { model.pause() }; return .handled }
     }
-    private var preparation: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
-                HStack { Text("准备复习").font(.system(size: 30, weight: .bold)); Spacer(); PrototypeBadge() }
-                Text("先想起来，再慢慢巩固。").font(.title3).foregroundStyle(.secondary)
-                RunwayCard(padding: 24) {
-                    VStack(alignment: .leading, spacing: 18) {
-                        HStack { VStack(alignment: .leading, spacing: 6) { Text("\(model.dueQuestions.count) 个到期知识点").font(.title2.weight(.semibold)); Text("按到期顺序 · 跨主题回顾").font(.callout).foregroundStyle(.secondary) }; Spacer(); Image(systemName: "rectangle.stack").font(.system(size: 30)).foregroundStyle(.secondary) }
-                        Divider()
-                        Text(model.dueQuestions.map(\.topic).joined(separator: "  ·  ")).font(.callout).foregroundStyle(.secondary).lineSpacing(5)
-                    }
-                }
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("这一轮，想复习多少？").font(.headline)
-                    Picker("本轮目标", selection: $model.goal) { ForEach(PrototypeGoal.allCases, id: \.self) { Text($0.rawValue).tag($0) } }.pickerStyle(.segmented)
-                    if model.goal == .minutes {
-                        HStack { Stepper(value: $model.minutes, in: 1...60) { Text("\(model.minutes) 分钟").monospacedDigit() }.frame(width: 170); Spacer(); Text("时间到后，完成当前题再收尾").font(.caption).foregroundStyle(.secondary) }
-                    } else if model.goal == .count {
-                        HStack { Stepper(value: $model.count, in: 1...30) { Text("\(model.count) 个知识点").monospacedDigit() }.frame(width: 170); Spacer(); Text("本轮最多 \(min(model.count, model.dueQuestions.count)) 个").font(.caption).foregroundStyle(.secondary) }
-                    } else { Text("完成开始时的到期清单，本轮不会插入新的知识。").font(.callout).foregroundStyle(.secondary) }
-                }
-                HStack(spacing: 16) {
-                    PrototypeCompanion(model: model).frame(width: 125, height: 120)
-                    VStack(alignment: .leading, spacing: 8) { Text("Mr. B 陪你一起回顾").font(.headline); Text("可以随时暂停、请求帮助，或者改用文字。\n不用背原话，说出自己的理解就好。").font(.callout).foregroundStyle(.secondary).lineSpacing(4) }
-                }
-                HStack(spacing: 16) {
-                    PrototypePrimaryButton(title: "开始语音", enabled: !model.dueQuestions.isEmpty) { model.start(.voice) }
-                    PrototypeButton(title: "用文字开始", symbol: "keyboard") { model.start(.text) }.disabled(model.dueQuestions.isEmpty)
-                }
-                Text("本原型只演示语音状态，不连接麦克风，也不会播放声音。").font(.caption).foregroundStyle(.secondary)
-            }.padding(36).frame(maxWidth: 760).frame(maxWidth: .infinity)
-        }
-    }
+    private var preparation: some View { PrototypeReviewPreparation(model: model) }
     private var answering: some View {
         VStack(spacing: 0) {
             HStack(spacing: 16) {

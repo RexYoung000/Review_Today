@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Native glass remains the material. Reflections stay behind the text and never delay activation.
+/// Glass owns the material; light is additive and never changes the label or hit target.
 struct PrototypeGlassEntry: View {
     let title: String
     let detail: String
@@ -18,35 +18,33 @@ struct PrototypeGlassEntry: View {
     @State private var hovering = false
     @State private var pointer = UnitPoint(x: 0.5, y: 0.3)
     @State private var entrySize = CGSize(width: 400, height: 84)
-    @State private var enteredAt = Date.distantPast
-    @State private var sweeping = false
+    @State private var enteredAt = Date.now
 
     private var shape: RoundedRectangle { .init(cornerRadius: Runway.chipRadius, style: .continuous) }
     private var keyboard: Bool { focused && input.keyboardNavigation }
     private var selected: Bool { enabled && controlState == .key && (hovering || keyboard || previewSelected) }
     private var dark: Bool { scheme == .dark }
+    private var flowing: Bool { selected && !keyboard && !reduced && !opaque }
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: 14) {
                 Image(systemName: symbol).font(.system(size: 19, weight: .medium)).frame(width: 26)
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(title).font(.headline)
+                    Text(title).font(.headline).underline(keyboard)
                     Text(detail).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
-                Image(systemName: "arrow.up.right").font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(selected ? (dark ? Color.black : .white) : palette.ink.opacity(0.5))
+                Image(systemName: "arrow.up.right").font(.system(size: 12, weight: selected ? .bold : .medium))
+                    .foregroundStyle(palette.ink.opacity(selected ? 0.9 : 0.5))
                     .frame(width: 26, height: 26)
-                    .background(selected ? palette.ink : .clear, in: Circle())
+                    .background(.white.opacity(selected ? (dark ? 0.16 : 0.75) : 0), in: Circle())
                     .offset(x: selected && !reduced ? 2 : 0, y: selected && !reduced ? -2 : 0)
             }
             .padding(.horizontal, 22).padding(.vertical, 19)
             .frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
             .background { material }
-            .overlay { rim.allowsHitTesting(false) }
             .contentShape(shape)
-            .shadow(color: .black.opacity(selected ? (dark ? 0.25 : 0.09) : 0), radius: 12, y: 5)
             .animation(reduced ? nil : .easeOut(duration: 0.16), value: selected)
         }
         .buttonStyle(PrototypeGlassPressStyle(reduced: reduced))
@@ -65,15 +63,9 @@ struct PrototypeGlassEntry: View {
         }
         .onHover { hovering = $0 }
         .onGeometryChange(for: CGSize.self) { $0.size } action: { entrySize = $0 }
-        .task(id: EntryHighlight(active: selected && !keyboard, animated: !reduced && !opaque)) {
-            sweeping = false
-            guard selected && !keyboard && !reduced && !opaque else { return }
-            enteredAt = .now; sweeping = true
-            do { try await Task.sleep(for: .milliseconds(760)) } catch { return }
-            guard !Task.isCancelled else { return }; sweeping = false
-        }
+        .onChange(of: flowing) { _, active in if active { enteredAt = .now } }
         .onChange(of: controlState) { _, value in if value != .key { hovering = false } }
-        .onDisappear { hovering = false; sweeping = false }
+        .onDisappear { hovering = false }
     }
 
     private var material: some View {
@@ -81,61 +73,72 @@ struct PrototypeGlassEntry: View {
             if opaque {
                 shape.fill(palette.card)
             } else {
-                shape.fill(.clear).glassEffect(.regular.interactive(!reduced), in: shape)
+                // Our hover light replaces the system interactive wash, which darkened this monochrome surface.
+                shape.fill(.clear).glassEffect(.regular, in: shape)
             }
-            shape.fill(palette.ink.opacity(selected ? (dark ? 0.065 : 0.055) : 0))
-            if selected && !opaque {
-                RadialGradient(colors: [.white.opacity(dark ? 0.16 : 0.9), .clear],
-                               center: reduced || keyboard ? .topLeading : pointer, startRadius: 0, endRadius: 190)
-                if sweeping && !reduced {
-                    TimelineView(.animation(minimumInterval: 1 / 60)) { clock in
-                        GlassReflection(elapsed: clock.date.timeIntervalSince(enteredAt), dark: dark)
-                    }
+            if selected {
+                shape.fill(.white.opacity(dark ? 0.035 : 0.02))
+                if !opaque {
+                    RadialGradient(colors: [.white.opacity(dark ? 0.15 : 0.35), .clear],
+                                   center: reduced || keyboard ? .topLeading : pointer, startRadius: 0, endRadius: 190)
+                }
+                shape.inset(by: 1).strokeBorder(
+                    LinearGradient(colors: [.white.opacity(0.9), .white.opacity(0.08), .white.opacity(0.6)],
+                                   startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
+            }
+            if flowing {
+                TimelineView(.animation(minimumInterval: 1 / 60)) { clock in
+                    GlassReflection(elapsed: max(0, clock.date.timeIntervalSince(enteredAt)), dark: dark)
                 }
             }
         }.clipShape(shape).allowsHitTesting(false)
     }
-
-    private var rim: some View {
-        ZStack {
-            shape.strokeBorder(palette.ink.opacity(selected ? (dark ? 0.35 : 0.22) : (opaque ? 0.08 : 0)), lineWidth: selected ? 1.2 : 1)
-            if selected && !opaque {
-                shape.inset(by: 1.4).strokeBorder(
-                    LinearGradient(colors: [.white.opacity(0.95), .white.opacity(0.14), .clear, .white.opacity(0.5)],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
-            }
-            if keyboard { shape.strokeBorder(palette.ink, lineWidth: 1.5).padding(-3) }
-        }
-    }
 }
 
-private struct EntryHighlight: Equatable {
-    let active: Bool
-    let animated: Bool
-}
-
+/// A continuous highlight trail and small moving glints; no full-card flash or dark rim.
 private struct GlassReflection: View {
     let elapsed: Double
     let dark: Bool
     var body: some View {
         GeometryReader { geometry in
-            let t = min(1, max(0, elapsed / 0.72))
-            let travel = 1 - pow(1 - t, 2)
-            let x = geometry.size.width * (-0.25 + 1.5 * travel)
-            let flash = max(0, 1 - abs(elapsed - 0.18) / 0.16)
-            ZStack(alignment: .topLeading) {
+            let phase = elapsed.truncatingRemainder(dividingBy: 2.8) / 2.8
+            let x = geometry.size.width * (-0.3 + 1.6 * phase)
+            ZStack {
                 Rectangle().fill(LinearGradient(stops: [
-                    .init(color: .clear, location: 0), .init(color: .white.opacity(0.10), location: 0.25),
-                    .init(color: .white.opacity(dark ? 0.4 : 0.95), location: 0.49),
-                    .init(color: .white.opacity(0.12), location: 0.62), .init(color: .clear, location: 1)
+                    .init(color: .clear, location: 0),
+                    .init(color: Color(red: 0.79, green: 0.87, blue: 0.92).opacity(dark ? 0.07 : 0.46), location: 0.26),
+                    .init(color: .white.opacity(dark ? 0.23 : 0.88), location: 0.49),
+                    .init(color: .white.opacity(0.08), location: 0.65), .init(color: .clear, location: 1)
                 ], startPoint: .leading, endPoint: .trailing))
-                .frame(width: geometry.size.width * 0.32, height: geometry.size.height * 2.5)
+                .frame(width: geometry.size.width * 0.40, height: geometry.size.height * 3)
                 .rotationEffect(.degrees(23)).position(x: x, y: geometry.size.height / 2)
-                // One small specular glint at the rim, not a repeated full-card flash.
-                Image(systemName: "sparkle").font(.system(size: 19, weight: .ultraLight))
-                    .foregroundStyle(.white).shadow(color: .white.opacity(0.9), radius: 4)
-                    .scaleEffect(0.7 + flash * 0.6).opacity(flash)
-                    .position(x: geometry.size.width * 0.74, y: 2)
+                Canvas { context, size in
+                    let path = RoundedRectangle(cornerRadius: Runway.chipRadius - 4, style: .continuous)
+                        .path(in: CGRect(origin: .zero, size: size).insetBy(dx: 4, dy: 4))
+                    for offset in [0.0, 0.5] {
+                        let head = (elapsed / 3.6 + offset).truncatingRemainder(dividingBy: 1)
+                        let silver = dark ? Color.white : Color(red: 0.57, green: 0.70, blue: 0.81)
+                        var glow = context
+                        glow.addFilter(.shadow(color: silver.opacity(0.7), radius: 3))
+                        for step in 0..<12 {
+                            let end = (head - Double(step) * 0.009 + 1).truncatingRemainder(dividingBy: 1)
+                            let start = max(0, end - 0.012)
+                            glow.stroke(path.trimmedPath(from: start, to: end),
+                                        with: .color(silver.opacity((1 - Double(step) / 12) * (dark ? 0.8 : 0.85))),
+                                        style: StrokeStyle(lineWidth: 1.7, lineCap: .round))
+                        }
+                        if let point = path.trimmedPath(from: 0, to: max(0.0001, head)).currentPoint {
+                            let pulse = 0.6 + 0.4 * pow(sin(elapsed * 2.7 + offset * 8), 2)
+                            var star = Path()
+                            star.move(to: .init(x: point.x - 5 * pulse, y: point.y))
+                            star.addLine(to: .init(x: point.x + 5 * pulse, y: point.y))
+                            star.move(to: .init(x: point.x, y: point.y - 5 * pulse))
+                            star.addLine(to: .init(x: point.x, y: point.y + 5 * pulse))
+                            glow.stroke(star, with: .color(silver), style: StrokeStyle(lineWidth: 1, lineCap: .round))
+                            glow.fill(Path(ellipseIn: CGRect(x: point.x - 1.4, y: point.y - 1.4, width: 2.8, height: 2.8)), with: .color(.white))
+                        }
+                    }
+                }
             }
         }.accessibilityHidden(true)
     }
@@ -145,7 +148,6 @@ private struct PrototypeGlassPressStyle: ButtonStyle {
     let reduced: Bool
     func makeBody(configuration: Configuration) -> some View {
         configuration.label.scaleEffect(configuration.isPressed && !reduced ? 0.992 : 1)
-            .opacity(configuration.isPressed ? 0.86 : 1)
             .animation(reduced ? nil : .easeOut(duration: 0.1), value: configuration.isPressed)
     }
 }

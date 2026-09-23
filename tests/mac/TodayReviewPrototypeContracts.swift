@@ -70,6 +70,17 @@ import Foundation
         let m = started(.count, count: 1); m.submitSample()
         try? await Task.sleep(for: .milliseconds(3100))
         expect(m.phase == .summary && m.results.count == 1 && m.summaryCelebration, "saved correct answer automatically progresses and finishes")
+        let live = started(.count, count: 2); correct(live); live.advance(); live.pause()
+        let liveQueue = live.queue, liveResults = live.results, liveIndex = live.index
+        let preview = PrototypeState.makeSummaryPreview(dark: true, reduced: false)
+        expect(preview.phase == .summary && preview.skipped == 1 && preview.unfinished == 1 && preview.dark, "direct preview opens truthful partial sample with current appearance")
+        preview.loadSummarySample(complete: true)
+        expect(preview.fullSuccess && preview.summaryMotion == "review_study", "complete preview uses genuine existing ending")
+        preview.summaryMotionTime = 3; preview.replaySummaryMotion()
+        expect(preview.summaryMotionTime == 0, "explicit replay resets only preview animation")
+        preview.close()
+        expect(live.phase == .paused && live.queue == liveQueue && live.results == liveResults && live.index == liveIndex, "summary preview selection replay and close preserve active round")
+        live.close()
         [a,b,c,d,e,f,g,h,i,j,k,l,m].forEach { $0.close() }
         print("\(checks) prototype state checks passed. No models, microphone, database or FSRS used.")
     }

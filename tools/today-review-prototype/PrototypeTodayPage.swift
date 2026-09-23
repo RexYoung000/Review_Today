@@ -41,6 +41,7 @@ struct PrototypeLearningItem: Identifiable {
 struct PrototypeTodayPage: View {
     @Bindable var model: PrototypeState
     var openReview: () -> Void
+    var openSummary: () -> Void
     var openLearning: (PrototypeLearningItem?) -> Void
     var openKnowledge: (UUID) -> Void
     @Environment(\.runway) private var palette
@@ -57,7 +58,10 @@ struct PrototypeTodayPage: View {
                             Text("今天").font(.system(size: 30, weight: .bold))
                             Text("让学过的，再想起来。").font(.callout).foregroundStyle(.secondary)
                         }
-                        Spacer(); PrototypeBadge()
+                        Spacer()
+                        PrototypeButton(title: "小结预览", symbol: "rectangle.on.rectangle", action: openSummary)
+                            .help("打开独立的示例小结，不改变当前复习进度")
+                        PrototypeBadge()
                     }.padding(.bottom, 2)
 
                     if compact {
@@ -195,7 +199,7 @@ struct PrototypeTodayPage: View {
 
     private var recentLearning: some View {
         RunwayCard(padding: 20) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 14) {
                 HStack {
                     Text("最近学习").font(.headline)
                     Spacer()
@@ -207,28 +211,32 @@ struct PrototypeTodayPage: View {
                 if model.today == .empty {
                     Text("你最近学过的内容，会留在这里。随时回来接着聊。").font(.callout).foregroundStyle(.secondary).padding(.vertical, 14)
                 } else if recentExpanded {
-                    ScrollView { recentRows(PrototypeLearningItem.samples) }.frame(height: 228)
+                    recentRows(PrototypeLearningItem.samples)
                 } else { recentRows(Array(PrototypeLearningItem.samples.prefix(3))) }
             }
         }
     }
     private func recentRows(_ items: [PrototypeLearningItem]) -> some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 6) {
             ForEach(items) { item in
-                if item.id != items.first?.id { Divider().padding(.horizontal, 6).opacity(0.55) }
                 Button { openLearning(item) } label: {
-                    HStack(spacing: 14) {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(item.title).font(.callout.weight(.medium)).lineLimit(1)
-                            Text("\(item.topics) · \(item.status)").font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    HStack(spacing: 16) {
+                        Image(systemName: item.mode == "精读" ? "book.closed" : "text.bubble")
+                            .font(.system(size: 18, weight: .light)).frame(width: 44, height: 48)
+                            .background(palette.field.opacity(0.65), in: RoundedRectangle(cornerRadius: 13))
+                        VStack(alignment: .leading, spacing: 7) {
+                            Text(item.title).font(.system(size: 15, weight: .medium)).lineLimit(2)
+                            Text(item.status).font(.caption).foregroundStyle(.secondary).lineLimit(2)
                         }
                         Spacer(minLength: 12)
-                        Text(item.when).font(.caption).foregroundStyle(.secondary)
-                        MetaTag(title: item.mode)
-                        Image(systemName: "chevron.right").font(.caption2).foregroundStyle(.secondary)
-                    }.padding(.horizontal, 6).padding(.vertical, 15).contentShape(Rectangle())
-                }.buttonStyle(InteractionButtonStyle(padding: 0, outline: .rounded(10)))
-                    .modifier(PrototypeKeyboardAction(radius: 10) { openLearning(item) })
+                        VStack(alignment: .trailing, spacing: 8) {
+                            Text(item.when).font(.caption).foregroundStyle(.secondary)
+                            Text(item.mode).font(.caption2).foregroundStyle(.tertiary)
+                        }
+                        Image(systemName: "arrow.up.right").font(.caption2).foregroundStyle(.secondary).padding(.leading, 4)
+                    }.padding(.horizontal, 10).padding(.vertical, 13).contentShape(Rectangle())
+                }.buttonStyle(InteractionButtonStyle(padding: 0, outline: .rounded(13)))
+                    .modifier(PrototypeKeyboardAction(radius: 13) { openLearning(item) })
             }
         }
     }

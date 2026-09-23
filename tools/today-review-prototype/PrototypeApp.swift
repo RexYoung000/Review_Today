@@ -16,11 +16,13 @@ final class PrototypeAppDelegate: NSObject, NSApplicationDelegate, NSWindowDeleg
     let capture = PrototypeCapture()
     var mainWindow: NSWindow!
     var reviewWindow: NSWindow?
+    var summaryWindow: NSWindow?
+    var summaryModel: PrototypeState?
     func applicationDidFinishLaunching(_ notification: Notification) {
         buildMenu()
         mainWindow = window(title: "Review Today · 交互原型", size: .init(width: 1160, height: 820), minimum: .init(width: 940, height: 640))
         mainWindow.contentView = NSHostingView(rootView: PrototypeAppearance(model: model) {
-            PrototypeShell(model: self.model, openReview: self.openReview, capture: self.capture).frame(minWidth: 940, minHeight: 640)
+            PrototypeShell(model: self.model, openReview: self.openReview, openSummary: self.openSummary, capture: self.capture).frame(minWidth: 940, minHeight: 640)
         })
         mainWindow.center(); mainWindow.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
@@ -42,7 +44,23 @@ final class PrototypeAppDelegate: NSObject, NSApplicationDelegate, NSWindowDeleg
         }
         reviewWindow?.makeKeyAndOrderFront(nil)
     }
-    func windowWillClose(_ notification: Notification) { if notification.object as? NSWindow === reviewWindow { model.close() } }
+    func openSummary() {
+        if let summaryWindow, summaryWindow.isVisible {
+            summaryWindow.makeKeyAndOrderFront(nil); return
+        }
+        let preview = PrototypeState.makeSummaryPreview(dark: model.dark, reduced: model.reduced)
+        summaryModel = preview
+        let w = window(title: "本轮小结 · 示例预览", size: .init(width: 980, height: 880), minimum: .init(width: 700, height: 700))
+        w.contentView = NSHostingView(rootView: PrototypeAppearance(model: preview) {
+            PrototypeSummaryPreview(model: preview, capture: self.capture, close: { self.summaryWindow?.performClose(nil); self.showToday() })
+                .frame(minWidth: 700, minHeight: 700)
+        })
+        summaryWindow = w; w.center(); w.makeKeyAndOrderFront(nil)
+    }
+    func windowWillClose(_ notification: Notification) {
+        if notification.object as? NSWindow === reviewWindow { model.close() }
+        if notification.object as? NSWindow === summaryWindow { summaryModel?.close() }
+    }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool { mainWindow.makeKeyAndOrderFront(nil); return true }
     private func buildMenu() {
@@ -55,7 +73,7 @@ final class PrototypeAppDelegate: NSObject, NSApplicationDelegate, NSWindowDeleg
         for (title, selector, key) in [("撤销", "undo:", "z"), ("重做", "redo:", "Z"), ("剪切", "cut:", "x"), ("复制", "copy:", "c"), ("粘贴", "paste:", "v"), ("全选", "selectAll:", "a")] { em.addItem(withTitle: title, action: Selector(selector), keyEquivalent: key) }
         edit.submenu = em; bar.addItem(edit)
         let preview = NSMenuItem(); let pm = NSMenu(title: "原型")
-        for (title, selector, key) in [("打开今天", #selector(showToday), "1"), ("打开复习", #selector(showReview), "2"), ("截取当前窗口", #selector(snapshot), "s"), ("开始／停止原速录制", #selector(record), "r"), ("默认窗口尺寸", #selector(defaultSize), "0"), ("最小窗口尺寸", #selector(minimumSize), "9")] { let item = pm.addItem(withTitle: title, action: selector, keyEquivalent: key); item.target = self }
+        for (title, selector, key) in [("打开今天", #selector(showToday), "1"), ("打开复习", #selector(showReview), "2"), ("打开小结预览", #selector(showSummary), "4"), ("截取当前窗口", #selector(snapshot), "s"), ("开始／停止原速录制", #selector(record), "r"), ("默认窗口尺寸", #selector(defaultSize), "0"), ("最小窗口尺寸", #selector(minimumSize), "9")] { let item = pm.addItem(withTitle: title, action: selector, keyEquivalent: key); item.target = self }
         pm.addItem(.separator()); pm.addItem(withTitle: "关闭窗口", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
         let reflection = pm.addItem(withTitle: "切换入口流光演示", action: #selector(previewGlass), keyEquivalent: "3")
         reflection.target = self
@@ -64,14 +82,15 @@ final class PrototypeAppDelegate: NSObject, NSApplicationDelegate, NSWindowDeleg
     }
     @objc func showToday() { model.page = .today; mainWindow.makeKeyAndOrderFront(nil) }
     @objc func showReview() { openReview() }
+    @objc func showSummary() { openSummary() }
     @objc func previewGlass() {
         showToday()
         model.previewGlassEntry = model.previewGlassEntry == nil ? "开始学习" : model.previewGlassEntry == "开始学习" ? "模拟考" : nil
     }
     @objc func snapshot() { capture.snapshot() }
     @objc func record() { capture.toggleRecording() }
-    @objc func defaultSize() { NSApp.keyWindow?.setContentSize(NSApp.keyWindow === reviewWindow ? .init(width: 860, height: 820) : .init(width: 1160, height: 820)) }
-    @objc func minimumSize() { NSApp.keyWindow?.setContentSize(NSApp.keyWindow === reviewWindow ? .init(width: 700, height: 650) : .init(width: 940, height: 640)) }
+    @objc func defaultSize() { NSApp.keyWindow?.setContentSize(NSApp.keyWindow === summaryWindow ? .init(width: 980, height: 880) : NSApp.keyWindow === reviewWindow ? .init(width: 860, height: 820) : .init(width: 1160, height: 820)) }
+    @objc func minimumSize() { NSApp.keyWindow?.setContentSize(NSApp.keyWindow === summaryWindow ? .init(width: 700, height: 700) : NSApp.keyWindow === reviewWindow ? .init(width: 700, height: 650) : .init(width: 940, height: 640)) }
     @objc func about() { let alert = NSAlert(); alert.messageText = "今天＋语音复习交互原型"; alert.informativeText = "独立合成数据。判断、保存、声音与排期均为演示；不调用真实模型，不使用麦克风，不写正式复习成绩。关闭复习窗口保留本次运行的进度，退出原型后重置。"; alert.runModal() }
 }
 struct PrototypeAppearance<Content: View>: View {

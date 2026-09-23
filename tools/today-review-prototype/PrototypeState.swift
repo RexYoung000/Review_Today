@@ -146,6 +146,27 @@ final class PrototypeState {
             }
         }
     }
+    /// A separate fixture instance: previewing an ending cannot reset the active round.
+    static func makeSummaryPreview(dark: Bool = false, reduced: Bool = false) -> PrototypeState {
+        let preview = PrototypeState()
+        preview.dark = dark; preview.reduced = reduced
+        preview.loadSummarySample(complete: false)
+        return preview
+    }
+    func loadSummarySample(complete: Bool) {
+        select(.finished)
+        if complete {
+            results = (0..<queue.count).map { sampleResult($0, grade: $0 == 1 ? "Again" : "Good", helped: $0 == 1) }
+            gradedIDs = Set(queue.map(\.id)); index = queue.count
+        }
+        finish(complete ? "这一轮，回顾完了" : "这次先到这里")
+        windowOpen = true
+    }
+    func replaySummaryMotion() {
+        guard phase == .summary, !correcting else { return }
+        summaryMotion = fullSuccess ? "review_study" : results.isEmpty ? "reaction_guide" : "reaction_encourage"
+        summaryMotionTime = 0; motionToken += 1
+    }
     private func sampleResult(_ index: Int, grade: String?, helped: Bool = false, skipped: Bool = false) -> PrototypeResult {
         let q = PrototypeQuestion.samples[index]
         return .init(id: UUID(), question: q, rawAnswer: skipped ? "" : q.answer, grade: grade, helped: helped, skipped: skipped)

@@ -1,0 +1,27 @@
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewController.swift:252:26: warning: immutable value 'context' was never used; consider replacing with '_' or removing it [#NoUsage]
+250 |     }
+251 |     func beginCorrection(_ selected: ReviewQueueEntry? = nil) {
+252 |         guard !busy, let context else { return }
+    |                          `- warning: immutable value 'context' was never used; consider replacing with '_' or removing it [#NoUsage]
+253 |         let target = selected ?? (currentAttempt?.independentGrade.isEmpty == false ? entry : entries.last(where: { entry in completed.contains { $0.attemptId == entry.attemptID } }))
+254 |         guard let target else { errorText = "可以直接重新说出完整回答，当前还没有计入的结果。"; return }
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+177 |
+178 |     private static func isWeak(_ text: String) -> Bool {
+179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+180 |         if value.count < 2 { return true }
+181 |         if genericTitles.contains(value) { return true }
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:182:13: warning: result of 'try?' is unused [#NoUsage]
+180 |             task.updatedAt = .now
+181 |             try? modelContext.save()
+182 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#NoUsage]
+183 |             return
+184 |         }
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
