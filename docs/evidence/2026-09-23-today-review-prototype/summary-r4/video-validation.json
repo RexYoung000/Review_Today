@@ -1,0 +1,35 @@
+[
+  {
+    "file": "01-layout-reflow.mp4",
+    "duration_seconds": 49.266667,
+    "width": 700,
+    "height": 682,
+    "average_frame_rate": "855000/29579",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "capture": "Native ScreenCaptureKit, actual timestamps, unedited"
+  },
+  {
+    "file": "02-correction-resize-final.mp4",
+    "duration_seconds": 27.2,
+    "width": 860,
+    "height": 852,
+    "average_frame_rate": "155800/5443",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "capture": "Native ScreenCaptureKit, actual timestamps, unedited"
+  },
+  {
+    "file": "iterations/02-initial-correction-resize.mp4",
+    "duration_seconds": 77.406667,
+    "width": 860,
+    "height": 852,
+    "average_frame_rate": "7075/242",
+    "audio_streams": 0,
+    "decode_ok": true,
+    "decode_stderr": "",
+    "capture": "Native ScreenCaptureKit, actual timestamps, unedited"
+  }
+]

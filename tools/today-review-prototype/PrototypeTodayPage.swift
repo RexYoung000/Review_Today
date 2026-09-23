@@ -184,14 +184,7 @@ struct PrototypeTodayPage: View {
                 .init(title: "待处理", value: 0), .init(title: "知识库", value: hasKnowledge ? PrototypeQuestion.samples.count : 0)]
     }
     private func metric(_ item: Metric) -> some View {
-        VStack(alignment: .leading, spacing: 7) {
-            Text("\(item.value)").font(.system(size: 30, weight: .semibold)).monospacedDigit()
-            Text(item.title).font(.caption).foregroundStyle(.secondary).fixedSize()
-        }
-        .frame(maxWidth: .infinity, minHeight: 84, alignment: .leading).padding(16)
-        .background(palette.card, in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
-        .shadow(color: palette.liftShadow, radius: 8, y: 2)
-        .accessibilityElement(children: .combine)
+        PrototypeMetricCard(title: item.title, value: item.value)
     }
 
     private func entry(_ title: String, detail: String, symbol: String, action: @escaping () -> Void) -> some View {

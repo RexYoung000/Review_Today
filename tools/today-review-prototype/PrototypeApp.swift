@@ -101,6 +101,24 @@ struct PrototypeBadge: View {
     var body: some View { Text("交互原型").font(.system(size: 11, weight: .medium)).padding(.horizontal, 9).padding(.vertical, 4).background(.primary.opacity(0.055), in: Capsule()).accessibilityLabel("交互原型，使用独立合成数据") }
 }
 
+/// Shared paper metric surface for Today and the review summary.
+struct PrototypeMetricCard: View {
+    let title: String
+    let value: Int
+    var minimumHeight: CGFloat = 84
+    @Environment(\.runway) private var palette
+    var body: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Text("\(value)").font(.system(size: 30, weight: .semibold)).monospacedDigit()
+            Text(title).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: minimumHeight, alignment: .leading).padding(16)
+        .background(palette.card, in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
+        .shadow(color: palette.liftShadow, radius: 8, y: 2)
+        .accessibilityElement(children: .combine)
+    }
+}
+
 /// Keep native keyboard focus explicit even when macOS's "all controls" setting is off.
 struct PrototypePrimaryButton: View {
     var title: String

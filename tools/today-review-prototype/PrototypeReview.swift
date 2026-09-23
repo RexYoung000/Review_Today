@@ -178,37 +178,8 @@ struct PrototypeReview: View {
         }.padding(32)
     }
     private var summary: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                HStack { VStack(alignment: .leading, spacing: 9) { Text(model.fullSuccess ? "这一轮，回顾完了" : model.summaryReason).font(.system(size: 28, weight: .semibold)); Text(model.fullSuccess ? "给记忆一点时间，下次再见。" : "每一次尝试都算数，剩下的可以稍后继续。").foregroundStyle(.secondary) }; Spacer(); PrototypeCompanion(model: model).frame(width: 250, height: 160) }
-                HStack { stat("完成", model.completed); stat("其中需帮助", model.helped); stat("跳过", model.skipped); stat("未完成", model.unfinished) }.padding(24).background(palette.card, in: RoundedRectangle(cornerRadius: 22))
-                VStack(alignment: .leading, spacing: 14) {
-                    Text("接下来的安排").font(.headline)
-                    if model.results.isEmpty { Text("本轮还没有记录回答，到期清单保持不变。").foregroundStyle(.secondary) }
-                    ForEach(model.results) { result in
-                        HStack(alignment: .top) {
-                            Image(systemName: result.skipped ? "forward.end" : result.helped ? "lightbulb" : "checkmark.circle").frame(width: 22)
-                            VStack(alignment: .leading, spacing: 5) { Text(result.question.topic).font(.callout.weight(.medium)); Text(resultDescription(result)).font(.caption).foregroundStyle(.secondary); if let correction = result.correction { Text("已纠正：\(correction)").font(.caption).foregroundStyle(.secondary) } }
-                            Spacer(); Text(result.arrangement).font(.caption).foregroundStyle(.secondary)
-                        }.padding(.vertical, 6)
-                    }
-                }
-                HStack(spacing: 12) {
-                    PrototypePrimaryButton(title: "回到今天", action: close)
-                    if let last = model.results.last, !last.rawAnswer.isEmpty { PrototypeButton(title: "纠正最后一次回答") { model.beginCorrection() } }
-                    if model.results.last?.grade != nil { Menu("调整最后一次评价") { ForEach(["Again", "Hard", "Good", "Easy"], id: \.self) { value in Button(value) { model.changeGrade(value) } } }.fixedSize() }
-                }
-                if model.correcting { transcript }
-                Text("原型小结 · 后续日期为示例，不写入正式复习记录。").font(.caption).foregroundStyle(.secondary)
-            }.padding(32).frame(maxWidth: 820).frame(maxWidth: .infinity)
-        }
+        PrototypeReviewSummary(model: model, close: close) { transcript }
     }
-    private func resultDescription(_ result: PrototypeResult) -> String {
-        if result.skipped { return result.grade == nil ? "本次跳过 · 未评分" : result.grade == "Again" ? "答错后跳过 · 保留首次回忆" : "已记录回忆 · 随后跳过" }
-        if result.helped { return "借助帮助完成 · 将再次巩固" }
-        return result.grade == "Hard" ? "独立答对 · 回忆有些困难" : result.grade == "Easy" ? "手动改判为 Easy" : result.grade == nil ? "评价待澄清" : result.grade == "Again" ? "需要再次巩固" : "独立回忆完成"
-    }
-    private func stat(_ title: String, _ number: Int) -> some View { VStack(alignment: .leading, spacing: 7) { Text("\(number)").font(.system(size: 30, weight: .medium)); Text(title).font(.caption).foregroundStyle(.secondary) }.frame(maxWidth: .infinity, alignment: .leading) }
     private var demoToolbar: some View {
         HStack(spacing: 10) {
             Text("模拟判断").font(.caption).foregroundStyle(.secondary)

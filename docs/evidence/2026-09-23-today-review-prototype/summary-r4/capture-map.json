@@ -1,0 +1,21 @@
+{
+  "native-1790163484601.png": "partial-light.png",
+  "native-1790163502150.png": "minimum-light.png",
+  "native-1790163515940.png": "minimum-dark-reduced.png",
+  "native-1790163528646.png": "minimum-dark-list.png",
+  "native-1790163546395.png": "partial-dark.png",
+  "native-1790163651127.png": "complete-light.png",
+  "native-1790163672418.png": "iterations/correction-offscreen-on-resize.png",
+  "native-interaction-1790163546.mp4": "01-layout-reflow.mp4",
+  "native-interaction-1790163546.txt": "01-layout-reflow.txt",
+  "native-interaction-1790163695.mp4": "iterations/02-initial-correction-resize.mp4",
+  "native-interaction-1790163695.txt": "iterations/02-initial-correction-resize.txt",
+  "native-1790163872357.png": "correction-minimum-visible.png",
+  "native-1790163883421.png": "corrected-minimum.png",
+  "native-1790163892408.png": "manual-grade.png",
+  "native-1790163925168.png": "empty.png",
+  "native-1790163944183.png": "empty-expanded.png",
+  "native-1790163972443.png": "partial-final.png",
+  "native-interaction-1790163892.mp4": "02-correction-resize-final.mp4",
+  "native-interaction-1790163892.txt": "02-correction-resize-final.txt"
+}
