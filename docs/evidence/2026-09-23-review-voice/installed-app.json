@@ -1,0 +1,64 @@
+{
+  "installed_app": "/tmp/review-today-jev-native-build/Build/Products/Debug/Review_Today.app",
+  "previous_app": "/tmp/review-today-jev-native-build/Build/Products/Debug/Review_Today.before-review-20260923-123035.app.backup",
+  "database_backup": "/tmp/review-today-jev-app-m1hmroih/ReviewInstallBackups/20260923-123035",
+  "database_integrity": "ok",
+  "counts_before": {
+    "ZKNOWLEDGE": 0,
+    "ZAGENTSESSION": 3,
+    "ZAGENTMESSAGE": 30,
+    "ZREVIEWATTEMPT": 0
+  },
+  "port": 56739,
+  "bundle_id": "Rex.Review-Today.Jev.NativeQA",
+  "signed_debug": true,
+  "source_commit": "522cb04",
+  "changes": [
+    "microphone description includes voice review"
+  ],
+  "launch_context": "Installed app metadata binds existing test database and port; no credentials stored in bundle.",
+  "message_history_unchanged": true,
+  "counts_after": {
+    "ZKNOWLEDGE": 0,
+    "ZAGENTSESSION": 3,
+    "ZAGENTMESSAGE": 30,
+    "ZREVIEWATTEMPT": 0
+  },
+  "new_review_schema_present": true,
+  "migration_backup_exists": true,
+  "health": {
+    "status": "ok",
+    "provider": "deepseek",
+    "jev": {
+      "status": "enabled",
+      "model": "jev-1.13.0",
+      "entry_rule": "jev-entry-3"
+    },
+    "model_roles": {
+      "router": {
+        "model": "deepseek-flash",
+        "status": "ready"
+      },
+      "coach": {
+        "model": "deepseek-v4-flash",
+        "status": "ready"
+      },
+      "risk": {
+        "model": "deepseek-v4-pro",
+        "status": "ready"
+      }
+    }
+  },
+  "review_routes_available": true,
+  "installed_debug_dylib_sha256": "f784dd6f10d04d177440c88b8bffac1842036613d338be0e011d1b7851f12153",
+  "ui_observed": [
+    "Current full App reopened with original sessions",
+    "Window > Review opened the new setup window",
+    "Due-list target, voice start, text start and audio privacy notice visible"
+  ],
+  "test_content": "Knowledge library is empty; no examples inserted while user preference is pending.",
+  "microphone_started": false,
+  "validation_limits": [
+    "Human speech, actual speaker echo and voice naturalness await user trial."
+  ]
+}

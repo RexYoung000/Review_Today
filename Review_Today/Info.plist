@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>zh-Hans</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>听写需要麦克风。录音会发送至阿里云百炼北京地域识别，文字保存成功后删除本机录音；失败时保留以便重试。</string>
+	<string>听写和语音复习需要麦克风，音频会发送至阿里云百炼北京地域处理。听写录音在文字保存成功后删除，失败时暂存供重试；语音复习仅临时缓冲音频，本机长期只保存文字和结果。</string>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>用于每日复习提醒，以及稍后和今日跳过。</string>
 	<key>NSAppTransportSecurity</key>
