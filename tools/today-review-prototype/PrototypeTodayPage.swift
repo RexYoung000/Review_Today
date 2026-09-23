@@ -206,9 +206,9 @@ struct PrototypeTodayPage: View {
                 Image(systemName: "arrow.up.right").font(.caption).foregroundStyle(.secondary)
             }
             .padding(.horizontal, 22).padding(.vertical, 19).frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
-            .background(palette.card.opacity(0.55), in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: Runway.chipRadius).strokeBorder(palette.hairline.opacity(0.5), lineWidth: 1))
-        }.buttonStyle(InteractionButtonStyle(padding: 0, outline: .rounded(Runway.chipRadius)))
+            .contentShape(RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
+            .modifier(PrototypeEntryGlass())
+        }.buttonStyle(.plain)
             .modifier(PrototypeKeyboardAction(radius: Runway.chipRadius, action: action))
     }
 
@@ -267,6 +267,23 @@ struct PrototypeTodayPage: View {
                     }.padding(.vertical, 4)
                 }
             }
+        }
+    }
+}
+
+/// Scoped to the two Today actions. Native glass owns its optical and pointer effects.
+private struct PrototypeEntryGlass: ViewModifier {
+    @Environment(\.runway) private var palette
+    @Environment(\.brandReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
+    @ViewBuilder func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous)
+        if reduceTransparency {
+            content.background(palette.card, in: shape)
+                .overlay(shape.strokeBorder(palette.hairline, lineWidth: 1).allowsHitTesting(false))
+        } else {
+            content.glassEffect(.regular.interactive(!reduceMotion), in: shape)
         }
     }
 }

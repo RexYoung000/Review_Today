@@ -1,0 +1,12 @@
+{
+  "file": "entry-interactions.mp4",
+  "duration_seconds": 64.795,
+  "width": 1160,
+  "height": 852,
+  "average_frame_rate": "130125/4861",
+  "audio_streams": 0,
+  "bytes": 1860468,
+  "decode_ok": true,
+  "decode_stderr": "",
+  "capture": "Native ScreenCaptureKit, actual timestamps, unedited"
+}

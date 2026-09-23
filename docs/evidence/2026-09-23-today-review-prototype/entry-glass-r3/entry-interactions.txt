@@ -1,0 +1,1 @@
+Native current-process window recording, 30 fps target, actual presentation timestamps, 1160x852. No audio. Synthetic interactions; no model or microphone.
