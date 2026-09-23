@@ -1,0 +1,47 @@
+{
+  "data": "synthetic in-memory SwiftData; production ContentView and ReviewView/ReviewController; controlled judgments; no microphone/model calls",
+  "contracts_passed": [
+    "ReviewUIIntegrationContracts",
+    "ReviewControllerContractTests",
+    "ReviewFlowContractTests",
+    "NavigationDataContractTests",
+    "AppRuntimeContractTests"
+  ],
+  "native_observed": [
+    "Today real query projection and heatmap",
+    "exam two choices and return",
+    "recent learning detail and exact session continuation",
+    "preparation due/minutes/count",
+    "voice connection failure to focused text at same question",
+    "forgot -> hint -> answer with first recall retained",
+    "question and feedback update after auto advance",
+    "pure skip followed by correct answers",
+    "pause/close/resume fixed queue",
+    "partial summary 3 completed, 1 helped, 1 skipped, 0 unfinished",
+    "transcript correction from summary returns to summary with same completed count",
+    "Today latest summary re-entry",
+    "second round includes only remaining due item",
+    "full summary 1 completed, 0 skipped, visible Spine study close",
+    "dark/light, minimum/default window, keyboard and reduced motion"
+  ],
+  "fixed_during_checks": [
+    "native selectable Text retained old question and feedback; view identity now follows displayed content",
+    "return to Today created extra WindowGroup instances; reuse existing main window, final native window ID remained main-AppWindow-1",
+    "latest answer label identifies its topic after an intervening skip"
+  ],
+  "final_native_build": "/tmp/review-today-integration-qa.jqmOXA/TodayReviewQA.app",
+  "not_verified": [
+    "real microphone conversation and echo/naturalness",
+    "model assessment accuracy",
+    "free mouse hover feel and frame timing",
+    "system reduce transparency",
+    "full VoiceOver",
+    "Release configuration this turn"
+  ],
+  "final_sources_sha256": {
+    "TodayView.swift": "71c7b2c9be60a473f1247a70bdc892ea92ff9b562559e7883b275f1c0e39e30a",
+    "ReviewView.swift": "f3f9cb7b8bc0aa4c0d37d5dfbadae0a676895cea2b87053d4b2ff20b142aaeda",
+    "ReviewController.swift": "ea9dddb83ba6dadd77b709995231a22157c94e9ee6fec237dc07a659ee544ce7",
+    "ReviewPresentation.swift": "0a5f4e64c19d118d62ce6a7d79caca74827d9fae09667f1ee145328a57def536"
+  }
+}

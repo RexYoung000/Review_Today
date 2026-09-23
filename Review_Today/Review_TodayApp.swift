@@ -61,6 +61,8 @@ struct Review_TodayApp: App {
                 .modelContainer(container)
                 .runwayAppearance()
         }
+        .defaultSize(width: 900, height: 820)
+        .windowResizability(.contentMinSize)
         .restorationBehavior(.disabled)
 
 #if DEBUG

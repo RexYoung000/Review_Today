@@ -16,6 +16,10 @@ final class ReviewController {
     var voice = ReviewVoice()
     var generation = 0
     var correctionTarget: ReviewQueueEntry?
+    var viewingHistory = false
+    var savedFeedback = ""
+    var savedReaction: String?
+    var savedResultToken = 0
     private var context: ModelContext?
     private var coordinator: ReviewCoordinator?
     private var work: Task<Void, Never>?
@@ -52,10 +56,14 @@ final class ReviewController {
         if self.context != nil { pause() }
         self.context = context; self.coordinator = coordinator
         phase = "setup"; session = nil; correctionTarget = nil; errorText = nil
+        viewingHistory = false; answer = ""; feedback = ""; savedFeedback = ""; savedReaction = nil
         let settings = try? context.fetch(FetchDescriptor<AppSettings>()).first
         goal = settings?.reviewGoal ?? "due"; goalValue = settings?.reviewGoalValue ?? 5
         resumable = ((try? context.fetch(FetchDescriptor<ReviewSession>())) ?? []).filter {
-            $0.protocolVersion == 2 && $0.mode == coordinator.mode && $0.endedAt == nil
+            $0.protocolVersion == 2 && $0.mode == coordinator.mode && $0.endedAt == nil &&
+            (coordinator.mode != "preview" || ReviewLedger.queue($0).contains {
+                coordinator.knowledgeIDs.contains($0.knowledgeID) && $0.questionID == coordinator.previewQuestionID
+            })
         }.max { $0.startedAt < $1.startedAt }
         voice.onSpeechStart = { [weak self] in self?.interrupt() }
         voice.onTranscript = { [weak self] text, id, generation in
@@ -63,6 +71,13 @@ final class ReviewController {
             self.answer = text; self.submit(text)
         }
         voice.onFailure = { [weak self] text in self?.errorText = text }
+        if let id = coordinator.summarySessionID {
+            if let previous = ((try? context.fetch(FetchDescriptor<ReviewSession>())) ?? []).first(where: {
+                $0.id == id && $0.protocolVersion == 2 && $0.mode == "formal" && $0.endedAt != nil
+            }) {
+                session = previous; phase = "summary"; viewingHistory = true
+            } else { errorText = "这份小结已不可用，可以返回今天重新选择。" }
+        }
     }
 
     func start(usingVoice: Bool, resume: Bool = false) {
@@ -114,6 +129,14 @@ final class ReviewController {
         }
     }
 
+    /// Explicit text mode owns capture shutdown, including an in-flight connection.
+    func useText() {
+        if phase == "connecting" {
+            work?.cancel(); work = nil; generation += 1
+            voice.stop(); prepareCurrent()
+        } else { voice.stop() }
+    }
+
     func prepareCurrent(stopVoiceAtEnd: Bool = true) {
         answer = ""; feedback = ""; errorText = nil
         guard let session, let entry else { phase = "summary"; if stopVoiceAtEnd { voice.stop() }; return }
@@ -152,6 +175,7 @@ final class ReviewController {
         guard let context, let session, let entry, !session.paused, !busy,
               !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         voice.interrupt()
+        savedFeedback = ""; savedReaction = nil
         let token = generation, revision = session.revision, correcting = correctionTarget != nil, eventID = UUID()
         phase = "thinking"; errorText = nil
         work = Task {
@@ -237,6 +261,9 @@ final class ReviewController {
                                 grade: grade, context: context, correcting: correcting)
         correctionTarget = nil; generation += 1
         prepareCurrent(stopVoiceAtEnd: false); flushOutbox()
+        savedFeedback = spoken.isEmpty ? (grade == nil ? "这题先放一放，后面还可以再来。" : "这次的回忆已经记下。") : spoken
+        savedReaction = grade == nil ? "reaction_guide" : grade == "again" || row.hintUsed ? "reaction_encourage" : "reaction_approve"
+        savedResultToken += 1
         let text = spoken + (self.entry.map { "\n" + $0.prompt } ?? "\n这一轮已结束，结果已保存在本机。")
         if phase == "summary" { voice.finish(with: text) } else { voice.say(text) }
     }
@@ -249,12 +276,12 @@ final class ReviewController {
         } catch { phase = "asking"; errorText = error.localizedDescription }
     }
     func beginCorrection(_ selected: ReviewQueueEntry? = nil) {
-        guard !busy, let context else { return }
+        guard !busy, context != nil else { return }
         let target = selected ?? (currentAttempt?.independentGrade.isEmpty == false ? entry : entries.last(where: { entry in completed.contains { $0.attemptId == entry.attemptID } }))
         guard let target else { errorText = "可以直接重新说出完整回答，当前还没有计入的结果。"; return }
         interrupt(); correctionTarget = target
         if let row = attempts.first(where: { $0.attemptId == target.attemptID }) {
-            answer = row.correctedAnswer ?? row.originalAnswer
+            answer = row.correctedAnswer ?? (row.originalAnswer.isEmpty ? row.answerText : row.originalAnswer)
         }
         phase = "asking"; feedback = "请修正刚才的原话，再提交判断。原记录会保留。"
         voice.bind(target.attemptID, generation: generation); voice.say(feedback)

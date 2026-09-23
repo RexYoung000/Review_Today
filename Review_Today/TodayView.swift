@@ -1,6 +1,5 @@
 import SwiftData
 import SwiftUI
-import UserNotifications
 
 struct TodayView: View {
     var activityCache = TodayActivityCache()
@@ -9,8 +8,6 @@ struct TodayView: View {
     var onOpenInbox: () -> Void
     var onOpenLibrary: () -> Void = {}
     var onOpenLearning: (UUID?) -> Void
-
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.openWindow) private var openWindow
     @Environment(\.runway) private var runway
     @Query private var captureTasks: [CaptureTask]
@@ -21,208 +18,195 @@ struct TodayView: View {
     @Query(sort: \AgentSession.updatedAt, order: .reverse) private var learningSessions: [AgentSession]
     @Query private var learningTasks: [LearningTask]
     @State private var recentExpanded = false
-    private var settings: AppSettings? { settingsRows.first }
-    private var developerMode: Bool { settings?.developerMode == true }
-
-    // Actions re-evaluate the clock and developer settings at activation time.
-    private var dueItems: [Knowledge] {
-        let developerMode = developerMode
-        let now = Date.now
-        return ReviewQueue.ordered(knowledge, developerMode: developerMode, now: now)
-    }
+    @State private var examPresented = false
+    @State private var recentID: UUID?
 
     var body: some View {
-        // Query getters and derived lists are evaluated once per body, not once
-        // per stat/header/row. In particular, do not read settings per knowledge.
-        let items = knowledge
-        let tasks = learningTasks
-        let sessions = learningSessions
+        Group {
+            if examPresented {
+                ExamSelectionView { examPresented = false }
+            } else if let id = recentID, let session = learningSessions.first(where: { $0.id == id }) {
+                RecentLearningDetail(session: session, back: { recentID = nil }, resume: { onOpenLearning(id) })
+            } else {
+                dashboard
+            }
+        }.background(PaperSurface()).navigationTitle("今天")
+    }
+
+    private var dashboard: some View {
+        // Read query results and derive counts once per render. The heatmap retains its existing cache.
+        let items = knowledge, tasks = learningTasks, sessions = learningSessions, reviews = reviewSessions
         let activeSessions = sessions.filter { $0.status == "active" }
-        let developerMode = developerMode
-        let now = Date.now
-        let dueCount = items.filter { ReviewQueue.isDue($0, developerMode: developerMode, now: now) }.count
+        let projection = TodayReviewProjection(knowledge: items, sessions: reviews, developerMode: settingsRows.first?.developerMode == true)
+        let latestSummary = projection.latest.map { ReviewRoundSummary(session: $0, attempts: attempts) }
         let learningCount = LearningGoalContinuity.unfinished(tasks, sessions: sessions).count
         let inboxCount = captureTasks.filter { ["needs_attention", "retryable_failed"].contains($0.status) }.count +
             tasks.filter { LearningDecisionInbox.includes($0, sessions: sessions) }.count +
             activeSessions.reduce(0) { $0 + TopicCaptureOffer.read($1.captureOffersJSON).filter(\.needsAttention).count }
         let libraryCount = items.filter { $0.lifecycle == "active" }.count
-        let reviews = reviewSessions
-        let results = attempts.filter { row in
-            guard row.mode != "preview", row.acked, !row.effectiveGrade.isEmpty else { return false }
-            let completed = row.completedAt ?? reviews.first(where: { $0.id == row.sessionId })?.endedAt
-            return completed.map(Calendar.current.isDateInToday) ?? false
-        }
-        VStack(spacing: 0) {
-            statusHeader(dueCount: dueCount, learningCount: learningCount)
-                .frame(maxWidth: 960)
-                .padding(.horizontal, 24)
-                .padding(.top, 24)
-                .padding(.bottom, 16)
-                .frame(maxWidth: .infinity)
-            ScrollView {
-            VStack(alignment: .leading, spacing: Runway.gap) {
-                statusBoard(dueCount: dueCount, learningCount: learningCount, inboxCount: inboxCount, libraryCount: libraryCount)
-                if !activeSessions.isEmpty {
-                    recentLearningCard(sessions: activeSessions)
-                }
-                if !results.isEmpty {
-                    resultsCard(results: results, knowledge: items)
-                }
-                TodayActivityHeatmap(cache: activityCache, onOpenLearning: onOpenLearning, onOpenKnowledge: onOpenKnowledge)
-            }
-            .frame(maxWidth: 960)
-            .padding(.horizontal, 24)
-            .padding(.bottom, 24)
-            .frame(maxWidth: .infinity)
-        }
-        }
-        .background(PaperSurface())
-        .navigationTitle(String(localized: "今天"))
-
-    }
-
-    private func statusHeader(dueCount: Int, learningCount: Int) -> some View {
-            HStack(alignment: .center, spacing: 12) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(dueCount == 0 ? "今天的学习状态" : tonightTitle)
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundStyle(runway.ink)
-                }
-                Spacer(minLength: 8)
-                if dueCount > 0 || reviewSessions.contains(where: { $0.protocolVersion == 2 && $0.mode == "formal" && $0.endedAt == nil }) {
-                    RunwayPrimaryButton(title: String(localized: "开始或继续复习")) {
-                        coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
-                        openWindow(id: "review")
+        let metrics: [(String, Int)] = projection.kind == .finished && latestSummary != nil ? [
+            ("已完成", latestSummary!.completed), ("其中需帮助", latestSummary!.helped),
+            ("跳过", latestSummary!.skipped), ("未完成", latestSummary!.unfinished)
+        ] : [("到期复习", projection.due.count), ("学习中", learningCount), ("待处理", inboxCount), ("知识库", libraryCount)]
+        return GeometryReader { geometry in
+            VStack(spacing: 0) {
+                HStack(alignment: .firstTextBaseline) {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("今天").font(.system(size: 30, weight: .bold))
+                        Text("让学过的，再想起来。").font(.callout).foregroundStyle(.secondary)
                     }
-                } else {
-                    RunwayPrimaryButton(title: learningCount == 0 ? "开始学习" : "继续学习") { onOpenLearning(nil) }
+                    Spacer(minLength: 8)
+                    ReviewActionButton(title: "最近小结", symbol: "rectangle.on.rectangle") {
+                        if let latest = projection.latest { openSummary(latest) }
+                    }.disabled(projection.latest == nil)
+                        .help(projection.latest == nil ? "完成一轮复习后，可在这里查看小结" : "查看最近一轮复习小结")
+                }.padding(.horizontal, 24).padding(.top, 24).padding(.bottom, 18)
+                    .frame(maxWidth: 1008).frame(maxWidth: .infinity)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 22) {
+                        if geometry.size.width < 850 {
+                            reviewCard(projection, summary: latestSummary)
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: geometry.size.width < 570 ? 2 : 4), spacing: 12) {
+                                metricCards(metrics, summary: projection.kind == .finished)
+                            }
+                        } else {
+                            HStack(alignment: .top, spacing: 16) {
+                                reviewCard(projection, summary: latestSummary)
+                                LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 16) {
+                                    metricCards(metrics, summary: projection.kind == .finished)
+                                }.frame(width: 280)
+                            }
+                        }
+                        if geometry.size.width < 570 { learningEntry; examEntry }
+                        else { HStack(spacing: 16) { learningEntry; examEntry } }
+                        recentLearningCard(sessions: activeSessions)
+                        if let latest = projection.latest, let summary = latestSummary { recentReviewCard(latest, summary: summary) }
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("学习足迹").font(.headline)
+                            TodayActivityHeatmap(cache: activityCache, onOpenLearning: onOpenLearning, onOpenKnowledge: onOpenKnowledge)
+                        }
+                    }.padding(.horizontal, 24).padding(.bottom, 24).frame(maxWidth: 1008).frame(maxWidth: .infinity)
                 }
             }
+        }
     }
-
-    private func statusBoard(dueCount: Int, learningCount: Int, inboxCount: Int, libraryCount: Int) -> some View {
-            StatStrip(items: [
-                StatCell(
-                    id: "due",
-                    value: "\(dueCount)",
-                    title: String(localized: "到期复习"),
-                    action: dueCount == 0 ? nil : {
-                        coordinator.startFormal(knowledgeIDs: dueItems.map(\.id))
-                        openWindow(id: "review")
-                    }
-                ),
-                StatCell(
-                    id: "learning",
-                    value: "\(learningCount)",
-                    title: String(localized: "学习中"),
-                    action: { onOpenLearning(nil) }
-                ),
-                StatCell(
-                    id: "inbox",
-                    value: "\(inboxCount)",
-                    title: String(localized: "待处理"),
-                    action: inboxCount == 0 ? nil : onOpenInbox
-                ),
-                StatCell(
-                    id: "library",
-                    value: "\(libraryCount)",
-                    title: String(localized: "知识库"),
-                    action: onOpenLibrary
-                )
-            ])
+    private var learningEntry: some View {
+        TodayGlassEntry(title: "开始学习", detail: "从一个问题，或一份材料开始", symbol: "sparkle") { onOpenLearning(nil) }
     }
+    private var examEntry: some View {
+        TodayGlassEntry(title: "模拟考", detail: "知识测验 · 模拟面试", symbol: "text.badge.checkmark") { examPresented = true }
+    }
+    private func metricCards(_ metrics: [(String, Int)], summary: Bool) -> some View {
+        ForEach(metrics.indices, id: \.self) { index in
+            Button {
+                if summary { if let latest = reviewSessions.filter({ $0.protocolVersion == 2 && $0.mode == "formal" && $0.endedAt != nil && !ReviewLedger.queue($0).isEmpty }).max(by: { ($0.endedAt ?? .distantPast) < ($1.endedAt ?? .distantPast) }) { openSummary(latest) } }
+                else { switch index { case 0: openReview(); case 1: onOpenLearning(nil); case 2: onOpenInbox(); default: onOpenLibrary() } }
+            } label: { ReviewMetricCard(title: metrics[index].0, value: metrics[index].1) }
+            .buttonStyle(InteractionButtonStyle(padding: 0, outline: .rounded(Runway.chipRadius)))
+            .accessibilityLabel("\(metrics[index].0) \(metrics[index].1)")
+        }
+    }
+    private func reviewCard(_ p: TodayReviewProjection, summary: ReviewRoundSummary?) -> some View {
+        RunwayCard(padding: 24) {
+            VStack(alignment: .leading, spacing: 0) {
+                Label(p.kind == .paused ? "继续本轮" : "今日复习", systemImage: p.kind == .paused ? "pause.circle" : "arrow.clockwise")
+                    .font(.callout.weight(.medium)).foregroundStyle(.secondary)
+                Spacer(minLength: 22)
+                Text(heroTitle(p, summary: summary)).font(.system(size: 26, weight: .semibold)).fixedSize(horizontal: false, vertical: true)
+                Text(heroDetail(p)).font(.callout).foregroundStyle(.secondary).lineSpacing(4)
+                    .fixedSize(horizontal: false, vertical: true).padding(.top, 9)
+                Spacer(minLength: 22)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 14) { heroActions(p) }
+                    VStack(alignment: .leading, spacing: 10) { heroActions(p) }
+                }
+            }.frame(minHeight: 200, alignment: .leading)
+        }
+    }
+    private func heroTitle(_ p: TodayReviewProjection, summary: ReviewRoundSummary?) -> String {
+        switch p.kind {
+        case .empty: "让今天的好奇，留下来"
+        case .unenrolled: "挑一些学过的，加入复习"
+        case .scheduled: "记忆正在沉淀"
+        case .due: "把学过的，再想起来"
+        case .paused: "接着上次，慢慢回想"
+        case .finished: summary?.title ?? "这一轮先到这里"
+        }
+    }
+    private func heroDetail(_ p: TodayReviewProjection) -> String {
+        switch p.kind {
+        case .empty: return "还没有保存的知识。从一个问题开始，值得记住的内容可以留下来。"
+        case .unenrolled: return "知识已经保存。选择你学过的内容，之后会在适合的时候提醒你回顾。"
+        case .scheduled: return p.nextDue.map { "下次复习：\($0.formatted(date: .abbreviated, time: .shortened))。现在可以继续学习，也可以管理复习内容。" } ?? "当前没有到期内容，可以继续学习。"
+        case .due: return "今天有 \(p.due.count) 个知识点可以回顾，先从逾期的内容开始。"
+        case .paused:
+            guard let session = p.resumable else { return "已经保存的结果会保留，可以继续未完成清单。" }
+            return "已处理 \(session.currentIndex) 个，还剩 \(max(0, ReviewLedger.queue(session).count - session.currentIndex)) 个。继续时沿用这一轮的清单。"
+        case .finished: return "已处理的回忆留在小结里；跳过或未完成的内容，仍会保留后续安排。"
+        }
+    }
+    @ViewBuilder private func heroActions(_ p: TodayReviewProjection) -> some View {
+        switch p.kind {
+        case .empty: ReviewStartButton(title: "开始学习") { onOpenLearning(nil) }
+        case .unenrolled: ReviewStartButton(title: "选择复习内容", action: onOpenLibrary)
+        case .scheduled: ReviewStartButton(title: "管理复习内容", action: onOpenLibrary)
+        case .due: ReviewStartButton(title: "准备复习", action: openReview)
+        case .paused: ReviewStartButton(title: "继续本轮", action: openReview)
+        case .finished:
+            ReviewStartButton(title: "查看本轮小结") { if let latest = p.latest { openSummary(latest) } }
+            if !p.due.isEmpty { ReviewActionButton(title: "再复习 \(p.due.count) 个", action: openReview) }
+            else { ReviewActionButton(title: "管理复习内容", action: onOpenLibrary) }
+        }
+    }
+    private func openReview() {
+        coordinator.startFormal(knowledgeIDs: ReviewQueue.ordered(knowledge, developerMode: settingsRows.first?.developerMode == true).map(\.id))
+        openWindow(id: "review")
+    }
+    private func openSummary(_ session: ReviewSession) { coordinator.showSummary(sessionID: session.id); openWindow(id: "review") }
 
     private func recentLearningCard(sessions: [AgentSession]) -> some View {
-        RunwayCard {
+        RunwayCard(padding: 20) {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    Text("最近学习")
-                        .font(.subheadline.weight(.semibold))
-                    Spacer()
-                    Button(recentExpanded ? "收起" : "展开") { recentExpanded.toggle() }
-                        .buttonStyle(.borderless)
+                    Text("最近学习").font(.headline); Spacer()
+                    if sessions.count > 3 { ReviewActionButton(title: recentExpanded ? "收起" : "展开全部") { recentExpanded.toggle() } }
                 }
-                Group {
-                    if recentExpanded {
-                        ScrollView {
-                            recentSessionRows(sessions)
-                        }
-                        .frame(maxHeight: 280)
-                    } else {
-                        recentSessionRows(Array(sessions.prefix(3)))
-                    }
+                if sessions.isEmpty {
+                    Text("还没有学习记录。开始一段对话后，可以从这里接着上次的内容。")
+                        .font(.callout).foregroundStyle(.secondary).padding(.vertical, 12)
+                }
+                ForEach(recentExpanded ? sessions : Array(sessions.prefix(3)), id: \.id) { session in
+                    Button { recentID = session.id } label: {
+                        HStack(spacing: 14) {
+                            Image(systemName: "text.book.closed").font(.system(size: 21, weight: .light))
+                                .frame(width: 44, height: 48).background(runway.field.opacity(0.6), in: RoundedRectangle(cornerRadius: 13))
+                            VStack(alignment: .leading, spacing: 7) {
+                                Text(session.title).font(.system(size: 15, weight: .medium)).foregroundStyle(runway.ink).lineLimit(2)
+                                TodaySessionStatus(sessionID: session.id).font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                            }.frame(maxWidth: .infinity, alignment: .leading)
+                            VStack(alignment: .trailing, spacing: 7) {
+                                Text(session.updatedAt, format: .dateTime.month().day()).font(.caption)
+                                Text(LearningWorkspace.modeLabel(session.modePreset)).font(.caption2)
+                            }.foregroundStyle(.secondary)
+                            Image(systemName: "arrow.up.right").font(.caption).foregroundStyle(.secondary)
+                        }.padding(.horizontal, 10).padding(.vertical, 13).contentShape(Rectangle())
+                    }.buttonStyle(InteractionButtonStyle(padding: 0))
                 }
             }
         }
     }
-
-    private func recentSessionRows(_ sessions: [AgentSession]) -> some View {
-        VStack(spacing: 4) {
-            ForEach(sessions, id: \.id) { session in
-                    Button { onOpenLearning(session.id) } label: {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text(session.title)
-                                    .foregroundStyle(runway.ink)
-                                    .lineLimit(1)
-                                HStack(spacing: 5) {
-                                    ForEach(Array(session.displayTopicTags.prefix(2)), id: \.self) { Text($0) }
-                                    if !session.displayTopicTags.isEmpty { Text("·") }
-                                    TodaySessionStatus(sessionID: session.id)
-                                }.font(.caption).foregroundStyle(.secondary).lineLimit(1)
-                            }
-                            Spacer()
-                            MetaTag(title: LearningWorkspace.modeLabel(session.modePreset))
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(InteractionButtonStyle(padding: 4))
-                    .padding(.vertical, 5)
-            }
-        }
-    }
-
-    private func resultsCard(results: [ReviewAttempt], knowledge: [Knowledge]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(String(localized: "今日复习结果"))
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(runway.ink)
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach(results, id: \.attemptId) { row in
-                    let item = knowledge.first(where: { $0.id == row.knowledgeId })
-                    HStack(alignment: .firstTextBaseline) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(item.map { KnowledgeLexicon.keyword(for: $0, clipped: false) } ?? String(localized: "知识点"))
-                                .font(.callout)
-                                .foregroundStyle(runway.ink)
-                            if let due = item?.dueAt {
-                                Text("下次 \(due.formatted(date: .abbreviated, time: .shortened))")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        Spacer()
-                        Text(MasteryCopy.label(row.effectiveGrade))
-                            .font(.caption.weight(.medium))
-                            .foregroundStyle(runway.information)
-                    }
+    private func recentReviewCard(_ session: ReviewSession, summary: ReviewRoundSummary) -> some View {
+        RunwayCard(padding: 20) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text("最近复习").font(.headline); Spacer()
+                    ReviewActionButton(title: "查看小结", symbol: "arrow.up.right") { openSummary(session) }
                 }
+                Text("完成 \(summary.completed) · 其中需帮助 \(summary.helped) · 跳过 \(summary.skipped) · 未完成 \(summary.unfinished)")
+                    .font(.callout).foregroundStyle(.secondary)
+                Text(session.endedAt ?? session.startedAt, format: .dateTime.month().day().hour().minute()).font(.caption).foregroundStyle(.secondary)
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(runway.card, in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
-        .shadow(color: runway.liftShadow, radius: 8, y: 2)
-    }
-
-    private var tonightTitle: String { "今晚 \(tonightClock) 复习" }
-
-    private var tonightClock: String {
-        let minutes = settings?.dailyReminderMinutes ?? 21 * 60
-        return String(format: "%d:%02d", minutes / 60, minutes % 60)
     }
 
     static func firstURL(in text: String) -> String? {

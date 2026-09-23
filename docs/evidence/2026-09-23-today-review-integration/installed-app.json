@@ -1,0 +1,31 @@
+{
+  "installed_app": "/tmp/review-today-jev-native-build/Build/Products/Debug/Review_Today.app",
+  "database_backup": "/tmp/review-today-jev-app-m1hmroih/ReviewInstallBackups/ui-20260923-214602/app.store",
+  "database_integrity": "ok",
+  "counts_before": {
+    "ZKNOWLEDGE": 0,
+    "ZAGENTSESSION": 3,
+    "ZAGENTMESSAGE": 30,
+    "ZREVIEWSESSION": 0,
+    "ZREVIEWATTEMPT": 0
+  },
+  "message_digest_before": "21a9d0d31d1645c3e27d2de30e2831427053a33af9b7b35e6cf28381162dad74",
+  "bundle_id": "Rex.Review-Today.Jev.NativeQA",
+  "port": "56739",
+  "state": "installed_and_launched",
+  "app_backup": "/tmp/review-today-jev-native-build/Build/Products/Debug/Review_Today-before-ui-20260923.app.backup",
+  "launch_environment_preserved": true,
+  "codesign_strict": "passed",
+  "installed_at": "2026-09-23T21:54:48.233475",
+  "counts_after": {
+    "ZKNOWLEDGE": 0,
+    "ZAGENTSESSION": 3,
+    "ZAGENTMESSAGE": 30,
+    "ZREVIEWSESSION": 0,
+    "ZREVIEWATTEMPT": 0
+  },
+  "message_digest_after": "21a9d0d31d1645c3e27d2de30e2831427053a33af9b7b35e6cf28381162dad74",
+  "history_preserved": true,
+  "database_integrity_after": "ok",
+  "service_http_status": 200
+}

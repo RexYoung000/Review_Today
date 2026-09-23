@@ -1,5 +1,11 @@
 # Review Today Agent 与系统架构
 
+## 今天与复习展示层接入（2026-09-23，已实现／已安装）
+
+原型样式迁入 App 展示组件，业务代码不引用 tools/tests。Today 由当前 SwiftData 查询投影六种复习状态、最近学习与小结；保留活动缓存和既有导航回调。ReviewCoordinator 增加按结束轮次打开小结的意图，ReviewController 加载同一持久化快照，历史查看不创建轮次、不推进游标；返回复习时重新读取暂停清单。复习视图绑定现有真实控制器与音频状态，装饰动作只反映已保存结果，不参与评分或排期。文字切换取消语音连接／采音及迟到转写，保持当前题与已提交结果。数据库 schema、网络接口、模型及 FSRS 参数不变。
+
+ReviewRoundSummary 只读取同轮尝试及排期快照；历史姿态不重播结算。回到今天复用现有 ConversationWindowRouter 主窗口，无窗口时才创建；预览恢复限定相同知识与题目。可选题目／反馈文字按内容身份更新，避免原生文本缓存沿用旧内容。检查与当前实例安装见 [接入证据](evidence/2026-09-23-today-review-integration/README.md)。
+
 ## 复习会话 V2（2026-09-23，已实现／隔离验证）
 
 Mac 持久化轮次目标、固定知识／问题／评分标准快照、索引、有效计时、对话和尝试。服务增加 `/v2/review/sessions`、轮次 turn／commit 接口和 WebSocket 音频通道；旧 `/v1/review` 与预览保持兼容。每个事件绑定 session/attempt/knowledge/version/question/spec，服务只提出判断，Mac 在单次事务写入历史、FSRS 和游标后确认提交，之后才能开新题。重复消息幂等，过期／取消／版本变化拒绝写入。

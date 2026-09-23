@@ -120,6 +120,9 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: .dictationSessionsDeleted)) { note in
             if let ids = note.object as? Set<UUID> { draftStore.discard(ids) }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .reviewReturnToToday)) { _ in
+            selection = .today
+        }
         .toolbar(.hidden, for: .windowToolbar)
         .ignoresSafeArea(.container, edges: .top)
         .toolbar(removing: .sidebarToggle)

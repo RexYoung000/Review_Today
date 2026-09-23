@@ -35,6 +35,7 @@ final class ReviewVoice {
 
     func start(sessionID: UUID) async throws {
         stop()
+        muted = false
         guard await AVCaptureDevice.requestAccess(for: .audio) else {
             status = "麦克风未授权，可用文字回答"
             throw ReviewFlowError.invalidResult

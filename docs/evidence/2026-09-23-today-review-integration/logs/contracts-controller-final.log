@@ -1,0 +1,81 @@
+Isolated contract directory: /tmp/review-today-shared-contracts.e0k7lmz0
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+177 |
+178 |     private static func isWeak(_ text: String) -> Bool {
+179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+180 |         if value.count < 2 { return true }
+181 |         if genericTitles.contains(value) { return true }
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:182:13: warning: result of 'try?' is unused [#NoUsage]
+180 |             task.updatedAt = .now
+181 |             try? modelContext.save()
+182 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#NoUsage]
+183 |             return
+184 |         }
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:78:16: warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 76 |         self.converter = converter
+ 77 |         engine.attach(player)
+ 78 |         engine.connect(player, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: 24000, channels: 1))
+    |                `- warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 79 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: input) { [weak self, converter] buffer, _ in
+ 80 |             guard let sample = converter.convert(buffer) else { return }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:79:26: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 77 |         engine.attach(player)
+ 78 |         engine.connect(player, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: 24000, channels: 1))
+ 79 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: input) { [weak self, converter] buffer, _ in
+    |                          `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 80 |             guard let sample = converter.convert(buffer) else { return }
+ 81 |             Task { @MainActor [weak self] in
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:88:36: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 86 |         capturing = true
+ 87 |         self.engine = engine
+ 88 |         try engine.start(); player.play()
+    |                                    `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 89 |         status = "正在聆听"
+ 90 |     }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:94:31: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 92 |     func say(_ text: String) {
+ 93 |         guard connected else { return }
+ 94 |         player.stop(); player.play()
+    |                               `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 95 |         pendingBuffers = 0; speechFinished = false
+ 96 |         let id = UUID(); speechID = id
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:115:47: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+113 |     func interrupt() {
+114 |         speechID = nil; player.stop()
+115 |         if engine?.isRunning == true { player.play() }
+    |                                               `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+116 |         if connected { enqueue(["type": "interrupt"]); status = muted ? "已静音" : "正在聆听" }
+117 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/tmp/review-today-shared-contracts.e0k7lmz0/ReviewUIIntegrationContracts.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'ReviewUIIntegrationContracts/ReviewUIIntegrationContracts.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/ReviewUIIntegrationContracts.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'ReviewUIIntegrationContracts/ReviewUIIntegrationContracts.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.e0k7lmz0/ReviewUIIntegrationContracts.swift'
+ 3 | import Foundation
+ 4 | import SwiftData
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.e0k7lmz0' ignored
+PASS: six Today states, honest saved/skip/unfinished metrics, saved feedback, history without replacing paused round, fixed resume, connecting-to-text cancellation, missing summary, preview isolation
+PASS executable: ReviewUIIntegrationContracts
+/tmp/review-today-shared-contracts.e0k7lmz0/ReviewControllerContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'ReviewControllerContractTests/ReviewControllerContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/ReviewControllerContractTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'ReviewControllerContractTests/ReviewControllerContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.e0k7lmz0/ReviewControllerContractTests.swift'
+ 3 | import Foundation
+ 4 | import SwiftData
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.e0k7lmz0' ignored
+PASS: controller auto-advance, first-recall preservation, hint, clarify, understood, pure skip/error-skip, correction once, failure, late cancellation, frozen resume, replace round
+PASS executable: ReviewControllerContractTests
+All selected contracts complete: /tmp/review-today-shared-contracts.e0k7lmz0
