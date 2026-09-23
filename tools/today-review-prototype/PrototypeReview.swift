@@ -20,7 +20,8 @@ struct PrototypeReview: View {
                 default: answering
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
-            Divider(); demoToolbar
+            if model.phase != .summary { Divider() }
+            demoToolbar
         }.background(PaperSurface())
         .onChange(of: model.textExpanded) { _, value in if value { answerFocused = true } }
         .onChange(of: model.phase) { _, value in if value == .asking && model.textExpanded { answerFocused = true } }
@@ -206,7 +207,7 @@ struct PrototypeCompanion: View {
     @Bindable var model: PrototypeState
     @Environment(\.brandReduceMotion) private var reduced
     @State private var failed = false
-    private var activeReaction: String? { model.phase == .summary && model.summaryCelebration && !model.correcting ? "review_study" : model.reaction }
+    private var activeReaction: String? { model.phase == .summary ? (model.correcting ? nil : model.summaryMotion) : model.reaction }
     private var voice: Bool { activeReaction == nil && ![.paused, .preparation, .summary].contains(model.phase) && (model.listening || model.voiceSpeaking) }
     private var voicePhase: MascotPhase { model.busy ? .thinking : model.voiceSpeaking ? .speaking : model.listening ? .listening : .idle }
     var body: some View {
@@ -214,7 +215,13 @@ struct PrototypeCompanion: View {
             MascotWebSurface(configuration: .init(surface: .voice, mode: voicePhase, level: model.listening || model.voiceSpeaking ? 0.28 : 0, reduced: reduced, dark: model.dark, visible: voice && model.windowOpen, material: "graphite", palette: .theme(dark: model.dark)))
                 .frame(width: 360, height: 180).scaleEffect(1.6).offset(y: -18)
                 .frame(width: 155, height: 155).clipped().opacity(voice ? 1 : 0)
-            MrBMotionView(configuration: .init(kind: model.busy ? "thinking" : activeReaction ?? "reaction_rest", token: model.motionToken, dark: model.dark, reduced: reduced || (activeReaction == nil && !model.busy), visible: !voice && model.windowOpen, count: max(1, model.completed), reviewRecording: false), onEvent: { event in if event == "failed" { failed = true }; if event == "finished" && model.phase == .explained { model.reaction = nil } })
+            MrBMotionView(configuration: .init(kind: model.busy ? "thinking" : activeReaction ?? "reaction_rest", token: model.motionToken, dark: model.dark, reduced: reduced || (activeReaction == nil && !model.busy), visible: !voice && model.windowOpen, count: max(1, model.completed), seekTime: model.phase == .summary ? model.summaryMotionTime : nil, seekToken: model.phase == .summary ? model.motionToken + 1 : 0, reviewRecording: false), onEvent: { event in
+                if event == "failed" { failed = true }
+                if event == "ready" { failed = false }
+                if event == "finished" && model.phase == .explained { model.reaction = nil }
+            }, onTime: { time in
+                if model.phase == .summary && model.summaryMotion != nil && model.windowOpen { model.summaryMotionTime = time }
+            })
                 .opacity(voice ? 0 : 1)
             if failed { Image(systemName: "book.closed").font(.system(size: 40)).foregroundStyle(.secondary) }
         }.allowsHitTesting(false).accessibilityHidden(true)

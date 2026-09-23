@@ -67,7 +67,7 @@ struct PrototypeReviewSummary<Correction: View>: View {
                     Text("本轮 \(model.queue.count) 个知识点 · 已处理 \(model.results.count) 个")
                         .font(.caption).foregroundStyle(.secondary)
                 }.frame(maxWidth: .infinity, alignment: .leading)
-                PrototypeCompanion(model: model).frame(width: 128, height: 164)
+                PrototypeCompanion(model: model).frame(width: model.fullSuccess ? 232 : 142, height: 164)
             }.frame(minHeight: 180)
         }
     }
@@ -101,18 +101,14 @@ struct PrototypeReviewSummary<Correction: View>: View {
                 ForEach(model.results) { result in
                     arrangementRow(topic: result.question.topic, detail: resultDescription(result),
                                    symbol: resultSymbol(result), arrangement: result.arrangement, correction: result.correction)
-                    if result.id != model.results.last?.id || !pendingQuestions.isEmpty { rowDivider }
                 }
                 ForEach(pendingQuestions) { question in
                     arrangementRow(topic: question.topic, detail: "尚未作答 · 未评分", symbol: "circle.dashed",
                                    arrangement: "仍在到期清单", correction: nil)
-                    if question.id != pendingQuestions.last?.id { rowDivider }
                 }
             }
         }
     }
-
-    private var rowDivider: some View { Divider().padding(.leading, 46) }
 
     private func arrangementRow(topic: String, detail: String, symbol: String, arrangement: String, correction: String?) -> some View {
         HStack(alignment: .top, spacing: 12) {
@@ -138,7 +134,6 @@ struct PrototypeReviewSummary<Correction: View>: View {
 
     private var footer: some View {
         VStack(spacing: 0) {
-            Divider().padding(.horizontal, 24)
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 10) {
                     if let last = model.results.last, !last.rawAnswer.isEmpty {

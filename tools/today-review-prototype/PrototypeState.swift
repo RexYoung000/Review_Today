@@ -47,7 +47,7 @@ struct PrototypeRecord: Identifiable { let id = UUID(); let speaker: String; let
 @MainActor @Observable
 final class PrototypeState {
     var today: PrototypeToday = .due
-    var page: PrototypePage = .today
+    var page: PrototypePage = .today { didSet { if page != .today { previewGlassEntry = nil } } }
     var dark = false
     var reduced = false
     var longQuestion = false
@@ -73,6 +73,10 @@ final class PrototypeState {
     var timeExpired = false
     var summaryReason = "本轮结束"
     var summaryCelebration = false
+    // Presentation progress survives a SwiftUI layout rebuild, so resize cannot replay an ending.
+    var summaryMotion: String? = nil
+    var summaryMotionTime: Double = 0
+    var previewGlassEntry: String? = nil
     var windowOpen = false
     var helpShown = false
     var firstGrade: String?
@@ -125,6 +129,7 @@ final class PrototypeState {
 
     func select(_ state: PrototypeToday) {
         cancelPending(); stopClock(); today = state; page = .today; summaryCelebration = false
+        summaryMotion = nil; summaryMotionTime = 0
         phase = .preparation; results = []; records = []; queue = []; index = 0
         gradedIDs = []; enrolledSamples = state == .empty || state == .unenrolled ? [] : Set(PrototypeQuestion.samples.map(\.id))
         feedback = ""; reaction = nil; text = ""; latestTranscript = ""; correcting = false
@@ -137,6 +142,7 @@ final class PrototypeState {
             else {
                 results.append(sampleResult(2, grade: nil, skipped: true)); index = 3
                 phase = .summary; summaryReason = "这次先到这里"
+                summaryMotion = "reaction_encourage"
             }
         }
     }
@@ -282,7 +288,10 @@ final class PrototypeState {
         if busy { text = pendingRaw }; cancelPending(); stopClock(); phase = .paused
         today = .paused; reaction = nil; voiceSpeaking = false; correcting = false
     }
-    func close() { pause(); windowOpen = false; reaction = nil; motionToken += 1 }
+    func close() {
+        pause(); windowOpen = false; reaction = nil; motionToken += 1
+        summaryMotion = nil; summaryCelebration = false
+    }
     func resume() {
         guard phase == .paused else { return }; windowOpen = true; phase = resumePhase; today = .due; startClock()
         if phase == .feedback { advance() }
@@ -291,10 +300,13 @@ final class PrototypeState {
         cancelPending(); stopClock(); phase = .summary; today = .finished; summaryReason = reason
         reaction = nil; voiceSpeaking = false; correcting = false; motionToken += 1
         summaryCelebration = fullSuccess
+        summaryMotion = fullSuccess ? "review_study" : results.isEmpty ? "reaction_guide" : "reaction_encourage"
+        summaryMotionTime = 0
     }
     func beginCorrection() {
         guard !busy, ![.preparation, .paused].contains(phase), !results.isEmpty || !latestTranscript.isEmpty else { return }
         cancelPending(); reaction = nil; voiceSpeaking = false; correcting = true; muted = true; summaryCelebration = false
+        summaryMotion = nil
         mode = .text; textExpanded = true
         let currentUnsubmitted = !latestTranscript.isEmpty && !results.contains(where: { $0.id == currentAttempt }) && phase != .summary
         let result = currentUnsubmitted ? nil : results.last

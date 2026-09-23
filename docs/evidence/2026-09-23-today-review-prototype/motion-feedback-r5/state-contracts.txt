@@ -1,0 +1,47 @@
+PASS opening 没有知识 never listens
+PASS 没有知识 has no due candidates
+PASS opening 尚未加入 never listens
+PASS 尚未加入 has no due candidates
+PASS opening 尚未到期 never listens
+PASS 尚未到期 has no due candidates
+PASS opening 有到期内容 never listens
+PASS opening 暂停的轮次 never listens
+PASS opening 本轮结束 never listens
+PASS fixed queue and explicit voice start
+PASS enrollment does not mutate active queue
+PASS text input stops simulated listening
+PASS voice resumes only on explicit action
+PASS mute stops listening
+PASS clarification does not grade or hint
+PASS duplicate save ignored
+PASS repeated next does not skip a question
+PASS skip produces truthful summary without celebration
+PASS partial summary offers encouragement instead of a forced static pose or celebration
+PASS presenting summary keeps animation progress
+PASS closing interrupts summary motion and reopening cannot replay it
+PASS pure skip never grades
+PASS pure skip has no fabricated transcript to correct
+PASS hinted correct preserves first failed recall
+PASS helped but processed round distinguishes completion from mastery
+PASS complete round retains the existing Spine ending
+PASS correction stops the summary animation without replay
+PASS correction keeps helped grade and interrupts ending
+PASS wrong then skip retains initial grade
+PASS current uncommitted transcript correction does not target previous result
+PASS uncommitted correction leaves previous result intact
+PASS closing pauses active question
+PASS reopening retains paused queue
+PASS resume same question without duplicate result
+PASS late evaluation cannot change closed round
+PASS voice failure preserves question and cannot grade
+PASS failed save cannot advance or count as success
+PASS save retry writes once
+PASS time limit handles current answer first
+PASS time limit retains unfinished queue
+PASS committed correction updates same attempt
+PASS empty ending never celebrates
+PASS explanation can finish without forced retest
+PASS explicit recall difficulty maps to Hard
+PASS Easy is manual only
+PASS saved correct answer automatically progresses and finishes
+46 prototype state checks passed. No models, microphone, database or FSRS used.

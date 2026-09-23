@@ -57,11 +57,17 @@ final class PrototypeAppDelegate: NSObject, NSApplicationDelegate, NSWindowDeleg
         let preview = NSMenuItem(); let pm = NSMenu(title: "原型")
         for (title, selector, key) in [("打开今天", #selector(showToday), "1"), ("打开复习", #selector(showReview), "2"), ("截取当前窗口", #selector(snapshot), "s"), ("开始／停止原速录制", #selector(record), "r"), ("默认窗口尺寸", #selector(defaultSize), "0"), ("最小窗口尺寸", #selector(minimumSize), "9")] { let item = pm.addItem(withTitle: title, action: selector, keyEquivalent: key); item.target = self }
         pm.addItem(.separator()); pm.addItem(withTitle: "关闭窗口", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
+        let reflection = pm.addItem(withTitle: "切换入口流光演示", action: #selector(previewGlass), keyEquivalent: "3")
+        reflection.target = self
         preview.submenu = pm; bar.addItem(preview)
         NSApp.mainMenu = bar
     }
     @objc func showToday() { model.page = .today; mainWindow.makeKeyAndOrderFront(nil) }
     @objc func showReview() { openReview() }
+    @objc func previewGlass() {
+        showToday()
+        model.previewGlassEntry = model.previewGlassEntry == nil ? "开始学习" : model.previewGlassEntry == "开始学习" ? "模拟考" : nil
+    }
     @objc func snapshot() { capture.snapshot() }
     @objc func record() { capture.toggleRecording() }
     @objc func defaultSize() { NSApp.keyWindow?.setContentSize(NSApp.keyWindow === reviewWindow ? .init(width: 860, height: 820) : .init(width: 1160, height: 820)) }

@@ -188,21 +188,9 @@ struct PrototypeTodayPage: View {
     }
 
     private func entry(_ title: String, detail: String, symbol: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 14) {
-                Image(systemName: symbol).font(.system(size: 19, weight: .medium)).frame(width: 26)
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(title).font(.headline)
-                    Text(detail).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: 0)
-                Image(systemName: "arrow.up.right").font(.caption).foregroundStyle(.secondary)
-            }
-            .padding(.horizontal, 22).padding(.vertical, 19).frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
-            .contentShape(RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
-            .modifier(PrototypeEntryGlass())
-        }.buttonStyle(.plain)
-            .modifier(PrototypeKeyboardAction(radius: Runway.chipRadius, action: action))
+        PrototypeGlassEntry(title: title, detail: detail, symbol: symbol, previewSelected: model.previewGlassEntry == title) {
+            model.previewGlassEntry = nil; action()
+        }
     }
 
     private var recentLearning: some View {
@@ -265,18 +253,3 @@ struct PrototypeTodayPage: View {
 }
 
 /// Scoped to the two Today actions. Native glass owns its optical and pointer effects.
-private struct PrototypeEntryGlass: ViewModifier {
-    @Environment(\.runway) private var palette
-    @Environment(\.brandReduceMotion) private var reduceMotion
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-
-    @ViewBuilder func body(content: Content) -> some View {
-        let shape = RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous)
-        if reduceTransparency {
-            content.background(palette.card, in: shape)
-                .overlay(shape.strokeBorder(palette.hairline, lineWidth: 1).allowsHitTesting(false))
-        } else {
-            content.glassEffect(.regular.interactive(!reduceMotion), in: shape)
-        }
-    }
-}

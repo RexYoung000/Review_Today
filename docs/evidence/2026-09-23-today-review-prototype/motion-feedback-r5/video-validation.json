@@ -1,0 +1,68 @@
+[
+  {
+    "file": "01-partial-resize-reopen.mp4",
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 860,
+          "height": 852,
+          "avg_frame_rate": "4200/157"
+        }
+      ],
+      "format": {
+        "duration": "9.926667"
+      }
+    },
+    "decode_exit": 0,
+    "decode_output": "",
+    "retimed": false
+  },
+  {
+    "file": "02-complete-correction.mp4",
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 860,
+          "height": 852,
+          "avg_frame_rate": "149250/5219"
+        }
+      ],
+      "format": {
+        "duration": "34.793333"
+      }
+    },
+    "decode_exit": 0,
+    "decode_output": "",
+    "retimed": false
+  },
+  {
+    "file": "03-glass-light-dark-interrupt.mp4",
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1160,
+          "height": 852,
+          "avg_frame_rate": "277200/9607"
+        }
+      ],
+      "format": {
+        "duration": "32.008333"
+      }
+    },
+    "decode_exit": 0,
+    "decode_output": "",
+    "retimed": false
+  }
+]
