@@ -11,4 +11,8 @@
 - 共享角色渲染器原生回归通过；App 与原型构建通过。
 - 原型实看浅色、深色及减少动态；App 中实看静态入口、确认点击进入「知识测验／模拟面试」选择页并返回。隔离数据库 `PRAGMA integrity_check` 返回 `ok`。
 
-未验证：自动化没有稳定的纯鼠标悬停动作，真实指针连续移入、停留、移出的主观节奏待 Rex 在测试 App 中评审；完整辅助技术检查未运行。
+随后 Rex 在测试版体验后确认“OK，不错”，授权接入。已将同一代码构建到本机日常 App（`Rex.Review-Today`）并打开，当前入口可从「今天 → 模拟考」进入「知识测验／模拟面试」选择页，返回后仍在今天。日常 App 路径为 `/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app`；这是本机开发签名构建，不是外部发布。构建成功，严格签名校验通过，包内 `ExamEntrySpine.html` 与仓库内容的 SHA-1 一致。
+
+更新前已把旧 App 与 SwiftData 的一致性快照备份到 `/Users/rexyoung/Library/Application Support/Review Today/Backups/before-exam-spine-20260924-194150/`。更新前后数据完整性均为 `ok`，知识 8、会话 2、消息 2、复习轮次 3、复习尝试 3，计数未变。没有启动录音、提交答案或写复习成绩。原有 Jev 测试实例仍使用独立数据库。
+
+自动化没有稳定的纯鼠标悬停动作，故未把日常 App 的自由指针循环列为自动化通过项；Rex 已确认主观动效。完整辅助技术检查未运行。
