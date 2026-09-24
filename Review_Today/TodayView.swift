@@ -81,10 +81,7 @@ struct TodayView: View {
                         else { HStack(spacing: 16) { learningEntry; examEntry } }
                         recentLearningCard(sessions: activeSessions)
                         if let latest = projection.latest, let summary = latestSummary { recentReviewCard(latest, summary: summary) }
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("学习足迹").font(.headline)
-                            TodayActivityHeatmap(cache: activityCache, onOpenLearning: onOpenLearning, onOpenKnowledge: onOpenKnowledge)
-                        }
+                        TodayActivityHeatmap(cache: activityCache, onOpenLearning: onOpenLearning, onOpenKnowledge: onOpenKnowledge)
                     }.padding(.horizontal, 24).padding(.bottom, 24).frame(maxWidth: 1008).frame(maxWidth: .infinity)
                 }
             }

@@ -37,6 +37,11 @@ struct TodayActivityHeatmap: View {
         let contentWidth = max(0, cardWidth - 40)
         return RunwayCard(padding: 20) {
             VStack(alignment: .leading, spacing: 18) {
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    Text("学习足迹").font(.headline).foregroundStyle(runway.ink)
+                    Spacer(minLength: 8)
+                    Text("最近 26 周").font(.caption).foregroundStyle(.secondary)
+                }
                 if wide {
                     HStack(alignment: .top, spacing: 18) {
                         calendarPanel(snapshot, width: contentWidth - 178)
@@ -64,7 +69,6 @@ struct TodayActivityHeatmap: View {
                        max(12.0, floor((width - 28 - 25 * spacing) / 26)))
         let gridWidth = 28 + 26 * cell + 25 * spacing
         return VStack(alignment: .leading, spacing: 12) {
-            Text("最近 26 周").font(.callout.weight(.medium)).foregroundStyle(runway.ink)
             ScrollView(.horizontal) { grid(snapshot, cell: cell, spacing: spacing) }
                 .scrollDisabled(width >= gridWidth)
                 .frame(height: 22 + 7 * cell + 6 * spacing)

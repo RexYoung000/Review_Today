@@ -83,12 +83,9 @@ struct PrototypeTodayPage: View {
                     }
                     recentLearning
                     if !model.results.isEmpty { reviewResults }
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack { Text("学习足迹").font(.headline); Spacer(); Text("合成活动记录").font(.caption).foregroundStyle(.secondary) }
-                        TodayActivityHeatmap(cache: activityCache, onOpenLearning: { id in
-                            openLearning(PrototypeLearningItem.samples.first { $0.id == id })
-                        }, onOpenKnowledge: openKnowledge)
-                    }
+                    TodayActivityHeatmap(cache: activityCache, onOpenLearning: { id in
+                        openLearning(PrototypeLearningItem.samples.first { $0.id == id })
+                    }, onOpenKnowledge: openKnowledge)
                 }
                 .padding(24).frame(maxWidth: 1008).frame(maxWidth: .infinity)
             }
