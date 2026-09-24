@@ -77,8 +77,9 @@ struct TodayView: View {
                                 }.frame(width: 280)
                             }
                         }
-                        if geometry.size.width < 570 { learningEntry; examEntry }
-                        else { HStack(spacing: 16) { learningEntry; examEntry } }
+                        TodayEntryPair(horizontal: geometry.size.width >= 570,
+                                       onLearn: { onOpenLearning(nil) },
+                                       onExam: { examPresented = true })
                         recentLearningCard(sessions: activeSessions)
                         if let latest = projection.latest, let summary = latestSummary { recentReviewCard(latest, summary: summary) }
                         TodayActivityHeatmap(cache: activityCache, onOpenLearning: onOpenLearning, onOpenKnowledge: onOpenKnowledge)
@@ -86,12 +87,6 @@ struct TodayView: View {
                 }
             }
         }
-    }
-    private var learningEntry: some View {
-        TodayGlassEntry(title: "开始学习", detail: "从一个问题，或一份材料开始", symbol: "sparkle") { onOpenLearning(nil) }
-    }
-    private var examEntry: some View {
-        TodayGlassEntry(title: "模拟考", detail: "知识测验 · 模拟面试", symbol: "text.badge.checkmark") { examPresented = true }
     }
     private func metricCards(_ metrics: [(String, Int)], summary: Bool) -> some View {
         ForEach(metrics.indices, id: \.self) { index in

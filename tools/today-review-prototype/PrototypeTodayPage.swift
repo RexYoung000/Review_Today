@@ -77,10 +77,11 @@ struct PrototypeTodayPage: View {
                         }
                     }
 
-                    HStack(spacing: 16) {
-                        entry("开始学习", detail: "从一个问题，或一份材料开始", symbol: "sparkle") { openLearning(nil) }
-                        entry("模拟考", detail: "知识测验 · 模拟面试", symbol: "text.badge.checkmark") { model.page = .exam }
-                    }
+                    TodayEntryPair(horizontal: true,
+                                   previewPoint: model.previewGlassEntry == nil ? nil : .init(x: 0.28, y: 0.24),
+                                   previewKind: model.previewGlassEntry == "开始学习" ? .learning : model.previewGlassEntry == "模拟考" ? .exam : nil,
+                                   onLearn: { model.previewGlassEntry = nil; openLearning(nil) },
+                                   onExam: { model.previewGlassEntry = nil; model.page = .exam })
                     recentLearning
                     if !model.results.isEmpty { reviewResults }
                     TodayActivityHeatmap(cache: activityCache, onOpenLearning: { id in
@@ -186,12 +187,6 @@ struct PrototypeTodayPage: View {
     }
     private func metric(_ item: Metric) -> some View {
         PrototypeMetricCard(title: item.title, value: item.value)
-    }
-
-    private func entry(_ title: String, detail: String, symbol: String, action: @escaping () -> Void) -> some View {
-        PrototypeGlassEntry(title: title, detail: detail, symbol: symbol, previewSelected: model.previewGlassEntry == title) {
-            model.previewGlassEntry = nil; action()
-        }
     }
 
     private var recentLearning: some View {

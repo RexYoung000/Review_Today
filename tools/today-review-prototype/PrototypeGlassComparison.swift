@@ -7,6 +7,7 @@ struct PrototypeGlassComparison: View {
     @Environment(\.runway) private var palette
     @State private var lastAction = ""
     @State private var previewPoint = 0
+    @State private var previewIcon = 0
 
     var body: some View {
         GeometryReader { geometry in
@@ -23,8 +24,17 @@ struct PrototypeGlassComparison: View {
                             Text("右缘").tag(3)
                         }
                         .pickerStyle(.segmented).labelsHidden().frame(width: 320)
-                        Text("流光只在指针悬停时播放；此处仅预览静态反光位置。")
+                        Text("此处只预览静态反光位置；图标循环可在下方单独预览。")
                             .font(.caption).foregroundStyle(.secondary)
+                    }
+                    HStack(spacing: 12) {
+                        Text("图标循环预览").font(.caption).foregroundStyle(.secondary)
+                        Picker("图标循环预览", selection: $previewIcon) {
+                            Text("关闭").tag(0)
+                            Text("学习星芒").tag(1)
+                            Text("模拟考勾选").tag(2)
+                        }
+                        .pickerStyle(.segmented).labelsHidden().frame(width: 320)
                     }
                     if compact {
                         VStack(spacing: 16) { currentPanel; proposedPanel }
@@ -64,16 +74,18 @@ struct PrototypeGlassComparison: View {
     }
 
     private var currentPanel: some View {
-        panel(title: "当前入口", number: "01", description: "整块扫光与沿边缘循环的光点") {
+        panel(title: "旧版对照", number: "01", description: "整块扫光与沿边缘循环的光点") {
             PrototypeGlassEntry(title: "开始学习", detail: "从一个问题，或一份材料开始", symbol: "sparkle", previewSelected: previewPoint != 0) { tapped("当前入口 · 开始学习") }
             PrototypeGlassEntry(title: "模拟考", detail: "知识测验 · 模拟面试", symbol: "checklist", previewSelected: previewPoint != 0) { tapped("当前入口 · 模拟考") }
         }
     }
 
     private var proposedPanel: some View {
-        panel(title: "B · 玻璃反光＋边缘流光", number: "02", description: "反光跟随指针，上下边缘有柔和的反向流光") {
-            TodayGlassEntry(title: "开始学习", detail: "从一个问题，或一份材料开始", symbol: "sparkle", previewPoint: samplePoint) { tapped("试作 · 开始学习") }
-            TodayGlassEntry(title: "模拟考", detail: "知识测验 · 模拟面试", symbol: "checklist", previewPoint: samplePoint) { tapped("试作 · 模拟考") }
+        panel(title: "现用入口 · 图标 Spine", number: "02", description: "悬停时星芒闪烁，或由完整的模拟考图标接替静态图标；移开立即停播") {
+            TodayEntryPair(horizontal: false, previewPoint: samplePoint,
+                           previewKind: previewIcon == 1 ? .learning : previewIcon == 2 ? .exam : nil,
+                           onLearn: { tapped("试作 · 开始学习") },
+                           onExam: { tapped("试作 · 模拟考") })
         }
     }
 

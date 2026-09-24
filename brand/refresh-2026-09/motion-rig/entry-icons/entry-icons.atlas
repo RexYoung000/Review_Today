@@ -1,0 +1,48 @@
+glint.png
+size: 64,64
+filter: Linear,Linear
+pma: false
+glint
+  bounds: 0,0,64,64
+
+exam-line-top.png
+size: 64,64
+filter: Linear,Linear
+pma: false
+exam-line-top
+  bounds: 0,0,64,64
+
+exam-line-middle.png
+size: 64,64
+filter: Linear,Linear
+pma: false
+exam-line-middle
+  bounds: 0,0,64,64
+
+exam-line-low.png
+size: 64,64
+filter: Linear,Linear
+pma: false
+exam-line-low
+  bounds: 0,0,64,64
+
+exam-line-bottom.png
+size: 64,64
+filter: Linear,Linear
+pma: false
+exam-line-bottom
+  bounds: 0,0,64,64
+
+exam-badge.png
+size: 64,64
+filter: Linear,Linear
+pma: false
+exam-badge
+  bounds: 0,0,64,64
+
+exam-tick.png
+size: 64,64
+filter: Linear,Linear
+pma: false
+exam-tick
+  bounds: 0,0,64,64

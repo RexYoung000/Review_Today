@@ -10,6 +10,13 @@ export async function nativeHTML(){
  json.animations=Object.fromEntries(Object.entries(json.animations).filter(([name])=>name==='recall'||name==='rest'||name.startsWith('idle_')));
  const atlas=await readFile(resolve(previewRoot,'data/images/mascot.atlas'),'utf8'),images={};
  for(const name of ['body.png','eye.png','pupil.png','fragment.png','shadow.png','book.png','book-back.png','book-spine.png','page.png'])images[name]='data:image/png;base64,'+(await readFile(resolve(previewRoot,'data/images',name))).toString('base64');
+ const iconRoot=resolve(previewRoot,'entry-icons');
+ const iconImages={};
+ for(const name of ['glint.png','exam-line-top.png','exam-line-middle.png','exam-line-low.png',
+                    'exam-line-bottom.png','exam-badge.png','exam-tick.png'])
+  iconImages[name]='data:image/png;base64,'+(await readFile(resolve(iconRoot,name))).toString('base64');
+ const entryIcons={json:JSON.parse(await readFile(resolve(iconRoot,'entry-icons.json'),'utf8')),
+  atlas:await readFile(resolve(iconRoot,'entry-icons.atlas'),'utf8'),images:iconImages};
  const runtime=await readFile(resolve(toolRoot,'node_modules/@esotericsoftware/spine-canvas/dist/iife/spine-canvas.min.js'),'utf8');
  const entry=await readFile(resolve(toolRoot,'src/native-player.mjs'),'utf8');
  const safe=text=>text.replace(/<\/script/gi,'<\\/script');
@@ -20,6 +27,7 @@ export async function nativeHTML(){
 <canvas aria-hidden="true"></canvas>
 <script type="importmap">${JSON.stringify({imports})}</script>
 <script type="application/json" id="rig-data">${safe(JSON.stringify({json,atlas,images}))}</script>
+<script type="application/json" id="entry-icon-data">${safe(JSON.stringify(entryIcons))}</script>
 <script>${safe(runtime)}</script><script type="module">${safe(entry)}</script>`;
 }
 const html=await nativeHTML(),destination=resolve(root,'Review_Today/MascotMotion.html');

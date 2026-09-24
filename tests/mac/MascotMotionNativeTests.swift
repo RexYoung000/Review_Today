@@ -60,6 +60,27 @@ struct MascotMotionNativeTests {
         for _ in 0..<200 { if coordinator.ready { break }; try await Task.sleep(for: .milliseconds(50)) }
         try expect(coordinator.ready, "WKWebView did not load bundled Spine modules")
         func inspect() async throws -> [String: Any] { try await web.evaluateJavaScript("window.mascotMotion.inspect()") as! [String: Any] }
+        func visibleIconPixels() async throws -> Int {
+            try await web.evaluateJavaScript("(()=>{const c=document.querySelector('canvas'),d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let n=0;for(let i=3;i<d.length;i+=4)if(d[i]>128)n++;return n})()") as! Int
+        }
+        coordinator.configuration.header = true
+        coordinator.configuration.entryKind = "exam"
+        coordinator.configuration.entryStartEpoch = Date().timeIntervalSince1970 - 0.4
+        coordinator.setVisible(true)
+        try await Task.sleep(for: .milliseconds(180))
+        var iconState = try await inspect()
+        try expect((iconState["config"] as? [String: Any])?["entryKind"] as? String == "exam" && iconState["animating"] as? Bool == true, "Exam Spine loop did not start")
+        try expect(try await visibleIconPixels() > 100, "Exam Spine icon is blank")
+        coordinator.configuration.entryKind = "learning"
+        coordinator.configuration.entryStartEpoch = Date().timeIntervalSince1970 - 0.3
+        coordinator.send()
+        try await Task.sleep(for: .milliseconds(150))
+        iconState = try await inspect()
+        try expect((iconState["config"] as? [String: Any])?["entryKind"] as? String == "learning" && iconState["animating"] as? Bool == true, "Learning Spine loop did not start")
+        try expect(try await visibleIconPixels() > 100, "Learning Spine icon is blank")
+        coordinator.configuration.header = false
+        coordinator.configuration.entryKind = nil
+        coordinator.send()
         coordinator.configuration.mode = .thinking; coordinator.send()
         try await Task.sleep(for: .milliseconds(500))
         var state = try await inspect()

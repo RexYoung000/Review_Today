@@ -7,7 +7,7 @@ import {createReturnState} from '@review-motion/return-state.mjs';
 import {createVoiceState,advanceVoice,applyVoice,drawVoiceScene,contactGeometry,contactMoving} from '@review-motion/voice-scene.mjs';
 const canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d'),Renderer=seamlessRenderer(spine.SkeletonRenderer),renderer=new Renderer(ctx);
 renderer.triangleRendering=true;
-let config={surface:'recall',mode:'idle',level:0,reduced:false,dark:false,visible:true,rate:1,material:'current'},rig,materials,voice,configured=false,raf=0,last=0,time=0,returnState,returnElapsed=0,frames=0,idle=createIdlePlayer();
+let config={surface:'recall',mode:'idle',level:0,reduced:false,dark:false,visible:true,rate:1,material:'current'},rig,entryRig,materials,voice,configured=false,raf=0,last=0,time=0,returnState,returnElapsed=0,frames=0,idle=createIdlePlayer();
 const send=(type,detail='')=>window.webkit?.messageHandlers.mascot?.postMessage({type,detail});
 const header=createHeaderPlayer();
 function poseRecall(dt){
@@ -24,6 +24,16 @@ function paint(dt){
  if(canvas.width!==Math.round(width*d)||canvas.height!==Math.round(height*d)){canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);}
  ctx.setTransform(d,0,0,d,0,0);renderer.pixelRatio=d;renderer.eyeOutline=config.material==='graphite'&&config.dark;
  renderer.materialImages=materials?.(config.material,config.dark,config.surface==='recall'&&(config.mode==='thinking'||!!returnState),config.palette);
+ if(config.entryKind&&entryRig){
+   const s=entryRig.skeleton;s.setToSetupPose();
+   const elapsed=Math.max(0,Date.now()/1000-config.entryStartEpoch)%1.6;
+   entryRig.data.findAnimation(config.entryKind).apply(s,0,elapsed,false,[],1,spine.MixBlend.replace,spine.MixDirection.mixIn);
+   s.updateWorldTransform(spine.Physics.none);
+   canvas.style.filter=config.dark?'none':'invert(1)';
+   ctx.clearRect(0,0,width,height);ctx.save();ctx.translate(width/2,height/2);
+   const scale=Math.min(width/44,height/44);ctx.scale(scale,-scale);renderer.draw(s);ctx.restore();frames++;return;
+ }
+ canvas.style.filter='none';
  if(config.surface==='voice'){
    advanceVoice(voice,dt,config.mode,config.level,config.reduced);applyVoice(spine,rig,voice);
    drawVoiceScene(ctx,renderer,rig,voice,width,height,{dark:config.dark,compact:width<300,material:config.material,palette:config.palette});
@@ -32,7 +42,7 @@ function paint(dt){
  }
  frames++;
 }
-function moving(){return config.header?header.moving():config.surface==='recall'?(config.mode==='thinking'||(config.ambient&&idle.inspect().phase!=='done')||!!returnState):(config.mode==='thinking'||(['listening','speaking'].includes(config.mode)&&config.level>0)||contactMoving(voice.contact));}
+function moving(){return config.header?(!!config.entryKind||header.moving()):config.surface==='recall'?(config.mode==='thinking'||(config.ambient&&idle.inspect().phase!=='done')||!!returnState):(config.mode==='thinking'||(['listening','speaking'].includes(config.mode)&&config.level>0)||contactMoving(voice.contact));}
 function frame(now){raf=0;if(!rig)return;const dt=Math.min(.05,(now-(last||now))/1000)*config.rate;last=now;paint(config.visible?dt:0);if(config.visible&&!config.reduced&&moving())raf=requestAnimationFrame(frame);else last=0;}
 function wake(){if(!raf&&rig&&configured)raf=requestAnimationFrame(frame);}
 window.mascotMotion={
@@ -49,6 +59,8 @@ window.mascotMotion={
    const previous=config;
    config={surface:next.surface==='voice'?'voice':'recall',mode:['listening','thinking','speaking','idle'].includes(next.mode)?next.mode:'idle',level:Math.max(0,Math.min(1,Number(next.level)||0)),ambient:!!next.ambient,idleClip:(idleNames.includes(next.idleClip)||next.idleClip==='sidebar_loop')?next.idleClip:'random',restartToken:Number(next.restartToken)||0,reduced:!!next.reduced,dark:!!next.dark,visible:!!next.visible,rate:next.rate===.5?.5:1,material:next.material==='graphite'?'graphite':'current',palette:next.palette};
    config.header=!!next.header&&config.surface==='recall';
+   config.entryKind=config.header&&['learning','exam'].includes(next.entryKind)?next.entryKind:null;
+   config.entryStartEpoch=Number.isFinite(Number(next.entryStartEpoch))?Number(next.entryStartEpoch):0;
    if(!config.visible||config.reduced||config.header!==previous.header)header.reset();
    if(previous.ambient!==config.ambient||previous.idleClip!==config.idleClip||previous.restartToken!==config.restartToken||config.reduced){idle=createIdlePlayer(Math.random,config.idleClip);}
    if(rig&&previous.surface!==config.surface){returnState=null;time=0;voice=createVoiceState(contactGeometry(spine,rig));}
@@ -67,5 +79,10 @@ try{
  const materialSources=[];
  await Promise.all(atlas.pages.map(async page=>{const image=new Image();image.src=asset.images[page.name];await image.decode();page.setTexture(new spine.CanvasTexture(image));materialSources.push([page.name,image]);}));
  materials=createMaterials(materialSources,(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;});
- const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(asset.json);rig={data,skeleton:new spine.Skeleton(data)};voice=createVoiceState(contactGeometry(spine,rig));send('ready');wake();
+ const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(asset.json);rig={data,skeleton:new spine.Skeleton(data)};voice=createVoiceState(contactGeometry(spine,rig));
+ const iconAsset=JSON.parse(document.getElementById('entry-icon-data').textContent),iconAtlas=new spine.TextureAtlas(iconAsset.atlas);
+ await Promise.all(iconAtlas.pages.map(async page=>{const image=new Image();image.src=iconAsset.images[page.name];await image.decode();page.setTexture(new spine.CanvasTexture(image));}));
+ const iconData=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(iconAtlas)).readSkeletonData(iconAsset.json);
+ entryRig={data:iconData,skeleton:new spine.Skeleton(iconData)};
+ send('ready');wake();
 }catch(e){send('failed',String(e));}

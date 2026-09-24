@@ -1,11 +1,16 @@
 import SwiftUI
 
+enum TodayEntryKind: String, Hashable { case learning, exam }
+
 /// Shared native glass for Today's live entries and the isolated design comparison.
 struct TodayGlassEntry: View {
     let title: String
     let detail: String
     let symbol: String
+    var kind: TodayEntryKind? = nil
     var previewPoint: UnitPoint? = nil
+    var onHoverChanged: ((TimeInterval?) -> Void)? = nil
+    var replacesIcon = false
     let action: () -> Void
     @Environment(\.runway) private var palette
     @Environment(\.colorScheme) private var scheme
@@ -18,8 +23,7 @@ struct TodayGlassEntry: View {
     @State private var hovering = false
     @State private var pointer = UnitPoint(x: 0.5, y: 0.3)
     @State private var entrySize = CGSize(width: 400, height: 84)
-    @State private var iconBurst = false
-    @State private var iconBurstTask: Task<Void, Never>?
+    @State private var hoverStartedAt: TimeInterval?
 
     private var shape: RoundedRectangle { .init(cornerRadius: Runway.chipRadius, style: .continuous) }
     private var keyboard: Bool { focused && input.keyboardNavigation }
@@ -56,7 +60,11 @@ struct TodayGlassEntry: View {
         .onContinuousHover { phase in
             switch phase {
             case .active(let location):
-                if !hovering && enabled && controlState == .key && !reduced { playIconBurst() }
+                if hoverStartedAt == nil && enabled && controlState == .key && !reduced && !keyboard {
+                    let start = Date().timeIntervalSince1970
+                    hoverStartedAt = start
+                    onHoverChanged?(start)
+                }
                 hovering = true
                 if !reduced {
                     pointer = .init(x: min(1, max(0, location.x / max(1, entrySize.width))),
@@ -67,50 +75,25 @@ struct TodayGlassEntry: View {
         }
         .onGeometryChange(for: CGSize.self) { $0.size } action: { entrySize = $0 }
         .onChange(of: controlState) { _, value in if value != .key { endHover() } }
-        .onChange(of: reduced) { _, value in if value { stopIconBurst() } }
+        .onChange(of: reduced) { _, value in if value { endHover() } }
+        .onChange(of: keyboard) { _, value in if value { endHover() } }
         .onDisappear { endHover() }
     }
 
     private var entryIcon: some View {
-        ZStack {
-            if symbol == "sparkle" && iconBurst {
-                Image(systemName: symbol)
-                    .foregroundStyle(palette.ink.opacity(0.25))
-                    .scaleEffect(1.5)
-                    .blur(radius: 3)
-            }
-            Image(systemName: symbol)
-                .rotationEffect(.degrees(symbol == "sparkle" && iconBurst ? -14 : 0))
-                .offset(y: symbol != "sparkle" && iconBurst ? -3 : 0)
-        }
+        Image(systemName: symbol)
         .font(.system(size: 19, weight: .medium))
-        .scaleEffect(iconBurst ? 1.22 : selected ? 1.12 : 1)
+        .scaleEffect(selected ? 1.12 : 1)
+        .opacity(replacesIcon ? 0 : 1)
         .frame(width: 26, height: 26)
-        .animation(reduced || keyboard ? nil : .spring(response: 0.22, dampingFraction: 0.62), value: iconBurst)
         .animation(reduced || keyboard ? nil : .spring(response: 0.28, dampingFraction: 0.7), value: selected)
         .accessibilityHidden(true) // The parent button already names the destination.
     }
 
-    private func playIconBurst() {
-        iconBurstTask?.cancel()
-        iconBurst = true
-        iconBurstTask = Task { @MainActor in
-            try? await Task.sleep(for: .milliseconds(170))
-            guard !Task.isCancelled else { return }
-            iconBurst = false
-            iconBurstTask = nil
-        }
-    }
-
-    private func stopIconBurst() {
-        iconBurstTask?.cancel()
-        iconBurstTask = nil
-        iconBurst = false
-    }
-
     private func endHover() {
+        if hoverStartedAt != nil { onHoverChanged?(nil) }
         hovering = false
-        stopIconBurst()
+        hoverStartedAt = nil
     }
 
     private var glass: some View {
@@ -148,6 +131,82 @@ struct TodayGlassEntry: View {
         .clipShape(shape)
         .allowsHitTesting(false)
         .accessibilityHidden(true)
+    }
+}
+
+private struct TodayEntryFramesKey: PreferenceKey {
+    static var defaultValue: [TodayEntryKind: CGRect] = [:]
+    static func reduce(value: inout [TodayEntryKind: CGRect], nextValue: () -> [TodayEntryKind: CGRect]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, new in new })
+    }
+}
+
+/// One preloaded icon Spine renderer follows the active card.
+struct TodayEntryPair: View {
+    var horizontal: Bool
+    var previewPoint: UnitPoint? = nil
+    var previewKind: TodayEntryKind? = nil
+    let onLearn: () -> Void
+    let onExam: () -> Void
+    @Environment(\.brandReduceMotion) private var reduced
+    @Environment(\.colorScheme) private var scheme
+    @Environment(\.controlActiveState) private var controlState
+    @State private var active: TodayEntryKind?
+    @State private var start: TimeInterval = 0
+    @State private var frames: [TodayEntryKind: CGRect] = [:]
+    @State private var iconRendererReady = false
+
+    var body: some View {
+        Group {
+            if horizontal { HStack(spacing: 16) { entries } }
+            else { VStack(spacing: 16) { entries } }
+        }
+        .coordinateSpace(name: "todayEntryPair")
+        .onPreferenceChange(TodayEntryFramesKey.self) { frames = $0 }
+        .overlay(alignment: .topLeading) {
+            GeometryReader { _ in
+                if let rect = frames[active ?? previewKind ?? .learning] {
+                    MascotWebSurface(configuration: .init(surface: .recall, mode: .idle,
+                                                          reduced: reduced, dark: scheme == .dark,
+                                                          visible: !reduced && (active != nil || previewKind != nil) && controlState == .key,
+                                                          header: true, entryKind: reduced ? nil : (active ?? previewKind)?.rawValue,
+                                                          entryStartEpoch: start,
+                                                          material: "graphite", palette: .theme(dark: scheme == .dark)),
+                                     onReady: { iconRendererReady = $0 })
+                        .frame(width: 44, height: 44)
+                        .position(x: rect.minX + 35, y: rect.midY)
+                        .opacity(reduced || (active == nil && previewKind == nil) ? 0 : 1)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
+            }
+        }
+        .onChange(of: controlState) { _, state in if state != .key { active = nil } }
+        .onChange(of: reduced) { _, value in if value { active = nil } }
+        .onChange(of: previewKind) { _, _ in start = Date().timeIntervalSince1970 }
+        .onDisappear { active = nil; iconRendererReady = false }
+    }
+
+    @ViewBuilder private var entries: some View {
+        entry(.learning, title: "开始学习", detail: "从一个问题，或一份材料开始", symbol: "sparkle", action: onLearn)
+        entry(.exam, title: "模拟考", detail: "知识测验 · 模拟面试", symbol: "text.badge.checkmark", action: onExam)
+    }
+
+    private func entry(_ kind: TodayEntryKind, title: String, detail: String, symbol: String,
+                       action: @escaping () -> Void) -> some View {
+        TodayGlassEntry(title: title, detail: detail, symbol: symbol, kind: kind,
+                        previewPoint: (previewKind == nil || previewKind == kind) ? previewPoint : nil,
+                        onHoverChanged: { epoch in
+            if let epoch { active = kind; start = epoch }
+            else if active == kind { active = nil }
+        }, replacesIcon: kind == .exam && iconRendererReady && !reduced && (active ?? previewKind) == .exam,
+                        action: action)
+        .background {
+            GeometryReader { geometry in
+                Color.clear.preference(key: TodayEntryFramesKey.self,
+                                       value: [kind: geometry.frame(in: .named("todayEntryPair"))])
+            }
+        }
     }
 }
 

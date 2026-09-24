@@ -24,6 +24,8 @@ struct MascotMotionConfiguration: Codable, Equatable {
     var rate: Double = 1
     var ambient = false
     var header = false
+    var entryKind: String? = nil
+    var entryStartEpoch: TimeInterval = 0
     var idleClip: MascotIdleClip = .random
     var material = "current"
     var palette: MascotMaterialPalette? = nil
