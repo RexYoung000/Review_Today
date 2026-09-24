@@ -101,20 +101,22 @@ struct TodayGlassEntry: View {
                         .mask(edgeLight)
                 }
             }
+        }
+        .clipShape(shape)
+        .overlay {
             if flowing {
                 TimelineView(.animation(minimumInterval: 1 / 30)) { clock in
                     GlassEdgeFlow(elapsed: max(0, clock.date.timeIntervalSince(enteredAt)), dark: dark)
                 }
             }
         }
-        .clipShape(shape)
         .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
 }
 
 /// Inspired by StarBorder's opposing top and bottom radial sweeps. The streaks
-/// stay on the glass edge; they never fill the card or orbit the full perimeter.
+/// are masked to the actual rounded outline, not clipped into the card interior.
 private struct GlassEdgeFlow: View {
     let elapsed: Double
     let dark: Bool
@@ -127,32 +129,29 @@ private struct GlassEdgeFlow: View {
             let streakWidth = min(240, geometry.size.width * 0.49)
             ZStack {
                 streak(width: streakWidth)
-                    .position(x: geometry.size.width * (-0.18 + 1.36 * travel), y: 1.6)
+                    .position(x: geometry.size.width * (-0.18 + 1.36 * travel), y: 1)
                 streak(width: streakWidth)
-                    .position(x: geometry.size.width * (1.18 - 1.36 * travel), y: geometry.size.height - 1.6)
+                    .position(x: geometry.size.width * (1.18 - 1.36 * travel), y: geometry.size.height - 1)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
             .opacity(fade)
-            .clipShape(RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
+            .mask {
+                RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous)
+                    .inset(by: 1)
+                    .stroke(.white, lineWidth: dark ? 1.4 : 1)
+            }
+            .shadow(color: dark ? .white.opacity(0.5) : Color(red: 0.77, green: 0.89, blue: 1).opacity(0.62),
+                    radius: dark ? 3 : 2.5)
         }.accessibilityHidden(true)
     }
 
     private func streak(width: CGFloat) -> some View {
-        let core = dark ? Color.white : Color(red: 0.57, green: 0.70, blue: 0.81)
-        let bloom = dark ? Color.white : Color(red: 0.70, green: 0.84, blue: 0.94)
-        return ZStack {
-            Capsule()
-                .fill(LinearGradient(colors: [.clear, bloom.opacity(dark ? 0.72 : 0.9), .clear],
-                                     startPoint: .leading, endPoint: .trailing))
-                .frame(width: width, height: 16)
-                .blur(radius: 6)
-            Capsule()
-                .fill(LinearGradient(colors: [.clear, core.opacity(dark ? 0.38 : 0.4),
-                                               core.opacity(dark ? 1 : 0.98),
-                                               core.opacity(dark ? 0.38 : 0.4), .clear],
-                                     startPoint: .leading, endPoint: .trailing))
-                .frame(width: width * 0.86, height: dark ? 3.2 : 3.5)
-        }
+        let core = dark ? Color.white : Color(red: 0.86, green: 0.94, blue: 1)
+        return Capsule()
+            .fill(LinearGradient(colors: [.clear, core.opacity(0.4), core,
+                                           core.opacity(0.4), .clear],
+                                 startPoint: .leading, endPoint: .trailing))
+            .frame(width: width, height: 10)
     }
 }
 
