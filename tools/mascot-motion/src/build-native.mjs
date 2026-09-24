@@ -12,8 +12,8 @@ export async function nativeHTML(){
  for(const name of ['body.png','eye.png','pupil.png','fragment.png','shadow.png','book.png','book-back.png','book-spine.png','page.png'])images[name]='data:image/png;base64,'+(await readFile(resolve(previewRoot,'data/images',name))).toString('base64');
  const iconRoot=resolve(previewRoot,'entry-icons');
  const iconImages={};
- for(const name of ['glint.png','exam-badge.png','exam-line-top.png','exam-line-middle.png',
-                    'exam-line-low.png','exam-line-bottom.png'])
+ for(const name of ['glint.png','exam-check.png','exam-line-top.png','exam-circle.png',
+                    'exam-line-bottom.png'])
   iconImages[name]='data:image/png;base64,'+(await readFile(resolve(iconRoot,name))).toString('base64');
  const entryIcons={json:JSON.parse(await readFile(resolve(iconRoot,'entry-icons.json'),'utf8')),
   atlas:await readFile(resolve(iconRoot,'entry-icons.atlas'),'utf8'),images:iconImages};

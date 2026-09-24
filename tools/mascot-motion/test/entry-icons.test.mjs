@@ -26,31 +26,39 @@ test('both Today icon loops are real Spine timelines with clean rest and distinc
   };
  const stable=value=>JSON.parse(JSON.stringify(value,(_,entry)=>
   typeof entry==='number'?Math.round(entry*100000)/100000:entry));
- for(const kind of ['learning','exam']){
-  assert.ok(Math.abs(data.findAnimation(kind).duration-1.6)<1e-6);
-  assert.deepEqual(stable(pose(kind,0)),stable(pose(kind,1.6)),`${kind} drifts at the loop seam`);
+ for(const [kind,duration] of [['learning',1.6],['exam',2.4]]){
+  assert.ok(Math.abs(data.findAnimation(kind).duration-duration)<1e-6);
+  assert.deepEqual(stable(pose(kind,0)),stable(pose(kind,duration)),`${kind} drifts at the loop seam`);
  }
  assert.ok(Object.values(pose('learning',0).slots).every(value=>value===0),'learning appears at rest');
  assert.ok(pose('learning',.24).slots['star-left']>.8);
  assert.ok(pose('learning',.24).slots['star-main']>.8);
  assert.ok(pose('learning',.58).slots['star-right']>.8);
  assert.ok(pose('learning',.92).slots['star-bottom']>.8);
- assert.ok(['exam-badge','exam-line-top','exam-line-middle','exam-line-low','exam-line-bottom']
-  .every(name=>pose('exam',0).slots[name]===1),'the exam icon must be complete in its first frame');
- assert.ok(pose('exam',.38).bones['exam-badge'].scaleX>1.04);
- assert.ok(pose('exam',.4).bones['exam-line-top'].x>pose('exam',0).bones['exam-line-top'].x+.5);
- assert.equal(pose('learning',.5).slots['exam-badge'],0);
+ const parts=['exam-check','exam-line-top','exam-circle','exam-line-bottom'];
+ assert.ok(parts.every(name=>pose('exam',0).slots[name]===0),'the exam loop starts transparent');
+ assert.ok(pose('exam',.20).slots['exam-check']>.9);
+ assert.ok(pose('exam',.20).slots['exam-line-top']<.1);
+ assert.ok(pose('exam',.39).slots['exam-line-top']>.9);
+ assert.ok(pose('exam',.39).slots['exam-circle']<.1);
+ assert.ok(pose('exam',.59).slots['exam-circle']>.9);
+ assert.ok(pose('exam',.59).slots['exam-line-bottom']<.1);
+ assert.ok(parts.every(name=>pose('exam',.95).slots[name]===1),'the icon settles complete');
+ assert.ok(pose('exam',1.43).bones['exam-check'].scaleX>1.07,'the check gets a second emphasis');
+ assert.ok(pose('exam',1.37).slots['exam-glint']>.5,'the check has a short visual ping');
+ assert.ok(parts.every(name=>pose('exam',1.75).slots[name]===1),'the complete frame returns before the loop');
+ assert.equal(pose('learning',.5).slots['exam-check'],0);
  assert.equal(pose('exam',.5).slots['star-left'],0);
 });
 
-test('resting exam symbol and five animated layers have identical pixels',async()=>{
+test('resting checklist and four animated layers have identical pixels',async()=>{
  const png=async file=>{
   const image=await loadImage(file),canvas=createCanvas(88,88),ctx=canvas.getContext('2d');
   ctx.drawImage(image,0,0);
   return ctx.getImageData(0,0,88,88).data;
  };
  const resting=await png(resolve(root,'Review_Today/Assets.xcassets/TodayExamIcon.imageset/exam.png'));
- const layers=await Promise.all(['exam-badge','exam-line-top','exam-line-middle','exam-line-low','exam-line-bottom']
+ const layers=await Promise.all(['exam-check','exam-line-top','exam-circle','exam-line-bottom']
   .map(name=>png(resolve(folder,name+'.png'))));
  let visible=0;
  for(let i=3;i<resting.length;i+=4){

@@ -81,7 +81,7 @@ struct PrototypeGlassComparison: View {
     }
 
     private var proposedPanel: some View {
-        panel(title: "现用入口 · 图标 Spine", number: "02", description: "悬停时星芒闪烁，或由完整的模拟考图标接替静态图标；移开立即停播") {
+        panel(title: "现用入口 · Spine 图标循环", number: "02", description: "悬停时学习星芒闪烁；模拟考的勾选与短线依次冒出、轻闪，再回到完整图标") {
             TodayEntryPair(horizontal: false, previewPoint: samplePoint,
                            previewKind: previewIcon == 1 ? .learning : previewIcon == 2 ? .exam : nil,
                            onLearn: { tapped("试作 · 开始学习") },

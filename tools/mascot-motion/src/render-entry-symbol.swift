@@ -5,7 +5,7 @@ import Foundation
 // resolution. The build script uses its alpha as both the resting image and
 // the source for the Spine layers, so the two states share one silhouette.
 guard CommandLine.arguments.count == 2,
-      let symbol = NSImage(systemSymbolName: "text.badge.checkmark", accessibilityDescription: nil)?
+      let symbol = NSImage(systemSymbolName: "checklist", accessibilityDescription: nil)?
         .withSymbolConfiguration(.init(pointSize: 19, weight: .medium)),
       let bitmap = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 88, pixelsHigh: 88,
                                     bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,

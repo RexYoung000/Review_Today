@@ -8,9 +8,9 @@ struct TodayGlassEntry: View {
     let detail: String
     let symbol: String
     var kind: TodayEntryKind? = nil
+    var animatedIconReady = false
     var previewPoint: UnitPoint? = nil
     var onHoverChanged: ((TimeInterval?) -> Void)? = nil
-    var replacesIcon = false
     let action: () -> Void
     @Environment(\.runway) private var palette
     @Environment(\.colorScheme) private var scheme
@@ -87,6 +87,7 @@ struct TodayGlassEntry: View {
                     .resizable()
                     .renderingMode(.template)
                     .foregroundStyle(palette.ink)
+                    .opacity(animatedIconReady ? 0.18 : 1)
                     .frame(width: 44, height: 44)
             } else {
                 Image(systemName: symbol)
@@ -94,7 +95,6 @@ struct TodayGlassEntry: View {
                     .scaleEffect(selected ? 1.12 : 1)
             }
         }
-        .opacity(replacesIcon ? 0 : 1)
         .frame(width: 26, height: 26)
         .animation(reduced || keyboard ? nil : .spring(response: 0.28, dampingFraction: 0.7), value: selected)
         .accessibilityHidden(true) // The parent button already names the destination.
@@ -151,7 +151,8 @@ private struct TodayEntryFramesKey: PreferenceKey {
     }
 }
 
-/// One preloaded icon Spine renderer follows the active card.
+/// Each entry has its own Spine surface so switching cards cannot expose a
+/// stale mascot frame. The native symbols remain as loading/failure fallbacks.
 struct TodayEntryPair: View {
     var horizontal: Bool
     var previewPoint: UnitPoint? = nil
@@ -164,7 +165,10 @@ struct TodayEntryPair: View {
     @State private var active: TodayEntryKind?
     @State private var start: TimeInterval = 0
     @State private var frames: [TodayEntryKind: CGRect] = [:]
-    @State private var iconRendererReady = false
+    @State private var examRendererReady = false
+
+    private var learningActive: Bool { (active ?? previewKind) == .learning }
+    private var examActive: Bool { (active ?? previewKind) == .exam }
 
     var body: some View {
         Group {
@@ -175,17 +179,29 @@ struct TodayEntryPair: View {
         .onPreferenceChange(TodayEntryFramesKey.self) { frames = $0 }
         .overlay(alignment: .topLeading) {
             GeometryReader { _ in
-                if let rect = frames[active ?? previewKind ?? .learning] {
+                if let rect = frames[.learning] {
                     MascotWebSurface(configuration: .init(surface: .recall, mode: .idle,
                                                           reduced: reduced, dark: scheme == .dark,
-                                                          visible: !reduced && (active != nil || previewKind != nil) && controlState == .key,
-                                                          header: true, entryKind: reduced ? nil : (active ?? previewKind)?.rawValue,
+                                                          visible: !reduced && learningActive && controlState == .key,
+                                                          // Keep the parked canvas on the star rig; otherwise
+                                                          // its last frame can be the solid mascot silhouette.
+                                                          header: true, entryKind: TodayEntryKind.learning.rawValue,
                                                           entryStartEpoch: start,
                                                           material: "graphite", palette: .theme(dark: scheme == .dark)),
-                                     onReady: { iconRendererReady = $0 })
+                                     onReady: { _ in })
                         .frame(width: 44, height: 44)
                         .position(x: rect.minX + 35, y: rect.midY)
-                        .opacity(reduced || (active == nil && previewKind == nil) ? 0 : 1)
+                        .opacity(!reduced && learningActive ? 1 : 0)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
+                if let rect = frames[.exam] {
+                    ExamEntrySpine(playing: !reduced && examActive && controlState == .key,
+                                    dark: scheme == .dark,
+                                    onReady: { examRendererReady = $0 })
+                        .frame(width: 44, height: 44)
+                        .position(x: rect.minX + 35, y: rect.midY)
+                        .opacity(examRendererReady && !reduced && examActive && controlState == .key ? 1 : 0)
                         .allowsHitTesting(false)
                         .accessibilityHidden(true)
                 }
@@ -194,22 +210,23 @@ struct TodayEntryPair: View {
         .onChange(of: controlState) { _, state in if state != .key { active = nil } }
         .onChange(of: reduced) { _, value in if value { active = nil } }
         .onChange(of: previewKind) { _, _ in start = Date().timeIntervalSince1970 }
-        .onDisappear { active = nil; iconRendererReady = false }
+        .onDisappear { active = nil; examRendererReady = false }
     }
 
     @ViewBuilder private var entries: some View {
         entry(.learning, title: "开始学习", detail: "从一个问题，或一份材料开始", symbol: "sparkle", action: onLearn)
-        entry(.exam, title: "模拟考", detail: "知识测验 · 模拟面试", symbol: "text.badge.checkmark", action: onExam)
+        entry(.exam, title: "模拟考", detail: "知识测验 · 模拟面试", symbol: "checklist", action: onExam)
     }
 
     private func entry(_ kind: TodayEntryKind, title: String, detail: String, symbol: String,
                        action: @escaping () -> Void) -> some View {
         TodayGlassEntry(title: title, detail: detail, symbol: symbol, kind: kind,
+                        animatedIconReady: kind == .exam && examRendererReady && !reduced && examActive && controlState == .key,
                         previewPoint: (previewKind == nil || previewKind == kind) ? previewPoint : nil,
                         onHoverChanged: { epoch in
             if let epoch { active = kind; start = epoch }
             else if active == kind { active = nil }
-        }, replacesIcon: kind == .exam && iconRendererReady && !reduced && (active ?? previewKind) == .exam,
+        },
                         action: action)
         .background {
             GeometryReader { geometry in

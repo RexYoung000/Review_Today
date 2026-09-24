@@ -13,7 +13,7 @@ with (folder/'build.log').open('w') as log:
  result=subprocess.run(['xcrun','swiftc','-I',str(folder),'-L',str(frameworks),'-lFSRS','-Xlinker','-rpath','-Xlinker','@executable_path/../Frameworks','-parse-as-library','-swift-version','5','-default-isolation','MainActor','-target','arm64-apple-macos26.5',*sources,'-o',str(binary.with_suffix('.building'))],stdout=log,stderr=subprocess.STDOUT)
 if result.returncode: print((folder/'build.log').read_text()); raise SystemExit(result.returncode)
 binary.with_suffix('.building').replace(binary)
-for name in ['MrBMotion.html','MascotMotion.html']:
+for name in ['MrBMotion.html','MascotMotion.html','ExamEntrySpine.html']:
  shutil.copy2(root/'Review_Today'/name,resources/name)
 for p in (root/'Review_Today/Fonts').glob('*'):
  if p.is_file(): shutil.copy2(p,resources/p.name)

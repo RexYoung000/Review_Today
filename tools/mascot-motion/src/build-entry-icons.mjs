@@ -9,34 +9,39 @@ import {root} from './paths.mjs';
 
 const target=resolve(root,'brand/refresh-2026-09/motion-rig/entry-icons');
 const imageSet=resolve(root,'Review_Today/Assets.xcassets/TodayExamIcon.imageset');
-const duration=1.6;
+const learningDuration=1.6;
+const examDuration=2.4;
 const frame=(time,value)=>({time,value});
-const fade=(a,b,c,d)=>[frame(0,0),frame(a,0),frame(b,1),frame(c,1),frame(d,0),frame(duration,0)];
+const fade=(a,b,c,d)=>[frame(0,0),frame(a,0),frame(b,1),frame(c,1),frame(d,0),frame(learningDuration,0)];
 const scale=(a,b,c,d)=>[
  {time:0,x:.65,y:.65},{time:a,x:.65,y:.65},{time:b,x:1.22,y:1.22},
- {time:c,x:1,y:1},{time:d,x:.7,y:.7},{time:duration,x:.65,y:.65}
+ {time:c,x:1,y:1},{time:d,x:.7,y:.7},{time:learningDuration,x:.65,y:.65}
 ];
-const examParts=['exam-badge','exam-line-top','exam-line-middle','exam-line-low','exam-line-bottom'];
+const examParts=['exam-check','exam-line-top','exam-circle','exam-line-bottom'];
 const bones=[
  {name:'root'},
  {name:'star-main',parent:'root'},
  {name:'star-left',parent:'root',x:-11,y:9},
  {name:'star-right',parent:'root',x:12,y:6},
  {name:'star-bottom',parent:'root',x:6,y:-12},
- // The badge pivot matches its visual center. Its attachment offsets cancel
- // that rest translation so the assembled pixels remain exactly unchanged.
- {name:'exam-badge',parent:'root',x:-5.5,y:4.25},
- ...examParts.slice(1).map(name=>({name,parent:'root'}))
+ // Attachment offsets cancel each pivot's rest translation. At scale 1 the
+ // four pieces exactly reassemble the source SF Symbol without a size jump.
+ {name:'exam-check',parent:'root',x:-5.5,y:5.5},
+ {name:'exam-line-top',parent:'root',x:10,y:5.5},
+ {name:'exam-circle',parent:'root',x:-5.5,y:-6},
+ {name:'exam-line-bottom',parent:'root',x:10,y:-6},
+ {name:'exam-glint',parent:'root',x:-5.5,y:5.5}
 ];
 const definitions=[
  ['star-main','glint',20],
  ['star-left','glint',8],['star-right','glint',10],['star-bottom','glint',6],
- ...examParts.map(name=>[name,name,44])
+ ...examParts.map(name=>[name,name,44]),['exam-glint','glint',5]
 ];
 const slots=definitions.map(([name,path])=>({name,bone:name,attachment:path,color:'ffffff00'}));
 const attachments=Object.fromEntries(definitions.map(([name,path,size])=>[
  name,{[path]:{type:'region',path,width:size,height:size,
-               ...(name==='exam-badge'?{x:5.5,y:-4.25}:{})}}
+               ...(['exam-check','exam-circle'].includes(name)?{x:5.5,y:name==='exam-check'?-5.5:6}:{}),
+               ...(['exam-line-top','exam-line-bottom'].includes(name)?{x:-10,y:name==='exam-line-top'?-5.5:6}:{})}}
 ]));
 const learningSlots=Object.fromEntries([
  ['star-main',fade(.05,.23,.34,.67)],
@@ -44,22 +49,27 @@ const learningSlots=Object.fromEntries([
  ['star-right',fade(.39,.54,.60,.82)],
  ['star-bottom',fade(.74,.88,.94,1.17)]
 ].map(([name,alpha])=>[name,{alpha}]));
-const lineSlide=start=>[
- {time:0,x:0,y:0},{time:start,x:0,y:0},
- {time:start+.16,x:.85,y:0},{time:start+.29,x:.85,y:0},
- {time:start+.48,x:0,y:0},{time:duration,x:0,y:0}
-];
-const examSlots=Object.fromEntries(examParts.map(name=>[
- name,{alpha:[frame(0,1),frame(duration,1)]}
-]));
-const examBones=Object.fromEntries([
- ['exam-badge',{
-  scale:[{time:0,x:1,y:1},{time:.16,x:1,y:1},{time:.38,x:1.06,y:1.06},
-         {time:.66,x:1,y:1},{time:duration,x:1,y:1}],
-  rotate:[frame(0,0),frame(.16,0),frame(.38,2),frame(.66,0),frame(duration,0)]
- }],
- ...examParts.slice(1).map((name,index)=>[name,{translate:lineSlide(.12+index*.17)}])
-]);
+const examStarts=[.08,.27,.46,.65];
+const examSlots=Object.fromEntries(examParts.map((name,index)=>{
+ const at=examStarts[index];
+ return [name,{alpha:[frame(0,0),frame(at,0),frame(at+.10,1),frame(2.05,1),frame(2.29,0),frame(examDuration,0)]}];
+}));
+examSlots['exam-glint']={alpha:[frame(0,0),frame(1.27,0),frame(1.35,.85),frame(1.52,0),frame(examDuration,0)]};
+const examBones=Object.fromEntries(examParts.map((name,index)=>{
+ const at=examStarts[index];
+ return [name,{
+  scale:[{time:0,x:.35,y:.35},{time:at,x:.35,y:.35},
+         {time:at+.11,x:1.17,y:1.17},{time:at+.24,x:1,y:1},
+         {time:1.34,x:1,y:1},
+         ...(index===0?[{time:1.43,x:1.11,y:1.11},{time:1.58,x:1,y:1}]:[]),
+         {time:2.05,x:1,y:1},{time:2.29,x:.35,y:.35},{time:examDuration,x:.35,y:.35}],
+  translate:[{time:0,x:-1.4,y:0},{time:at,x:-1.4,y:0},
+             {time:at+.11,x:0,y:0},{time:2.05,x:0,y:0},
+             {time:2.29,x:-1.4,y:0},{time:examDuration,x:-1.4,y:0}]
+ }];
+}));
+examBones['exam-glint']={scale:[{time:0,x:.5,y:.5},{time:1.35,x:.5,y:.5},
+ {time:1.43,x:1.3,y:1.3},{time:1.57,x:.5,y:.5},{time:examDuration,x:.5,y:.5}]};
 const animation=(slotAnimations,boneAnimations)=>({slots:slotAnimations,bones:boneAnimations});
 const json={
  skeleton:{spine:'4.2.00',images:'./',audio:'./',x:-22,y:-22,width:44,height:44,fps:30},
@@ -83,10 +93,7 @@ function glint(){
  return canvas.toBuffer('image/png');
 }
 
-function examPart(x,y){
- if(y<47)return x<44?'exam-badge':y<36?'exam-line-top':'exam-line-middle';
- return y<56?'exam-line-low':'exam-line-bottom';
-}
+function examPart(x,y){return y<44?(x<44?'exam-check':'exam-line-top'):(x<44?'exam-circle':'exam-line-bottom');}
 
 async function renderExamArt(){
  const scratch=await mkdtemp(resolve(tmpdir(),'review-today-exam-icon-'));
@@ -121,6 +128,8 @@ async function renderExamArt(){
 }
 
 await mkdir(target,{recursive:true});
+for(const old of ['exam-badge.png','exam-line-middle.png','exam-line-low.png'])
+ await rm(resolve(target,old),{force:true});
 await renderExamArt();
 await writeFile(resolve(target,'glint.png'),glint());
 const imageNames=['glint',...examParts],atlas=imageNames.map(name=>{

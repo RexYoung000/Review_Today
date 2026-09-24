@@ -5,11 +5,11 @@ pma: false
 glint
   bounds: 0,0,64,64
 
-exam-badge.png
+exam-check.png
 size: 88,88
 filter: Linear,Linear
 pma: false
-exam-badge
+exam-check
   bounds: 0,0,88,88
 
 exam-line-top.png
@@ -19,18 +19,11 @@ pma: false
 exam-line-top
   bounds: 0,0,88,88
 
-exam-line-middle.png
+exam-circle.png
 size: 88,88
 filter: Linear,Linear
 pma: false
-exam-line-middle
-  bounds: 0,0,88,88
-
-exam-line-low.png
-size: 88,88
-filter: Linear,Linear
-pma: false
-exam-line-low
+exam-circle
   bounds: 0,0,88,88
 
 exam-line-bottom.png

@@ -78,7 +78,7 @@ struct MascotMotionNativeTests {
         }
         coordinator.configuration.header = true
         coordinator.configuration.entryKind = "exam"
-        coordinator.configuration.entryStartEpoch = Date().timeIntervalSince1970 + 2 // Hold the exact first frame.
+        coordinator.configuration.entryStartEpoch = Date().timeIntervalSince1970 - 0.95 // Settled full checklist.
         coordinator.setVisible(true)
         try await Task.sleep(for: .milliseconds(180))
         let bounds = try await iconBounds()
