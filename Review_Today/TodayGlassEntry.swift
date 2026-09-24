@@ -18,19 +18,19 @@ struct TodayGlassEntry: View {
     @State private var hovering = false
     @State private var pointer = UnitPoint(x: 0.5, y: 0.3)
     @State private var entrySize = CGSize(width: 400, height: 84)
-    @State private var enteredAt = Date.now
+    @State private var iconBurst = false
+    @State private var iconBurstTask: Task<Void, Never>?
 
     private var shape: RoundedRectangle { .init(cornerRadius: Runway.chipRadius, style: .continuous) }
     private var keyboard: Bool { focused && input.keyboardNavigation }
     private var selected: Bool { enabled && ((controlState == .key && (hovering || keyboard)) || previewPoint != nil) }
     private var activePoint: UnitPoint { reduced || keyboard ? .init(x: 0.28, y: 0.24) : hovering ? pointer : previewPoint ?? pointer }
     private var dark: Bool { scheme == .dark }
-    private var flowing: Bool { hovering && selected && !keyboard && !reduced && !opaque }
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: 14) {
-                Image(systemName: symbol).font(.system(size: 19, weight: .medium)).frame(width: 26)
+                entryIcon
                 VStack(alignment: .leading, spacing: 6) {
                     Text(title).font(.headline).underline(keyboard)
                     Text(detail).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
@@ -56,18 +56,61 @@ struct TodayGlassEntry: View {
         .onContinuousHover { phase in
             switch phase {
             case .active(let location):
+                if !hovering && enabled && controlState == .key && !reduced { playIconBurst() }
                 hovering = true
                 if !reduced {
                     pointer = .init(x: min(1, max(0, location.x / max(1, entrySize.width))),
                                     y: min(1, max(0, location.y / max(1, entrySize.height))))
                 }
-            case .ended: hovering = false
+            case .ended: endHover()
             }
         }
         .onGeometryChange(for: CGSize.self) { $0.size } action: { entrySize = $0 }
-        .onChange(of: flowing) { _, active in if active { enteredAt = .now } }
-        .onChange(of: controlState) { _, value in if value != .key { hovering = false } }
-        .onDisappear { hovering = false }
+        .onChange(of: controlState) { _, value in if value != .key { endHover() } }
+        .onChange(of: reduced) { _, value in if value { stopIconBurst() } }
+        .onDisappear { endHover() }
+    }
+
+    private var entryIcon: some View {
+        ZStack {
+            if symbol == "sparkle" && iconBurst {
+                Image(systemName: symbol)
+                    .foregroundStyle(palette.ink.opacity(0.25))
+                    .scaleEffect(1.5)
+                    .blur(radius: 3)
+            }
+            Image(systemName: symbol)
+                .rotationEffect(.degrees(symbol == "sparkle" && iconBurst ? -14 : 0))
+                .offset(y: symbol != "sparkle" && iconBurst ? -3 : 0)
+        }
+        .font(.system(size: 19, weight: .medium))
+        .scaleEffect(iconBurst ? 1.22 : selected ? 1.12 : 1)
+        .frame(width: 26, height: 26)
+        .animation(reduced || keyboard ? nil : .spring(response: 0.22, dampingFraction: 0.62), value: iconBurst)
+        .animation(reduced || keyboard ? nil : .spring(response: 0.28, dampingFraction: 0.7), value: selected)
+        .accessibilityHidden(true) // The parent button already names the destination.
+    }
+
+    private func playIconBurst() {
+        iconBurstTask?.cancel()
+        iconBurst = true
+        iconBurstTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(170))
+            guard !Task.isCancelled else { return }
+            iconBurst = false
+            iconBurstTask = nil
+        }
+    }
+
+    private func stopIconBurst() {
+        iconBurstTask?.cancel()
+        iconBurstTask = nil
+        iconBurst = false
+    }
+
+    private func endHover() {
+        hovering = false
+        stopIconBurst()
     }
 
     private var glass: some View {
@@ -103,55 +146,8 @@ struct TodayGlassEntry: View {
             }
         }
         .clipShape(shape)
-        .overlay {
-            if flowing {
-                TimelineView(.animation(minimumInterval: 1 / 30)) { clock in
-                    GlassEdgeFlow(elapsed: max(0, clock.date.timeIntervalSince(enteredAt)), dark: dark)
-                }
-            }
-        }
         .allowsHitTesting(false)
         .accessibilityHidden(true)
-    }
-}
-
-/// Inspired by StarBorder's opposing top and bottom radial sweeps. The streaks
-/// are masked to the actual rounded outline, not clipped into the card interior.
-private struct GlassEdgeFlow: View {
-    let elapsed: Double
-    let dark: Bool
-
-    var body: some View {
-        GeometryReader { geometry in
-            let phase = elapsed.truncatingRemainder(dividingBy: 5.4) / 5.4
-            let travel = phase < 0.5 ? phase * 2 : (1 - phase) * 2
-            let fade = 0.25 + 0.75 * sin(.pi * travel)
-            let streakWidth = min(240, geometry.size.width * 0.49)
-            ZStack {
-                streak(width: streakWidth)
-                    .position(x: geometry.size.width * (-0.18 + 1.36 * travel), y: 1)
-                streak(width: streakWidth)
-                    .position(x: geometry.size.width * (1.18 - 1.36 * travel), y: geometry.size.height - 1)
-            }
-            .frame(width: geometry.size.width, height: geometry.size.height)
-            .opacity(fade)
-            .mask {
-                RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous)
-                    .inset(by: 1)
-                    .stroke(.white, lineWidth: dark ? 1.4 : 1)
-            }
-            .shadow(color: dark ? .white.opacity(0.5) : Color(red: 0.77, green: 0.89, blue: 1).opacity(0.62),
-                    radius: dark ? 3 : 2.5)
-        }.accessibilityHidden(true)
-    }
-
-    private func streak(width: CGFloat) -> some View {
-        let core = dark ? Color.white : Color(red: 0.86, green: 0.94, blue: 1)
-        return Capsule()
-            .fill(LinearGradient(colors: [.clear, core.opacity(0.4), core,
-                                           core.opacity(0.4), .clear],
-                                 startPoint: .leading, endPoint: .trailing))
-            .frame(width: width, height: 10)
     }
 }
 
