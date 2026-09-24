@@ -4,7 +4,7 @@
 
 ## App 内接入
 
-`node tools/mascot-motion/src/build-native.mjs`（仓库根目录）从已提交骨架、纹理与共享模块生成 `Review_Today/MascotMotion.html`；`--check` 检查资源是否与源一致。今天入口的两条图标 Spine 时间轴由 `node tools/mascot-motion/src/build-entry-icons.mjs` 重建，改动它们后先运行此命令，再生成 HTML。App 随包加载，不依赖 Node、8769、远程脚本或麦克风，页面通过 CSP 禁止网络请求。修改已确认动效后须重建该资源，再构建 App；MCP `.work` 草稿不会自动替换日常 App。
+`node tools/mascot-motion/src/build-native.mjs`（仓库根目录）从已提交骨架、纹理与共享模块生成 `Review_Today/MascotMotion.html`；`--check` 检查资源是否与源一致。今天入口的两条图标 Spine 时间轴由 `node tools/mascot-motion/src/build-entry-icons.mjs` 在 macOS 上重建：它调用 AppKit 导出模拟考原有 SF Symbol 的同一轮廓，同时生成静态资源与 Spine 分层纹理。改动图标后先运行此命令，再生成 HTML。App 随包加载，不依赖 Node、8769、远程脚本或麦克风，页面通过 CSP 禁止网络请求。修改已确认动效后须重建该资源，再构建 App；MCP `.work` 草稿不会自动替换日常 App。
 
 SwiftUI 的 `MascotMotion` 包装本地 WebKit/官方 Spine 渲染，避免重做另一套碰撞。`RunPhaseLine` 仅在已启动的 running / adjusting 时驱动 recall，完成/停止后短促收拢。四态组件参数为 surface、phase、level、reduced、rate；语音 level 当前用于明确标识的模拟验证，不是已接通的录音输入。非活动/遮挡/移除视图暂停，组件不接收鼠标或键盘焦点。
 

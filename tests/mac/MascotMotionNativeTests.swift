@@ -63,11 +63,31 @@ struct MascotMotionNativeTests {
         func visibleIconPixels() async throws -> Int {
             try await web.evaluateJavaScript("(()=>{const c=document.querySelector('canvas'),d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let n=0;for(let i=3;i<d.length;i+=4)if(d[i]>128)n++;return n})()") as! Int
         }
+        func iconBounds() async throws -> [String: Double] {
+            try await web.evaluateJavaScript("""
+            (()=>{const c=document.querySelector('canvas'),d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;
+              let left=c.width,top=c.height,right=-1,bottom=-1;
+              for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++)if(d[(y*c.width+x)*4+3]>128){
+                left=Math.min(left,x);top=Math.min(top,y);right=Math.max(right,x);bottom=Math.max(bottom,y);
+              }
+              const ratio=c.width/c.clientWidth,scale=Math.min(c.clientWidth/44,c.clientHeight/44);
+              return {left:22+(left/ratio-c.clientWidth/2)/scale,right:22+(right/ratio-c.clientWidth/2)/scale,
+                      top:22+(top/ratio-c.clientHeight/2)/scale,bottom:22+(bottom/ratio-c.clientHeight/2)/scale};
+            })()
+            """) as! [String: Double]
+        }
         coordinator.configuration.header = true
         coordinator.configuration.entryKind = "exam"
-        coordinator.configuration.entryStartEpoch = Date().timeIntervalSince1970 - 0.4
+        coordinator.configuration.entryStartEpoch = Date().timeIntervalSince1970 + 2 // Hold the exact first frame.
         coordinator.setVisible(true)
         try await Task.sleep(for: .milliseconds(180))
+        let bounds = try await iconBounds()
+        try expect(abs((bounds["left"] ?? 0) - 12) < 1.5 && abs((bounds["right"] ?? 0) - 31) < 1.5 &&
+                   abs((bounds["top"] ?? 0) - 13) < 1.5 && abs((bounds["bottom"] ?? 0) - 30.5) < 1.5,
+                   "Spine first frame shifts or scales the resting SF Symbol: \(bounds)")
+        coordinator.configuration.entryStartEpoch = Date().timeIntervalSince1970 - 0.4
+        coordinator.send()
+        try await Task.sleep(for: .milliseconds(100))
         var iconState = try await inspect()
         try expect((iconState["config"] as? [String: Any])?["entryKind"] as? String == "exam" && iconState["animating"] as? Bool == true, "Exam Spine loop did not start")
         try expect(try await visibleIconPixels() > 100, "Exam Spine icon is blank")
@@ -132,7 +152,10 @@ struct MascotMotionNativeTests {
         }
         coordinator.configuration.surface = .recall; coordinator.configuration.mode = .idle
         coordinator.configuration.reduced = false; coordinator.configuration.ambient = true; coordinator.send()
-        try await Task.sleep(for: .milliseconds(400)); state = try await inspect()
+        for _ in 0..<12 {
+            try await Task.sleep(for: .milliseconds(100)); state = try await inspect()
+            if state["animating"] as? Bool == true && (state["time"] as? Double ?? 0) > 0 { break }
+        }
         try expect(state["animating"] as? Bool == true && (state["time"] as? Double ?? 0) > 0, "Ambient idle did not breathe")
         coordinator.configuration.reduced = true; coordinator.send()
         try await Task.sleep(for: .milliseconds(100)); state = try await inspect()

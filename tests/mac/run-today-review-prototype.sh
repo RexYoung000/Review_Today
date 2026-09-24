@@ -20,6 +20,7 @@ for p in (root/'Review_Today/Fonts').glob('*'):
 assets=folder/'PrototypeAssets.xcassets'; assets.mkdir(exist_ok=True)
 shutil.copy2(root/'Review_Today/Assets.xcassets/Contents.json', assets/'Contents.json')
 shutil.copytree(root/'Review_Today/Assets.xcassets/BrandDefaultLogo.imageset',assets/'BrandDefaultLogo.imageset',dirs_exist_ok=True)
+shutil.copytree(root/'Review_Today/Assets.xcassets/TodayExamIcon.imageset',assets/'TodayExamIcon.imageset',dirs_exist_ok=True)
 subprocess.run(['xcrun','actool',str(assets),'--compile',str(resources),'--platform','macosx','--minimum-deployment-target','26.5'],check=True,stdout=subprocess.DEVNULL)
 with (contents/'Info.plist').open('wb') as f:
  plistlib.dump(dict(CFBundleIdentifier='Rex.Review-Today.TodayReviewPrototype',CFBundleName='TodayReviewPrototype',CFBundleDisplayName='Review Today · 交互原型',CFBundleExecutable='TodayReviewPrototype',CFBundlePackageType='APPL',LSMinimumSystemVersion='26.5',NSHighResolutionCapable=True,PreviewProjectRoot=str(root)),f)

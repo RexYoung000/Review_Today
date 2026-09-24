@@ -81,9 +81,19 @@ struct TodayGlassEntry: View {
     }
 
     private var entryIcon: some View {
-        Image(systemName: symbol)
-        .font(.system(size: 19, weight: .medium))
-        .scaleEffect(selected ? 1.12 : 1)
+        Group {
+            if kind == .exam {
+                Image("TodayExamIcon")
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundStyle(palette.ink)
+                    .frame(width: 44, height: 44)
+            } else {
+                Image(systemName: symbol)
+                    .font(.system(size: 19, weight: .medium))
+                    .scaleEffect(selected ? 1.12 : 1)
+            }
+        }
         .opacity(replacesIcon ? 0 : 1)
         .frame(width: 26, height: 26)
         .animation(reduced || keyboard ? nil : .spring(response: 0.28, dampingFraction: 0.7), value: selected)
