@@ -138,10 +138,11 @@ private struct GlassEdgeFlow: View {
     }
 
     private func streak(width: CGFloat) -> some View {
-        let core = dark ? Color.white : Color(white: 0.36)
+        let core = dark ? Color.white : Color(red: 0.57, green: 0.70, blue: 0.81)
+        let bloom = dark ? Color.white : Color(red: 0.70, green: 0.84, blue: 0.94)
         return ZStack {
             Capsule()
-                .fill(LinearGradient(colors: [.clear, .white.opacity(dark ? 0.72 : 0.9), .clear],
+                .fill(LinearGradient(colors: [.clear, bloom.opacity(dark ? 0.72 : 0.9), .clear],
                                      startPoint: .leading, endPoint: .trailing))
                 .frame(width: width, height: 16)
                 .blur(radius: 6)
@@ -150,7 +151,7 @@ private struct GlassEdgeFlow: View {
                                                core.opacity(dark ? 1 : 0.98),
                                                core.opacity(dark ? 0.38 : 0.4), .clear],
                                      startPoint: .leading, endPoint: .trailing))
-                .frame(width: width * 0.86, height: dark ? 3.2 : 4.2)
+                .frame(width: width * 0.86, height: dark ? 3.2 : 3.5)
         }
     }
 }

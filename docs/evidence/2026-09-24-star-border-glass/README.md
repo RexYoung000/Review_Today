@@ -1,6 +1,8 @@
 # 今天入口：B 玻璃反光与边缘流光
 
-2026-09-24。Rex 选择 B，并以 [React Bits Star Border](https://reactbits.dev/animations/star-border) 的上、下缘反向流动作为动效参考。本次在 SwiftUI 的系统玻璃上实现中性银白边缘流光；没有接入 React、CSS 或新的依赖。正式 App 的「开始学习」「模拟考」共用 `TodayGlassEntry`，仅在窗口有效且鼠标实际悬停时播放，离开即停止。键盘聚焦、减少动态和减少透明度使用静态反馈。
+2026-09-24。Rex 选择 B，并以 [React Bits Star Border](https://reactbits.dev/animations/star-border) 的上、下缘反向流动作为动效参考。本次在 SwiftUI 的系统玻璃上实现边缘流光；没有接入 React、CSS 或新的依赖。正式 App 的「开始学习」「模拟考」共用 `TodayGlassEntry`，仅在窗口有效且鼠标实际悬停时播放，离开即停止。键盘聚焦、减少动态和减少透明度使用静态反馈。
+
+浅色模式实看后，Rex 认为深灰细芯有脏污感。本轮将浅色细芯改回原玻璃入口的淡蓝色，背后的柔光改为蓝白色并缩细细芯；深色仍用已认可的白色。悬停触发、移动节奏和其余入口布局未变。更新后的原型与 Jev 测试 App 均重新构建通过；测试 App 再次完成签名校验、服务健康检查和原有数据库完整性及记录数核对。自动化无法产生连续鼠标悬停事件，因此新颜色在流动时的视觉效果仍待 Rex 直接验收。
 
 已将最终构建更新到原有 `Review Today · Jev 测试` 实例（`Rex.Review-Today.Jev.NativeQA`）；沿用原测试库、服务端口及凭证来源。替换前备份了 App 和 SQLite，签名严格校验通过。重启后 Jev 测试服务 `/healthz` 为 200，界面再次显示「Jev 测试已启用」；SQLite 完整性为 `ok`，知识 0、会话 3、消息 30、复习轮次与尝试 0，和替换前一致。点击两个入口分别进入现有 Agent 和模拟考模式选择页。
 
