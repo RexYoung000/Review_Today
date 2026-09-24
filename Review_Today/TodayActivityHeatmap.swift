@@ -11,7 +11,7 @@ struct TodayActivityHeatmap: View {
     @Environment(\.locale) private var locale
     @State private var selectedDate: Date?
     @State private var day = Date.now
-    @State private var compact = false
+    @State private var cardWidth: CGFloat = 0
 
     var body: some View {
         var calendar = calendar
@@ -33,46 +33,78 @@ struct TodayActivityHeatmap: View {
     }
 
     private func card(_ snapshot: TodayActivitySnapshot) -> some View {
-        RunwayCard(padding: snapshot.isEmpty ? 12 : Runway.gap) {
-            VStack(alignment: .leading, spacing: snapshot.isEmpty ? 10 : 16) {
-                HStack(spacing: 44) {
-                    stat(snapshot.activeDays, "活跃天数")
-                    stat(snapshot.currentStreak, "当前连续天数")
-                    stat(snapshot.longestStreak, "最长连续天数")
-                    Spacer()
-                    Text("最近 26 周").font(.caption).foregroundStyle(.secondary)
-                }
-                // The measured width chooses a size before building cells. One
-                // grid replaces three independently evaluated ViewThatFits trees.
-                GeometryReader { geometry in
-                    let large = geometry.size.width >= 20 + 26 * 16 + 25 * 5
-                    let cell: CGFloat = large ? 16 : 12
-                    let spacing: CGFloat = large ? 5 : 4
-                    ScrollView(.horizontal) { grid(snapshot, cell: cell, spacing: spacing) }
-                        .scrollDisabled(geometry.size.width >= 20 + 26 * cell + 25 * spacing)
-                }
-                .onGeometryChange(for: Bool.self) { $0.size.width < 561 } action: { value in if compact != value { compact = value } }
-                .frame(height: compact ? 128 : 162)
-                HStack(spacing: 5) {
-                    Text("较少")
-                    ForEach(0..<5, id: \.self) { level in
-                        RoundedRectangle(cornerRadius: 3).fill(color(level)).frame(width: 14, height: 14)
+        let wide = cardWidth >= 920
+        let contentWidth = max(0, cardWidth - 40)
+        return RunwayCard(padding: 20) {
+            VStack(alignment: .leading, spacing: 18) {
+                if wide {
+                    HStack(alignment: .top, spacing: 18) {
+                        calendarPanel(snapshot, width: contentWidth - 178)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        statistics(snapshot, vertical: true).frame(width: 160)
                     }
-                    Text("较多")
-                }.font(.caption2).foregroundStyle(.secondary)
+                } else {
+                    calendarPanel(snapshot, width: contentWidth)
+                    statistics(snapshot, vertical: false)
+                }
                 if let selectedDate {
                     Divider()
                     details(selectedDate, rows: snapshot.activitiesByDay[selectedDate] ?? [])
                 }
             }
         }
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
+            if abs(cardWidth - width) > 1 { cardWidth = width }
+        }
+    }
+
+    private func calendarPanel(_ snapshot: TodayActivitySnapshot, width: CGFloat) -> some View {
+        let spacing: CGFloat = width >= 650 ? 5.5 : 4
+        let cell = min(width >= 650 ? 22.0 : 20.0,
+                       max(12.0, floor((width - 28 - 25 * spacing) / 26)))
+        let gridWidth = 28 + 26 * cell + 25 * spacing
+        return VStack(alignment: .leading, spacing: 12) {
+            Text("最近 26 周").font(.callout.weight(.medium)).foregroundStyle(runway.ink)
+            ScrollView(.horizontal) { grid(snapshot, cell: cell, spacing: spacing) }
+                .scrollDisabled(width >= gridWidth)
+                .frame(height: 22 + 7 * cell + 6 * spacing)
+            HStack(spacing: 5) {
+                Text("较少")
+                ForEach(0..<5, id: \.self) { level in
+                    RoundedRectangle(cornerRadius: 3).fill(color(level)).frame(width: 14, height: 14)
+                }
+                Text("较多")
+            }.font(.caption2).foregroundStyle(.secondary)
+        }.frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func statistics(_ snapshot: TodayActivitySnapshot, vertical: Bool) -> some View {
+        let values = [(snapshot.activeDays, "活跃天数"), (snapshot.currentStreak, "当前连续天数"),
+                      (snapshot.longestStreak, "最长连续天数")]
+        return Group {
+            if vertical {
+                VStack(spacing: 8) {
+                    ForEach(values.indices, id: \.self) { index in stat(values[index].0, values[index].1) }
+                }
+            } else {
+                HStack(spacing: 8) {
+                    ForEach(values.indices, id: \.self) { index in stat(values[index].0, values[index].1) }
+                }
+            }
+        }
     }
 
     private func stat(_ value: Int, _ title: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text("\(value) 天").font(.title2.bold()).foregroundStyle(runway.ink)
-            Text(title).font(.caption).foregroundStyle(.secondary)
-        }
+        VStack(alignment: .leading, spacing: 7) {
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                Text("\(value)").font(.system(size: 25, weight: .semibold)).monospacedDigit()
+                Text("天").font(.caption).foregroundStyle(.secondary)
+            }.foregroundStyle(runway.ink)
+            Text(title).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+        }.frame(maxWidth: .infinity, minHeight: 70, alignment: .leading)
+            .padding(.horizontal, 15).padding(.vertical, 8)
+            .background(runway.field.opacity(0.65), in: RoundedRectangle(cornerRadius: Runway.chipRadius, style: .continuous))
+            .accessibilityElement(children: .combine)
     }
 
     private func grid(_ snapshot: TodayActivitySnapshot, cell: CGFloat, spacing: CGFloat) -> some View {
