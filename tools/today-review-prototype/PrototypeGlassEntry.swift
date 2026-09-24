@@ -22,7 +22,7 @@ struct PrototypeGlassEntry: View {
 
     private var shape: RoundedRectangle { .init(cornerRadius: Runway.chipRadius, style: .continuous) }
     private var keyboard: Bool { focused && input.keyboardNavigation }
-    private var selected: Bool { enabled && controlState == .key && (hovering || keyboard || previewSelected) }
+    private var selected: Bool { enabled && ((controlState == .key && (hovering || keyboard)) || previewSelected) }
     private var dark: Bool { scheme == .dark }
     private var flowing: Bool { selected && !keyboard && !reduced && !opaque }
 
