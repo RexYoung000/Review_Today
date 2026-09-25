@@ -120,6 +120,13 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: .dictationSessionsDeleted)) { note in
             if let ids = note.object as? Set<UUID> { draftStore.discard(ids) }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .localDataDidReset)) { note in
+            selectedKnowledgeID = nil
+            if note.object as? LocalResetKind == .all {
+                selectedLearningSessionID = nil; captureDestination = nil; draftEntrance = true
+                selection = .today
+            }
+        }
         .onReceive(NotificationCenter.default.publisher(for: .reviewReturnToToday)) { _ in
             selection = .today
         }

@@ -303,6 +303,12 @@ final class ReviewController {
             if let entry { voice.bind(entry.attemptID, generation: generation) }
         }
     }
+    func discardForDataReset() {
+        work?.cancel(); work = nil; generation += 1; voice.stop()
+        session = nil; resumable = nil; correctionTarget = nil
+        answer = ""; feedback = ""; savedFeedback = ""; savedReaction = nil
+        phase = "setup"; errorText = nil
+    }
     func pause() {
         work?.cancel(); work = nil; generation += 1; voice.stop()
         guard let context, let session, session.endedAt == nil, !session.paused else { return }
@@ -317,12 +323,15 @@ final class ReviewController {
         let pending = attempts.filter(\.serviceCommitPending)
         guard !pending.isEmpty else { return }
         let snapshot = ReviewAPI.SessionSnapshot(session, entry: entry)
+        let resetGeneration = LocalDataReset.generation
         Task {
             do {
                 try await syncSession(snapshot)
+                guard resetGeneration == LocalDataReset.generation else { return }
                 for row in pending {
                     let revision = row.correctionRevision
                     try await confirmAttempt(session, row)
+                    guard resetGeneration == LocalDataReset.generation else { return }
                     guard revision == row.correctionRevision else { continue }
                     row.serviceCommitPending = false
                     try context.save()

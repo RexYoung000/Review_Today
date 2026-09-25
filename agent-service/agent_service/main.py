@@ -29,6 +29,7 @@ Statuses: processing → committing → completed
 
 from __future__ import annotations
 
+from uuid import UUID
 import base64
 import asyncio
 import json
@@ -672,6 +673,24 @@ def capture_action(task_id: str, body: CaptureActionRequest, background: Backgro
         return record.view().model_dump()
 
     raise _http_error(400, "RT.CAPTURE.UNSUPPORTED_INPUT", "unknown action")
+
+
+class LocalDataCleanupRequest(BaseModel):
+    review_ids: list[UUID] = Field(default_factory=list, max_length=10000)
+    capture_ids: list[UUID] = Field(default_factory=list, max_length=10000)
+    attempt_ids: list[UUID] = Field(default_factory=list, max_length=100000)
+
+
+@app.post("/v2/local-data/cleanup")
+def local_data_cleanup(body: LocalDataCleanupRequest) -> dict:
+    from agent_service.review_sessions import store as review_session_store
+    review_session_store.erase([str(v) for v in body.review_ids], [str(v) for v in body.attempt_ids])
+    store.erase([str(v) for v in body.capture_ids])
+    with _grade_lock:
+        for value in body.attempt_ids:
+            _grade_results.pop(str(value), None)
+            _grade_acks.discard(str(value))
+    return {"cleaned": True}
 
 
 @app.post("/v1/review/grade")

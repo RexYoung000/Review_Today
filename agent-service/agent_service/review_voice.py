@@ -209,9 +209,10 @@ async def audio(websocket: WebSocket, session_id: UUID):
         pending.clear(); bindings.clear()
         # No audio payloads are retained. Usage is independent of grading success.
         try:
-            with store.db() as db:
+            with store.lock, store.db() as db:
                 db.execute('CREATE TABLE IF NOT EXISTS review_voice_usage (session_id TEXT, model TEXT, duration_ms INTEGER, calls INTEGER, usage TEXT)')
-                db.execute('INSERT INTO review_voice_usage VALUES (?,?,?,?,?)', (str(session_id), MODEL, int((time.monotonic()-started)*1000), calls, json.dumps(usage)))
+                if not db.execute('SELECT 1 FROM review_deleted_sessions WHERE id=?', (str(session_id),)).fetchone():
+                    db.execute('INSERT INTO review_voice_usage VALUES (?,?,?,?,?)', (str(session_id), MODEL, int((time.monotonic()-started)*1000), calls, json.dumps(usage)))
         except Exception: pass
         try: await websocket.close()
         except Exception: pass

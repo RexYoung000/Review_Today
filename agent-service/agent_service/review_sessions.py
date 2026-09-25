@@ -118,6 +118,7 @@ class ReviewStore:
         db.execute('CREATE TABLE IF NOT EXISTS review_turns (id TEXT PRIMARY KEY, session_id TEXT, fingerprint TEXT, result TEXT)')
         db.execute('CREATE TABLE IF NOT EXISTS review_commits (id TEXT, revision INTEGER, payload TEXT, PRIMARY KEY(id,revision))')
         db.execute('CREATE TABLE IF NOT EXISTS review_inputs (id TEXT PRIMARY KEY, payload TEXT)')
+        db.execute('CREATE TABLE IF NOT EXISTS review_deleted_sessions (id TEXT PRIMARY KEY)')
         with self.lock:
             if not self.recovered:
                 db.execute('DELETE FROM review_turns WHERE result IS NULL')
@@ -131,12 +132,28 @@ class ReviewStore:
         finally:
             db.close()
 
+    def erase(self, session_ids, attempt_ids):
+        # Tombstones contain only IDs and fence reconnects and late evaluations.
+        with self.lock, self.db() as db:
+            for sid in session_ids:
+                db.execute('INSERT OR IGNORE INTO review_deleted_sessions VALUES (?)', (sid,))
+                db.execute('DELETE FROM review_inputs WHERE id IN (SELECT id FROM review_turns WHERE session_id=?)', (sid,))
+                db.execute('DELETE FROM review_turns WHERE session_id=?', (sid,))
+                db.execute("DELETE FROM review_commits WHERE json_extract(payload, '$.session_id')=?", (sid,))
+                db.execute('DELETE FROM review_sessions WHERE id=?', (sid,))
+                if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='review_voice_usage'").fetchone():
+                    db.execute('DELETE FROM review_voice_usage WHERE session_id=?', (sid,))
+            for aid in attempt_ids:
+                db.execute('DELETE FROM review_commits WHERE id=?', (aid,))
+
     @staticmethod
     def binding_key(binding):
         return binding.model_dump_json() if binding else ''
 
     def upsert(self, body):
         with self.lock, self.db() as db:
+            if db.execute('SELECT 1 FROM review_deleted_sessions WHERE id=?', (str(body.session_id),)).fetchone():
+                raise HTTPException(409, 'RT.REVIEW.DELETED_SESSION')
             key = self.binding_key(body.binding)
             old = db.execute('SELECT revision,paused,binding FROM review_sessions WHERE id=?', (str(body.session_id),)).fetchone()
             if old and (old[0] > body.revision or (old[0] == body.revision and old[2] != key)):
@@ -151,9 +168,9 @@ class ReviewStore:
                 raise HTTPException(409, 'RT.REVIEW.STALE_SESSION')
 
     def lookup(self, sid, body):
-        self.validate(sid, body)
         fingerprint = hashlib.sha256(body.model_dump_json().encode()).hexdigest()
         with self.lock, self.db() as db:
+            self.validate(sid, body)
             row = db.execute('SELECT session_id,fingerprint,result FROM review_turns WHERE id=?', (str(body.event_id),)).fetchone()
             if row:
                 if row[0] != sid or row[1] != fingerprint: raise HTTPException(409, 'RT.REVIEW.EVENT_CONFLICT')

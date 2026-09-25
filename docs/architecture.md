@@ -1,5 +1,11 @@
 # Review Today Agent 与系统架构
 
+## 设置、清理事务与专属存储（2026-09-25）
+
+SettingsView 使用现有 AppSettings 与 Runway；新增 localDataCleanupJSON 默认空队列。LocalDataReset 在同一 MainActor 事务中复核范围、写入无正文删除标记与清理队列、删除业务记录并原子保存；回滚不返回成功。复习控制器的 generation 和既有会话 tombstone 阻止迟到回复恢复记录。清理仅携带 UUID 到 /v2/local-data/cleanup；ReviewStore 保留无正文删除标记，拒绝旧轮次重建，CaptureStore 丢弃被清除的工作结果。后台确认成功后才移除 outbox。
+
+正常 App 数据库固定到 Application Support/Review Today/Data/ReviewToday.store。首次迁移仅接受包含 ZKNOWLEDGE 和 ZAPPSETTINGS 的旧数据库，通过 SQLite Backup 复制已提交 WAL，保留旧库；遇到不相关默认库停止迁移，不覆盖。隔离／预览实例仍走原隔离配置。此次经 Rex 授权从 2026-09-25 19:21 备份恢复到新路径；未声称恢复此后的数据。
+
 ## 今天与复习展示层接入（2026-09-23，已实现／已安装）
 
 原型样式迁入 App 展示组件，业务代码不引用 tools/tests。Today 由当前 SwiftData 查询投影六种复习状态、最近学习与小结；保留活动缓存和既有导航回调。ReviewCoordinator 增加按结束轮次打开小结的意图，ReviewController 加载同一持久化快照，历史查看不创建轮次、不推进游标；返回复习时重新读取暂停清单。复习视图绑定现有真实控制器与音频状态，装饰动作只反映已保存结果，不参与评分或排期。文字切换取消语音连接／采音及迟到转写，保持当前题与已提交结果。数据库 schema、网络接口、模型及 FSRS 参数不变。

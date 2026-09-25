@@ -34,6 +34,11 @@ struct ReviewView: View {
                 }
             }
             .background(PaperSurface()).frame(minWidth: 700, minHeight: 650)
+            .onReceive(NotificationCenter.default.publisher(for: .localDataWillReset)) { _ in
+                controller.discardForDataReset(); motion.show(nil, still: true)
+                coordinator.summarySessionID = nil; coordinator.knowledgeIDs = []; coordinator.previewQuestionID = nil
+                dismiss()
+            }
             .onAppear { configure() }
             .onChange(of: coordinator.openNonce) { _, _ in configure() }
             .onDisappear { controller.pause(); motion.show(nil, still: true) }

@@ -63,6 +63,13 @@ class TaskStore:
     def __init__(self) -> None:
         self._lock = threading.Lock()
         self._tasks: dict[str, TaskRecord] = {}
+        self._erased: set[str] = set()
+
+    def erase(self, task_ids: list[str]) -> None:
+        with self._lock:
+            for task_id in task_ids:
+                self._erased.add(task_id)
+                self._tasks.pop(task_id, None)
 
     def get(self, task_id: str) -> TaskRecord | None:
         with self._lock:
@@ -70,11 +77,15 @@ class TaskStore:
 
     def put(self, record: TaskRecord) -> None:
         with self._lock:
+            if record.task_id in self._erased:
+                return
             record.updated_at = _now()
             self._tasks[record.task_id] = record
 
     def upsert_new(self, record: TaskRecord) -> tuple[TaskRecord, bool]:
         with self._lock:
+            if record.task_id in self._erased:
+                raise ValueError("RT.CAPTURE.DELETED_TASK")
             existing = self._tasks.get(record.task_id)
             if existing is not None:
                 return existing, False

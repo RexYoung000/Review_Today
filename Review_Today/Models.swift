@@ -179,6 +179,7 @@ final class AppSettings {
     var agentDraftThinking: String = "smart"
     var lastThinkingStrength: String = "smart"
     var sessionDeletionsJSON: String = "[]"
+    var localDataCleanupJSON: String = "[]"
 
     init(
         dailyReminderMinutes: Int = 21 * 60,

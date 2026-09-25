@@ -47,6 +47,7 @@ final class ConversationSync {
                 deletionCleaner = Task {
                     defer { self.deletionCleaner = nil }
                     await SessionDeletion.cleanPending(context: context)
+                    await LocalDataReset.cleanPending(context: context)
                 }
             }
             guard let work = try? ConversationWorkSnapshot(context: context) else { continue }
@@ -89,6 +90,7 @@ final class ConversationSync {
                     } catch is CancellationError {
                         return
                     } catch {
+                        guard (try? SessionDeletion.contains(session.id, context: context)) == false else { return }
                         session.syncError = HarnessAPIError.code(for: error)
                         if session.syncError == "RT.SESSION.UNKNOWN" {
                             do { try await ConversationProcessor.restoreCheckpoint(session, context: context) }

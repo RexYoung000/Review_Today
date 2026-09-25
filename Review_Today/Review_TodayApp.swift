@@ -19,7 +19,12 @@ struct Review_TodayApp: App {
                 return
             }
 #endif
-            try ReviewMigration.backupIfNeeded(ModelConfiguration().url)
+            let storeURL = try ReviewMigration.prepareStore(
+                legacyURL: ModelConfiguration().url,
+                directory: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+                    .appendingPathComponent("Review Today/Data", isDirectory: true)
+            )
+            try ReviewMigration.backupIfNeeded(storeURL)
             container = try ModelContainer(
                 for: Source.self,
                 Knowledge.self,
@@ -39,7 +44,8 @@ struct Review_TodayApp: App {
                 SessionSummaryRecord.self,
                 AgentRun.self,
                 AgentRunControl.self,
-                SessionEventRecord.self
+                SessionEventRecord.self,
+                configurations: ModelConfiguration(url: storeURL)
             )
         } catch {
             fatalError("SwiftData container failed: \(error)")
