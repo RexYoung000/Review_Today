@@ -89,6 +89,13 @@ struct TodayGlassEntry: View {
                     .foregroundStyle(palette.ink)
                     .opacity(animatedIconReady ? 0.18 : 1)
                     .frame(width: 44, height: 44)
+                    // The Spine overlay disappears immediately on hover exit. Restore its
+                    // static fallback in the same frame instead of inheriting the card's
+                    // hover animation, which briefly leaves a pale icon behind.
+                    .transaction { transaction in
+                        transaction.animation = nil
+                        transaction.disablesAnimations = true
+                    }
             } else {
                 Image(systemName: symbol)
                     .font(.system(size: 19, weight: .medium))

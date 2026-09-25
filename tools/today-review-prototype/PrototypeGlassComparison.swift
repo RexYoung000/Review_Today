@@ -24,7 +24,7 @@ struct PrototypeGlassComparison: View {
                             Text("右缘").tag(3)
                         }
                         .pickerStyle(.segmented).labelsHidden().frame(width: 320)
-                        Text("此处只预览静态反光位置；图标循环可在下方单独预览。")
+                        Text("可固定反光位置；选择图标循环时也会模拟预选，以检查移出复位。")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     HStack(spacing: 12) {
@@ -82,7 +82,7 @@ struct PrototypeGlassComparison: View {
 
     private var proposedPanel: some View {
         panel(title: "现用入口 · Spine 图标循环", number: "02", description: "悬停时学习星芒闪烁；模拟考的勾选与短线依次冒出、轻闪，再回到完整图标") {
-            TodayEntryPair(horizontal: false, previewPoint: samplePoint,
+            TodayEntryPair(horizontal: false, previewPoint: samplePoint ?? (previewIcon == 0 ? nil : .init(x: 0.50, y: 0.25)),
                            previewKind: previewIcon == 1 ? .learning : previewIcon == 2 ? .exam : nil,
                            onLearn: { tapped("试作 · 开始学习") },
                            onExam: { tapped("试作 · 模拟考") })
