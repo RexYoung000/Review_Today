@@ -222,15 +222,72 @@ private struct KnowledgeDepthCard: View {
         VStack(alignment: .leading, spacing: paper ? 24 : 28) {
             if paper {
                 Text(resolvedTitle).font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(runway.ink).lineSpacing(4)
+                    .foregroundStyle(runway.ink).lineSpacing(paper ? 7 : 4)
                     .fixedSize(horizontal: false, vertical: true)
                     .contentShape(Rectangle()).knowledgeDeckDragSurface()
                     .accessibilityAddTraits(.isHeader)
             }
             questionBlock
-            detailBlock
-            memoryBlock
-            sourceBlock
+            if paper {
+                paperSection { detailBlock }
+                paperSection { memoryBlock }
+                if !mixups.isEmpty { paperSection { paperMisconceptions } }
+                paperSection { paperSource }
+            } else {
+                detailBlock
+                memoryBlock
+                sourceBlock
+            }
+        }
+        .frame(maxWidth: paper ? 660 : .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .center)
+    }
+
+    private func paperSection<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        content()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(22)
+            .background(runway.field.opacity(0.45), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+    }
+
+    private var paperMisconceptions: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("常见误区").font(.system(size: 12, weight: .semibold)).foregroundStyle(.secondary)
+            ForEach(Array(mixups.enumerated()), id: \.offset) { _, line in
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    Image(systemName: "exclamationmark.circle")
+                        .font(.system(size: 13)).foregroundStyle(.secondary).accessibilityHidden(true)
+                    Text(line).font(.system(size: 15)).foregroundStyle(runway.copy)
+                        .lineSpacing(7).fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+    }
+
+    private var paperSource: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            HStack {
+                Text("来源依据").font(.system(size: 12, weight: .semibold)).foregroundStyle(.secondary)
+                if let origin = item.originSessionID, (try? SessionDeletion.contains(origin, context: deletionContext)) == true {
+                    Text("原会话已删除").font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            if let locator = sourceLocator {
+                Link("打开来源", destination: locator).font(.caption)
+            } else {
+                Text("来自你提交的原文").font(.caption).foregroundStyle(.secondary)
+            }
+            let evidence = item.evidenceExcerpt.trimmingCharacters(in: .whitespacesAndNewlines)
+            if evidence.isEmpty {
+                Text("没有可核对的原文证据。").font(.system(size: 15)).foregroundStyle(Color.orange)
+            } else {
+                VStack(alignment: .leading, spacing: 22) {
+                    ForEach(Array(evidence.components(separatedBy: "\n\n").enumerated()), id: \.offset) { _, paragraph in
+                        Text(paragraph).font(.system(size: 15)).foregroundStyle(runway.copy)
+                            .lineSpacing(7).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
         }
     }
 
@@ -348,11 +405,11 @@ private struct KnowledgeDepthCard: View {
     }
 
     private var detailBlock: some View {
-        VStack(alignment: .leading, spacing: Runway.gap) {
-            Text(String(localized: "详解"))
+        VStack(alignment: .leading, spacing: paper ? 20 : Runway.gap) {
+            Text(paper ? "讲解" : String(localized: "详解"))
                 .font(paper ? .system(size: 12, weight: .semibold) : .caption)
                 .foregroundStyle(.secondary)
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: paper ? 24 : 12) {
                 ForEach(Array(pieces.enumerated()), id: \.offset) { _, piece in
                     explanationRow(piece)
                 }
@@ -369,7 +426,7 @@ private struct KnowledgeDepthCard: View {
                 Text(mainQuestion.promptText)
                     .font(paper ? .system(size: 15, weight: .medium) : .body.weight(.medium))
                     .foregroundStyle(runway.ink)
-                    .lineSpacing(4)
+                    .lineSpacing(paper ? 7 : 4)
                     .fixedSize(horizontal: false, vertical: true)
             } else {
                 Text(String(localized: "这张卡还没有可用的主问题。"))
@@ -377,13 +434,13 @@ private struct KnowledgeDepthCard: View {
                     .foregroundStyle(Color.orange)
             }
         }
-        .padding(paper ? 16 : 20)
+        .padding(paper ? 22 : 20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(runway.field.opacity(paper ? 0.35 : 0.70), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(runway.field.opacity(paper ? 0.35 : 0.70), in: RoundedRectangle(cornerRadius: paper ? 18 : 14, style: .continuous))
     }
 
     private var memoryBlock: some View {
-        VStack(alignment: .leading, spacing: Runway.gap) {
+        VStack(alignment: .leading, spacing: paper ? 20 : Runway.gap) {
             Text(String(localized: "判断关键点"))
                 .font(paper ? .system(size: 12, weight: .semibold) : .caption)
                 .foregroundStyle(.secondary)
@@ -404,7 +461,7 @@ private struct KnowledgeDepthCard: View {
                     memoryRow(line)
                 }
             }
-            if !mixups.isEmpty {
+            if !paper && !mixups.isEmpty {
                 DisclosureGroup(isExpanded: $misconceptionsExpanded) {
                     VStack(alignment: .leading, spacing: 12) {
                         ForEach(Array(mixups.enumerated()), id: \.offset) { index, line in
@@ -415,7 +472,7 @@ private struct KnowledgeDepthCard: View {
                             }
                                 .font(paper ? .system(size: 15) : .callout)
                                 .foregroundStyle(runway.copy)
-                                .lineSpacing(4)
+                                .lineSpacing(paper ? 7 : 4)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                     }
@@ -461,7 +518,7 @@ private struct KnowledgeDepthCard: View {
                     Text("“\(evidence)”")
                         .font(paper ? .system(size: 15) : .callout)
                         .foregroundStyle(runway.copy)
-                        .lineSpacing(4)
+                        .lineSpacing(paper ? 7 : 4)
                         .textSelection(.enabled)
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(Runway.gap)
@@ -506,7 +563,7 @@ private struct KnowledgeDepthCard: View {
                 Text(piece.text)
                     .font(paper ? .system(size: 15) : .callout)
                     .foregroundStyle(runway.copy)
-                    .lineSpacing(4)
+                    .lineSpacing(paper ? 7 : 4)
                     .fixedSize(horizontal: false, vertical: true)
             }
         case .bullet:
@@ -519,14 +576,14 @@ private struct KnowledgeDepthCard: View {
                 Text(piece.text)
                     .font(paper ? .system(size: 15) : .callout)
                     .foregroundStyle(runway.copy)
-                    .lineSpacing(4)
+                    .lineSpacing(paper ? 7 : 4)
                     .fixedSize(horizontal: false, vertical: true)
             }
         case .paragraph:
             Text(piece.text)
                 .font(paper ? .system(size: 15) : .callout)
                 .foregroundStyle(runway.copy)
-                .lineSpacing(5)
+                .lineSpacing(paper ? 7 : 5)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -546,7 +603,7 @@ private struct KnowledgeDepthCard: View {
                     Text(String(text[text.index(after: colon)...]))
                         .font(paper ? .system(size: 15) : .callout)
                         .foregroundStyle(runway.copy)
-                        .lineSpacing(4)
+                        .lineSpacing(paper ? 7 : 4)
                         .frame(minWidth: 180, maxWidth: .infinity, alignment: .leading)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -557,7 +614,7 @@ private struct KnowledgeDepthCard: View {
                     Text(String(text[text.index(after: colon)...]))
                         .font(paper ? .system(size: 15) : .callout)
                         .foregroundStyle(runway.copy)
-                        .lineSpacing(4)
+                        .lineSpacing(paper ? 7 : 4)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -565,7 +622,7 @@ private struct KnowledgeDepthCard: View {
             Text(text)
                 .font(paper ? .system(size: 15) : .callout)
                 .foregroundStyle(runway.copy)
-                .lineSpacing(4)
+                .lineSpacing(paper ? 7 : 4)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
