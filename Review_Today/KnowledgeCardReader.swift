@@ -44,6 +44,7 @@ private struct KnowledgeDisclosureStyle: DisclosureGroupStyle {
 
 struct KnowledgeDeckOverlay: View {
     var items: [Knowledge]
+    var sourceFrame: CGRect? = nil
     var titles: [UUID: String]
     @Binding var index: Int
     var coordinator: ReviewCoordinator
@@ -53,11 +54,25 @@ struct KnowledgeDeckOverlay: View {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.runway) private var runway
 
+    @Environment(\.knowledgePaper) private var paper
+
     var body: some View {
+        if paper {
+            KnowledgePaperTransition(sourceFrame: sourceFrame, onClose: onClose) { close in
+                deck(close: close)
+            }
+        } else {
+            ZStack {
+                runway.scrim.ignoresSafeArea().onTapGesture(perform: onClose)
+                deck(close: onClose)
+            }
+        }
+    }
+
+    private func deck(close: @escaping () -> Void) -> some View {
         ZStack {
-            runway.scrim
+            Color.clear
                 .ignoresSafeArea()
-                .onTapGesture(perform: onClose)
 
             DepthCarousel(items: deckItems, index: $index, title: {
                 titles[$0.id] ?? $0.item.title
@@ -66,7 +81,7 @@ struct KnowledgeDeckOverlay: View {
                     item: wrapper.item,
                     siblings: items,
                     resolvedTitle: titles[wrapper.id] ?? wrapper.item.title,
-                    onClose: onClose,
+                    onClose: close,
                     onPreview: {
                         guard let question = KnowledgeLexicon.mainQuestion(for: wrapper.item),
                               KnowledgeLexicon.previewUnavailableReason(for: wrapper.item) == nil
@@ -76,7 +91,7 @@ struct KnowledgeDeckOverlay: View {
                             questionID: question.id
                         )
                         openWindow(id: "review")
-                        onClose()
+                        close()
                     },
                     onAction: { onAction($0, wrapper.item.id) }
                 )
@@ -109,6 +124,10 @@ private struct KnowledgeDepthCard: View {
     var onAction: (KnowledgeAction) -> Void
     @Environment(\.modelContext) private var deletionContext
     @Environment(\.runway) private var runway
+    @Environment(\.knowledgePaper) private var paper
+    @Environment(\.knowledgePrototype) private var prototype
+    @State private var prototypeEnrollment: Bool?
+    @State private var prototypeMessage: String?
     @State private var sourceExpanded = false
     @State private var misconceptionsExpanded = false
 
@@ -129,7 +148,7 @@ private struct KnowledgeDepthCard: View {
     var body: some View {
         GeometryReader { _ in
             VStack(alignment: .leading, spacing: 0) {
-                titleBlock
+                if paper { paperHeader } else { titleBlock }
 
                 ScrollView(.vertical, showsIndicators: true) {
                     readingContent
@@ -140,11 +159,31 @@ private struct KnowledgeDepthCard: View {
                 .scrollIndicators(.visible)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-                footer
+                if paper { paperFooter } else { footer }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(runway.card)
         }
+        .alert("原型操作", isPresented: Binding(get: { prototypeMessage != nil }, set: { if !$0 { prototypeMessage = nil } })) {
+            Button("知道了") { prototypeMessage = nil }
+        } message: { Text(prototypeMessage ?? "") }
+    }
+
+    private var paperHeader: some View {
+        HStack(spacing: 12) {
+            Text(KnowledgeLexicon.displayTheme(for: item))
+                .font(.caption).foregroundStyle(.secondary)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle()).knowledgeDeckDragSurface()
+            Button(action: onClose) {
+                Image(systemName: "xmark").font(.system(size: 12, weight: .medium))
+                    .frame(width: 28, height: 28).foregroundStyle(.secondary)
+            }
+            .buttonStyle(InteractionButtonStyle(padding: 0, outline: .capsule))
+            .accessibilityLabel("关闭知识详情").keyboardShortcut(.cancelAction)
+        }
+        .padding(.horizontal, 24).padding(.top, 16).padding(.bottom, 12)
     }
 
     private var titleBlock: some View {
@@ -180,7 +219,14 @@ private struct KnowledgeDepthCard: View {
     }
 
     private var readingContent: some View {
-        VStack(alignment: .leading, spacing: 28) {
+        VStack(alignment: .leading, spacing: paper ? 24 : 28) {
+            if paper {
+                Text(resolvedTitle).font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(runway.ink).lineSpacing(4)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .contentShape(Rectangle()).knowledgeDeckDragSurface()
+                    .accessibilityAddTraits(.isHeader)
+            }
             questionBlock
             detailBlock
             memoryBlock
@@ -198,7 +244,8 @@ private struct KnowledgeDepthCard: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 if item.lifecycle == "active" {
-                    Toggle("已学过，参与间隔复习", isOn: Binding(get: { item.participatesInReview }, set: { enabled in
+                    Toggle("已学过，参与间隔复习", isOn: Binding(get: { enrolled }, set: { enabled in
+                        if prototype { prototypeEnrollment = enabled; return }
                         let before = (item.reviewEnrollment, item.studiedAt, item.dueAt)
                         item.setReviewParticipation(enabled)
                         do { try reviewContext.save(); reviewError = nil }
@@ -207,12 +254,12 @@ private struct KnowledgeDepthCard: View {
                     if let reviewError { Text(reviewError).font(.caption).foregroundStyle(.orange) }
                 }
                 HStack(alignment: .center, spacing: Runway.space) {
-                    Text(item.lifecycle == "soft_deleted" ? "已移到回收站" : !item.participatesInReview ? "仅保存资料 · 未参与复习" : "下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
+                    Text(item.lifecycle == "soft_deleted" ? "已移到回收站" : !enrolled ? "仅保存资料 · 未参与复习" : "下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer()
                     Menu {
-                        KnowledgeActionButtons(lifecycle: item.lifecycle, perform: onAction)
+                        KnowledgeActionButtons(lifecycle: item.lifecycle, perform: performAction)
                     } label: {
                         Image(systemName: "ellipsis")
                             .font(.body.weight(.medium))
@@ -224,7 +271,7 @@ private struct KnowledgeDepthCard: View {
                         RunwayPrimaryButton(
                             title: String(localized: "试一题"),
                             enabled: previewUnavailableReason == nil,
-                            action: onPreview
+                            action: preview
                         )
                     }
                 }
@@ -235,10 +282,75 @@ private struct KnowledgeDepthCard: View {
         }
     }
 
+
+    private var enrolled: Bool { prototypeEnrollment ?? item.participatesInReview }
+
+    private func preview() {
+        if prototype { prototypeMessage = "这里会打开独立复习窗口。本原型不出题、不调用模型、不写正式复习成绩。" }
+        else { onPreview() }
+    }
+    private func performAction(_ action: KnowledgeAction) {
+        if prototype { prototypeMessage = "模拟操作：" + action.title + "。正式知识不会改变。" }
+        else { onAction(action) }
+    }
+    private var enrollmentControl: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            if item.lifecycle == "active" {
+                Toggle("已学过，参与间隔复习", isOn: Binding(get: { enrolled }, set: { enabled in
+                    if prototype { prototypeEnrollment = enabled; return }
+                    let before = (item.reviewEnrollment, item.studiedAt, item.dueAt)
+                    item.setReviewParticipation(enabled)
+                    do { try reviewContext.save(); reviewError = nil }
+                    catch {
+                        reviewContext.rollback()
+                        item.reviewEnrollment = before.0; item.studiedAt = before.1; item.dueAt = before.2
+                        reviewError = "复习设置未保存，请重试。"
+                    }
+                })).toggleStyle(.checkbox).font(.system(size: 12))
+            }
+            Text(item.lifecycle == "soft_deleted" ? "已移到回收站" : !enrolled ? "仅保存资料 · 未参与复习" : "下次 \(item.dueAt.formatted(date: .abbreviated, time: .omitted))")
+                .font(.caption).foregroundStyle(.secondary)
+            if let reviewError { Text(reviewError).font(.caption).foregroundStyle(.orange) }
+        }
+    }
+    private var paperActions: some View {
+        HStack(spacing: 12) {
+            Menu {
+                KnowledgeActionButtons(lifecycle: item.lifecycle, perform: performAction)
+            } label: {
+                Image(systemName: "ellipsis").frame(width: 28, height: 28)
+            }.menuStyle(.borderlessButton).fixedSize().accessibilityLabel("知识管理")
+            if item.lifecycle != "soft_deleted" {
+                RunwayPrimaryButton(title: "试一题", enabled: previewUnavailableReason == nil, action: preview)
+            }
+        }
+    }
+    private var paperFooter: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 16) {
+                enrollmentControl
+                Spacer(minLength: 16)
+                paperActions
+            }.frame(minWidth: 512)
+            VStack(alignment: .leading, spacing: 10) {
+                enrollmentControl
+                HStack { Spacer(); paperActions }
+            }
+        }
+        .safeAreaInset(edge: .top, spacing: 6) {
+            if let previewUnavailableReason {
+                Text(previewUnavailableReason).font(.caption).foregroundStyle(.orange)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .padding(.horizontal, 24).padding(.vertical, 16)
+        .background(runway.card)
+    }
+
     private var detailBlock: some View {
         VStack(alignment: .leading, spacing: Runway.gap) {
             Text(String(localized: "详解"))
-                .font(.caption)
+                .font(paper ? .system(size: 12, weight: .semibold) : .caption)
                 .foregroundStyle(.secondary)
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(Array(pieces.enumerated()), id: \.offset) { _, piece in
@@ -255,35 +367,35 @@ private struct KnowledgeDepthCard: View {
                 .foregroundStyle(.secondary)
             if let mainQuestion {
                 Text(mainQuestion.promptText)
-                    .font(.body.weight(.medium))
+                    .font(paper ? .system(size: 15, weight: .medium) : .body.weight(.medium))
                     .foregroundStyle(runway.ink)
                     .lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)
             } else {
                 Text(String(localized: "这张卡还没有可用的主问题。"))
-                    .font(.callout)
+                    .font(paper ? .system(size: 15) : .callout)
                     .foregroundStyle(Color.orange)
             }
         }
-        .padding(20)
+        .padding(paper ? 16 : 20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(runway.field.opacity(0.70), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(runway.field.opacity(paper ? 0.35 : 0.70), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var memoryBlock: some View {
         VStack(alignment: .leading, spacing: Runway.gap) {
             Text(String(localized: "判断关键点"))
-                .font(.caption)
+                .font(paper ? .system(size: 12, weight: .semibold) : .caption)
                 .foregroundStyle(.secondary)
             if !orderHint.isEmpty {
                 Text(orderHint)
-                    .font(.callout)
+                    .font(paper ? .system(size: 15) : .callout)
                     .foregroundStyle(runway.copy)
                     .fixedSize(horizontal: false, vertical: true)
             }
             if cover.isEmpty && mixups.isEmpty && orderHint.isEmpty {
                 Text(String(localized: "先说出学习目标里的限定，再用自己的话讲核心含义。"))
-                    .font(.callout)
+                    .font(paper ? .system(size: 15) : .callout)
                     .foregroundStyle(runway.copy)
             }
             ForEach(Array(cover.enumerated()), id: \.offset) { _, line in
@@ -301,7 +413,7 @@ private struct KnowledgeDepthCard: View {
                                 Text(line)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                                .font(.callout)
+                                .font(paper ? .system(size: 15) : .callout)
                                 .foregroundStyle(runway.copy)
                                 .lineSpacing(4)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -321,9 +433,9 @@ private struct KnowledgeDepthCard: View {
                 .padding(.top, Runway.space)
             }
         }
-        .padding(20)
+        .padding(paper ? 0 : 20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(runway.field.opacity(0.70), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(runway.field.opacity(paper ? 0 : 0.70), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var sourceBlock: some View {
@@ -343,18 +455,18 @@ private struct KnowledgeDepthCard: View {
                 let evidence = item.evidenceExcerpt.trimmingCharacters(in: .whitespacesAndNewlines)
                 if evidence.isEmpty {
                     Text(String(localized: "没有可核对的原文证据。"))
-                        .font(.callout)
+                        .font(paper ? .system(size: 15) : .callout)
                         .foregroundStyle(Color.orange)
                 } else {
                     Text("“\(evidence)”")
-                        .font(.callout)
+                        .font(paper ? .system(size: 15) : .callout)
                         .foregroundStyle(runway.copy)
                         .lineSpacing(4)
                         .textSelection(.enabled)
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(Runway.gap)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(runway.field, in: RoundedRectangle(cornerRadius: Runway.innerRadius, style: .continuous))
+                        .background(runway.field.opacity(paper ? 0 : 1), in: RoundedRectangle(cornerRadius: Runway.innerRadius, style: .continuous))
                 }
             }
             .padding(.top, Runway.space)
@@ -392,7 +504,7 @@ private struct KnowledgeDepthCard: View {
                     .frame(width: 18, height: 20)
             } content: {
                 Text(piece.text)
-                    .font(.callout)
+                    .font(paper ? .system(size: 15) : .callout)
                     .foregroundStyle(runway.copy)
                     .lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)
@@ -405,14 +517,14 @@ private struct KnowledgeDepthCard: View {
                     .padding(.top, 7)
             } content: {
                 Text(piece.text)
-                    .font(.callout)
+                    .font(paper ? .system(size: 15) : .callout)
                     .foregroundStyle(runway.copy)
                     .lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)
             }
         case .paragraph:
             Text(piece.text)
-                .font(.callout)
+                .font(paper ? .system(size: 15) : .callout)
                 .foregroundStyle(runway.copy)
                 .lineSpacing(5)
                 .fixedSize(horizontal: false, vertical: true)
@@ -428,11 +540,11 @@ private struct KnowledgeDepthCard: View {
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .firstTextBaseline, spacing: Runway.gap) {
                     Text(String(text[...colon]))
-                        .font(.callout.weight(.medium))
+                        .font(paper ? .system(size: 15, weight: .medium) : .callout.weight(.medium))
                         .foregroundStyle(runway.ink)
                         .frame(width: 126, alignment: .leading)
                     Text(String(text[text.index(after: colon)...]))
-                        .font(.callout)
+                        .font(paper ? .system(size: 15) : .callout)
                         .foregroundStyle(runway.copy)
                         .lineSpacing(4)
                         .frame(minWidth: 180, maxWidth: .infinity, alignment: .leading)
@@ -440,10 +552,10 @@ private struct KnowledgeDepthCard: View {
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     Text(String(text[...colon]))
-                        .font(.callout.weight(.medium))
+                        .font(paper ? .system(size: 15, weight: .medium) : .callout.weight(.medium))
                         .foregroundStyle(runway.ink)
                     Text(String(text[text.index(after: colon)...]))
-                        .font(.callout)
+                        .font(paper ? .system(size: 15) : .callout)
                         .foregroundStyle(runway.copy)
                         .lineSpacing(4)
                         .fixedSize(horizontal: false, vertical: true)
@@ -451,7 +563,7 @@ private struct KnowledgeDepthCard: View {
             }
         } else {
             Text(text)
-                .font(.callout)
+                .font(paper ? .system(size: 15) : .callout)
                 .foregroundStyle(runway.copy)
                 .lineSpacing(4)
                 .fixedSize(horizontal: false, vertical: true)

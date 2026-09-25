@@ -12,6 +12,7 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
     @Environment(\.runway) private var runway
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.controlActiveState) private var controlState
+    @Environment(\.knowledgePaper) private var paper
     @State private var navigation = KnowledgeDeckNavigation<Item.ID>()
     @State private var locatorHover: Int?
     @State private var scrubbing = false
@@ -24,7 +25,7 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
             let size = KnowledgeDeckMetrics.cardSize(in: geometry.size)
             let origin = navigation.originIndex ?? KnowledgeDeckNavigation<Item.ID>.clamped(index, count: items.count)
             let frame = CGRect(x: (geometry.size.width - size.width) / 2,
-                               y: (geometry.size.height - size.height) / 2 - 18,
+                               y: (geometry.size.height - size.height) / 2 - (paper ? 8 : 18),
                                width: size.width, height: size.height)
 
             ZStack {
@@ -110,8 +111,8 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
             .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .strokeBorder(colorScheme == .dark ? Color.white.opacity(0.12) : Color.black.opacity(0.055), lineWidth: 0.75)
                 .allowsHitTesting(false))
-            .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.32 : 0.10), radius: 3, y: 3)
-            .shadow(color: runway.liftShadow, radius: Runway.shadowBlur, y: Runway.shadowY)
+            .shadow(color: Color.black.opacity(paper ? 0.025 : (colorScheme == .dark ? 0.32 : 0.10)), radius: 3, y: 3)
+            .shadow(color: runway.liftShadow.opacity(paper ? 0.45 : 1), radius: paper ? 8 : Runway.shadowBlur, y: Runway.shadowY)
             .allowsHitTesting(interactive)
             .accessibilityHidden(!interactive)
             .transformPreference(KnowledgeDeckDragRegionKey.self) { value in
@@ -135,11 +136,11 @@ struct DepthCarousel<Item: Identifiable, Card: View>: View {
                                     opacity: movingCardOpacity(distance: progress))
             }
             let remainingDepth = CGFloat(depth) - progress
-            let placement = KnowledgeDeckMetrics.stackPlacement(depth: remainingDepth, cardHeight: size.height)
+            let placement = KnowledgeDeckMetrics.stackPlacement(depth: remainingDepth, cardHeight: size.height, paper: paper)
             return CardPosition(y: placement.y, scale: placement.scale, depth: remainingDepth)
         }
         let depth = CGFloat(depth) - progress
-        let placement = KnowledgeDeckMetrics.stackPlacement(depth: depth, cardHeight: size.height)
+        let placement = KnowledgeDeckMetrics.stackPlacement(depth: depth, cardHeight: size.height, paper: paper)
         return CardPosition(y: placement.y, scale: placement.scale,
                             opacity: Double(max(0, 3 - depth)), depth: depth)
     }

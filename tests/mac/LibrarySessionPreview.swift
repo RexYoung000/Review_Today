@@ -8,22 +8,27 @@ import SwiftUI
 /// from this preview's own view, never another app or the daily database.
 @MainActor @Observable
 final class LibrarySessionQA {
+    var paper = true
     var reduced = false
     var recording = false
     var message = ""
 
+    private var previewWindow: NSWindow? {
+        NSApp.keyWindow ?? NSApp.windows.first { $0.isVisible && $0.canBecomeKey }
+    }
+
     private var folder: URL {
         URL(fileURLWithPath: Bundle.main.object(forInfoDictionaryKey: "PreviewProjectRoot") as! String)
-            .appendingPathComponent("docs/evidence/2026-09-08-library-sessions/management")
+            .appendingPathComponent("docs/evidence/2026-09-25-knowledge-paper")
     }
 
     func resize(_ width: CGFloat, _ height: CGFloat) {
-        guard let window = NSApp.keyWindow else { return }
+        guard let window = previewWindow else { return }
         window.setContentSize(NSSize(width: width, height: height)); window.center()
     }
 
     func snapshot() {
-        guard let view = NSApp.keyWindow?.contentView,
+        guard let view = previewWindow?.contentView,
               let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return }
         view.cacheDisplay(in: view.bounds, to: bitmap)
         do {
@@ -34,7 +39,7 @@ final class LibrarySessionQA {
 
     func toggleRecording() {
         if recording { recording = false; return }
-        guard let view = NSApp.keyWindow?.contentView else { return }
+        guard let view = previewWindow?.contentView else { return }
         recording = true
         Task { @MainActor in
             do { try await record(view) }
@@ -129,6 +134,15 @@ struct LibrarySessionPreviewApp: App {
                 question.knowledge = item
                 context.insert(item); context.insert(question)
             }
+            let vectorText = "嵌入模型把问题和文本片段转换为数值向量。语义相近的内容，通常会在向量空间中更接近，因此可以通过相似度找到候选资料。\n\n向量数据库负责存储和索引这些向量，并支持近邻检索及元数据过滤。RAG 将取回的原文片段交给生成模型，作为组织回答的参考。\n\n相似度高不等于内容准确。检索结果仍需要检查来源、权限和时效性；向量检索也不会直接更新生成模型的参数。"
+            let vector = Knowledge(learningGoal: "解释向量嵌入和向量数据库在 RAG 检索中的作用", knowledgeType: "concept", theme: "向量嵌入与检索", contentLanguage: "zh", questionLanguage: "zh", answerLanguage: "zh", evidenceExcerpt: vectorText, evidenceLocator: "隔离设计样例", title: "向量嵌入和向量数据库在 RAG 检索中的作用", explanation: vectorText)
+            vector.source = source
+            let vectorSpec = AgentAPI.ScoringSpec(learningGoal: vector.learningGoal, mustCover: ["嵌入将问题和内容表示为数值向量", "通过向量相似度查找语义相关的候选资料", "向量数据库提供存储、索引与检索能力", "生成模型依据取回的原文组织回答"], acceptableParaphrases: [], commonMisconceptions: ["相似度高就代表内容真实", "向量数据库直接生成最终答案", "检索过程等同于训练模型"], evidence: vectorText, orderRules: "先解释内容如何表示，再说明检索与生成的衔接。")
+            let vectorQuestion = Question(variantIndex: 0, promptText: "在 RAG 中，为什么要把内容转换为向量？向量数据库又如何帮助找到相关资料？", scoringSpecJSON: String(decoding: try JSONEncoder().encode(vectorSpec), as: UTF8.self))
+            vectorQuestion.knowledge = vector
+            context.insert(vector); context.insert(vectorQuestion)
+            let incomplete = Knowledge(learningGoal: "缺失题目示例", knowledgeType: "concept", theme: "边界状态", contentLanguage: "zh", questionLanguage: "zh", answerLanguage: "zh", evidenceExcerpt: "", evidenceLocator: "", title: "只有资料，还没有检查题", explanation: "这条合成资料用来检查缺少题目、判断标准与来源时的显示。保存资料不等于已经掌握。")
+            context.insert(incomplete)
             for title in ["RAG 已归档基础", "RAG 已归档评估", "向量检索已归档"] {
                 let session = AgentSession(title: title, modePreset: "auto")
                 session.status = "archived"; session.archivedAt = .now; session.setAutomaticTopicTags(["隔离样例"])
@@ -154,14 +168,31 @@ struct LibrarySessionPreviewApp: App {
     }
 
     var body: some Scene {
-        WindowGroup("知识卡与会话 · 隔离原生验收", id: "main") {
-            ContentView(coordinator: coordinator).modelContainer(container).runwayAppearance()
-                .environment(\.brandTrialStill, qa.reduced)
+        WindowGroup("知识卡 · 轻纸面对照", id: "main") {
+            VStack(spacing: 0) {
+                ContentView(coordinator: coordinator)
+                    .environment(\.knowledgePaper, qa.paper)
+                    .environment(\.knowledgePrototype, true)
+                    .environment(\.brandTrialStill, qa.reduced)
+                HStack(spacing: 16) {
+                    Text("知识卡设计 · 隔离小样").font(.caption).foregroundStyle(.secondary)
+                    Picker("版本", selection: $qa.paper) {
+                        Text("当前版").tag(false)
+                        Text("轻纸面").tag(true)
+                    }.pickerStyle(.segmented).frame(width: 170)
+                    Spacer()
+                    Button("浅深色") { let a = AppearanceController.shared; a.setDark(!a.isDark, screenPoint: nil, reduceMotion: true) }
+                    Toggle("减少动态", isOn: $qa.reduced).toggleStyle(.checkbox)
+                    Button("截图") { qa.snapshot() }
+                    Button(qa.recording ? "停止录制" : "录制") { qa.toggleRecording() }.help(qa.message.isEmpty ? "录制本原型窗口，最多45秒" : qa.message)
+                }.padding(.horizontal, 16).padding(.vertical, 8)
+            }.modelContainer(container).runwayAppearance()
         }
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 1280, height: 820).windowResizability(.contentMinSize)
         .commands {
             CommandMenu("验收") {
+                Toggle("轻纸面新版", isOn: $qa.paper).keyboardShortcut("b", modifiers: [.command, .option])
                 Button("添加到100张知识（隔离数据）") { addStressCards() }
                 Button("标准窗口") { qa.resize(1280, 820) }.keyboardShortcut("1", modifiers: [.command, .option])
                 Button("最小窗口") { qa.resize(760, 620) }.keyboardShortcut("2", modifiers: [.command, .option])

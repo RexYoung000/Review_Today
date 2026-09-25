@@ -10,6 +10,8 @@ struct LibraryView: View {
     @Environment(\.runway) private var runway
     @State private var filter = "active"
     @State private var theme = "all"
+    @Environment(\.knowledgePaper) private var paper
+    @State private var sourceFocus: UUID?
     @State private var showDeck = false
     @State private var browsingIndex = 0
     @Environment(\.modelContext) private var modelContext
@@ -68,6 +70,9 @@ struct LibraryView: View {
                         .padding(.bottom, 40)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    .transformAnchorPreference(key: KnowledgeReaderAnchors.self, value: .bounds) { anchors, viewport in
+                        if paper { anchors[.viewport] = viewport }
+                    }
                 }
             }
         }
@@ -75,17 +80,26 @@ struct LibraryView: View {
         .navigationTitle(String(localized: "知识库"))
         .accessibilityHidden(showDeck)
         .disabled(showDeck)
-        .overlay {
-            if showDeck, !visibleItems.isEmpty {
-                KnowledgeDeckOverlay(
-                    items: visibleItems,
-                    titles: deckTitles,
-                    index: $browsingIndex,
-                    coordinator: coordinator,
-                    onClose: closeDeck,
-                    onAction: { action, id in perform(action, ids: [id]) }
-                )
-            }
+        .overlayPreferenceValue(KnowledgeReaderAnchors.self) { anchors in
+            GeometryReader { geometry in
+                if showDeck, !visibleItems.isEmpty {
+                    let itemID = visibleItems[KnowledgeDeckNavigation<UUID>.clamped(browsingIndex, count: visibleItems.count)].id
+                    let frame = anchors[.item(itemID)].map { geometry[$0] }
+                    let viewport = anchors[.viewport].map { geometry[$0] }
+                    let source = frame.flatMap { candidate in
+                        viewport?.contains(candidate) == true ? candidate : nil
+                    }
+                    KnowledgeDeckOverlay(
+                        items: visibleItems,
+                        sourceFrame: source,
+                        titles: deckTitles,
+                        index: $browsingIndex,
+                        coordinator: coordinator,
+                        onClose: { closeDeck(returnFocus: source != nil) },
+                        onAction: { action, id in perform(action, ids: [id]) }
+                    )
+                }
+            }.allowsHitTesting(showDeck)
         }
         .sheet(item: $deletionImpact) { impact in
             KnowledgeDeletionSheet(impact: impact) { undoTrash = [:] }
@@ -195,10 +209,15 @@ struct LibraryView: View {
                         title: KnowledgeLexicon.chipTitle(resolved: titles[item.id] ?? item.title, theme: group.theme),
                         fullTitle: titles[item.id] ?? item.title,
                         selecting: selecting, selected: selection.ids.contains(item.id), lifecycle: item.lifecycle,
+                        restoreFocus: paper && sourceFocus == item.id,
                         onAction: { perform($0, ids: [item.id]) }
                     ) {
                         if selecting { selection.toggle(item.id, visible: selectableIDs) }
                         else { selection.finish(); openDeck(item) }
+                    }
+                    .opacity(paper && showDeck && selectedID == item.id ? 0 : 1)
+                    .anchorPreference(key: KnowledgeReaderAnchors.self, value: .bounds) { anchor in
+                        paper ? [.item(item.id): anchor] : [:]
                     }
                     .contextMenu { if !selecting { chipMenu(item) } }
                 }
@@ -281,6 +300,7 @@ struct LibraryView: View {
     }
 
     private func openDeck(_ item: Knowledge) {
+        sourceFocus = nil
         if let i = visibleItems.firstIndex(where: { $0.id == item.id }) {
             browsingIndex = i
         }
@@ -288,8 +308,11 @@ struct LibraryView: View {
         showDeck = true
     }
 
-    private func closeDeck() {
+    private func closeDeck(returnFocus: Bool) {
         showDeck = false
+        if paper, returnFocus, visibleItems.indices.contains(browsingIndex) {
+            sourceFocus = visibleItems[browsingIndex].id
+        }
     }
 
     @ViewBuilder
@@ -304,8 +327,10 @@ private struct SummaryChip: View {
     var selecting = false
     var selected = false
     var lifecycle = "active"
+    var restoreFocus = false
     var onAction: (KnowledgeAction) -> Void = { _ in }
     var action: () -> Void
+    @Environment(\.knowledgePaper) private var paper
     @State private var hovering = false
     @FocusState private var focused: Bool
     @FocusState private var menuFocused: Bool
@@ -349,6 +374,11 @@ private struct SummaryChip: View {
         }
         .accessibilityAddTraits(selected ? [.isSelected] : [])
         .focusable().focusEffectDisabled().focused($focused)
+        .onChange(of: restoreFocus) { _, shouldFocus in if shouldFocus { focused = true } }
+        .onKeyPress(keys: [.return, .space]) { _ in
+            guard paper && focused else { return .ignored }
+            action(); return .handled
+        }
         .onHover { hovering = $0 }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: hovering)
     }

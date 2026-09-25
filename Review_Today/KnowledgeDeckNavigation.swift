@@ -86,10 +86,10 @@ struct KnowledgeDeckNavigation<ID: Hashable> {
 }
 
 enum KnowledgeDeckMetrics {
-    static func stackPlacement(depth: CGFloat, cardHeight: CGFloat) -> (y: CGFloat, scale: CGFloat) {
+    static func stackPlacement(depth: CGFloat, cardHeight: CGFloat, paper: Bool = false) -> (y: CGFloat, scale: CGFloat) {
         // Compensate for top-anchored scaling so each rear card exposes the same
         // 24 pt bottom edge in both short and tall windows.
-        (y: depth * (cardHeight * 0.025 + 24), scale: 1 - depth * 0.025)
+        (y: depth * (cardHeight * (paper ? 0.015 : 0.025) + (paper ? 8 : 24)), scale: 1 - depth * (paper ? 0.015 : 0.025))
     }
 
     static func cardSize(in available: CGSize) -> CGSize {
