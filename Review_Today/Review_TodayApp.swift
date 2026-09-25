@@ -49,6 +49,7 @@ struct Review_TodayApp: App {
     var body: some Scene {
         WindowGroup("Review Today", id: "main") {
             ContentView(coordinator: coordinator)
+                .environment(\.knowledgePaper, true)
                 .runwayAppearance()
         }
         .modelContainer(container)
