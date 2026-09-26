@@ -2,6 +2,7 @@ import uuid
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
+from agent_service.image_inputs import ImageAttachment
 
 KnowledgeType = Literal["fact", "concept", "procedure"]
 Attribution = Literal["claim", "source_view", "personal"]
@@ -626,12 +627,20 @@ class BoundOperation(BaseModel):
 
 
 class SessionMessageRequest(SessionTurnRequest):
+    content_type: Literal["text", "url", "image"] = "text"
+    image: ImageAttachment | None = None
     delivery: Literal["steer", "queue"] = "steer"
     task_id: str | None = None
     operation: BoundOperation | None = None
     expected_event_seq: int | None = Field(default=None, ge=0)
     lifecycle_revision: int | None = Field(default=None, ge=0)
     thinking_strength: Literal["smart", "deep"] | None = None
+
+    @model_validator(mode="after")
+    def image_contract(self):
+        if (self.image is not None) != (self.content_type == "image") or (self.image and self.operation):
+            raise ValueError("RT.IMAGE.INVALID_MESSAGE")
+        return self
 
 
 class MessageAccepted(BaseModel):

@@ -175,6 +175,7 @@ final class AppSettings {
     var agentDraftID: UUID?
     var agentDraftMessageID: UUID?
     var agentDraftText: String = ""
+    @Attribute(.externalStorage) var agentDraftImage: Data?
     var agentDraftMode: String = "auto"
     var agentDraftThinking: String = "smart"
     var lastThinkingStrength: String = "smart"
@@ -347,6 +348,7 @@ final class AgentSession {
     var handoffJSON: String?
     var syncError: String?
     var composerDraft: String = ""
+    @Attribute(.externalStorage) var composerImage: Data?
     var autoTopicTagsJSON: String = "[]"
     var manualTopicTagsJSON: String?
     var topicTagRevision: Int = 0
@@ -433,6 +435,7 @@ final class AgentMessage {
     var role: String
     var content: String
     var contentType: String
+    @Attribute(.externalStorage) var imageAttachment: Data?
     var createdAt: Date
     var deliveryStatus: String
     var runID: UUID?

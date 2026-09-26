@@ -59,6 +59,7 @@ struct AppRuntime: Equatable {
             }
             return AppRuntime(mode: .preview)
         }
+        guard !bundleID.hasSuffix(".NativeQA") else { throw ConfigurationError.invalidIsolation }
         return AppRuntime(mode: .normal)
     }
 

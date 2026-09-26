@@ -40,7 +40,7 @@ from agent_service.schemas import (
 )
 
 from agent_service import conversation_context, conversation_controls, conversation_model_call, topic_capture, dialogue_routing, goal_continuation
-from agent_service import conversation_materials
+from agent_service import conversation_materials, image_inputs
 from agent_service.conversation_controls import LABELS, FINISHED
 
 
@@ -72,7 +72,10 @@ class ConversationHarness(ConditionalTeaching):
             if data.get("status", "active") != "active":
                 raise ValueError("RT.SESSION.ARCHIVED")
             receipts = data.setdefault("message_receipts", {})
-            fingerprint = hashlib.sha256(json.dumps(dict(content=body.content, operation=body.operation.model_dump() if body.operation else None), sort_keys=True).encode()).hexdigest()
+            identity = dict(content=body.content, operation=body.operation.model_dump() if body.operation else None)
+            if body.image:
+                identity["image"] = body.image.metadata()
+            fingerprint = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
             receipt = receipts.get(body.client_message_id)
             if receipt:
                 if receipt["fingerprint"] != fingerprint:
@@ -82,7 +85,7 @@ class ConversationHarness(ConditionalTeaching):
             existing = next((m for m in data["messages"] if m.get("message_id") == body.client_message_id), None)
             if existing:
                 # Same key with a different payload is not a second user instruction.
-                if existing["content"] != body.content:
+                if existing["content"] != body.content or (existing.get("image") or {}).get("sha256") != (body.image.sha256 if body.image else None):
                     raise ValueError("RT.MESSAGE.IDEMPOTENCY_CONFLICT")
                 run = data["runs"][existing["run_id"]]
             else:
@@ -131,6 +134,8 @@ class ConversationHarness(ConditionalTeaching):
                                content_type=body.content_type, created_at=now_iso(), run_id=run["run_id"],
                                task_id=body.task_id, context=body.context.model_dump(),
                                operation=body.operation.model_dump() if body.operation else None)
+                if body.image:
+                    message["image"] = body.image.model_dump()
                 data["messages"].append(message)
                 run["lifecycle_revision"] = data.get("lifecycle_revision", 0)
                 if body.task_id:
@@ -228,6 +233,11 @@ class ConversationHarness(ConditionalTeaching):
                 return self.export_snapshot(sid)
             if existing is not None:
                 raise ValueError("RT.SESSION.SNAPSHOT_EXISTS")
+            for message in incoming.get("messages", []):
+                if message.get("image", {}).get("data_base64"):
+                    message["image"] = image_inputs.ImageAttachment.model_validate(message["image"]).model_dump()
+                elif message.get("image") and not message.get("image_reading"):
+                    raise ValueError("RT.IMAGE.ORIGINAL_REQUIRED")
             for task in incoming.get("tasks", {}).values():
                 if task.get("session_id") != sid:
                     raise ValueError("RT.SESSION.SNAPSHOT_INVALID")
@@ -423,6 +433,10 @@ class ConversationHarness(ConditionalTeaching):
                                        if data.get("summary_error") else "当前内容超过可处理的上下文容量，请缩小本次范围；输入已保留")
                         elif code == "RT.MODEL.SCHEMA":
                             summary = "回答格式暂时有问题，可重试；输入和学习进度已保留"
+                        elif code == "RT.IMAGE.ORIGINAL_REQUIRED":
+                            summary = "这张图片的原图未能恢复，请重新添加图片；已有对话保留。"
+                        elif code.startswith("RT.IMAGE."):
+                            summary = "图片暂时无法处理，请检查格式、大小或减少本轮图片数量；原消息已保留。"
                         elif code == "RT.QUESTION.QUALITY_UNRESOLVED":
                             summary = "检查题与评分要求尚未核对完成，可重试；输入和学习进度已保留"
                         elif code in {"RT.MODEL.CONNECTION", "RT.MODEL.TIMEOUT"}:
@@ -470,9 +484,9 @@ class ConversationHarness(ConditionalTeaching):
         return conversation_context.compact_history(self, sid, run, system, payload, schema, model, background=background,
             parse_model=parse_model, configured_window=configured_window)
 
-    def _call(self, session_id, run_id, revision, node, system, prompt, schema, model=COACH_MODEL):
+    def _call(self, session_id, run_id, revision, node, system, prompt, schema, model=COACH_MODEL, *, images=None):
         return conversation_model_call.call(self, session_id, run_id, revision, node, system, prompt, schema, model,
-            parse_model=parse_model, configured_window=configured_window, alternatives=alternatives, require_model=require_model)
+            parse_model=parse_model, configured_window=configured_window, alternatives=alternatives, require_model=require_model, images=images)
 
     @staticmethod
     def _elapsed(run):
@@ -623,7 +637,7 @@ class ConversationHarness(ConditionalTeaching):
                                       target_task_id=task["task_id"] if task else "", relation="continuation",
                                       workflow=task["mode"] if task and task["mode"] != "auto" else None,
                                       scope="continue_goal", rationale="用户点击了绑定对象与内容版本的操作；由程序检查执行条件。")
-        elif last["content"].strip().rstrip("。！？!?") in {"直接教我", "请直接教我", "直接讲解", "继续讲解"} and (task or dialogue_routing.current_learning_goal(data)):
+        elif not image_inputs.current_images(data, run) and last["content"].strip().rstrip("。！？!?") in {"直接教我", "请直接教我", "直接讲解", "继续讲解"} and (task or dialogue_routing.current_learning_goal(data)):
             # Exact, whole-message teaching controls have no grading/write meaning.
             # Quoted text, pasted material and longer requests still use the model.
             decision = IntentDecision(intents=["continue"], target_task_id=task["task_id"] if task else "",
@@ -633,6 +647,10 @@ class ConversationHarness(ConditionalTeaching):
                                       rationale="用户明确要求继续教学，不是独立作答或保存授权。")
         elif run.get("intent") and {"programming_boundary", "conversation_kind", "resource_boundary", "reply_feedback"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"] and self._intent_policy_matches(run):
             decision = IntentDecision.model_validate(run["intent"])
+        elif any(not m.get("image_reading") for m in image_inputs.current_images(data, run)):
+            decision = image_inputs.resolve(self, sid, rid, rev, dialogue_routing.intent_context(context), INTENT_SYSTEM)
+            data, run = self._snapshot(sid, rid, rev)
+            context, last = self._context(data, run)
         elif self.judgments is not None:
             from agent_service.judgment_nodes import resolve_entry
             decision = resolve_entry(self, sid, rid, rev, dialogue_routing.intent_context(context), INTENT_SYSTEM, ROUTER_MODEL)

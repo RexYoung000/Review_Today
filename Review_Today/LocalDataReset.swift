@@ -56,7 +56,8 @@ enum LocalDataReset {
             signature += try context.fetch(FetchDescriptor<CaptureTask>()).map { "c:\($0.id):\($0.status)" }
             signature += try context.fetch(FetchDescriptor<Source>()).map { "source:\($0.id)" }
             signature += try context.fetch(FetchDescriptor<AgentMessage>()).map { "m:\($0.id):\($0.deliveryStatus):\($0.content.hashValue)" }
-            signature += sessions.map { "draft:\($0.id):\($0.composerDraft.hashValue)" }
+            signature += sessions.map { "draft:\($0.id):\($0.composerDraft.hashValue):\($0.composerImage?.hashValue ?? 0)" }
+            signature += try context.fetch(FetchDescriptor<AppSettings>()).map { "landing:\($0.agentDraftText.hashValue):\($0.agentDraftImage?.hashValue ?? 0)" }
             signature += try context.fetch(FetchDescriptor<LearningTask>()).map { "t:\($0.id):\($0.updatedAt.timeIntervalSince1970)" }
         }
         return LocalResetImpact(kind: kind, signature: signature.sorted(), knowledge: cards.count,
@@ -129,6 +130,7 @@ enum LocalDataReset {
                 try remove(AgentSession.self, context); try remove(CaptureTask.self, context)
                 try remove(Question.self, context); try remove(Knowledge.self, context); try remove(Source.self, context)
                 settings.agentDraftID = nil; settings.agentDraftMessageID = nil; settings.agentDraftText = ""
+                settings.agentDraftImage = nil
             }
             settings.skipToday = ""; settings.snoozeDay = ""; settings.snoozeCount = 0
             if let save { try save() } else { try context.save() }

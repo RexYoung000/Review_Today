@@ -142,17 +142,20 @@ enum AgentComposerStore {
     }
 
     static func sendInitial(_ text: String, in session: AgentSession, context: ModelContext,
-                            runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> AgentMessage {
+                            image: Data? = nil, runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> AgentMessage {
         try (runtime ?? .current).requireSending()
         let content = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !content.isEmpty else { throw Failure.blankInput }
         guard session.status == "active" else { throw Failure.inactiveSession }
-        let snapshot = (session.composerDraft, session.title, session.updatedAt)
+        let snapshot = (session.composerDraft, session.title, session.updatedAt, session.composerImage)
         let message = AgentMessage(sessionID: session.id, role: "user", content: content,
                                    contentType: TodayView.firstURL(in: content) == nil ? "text" : "url")
         message.clientMessageID = message.id
+        message.imageAttachment = image
+        if image != nil { message.contentType = "image" }
         context.insert(message)
         session.composerDraft = ""
+        session.composerImage = nil
         if ["新会话", "新学习 Session"].contains(session.title) { session.title = String(content.prefix(28)) }
         session.updatedAt = .now
         do {
@@ -161,6 +164,7 @@ enum AgentComposerStore {
         } catch {
             context.processPendingChanges(); context.rollback()
             session.composerDraft = snapshot.0; session.title = snapshot.1; session.updatedAt = snapshot.2
+            session.composerImage = snapshot.3
             throw error
         }
     }
@@ -168,39 +172,45 @@ enum AgentComposerStore {
     @discardableResult
     static func preserveLandingDraft(context: ModelContext, save: (() throws -> Void)? = nil) throws -> AgentSession? {
         let row = try settings(context)
-        guard !row.agentDraftText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
-        let snapshot = (row.agentDraftText, row.agentDraftID, row.agentDraftMessageID)
+        guard !row.agentDraftText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || row.agentDraftImage != nil else { return nil }
+        let snapshot = (row.agentDraftText, row.agentDraftID, row.agentDraftMessageID, row.agentDraftImage)
         let session = AgentSession(id: row.agentDraftID ?? UUID(), title: "新会话", modePreset: row.agentDraftMode)
         session.composerDraft = row.agentDraftText
+        session.composerImage = row.agentDraftImage
         session.thinkingStrength = row.agentDraftThinking
         context.insert(session)
         row.agentDraftText = ""; row.agentDraftID = nil; row.agentDraftMessageID = nil
+        row.agentDraftImage = nil
         do {
             if let save { try save() } else { try context.save() }
             return session
         } catch {
             context.processPendingChanges(); context.rollback()
             row.agentDraftText = snapshot.0; row.agentDraftID = snapshot.1; row.agentDraftMessageID = snapshot.2
+            row.agentDraftImage = snapshot.3
             throw error
         }
     }
 
     /// One local transaction owns first message, Session and outbox. The unsent
     /// landing-page fallback creates a session only when no explicit session exists.
-    static func sendFirst(_ text: String, context: ModelContext, runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> (AgentSession, AgentMessage) {
+    static func sendFirst(_ text: String, context: ModelContext, image: Data? = nil, runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> (AgentSession, AgentMessage) {
         try (runtime ?? .current).requireSending()
         let content = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !content.isEmpty else { throw Failure.blankInput }
         let row = try prepare(context)
         let sid = row.agentDraftID!, mid = row.agentDraftMessageID!
-        let draftSnapshot = (row.agentDraftText, row.agentDraftMode, row.agentDraftThinking)
+        let draftSnapshot = (row.agentDraftText, row.agentDraftMode, row.agentDraftThinking, row.agentDraftImage)
         do {
             let session = AgentSession(id: sid, title: String(content.prefix(28)), modePreset: row.agentDraftMode)
             session.thinkingStrength = row.agentDraftThinking
             let message = AgentMessage(id: mid, clientMessageID: mid, sessionID: sid, role: "user", content: content,
                                        contentType: TodayView.firstURL(in: content) == nil ? "text" : "url")
+            message.imageAttachment = image
+            if image != nil { message.contentType = "image" }
             context.insert(session); context.insert(message)
             row.agentDraftText = ""
+            row.agentDraftImage = nil
             row.agentDraftID = nil
             row.agentDraftMessageID = nil
             row.agentDraftMode = "auto"
@@ -213,6 +223,7 @@ enum AgentComposerStore {
             // Restore the visible draft as well as rolling back the persisted graph.
             row.agentDraftID = sid; row.agentDraftMessageID = mid
             row.agentDraftText = draftSnapshot.0; row.agentDraftMode = draftSnapshot.1; row.agentDraftThinking = draftSnapshot.2
+            row.agentDraftImage = draftSnapshot.3
             throw error
         }
     }

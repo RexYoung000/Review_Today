@@ -182,8 +182,12 @@ def compact_history(self, sid, run, system, payload, schema, model, *, backgroun
 
 
 def context(self, data, run):
+    from agent_service.image_inputs import material, strip_image_bytes
     selected = [m for m in data["messages"] if m.get("message_id") in run["input_ids"]]
     last = dict(selected[-1])
+    if last.get("image"):
+        last["image"] = dict(last["image"])
+        strip_image_bytes([last])
     if run.get("resolved_input"):
         last["content"] = run["resolved_input"]
         last["operation"] = None
@@ -202,7 +206,8 @@ def context(self, data, run):
     eligible = [m for m in data["messages"] if m not in selected and data["runs"].get(m.get("run_id"), {}).get("status") != "queued"
                 and self._memory_run_valid(data["runs"].get(m.get("run_id"), {}))]
     summarized_ids = set(data.get("summarized_message_ids", []))
-    recent = [dict(message_id=m["message_id"], role=m["role"], run_id=m.get("run_id"), content=m["content"]) for m in eligible
+    recent = [dict(message_id=m["message_id"], role=m["role"], run_id=m.get("run_id"), content=m["content"],
+                   **({"image_material": material(m)} if material(m) else {})) for m in eligible
               if m["message_id"] not in summarized_ids]
     external = last.get("context", {})
     from agent_service.dialogue_routing import current_learning_goal
@@ -215,6 +220,7 @@ def context(self, data, run):
                 runtime_models=dict(short_reply=ROUTER_MODEL, teaching=COACH_MODEL),
                 recent_scope_reply=dict(message_id=previous['message_id'], **recent_scope) if recent_scope else None,
                 capture_continuation=bool(run.get("capture_continuation")),
+                image_materials=[value for m in selected if (value := material(m))],
                 current_inputs=[run["resolved_input"]] if run.get("resolved_input") else [m["content"] for m in selected], task=task_context,
                 pending=data["pending"], draft=None if data.get("draft", {}) and data["draft"].get("invalidated") else data["draft"],
                 summary=data["summary"] if data.get("summary_invalidated") else data["summary"] or external.get("summary", ""),

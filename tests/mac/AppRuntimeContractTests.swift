@@ -34,6 +34,7 @@ struct AppRuntimeContractTests {
         let wrongRule = try JSONDecoder().decode(HealthResponse.self, from: Data(#"{"status":"ok","key_configured":true,"model_roles":{},"jev":{"status":"enabled","model":"jev-1.13.0","entry_rule":"jev-entry-2"}}"#.utf8))
         precondition(!wrongRule.supportsJevTest, "a stale entry contract must not be labelled ready")
         for (values, bundle) in [
+            ([:], "Rex.Review-Today.Image.NativeQA"),
             (environment, "Rex.Review-Today"),
             (["REVIEW_TODAY_JEV_TEST": "1"], "Rex.Review-Today"),
             (["REVIEW_TODAY_JEV_TEST": "1", "REVIEW_TODAY_M1_UI_FIXTURE": "learning"], "Rex.Review-Today.Jev.NativeQA"),

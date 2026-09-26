@@ -32,6 +32,7 @@ struct HealthResponse: Decodable {
     let modelRoles: [String: ModelRole]
     let conversationProtocol: Int?
     let responseStreamProtocol: Int?
+    let imageInputProtocol: Int?
     let jev: Jev?
 
     var supportsJevTest: Bool {
@@ -45,6 +46,7 @@ struct HealthResponse: Decodable {
         case modelRoles = "model_roles"
         case conversationProtocol = "conversation_protocol"
         case responseStreamProtocol = "response_stream_protocol"
+        case imageInputProtocol = "image_input_protocol"
         case jev
     }
 }
@@ -104,6 +106,7 @@ final class AgentServiceMonitor {
     private(set) var serviceReachable = false
     private(set) var conversationSupported = false
     private(set) var responseStreamSupported = false
+    private(set) var imageInputSupported = false
     private(set) var streamNotice = ""
     private(set) var capabilityNotice = ""
     private(set) var canSubmitMessages = false
@@ -215,6 +218,7 @@ final class AgentServiceMonitor {
             startup?.healthy(at: .now)
             conversationSupported = health.conversationProtocol == 1
             responseStreamSupported = health.responseStreamProtocol == 1
+            imageInputSupported = health.imageInputProtocol == 1
             if !responseStreamSupported {
                 streamNotice = "当前无法逐字显示回复，请重启应用后重试。"
             } else if let coach = health.modelRoles["coach"], coach.streaming == "buffered" {

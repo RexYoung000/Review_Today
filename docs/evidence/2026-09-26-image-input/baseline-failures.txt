@@ -1,0 +1,90 @@
+HEAD baseline at /tmp/review-today-image-baseline-cgcodgs_
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ ClosureRepairTests.test_fetched_source_is_reused_on_generation_retry_and_refresh_has_version _
+
+self = <test_closure_repair.ClosureRepairTests testMethod=test_fetched_source_is_reused_on_generation_retry_and_refresh_has_version>
+
+    def test_fetched_source_is_reused_on_generation_retry_and_refresh_has_version(self):
+        from agent_service.openai_client import ModelCallError
+        from agent_service.schemas import ConversationOutput
+        self.decision = intent("material", workflow="source_learning", scope="learning")
+        def fail_answer(*args, **kwargs):
+            if args[2] is ConversationOutput: raise ModelCallError("TIMEOUT")
+            return self.model(*args, **kwargs)
+        with patch("agent_service.conversation.fetch_public_url", return_value=("公开资料", "版本一")) as fetch:
+            with patch("agent_service.conversation.parse_model", side_effect=fail_answer):
+                accepted = self.send("https://example.com/rag", mode="source_learning")
+            self.assertEqual(fetch.call_count, 1)
+            self.control(accepted.run_id, "retry")
+            self.harness.drain(self.sid)
+            self.assertEqual(fetch.call_count, 1, "retry must reuse the completed fetch step")
+            self.decision = intent("followup", refresh_sources=True)
+            fetch.return_value = ("公开资料", "版本二")
+            with self.store.transaction(self.sid) as data:
+                data["tasks"][data["active_task_id"]]["context"]["selected_sources"] = ["https://example.com/rag"]
+            self.send("刷新资料再解释")
+        task = self.state()["tasks"][self.state()["active_task_id"]]
+>       self.assertEqual(task["context"]["sources"][0]["version"], 2)
+E       AssertionError: 1 != 2
+
+tests/test_closure_repair.py:38: AssertionError
+_______ ClosureRepairTests.test_mixed_material_keeps_generated_identity ________
+
+self = <test_closure_repair.ClosureRepairTests testMethod=test_mixed_material_keeps_generated_identity>
+
+    def test_mixed_material_keeps_generated_identity(self):
+        self.decision = intent("goal", workflow="source_learning", scope="learning", direct_teaching=True)
+        self.send("直接教我 RAG")
+        self.decision = intent("material", "followup")
+        self.send("补充资料：检索可能采用关键词与向量混合")
+        task = self.state()["tasks"][self.state()["active_task_id"]]
+>       self.assertEqual({s["type"] for s in task["context"]["sources"]}, {"agent_generated", "user_material"})
+E       AssertionError: Items in the second set but not the first:
+E       'agent_generated'
+
+tests/test_closure_repair.py:47: AssertionError
+=============================== warnings summary ===============================
+../../../../Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:87
+  /private/tmp/review-today-image-baseline-cgcodgs_/agent-service/agent_service/main.py:87: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    @app.on_event("startup")
+
+../../../../Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+../../../../Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:114
+  /private/tmp/review-today-image-baseline-cgcodgs_/agent-service/agent_service/main.py:114: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_closure_repair.py::ClosureRepairTests::test_fetched_source_is_reused_on_generation_retry_and_refresh_has_version
+FAILED tests/test_closure_repair.py::ClosureRepairTests::test_mixed_material_keeps_generated_identity
+2 failed, 5 warnings in 5.59s
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/bin/python', '-m', 'pytest', 'tests/test_closure_repair.py::ClosureRepairTests::test_fetched_source_is_reused_on_generation_retry_and_refresh_has_version', 'tests/test_closure_repair.py::ClosureRepairTests::test_mixed_material_keeps_generated_identity', '-q']' returned non-zero exit status 1.

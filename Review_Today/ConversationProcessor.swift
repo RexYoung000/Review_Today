@@ -170,6 +170,11 @@ enum ConversationProcessor {
                                 "invalid_memory_run_ids": invalidRuns.map { $0.uuidString.lowercased() }],
                 ]
                 if let operation = object(message.operationJSON), !operation.isEmpty { body["operation"] = operation }
+                if let raw = message.imageAttachment {
+                    guard monitor.imageInputSupported else { throw HarnessAPIError.server(code: "RT.IMAGE.SERVICE_UPDATE_REQUIRED", message: "图片已保留，当前学习服务尚未支持识图，请重启应用后重试") }
+                    guard let image = LearningImageAttachment.decode(raw) else { throw HarnessAPIError.server(code: "RT.IMAGE.INVALID_FORMAT", message: "本机图片无法读取，请重新添加") }
+                    body["image"] = image.request
+                }
                 if let handoff = object(session.handoffJSON), var supplied = body["context"] as? [String: Any] {
                     supplied["handoff"] = handoff
                     body["context"] = supplied
@@ -243,6 +248,20 @@ enum ConversationProcessor {
         checkpoint["paused"] = true
         checkpoint["pending"] = NSNull()
         try LearningGoalContinuity.fenceCheckpoint(&checkpoint, context: context)
+        if var records = checkpoint["messages"] as? [[String: Any]] {
+            let sid = session.id
+            let local = try context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == sid }))
+            for index in records.indices {
+                // Completed readings are sufficient for text continuation. Only
+                // unresolved image inputs need their original bytes restored.
+                guard let meta = records[index]["image"] as? [String: Any], records[index]["image_reading"] == nil,
+                      let id = uuid(records[index]["message_id"]),
+                      let image = LearningImageAttachment.decode(local.first(where: { $0.id == id })?.imageAttachment),
+                      image.sha256 == meta["sha256"] as? String else { continue }
+                records[index]["image"] = image.request
+            }
+            checkpoint["messages"] = records
+        }
         snapshot["checkpoint"] = checkpoint
         _ = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/snapshot/restore", body: snapshot)
         guard session.lifecycleRevision == lifecycle else { return }

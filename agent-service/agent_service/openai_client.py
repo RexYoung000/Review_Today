@@ -24,12 +24,15 @@ def _client(*, timeout: float = MODEL_TIMEOUT_SECONDS) -> OpenAI:
     return client
 
 
-def _input(system, user):
+def _input(system, user, images=None):
     # DeepSeek treats developer messages as user input. Preserve trusted rules.
     if PROVIDER == "deepseek":
         system += ("\n输出必须是一个严格符合本次 text.format JSON Schema 的 JSON 对象。"
                    "不要使用 Markdown 代码围栏，不要在 JSON 之外输出任何文字。"
                    "对用户的回答、解释和 Markdown 排版只能放在结构定义的正文字符串字段内。")
+    if images:
+        from agent_service.image_inputs import image_part
+        user = [{"type": "input_text", "text": user}, *[image_part(item) for item in images]]
     return [{"role": "system" if PROVIDER == "deepseek" else "developer", "content": system},
             {"role": "user", "content": user}]
 
@@ -85,18 +88,21 @@ def parse_model(
     on_cancel_handle: Callable[[Callable[[], None]], None] | None = None,
     on_usage: Callable[[dict], None] | None = None,
     on_request: Callable[[], None] | None = None,
+    images: list[dict] | None = None,
 ) -> BaseModel:
+    if images and (PROVIDER != "deepseek" or (model or MODEL) not in {"deepseek-flash", "deepseek-v4-flash"}):
+        raise ModelCallError("UNSUPPORTED", "image input requires the configured DeepSeek Flash provider")
     try:
         with budget_scope(timeout) as budget:
             if on_partial is not None:
                 result = _stream_model(system, user, text_format, model=model, timeout=timeout,
                                      on_partial=on_partial, on_transport=on_transport, on_cancel_handle=on_cancel_handle,
                                      on_usage=on_usage, on_request=on_request,
-                                     reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens)
+                                     reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens, images=images)
             else:
                 result = _parse_model(system, user, text_format, model=model, timeout=timeout, on_cancel_handle=on_cancel_handle,
                                 on_usage=on_usage, on_request=on_request,
-                                reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens)
+                                reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens, images=images)
             budget.remaining()
             return result
     except ModelCallError:
@@ -154,7 +160,7 @@ def _report_usage(response, callback):
     callback(value)
 
 
-def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_transport, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None, on_usage=None, on_request=None):
+def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_transport, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None, on_usage=None, on_request=None, images=None):
     """Only output_text reaches the projection callback; reasoning is never read.
 
     A projection is a preview, not a validated model result. Once any preview has
@@ -173,7 +179,7 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
         # before response.created, which the SDK's snapshot aggregator rejects.
         request_timeout = current_budget.get().take()
         if on_request: on_request()
-        with client.responses.create(model=selected, input=_input(system, user),
+        with client.responses.create(model=selected, input=_input(system, user, images),
            text={"format": _text_format(text_format)}, stream=True,
            timeout=request_timeout, **({"max_output_tokens": max_output_tokens} if max_output_tokens else {}), **_reasoning(reasoning_effort)) as stream:
             for event in stream:
@@ -244,12 +250,12 @@ def model_stream_capability(model: str, *, reasoning_effort: str | None = None) 
     return {"ready": result.ready, "streaming": "ready" if distinct and "buffered" not in transports else "buffered"}
 
 
-def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None, on_usage=None, on_request=None):
+def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None, on_usage=None, on_request=None, images=None):
     client = _client(timeout=timeout)
     if on_cancel_handle:
         on_cancel_handle(client.close)
     selected_model = model or MODEL
-    params = dict(model=selected_model, input=_input(system, user),
+    params = dict(model=selected_model, input=_input(system, user, images),
                   timeout=current_budget.get().take(), **({"max_output_tokens": max_output_tokens} if max_output_tokens else {}), **_reasoning(reasoning_effort))
     if on_request: on_request()
     if PROVIDER == "deepseek":

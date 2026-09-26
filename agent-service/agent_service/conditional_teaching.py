@@ -183,6 +183,7 @@ class ConditionalTeaching:
                               json.dumps(dict(current_date=now_iso()[:10], topic=(task or {}).get("content") or context.get("session_goal") or decision.target_description,
                                               learning_purpose=prior.get("learning_goal"), instruction=instruction,
                                               user_input=context.get('current_inputs', [last["content"]]),
+                                              image_materials=context.get('image_materials', []),
                                               requested_query=decision.public_search_query, relation=decision.relation,
                                               current_step=next((s for s in prior.get("learning_plan", {}).get("steps", []) if s["id"] == prior.get("learning_plan", {}).get("current_step_id")), None),
                                               previous_concepts=prior.get("taught_concepts", []), prior_queries=prior.get("verified_queries", [])), ensure_ascii=False), prep_schema, ROUTER_MODEL)

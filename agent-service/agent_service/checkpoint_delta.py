@@ -8,6 +8,8 @@ def recovery_projection(data):
               and not k.startswith("recovery_")}
     result.update(events=[], event_base_seq=data.get("event_base_seq", 0) + len(data["events"]),
                   last_acked_seq=0)
+    from agent_service.image_inputs import strip_image_bytes
+    strip_image_bytes(result.get("messages", []))
     return result
 
 

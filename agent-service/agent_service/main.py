@@ -103,6 +103,7 @@ def healthz() -> dict[str, object]:
         "harness": "v2",
         "conversation_protocol": 1,
         "response_stream_protocol": 1,
+        "image_input_protocol": 1 if PROVIDER == "deepseek" else 0,
         "jev": runtime_status(conversation_harness.judgments),
         "model_roles": model_capability_snapshot(),
         "web_search": web_search_capability(),
@@ -178,7 +179,8 @@ def session_snapshot(session_id: str) -> dict:
 @app.post("/v2/sessions/{session_id}/snapshot/restore")
 def restore_session_snapshot(session_id: str, body: dict) -> dict:
     sid = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
-    if len(json.dumps(body)) > 16_000_000:
+    from agent_service.image_inputs import snapshot_within_limit
+    if not snapshot_within_limit(body):
         raise _http_error(413, "RT.SESSION.SNAPSHOT_TOO_LARGE", "Snapshot exceeds restore limit")
     try:
         return conversation_harness.restore_snapshot(sid, body)

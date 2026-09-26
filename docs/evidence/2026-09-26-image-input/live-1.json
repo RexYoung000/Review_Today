@@ -1,0 +1,319 @@
+{
+  "fixture": "synthetic, manually authored learning slide",
+  "image": {
+    "name": "review-today-image-fixture.png",
+    "mime_type": "image/png",
+    "sha256": "e2e812a1f981bbbd12abfdc979233fec8f5ec79394509c710731265250ae1e04"
+  },
+  "provider": "deepseek",
+  "calls": [
+    {
+      "schema": "ImageIntent",
+      "model": "deepseek-flash",
+      "image_count": 1,
+      "elapsed_ms": 4230
+    },
+    {
+      "schema": "TeachingPreparation",
+      "model": "deepseek-flash",
+      "image_count": 0,
+      "elapsed_ms": 791
+    },
+    {
+      "schema": "ConversationOutput",
+      "model": "deepseek-v4-flash",
+      "image_count": 0,
+      "elapsed_ms": 7616
+    },
+    {
+      "schema": "IntentDecision",
+      "model": "deepseek-flash",
+      "image_count": 0,
+      "elapsed_ms": 2294
+    },
+    {
+      "schema": "TeachingPreparation",
+      "model": "deepseek-flash",
+      "image_count": 0,
+      "elapsed_ms": 690
+    },
+    {
+      "schema": "ConversationOutput",
+      "model": "deepseek-v4-flash",
+      "image_count": 0,
+      "elapsed_ms": 4110
+    }
+  ],
+  "turns": [
+    {
+      "input": "请读图。先逐字列出图片文字，保留数字和否定词；再用两句话解释箭头关系；最后说明看不清或不确定的部分。不需要联网、出题或保存。",
+      "status": "completed",
+      "elapsed_ms": 14591,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "material",
+          "question"
+        ],
+        "target_task_id": "",
+        "target_description": "",
+        "relation": "new_topic",
+        "workflow": null,
+        "scope": "conversation",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户提交图片并明确只要逐字读图、解释箭头关系、列不确定项，属于已给定材料的局部理解请求，有明确本轮用途，不必进入学习目标或整理模板；不需要联网、出题或保存。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": false,
+        "direct_teaching": false,
+        "answer_only": true,
+        "is_jd": false,
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "readings": [
+        {
+          "transcription": "合成学习材料：RAG 的两步流程\n先检索相关资料，再结合资料生成回答。\n检索 → 生成\n保留原句：未找到依据时，不应编造答案。\n样例编号：RT-042；预算：12.50 元；数量：3。",
+          "visual_description": "白底黑字的演示幻灯片式图片。顶部为加粗标题“合成学习材料：RAG 的两步流程”；下方一行说明“先检索相关资料，再结合资料生成回答。”；中部居中较大字号显示“检索 → 生成”，带一个向右箭头表示先后顺序；再下有“保留原句”提示与否定句；最底部一行给出样例编号、预算金额和数量。整体为纯文本布局，没有其他图形或表格。",
+          "uncertainties": [
+            "图片为纯文本渲染，未见裁切或模糊；字号、颜色深浅的细微差异不影响文字内容。",
+            "除文字内容外，没有更多上下文说明该流程图对应系统的具体实现细节。"
+          ]
+        }
+      ],
+      "replies": [
+        "## 逐字文字\n\n- 合成学习材料：RAG 的两步流程\n- 先检索相关资料，再结合资料生成回答。\n- 检索 → 生成\n- 保留原句：未找到依据时，不应编造答案。\n- 样例编号：RT-042；预算：12.50 元；数量：3。\n\n## 箭头关系\n\n箭头连接“检索”与“生成”，表示这两步有先后依赖：需要先拿到相关资料，才有条件进入生成回答这一步。\n\n它不是并列关系，也不表示从“生成”倒回“检索”；箭头指向说明流程方向只有一个。\n\n## 不确定部分\n\n- 以上文字来自对图片的识读，尚未逐字核对原图；数字 `RT-042`、`12.50 元`、`3` 和否定词“不”需要以原图为准。\n- 图中没有说明检索用什么方式、生成依据哪些具体资料，也没有给出获取时间或适用范围，因此这些实现细节无法从这张图判断。\n- 图片本身为纯文本布局，除文字内容外没有更多上下文；如果原图存在裁切、缩放或字重差异影响判读，识读可能不完整。"
+      ],
+      "calls": [
+        {
+          "id": "e54b2c19-a4d0-405a-8d6d-d65fd0cd986d",
+          "budget_id": "90e89688-cbe2-4f6c-ba37-2b4a0868ef1c",
+          "revision": 1,
+          "background": false,
+          "node": "image_intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 23637,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "6dc4e914-ff28-4218-93e2-a3e3e308e3c7",
+              "input_tokens": 11437,
+              "output_tokens": 598,
+              "total_tokens": 12035,
+              "cached_input_tokens": 0,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "fc7dd5c9-5642-422f-bbd3-bbe5f6975da0",
+          "budget_id": "90e89688-cbe2-4f6c-ba37-2b4a0868ef1c",
+          "revision": 1,
+          "background": false,
+          "node": "teaching_preparation",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 2266,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "d742ca38-9409-4b67-9279-be250ff9fc11",
+              "input_tokens": 1160,
+              "output_tokens": 59,
+              "total_tokens": 1219,
+              "cached_input_tokens": 640,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "f6df3505-659e-4432-8a01-9eb41ab35aee",
+          "budget_id": "90e89688-cbe2-4f6c-ba37-2b4a0868ef1c",
+          "revision": 1,
+          "background": false,
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 8538,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "82f32aa6-4402-4c00-8e4a-ac0e67c0375a",
+              "input_tokens": 4041,
+              "output_tokens": 327,
+              "total_tokens": 4368,
+              "cached_input_tokens": 1024,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "input": "图中写的是可以编造答案，还是不应编造答案？只引用对应原句。",
+      "status": "completed",
+      "elapsed_ms": 9228,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "question"
+        ],
+        "target_task_id": "",
+        "target_description": "",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "conversation",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户针对图片识读内容提问，要求只引用对应原句，属普通知识核对问题，直接依据已识读文本回答并提示以原图为准。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": false,
+        "direct_teaching": false,
+        "answer_only": true,
+        "is_jd": false,
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "图中原句是：“保留原句：未找到依据时，不应编造答案。”所以图中写的是不应编造答案。该句来自图片识读，请以原图为准。",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "readings": [
+        {
+          "transcription": "合成学习材料：RAG 的两步流程\n先检索相关资料，再结合资料生成回答。\n检索 → 生成\n保留原句：未找到依据时，不应编造答案。\n样例编号：RT-042；预算：12.50 元；数量：3。",
+          "visual_description": "白底黑字的演示幻灯片式图片。顶部为加粗标题“合成学习材料：RAG 的两步流程”；下方一行说明“先检索相关资料，再结合资料生成回答。”；中部居中较大字号显示“检索 → 生成”，带一个向右箭头表示先后顺序；再下有“保留原句”提示与否定句；最底部一行给出样例编号、预算金额和数量。整体为纯文本布局，没有其他图形或表格。",
+          "uncertainties": [
+            "图片为纯文本渲染，未见裁切或模糊；字号、颜色深浅的细微差异不影响文字内容。",
+            "除文字内容外，没有更多上下文说明该流程图对应系统的具体实现细节。"
+          ]
+        }
+      ],
+      "replies": [
+        "图中对应原句是：**“未找到依据时，不应编造答案。”**\n\n写的是**不应**编造答案，不是可以编造。这句里的否定词“不”直接影响结论，需要以原图为准。"
+      ],
+      "calls": [
+        {
+          "id": "f58c3028-c5fb-4b6c-88e2-530b1714523c",
+          "budget_id": "f1925b72-469e-4c0c-840a-2310c6a2764c",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 22910,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "cd7622ae-60f6-407f-8784-a4556c139aa5",
+              "input_tokens": 10614,
+              "output_tokens": 367,
+              "total_tokens": 10981,
+              "cached_input_tokens": 384,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "9935fed4-a8ca-4ff3-ba00-52fee6c242d5",
+          "budget_id": "f1925b72-469e-4c0c-840a-2310c6a2764c",
+          "revision": 1,
+          "background": false,
+          "node": "teaching_preparation",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 1925,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "e5298c61-caee-44b8-a0c6-044ba6cacea0",
+              "input_tokens": 980,
+              "output_tokens": 34,
+              "total_tokens": 1014,
+              "cached_input_tokens": 512,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "678790b7-27b1-4b32-8089-0ac8e25a048b",
+          "budget_id": "f1925b72-469e-4c0c-840a-2310c6a2764c",
+          "revision": 1,
+          "background": false,
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 9516,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "98b707b5-80a1-4367-95aa-66c2256d222e",
+              "input_tokens": 4579,
+              "output_tokens": 91,
+              "total_tokens": 4670,
+              "cached_input_tokens": 2560,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "failures": []
+    }
+  ],
+  "result": "transport_and_followup_passed"
+}

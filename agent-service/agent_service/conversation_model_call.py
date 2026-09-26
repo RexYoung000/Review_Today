@@ -18,7 +18,7 @@ from agent_service.source_links import bound_source_links
 from agent_service import run_accounting
 from agent_service.interruptible_call import pool
 
-def call(self, session_id, run_id, revision, node, system, prompt, schema, model=COACH_MODEL, *, parse_model, configured_window, alternatives, require_model):
+def call(self, session_id, run_id, revision, node, system, prompt, schema, model=COACH_MODEL, *, parse_model, configured_window, alternatives, require_model, images=None):
     data, run = self._snapshot(session_id, run_id, revision)
     strength = run.get("thinking_strength", data.get("thinking_strength", "smart"))
     try:
@@ -35,13 +35,16 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
         prompt = json.dumps(payload, ensure_ascii=False)
     self._snapshot(session_id, run_id, revision)
     prompt, capacity = prepare_context(system, prompt, window=configured_window(model), schema=schema.model_json_schema())
-    key = hashlib.sha256((node + system + prompt + model + strength).encode()).hexdigest()
+    from agent_service.image_inputs import reserve_capacity
+    capacity = reserve_capacity(capacity, images)
+    image_identity = "".join(item["sha256"] for item in images or [])
+    key = hashlib.sha256((node + system + prompt + model + strength + image_identity).encode()).hexdigest()
     if key in run["steps"]:
         return schema.model_validate(run["steps"][key])
     with self.store.transaction(session_id, run_id, revision) as data:
         data["runs"][run_id]["context_capacity"] = capacity
         self.store.event(data, data["runs"][run_id], node,
-                         {"intent": "正在理解本轮意图", "evaluate": "正在评价这次独立作答",
+                         {"image_intent": "正在理解图片与问题", "intent": "正在理解本轮意图", "evaluate": "正在评价这次独立作答",
                           "answer": "正在准备回答", "lesson": "正在准备讲解", "organize": "正在整理知识关系",
                           "problem_answer": "正在组织基础答案与学习路径", "jd_analysis": "正在拆解岗位要求",
                           "teaching_preparation": "正在梳理当前问题", "memory_selection": "正在关联学习记录",
@@ -111,7 +114,7 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
         streamable = node in {"answer", "lesson", "organize", "problem_answer", "evaluate", "jd_analysis"}
         from agent_service.config import MODEL_TIMEOUT_SECONDS
         with budget_scope(seconds=min(MODEL_TIMEOUT_SECONDS, run_accounting.remaining(run))) as budget:
-            choices = ([model] + (alternatives(model, strength, streamable) or [model]))[:2]
+            choices = ([model, model] if images else [model] + (alternatives(model, strength, streamable) or [model]))[:2]
             repaired = False
             for index, selected_model in enumerate(choices):
                 attempt_event = None
@@ -128,6 +131,7 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                                                                   schema.model_json_schema(), selected_model)
                             prompt = json.dumps(retry_payload, ensure_ascii=False)
                     prompt, actual_capacity = prepare_context(system, prompt, window=configured_window(selected_model), schema=schema.model_json_schema())
+                    actual_capacity = reserve_capacity(actual_capacity, images)
                     with self.store.transaction(session_id, run_id, revision) as current:
                         current["runs"][run_id]["context_capacity"] = actual_capacity
                         if actual_capacity != capacity:
@@ -149,6 +153,7 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                                 reasoning_effort="high" if strength == "deep" else None,
                                 on_usage=lambda usage: run_accounting.record(self, session_id, run_id, call_id, usage=usage),
                                 on_request=lambda: run_accounting.request(self, session_id, run_id, revision, call_id),
+                                **({"images": images} if images else {}),
                                 **({"on_partial": emit, "on_transport": transport} if streamable else {}))
                         except BaseException:
                             run_accounting.record(self, session_id, run_id, call_id, status='failed_or_cancelled')
@@ -188,6 +193,7 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                         choices[index + 1:] = [selected_model]
                         system += "\n" + schema_repair_instruction(error)
                         prompt, repaired_capacity = prepare_context(system, prompt, window=configured_window(model), schema=schema.model_json_schema())
+                        repaired_capacity = reserve_capacity(repaired_capacity, images)
                         with self.store.transaction(session_id, run_id, revision) as current:
                             active = current["runs"][run_id]
                             active["context_capacity"] = repaired_capacity

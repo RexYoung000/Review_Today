@@ -21,6 +21,7 @@ struct LearningTextInput: NSViewRepresentable {
     var editable = true
     var onInsertionApplied: ((String) -> Void)? = nil
     var preservesFocusOnClick: ((NSEvent) -> Bool)? = nil
+    var onImagePaste: ((NSPasteboard) -> Bool)? = nil
     var onSubmit: () -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -65,6 +66,7 @@ struct LearningTextInput: NSViewRepresentable {
         view.setEditingEnabled(editable)
         view.onInsertionApplied = onInsertionApplied
         view.preservesFocusOnClick = preservesFocusOnClick
+        view.onImagePaste = onImagePaste
         view.onFocus = { [weak coordinator, weak view] value in
             guard let coordinator else { return }
             let owner = coordinator.sessionID
@@ -160,6 +162,19 @@ struct LearningTextInput: NSViewRepresentable {
 }
 
 final class LearningEditor: NSTextView {
+    var onImagePaste: ((NSPasteboard) -> Bool)?
+
+    override func paste(_ sender: Any?) {
+        guard isEditable else { return }
+        if onImagePaste?(NSPasteboard.general) == true { return }
+        super.paste(sender)
+    }
+
+    override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
+        if item.action == #selector(paste(_:)), isEditable, onImagePaste != nil,
+           NSPasteboard.general.availableType(from: [.png, .tiff]) != nil { return true }
+        return super.validateUserInterfaceItem(item)
+    }
     var preservesFocusOnClick: ((NSEvent) -> Bool)?
     var placeholder = ""
     var onSubmit: (() -> Void)?

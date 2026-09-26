@@ -1,0 +1,30 @@
+Native contracts
+PASS: image normalization, metadata removal, draft isolation, first-send rollback, image-only draft preservation, disk restart, archive/delete lifecycle and native paste dispatch
+PASS executable: ImageInputContractTests
+PASS: 12 scenarios, 6-card refresh, protected prefill/IME/undo, sidebar preference, native input, atomic first-send failure/retry, no empty Sessions, independent drafts/preferences, tags, partial persistence, activity
+PASS executable: LearningInputContractTests
+PASS: independent creation, legacy draft preservation/rollback, per-session disk persistence, no message/run on creation, creation/first-send failure, first-send identity, active empty/populated deletion and no draft resurrection
+PASS executable: IndependentSessionContractTests
+PASS: reset preview, rollback, preserved knowledge/enrollment/preferences, immediate due, scope changes, busy rejection, full purge, tombstones, durable cleanup, duplicate execution and controller invalidation
+PASS executable: LocalDataResetContractTests
+PASS: 90s cold startup, 10s sustained outage, recovery resets timer, monotonic startup diagnostics, single termination
+PASS: capability probing is background state; partial capability is compact; all unavailable blocks
+PASS executable: AgentServiceMonitorContractTests
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+PASS executable: ConversationReplayTests
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+PASS: real SSE Unicode transport, incremental delivery, max controlled receive delay 25 ms
+
+Final image and runtime contracts
+PASS: image normalization, metadata removal, draft isolation, first-send rollback, image-only draft preservation, disk restart, archive/delete lifecycle and native paste dispatch
+PASS executable: ImageInputContractTests
+PASS: runtime/storage/network identity, preview submit guard, durable isolation, invalid acceptance and stable retry, delivery feedback, bounded static samples
+PASS executable: AppRuntimeContractTests
+
+Full Python regression
+FAILED tests/test_closure_repair.py::ClosureRepairTests::test_fetched_source_is_reused_on_generation_retry_and_refresh_has_version
+FAILED tests/test_closure_repair.py::ClosureRepairTests::test_mixed_material_keeps_generated_identity
+2 failed, 836 passed, 4 skipped, 5 warnings, 354 subtests passed in 437.39s (0:07:17)
+
+Final targeted Python regression
+149 passed, 5 warnings, 8 subtests passed in 36.75s
