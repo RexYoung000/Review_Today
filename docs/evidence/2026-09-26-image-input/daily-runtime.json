@@ -1,0 +1,23 @@
+{
+  "status": "ok",
+  "provider": "deepseek",
+  "image_input_protocol": 1,
+  "jev": "off",
+  "models": {
+    "router": {
+      "model": "deepseek-flash",
+      "status": "ready",
+      "streaming": "not_applicable"
+    },
+    "coach": {
+      "model": "deepseek-v4-flash",
+      "status": "ready",
+      "streaming": "ready"
+    },
+    "risk": {
+      "model": "deepseek-v4-pro",
+      "status": "ready",
+      "streaming": "not_applicable"
+    }
+  }
+}
