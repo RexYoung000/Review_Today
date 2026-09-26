@@ -115,15 +115,17 @@ struct LearningWorkspace: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            workspace(width: geometry.size.width, height: geometry.size.height)
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .background {
-                    if isStarting { AgentTitlePointerRegion(driver: titleMascot).accessibilityHidden(true) }
-                }
+        LearningImageDropContainer(enabled: acceptsImageInput, onTarget: { imageDropTargeted = $0 }, onDrop: dropImages) {
+            GeometryReader { geometry in
+                workspace(width: geometry.size.width, height: geometry.size.height)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .background {
+                        if isStarting { AgentTitlePointerRegion(driver: titleMascot).accessibilityHidden(true) }
+                    }
+            }
+            .background(PaperSurface())
         }
-        .background(PaperSurface())
-        .onDrop(of: acceptsImageInput ? LearningImageImport.dropTypes : [], isTargeted: $imageDropTargeted, perform: dropImages)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay {
             if acceptsImageInput && (imageDropTargeted || editorImageDropTargeted) {
                 ZStack {
@@ -655,7 +657,7 @@ struct LearningWorkspace: View {
                 sessionID: selectedSessionID ?? draftSettings?.agentDraftID, placeholder: activeActionPlaceholder,
                 insertion: dictation.insertion ?? insertion, editable: !dictation.busy,
                 onInsertionApplied: acceptDictation, onSubmit: submitDraft,
-                preservesFocusOnClick: titleMascot.preservesInputFocus, onImagePaste: pasteImage, onImageDragTarget: { editorImageDropTargeted = $0 }) {
+                preservesFocusOnClick: titleMascot.preservesInputFocus, onImagePaste: pasteImage, onImageDrop: dropImages, onImageDragTarget: { editorImageDropTargeted = $0 }) {
                 HStack {
                   composerControls.disabled(dictation.busy)
                   Spacer(minLength: 8)
@@ -771,11 +773,19 @@ struct LearningWorkspace: View {
         }
     }
 
-    private func dropImages(_ providers: [NSItemProvider]) -> Bool {
-        guard let ticket = reserveImages(providers.count) else { return false }
-        let owner = draftSessionID
-        LearningImageImport.loadProviders(providers) { result in finishImages(ticket, result: result, owner: owner) }
-        return true
+    private func dropImages(_ pasteboard: NSPasteboard) -> Bool {
+        guard acceptsImageInput, LearningImageImport.containsDropImages(pasteboard) else { return false }
+        do {
+            let capacity = LearningImageAttachment.maximumCount - draftImages.count - imageImports.pendingCount
+            let plan = try LearningImageImport.captureDrop(pasteboard, capacity: capacity)
+            guard let ticket = reserveImages(plan.reservationCount) else { return false }
+            let owner = draftSessionID
+            LearningImageImport.loadDrop(plan) { result in finishImages(ticket, result: result, owner: owner) }
+            return true
+        } catch {
+            localError = "这批图片未添加：" + error.localizedDescription
+            return false
+        }
     }
 
     private func finishImages(_ ticket: LearningImageImportQueue.Ticket, result: Result<[LearningImageAttachment], Error>, owner: UUID?) {

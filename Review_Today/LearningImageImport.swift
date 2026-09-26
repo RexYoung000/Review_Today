@@ -61,13 +61,24 @@ enum LearningImageImport {
     static func pasteboardInputs(_ pasteboard: NSPasteboard) throws -> [Input] {
         let items = pasteboard.pasteboardItems ?? []
         guard items.count <= LearningImageAttachment.maximumCount else { throw LearningImageAttachment.Failure.count }
-        return try items.map { item in
-            if let value = item.string(forType: .fileURL), let url = URL(string: value), url.isFileURL { return .file(url) }
-            for type in pasteboardTypes.dropFirst() {
-                if let data = item.data(forType: type) { return .bytes(data, "剪贴板图片.png") }
-            }
-            throw LearningImageAttachment.Failure.format
+        let urls = fileURLs(pasteboard)
+        return try items.map { try pasteboardInput($0, fileURLs: urls) }
+    }
+
+    static func fileURLs(_ board: NSPasteboard) -> [URL] {
+        // Let AppKit attach the drag/pasteboard access grant to the NSURL.
+        (board.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL]) ?? []
+    }
+
+    static func pasteboardInput(_ item: NSPasteboardItem, fileURLs: [URL] = []) throws -> Input {
+        // Raw pixels are safer than a private cache URL offered alongside them.
+        for type in pasteboardTypes.dropFirst() {
+            if let data = item.data(forType: type), !data.isEmpty { return .bytes(data, "剪贴板图片.png") }
         }
+        if let value = item.string(forType: .fileURL), let url = URL(string: value), url.isFileURL {
+            return .file(fileURLs.first { $0.standardizedFileURL == url.standardizedFileURL } ?? url)
+        }
+        throw LearningImageAttachment.Failure.format
     }
 
     /// Start every provider load in the drop callback itself. Temporary file

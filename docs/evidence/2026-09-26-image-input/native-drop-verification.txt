@@ -1,0 +1,31 @@
+Native image drop — 2026-09-26
+
+Observed daily-runtime failure (system log, 20:01:05):
+NSItemProvider public.jpeg file/data representations: domain=-1000
+Underlying data-copy error: NSCocoaErrorDomain code=513,
+NSPOSIXErrorDomain code=1. Private paths were not extracted or saved.
+
+Current-source tests:
+PASS executable: ImageInputContractTests
+PASS executable: LearningInputContractTests
+PASS executable: IndependentSessionContractTests
+PASS executable: InteractionFocusTests
+Added checks: native body/editor dispatch; button hit-testing; direct image bytes
+before inaccessible cache URL; real NSFilePromiseProvider metadata; controlled
+reverse-order promised files; batch size rejection; source failure; timeout;
+temporary-directory cleanup. Existing queue and persisted-draft checks passed.
+
+Build: normal signed macOS Debug, exit 0; strict signature check passed.
+The final build and app-module compilation used unchanged source.
+An earlier compilation was discarded after detecting a source edit during
+compilation; a test-only required initializer was corrected before final runs.
+
+UI: complete isolated App displayed conversation/history and image chips.
+Preview/Escape, remove/add via picker, text draft, session switch and draft
+restoration passed. No test messages were sent to daily data.
+Isolated backend did not become ready; no model reply was retested this turn.
+
+Actual gesture boundary:
+Independent native drag probe observed mouseDown and draggingSession start.
+Automation did not complete delivery; Escape cancelled the session.
+No success claim for user-source drag or actual file-promise transfer.

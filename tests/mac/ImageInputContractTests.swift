@@ -180,6 +180,7 @@ struct ImageInputContractTests {
         }
         precondition(providerImages.map(\.sha256) == fileImages.map(\.sha256))
         try await fileBackedProviders(first: first, directory: directory)
+        try await nativeDrops(first: first, firstPath: firstPath)
         let broken = directory.appendingPathComponent("broken.png")
         try Data("not a picture".utf8).write(to: broken)
         do {
@@ -302,6 +303,114 @@ struct ImageInputContractTests {
         } catch LearningImageAttachment.Failure.format {}
         print("PASS: JPEG file representation works when its data representation is unavailable")
         print("PASS: data/item/type fallbacks, stale URL recovery, atomic limit rejection and remote URL rejection")
+    }
+
+    @MainActor static func nativeDrops(first: LearningImageAttachment, firstPath: URL) async throws {
+        let board = NSPasteboard.withUniqueName()
+        defer { board.releaseGlobally() }
+        let item = NSPasteboardItem()
+        item.setString("file:///private/unreadable-cache-image.png", forType: .fileURL)
+        item.setData(first.data, forType: .png)
+        precondition(board.writeObjects([item]))
+        let plan = try LearningImageImport.captureDrop(board, capacity: 8)
+        precondition(plan.reservationCount == 1)
+        let raw = try await drop(plan)
+        let normalized = try LearningImageAttachment.load(firstPath)
+        precondition(raw.count == 1 && raw[0].sha256 == normalized.sha256)
+        let view = LearningImageDropView(frame: NSRect(x: 0, y: 0, width: 400, height: 300))
+        let button = NSButton(frame: NSRect(x: 0, y: 0, width: 100, height: 30))
+        view.addSubview(button)
+        precondition(view.hitTest(NSPoint(x: 20, y: 15)) === button)
+        var targeted = false, calls = 0
+        view.onTarget = { targeted = $0 }
+        view.onDrop = { calls += 1; return $0.name == board.name }
+        let dragging = ImageDragInfo(board)
+        precondition(view.draggingEntered(dragging) == .copy && targeted)
+        precondition(view.performDragOperation(dragging) && calls == 1 && !targeted)
+        view.enabled = false
+        precondition(view.draggingEntered(dragging).isEmpty && !view.performDragOperation(dragging))
+        let editor = LearningEditor(); editor.isEditable = true; editor.string = "保留输入"
+        editor.onImageDrop = { calls += 1; return $0.name == board.name }
+        precondition(editor.performDragOperation(dragging) && calls == 2 && editor.string == "保留输入")
+
+        // Real AppKit promise metadata must be captured during the drop; calling
+        // the promise outside a real NSDraggingSession is prohibited by AppKit.
+        board.clearContents()
+        let source = PromiseMetadataSource()
+        let promised = NSFilePromiseProvider(fileType: UTType.png.identifier, delegate: source)
+        precondition(board.writeObjects([promised]))
+        let promisedPlan = try LearningImageImport.captureDrop(board, capacity: 5)
+        precondition(promisedPlan.reservationCount == 5 && promisedPlan.parts.count == 1)
+        guard case .promise = promisedPlan.parts[0] else { preconditionFailure() }
+
+        let receiver = ControlledImagePromise(names: ["第一张.png", "第二张.png"], bytes: first.data, reverse: true)
+        let combined = LearningImageImport.DropPlan(parts: [.input(.file(firstPath)), .promise(receiver)], reservationCount: 4)
+        let loaded = try await drop(combined)
+        precondition(loaded.map(\.name) == [firstPath.lastPathComponent, "第一张.png", "第二张.png"])
+        precondition(!FileManager.default.fileExists(atPath: receiver.destination!.path))
+        let tooMany = ControlledImagePromise(names: ["一.png", "二.png"], bytes: first.data)
+        do {
+            _ = try await drop(.init(parts: [.promise(tooMany)], reservationCount: 1))
+            preconditionFailure()
+        } catch LearningImageAttachment.Failure.count {}
+        precondition(!FileManager.default.fileExists(atPath: tooMany.destination!.path))
+        let refused = ControlledImagePromise(names: ["失败.png"], bytes: first.data, refuses: true)
+        do {
+            _ = try await drop(.init(parts: [.input(.file(firstPath)), .promise(refused)], reservationCount: 8))
+            preconditionFailure()
+        } catch LearningImageAttachment.Failure.unavailable {}
+        precondition(!FileManager.default.fileExists(atPath: refused.destination!.path))
+        let silent = ControlledImagePromise(names: ["未完成.png"], bytes: first.data, silent: true)
+        do {
+            _ = try await drop(.init(parts: [.promise(silent)], reservationCount: 8), timeout: 0.03)
+            preconditionFailure()
+        } catch LearningImageAttachment.Failure.unavailable {}
+        precondition(!FileManager.default.fileExists(atPath: silent.destination!.path))
+        withExtendedLifetime(source) {}
+        print("PASS: native drop routing, click pass-through, raw pixels before cache URL, real promise metadata, ordered promised files, atomic failure/limit/timeout and temporary-file cleanup")
+    }
+
+    @MainActor static func drop(_ plan: LearningImageImport.DropPlan, timeout: TimeInterval = 2) async throws -> [LearningImageAttachment] {
+        try await withCheckedThrowingContinuation { c in
+            LearningImageImport.loadDrop(plan, timeout: timeout) { c.resume(with: $0) }
+        }
+    }
+}
+
+@MainActor private final class PromiseMetadataSource: NSObject, NSFilePromiseProviderDelegate {
+    func filePromiseProvider(_ provider: NSFilePromiseProvider, fileNameForType fileType: String) -> String { "原生承诺.png" }
+    nonisolated func filePromiseProvider(_ provider: NSFilePromiseProvider, writePromiseTo url: URL, completionHandler: @escaping ((any Error)?) -> Void) {
+        preconditionFailure("Metadata capture must not call in the file promise")
+    }
+}
+
+private nonisolated final class ControlledImagePromise: NSFilePromiseReceiver, @unchecked Sendable {
+    private let names: [String]
+    private let bytes: Data
+    private let reverse: Bool
+    private let refuses: Bool
+    private let silent: Bool
+    private(set) var destination: URL?
+    override var fileNames: [String] { names }
+    init(names: [String], bytes: Data, reverse: Bool = false, refuses: Bool = false, silent: Bool = false) {
+        self.names = names; self.bytes = bytes; self.reverse = reverse; self.refuses = refuses; self.silent = silent
+        super.init()
+    }
+    required init?(pasteboardPropertyList propertyList: Any, ofType type: NSPasteboard.PasteboardType) { return nil }
+    override func receivePromisedFiles(atDestination destination: URL, options: [AnyHashable: Any] = [:], operationQueue: OperationQueue, reader: @escaping (URL, (any Error)?) -> Void) {
+        self.destination = destination
+        guard !silent else { return }
+        for name in reverse ? Array(names.reversed()) : names {
+            let url = destination.appendingPathComponent(name)
+            let bytes = bytes, refuses = refuses
+            operationQueue.addOperation {
+                do {
+                    if refuses { throw NSError(domain: NSCocoaErrorDomain, code: 513) }
+                    try bytes.write(to: url)
+                    reader(url, nil)
+                } catch { reader(url, error) }
+            }
+        }
     }
 }
 
