@@ -65,3 +65,20 @@ python3 tests/mac/run-contracts.py ConversationReplayTests
 原生 `ConversationControlTests`、`ConversationReplayTests`、`SessionOrganizationContractTests`、`LocalDataResetContractTests` 通过；覆盖 20 次连续点击、超时重发同一 ID、服务接受与快速完成、订阅交错、旧重复请求让出队列给取消、错误／过期收据、事件幂等、归档／停止守卫和数据清理边界。真实 SSE 解析复测通过；Debug 构建通过。
 
 更新并重新打开同一个 Xcode 开发 App 后，本机原有 8 项积压操作全部得到处理（拒绝保留原因，不冒充执行成功），待发送操作为 0；用户原先排队的取消已送达，界面显示“目标已取消”，8 条知识和 8 条原消息保留。没有清除原失败记录、没有重新请求实际招聘页面、没有新增模型测试聊天。完整鼠标快速连点手感及新一轮真实模型回复仍由后续体验确认；本轮自动化连点为原生控制入口的受控验证。
+
+## 网页增强读取实测（2026-09-26，仅验证，浏览器接入未实施）
+
+Rex 确认先验证现有工具的增强能力。本次单独调用现有账户的 Exa Contents 新鲜抓取和 Tavily advanced，各读取同一条公开 BOSS 岗位链接及 Python 官方文档一次，共 4 次请求；没有请求模型、重试、改变 App 默认配置或写入用户会话。BOSS 原链接及其跟踪参数不进入提交的证据，原始请求／响应仅保存在本机临时实验目录，文件权限 0600；其中不保存认证头。
+
+| 材料 | Exa Contents，强制新鲜抓取 | Tavily advanced |
+|---|---|---|
+| 用户提供的 BOSS 岗位 | 2.632 秒，返回 3310 字符脚本，正文检查拒绝 | 13.495 秒，0 条结果，`Failed to fetch url` |
+| Python 官方数据结构文档 | 1.203 秒，实际正文 20000 字符，达到请求长度上限 | 1.243 秒，实际正文 15774 字符，也包含导航内容 |
+
+结果见 [脱敏实测记录](url-reader-probe-1.json)。公开文档对照证明本次两个账户的直接读取接口可用；不能据此承诺任意网址成功率。BOSS 的 Exa 响应虽为 `success / crawled`，实际仍没有职责或任职要求，不能作为读取成功的证据。前一轮普通浏览器检查中同一链接在页面加载后展示了实际岗位正文；这只是浏览器可读的证据，App 尚无该兜底链路。
+
+Exa 两次响应的费用估算合计 0.002 美元，未核对账单。Tavily 两次 `usage.credits` 都返回 0；官方按成功 URL 分组计费，不能解释为免费。单次耗时不是稳定延迟或整轮性能结果。此次 Tavily 岗位请求用时超过 App 当前每服务 12 秒预算，因此增强接入还须一起处理整轮等待预算、状态及取消，不能仅将 basic 改成 advanced。
+
+结论：增强模式没有解决当前招聘链接，不能把它直接设为默认并声称修复。下一阶段需要独立实施通用浏览器正文读取，保留公网边界、有限等待、取消／版本守卫、实际正文检查和真实失败说明；尚未验证登录页面、验证码、图片／视频内容或跨网站覆盖。
+
+接口依据：[Exa Contents](https://exa.ai/docs/contents/quickstart)、[Tavily 提取模式](https://docs.tavily.com/documentation/best-practices/best-practices-extract)、[Tavily 用量返回](https://docs.tavily.com/documentation/api-reference/endpoint/extract)。

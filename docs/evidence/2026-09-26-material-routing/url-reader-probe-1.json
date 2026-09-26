@@ -1,0 +1,83 @@
+{
+  "date": "2026-09-26",
+  "scope": "Standalone real provider probes, not App integration or model evaluation",
+  "inputs": {
+    "public_boss_job": "Same user-supplied public BOSS job URL; tracking parameters and URL omitted from this committed summary",
+    "public_python_documentation": "https://docs.python.org/3/tutorial/datastructures.html"
+  },
+  "settings": {
+    "exa_contents_fresh": {
+      "endpoint": "https://api.exa.ai/contents",
+      "text": {"maxCharacters": 20000},
+      "maxAgeHours": 0,
+      "livecrawlTimeout": 20000
+    },
+    "tavily_advanced": {
+      "endpoint": "https://api.tavily.com/extract",
+      "extract_depth": "advanced",
+      "format": "text",
+      "include_images": false,
+      "timeout": 25,
+      "include_usage": true
+    }
+  },
+  "results": [
+    {
+      "provider": "exa_contents_fresh",
+      "input": "public_boss_job",
+      "calls": 1,
+      "elapsed_ms": 2632,
+      "result_count": 1,
+      "characters": 3310,
+      "provider_status": "success",
+      "provider_source": "crawled",
+      "readable": false,
+      "error": "RT.WEB.UNUSABLE_CONTENT",
+      "observation": "Script shell; no job responsibilities, requirements or role content",
+      "estimated_cost_dollars": {"total": 0.001, "contents": {"text": 0.001}}
+    },
+    {
+      "provider": "tavily_advanced",
+      "input": "public_boss_job",
+      "calls": 1,
+      "elapsed_ms": 13495,
+      "result_count": 0,
+      "characters": 0,
+      "readable": false,
+      "provider_failure": "Failed to fetch url",
+      "reported_usage": {"credits": 0}
+    },
+    {
+      "provider": "exa_contents_fresh",
+      "input": "public_python_documentation",
+      "calls": 1,
+      "elapsed_ms": 1203,
+      "result_count": 1,
+      "characters": 20000,
+      "provider_status": "success",
+      "provider_source": "crawled",
+      "readable": true,
+      "observation": "Actual Data Structures text, including append and extend explanations; output reaches requested character limit",
+      "estimated_cost_dollars": {"total": 0.001, "contents": {"text": 0.001}}
+    },
+    {
+      "provider": "tavily_advanced",
+      "input": "public_python_documentation",
+      "calls": 1,
+      "elapsed_ms": 1243,
+      "result_count": 1,
+      "characters": 15774,
+      "readable": true,
+      "observation": "Actual Data Structures text, including append and extend explanations; also includes navigation text",
+      "reported_usage": {"credits": 0}
+    }
+  ],
+  "limits": [
+    "One request per provider per input; no retries or statistical coverage claim",
+    "No model requests, App configuration changes, conversation writes or review-data changes",
+    "Exa estimated_cost_dollars is the provider response estimate, not a verified invoice",
+    "Tavily reported zero credits does not establish free usage; successful URL charges are grouped",
+    "Browser rendering succeeded in the preceding manual inspection; it is not an App-integrated fallback",
+    "Standalone provider deadlines differ from the current App per-provider 12-second budget"
+  ]
+}
