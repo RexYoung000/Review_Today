@@ -201,6 +201,8 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
                     _report_usage(response, on_usage)
                 if event.type != "response.output_text.delta":
                     continue
+                if event.delta.strip():
+                    current_budget.get().output_progress()
                 snapshot += event.delta
                 try:
                     partial = jiter.from_json(snapshot.encode(), partial_mode="trailing-strings")

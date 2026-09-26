@@ -41,13 +41,14 @@ class MaterialRoutingTests(unittest.TestCase):
             findings = []
             for source in payload['sources']:
                 body = source['content']
-                role = 'jd' if JD in body else 'product' if PRODUCT in body else 'other'
+                role = 'jd_and_product' if JD in body and PRODUCT in body else 'jd' if JD in body else 'product' if PRODUCT in body else 'other'
                 findings.append(MaterialFinding(source_id=source['source_id'], role=role,
-                    sufficient=role != 'other', evidence=JD if role == 'jd' else PRODUCT if role == 'product' else ''))
-            proceed = any(f.sufficient and (payload['kind'] != 'jd' or f.role == 'jd') for f in findings)
+                    sufficient=role != 'other', evidence=JD if role in {'jd', 'jd_and_product'} else PRODUCT if role == 'product' else ''))
+            roles = {'jd': {'jd', 'jd_and_product'}, 'product': {'product', 'jd_and_product'}}.get(payload['kind'])
+            proceed = any(f.sufficient and (not roles or f.role in roles) for f in findings)
             return MaterialReadiness(can_proceed=proceed, findings=findings,
                 missing=[] if any(f.role == 'product' for f in findings) else ['EMOX 的实际产品内容尚未提供。'],
-                reply='' if proceed else '你这次要准备面试，但链接还没有提供可用的岗位正文。请贴出岗位职责和任职要求，我们接着分析这个岗位。')
+                reply='' if proceed else '收到小程序分享链接，但这里无法直接打开；JD 已收到，请补一张产品首页截图。' if payload['kind'] == 'product' else '你这次要准备面试，但链接还没有提供可用的岗位正文。请贴出岗位职责和任职要求，我们接着分析这个岗位。')
         if schema is JDAnalysis:
             self.jd_inputs.append(payload)
             if self.outputs:

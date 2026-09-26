@@ -17,13 +17,31 @@ class AttemptBudget:
     closers: list = field(default_factory=list)
     expired: bool = False
     abandoned: bool = False
+    first_output_seconds: float | None = None
+    idle_seconds: float | None = None
+    last_output: float | None = None
+    wake: threading.Event = field(default_factory=threading.Event, repr=False)
 
     def remaining(self):
         from agent_service.call_errors import ModelCallError
-        remaining = self.seconds - (time.monotonic() - self.started)
+        now = time.monotonic()
+        remaining = self.seconds - (now - self.started)
+        reason = "step deadline exceeded"
+        if self.first_output_seconds is not None:
+            output_deadline = (self.started + self.first_output_seconds if self.last_output is None
+                               else self.last_output + self.idle_seconds)
+            if output_deadline - now < remaining:
+                remaining = output_deadline - now
+                reason = "first output deadline exceeded" if self.last_output is None else "stream idle deadline exceeded"
         if remaining <= 0 or self.expired:
-            raise ModelCallError("TIMEOUT", "step deadline exceeded")
+            raise ModelCallError("TIMEOUT", reason)
         return remaining
+
+    def output_progress(self):
+        # A late chunk cannot resurrect an expired or cancelled generation.
+        self.remaining()
+        self.last_output = time.monotonic()
+        self.wake.set()
 
     def register(self, close):
         self.closers.append(close)
@@ -57,20 +75,33 @@ current_budget = ContextVar("review_today_attempt_budget", default=None)
 
 
 @contextmanager
-def budget_scope(seconds=MODEL_TIMEOUT_SECONDS, *, limit=2, isolated=False):
+def budget_scope(seconds=MODEL_TIMEOUT_SECONDS, *, limit=2, isolated=False,
+                 first_output_seconds=None, idle_seconds=None):
     existing = current_budget.get()
     if existing and not isolated:
         yield existing
         return
-    budget = AttemptBudget(seconds=seconds, limit=limit)
+    budget = AttemptBudget(seconds=seconds, limit=limit,
+                           first_output_seconds=first_output_seconds, idle_seconds=idle_seconds)
     token = current_budget.set(budget)
-    timer = threading.Timer(budget.seconds, lambda: budget.close(expired=True))
-    timer.daemon = True
-    timer.start()
+    finished = threading.Event()
+    def watch():
+        from agent_service.call_errors import ModelCallError
+        while not finished.is_set():
+            try:
+                delay = budget.remaining()
+            except ModelCallError:
+                if not finished.is_set():
+                    budget.close(expired=True)
+                return
+            budget.wake.wait(delay)
+            budget.wake.clear()
+    threading.Thread(target=watch, daemon=True, name='review-today-model-deadline').start()
     try:
         yield budget
     finally:
-        timer.cancel()
+        finished.set()
+        budget.wake.set()
         if not budget.abandoned:
             budget.close()
         current_budget.reset(token)

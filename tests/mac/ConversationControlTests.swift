@@ -9,6 +9,19 @@ struct ConversationControlTests {
         let c = container.mainContext
         c.autosaveEnabled = false
         let session = AgentSession()
+        let task = LearningTask(sessionID: session.id, inputMessageID: UUID(), status: "retryable_failed")
+        let failedJD = AgentRun(id: UUID(), sessionID: session.id)
+        failedJD.taskID = task.id; failedJD.status = "retryable_failed"
+        failedJD.createdAt = .now.addingTimeInterval(-10)
+        let productReply = AgentRun(id: UUID(), sessionID: session.id)
+        productReply.taskID = task.id; productReply.status = "completed"
+        precondition(ConversationProcessor.taskRun(task, runs: [failedJD, productReply])?.id == failedJD.id)
+        productReply.status = "running"
+        precondition(ConversationProcessor.taskRun(task, runs: [failedJD, productReply])?.id == productReply.id)
+        productReply.status = "completed"; task.status = "awaiting_user"
+        precondition(ConversationProcessor.taskRun(task, runs: [failedJD, productReply])?.id == productReply.id)
+        let otherSession = AgentRun(id: UUID(), sessionID: UUID()); otherSession.taskID = task.id
+        precondition(ConversationProcessor.taskRun(task, runs: [failedJD, productReply, otherSession])?.id == productReply.id)
         let run = AgentRun(id: UUID(), sessionID: session.id)
         run.status = "retryable_failed"
         run.errorCode = "RT.MODEL.SCHEMA"

@@ -6,6 +6,39 @@ from agent_service.execution_policy import AttemptBudget, ApprovedAlternative, a
 
 
 class ExecutionPolicyTests(unittest.TestCase):
+    def test_stream_progress_passes_old_deadline_but_never_total_deadline(self):
+        budget = AttemptBudget(seconds=180, first_output_seconds=90, idle_seconds=30)
+        start = budget.started
+        for elapsed in [20, 45, 70, 95, 120, 145, 170]:
+            with patch('agent_service.execution_policy.time.monotonic', return_value=start + elapsed):
+                budget.output_progress()
+                self.assertGreater(budget.remaining(), 0)
+        with patch('agent_service.execution_policy.time.monotonic', return_value=start + 180):
+            with self.assertRaisesRegex(RuntimeError, 'TIMEOUT'):
+                budget.output_progress()
+
+    def test_first_output_and_idle_deadlines_are_distinct(self):
+        budget = AttemptBudget(seconds=180, first_output_seconds=90, idle_seconds=30)
+        start = budget.started
+        with patch('agent_service.execution_policy.time.monotonic', return_value=start + 91):
+            with self.assertRaisesRegex(RuntimeError, 'TIMEOUT'):
+                budget.remaining()
+        with patch('agent_service.execution_policy.time.monotonic', return_value=start + 10):
+            budget.output_progress()
+        with patch('agent_service.execution_policy.time.monotonic', return_value=start + 41):
+            with self.assertRaisesRegex(RuntimeError, 'TIMEOUT'):
+                budget.output_progress()
+
+    def test_watchdog_closes_stalled_stream_after_progress(self):
+        import threading
+        from agent_service.execution_policy import budget_scope
+        closed = threading.Event()
+        with budget_scope(seconds=1, first_output_seconds=.8, idle_seconds=.03) as budget:
+            budget.register(closed.set)
+            budget.output_progress()
+            self.assertTrue(closed.wait(.4))
+            self.assertTrue(budget.expired)
+
     def test_budget_shared_and_finite(self):
         budget = AttemptBudget(limit=2, seconds=10)
         budget.take(); budget.take()

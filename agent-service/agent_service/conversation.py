@@ -120,7 +120,7 @@ class ConversationHarness(ConditionalTeaching):
                     # Recompute its scope from all current inputs, not a stale
                     # learning-only projection from the superseded attempt.
                     for key in ("resolved_input", "resource_scope_reply", "programming_scope_reply", "request_scope",
-                                "dialogue_only", "social_reply_kind", "activity_candidate", "learning_concepts"):
+                                "dialogue_only", "social_reply_kind", "activity_candidate", "learning_concepts", "material_followup"):
                         run.pop(key, None)
                     summary = "已收到补充，正在调整"
                 else:
@@ -423,7 +423,7 @@ class ConversationHarness(ConditionalTeaching):
                         run["status"] = "retryable_failed"
                         topic_capture.failed(self, data, run, "这次录入未完成，可重试或跳过。")
                         task = self._task(data, run)
-                        if task and task["status"] not in FINISHED | {"committing"}:
+                        if task and not run.get('material_followup') and task["status"] not in FINISHED | {"committing"}:
                             task.update(status="retryable_failed", user_summary="当前步骤未完成，可重试；学习进度保留", error_code=code)
                             self._project_event(data, run, task)
                         if code.startswith("RT.RUN.BUDGET"):
@@ -793,6 +793,21 @@ class ConversationHarness(ConditionalTeaching):
             return
         if decision.clarification:
             self._publish(sid, rid, rev, decision.clarification)
+            return
+        if decision.material_focus == 'product' and not decision.direct_teaching:
+            with self.store.transaction(sid, rid, rev) as current:
+                current['runs'][rid]['material_followup'] = True
+            self._respond(sid, rid, rev, decision,
+                "只承接本轮产品问题或补充材料，不重写 JD 能力地图、风险清单和面试题。"
+                "区分材料中的产品自述、已读页面和未观察的实际体验，复用已有产品介绍；"
+                "仅本轮发分享链接或询问打开能力时说明读取限制；已经补了正文/截图就直接使用，不重说上一轮打不开。"
+                "用户转述的页面文字应归因为用户提供，不说自己亲眼观察了页面；不能把旧 JD 充分视为已取得小程序页面。"
+                "页面只列入口名称时，不能断言入口彼此没有关联、机制缺失、只是装饰或实现容易；未展示不等于不存在。"
+                "提出设计建议要用条件句，例如‘若角色尚未根据记录反馈，可考虑…’，明确这是建议，不能说‘因果绑定是缺失的’。"
+                "公开资料查询与操作微信不同，只在本轮已授权的范围检索；不要声称无法查询一切相关信息。"
+                "有材料则补充具体分析，无材料只说明一个必要缺口；保留原岗位任务和已展示内容。"
+                "默认用一到三个短段落回答，通常250字内；不列与当前问题无关的待补页面，不每次重列所有来源与未知项。"
+                "没有要求完整评估产品时，不把未展示的所有模块当作必须补齐的材料。", node="answer")
             return
         if dialogue_routing.ordinary_question(data, decision, last):
             dialogue_routing.retire_misrouted_task(self, sid, rid, rev)
@@ -1196,6 +1211,8 @@ class ConversationHarness(ConditionalTeaching):
         if len(types) > 1:
             source_type = "mixed"
         coach_evidence = dict(evidence)
+        if run.get('search_state') == 'unavailable':
+            instruction += "\n本轮检索工具不可用，没有取得检索结果。必须说这次未能执行查询，不能说已搜索但结果为空、没有官方介绍或没有相关产品。简短说明一次后仅回应已有材料可支持的部分，不重复索要已经提供的内容，不扩大为收集完整产品档案。"
         if run.get("search_state") == "not_called" and not run.get("verification_notice"):
             # Preserve uncertainty, but do not feed a stale service failure as a
             # fresh summary to be paraphrased into each follow-up answer.

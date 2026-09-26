@@ -518,7 +518,13 @@ struct LearningWorkspace: View {
                       .frame(maxWidth: bubbleWidth, alignment: .leading)
               }
               if ["interrupted", "failed"].contains(message.responseState) {
-                  Text(message.responseState == "interrupted" ? "回复已中断" : "回复未完成").font(.caption2).foregroundStyle(.secondary)
+                  if message.responseState == "failed" {
+                      Label(runs.first(where: { $0.id == message.runID })?.errorCode == "RT.MODEL.TIMEOUT"
+                            ? "生成超时，已保留未完成的回复" : "回复未完成，已保留已输出内容", systemImage: "exclamationmark.triangle")
+                          .font(.caption).foregroundStyle(.orange)
+                  } else {
+                      Text("回复已中断").font(.caption).foregroundStyle(.secondary)
+                  }
               } else if message.responseState == "streaming" {
                   Text("正在回复").font(.caption2).foregroundStyle(.secondary)
               } else if message.responseState == "recovering" {
@@ -537,7 +543,7 @@ struct LearningWorkspace: View {
     }
 
     private func taskCard(_ task: LearningTask, run: AgentRun?, runEvents: [SessionEventRecord], sessionMessages: [AgentMessage]) -> some View {
-        LearningTaskCard(task: task, run: run, runs: runs, events: events, runEvents: runEvents,
+        LearningTaskCard(task: task, run: ConversationProcessor.taskRun(task, runs: runs) ?? run, runs: runs, events: events, runEvents: runEvents,
             sessionMessages: sessionMessages, isSessionActive: selectedSession?.status == "active",
             developerDiagnostics: developerDiagnostics, onControl: { taskControl(task, action: $0) },
             onRespond: { respond($0, to: task) })
@@ -888,7 +894,7 @@ struct LearningWorkspace: View {
     }
 
     private func taskControl(_ task: LearningTask, action: String) {
-        if let run = runs.last(where: { $0.sessionID == task.sessionID && $0.taskID == task.id }) {
+        if let run = ConversationProcessor.taskRun(task, runs: runs) {
             ConversationProcessor.queueControl(run, action: action, context: modelContext)
         } else {
             HarnessProcessor.queueAction(task, type: action == "cancel_task" ? "cancel" : action, content: "", context: modelContext)

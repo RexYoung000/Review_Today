@@ -281,6 +281,22 @@ class StreamingHarnessTests(unittest.TestCase):
 
 
 class AdapterStreamingTests(unittest.TestCase):
+    def test_only_nonblank_text_deltas_refresh_stream_deadline(self):
+        from agent_service.execution_policy import AttemptBudget
+        client = MagicMock()
+        client.responses.create.return_value.__enter__.return_value = iter([
+            NS(type='response.output_text.delta', delta='  '),
+            NS(type='response.created', response=NS(id='one')),
+            NS(type='response.reasoning_text.delta', delta='private reasoning'),
+            NS(type='response.output_text.delta', delta='{"message":"complete"}'),
+            NS(type='response.completed', response=NS(status='completed', output=[])),
+        ])
+        with patch('agent_service.openai_client._client', return_value=client), \
+             patch.object(AttemptBudget, 'output_progress', autospec=True) as progress:
+            result = parse_model('s', 'u', ConversationOutput, on_partial=lambda _: None)
+        self.assertEqual(result.message, 'complete')
+        self.assertEqual(progress.call_count, 1)
+
     def test_compatible_whitespace_prelude_and_restart_before_content(self):
         client = MagicMock()
         stream = client.responses.create.return_value.__enter__.return_value

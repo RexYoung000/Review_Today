@@ -3,7 +3,7 @@ from agent_service.schemas import IntentDecision
 
 LEGACY_QUESTION = '你希望继续刚才的内容，还是开始一个新的学习问题？'
 LOCAL_QUESTIONS = {'question', 'followup', 'example', 'hint'}
-POLICY_VERSION = 'dialogue-materials-4'
+POLICY_VERSION = 'dialogue-materials-5'
 
 
 def pure_conversational_reply(decision, last):

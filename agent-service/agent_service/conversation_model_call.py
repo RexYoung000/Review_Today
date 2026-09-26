@@ -113,7 +113,10 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
     try:
         streamable = node in {"answer", "lesson", "organize", "problem_answer", "evaluate", "jd_analysis"}
         from agent_service.config import MODEL_TIMEOUT_SECONDS
-        with budget_scope(seconds=min(MODEL_TIMEOUT_SECONDS, run_accounting.remaining(run))) as budget:
+        remaining_seconds = run_accounting.remaining(run)
+        with budget_scope(seconds=remaining_seconds if streamable else min(MODEL_TIMEOUT_SECONDS, remaining_seconds),
+                          first_output_seconds=MODEL_TIMEOUT_SECONDS if streamable else None,
+                          idle_seconds=30 if streamable else None) as budget:
             choices = ([model, model] if images else [model] + (alternatives(model, strength, streamable) or [model]))[:2]
             repaired = False
             for index, selected_model in enumerate(choices):

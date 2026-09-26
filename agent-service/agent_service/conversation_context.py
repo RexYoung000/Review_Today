@@ -200,6 +200,13 @@ def context(self, data, run):
         # Web passages are supplied once in the explicit sources input. Keep
         # their durable originals/checkpoints without duplicating them here.
         task_context["context"] = {k: v for k, v in task["context"].items() if k not in {"sources", "source_history", "source_pack"}}
+        if (task_context['stage'] == 'awaiting_material'
+                and task_context['context'].get('material_readiness', {}).get('can_proceed')
+                and not task_context['context'].get('awaiting_material', True)):
+            # Old failed generations may retain a stale wait-for-material card.
+            # Correct the model projection without rewriting historical events.
+            task_context.update(stage='jd_analyzing' if task_context['context'].get('material_kind') == 'jd' else 'material_ready',
+                                required_action=None)
         if task["context"].get("memory_invalidated"):
             task_context = dict(task_id=task["task_id"], mode=task["mode"], content=task["content"],
                                 status=task["status"], stage="memory_updated", context={"memory_invalidated": True})
@@ -216,7 +223,19 @@ def context(self, data, run):
     previous = next((m for m in reversed(eligible) if m['role'] == 'coach'), {})
     previous_run = data['runs'].get(previous.get('run_id'), {})
     recent_scope = {domain: True for domain in ('resource', 'programming') if previous_run.get(domain + '_scope_reply')}
+    complete_ids = {m['message_id'] for m in data['messages'] if m['role'] == 'coach'}
+    incomplete = []
+    for old in data['runs'].values():
+        response = old.get('active_response') or {}
+        if ((old['run_id'] != run['run_id'] or response.get('revision', 0) < run['revision']) and self._memory_run_valid(old)
+                and response.get('status') in {'failed', 'interrupted'} and response.get('text')
+                and response.get('response_id') not in complete_ids):
+            incomplete.append(dict(run_id=old['run_id'], response_id=response['response_id'],
+                state=response['status'], content=response['text'], task_id=old.get('task_id'),
+                error_code=old.get('error_code'), created_at=old.get('created_at', '')))
+    incomplete.sort(key=lambda item: item['created_at'])
     return dict(continuation_selection=data.get("continuation_selection"), mode=data["mode"], session_goal=current_learning_goal(data),
+                incomplete_responses=incomplete[-3:],
                 awaiting_material=({k: data.get('teaching_context', {}).get(k) for k in ('material_kind', 'material_goal', 'material_reads')}
                                    if not task and data.get('teaching_context', {}).get('awaiting_material') else None),
                 runtime_models=dict(short_reply=ROUTER_MODEL, teaching=COACH_MODEL),

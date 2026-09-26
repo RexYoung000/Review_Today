@@ -604,6 +604,8 @@ class IntentDecision(BaseModel):
     direct_teaching: bool = False
     answer_only: bool = False
     is_jd: bool = False
+    material_focus: Literal['none', 'jd', 'product', 'source'] = Field(default='none',
+        description='Object of THIS turn, not the overall goal: jd for a new/revised JD or explicit full JD analysis/retry; product for product info, screenshots, app share references or product research followups; source for other material. Same interview does not imply jd.')
     jd_request: Literal['none', 'analyze', 'method'] = Field(default='none',
         description='analyze: work on a concrete supplied job description for interview preparation; method: learn how to dissect a JD; none: mention/background or ordinary concepts.')
     needs_verification: bool = False

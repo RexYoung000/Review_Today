@@ -364,6 +364,20 @@ enum ConversationProcessor {
     }
 
     @MainActor
+    static func taskRun(_ task: LearningTask, runs: [AgentRun]) -> AgentRun? {
+        let related = runs.filter { $0.sessionID == task.sessionID && $0.taskID == task.id }
+            .sorted { $0.createdAt > $1.createdAt }
+        if let active = related.first(where: { ["accepted", "queued", "running", "adjusting", "resuming", "stopping"].contains($0.status) }) {
+            return active
+        }
+        if ["retryable_failed", "needs_attention", "terminal_failed"].contains(task.status),
+           let failed = related.first(where: { ["retryable_failed", "terminal_failed"].contains($0.status) }) {
+            return failed
+        }
+        return related.first
+    }
+
+    @MainActor
     @discardableResult
     static func queueControl(_ run: AgentRun, action: String, mode: String? = nil, thinkingStrength: String? = nil, context: ModelContext) -> Bool {
         let sid = run.sessionID
