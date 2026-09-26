@@ -17,13 +17,14 @@ struct LearningImageAttachment: Codable, Sendable, Equatable {
     nonisolated static let maximumCount = 8
 
     enum Failure: LocalizedError {
-        case format, size, dimensions, count
+        case format, size, dimensions, count, unavailable
         var errorDescription: String? {
             switch self {
             case .format: "无法读取这张图片，请选择有效的 PNG 或 JPEG。"
             case .size: "图片超过 8 MB，请压缩文件后重新添加。"
             case .dimensions: "图片边长超过 8192 像素，请分段截图后添加。"
             case .count: "每条消息最多添加 8 张图片；这批图片未添加，已有草稿已保留。"
+            case .unavailable: "无法读取拖入的图片，请重试，或先保存为 PNG/JPEG 后通过“＋”添加。"
             }
         }
     }

@@ -179,6 +179,7 @@ struct ImageInputContractTests {
             LearningImageImport.loadProviders(providers) { continuation.resume(with: $0) }
         }
         precondition(providerImages.map(\.sha256) == fileImages.map(\.sha256))
+        try await fileBackedProviders(first: first, directory: directory)
         let broken = directory.appendingPathComponent("broken.png")
         try Data("not a picture".utf8).write(to: broken)
         do {
@@ -211,6 +212,117 @@ struct ImageInputContractTests {
         }
         print("PASS: legacy/multi-image codec, protocol guard, async order/cancellation/limit, multi-file clipboard, native editor drop, NSItemProvider batch, multi-image rollback and disk draft recovery")
         print("Second synthetic image fixture: \(secondPath.path)")
+    }
+
+    @MainActor static func fileBackedProviders(first: LearningImageAttachment, directory: URL) async throws {
+        let source = CGImageSourceCreateWithData(first.data as CFData, nil)!
+        let jpeg = NSMutableData()
+        let destination = CGImageDestinationCreateWithData(jpeg, UTType.jpeg.identifier as CFString, 1, nil)!
+        CGImageDestinationAddImageFromSource(destination, source, 0, nil)
+        precondition(CGImageDestinationFinalize(destination))
+        let path = directory.appendingPathComponent("拖入的 JPEG.jpg")
+        try (jpeg as Data).write(to: path)
+        let provider = FileBackedImageProvider()
+        provider.suggestedName = path.lastPathComponent
+        provider.registerFileRepresentation(forTypeIdentifier: UTType.jpeg.identifier, fileOptions: [], visibility: .all) { complete in
+            complete(path, false, nil)
+            return nil
+        }
+        // Some drag sources advertise public.jpeg but cannot supply NSData.
+        // Keep Foundation's real temporary-file representation; reject only
+        // the data request to reproduce the user's -1000 error deterministically.
+        let bytesError: Error? = await withCheckedContinuation { c in
+            _ = provider.loadDataRepresentation(forTypeIdentifier: UTType.jpeg.identifier) { _, error in c.resume(returning: error) }
+        }
+        precondition((bytesError as NSError?)?.domain == NSItemProvider.errorDomain)
+        let actual: [LearningImageAttachment] = try await withCheckedThrowingContinuation { c in
+            LearningImageImport.loadProviders([provider]) { c.resume(with: $0) }
+        }
+        let expected = try LearningImageAttachment.load(path)
+        precondition(actual.count == 1 && actual[0].sha256 == expected.sha256)
+        precondition(actual[0].name == path.lastPathComponent && actual[0].mimeType == "image/jpeg")
+
+        let bytes = jpeg as Data
+        let dataProvider = DataBackedImageProvider()
+        dataProvider.registerDataRepresentation(forTypeIdentifier: UTType.jpeg.identifier, visibility: .all) { done in
+            done(bytes, nil); return nil
+        }
+        let legacy = LegacyImageProvider(item: path as NSURL, typeIdentifier: UTType.jpeg.identifier)
+        let alternate = NSItemProvider()
+        alternate.registerDataRepresentation(forTypeIdentifier: UTType.png.identifier, visibility: .all) { done in
+            done(nil, Disk.failed); return nil
+        }
+        alternate.registerDataRepresentation(forTypeIdentifier: UTType.jpeg.identifier, visibility: .all) { done in
+            done(bytes, nil); return nil
+        }
+        let staleURL = NSItemProvider()
+        staleURL.registerDataRepresentation(forTypeIdentifier: UTType.fileURL.identifier, visibility: .all) { done in
+            done(nil, Disk.failed); return nil
+        }
+        staleURL.registerDataRepresentation(forTypeIdentifier: UTType.jpeg.identifier, visibility: .all) { done in
+            done(bytes, nil); return nil
+        }
+        let fallbacks: [LearningImageAttachment] = try await withCheckedThrowingContinuation { c in
+            LearningImageImport.loadProviders([provider, dataProvider, legacy, alternate, staleURL]) { c.resume(with: $0) }
+        }
+        precondition(fallbacks.count == 5 && fallbacks.allSatisfy { $0.sha256 == expected.sha256 })
+
+        // Even a readable fallback must not bypass the original image limits.
+        let oversized = directory.appendingPathComponent("too-large.jpg")
+        try Data(count: LearningImageAttachment.maximumBytes + 1).write(to: oversized)
+        let limited = NSItemProvider(object: oversized as NSURL)
+        limited.registerDataRepresentation(forTypeIdentifier: UTType.jpeg.identifier, visibility: .all) { done in
+            done(bytes, nil); return nil
+        }
+        do {
+            let _: [LearningImageAttachment] = try await withCheckedThrowingContinuation { c in
+                LearningImageImport.loadProviders([provider, limited]) { c.resume(with: $0) }
+            }
+            preconditionFailure()
+        } catch LearningImageAttachment.Failure.size {}
+
+        let unavailable = NSItemProvider()
+        unavailable.registerDataRepresentation(forTypeIdentifier: UTType.jpeg.identifier, visibility: .all) { done in
+            done(nil, Disk.failed); return nil
+        }
+        do {
+            let _: [LearningImageAttachment] = try await withCheckedThrowingContinuation { c in
+                LearningImageImport.loadProviders([unavailable]) { c.resume(with: $0) }
+            }
+            preconditionFailure()
+        } catch LearningImageAttachment.Failure.unavailable {
+            precondition(!LearningImageAttachment.Failure.unavailable.localizedDescription.contains("public.jpeg"))
+        }
+        let remote = LegacyImageProvider(item: URL(string: "https://example.invalid/image.jpg")! as NSURL, typeIdentifier: UTType.jpeg.identifier)
+        do {
+            let _: [LearningImageAttachment] = try await withCheckedThrowingContinuation { c in
+                LearningImageImport.loadProviders([remote]) { c.resume(with: $0) }
+            }
+            preconditionFailure()
+        } catch LearningImageAttachment.Failure.format {}
+        print("PASS: JPEG file representation works when its data representation is unavailable")
+        print("PASS: data/item/type fallbacks, stale URL recovery, atomic limit rejection and remote URL rejection")
+    }
+}
+
+private final class FileBackedImageProvider: NSItemProvider, @unchecked Sendable {
+    override func loadDataRepresentation(forTypeIdentifier typeIdentifier: String, completionHandler: @escaping @Sendable (Data?, (any Error)?) -> Void) -> Progress {
+        completionHandler(nil, NSError(domain: NSItemProvider.errorDomain, code: -1000, userInfo: [NSLocalizedDescriptionKey: "Cannot load representation of type \(typeIdentifier)"]))
+        return Progress(totalUnitCount: 1)
+    }
+}
+
+private class DataBackedImageProvider: NSItemProvider, @unchecked Sendable {
+    override func loadFileRepresentation(forTypeIdentifier typeIdentifier: String, completionHandler: @escaping @Sendable (URL?, (any Error)?) -> Void) -> Progress {
+        completionHandler(nil, NSError(domain: NSItemProvider.errorDomain, code: -1000))
+        return Progress(totalUnitCount: 1)
+    }
+}
+
+private final class LegacyImageProvider: DataBackedImageProvider, @unchecked Sendable {
+    override func loadDataRepresentation(forTypeIdentifier typeIdentifier: String, completionHandler: @escaping @Sendable (Data?, (any Error)?) -> Void) -> Progress {
+        completionHandler(nil, NSError(domain: NSItemProvider.errorDomain, code: -1000))
+        return Progress(totalUnitCount: 1)
     }
 }
 

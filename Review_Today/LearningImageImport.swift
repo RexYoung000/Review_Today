@@ -73,11 +73,62 @@ enum LearningImageImport {
     /// Start every provider load in the drop callback itself. Temporary file
     /// contents are consumed in its completion, before the provider releases it.
     static func loadProviders(_ providers: [NSItemProvider], completion: @escaping @MainActor (Result<[LearningImageAttachment], Error>) -> Void) {
+        guard !providers.isEmpty, providers.count <= LearningImageAttachment.maximumCount else {
+            completion(.failure(LearningImageAttachment.Failure.count))
+            return
+        }
         let collector = ProviderResults(count: providers.count, completion: completion)
         for (index, provider) in providers.enumerated() {
-            if provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) {
-                provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { value, error in
-                    collector.receive(index, result: Result {
+            ProviderImageLoader(provider: provider) { result in
+                collector.receive(index, result: result)
+            }.start()
+        }
+    }
+
+    /// An advertised JPEG may be backed by a file or image object, without an
+    /// NSData representation. Retain its provider through the serial fallback
+    /// chain and consume temporary URLs before returning from their callbacks.
+    private nonisolated final class ProviderImageLoader: @unchecked Sendable {
+        private enum Representation {
+            case fileURL
+            case file(String), data(String), item(String)
+        }
+        private let provider: NSItemProvider
+        private let completion: @Sendable (Result<LearningImageAttachment, Error>) -> Void
+        private let representations: [Representation]
+        private var next = 0
+        private var imageFailure: LearningImageAttachment.Failure?
+
+        init(provider: NSItemProvider, completion: @escaping @Sendable (Result<LearningImageAttachment, Error>) -> Void) {
+            self.provider = provider
+            self.completion = completion
+            let supported: [UTType] = [.png, .jpeg, .tiff]
+            var types = provider.registeredTypeIdentifiers.filter { identifier in
+                guard let type = UTType(identifier) else { return false }
+                return supported.contains { type.conforms(to: $0) }
+            }
+            for type in supported where !types.contains(type.identifier) && provider.hasItemConformingToTypeIdentifier(type.identifier) {
+                types.append(type.identifier)
+            }
+            var choices: [Representation] = []
+            if provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) { choices.append(.fileURL) }
+            for type in types { choices += [.file(type), .data(type), .item(type)] }
+            representations = choices
+        }
+
+        func start() { loadNext() }
+
+        private func loadNext() {
+            guard next < representations.count else {
+                completion(.failure(imageFailure ?? LearningImageAttachment.Failure.unavailable))
+                return
+            }
+            let representation = representations[next]
+            next += 1
+            switch representation {
+            case .fileURL:
+                provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { [self] value, error in
+                    accept(Result {
                         if let error { throw error }
                         let url: URL?
                         if let value = value as? URL { url = value }
@@ -88,17 +139,66 @@ enum LearningImageImport {
                         return try LearningImageAttachment.load(url)
                     })
                 }
-            } else if let type = [UTType.png, .jpeg, .tiff].first(where: { provider.hasItemConformingToTypeIdentifier($0.identifier) }) {
-                let name = provider.suggestedName ?? "拖入图片.png"
-                provider.loadDataRepresentation(forTypeIdentifier: type.identifier) { data, error in
-                    collector.receive(index, result: Result {
+            case .file(let type):
+                provider.loadFileRepresentation(forTypeIdentifier: type) { [self] url, error in
+                    accept(Result {
                         if let error { throw error }
-                        guard let data else { throw LearningImageAttachment.Failure.format }
-                        return try LearningImageAttachment.prepare(data, name: name, clipboard: true)
+                        guard let url else { throw LearningImageAttachment.Failure.format }
+                        return try readFile(url, type: type)
                     })
                 }
-            } else {
-                collector.receive(index, result: .failure(LearningImageAttachment.Failure.format))
+            case .data(let type):
+                provider.loadDataRepresentation(forTypeIdentifier: type) { [self] data, error in
+                    accept(Result {
+                        if let error { throw error }
+                        guard let data else { throw LearningImageAttachment.Failure.format }
+                        return try LearningImageAttachment.prepare(data, name: name(for: type), clipboard: true)
+                    })
+                }
+            case .item(let type):
+                provider.loadItem(forTypeIdentifier: type, options: nil) { [self] value, error in
+                    accept(Result {
+                        if let error { throw error }
+                        if let url = value as? URL { return try readFile(url, type: type) }
+                        if let data = value as? Data { return try LearningImageAttachment.prepare(data, name: name(for: type), clipboard: true) }
+                        if let image = value as? NSImage, let data = image.tiffRepresentation {
+                            return try LearningImageAttachment.prepare(data, name: name(for: type), clipboard: true)
+                        }
+                        throw LearningImageAttachment.Failure.format
+                    })
+                }
+            }
+        }
+
+        private func readFile(_ url: URL, type: String) throws -> LearningImageAttachment {
+            guard url.isFileURL else { throw LearningImageAttachment.Failure.format }
+            let access = url.startAccessingSecurityScopedResource()
+            defer { if access { url.stopAccessingSecurityScopedResource() } }
+            let limit = UTType(type)?.conforms(to: .tiff) == true ? 64 * 1024 * 1024 : LearningImageAttachment.maximumBytes
+            guard let size = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize, size <= limit else { throw LearningImageAttachment.Failure.size }
+            return try LearningImageAttachment.prepare(Data(contentsOf: url, options: .mappedIfSafe), name: name(for: type), clipboard: true)
+        }
+
+        private func name(for type: String) -> String {
+            if let name = provider.suggestedName, !name.isEmpty { return name }
+            return "拖入图片." + (UTType(type)?.preferredFilenameExtension ?? "png")
+        }
+
+        private func accept(_ result: Result<LearningImageAttachment, Error>) {
+            switch result {
+            case .success:
+                completion(result)
+            case .failure(let error):
+                // A failed transport may have another representation; an image
+                // that actually exceeds our limits must not fall back to a preview.
+                if let failure = error as? LearningImageAttachment.Failure {
+                    switch failure {
+                    case .size, .dimensions, .count: completion(result); return
+                    case .format: imageFailure = failure
+                    case .unavailable: break
+                    }
+                }
+                loadNext()
             }
         }
     }

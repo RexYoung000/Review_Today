@@ -1,0 +1,26 @@
+JPEG drag representation regression — 2026-09-26
+
+Before fix (against the pre-fix compiled app module):
+Provider advertises public.jpeg, retains a real Foundation file representation,
+and returns NSItemProviderErrorDomain/-1000 only for the NSData representation.
+Exit -5: Cannot load representation of type public.jpeg.
+This is a controlled provider regression, not a capture of the user's original drag.
+
+After fix:
+PASS: JPEG file representation works when its data representation is unavailable
+PASS: data/item/type fallbacks, stale URL recovery, atomic limit rejection and remote URL rejection
+PASS: legacy/multi-image codec, protocol guard, async order/cancellation/limit, multi-file clipboard, native editor drop, NSItemProvider batch, multi-image rollback and disk draft recovery
+PASS: image normalization, metadata removal, draft isolation, first-send rollback, image-only draft preservation, disk restart, archive/delete lifecycle and native paste dispatch
+PASS executable: ImageInputContractTests
+PASS executable: LearningInputContractTests
+
+Build: signed macOS Debug; initial exit 0, incremental recheck exit 0.
+Strict signature verification: passed.
+Initial Xcode output had exit-code-0 scheduling diagnostics for KnowledgeLexicon
+and LibraryInboxSettings; the incremental recheck did not repeat them.
+Existing deprecation/concurrency warnings remain; loadItem is retained as the
+compatibility fallback for older drag providers.
+
+No service or model changes. No additional real model calls.
+No successful automated real-gesture drop evidence; original-image/source
+acceptance remains open for the user.
