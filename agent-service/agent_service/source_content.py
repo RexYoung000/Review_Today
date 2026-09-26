@@ -3,6 +3,14 @@ import re
 from agent_service.call_errors import WebToolError
 
 
+class PageRead(tuple):
+    """Keep the title/body contract while carrying observed reading provenance."""
+    def __new__(cls, title, body, *, details):
+        value = super().__new__(cls, (title, body))
+        value.details = dict(details)
+        return value
+
+
 def readable_page(result):
     if (not isinstance(result, (tuple, list)) or len(result) != 2
             or not all(isinstance(value, str) for value in result)):
@@ -29,4 +37,6 @@ def readable_page(result):
                    and (re.search(r'[。！？]', line) or len(line.split()) >= 6)]
     if len(markers) >= 3 and not prose_lines and (body.count(';') >= 3 or body.count('{') >= 3):
         raise WebToolError('UNUSABLE_CONTENT', 'script_shell')
+    if isinstance(result, PageRead):
+        return PageRead(title, body, details=result.details)
     return title, body

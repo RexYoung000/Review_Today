@@ -1,5 +1,6 @@
 """Replay supplied material through the real Harness with isolated fixtures."""
 import json
+import os
 import threading
 import unittest
 import uuid
@@ -9,7 +10,7 @@ from unittest.mock import patch
 from agent_service.capture.fetch import extract_urls
 from agent_service.conversation_materials import MaterialReadiness, MaterialFinding
 from agent_service.schemas import JDAnalysis, ConversationOutput
-from agent_service.source_content import readable_page
+from agent_service.source_content import readable_page, PageRead
 from agent_service.call_errors import WebToolError, ModelCallError
 from agent_service.harness_store import HarnessTaskRecord
 from tests import test_conversation_v2 as base
@@ -107,6 +108,50 @@ class MaterialRoutingTests(unittest.TestCase):
         self.assertTrue(any(s['content'] == PRODUCT for s in payload['sources']))
         self.assertEqual(payload['materials']['missing'], [])
         self.assertEqual(self.f.state()['pending']['version'], 1)
+
+    def test_browser_body_and_redirect_provenance_reach_jd_and_cache(self):
+        self.jd()
+        final='https://example.com/rendered-job'
+        page=PageRead('真实岗位',JD,details=dict(reader='browser',requested_url=URL,final_url=final,
+                                               final_url_redacted=False,truncated=False))
+        with patch.dict(os.environ,{'REVIEW_TODAY_BROWSER_FALLBACK':'1','REVIEW_TODAY_READ_PROVIDER':'exa'}), \
+             patch('agent_service.conversation.fetch_public_url',return_value=page) as read:
+            first=self.f.send('JD在这里，帮我分析：'+URL)
+        payload=self.jd_inputs[0]
+        source=next(s for s in payload['sources'] if s['url']==final)
+        self.assertEqual(source['content'],JD)
+        saved=self.f.state()['runs'][first.run_id]['source_cache'][URL]
+        self.assertEqual(saved['requested_url'],URL)
+        self.assertEqual(saved['read_details']['reader'],'browser')
+        self.assertEqual(saved['url'],final)
+        self.assertIn(final,self.f.state()['runs'][first.run_id]['allowed_source_urls'])
+        read.assert_called_once()
+
+    def test_browser_access_failure_is_carried_to_material_clarification(self):
+        self.jd()
+        with patch('agent_service.conversation.fetch_public_url',side_effect=WebToolError('CHAIN_FAILED','RT.WEB.BROWSER_ACCESS_REQUIRED')):
+            self.f.send('JD在这里：'+URL)
+        self.assertEqual(self.readiness[-1]['reads'][0]['read_failure'],'RT.WEB.BROWSER_ACCESS_REQUIRED')
+        self.assertEqual(self.jd_inputs,[])
+        self.assertNotIn('source_cache',self.f.state()['runs'][next(reversed(self.f.state()['runs']))])
+
+    def test_browser_material_and_following_verification_share_one_round_budget(self):
+        from agent_service.web_resilience import active_round, web_round_scope
+        budgets=[]
+        def execute(sid,rid,rev):
+            outer=active_round.get()
+            self.assertIsNotNone(outer)
+            with web_round_scope(seconds=60) as material:
+                budgets.append(material)
+                material.calls=10
+            with web_round_scope(seconds=60) as verification:
+                budgets.append(verification)
+                with self.assertRaisesRegex(WebToolError,'BUDGET_EXHAUSTED'):
+                    verification.check()
+        with patch.dict(os.environ,{'REVIEW_TODAY_BROWSER_FALLBACK':'1','REVIEW_TODAY_READ_PROVIDER':'exa'}), \
+             patch.object(self.f.harness,'_execute',side_effect=execute):
+            self.f.send('请读这份资料并核对来源：'+URL)
+        self.assertIs(budgets[0],budgets[1])
 
     def test_readable_but_irrelevant_job_page_does_not_start_analysis(self):
         self.jd()

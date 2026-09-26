@@ -1,0 +1,568 @@
+{
+  "date": "2026-09-26",
+  "data_boundary": "isolated SQLite; public links and synthetic prompts; user messages and tracking URL excluded",
+  "configured_models": {
+    "router": "deepseek-flash",
+    "coach": "deepseek-v4-flash"
+  },
+  "read_chain": [
+    "exa",
+    "tavily",
+    "browser"
+  ],
+  "cases": [
+    {
+      "case": "boss",
+      "elapsed_ms": 19234,
+      "status": "completed",
+      "task_stage": "awaiting_material",
+      "reply": "我这次没能读取到链接里的 JD 正文，方便把岗位职责和任职要求直接粘贴成文字发我吗？我拿到后就能帮你分析面试所需能力与重点准备问题。",
+      "web_events": [
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": "",
+          "occurred_at": "2026-09-26T05:45:37.896425+00:00"
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "failed",
+          "code": "RT.WEB.UNUSABLE_CONTENT",
+          "occurred_at": "2026-09-26T05:45:42.354631+00:00"
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "started",
+          "code": "",
+          "occurred_at": "2026-09-26T05:45:42.365534+00:00"
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "failed",
+          "code": "RT.WEB.READ_FAILED",
+          "occurred_at": "2026-09-26T05:45:47.124879+00:00"
+        },
+        {
+          "provider": "browser",
+          "operation": "read",
+          "status": "started",
+          "code": "",
+          "occurred_at": "2026-09-26T05:45:47.131794+00:00"
+        },
+        {
+          "provider": "browser",
+          "operation": "read",
+          "status": "failed",
+          "code": "RT.WEB.BROWSER_ACCESS_REQUIRED",
+          "occurred_at": "2026-09-26T05:45:53.379662+00:00"
+        }
+      ],
+      "reads": [
+        {
+          "state": "unavailable",
+          "reason": "RT.WEB.CHAIN_FAILED",
+          "read_failure": "RT.WEB.BROWSER_ACCESS_REQUIRED"
+        }
+      ],
+      "source_bodies": [],
+      "model_calls": [
+        {
+          "node": "intent",
+          "model": "deepseek-flash",
+          "status": "returned",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 9892,
+              "output_tokens": 357,
+              "total_tokens": 10249,
+              "cached_input_tokens": 9600,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        },
+        {
+          "node": "material_readiness",
+          "model": "deepseek-flash",
+          "status": "returned",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 1764,
+              "output_tokens": 159,
+              "total_tokens": 1923,
+              "cached_input_tokens": 128,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        }
+      ],
+      "model_nodes": [
+        {
+          "schema": "IntentDecision",
+          "duration_ms": 2009,
+          "error": null
+        },
+        {
+          "schema": "MaterialReadiness",
+          "duration_ms": 1544,
+          "error": null
+        }
+      ],
+      "external_extractor_requests": 2,
+      "actual_browser_reads": 1,
+      "provider_timings": [
+        {
+          "provider": "exa",
+          "status": "failed",
+          "duration_ms": 4458,
+          "error": "RT.WEB.UNUSABLE_CONTENT"
+        },
+        {
+          "provider": "tavily",
+          "status": "failed",
+          "duration_ms": 4759,
+          "error": "RT.WEB.READ_FAILED"
+        },
+        {
+          "provider": "browser",
+          "status": "failed",
+          "duration_ms": 6248,
+          "error": "RT.WEB.BROWSER_ACCESS_REQUIRED"
+        }
+      ],
+      "actual_model_requests": 2,
+      "tokens": {
+        "input_tokens": 11656,
+        "output_tokens": 516,
+        "cached_input_tokens": 9728
+      }
+    },
+    {
+      "case": "python",
+      "elapsed_ms": 8659,
+      "status": "retryable_failed",
+      "task_stage": null,
+      "reply": "",
+      "web_events": [
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": "",
+          "occurred_at": "2026-09-26T05:45:57.357876+00:00"
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "succeeded",
+          "code": "",
+          "occurred_at": "2026-09-26T05:45:59.937169+00:00"
+        }
+      ],
+      "reads": [],
+      "source_bodies": [
+        {
+          "title": "5. Data Structures — Python 3.14.7 documentation",
+          "chars": 19999,
+          "reader": null
+        }
+      ],
+      "model_calls": [
+        {
+          "node": "intent",
+          "model": "deepseek-flash",
+          "status": "returned",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 9839,
+              "output_tokens": 328,
+              "total_tokens": 10167,
+              "cached_input_tokens": 9600,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        },
+        {
+          "node": "material_readiness",
+          "model": "deepseek-flash",
+          "status": "failed_or_cancelled",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 2620,
+              "output_tokens": 271,
+              "total_tokens": 2891,
+              "cached_input_tokens": 768,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        },
+        {
+          "node": "material_readiness",
+          "model": "deepseek-flash",
+          "status": "failed_or_cancelled",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 2707,
+              "output_tokens": 267,
+              "total_tokens": 2974,
+              "cached_input_tokens": 384,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        }
+      ],
+      "model_nodes": [
+        {
+          "schema": "IntentDecision",
+          "duration_ms": 2230,
+          "error": null
+        },
+        {
+          "schema": "MaterialReadiness",
+          "duration_ms": 1841,
+          "error": "RT.MODEL.SCHEMA"
+        },
+        {
+          "schema": "MaterialReadiness",
+          "duration_ms": 1760,
+          "error": "RT.MODEL.SCHEMA"
+        }
+      ],
+      "external_extractor_requests": 1,
+      "actual_browser_reads": 0,
+      "provider_timings": [
+        {
+          "provider": "exa",
+          "status": "succeeded",
+          "duration_ms": 2579,
+          "error": null
+        }
+      ],
+      "actual_model_requests": 3,
+      "tokens": {
+        "input_tokens": 15166,
+        "output_tokens": 866,
+        "cached_input_tokens": 10752
+      }
+    },
+    {
+      "case": "python_retry_after_precise_evidence_limit",
+      "elapsed_ms": 5420,
+      "status": "completed",
+      "reply": "`list.pop()` 的用途是：**移除并返回列表中指定位置的那个元素**，也就是“取走”一个元素——它不只是删除，还会把删掉的值交回给你。\n\n```python\nfruits = ['apple', 'banana', 'pear']\nlast = fruits.pop()   # last 得到 'pear'\nprint(fruits)         # ['apple', 'banana']\n```\n\n不写参数时，`pop()` 默认从末尾取走最后一个元素（官方示例里 `fruits.pop()` 返回 `'pear'` 就是这个行为）。\n\n想取指定位置，就把索引传进去，比如 `fruits.pop(0)` 会取走第一个元素。\n\n两个边界情况需要注意：列表为空、或索引超出范围时，`pop()` 会抛出 `IndexError`。另外，因为它是“从末尾取走”，所以常被用来实现“后进先出”的栈操作——`append()` 放进去，`pop()` 拿出来；这是官方文档在“Using Lists as Stacks”一节里给出的用法。\n\n### 参考资料\n\n- [5. Data Structures — Python 3.14.7 documentation](https://docs.python.org/3/tutorial/datastructures.html)",
+      "model_nodes": [
+        {
+          "schema": "MaterialReadiness",
+          "duration_ms": 1342,
+          "error": null
+        },
+        {
+          "schema": "TeachingPreparation",
+          "duration_ms": 927,
+          "error": null
+        },
+        {
+          "schema": "ConversationOutput",
+          "duration_ms": 2771,
+          "error": null
+        }
+      ],
+      "model_calls": [
+        {
+          "node": "material_readiness",
+          "model": "deepseek-flash",
+          "status": "returned",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 2662,
+              "output_tokens": 186,
+              "total_tokens": 2848,
+              "cached_input_tokens": 0,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        },
+        {
+          "node": "teaching_preparation",
+          "model": "deepseek-flash",
+          "status": "returned",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 861,
+              "output_tokens": 70,
+              "total_tokens": 931,
+              "cached_input_tokens": 640,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        },
+        {
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "status": "returned",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 4614,
+              "output_tokens": 299,
+              "total_tokens": 4913,
+              "cached_input_tokens": 2816,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        }
+      ],
+      "source_cache_count": 1,
+      "web_events_total": [
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "external_extractor_requests": 0,
+      "actual_browser_reads": 0,
+      "provider_timings": [],
+      "actual_model_requests": 3,
+      "tokens": {
+        "input_tokens": 8137,
+        "output_tokens": 555,
+        "cached_input_tokens": 3456
+      }
+    },
+    {
+      "case": "fault_injection_actual_browser_and_models",
+      "fault_injection": "Two synthetic extraction failures; no Exa/Tavily external requests",
+      "elapsed_ms": 11710,
+      "status": "completed",
+      "reply": "`list.pop()` 用于移除列表中指定位置的元素，并把被移除的元素作为返回值返回；如果不传参数，`a.pop()` 默认移除并返回最后一个元素，因此常用来实现“后进先出”的栈操作。若列表为空或索引超出范围，它会抛出 `IndexError`。\n\n来源：[5. Data Structures — Python 3.14.7 documentation](https://docs.python.org/3/tutorial/datastructures.html)（该页 `list.pop(index=-1, /)` 条目及 5.1.1 节示例）。",
+      "sources": [
+        {
+          "title": "5. Data Structures — Python 3.14.7 documentation",
+          "body_chars": 19999,
+          "read_details": {
+            "reader": "browser",
+            "requested_url": "https://docs.python.org/3/tutorial/datastructures.html",
+            "final_url": "https://docs.python.org/3/tutorial/datastructures.html",
+            "final_url_redacted": false,
+            "truncated": true,
+            "request_count": 21,
+            "connections": 3,
+            "network_bytes": 73585,
+            "blocked_connections": 0
+          }
+        }
+      ],
+      "web_events": [
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": "",
+          "occurred_at": "2026-09-26T05:51:26.446959+00:00"
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "failed",
+          "code": "RT.WEB.READ_FAILED",
+          "occurred_at": "2026-09-26T05:51:26.452622+00:00"
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "started",
+          "code": "",
+          "occurred_at": "2026-09-26T05:51:26.460680+00:00"
+        },
+        {
+          "provider": "tavily",
+          "operation": "read",
+          "status": "failed",
+          "code": "RT.WEB.READ_FAILED",
+          "occurred_at": "2026-09-26T05:51:26.468599+00:00"
+        },
+        {
+          "provider": "browser",
+          "operation": "read",
+          "status": "started",
+          "code": "",
+          "occurred_at": "2026-09-26T05:51:26.483973+00:00"
+        },
+        {
+          "provider": "browser",
+          "operation": "read",
+          "status": "succeeded",
+          "code": "",
+          "occurred_at": "2026-09-26T05:51:31.852646+00:00"
+        }
+      ],
+      "model_calls": [
+        {
+          "node": "intent",
+          "model": "deepseek-flash",
+          "status": "returned",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 9843,
+              "output_tokens": 333,
+              "total_tokens": 10176,
+              "cached_input_tokens": 9600,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        },
+        {
+          "node": "material_readiness",
+          "model": "deepseek-flash",
+          "status": "returned",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 2752,
+              "output_tokens": 210,
+              "total_tokens": 2962,
+              "cached_input_tokens": 896,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        },
+        {
+          "node": "teaching_preparation",
+          "model": "deepseek-flash",
+          "status": "returned",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 865,
+              "output_tokens": 74,
+              "total_tokens": 939,
+              "cached_input_tokens": 640,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        },
+        {
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "status": "returned",
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 4700,
+              "output_tokens": 178,
+              "total_tokens": 4878,
+              "cached_input_tokens": 2816,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ]
+        }
+      ],
+      "model_nodes": [
+        {
+          "schema": "IntentDecision",
+          "duration_ms": 1579,
+          "error": null
+        },
+        {
+          "schema": "MaterialReadiness",
+          "duration_ms": 1404,
+          "error": null
+        },
+        {
+          "schema": "TeachingPreparation",
+          "duration_ms": 778,
+          "error": null
+        },
+        {
+          "schema": "ConversationOutput",
+          "duration_ms": 1812,
+          "error": null
+        }
+      ],
+      "external_extractor_requests": 0,
+      "actual_browser_reads": 1,
+      "synthetic_extractor_failures": 2,
+      "provider_timings": [
+        {
+          "provider": "exa",
+          "status": "failed",
+          "duration_ms": 6,
+          "error": "RT.WEB.READ_FAILED"
+        },
+        {
+          "provider": "tavily",
+          "status": "failed",
+          "duration_ms": 8,
+          "error": "RT.WEB.READ_FAILED"
+        },
+        {
+          "provider": "browser",
+          "status": "succeeded",
+          "duration_ms": 5369,
+          "error": null
+        }
+      ],
+      "actual_model_requests": 4,
+      "tokens": {
+        "input_tokens": 18160,
+        "output_tokens": 795,
+        "cached_input_tokens": 13952
+      }
+    }
+  ],
+  "cost": {
+    "actual_model_requests": 12,
+    "external_extractor_requests": 3,
+    "actual_browser_reads": 2,
+    "currency_amount": null,
+    "reason": "No invoice or live tariff matched; usage reported, not a billed-cost claim. Excludes debugging probes and App startup capability probes."
+  },
+  "limitations": [
+    "BOSS public job blocked by security-verification page in fresh browser session; real JD success criterion not met.",
+    "Python fallback success uses injected Exa/Tavily failures; browser fetch and model calls are real.",
+    "No CAPTCHA solving, login/profile reuse, OCR, iframe-body extraction or arbitrary-site guarantee."
+  ]
+}

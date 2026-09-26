@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass
 from dotenv import load_dotenv
 from agent_service.call_errors import WebToolError
 from agent_service.execution_policy import budget_scope
-from agent_service.web_privacy import safe_public_query, require_public_query, require_public_url
+from agent_service.web_privacy import safe_public_query, require_public_query, require_public_url, public_service_url
 from agent_service.source_content import readable_page
 
 load_dotenv(Path(__file__).resolve().parent.parent / 'providers' / 'web' / '.env')
@@ -40,7 +40,16 @@ def read_provider():
     return os.getenv('REVIEW_TODAY_READ_PROVIDER', 'local').strip() or 'local'
 
 
+def browser_fallback_enabled():
+    return os.getenv('REVIEW_TODAY_BROWSER_FALLBACK') == '1' and read_provider() in {'exa', 'tavily'}
+
+
 def _backend(provider):
+    if provider == 'browser':
+        if not browser_fallback_enabled():
+            raise WebToolError('NOT_CONFIGURED')
+        from agent_service.browser_reader import BrowserBackend
+        return BrowserBackend()
     if provider == 'exa':
         from agent_service.exa_tools import ExaBackend
         return ExaBackend(os.getenv('EXA_API_KEY', '').strip())
@@ -57,13 +66,16 @@ def provider_chain(operation):
     primary = search_provider() if operation == 'search' else read_provider()
     fallback = os.getenv('REVIEW_TODAY_' + operation.upper() + '_FALLBACKS', '')
     providers = list(dict.fromkeys([primary] + [p.strip() for p in fallback.split(',') if p.strip()]))
+    providers = [p for p in providers if p != 'browser']
+    if operation == 'read' and browser_fallback_enabled():
+        providers.append('browser')
     allowed = {'exa', 'tavily', 'brave'} if operation == 'search' else {'exa', 'tavily'}
     # 'none' and local-only mode cannot silently enable a remote provider.
     return providers if primary in allowed else [primary]
 
 
 def _operation_backend(provider, operation):
-    if operation == 'read' and provider not in {'exa', 'tavily'}:
+    if operation == 'read' and provider not in {'exa', 'tavily', 'browser'}:
         raise WebToolError('UNSUPPORTED')
     return _backend(provider)
 
@@ -155,35 +167,6 @@ def web_context_pages(query, *, on_cancel_handle=None, allowed_domains=()):
         (urlsplit(p['url']).hostname or '').lower().endswith('.' + d) for d in allowed_domains)]
 
 
-def public_service_url(url):
-    """Remote service eligibility only; local fetch still performs DNS pinning."""
-    import ipaddress
-    import re
-    from urllib.parse import urlsplit
-    require_public_url(url)
-    if not isinstance(url, str) or len(url) > 2048 or any(c.isspace() or ord(c) < 32 for c in url):
-        raise ValueError('RT.WEB.INVALID_URL')
-    try:
-        parsed = urlsplit(url)
-        host = (parsed.hostname or '').lower().rstrip('.')
-        if (parsed.scheme not in {'http', 'https'} or not host or parsed.username is not None
-                or parsed.password is not None or parsed.port not in (None, 80, 443)
-                or host.endswith(('.local', '.internal', '.localhost', '.test', '.invalid'))
-                or '.' not in host or '\\' in url or '%' in host
-                or not re.fullmatch(r'[a-z0-9.-]+', host) or host in {'metadata.google.internal'}):
-            raise ValueError('RT.WEB.INVALID_URL')
-        try:
-            ipaddress.ip_address(host)
-        except ValueError:
-            if all(part.isdigit() or part.startswith('0x') for part in host.split('.')):
-                raise ValueError('RT.WEB.INVALID_URL')
-        else:
-            raise ValueError('RT.WEB.INVALID_URL')
-    except (ValueError, TypeError):
-        raise ValueError('RT.WEB.INVALID_URL') from None
-    return url
-
-
 def assert_readable_url(url):
     require_public_url(url)
     if read_provider() == 'local':
@@ -211,9 +194,12 @@ def read_search_evidence(search, *, reader=None):
         seen.add(url)
         try:
             public_service_url(url)
-            title, body = reader(url)
+            page = reader(url)
+            title, body = page
             if body.strip():
-                pages.append(dict(url=url, title=title, content=body[:6000]))
+                details = getattr(page, 'details', {})
+                pages.append(dict(url=details.get('final_url', url), title=title, content=body[:6000],
+                                  **({'requested_url': url, 'read_details': details} if details else {})))
         except (ValueError, OSError, WebToolError):
             continue
     return pages

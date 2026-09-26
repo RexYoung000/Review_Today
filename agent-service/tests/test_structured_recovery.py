@@ -64,6 +64,19 @@ class OutputDiagnosticTests(unittest.TestCase):
         output = ConversationOutput(message='示例：\n```json\n{"a": 1}\n```')
         self.assertEqual(llm._validate_output(ConversationOutput, output.model_dump_json(), response("")), output)
 
+    def test_evidence_length_repair_knows_character_limit_without_echoing_body(self):
+        from agent_service.conversation_materials import MaterialReadiness
+        raw=json.dumps(dict(can_proceed=True, findings=[dict(source_id='one',role='other',sufficient=True,
+                                                           evidence='PRIVATE_SECRET ' * 30)]))
+        with self.assertRaises(llm.ModelCallError) as failure:
+            llm._validate_output(MaterialReadiness,raw,response(raw))
+        error=failure.exception
+        detail=json.loads(error.diagnostic)[0]
+        self.assertEqual(detail['max_length'],240)
+        self.assertEqual(detail['field'],['findings',0,'evidence'])
+        self.assertNotIn('PRIVATE_SECRET',schema_repair_instruction(error))
+        self.assertIn('字符计数',schema_repair_instruction(error))
+
     def test_streaming_final_uses_same_diagnostic_and_does_not_accept_fence(self):
         raw = "```json\n" + greeting().model_dump_json() + "\n```"
         manager = MagicMock()

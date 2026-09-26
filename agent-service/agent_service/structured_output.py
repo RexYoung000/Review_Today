@@ -9,6 +9,13 @@ def schema_diagnostic(error, raw=None):
         detail = {"field": list(item["loc"]), "type": item["type"]}
         if item["type"] == "literal_error":
             detail["allowed"] = item.get("ctx", {}).get("expected", "")
+        if item["type"] in {"string_too_long", "string_too_short", "too_long", "too_short"}:
+            # Trusted schema bounds only; input text and arbitrary context stay
+            # excluded. Without the bound, a retry can repeat the same length.
+            for key in ("max_length", "min_length"):
+                value = item.get("ctx", {}).get(key)
+                if type(value) is int and 0 <= value <= 1_000_000:
+                    detail[key] = value
         if raw is not None and item["type"] == "json_invalid":
             stripped = raw.lstrip()
             detail.update(output_format="markdown_fence" if stripped.startswith("```") else
@@ -51,6 +58,9 @@ def schema_repair_instruction(error):
                 "第一个非空字符必须是 {，最后一个非空字符必须是 }；"
                 "JSON 对象外不得输出反引号、代码围栏、前言或后记。"
                 "字符串内的引号、换行必须正确转义。")
-    return ("输出结构校验失败：" + error.diagnostic + "\n" + common +
+    length_hint = ""
+    if any(isinstance(d, dict) and d.get("type") == "string_too_long" for d in details):
+        length_hint = "字符串的 max_length 按字符计数，包含空格和标点，不是英文单词数。证据只取原文中最短的连续必要片段，不要重复整段。"
+    return ("输出结构校验失败：" + error.diagnostic + "\n" + common + length_hint +
             "修复标出的字段并严格使用 schema 的枚举；工作流放 workflow，"
             "直接教学放 direct_teaching 布尔字段。")

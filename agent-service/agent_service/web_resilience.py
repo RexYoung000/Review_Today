@@ -13,7 +13,9 @@ from agent_service.execution_policy import budget_scope
 ROUND_SECONDS = 60
 ROUND_CALLS = 10
 CHAIN_SECONDS = 30
+READ_CHAIN_SECONDS = 60
 PROVIDER_SECONDS = 12
+BROWSER_SECONDS = 25
 QUEUE_SECONDS = 2
 
 
@@ -24,11 +26,13 @@ class WebRound:
     calls: int = 0
     on_event: object = None
     check_cancel: object = None
+    deadline: float | None = None
 
     def check(self):
         if self.check_cancel:
             self.check_cancel()
-        if self.spent >= self.seconds or self.calls >= ROUND_CALLS:
+        if (self.spent >= self.seconds or self.calls >= ROUND_CALLS
+                or self.deadline is not None and time.monotonic() >= self.deadline):
             raise WebToolError('BUDGET_EXHAUSTED')
 
 
@@ -36,11 +40,11 @@ active_round = ContextVar('web_round', default=None)
 
 
 @contextmanager
-def web_round_scope(*, on_event=None, check_cancel=None, seconds=ROUND_SECONDS):
+def web_round_scope(*, on_event=None, check_cancel=None, seconds=ROUND_SECONDS, deadline=None):
     if active_round.get() is not None:
         yield active_round.get()
         return
-    state = WebRound(on_event=on_event, check_cancel=check_cancel, seconds=seconds)
+    state = WebRound(on_event=on_event, check_cancel=check_cancel, seconds=seconds, deadline=deadline)
     token = active_round.set(state)
     try:
         yield state
@@ -110,7 +114,10 @@ def route(providers, operation, invoke, *, on_cancel_handle=None):
         on_cancel_handle(cancel)
     with web_round_scope() as state:
         started = time.monotonic()
-        deadline = started + min(CHAIN_SECONDS, state.seconds - state.spent)
+        chain_seconds = READ_CHAIN_SECONDS if operation == 'read' and 'browser' in providers else CHAIN_SECONDS
+        deadline = started + min(chain_seconds, state.seconds - state.spent)
+        if state.deadline is not None:
+            deadline = min(deadline, state.deadline)
         empty_result = None
         empty_searches = 0
         last_error = WebToolError('NOT_CONFIGURED')
@@ -154,11 +161,15 @@ def route(providers, operation, invoke, *, on_cancel_handle=None):
                         check()
                         cancelled.wait(min(.05, max(0, shared.next_start - time.monotonic())))
                     check()
+                    if provider == 'browser' and deadline - time.monotonic() < 2:
+                        emit(state, provider, operation, 'skipped', 'RT.WEB.BUDGET_EXHAUSTED')
+                        raise WebToolError('BUDGET_EXHAUSTED')
                     state.calls += 1
                     shared.next_start = time.monotonic() + (.55 if provider == 'exa' else .1)
                     emit(state, provider, operation, 'started')
                     try:
-                        with budget_scope(seconds=min(PROVIDER_SECONDS, deadline - time.monotonic()), limit=1, isolated=True):
+                        provider_seconds = BROWSER_SECONDS if provider == 'browser' else PROVIDER_SECONDS
+                        with budget_scope(seconds=min(provider_seconds, deadline - time.monotonic()), limit=1, isolated=True):
                             result = invoke(provider, backend, register)
                         if cancelled.is_set(): raise WebToolError('CANCELLED')
                         if state.check_cancel: state.check_cancel()

@@ -125,15 +125,23 @@ class ConditionalTeaching:
                 run["teaching_sources"] = sources or []
             self.store.event(current, run, "search_" + state, labels[state], detail=detail)
 
+    def _web_provider_event(self, sid, rid, rev, payload):
+        with self.store.transaction(sid, rid, rev) as current:
+            label = {'search': '正在检索公开资料', 'read': '正在读取网页正文', 'context': '正在补充网页依据'}.get(payload['operation'], '正在读取网页正文')
+            if payload.get('provider') == 'browser':
+                label = '正在加载网页内容'
+            self.store.event(current, current['runs'][rid], 'web_provider', label,
+                             detail=' / '.join(payload[k] for k in ('operation', 'provider', 'status', 'code') if payload[k]), payload=payload)
+
     def _prepare_teaching(self, sid, rid, rev, decision, *, force=False, instruction=""):
         from agent_service.web_resilience import web_round_scope
-        def event(payload):
-            with self.store.transaction(sid, rid, rev) as current:
-                label = {'search': '正在检索公开资料', 'read': '正在读取网页正文', 'context': '正在补充网页依据'}.get(payload['operation'], '正在读取网页正文')
-                self.store.event(current, current['runs'][rid], 'web_provider', label,
-                                 detail=' / '.join(payload[k] for k in ('operation', 'provider', 'status', 'code') if payload[k]), payload=payload)
-        with web_round_scope(on_event=event, check_cancel=lambda: self._snapshot(sid, rid, rev),
-                             seconds=60 if force or decision.cross_check_sources else 30):
+        from agent_service.web_tools import browser_fallback_enabled
+        from agent_service.run_accounting import remaining
+        _, run = self._snapshot(sid, rid, rev)
+        with web_round_scope(on_event=lambda payload: self._web_provider_event(sid, rid, rev, payload),
+                             check_cancel=lambda: self._snapshot(sid, rid, rev),
+                             deadline=time.monotonic() + remaining(run),
+                             seconds=60 if force or decision.cross_check_sources or browser_fallback_enabled() else 30):
             return self._prepare_teaching_impl(sid, rid, rev, decision, force=force, instruction=instruction)
 
     def _prepare_teaching_impl(self, sid, rid, rev, decision, *, force=False, instruction=""):
@@ -295,7 +303,8 @@ class ConditionalTeaching:
                 cached = run.get("source_cache", {}).get(url) or next((s for s in sources if s.get("url") == url and s.get("content") and s.get("content_kind", "page_text") == "page_text"), None)
                 if not cached or decision.refresh_sources:
                     try:
-                        title, content = self._read_page(sid, rid, rev, url, fetch_public_url)
+                        page = self._read_page(sid, rid, rev, url, fetch_public_url)
+                        title, content = page
                     except (ValueError, OSError, WebToolError) as exc:
                         if isinstance(exc, CallError) and exc.code.endswith("CANCELLED"):
                             raise
@@ -308,8 +317,14 @@ class ConditionalTeaching:
                         title = candidate.title or url
                     cached = dict(source_id=str(uuid.uuid5(uuid.UUID(sid), url)), version=(cached or {}).get("version", 0) + 1,
                                   type="public_source", content_kind="page_text", url=url, title=title, content=content[:10000], fetched_at=now_iso())
+                    if details := getattr(page, 'details', {}):
+                        cached.update(url=details['final_url'], requested_url=url, read_details=details)
                     with self.store.transaction(sid, rid, rev) as current:
                         current["runs"][rid].setdefault("source_cache", {})[url] = cached
+                final_host = (urlsplit(cached['url']).hostname or '').lower()
+                if official_required and not any(final_host == d or final_host.endswith('.' + d) for d in domains):
+                    read_failures += 1
+                    continue
                 read.append(cached)
                 self._snapshot(sid, rid, rev)
                 # A corroboration request must first obtain independent origins.

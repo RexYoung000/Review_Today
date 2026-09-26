@@ -7,6 +7,7 @@ from tests.test_conversation_v2 import intent
 from agent_service.schemas import TeachingPreparation, SourceList, EvidenceAssessmentV2, ConversationOutput
 from agent_service.call_errors import WebToolError
 from agent_service.web_resilience import web_round_scope
+from agent_service.source_content import PageRead
 
 
 class SelectiveWebTests(unittest.TestCase):
@@ -60,6 +61,29 @@ class SelectiveWebTests(unittest.TestCase):
         self.assertNotEqual(run['status'], 'completed')
         self.assertFalse(run.get('teaching_sources'))
         recovery.assert_not_called()
+
+    def test_browser_redirect_outside_official_domain_never_supports_answer(self):
+        self.decision=intent('question',needs_verification=True,public_search_query='Python official documentation')
+        original=self.model
+        assessed=[]
+        def model(system,user,schema,**kwargs):
+            if schema is TeachingPreparation:
+                return TeachingPreparation(concepts=['Python'],public_query='Python list',official_sources_required=True,source_domains=['python.org'])
+            if schema is SourceList:
+                return SourceList(candidates=[dict(url='https://docs.python.org/3/',title='Python')])
+            if schema is EvidenceAssessmentV2:
+                assessed.append(json.loads(user))
+            return original(system,user,schema,**kwargs)
+        page=PageRead('Unofficial mirror','镜像文字'*40,details={'reader':'browser','final_url':'https://other.org/copied'})
+        with patch('agent_service.conversation.parse_model',side_effect=model), \
+             patch('agent_service.conversation.web_search_text',return_value='https://docs.python.org/3/'), \
+             patch('agent_service.conditional_teaching.fetch_public_url',return_value=page), \
+             patch('agent_service.web_tools.web_context_pages',return_value=[]):
+            result=self.send('请查阅 Python 官方文档')
+        run=self.state()['runs'][result.run_id]
+        self.assertFalse(assessed)
+        self.assertFalse(run.get('teaching_sources'))
+        self.assertNotEqual(run['search_state'],'verified')
 
     def progressive(self, states, *, cross=False, same_host=False):
         urls = ['https://example.com/rag', 'https://example.com/second' if same_host else 'https://other.org/rag', 'https://third.org/rag']

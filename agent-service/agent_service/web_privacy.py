@@ -75,6 +75,33 @@ def require_public_url(url):
     return url
 
 
+def public_service_url(url):
+    """Public URL syntax only. Local network callers must also pin public DNS."""
+    import ipaddress
+    require_public_url(url)
+    if not isinstance(url, str) or len(url) > 2048 or any(c.isspace() or ord(c) < 32 for c in url):
+        raise ValueError('RT.WEB.INVALID_URL')
+    try:
+        parsed = urlsplit(url)
+        host = (parsed.hostname or '').lower().rstrip('.')
+        if (parsed.scheme not in {'http', 'https'} or not host or parsed.username is not None
+                or parsed.password is not None or parsed.port not in (None, 80, 443)
+                or host.endswith(('.local', '.internal', '.localhost', '.test', '.invalid'))
+                or '.' not in host or '\\' in url or '%' in host
+                or not re.fullmatch(r'[a-z0-9.-]+', host) or host in {'metadata.google.internal'}):
+            raise ValueError('RT.WEB.INVALID_URL')
+        try:
+            ipaddress.ip_address(host)
+        except ValueError:
+            if all(part.isdigit() or part.startswith('0x') for part in host.split('.')):
+                raise ValueError('RT.WEB.INVALID_URL')
+        else:
+            raise ValueError('RT.WEB.INVALID_URL')
+    except (ValueError, TypeError):
+        raise ValueError('RT.WEB.INVALID_URL') from None
+    return url
+
+
 def sensitive_material(value):
     # Recognizable contact values are independently rejected in the outgoing
     # query. Their mere presence must not block an unrelated public question.

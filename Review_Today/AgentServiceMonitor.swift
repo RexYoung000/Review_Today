@@ -366,6 +366,7 @@ final class AgentServiceMonitor {
             "PYTHONUNBUFFERED": "1",
             "PYTHONPATH": serviceRoot.path,
             "REVIEW_TODAY_JEV_TEST": AppRuntime.current.isJevTest ? "1" : "0",
+            "REVIEW_TODAY_BROWSER_FALLBACK": "1",
         ]
         for key in ["USER", "LOGNAME", "SSL_CERT_FILE", "REQUESTS_CA_BUNDLE"] {
             if let value = inherited[key] { environment[key] = value }

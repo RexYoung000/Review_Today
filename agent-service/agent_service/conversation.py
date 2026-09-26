@@ -340,7 +340,19 @@ class ConversationHarness(ConditionalTeaching):
                 self.store.event(data, run, "understanding", "正在校验这次明确操作" if bound_input else "正在理解本轮意图", model="" if bound_input else ROUTER_MODEL)
             try:
                 if not run.get("execution_complete"):
-                    self._execute(session_id, run_id, revision)
+                    from contextlib import nullcontext
+                    from agent_service.web_tools import browser_fallback_enabled
+                    from agent_service.web_resilience import web_round_scope
+                    from agent_service.run_accounting import remaining
+                    # Rendering extends the read chain, not the total web
+                    # allowance. Supplied materials and subsequent verification
+                    # must share one round rather than each gaining 60 seconds.
+                    scope = (web_round_scope(
+                        on_event=lambda payload: self._web_provider_event(session_id, run_id, revision, payload),
+                        check_cancel=lambda: self._snapshot(session_id, run_id, revision),
+                        deadline=time.monotonic() + remaining(run)) if browser_fallback_enabled() else nullcontext())
+                    with scope:
+                        self._execute(session_id, run_id, revision)
                     with self.store.transaction(session_id, run_id, revision) as data:
                         data["runs"][run_id]["execution_complete"] = True
                 with self.store.transaction(session_id, run_id, revision) as data:
@@ -1426,7 +1438,9 @@ class ConversationHarness(ConditionalTeaching):
                 result = readable_page(result)
             with self.store.transaction(sid, rid, rev) as current:
                 self.store.event(current, current["runs"][rid], "source_read", "网页内容已读取",
-                                 duration_ms=int((time.monotonic() - started) * 1000))
+                                 duration_ms=int((time.monotonic() - started) * 1000),
+                                 payload={'read_details': {key:value for key,value in getattr(result, 'details', {}).items()
+                                                          if key not in {'requested_url','final_url'}}})
             return result
         finally:
             with self._worker_lock:
