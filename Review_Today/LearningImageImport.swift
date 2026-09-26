@@ -42,11 +42,13 @@ enum LearningImageImport {
     enum Input: Sendable {
         case file(URL)
         case bytes(Data, String)
+        case fileBytes(Data, String)
 
         nonisolated func load() throws -> LearningImageAttachment {
             switch self {
             case .file(let url): return try LearningImageAttachment.load(url)
             case .bytes(let data, let name): return try LearningImageAttachment.prepare(data, name: name, clipboard: true)
+            case .fileBytes(let data, let name): return try LearningImageAttachment.prepare(data, name: name)
             }
         }
     }
@@ -76,9 +78,24 @@ enum LearningImageImport {
             if let data = item.data(forType: type), !data.isEmpty { return .bytes(data, "剪贴板图片.png") }
         }
         if let value = item.string(forType: .fileURL), let url = URL(string: value), url.isFileURL {
-            return .file(fileURLs.first { $0.standardizedFileURL == url.standardizedFileURL } ?? url)
+            let selected = fileURLs.first { $0.standardizedFileURL == url.standardizedFileURL } ?? url
+            // Finish file I/O in the paste/drop callback. Keep only owned bytes
+            // for background decoding; a cache URL is not a durable attachment.
+            return .fileBytes(try LearningImageAttachment.readFile(selected), selected.lastPathComponent)
         }
         throw LearningImageAttachment.Failure.format
+    }
+
+    nonisolated static func failure(_ error: Error) -> LearningImageAttachment.Failure {
+        if let known = error as? LearningImageAttachment.Failure { return known }
+        var detail = error as NSError
+        for _ in 0..<4 {
+            if (detail.domain == NSCocoaErrorDomain && detail.code == NSFileReadNoPermissionError)
+                || (detail.domain == NSPOSIXErrorDomain && [1, 13].contains(detail.code)) { return .permission }
+            guard let underlying = detail.userInfo[NSUnderlyingErrorKey] as? NSError else { break }
+            detail = underlying
+        }
+        return .unavailable
     }
 
     /// Start every provider load in the drop callback itself. Temporary file
@@ -183,11 +200,8 @@ enum LearningImageImport {
 
         private func readFile(_ url: URL, type: String) throws -> LearningImageAttachment {
             guard url.isFileURL else { throw LearningImageAttachment.Failure.format }
-            let access = url.startAccessingSecurityScopedResource()
-            defer { if access { url.stopAccessingSecurityScopedResource() } }
             let limit = UTType(type)?.conforms(to: .tiff) == true ? 64 * 1024 * 1024 : LearningImageAttachment.maximumBytes
-            guard let size = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize, size <= limit else { throw LearningImageAttachment.Failure.size }
-            return try LearningImageAttachment.prepare(Data(contentsOf: url, options: .mappedIfSafe), name: name(for: type), clipboard: true)
+            return try LearningImageAttachment.prepare(LearningImageAttachment.readFile(url, limit: limit), name: name(for: type), clipboard: true)
         }
 
         private func name(for type: String) -> String {
@@ -206,7 +220,7 @@ enum LearningImageImport {
                     switch failure {
                     case .size, .dimensions, .count: completion(result); return
                     case .format: imageFailure = failure
-                    case .unavailable: break
+                    case .unavailable, .permission: break
                     }
                 }
                 loadNext()

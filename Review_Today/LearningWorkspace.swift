@@ -760,7 +760,7 @@ struct LearningWorkspace: View {
     private func pasteImage(_ pasteboard: NSPasteboard) -> Bool {
         guard acceptsImageInput, LearningImageImport.containsImages(pasteboard) else { return false }
         do { importImages(try LearningImageImport.pasteboardInputs(pasteboard)) }
-        catch { localError = error.localizedDescription }
+        catch { localError = LearningImageImport.failure(error).localizedDescription }
         return true
     }
 

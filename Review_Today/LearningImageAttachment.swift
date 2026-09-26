@@ -17,7 +17,7 @@ struct LearningImageAttachment: Codable, Sendable, Equatable {
     nonisolated static let maximumCount = 8
 
     enum Failure: LocalizedError {
-        case format, size, dimensions, count, unavailable
+        case format, size, dimensions, count, unavailable, permission
         var errorDescription: String? {
             switch self {
             case .format: "无法读取这张图片，请选择有效的 PNG 或 JPEG。"
@@ -25,15 +25,31 @@ struct LearningImageAttachment: Codable, Sendable, Equatable {
             case .dimensions: "图片边长超过 8192 像素，请分段截图后添加。"
             case .count: "每条消息最多添加 8 张图片；这批图片未添加，已有草稿已保留。"
             case .unavailable: "无法读取拖入的图片，请重试，或先保存为 PNG/JPEG 后通过“＋”添加。"
+            case .permission: "macOS 未允许读取这张拖入图片。请在来源中复制图片后粘贴，或将图片保存到本地后添加。"
             }
         }
     }
 
     nonisolated static func load(_ url: URL) throws -> Self {
+        try prepare(readFile(url), name: url.lastPathComponent)
+    }
+
+    /// Read only the selected file, with a strict allocation bound. A mapped
+    /// Data or URL can otherwise outlive the drag's temporary access grant.
+    nonisolated static func readFile(_ url: URL, limit: Int = maximumBytes) throws -> Data {
+        guard url.isFileURL else { throw Failure.format }
         let access = url.startAccessingSecurityScopedResource()
         defer { if access { url.stopAccessingSecurityScopedResource() } }
-        guard let size = try url.resourceValues(forKeys: [.fileSizeKey]).fileSize, size <= maximumBytes else { throw Failure.size }
-        return try prepare(Data(contentsOf: url, options: .mappedIfSafe), name: url.lastPathComponent)
+        let file = try FileHandle(forReadingFrom: url)
+        defer { try? file.close() }
+        var bytes = Data()
+        while bytes.count <= limit {
+            let chunk = try file.read(upToCount: min(64 * 1024, limit + 1 - bytes.count)) ?? Data()
+            if chunk.isEmpty { break }
+            bytes.append(chunk)
+        }
+        guard bytes.count <= limit else { throw Failure.size }
+        return bytes
     }
 
     nonisolated static func prepare(_ raw: Data, name: String, clipboard: Bool = false) throws -> Self {

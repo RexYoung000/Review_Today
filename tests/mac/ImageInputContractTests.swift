@@ -317,6 +317,34 @@ struct ImageInputContractTests {
         let raw = try await drop(plan)
         let normalized = try LearningImageAttachment.load(firstPath)
         precondition(raw.count == 1 && raw[0].sha256 == normalized.sha256)
+
+        // A source can remove its temporary file as soon as the gesture ends.
+        // No later decode may depend on that file or the drag pasteboard.
+        let transient = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".png")
+        try first.data.write(to: transient)
+        board.clearContents()
+        precondition(board.writeObjects([transient as NSURL]))
+        let captured = try LearningImageImport.captureDrop(board, capacity: 8)
+        let pasted = try LearningImageImport.pasteboardInputs(board)
+        try FileManager.default.removeItem(at: transient)
+        board.clearContents()
+        let retained = try await drop(captured)
+        precondition(retained.map(\.sha256) == [normalized.sha256])
+        let pastedHashes = try pasted.map { try $0.load().sha256 }
+        precondition(pastedHashes == [normalized.sha256])
+        // File snapshots retain the file limit, unlike larger clipboard TIFFs.
+        try Data(count: LearningImageAttachment.maximumBytes + 1).write(to: transient)
+        precondition(board.writeObjects([transient as NSURL]))
+        do { _ = try LearningImageImport.captureDrop(board, capacity: 8); preconditionFailure() }
+        catch LearningImageAttachment.Failure.size {}
+        try FileManager.default.removeItem(at: transient)
+        precondition(LearningImageImport.failure(NSError(domain: NSCocoaErrorDomain, code: 257)) == .permission)
+        precondition(LearningImageImport.failure(NSError(domain: "wrapper", code: 0, userInfo: [NSUnderlyingErrorKey: NSError(domain: NSPOSIXErrorDomain, code: 1)])) == .permission)
+        precondition(LearningImageImport.failure(NSError(domain: NSCocoaErrorDomain, code: 260)) == .unavailable)
+        board.clearContents()
+        let routeItem = NSPasteboardItem()
+        routeItem.setData(first.data, forType: .png)
+        precondition(board.writeObjects([routeItem]))
         let view = LearningImageDropView(frame: NSRect(x: 0, y: 0, width: 400, height: 300))
         let button = NSButton(frame: NSRect(x: 0, y: 0, width: 100, height: 30))
         view.addSubview(button)
@@ -368,6 +396,7 @@ struct ImageInputContractTests {
         precondition(!FileManager.default.fileExists(atPath: silent.destination!.path))
         withExtendedLifetime(source) {}
         print("PASS: native drop routing, click pass-through, raw pixels before cache URL, real promise metadata, ordered promised files, atomic failure/limit/timeout and temporary-file cleanup")
+        print("PASS: dropped/pasted file snapshots survive source removal; bounded file reads and permission errors remain distinct")
     }
 
     @MainActor static func drop(_ plan: LearningImageImport.DropPlan, timeout: TimeInterval = 2) async throws -> [LearningImageAttachment] {

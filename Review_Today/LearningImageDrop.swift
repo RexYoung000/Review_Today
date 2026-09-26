@@ -84,13 +84,23 @@ extension LearningImageImport {
             throw LearningImageAttachment.Failure.unavailable
         }
         var promised = false
-        let parts: [DropPart] = try objects.map { object in
+        let parts: [DropPart] = try objects.enumerated().map { index, object in
             if let receiver = object as? NSFilePromiseReceiver {
                 promised = true
                 return .promise(receiver)
             }
             guard let item = object as? NSPasteboardItem else { throw LearningImageAttachment.Failure.format }
-            return .input(try pasteboardInput(item, fileURLs: urls))
+            do {
+                let input = try pasteboardInput(item, fileURLs: urls)
+                let fileSnapshot: Bool
+                if case .fileBytes = input { fileSnapshot = true } else { fileSnapshot = false }
+                dropLog.notice("Native image captured in callback: item \(index), file snapshot: \(fileSnapshot)")
+                return .input(input)
+            } catch {
+                let detail = error as NSError
+                dropLog.error("Native image capture failed in callback: \(detail.domain, privacy: .public)/\(detail.code)")
+                throw failure(error)
+            }
         }
         dropLog.notice("Native image drop: \(parts.count) items, promised files: \(promised)")
         // Legacy promises can contain several files in one pasteboard item.
@@ -194,7 +204,7 @@ extension LearningImageImport {
             case .failure(let error):
                 let detail = error as NSError
                 dropLog.error("Native image drop failed: \(detail.domain, privacy: .public)/\(detail.code)")
-                let failure = (error as? LearningImageAttachment.Failure) ?? .unavailable
+                let failure = LearningImageImport.failure(error)
                 Task { @MainActor in completion(.failure(failure)) }
             }
         }
