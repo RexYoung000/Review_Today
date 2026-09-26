@@ -24,10 +24,12 @@ struct LearningWorkspace: View {
     @Query private var captureReferences: [KnowledgeReference]
     @State private var queueInput = false
     @State private var draft = ""
-    @State private var draftImage: LearningImageAttachment?
+    @State private var draftImages: [LearningImageAttachment] = []
     @State private var showImagePicker = false
     @State private var imagePickerOwner: UUID?
-    @State private var imageImportID: UUID?
+    @State private var imageImports = LearningImageImportQueue()
+    @State private var imageDropTargeted = false
+    @State private var editorImageDropTargeted = false
     @State private var dictation = DictationController()
     @State private var dictationOriginal = ""
     @State private var localError: String?
@@ -121,6 +123,23 @@ struct LearningWorkspace: View {
                 }
         }
         .background(PaperSurface())
+        .onDrop(of: acceptsImageInput ? LearningImageImport.dropTypes : [], isTargeted: $imageDropTargeted, perform: dropImages)
+        .overlay {
+            if acceptsImageInput && (imageDropTargeted || editorImageDropTargeted) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 18).fill(.regularMaterial)
+                    RoundedRectangle(cornerRadius: 18).strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 2, dash: [8, 5]))
+                    VStack(spacing: 8) {
+                        Image(systemName: "photo.on.rectangle.angled").font(.largeTitle)
+                        Text("松开以添加图片").font(.headline)
+                        Text("添加到当前草稿 · 每条最多 8 张").font(.subheadline).foregroundStyle(.secondary)
+                    }
+                }.padding(12).allowsHitTesting(false).accessibilityHidden(true)
+            }
+        }
+        .onChange(of: selectedSession?.status) { _, status in
+            if status != nil && status != "active" { imageImports.cancel(); imageDropTargeted = false; editorImageDropTargeted = false }
+        }
         .navigationTitle((selectedSession?.title ?? "Agent") + runtime.windowSuffix)
         .toolbar(removing: .title)
         .onAppear(perform: loadDraft)
@@ -128,7 +147,7 @@ struct LearningWorkspace: View {
             if value > 0 { focusRequest += 1; onEntryFocusConsumed() }
         }
         .onChange(of: selectedSessionID) { _, _ in
-            imageImportID = nil
+            imageImports.cancel(); imageDropTargeted = false; editorImageDropTargeted = false
             localError = nil
             dictation.leave()
             saveDraft()
@@ -147,7 +166,7 @@ struct LearningWorkspace: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .prepareNewConversation)) { _ in saveDraft() }
-        .onDisappear { dictation.leave(); imageImportID = nil; saveDraft() }
+        .onDisappear { dictation.leave(); imageImports.cancel(); imageDropTargeted = false; editorImageDropTargeted = false; saveDraft() }
         .onReceive(NotificationCenter.default.publisher(for: .dictationSessionsDeleted)) { note in
             if let ids = note.object as? Set<UUID>, let owner = dictation.owner, ids.contains(owner) { dictation.cancel() }
         }
@@ -161,10 +180,10 @@ struct LearningWorkspace: View {
                 showKnowledgePicker = false
             }
         }
-        .fileImporter(isPresented: $showImagePicker, allowedContentTypes: [.png, .jpeg]) { result in
+        .fileImporter(isPresented: $showImagePicker, allowedContentTypes: [.png, .jpeg], allowsMultipleSelection: true) { result in
             guard imagePickerOwner == draftSessionID else { return }
             switch result {
-            case .success(let url): importImage { try LearningImageAttachment.load(url) }
+            case .success(let urls): importImages(urls.map { .file($0) })
             case .failure(let error): localError = error.localizedDescription
             }
         }
@@ -482,8 +501,8 @@ struct LearningWorkspace: View {
         return HStack(alignment: .top, spacing: 10) {
             VStack(alignment: isUser ? .trailing : .leading, spacing: 5) {
               if isUser {
-                  if let attachment = LearningImageAttachment.decode(message.imageAttachment) {
-                      LearningImageChip(attachment: attachment).frame(maxWidth: min(320, bubbleWidth), alignment: .trailing)
+                  if message.imageAttachment != nil {
+                      LearningMessageImages(data: message.imageAttachment, maximumWidth: bubbleWidth)
                   }
                   Text(.init(message.content))
                       .font(.body).foregroundStyle(runway.ink).textSelection(.enabled)
@@ -624,18 +643,19 @@ struct LearningWorkspace: View {
                     Spacer(minLength: 0)
                 }.accessibilityElement(children: .combine)
             }
-            if let image = draftImage {
-                LearningImageChip(attachment: image) { updateImage(nil) }
-                    .disabled(dictation.busy || imageImportID != nil)
-                Text("发送后将由 DeepSeek 理解图片。")
+            if !draftImages.isEmpty {
+                LearningImageGrid(images: draftImages) { index in
+                    var updated = draftImages; updated.remove(at: index); updateImages(updated)
+                }.disabled(dictation.busy)
+                Text("已添加 \(draftImages.count) 张图片 · 发送后由 DeepSeek 理解")
                     .font(.caption2).foregroundStyle(.secondary)
             }
-            if imageImportID != nil { Text("正在准备图片…").font(.caption).foregroundStyle(.secondary) }
+            if imageImports.isLoading { Text("正在准备图片…").font(.caption).foregroundStyle(.secondary) }
             LearningComposerInput(text: $draft, focusRequest: focusRequest,
                 sessionID: selectedSessionID ?? draftSettings?.agentDraftID, placeholder: activeActionPlaceholder,
                 insertion: dictation.insertion ?? insertion, editable: !dictation.busy,
                 onInsertionApplied: acceptDictation, onSubmit: submitDraft,
-                preservesFocusOnClick: titleMascot.preservesInputFocus, onImagePaste: pasteImage) {
+                preservesFocusOnClick: titleMascot.preservesInputFocus, onImagePaste: pasteImage, onImageDragTarget: { editorImageDropTargeted = $0 }) {
                 HStack {
                   composerControls.disabled(dictation.busy)
                   Spacer(minLength: 8)
@@ -648,7 +668,7 @@ struct LearningWorkspace: View {
                         .background(runway.action, in: Circle())
                 }
                 .buttonStyle(.plain)
-                .disabled(dictation.busy || imageImportID != nil || !runtime.allowsSending || (draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && draftImage == nil))
+                .disabled(dictation.busy || imageImports.isLoading || !runtime.allowsSending || (draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && draftImages.isEmpty))
                 .help(runtime.isPreview ? "界面预览不可发送" : "发送（Return 或 ⌘ Return）")
                 .accessibilityLabel("发送")
                 }
@@ -716,39 +736,68 @@ struct LearningWorkspace: View {
     }
 
     private func submitDraft() {
-        guard !dictation.busy, imageImportID == nil else { return }
+        guard !dictation.busy, !imageImports.isLoading else { return }
         let content = draft.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !content.isEmpty || draftImage != nil else { return }
-        sendMessage(content.isEmpty ? "请帮我理解这张图片中的内容" : content, image: draftImage?.encoded)
+        guard !content.isEmpty || !draftImages.isEmpty else { return }
+        let defaultRequest = draftImages.count == 1 ? "请帮我理解这张图片中的内容" : "请帮我理解这些图片中的内容"
+        sendMessage(content.isEmpty ? defaultRequest : content, image: LearningImageAttachment.encodeAll(draftImages))
+    }
+
+    private var acceptsImageInput: Bool {
+        !dictation.busy && (selectedSessionID == nil || selectedSession?.status == "active")
+    }
+
+    private func reserveImages(_ count: Int) -> LearningImageImportQueue.Ticket? {
+        guard acceptsImageInput else { return nil }
+        do {
+            if !imageImports.isLoading { localError = nil }
+            return try imageImports.reserve(count, existing: draftImages.count)
+        } catch { localError = error.localizedDescription; return nil }
     }
 
     private func pasteImage(_ pasteboard: NSPasteboard) -> Bool {
-        guard !dictation.busy, let raw = pasteboard.data(forType: .png) ?? pasteboard.data(forType: .tiff) else { return false }
-        importImage { try LearningImageAttachment.prepare(raw, name: "剪贴板图片.png", clipboard: true) }
+        guard acceptsImageInput, LearningImageImport.containsImages(pasteboard) else { return false }
+        do { importImages(try LearningImageImport.pasteboardInputs(pasteboard)) }
+        catch { localError = error.localizedDescription }
         return true
     }
 
-    private func importImage(_ load: @escaping @Sendable () throws -> LearningImageAttachment) {
-        let request = UUID(), owner = draftSessionID
-        imageImportID = request
+    private func importImages(_ inputs: [LearningImageImport.Input]) {
+        guard let ticket = reserveImages(inputs.count) else { return }
+        let owner = draftSessionID
         Task {
-            do {
-                let image = try await Task.detached(priority: .userInitiated, operation: load).value
-                guard imageImportID == request, draftSessionID == owner else { return }
-                updateImage(image)
-            } catch {
-                guard imageImportID == request, draftSessionID == owner else { return }
-                localError = error.localizedDescription
-            }
-            if imageImportID == request { imageImportID = nil }
+            let result = await Task.detached(priority: .userInitiated) { Result { try inputs.map { try $0.load() } } }.value
+            finishImages(ticket, result: result, owner: owner)
         }
     }
 
-    private func updateImage(_ image: LearningImageAttachment?) {
-        draftImage = image
+    private func dropImages(_ providers: [NSItemProvider]) -> Bool {
+        guard let ticket = reserveImages(providers.count) else { return false }
+        let owner = draftSessionID
+        LearningImageImport.loadProviders(providers) { result in finishImages(ticket, result: result, owner: owner) }
+        return true
+    }
+
+    private func finishImages(_ ticket: LearningImageImportQueue.Ticket, result: Result<[LearningImageAttachment], Error>, owner: UUID?) {
+        let results = imageImports.finish(ticket, with: result)
+        guard owner == draftSessionID, selectedSessionID == nil || selectedSession?.status == "active" else { return }
+        var images = draftImages
+        var failures: [String] = []
+        for result in results {
+            switch result {
+            case .success(let added): images.append(contentsOf: added)
+            case .failure(let error): failures.append(error.localizedDescription)
+            }
+        }
+        if images != draftImages { updateImages(images, clearError: false) }
+        if !failures.isEmpty { localError = "这批图片未添加：" + failures.joined(separator: "；") }
+    }
+
+    private func updateImages(_ images: [LearningImageAttachment], clearError: Bool = true) {
+        draftImages = images
         do {
-            try draftStore.saveImage(image?.encoded, sessionID: draftSessionID, context: modelContext)
-            localError = nil
+            try draftStore.saveImage(LearningImageAttachment.encodeAll(images), sessionID: draftSessionID, context: modelContext)
+            if clearError { localError = nil }
             focusRequest += 1
         } catch { localError = "图片草稿尚未保存，请保留当前窗口并重试。" }
     }
@@ -761,7 +810,7 @@ struct LearningWorkspace: View {
             do {
                 let (session, message) = try AgentComposerStore.sendFirst(content, context: modelContext, image: image)
                 draft = ""
-                draftImage = nil; draftStore.imageSent(sessionID: nil)
+                draftImages = []; draftStore.imageSent(sessionID: nil)
                 draftSessionID = session.id
                 selectedSessionID = session.id
                 sentMessageID = message.id
@@ -779,7 +828,7 @@ struct LearningWorkspace: View {
             do {
                 let message = try AgentComposerStore.sendInitial(content, in: session, context: modelContext, image: image)
                 draft = ""; sentMessageID = message.id; localError = nil
-                draftImage = nil; draftStore.imageSent(sessionID: session.id)
+                draftImages = []; draftStore.imageSent(sessionID: session.id)
                 focusRequest += 1
                 onMessageSaved(message, false)
                 ConversationSync.wake()
@@ -807,7 +856,7 @@ struct LearningWorkspace: View {
         do {
             if operation == nil && consumesDraft { session.composerDraft = ""; session.composerImage = nil }
             try modelContext.save()
-            if operation == nil && consumesDraft { draft = ""; draftImage = nil; draftStore.imageSent(sessionID: session.id) }
+            if operation == nil && consumesDraft { draft = ""; draftImages = []; draftStore.imageSent(sessionID: session.id) }
             message.localSavedMS = Int(Date.now.timeIntervalSince(started) * 1000)
             queueInput = false
             localError = nil
@@ -938,7 +987,7 @@ struct LearningWorkspace: View {
         do {
             draftSettings = selectedSessionID == nil ? try AgentComposerStore.prepare(modelContext) : try AgentComposerStore.settings(modelContext)
             draftSessionID = selectedSessionID
-            draftImage = LearningImageAttachment.decode(try draftStore.image(sessionID: draftSessionID, context: modelContext))
+            draftImages = LearningImageAttachment.decodeAll(try draftStore.image(sessionID: draftSessionID, context: modelContext))
             draft = draftStore.unsavedText(sessionID: draftSessionID) ?? selectedSession?.composerDraft ?? draftSettings?.agentDraftText ?? ""
             if draftStore.unsavedText(sessionID: draftSessionID) != nil {
                 do { try draftStore.save(draft, sessionID: draftSessionID, context: modelContext) }

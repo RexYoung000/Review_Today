@@ -2,11 +2,12 @@ import AppKit
 import Foundation
 import ImageIO
 import SwiftData
+import UniformTypeIdentifiers
 
 @main
 struct ImageInputContractTests {
     enum Disk: Error { case failed }
-    @MainActor static func main() throws {
+    @MainActor static func main() async throws {
         let fixture = NSImage(size: NSSize(width: 1200, height: 700))
         fixture.lockFocus()
         NSColor.white.setFill(); NSRect(x: 0, y: 0, width: 1200, height: 700).fill()
@@ -97,7 +98,138 @@ struct ImageInputContractTests {
         precondition(pasted == 1 && editor.string == "输入草稿")
         editor.isEditable = false; editor.paste(nil)
         precondition(pasted == 1)
+        try await multipleImages(first: image, firstPath: path, directory: directory)
         print("PASS: image normalization, metadata removal, draft isolation, first-send rollback, image-only draft preservation, disk restart, archive/delete lifecycle and native paste dispatch")
         print("Synthetic image fixture: \(path.path)")
     }
+
+    @MainActor static func multipleImages(first: LearningImageAttachment, firstPath: URL, directory: URL) async throws {
+        let fixture = NSImage(size: NSSize(width: 1200, height: 700))
+        fixture.lockFocus()
+        NSColor.white.setFill(); NSRect(x: 0, y: 0, width: 1200, height: 700).fill()
+        let style: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: 40), .foregroundColor: NSColor.black]
+        ("第二张合成学习材料：检查回答" as NSString).draw(at: NSPoint(x: 60, y: 570), withAttributes: style)
+        ("生成  →  核对依据" as NSString).draw(at: NSPoint(x: 140, y: 400), withAttributes: style)
+        ("引用缺失时，需要补查资料。" as NSString).draw(at: NSPoint(x: 60, y: 240), withAttributes: style)
+        ("样例编号：RT-043；预算：18.75 元；数量：5。" as NSString).draw(at: NSPoint(x: 60, y: 110), withAttributes: style)
+        fixture.unlockFocus()
+        let second = try LearningImageAttachment.prepare(fixture.tiffRepresentation!, name: "第二张学习截图.png", clipboard: true)
+        let secondPath = URL(fileURLWithPath: "/tmp/review-today-image-fixture-2.png")
+        try second.data.write(to: secondPath)
+        let images = [first, second], encoded = LearningImageAttachment.encodeAll(images)!
+        precondition(LearningImageAttachment.decodeAll(first.encoded) == [first])
+        precondition(LearningImageAttachment.decodeAll(encoded) == images)
+        precondition(LearningImageAttachment.encodeAll([]) == nil)
+        let singleFields = try ConversationProcessor.imageFields(first.encoded!, protocolVersion: 1)
+        let fields = try ConversationProcessor.imageFields(encoded, protocolVersion: 2)
+        precondition(singleFields["image"] != nil && singleFields["images"] == nil)
+        precondition((fields["images"] as? [[String: Any]])?.compactMap { $0["sha256"] as? String } == images.map(\.sha256))
+        do { _ = try ConversationProcessor.imageFields(encoded, protocolVersion: 1); preconditionFailure() }
+        catch { precondition(HarnessAPIError.code(for: error) == "RT.IMAGE.SERVICE_UPDATE_REQUIRED") }
+
+        let queue = LearningImageImportQueue()
+        let a = try queue.reserve(2, existing: 1), b = try queue.reserve(1, existing: 1)
+        precondition(queue.pendingCount == 3)
+        do { _ = try queue.reserve(5, existing: 1); preconditionFailure() } catch LearningImageAttachment.Failure.count {}
+        precondition(queue.finish(b, with: .success([second])).isEmpty)
+        let ordered = queue.finish(a, with: .success(images))
+        let published = try ordered.flatMap { try $0.get() }
+        precondition(published == images + [second])
+        precondition(!queue.isLoading)
+        let cancelled = try queue.reserve(1, existing: 0)
+        queue.cancel()
+        precondition(queue.finish(cancelled, with: .success([first])).isEmpty)
+        let bad = try queue.reserve(1, existing: 0), good = try queue.reserve(1, existing: 0)
+        precondition(queue.finish(good, with: .success([second])).isEmpty)
+        let drained = queue.finish(bad, with: .failure(LearningImageAttachment.Failure.format))
+        precondition(drained.count == 2 && !queue.isLoading)
+        let afterFailure = try drained[1].get()
+        precondition(afterFailure == [second])
+
+        let board = NSPasteboard.withUniqueName()
+        defer { board.releaseGlobally() }
+        precondition(board.writeObjects([firstPath as NSURL, secondPath as NSURL]))
+        precondition(LearningImageImport.containsImages(board))
+        // File loading normalizes an encoded file once more; compare against
+        // independently loaded files, not the original TIFF conversion bytes.
+        let fileImages = try [firstPath, secondPath].map { try LearningImageAttachment.load($0) }
+        let pasted = try LearningImageImport.pasteboardInputs(board).map { try $0.load() }
+        precondition(pasted.map(\.sha256) == fileImages.map(\.sha256))
+        let editor = LearningEditor(); editor.isEditable = true; editor.string = "文字草稿不改变"
+        var target = false, received: [LearningImageAttachment] = []
+        editor.onImageDragTarget = { target = $0 }
+        editor.onImagePaste = { board in
+            received = (try? LearningImageImport.pasteboardInputs(board).map { try $0.load() }) ?? []
+            return true
+        }
+        let dragging = ImageDragInfo(board)
+        precondition(editor.draggingEntered(dragging) == .copy && target)
+        precondition(editor.prepareForDragOperation(dragging))
+        precondition(editor.performDragOperation(dragging) && !target)
+        precondition(received.map(\.sha256) == fileImages.map(\.sha256) && editor.string == "文字草稿不改变")
+        _ = editor.draggingEntered(dragging); editor.draggingExited(dragging)
+        precondition(!target)
+        editor.isEditable = false
+        precondition(editor.draggingEntered(dragging).isEmpty && !editor.performDragOperation(dragging))
+
+        // Exercise NSItemProvider itself for conversation-body drops, preserving
+        // file ordering and rejecting the whole batch if a file is invalid.
+        let providers = [NSItemProvider(object: firstPath as NSURL), NSItemProvider(object: secondPath as NSURL)]
+        let providerImages: [LearningImageAttachment] = try await withCheckedThrowingContinuation { continuation in
+            LearningImageImport.loadProviders(providers) { continuation.resume(with: $0) }
+        }
+        precondition(providerImages.map(\.sha256) == fileImages.map(\.sha256))
+        let broken = directory.appendingPathComponent("broken.png")
+        try Data("not a picture".utf8).write(to: broken)
+        do {
+            let _: [LearningImageAttachment] = try await withCheckedThrowingContinuation { continuation in
+                LearningImageImport.loadProviders([providers[0], NSItemProvider(object: broken as NSURL)]) { continuation.resume(with: $0) }
+            }
+            preconditionFailure()
+        } catch LearningImageAttachment.Failure.format {}
+        let storeURL = directory.appendingPathComponent("multi.store")
+        var sid: UUID!
+        do {
+            let container = try ModelContainer(for: M1DebugFixture.schema, configurations: ModelConfiguration(url: storeURL))
+            let c = container.mainContext; c.autosaveEnabled = false
+            _ = try AgentComposerStore.prepare(c)
+            let session = try AgentComposerStore.createSession(context: c); sid = session.id
+            try LearningDraftStore().saveImage(encoded, sessionID: sid, context: c)
+            do {
+                _ = try AgentComposerStore.sendInitial("比较两张图片", in: session, context: c, image: encoded, save: { throw Disk.failed })
+                preconditionFailure()
+            } catch Disk.failed {}
+            precondition(LearningImageAttachment.decodeAll(session.composerImage) == images)
+        }
+        do {
+            let container = try ModelContainer(for: M1DebugFixture.schema, configurations: ModelConfiguration(url: storeURL))
+            let c = container.mainContext; c.autosaveEnabled = false
+            let session = try c.fetch(FetchDescriptor<AgentSession>()).first { $0.id == sid }!
+            precondition(LearningImageAttachment.decodeAll(session.composerImage) == images)
+            let message = try AgentComposerStore.sendInitial("比较两张图片", in: session, context: c, image: session.composerImage)
+            precondition(LearningImageAttachment.decodeAll(message.imageAttachment) == images && session.composerImage == nil)
+        }
+        print("PASS: legacy/multi-image codec, protocol guard, async order/cancellation/limit, multi-file clipboard, native editor drop, NSItemProvider batch, multi-image rollback and disk draft recovery")
+        print("Second synthetic image fixture: \(secondPath.path)")
+    }
+}
+
+@MainActor private final class ImageDragInfo: NSObject, NSDraggingInfo {
+    let draggingPasteboard: NSPasteboard
+    init(_ pasteboard: NSPasteboard) { draggingPasteboard = pasteboard }
+    var draggingDestinationWindow: NSWindow? { nil }
+    var draggingSourceOperationMask: NSDragOperation { .copy }
+    var draggingLocation: NSPoint { .zero }
+    var draggedImageLocation: NSPoint { .zero }
+    var draggedImage: NSImage? { nil }
+    var draggingSource: Any? { nil }
+    var draggingSequenceNumber: Int { 1 }
+    var draggingFormation: NSDraggingFormation = .none
+    var animatesToDestination = false
+    var numberOfValidItemsForDrop = 2
+    var springLoadingHighlight: NSSpringLoadingHighlight { .none }
+    func slideDraggedImage(to screenPoint: NSPoint) {}
+    override func namesOfPromisedFilesDropped(atDestination dropDestination: URL) -> [String]? { nil }
+    func resetSpringLoading() {}
+    func enumerateDraggingItems(options enumOpts: NSDraggingItemEnumerationOptions, for view: NSView?, classes classArray: [AnyClass], searchOptions: [NSPasteboard.ReadingOptionKey: Any], using block: (NSDraggingItem, Int, UnsafeMutablePointer<ObjCBool>) -> Void) {}
 }

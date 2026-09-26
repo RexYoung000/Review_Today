@@ -73,8 +73,11 @@ class ConversationHarness(ConditionalTeaching):
                 raise ValueError("RT.SESSION.ARCHIVED")
             receipts = data.setdefault("message_receipts", {})
             identity = dict(content=body.content, operation=body.operation.model_dump() if body.operation else None)
-            if body.image:
-                identity["image"] = body.image.metadata()
+            pictures = body.images or ([body.image] if body.image else [])
+            if len(pictures) == 1:
+                identity["image"] = pictures[0].metadata()
+            elif pictures:
+                identity["images"] = [image.metadata() for image in pictures]
             fingerprint = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
             receipt = receipts.get(body.client_message_id)
             if receipt:
@@ -85,7 +88,7 @@ class ConversationHarness(ConditionalTeaching):
             existing = next((m for m in data["messages"] if m.get("message_id") == body.client_message_id), None)
             if existing:
                 # Same key with a different payload is not a second user instruction.
-                if existing["content"] != body.content or (existing.get("image") or {}).get("sha256") != (body.image.sha256 if body.image else None):
+                if existing["content"] != body.content or [i["sha256"] for i in image_inputs.attachments(existing)] != [i.sha256 for i in pictures]:
                     raise ValueError("RT.MESSAGE.IDEMPOTENCY_CONFLICT")
                 run = data["runs"][existing["run_id"]]
             else:
@@ -134,8 +137,10 @@ class ConversationHarness(ConditionalTeaching):
                                content_type=body.content_type, created_at=now_iso(), run_id=run["run_id"],
                                task_id=body.task_id, context=body.context.model_dump(),
                                operation=body.operation.model_dump() if body.operation else None)
-                if body.image:
-                    message["image"] = body.image.model_dump()
+                if len(pictures) == 1:
+                    message["image"] = pictures[0].model_dump()
+                elif pictures:
+                    message["images"] = [image.model_dump() for image in pictures]
                 data["messages"].append(message)
                 run["lifecycle_revision"] = data.get("lifecycle_revision", 0)
                 if body.task_id:
@@ -234,10 +239,7 @@ class ConversationHarness(ConditionalTeaching):
             if existing is not None:
                 raise ValueError("RT.SESSION.SNAPSHOT_EXISTS")
             for message in incoming.get("messages", []):
-                if message.get("image", {}).get("data_base64"):
-                    message["image"] = image_inputs.ImageAttachment.model_validate(message["image"]).model_dump()
-                elif message.get("image") and not message.get("image_reading"):
-                    raise ValueError("RT.IMAGE.ORIGINAL_REQUIRED")
+                image_inputs.validate_restored_message(message)
             for task in incoming.get("tasks", {}).values():
                 if task.get("session_id") != sid:
                     raise ValueError("RT.SESSION.SNAPSHOT_INVALID")
@@ -647,7 +649,7 @@ class ConversationHarness(ConditionalTeaching):
                                       rationale="用户明确要求继续教学，不是独立作答或保存授权。")
         elif run.get("intent") and {"programming_boundary", "conversation_kind", "resource_boundary", "reply_feedback"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"] and self._intent_policy_matches(run):
             decision = IntentDecision.model_validate(run["intent"])
-        elif any(not m.get("image_reading") for m in image_inputs.current_images(data, run)):
+        elif any(not image_inputs.has_reading(m) for m in image_inputs.current_images(data, run)):
             decision = image_inputs.resolve(self, sid, rid, rev, dialogue_routing.intent_context(context), INTENT_SYSTEM)
             data, run = self._snapshot(sid, rid, rev)
             context, last = self._context(data, run)

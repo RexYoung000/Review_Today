@@ -629,6 +629,7 @@ class BoundOperation(BaseModel):
 class SessionMessageRequest(SessionTurnRequest):
     content_type: Literal["text", "url", "image"] = "text"
     image: ImageAttachment | None = None
+    images: list[ImageAttachment] = Field(default_factory=list, max_length=8)
     delivery: Literal["steer", "queue"] = "steer"
     task_id: str | None = None
     operation: BoundOperation | None = None
@@ -638,7 +639,8 @@ class SessionMessageRequest(SessionTurnRequest):
 
     @model_validator(mode="after")
     def image_contract(self):
-        if (self.image is not None) != (self.content_type == "image") or (self.image and self.operation):
+        supplied = self.image is not None or bool(self.images)
+        if supplied != (self.content_type == "image") or (supplied and self.operation) or (self.image and self.images):
             raise ValueError("RT.IMAGE.INVALID_MESSAGE")
         return self
 

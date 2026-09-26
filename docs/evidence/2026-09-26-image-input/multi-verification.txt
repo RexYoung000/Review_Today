@@ -1,0 +1,23 @@
+macOS Debug signed build: exit 0
+Python targeted: 179 passed, 8 subtests passed (63.96 seconds)
+Final image/teaching regression after current-source deduplication: 55 passed (23.55 seconds)
+Native contracts: source module compiled once; tests fixed and recompiled against unchanged app code.
+PASS: legacy/multi-image codec, protocol guard, async order/cancellation/limit, multi-file clipboard, native editor drop, NSItemProvider batch, multi-image rollback and disk draft recovery
+PASS: image normalization, metadata removal, draft isolation, first-send rollback, image-only draft preservation, disk restart, archive/delete lifecycle and native paste dispatch
+PASS executable: ImageInputContractTests
+PASS: 12 scenarios, 6-card refresh, protected prefill/IME/undo, sidebar preference, native input, atomic first-send failure/retry, no empty Sessions, independent drafts/preferences, tags, partial persistence, activity
+PASS executable: LearningInputContractTests
+PASS: independent creation, legacy draft preservation/rollback, per-session disk persistence, no message/run on creation, creation/first-send failure, first-send identity, active empty/populated deletion and no draft resurrection
+PASS executable: IndependentSessionContractTests
+PASS: reset preview, rollback, preserved knowledge/enrollment/preferences, immediate due, scope changes, busy rejection, full purge, tombstones, durable cleanup, duplicate execution and controller invalidation
+PASS executable: LocalDataResetContractTests
+PASS: 90s cold startup, 10s sustained outage, recovery resets timer, monotonic startup diagnostics, single termination
+PASS: capability probing is background state; partial capability is compact; all unavailable blocks
+PASS executable: AgentServiceMonitorContractTests
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+PASS executable: ConversationReplayTests
+PASS: runtime/storage/network identity, preview submit guard, durable isolation, invalid acceptance and stable retry, delivery feedback, bounded static samples
+PASS executable: AppRuntimeContractTests
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+PASS: real SSE Unicode transport, incremental delivery, max controlled receive delay 26 ms
+All selected contracts complete

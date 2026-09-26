@@ -14,6 +14,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--live", required=True, action="store_true")
     parser.add_argument("--image", required=True, type=Path)
+    parser.add_argument("--additional-image", action="append", default=[], type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     if args.output.exists():
@@ -30,12 +31,15 @@ def main():
         from agent_service.harness_store import HarnessStore
         from agent_service.schemas import SessionMessageRequest
         from agent_service.openai_client import parse_model
-        from agent_service.image_inputs import ImageAttachment
+        from agent_service.image_inputs import ImageAttachment, materials
         if PROVIDER != "deepseek":
             raise SystemExit("Requires the existing DeepSeek provider; no configuration was changed")
-        image = ImageAttachment(name=args.image.name, mime_type="image/png", data_base64=base64.b64encode(args.image.read_bytes()).decode())
+        paths = [args.image, *args.additional_image]
+        if len(paths) > 8:
+            raise SystemExit("At most eight synthetic images per run")
+        images = [ImageAttachment(name=path.name, mime_type="image/png", data_base64=base64.b64encode(path.read_bytes()).decode()) for path in paths]
         h = ConversationHarness(ConversationStore(HarnessStore(os.environ["REVIEW_TODAY_HARNESS_DB"])))
-        result = dict(fixture="synthetic, manually authored learning slide", image=image.metadata(),
+        result = dict(fixture="synthetic, manually authored learning slides", images=[image.metadata() for image in images],
                       provider=PROVIDER, calls=[], turns=[], result="running")
 
         def record(system, prompt, schema, **kwargs):
@@ -52,13 +56,14 @@ def main():
                 entry["elapsed_ms"] = round((time.monotonic() - start) * 1000)
 
         sid = str(uuid.uuid4())
-        def send(text, attachment=None):
+        def send(text, attachments=None):
+            fields = {"image": attachments[0]} if attachments and len(attachments) == 1 else {"images": attachments or []}
             accepted = h.accept(sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content=text,
-                content_type="image" if attachment else "text", image=attachment))
+                content_type="image" if attachments else "text", **fields))
             h.drain(sid)
             state = h.store.get(sid); run = state["runs"][accepted.run_id]
             turn = dict(input=text, status=run["status"], elapsed_ms=run.get("elapsed_ms"), intent=run.get("intent"),
-                readings=[m["image_reading"] for m in state["messages"] if m.get("image_reading")],
+                readings=[value for m in state["messages"] for value in materials(m)],
                 replies=[m["content"] for m in state["messages"] if m["role"] == "coach" and m["run_id"] == accepted.run_id],
                 calls=run.get("model_calls", []),
                 failures=[dict(stage=e["stage"], code=e.get("error_code"), summary=e["user_summary"])
@@ -68,10 +73,10 @@ def main():
             assert turn["status"] == "completed" and turn["replies"], "turn failed"
         try:
             with patch("agent_service.conversation.parse_model", side_effect=record), patch.object(h, "_schedule_summary"):
-                send("请读图。先逐字列出图片文字，保留数字和否定词；再用两句话解释箭头关系；最后说明看不清或不确定的部分。不需要联网、出题或保存。", image)
-                assert result["turns"][0]["readings"]
+                send("请按图片顺序分别读图。每张先逐字列出文字，保留数字和否定词；再用两句话解释箭头关系；最后说明看不清或不确定的部分。不需要联网、出题或保存。", images)
+                assert len(result["turns"][0]["readings"]) == len(images)
                 image_calls = sum(c["image_count"] for c in result["calls"])
-                send("图中写的是可以编造答案，还是不应编造答案？只引用对应原句。")
+                send("第二张和第一张的编号、预算分别是多少？第一张允许编造答案吗？请分别引用图中原句。" if len(images) > 1 else "图中写的是可以编造答案，还是不应编造答案？只引用对应原句。")
                 assert sum(c["image_count"] for c in result["calls"]) == image_calls, "text followup unexpectedly resubmitted pixels"
             result["result"] = "transport_and_followup_passed"
         except Exception as exc:

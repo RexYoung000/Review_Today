@@ -252,3 +252,172 @@ def test_private_image_text_cannot_become_a_public_search(harness):
         state["runs"][rid]["intent"] = {"relation": "new_topic"}
     with pytest.raises(WebToolError, match="PRIVATE_INPUT"):
         check_web(h, sid, rid, 1, "Orion 项目介绍", operation="search")
+
+
+def accept_multiple(h, count=2):
+    sid = str(uuid.uuid4())
+    request = SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="比较这些图片中的流程", content_type="image",
+                                    images=[{**picture(i * 20), "name": f"图{i + 1}.png"} for i in range(count)])
+    accepted = h.accept(sid, request)
+    with h.store.transaction(sid) as state:
+        state["runs"][accepted.run_id]["status"] = "running"
+    return sid, accepted.run_id, request
+
+
+def install_multiple_reader(monkeypatch, request, *, wrong_index=False, before_return=None):
+    calls = []
+    def parse(system, user, schema, **kwargs):
+        payload = json.loads(user)
+        assert [i["image_index"] for i in payload["image_inputs"]] == [0, 1]
+        assert [i["sha256"] for i in kwargs["images"]] == [i.sha256 for i in request.images]
+        assert all(i.data_base64 not in user for i in request.images)
+        calls.append(payload)
+        if before_return: before_return()
+        # Deliberately reverse response order: image_index owns identity.
+        return schema.model_validate(dict(decision=IntentDecision(intents=["question", "material"], relation="continuation",
+            scope="conversation", rationale="比较两张图", answer_only=True).model_dump(), readings=[
+                dict(message_id=request.client_message_id, image_index=0 if wrong_index else 1,
+                     transcription="第二张预算：18.75 元", visual_description="生成指向校验", uncertainties=[]),
+                dict(message_id=request.client_message_id, image_index=0,
+                     transcription="第一张预算：12.50 元", visual_description="检索指向生成", uncertainties=[])]))
+    monkeypatch.setattr("agent_service.conversation.parse_model", parse)
+    return calls
+
+
+def test_multi_image_limits_and_legacy_single_transport_identity(harness):
+    with pytest.raises(ValidationError):
+        SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="x", content_type="image", images=[picture()] * 9)
+    with pytest.raises(ValidationError):
+        message(images=[picture()])
+    h, sid, rid, request = harness
+    equivalent = request.model_copy(update={"image": None, "images": [request.image]})
+    assert h.accept(sid, equivalent).run_id == rid
+    other_sid, other_rid, multi = accept_multiple(h)
+    assert h.accept(other_sid, multi).run_id == other_rid
+    with pytest.raises(ValueError, match="IDEMPOTENCY_CONFLICT"):
+        h.accept(other_sid, multi.model_copy(update={"images": list(reversed(multi.images))}))
+    assert len(h.store.get(other_sid)["messages"]) == 1
+
+
+def test_multi_image_reading_order_context_and_checkpoint(harness, monkeypatch, tmp_path):
+    h = harness[0]
+    sid, rid, request = accept_multiple(h)
+    calls = install_multiple_reader(monkeypatch, request)
+    state = h.store.get(sid)
+    context, _ = h._context(state, state["runs"][rid])
+    image_inputs.resolve(h, sid, rid, 1, context, "规则")
+    state = h.store.get(sid)
+    context, last = h._context(state, state["runs"][rid])
+    assert [m["transcription"] for m in context["image_materials"]] == ["第一张预算：12.50 元", "第二张预算：18.75 元"]
+    assert [m["image_index"] for m in context["image_materials"]] == [0, 1]
+    assert len(calls) == 1
+    assert state["runs"][rid]["context_capacity"]["image_tokens"] == 2048
+    assert all("data_base64" not in i for i in last["images"])
+    snapshot = h.export_snapshot(sid)
+    assert "data_base64" not in json.dumps(snapshot)
+    restored = ConversationHarness(ConversationStore(HarnessStore(str(tmp_path / "multiple.sqlite3"))))
+    restored.restore_snapshot(sid, snapshot)
+    assert image_inputs.has_reading(restored.store.get(sid)["messages"][0])
+    assert len(image_inputs.materials(restored.store.get(sid)["messages"][0])) == 2
+
+
+def test_missing_or_duplicate_image_index_is_repaired_once(harness, monkeypatch):
+    h = harness[0]
+    sid, rid, request = accept_multiple(h)
+    calls = install_multiple_reader(monkeypatch, request, wrong_index=True)
+    with pytest.raises(openai_client.ModelCallError, match="SCHEMA"):
+        image_inputs.resolve(h, sid, rid, 1, {}, "规则")
+    assert len(calls) == 2
+    assert not image_inputs.has_reading(h.store.get(sid)["messages"][0])
+
+
+def test_multi_unread_recovery_needs_every_original(harness, tmp_path):
+    h = harness[0]
+    sid, rid, request = accept_multiple(h)
+    snapshot = h.export_snapshot(sid)
+    restored = ConversationHarness(ConversationStore(HarnessStore(str(tmp_path / "multi-unread.sqlite3"))))
+    snapshot["checkpoint"]["messages"][0]["images"][0] = request.images[0].model_dump()
+    with pytest.raises(ValueError, match="ORIGINAL_REQUIRED"):
+        restored.restore_snapshot(sid, snapshot)
+    snapshot["checkpoint"]["messages"][0]["images"] = [i.model_dump() for i in request.images]
+    assert image_inputs.snapshot_within_limit(snapshot)
+    restored.restore_snapshot(sid, snapshot)
+    assert [i["sha256"] for i in restored.store.get(sid)["messages"][0]["images"]] == [i.sha256 for i in request.images]
+    snapshot["checkpoint"]["messages"][0]["images"] *= 5
+    assert not image_inputs.snapshot_within_limit(snapshot)
+
+
+def test_multi_cancelled_result_and_total_turn_limit(harness, monkeypatch):
+    h = harness[0]
+    sid, rid, request = accept_multiple(h)
+    def stop():
+        with h.store.transaction(sid) as state:
+            state["runs"][rid]["revision"] += 1
+    install_multiple_reader(monkeypatch, request, before_return=stop)
+    with pytest.raises(Superseded):
+        image_inputs.resolve(h, sid, rid, 1, {}, "规则")
+    assert not image_inputs.has_reading(h.store.get(sid)["messages"][0])
+    with h.store.transaction(sid) as state:
+        original = state["messages"][0]
+        other = {**original, "message_id": str(uuid.uuid4()), "images": original["images"] * 4}
+        state["messages"].append(other)
+        state["runs"][rid]["input_ids"].append(other["message_id"])
+    with pytest.raises(ValueError, match="TURN_LIMIT"):
+        image_inputs.resolve(h, sid, rid, 2, {}, "规则")
+
+
+def test_private_second_image_blocks_public_query(harness, monkeypatch):
+    from agent_service.request_scope import check_web
+    from agent_service.call_errors import WebToolError
+    h = harness[0]
+    sid, rid, request = accept_multiple(h)
+    install_multiple_reader(monkeypatch, request)
+    image_inputs.resolve(h, sid, rid, 1, {}, "规则")
+    with h.store.transaction(sid) as state:
+        state["runs"][rid]["intent"] = {"relation": "new_topic"}
+        state["messages"][0]["image_readings"][1]["transcription"] = "这是内部未发布项目 Orion 的资料"
+    with pytest.raises(WebToolError, match="PRIVATE_INPUT"):
+        check_web(h, sid, rid, 1, "Orion 介绍", operation="search")
+
+
+def test_full_multi_turn_followup_keeps_both_images_without_upload(harness, monkeypatch, tmp_path):
+    from tests.test_conversation_v2 import ConversationTests, intent
+    from agent_service import conversation
+    h = harness[0]
+    sid, rid, request = accept_multiple(h)
+    calls = install_multiple_reader(monkeypatch, request)
+    read = conversation.parse_model
+    baseline = ConversationTests(); baseline.calls = []; baseline.decision = intent("question", answer_only=True)
+    changing_topic = False
+    def parse(system, user, schema, **kwargs):
+        if kwargs.get("images"): return read(system, user, schema, **kwargs)
+        if changing_topic and schema.__name__ == "TeachingPreparation":
+            assert "12.50" not in user and "18.75" not in user
+        elif not changing_topic and schema.__name__ in {"ConversationOutput", "TeachingPreparation"}:
+            assert "12.50" in user and "18.75" in user
+        if schema.__name__ == "TeachingPreparation":
+            payload = json.loads(user)
+            if payload["image_materials"] or changing_topic:
+                assert payload["previous_image_materials"] == []
+            else:
+                assert len(payload["previous_image_materials"]) == 2
+        assert all(i.data_base64 not in user for i in request.images)
+        return baseline.model(system, user, schema, **kwargs)
+    monkeypatch.setattr(conversation, "parse_model", parse)
+    monkeypatch.setattr(conversation, "web_search_capability", lambda: {"status": "unverified", "provider": "none"})
+    monkeypatch.setattr(h, "_schedule_summary", lambda *_: None)
+    with h.store.transaction(sid) as state: state["runs"][rid]["status"] = "accepted"
+    h.drain(sid)
+    assert h.store.get(sid)["runs"][rid]["status"] == "completed"
+    restored = ConversationHarness(ConversationStore(HarnessStore(str(tmp_path / "multi-followup.sqlite3"))))
+    restored.restore_snapshot(sid, h.export_snapshot(sid))
+    monkeypatch.setattr(restored, "_schedule_summary", lambda *_: None)
+    accepted = restored.accept(sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="第二张和第一张预算分别是多少？"))
+    restored.drain(sid)
+    assert restored.store.get(sid)["runs"][accepted.run_id]["status"] == "completed"
+    assert len(calls) == 1
+    changing_topic = True
+    baseline.decision = baseline.decision.model_copy(update={"relation": "new_topic"})
+    accepted = restored.accept(sid, SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="换个话题，什么是梯度？"))
+    restored.drain(sid)
+    assert restored.store.get(sid)["runs"][accepted.run_id]["status"] == "completed"

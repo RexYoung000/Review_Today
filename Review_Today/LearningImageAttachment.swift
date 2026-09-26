@@ -14,14 +14,16 @@ struct LearningImageAttachment: Codable, Sendable, Equatable {
 
     nonisolated static let maximumBytes = 8 * 1024 * 1024
     nonisolated static let maximumSide = 8192
+    nonisolated static let maximumCount = 8
 
     enum Failure: LocalizedError {
-        case format, size, dimensions
+        case format, size, dimensions, count
         var errorDescription: String? {
             switch self {
             case .format: "无法读取这张图片，请选择有效的 PNG 或 JPEG。"
             case .size: "图片超过 8 MB，请压缩文件后重新添加。"
             case .dimensions: "图片边长超过 8192 像素，请分段截图后添加。"
+            case .count: "每条消息最多添加 8 张图片；这批图片未添加，已有草稿已保留。"
             }
         }
     }
@@ -72,7 +74,42 @@ struct LearningImageAttachment: Codable, Sendable, Equatable {
     var sha256: String { SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined() }
     var encoded: Data? { try? JSONEncoder().encode(self) }
     static func decode(_ data: Data?) -> Self? { data.flatMap { try? JSONDecoder().decode(Self.self, from: $0) } }
+    static func decodeAll(_ data: Data?) -> [Self] {
+        guard let data else { return [] }
+        if let values = try? JSONDecoder().decode([Self].self, from: data) { return values }
+        return decode(data).map { [$0] } ?? []
+    }
+    static func encodeAll(_ images: [Self]) -> Data? {
+        guard !images.isEmpty else { return nil }
+        return images.count == 1 ? images[0].encoded : try? JSONEncoder().encode(images)
+    }
     var request: [String: Any] { ["name": name, "mime_type": mimeType, "data_base64": data.base64EncodedString(), "sha256": sha256] }
+}
+
+struct LearningImageGrid: View {
+    let images: [LearningImageAttachment]
+    var remove: ((Int) -> Void)? = nil
+
+    var body: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 180, maximum: 260), spacing: 8)], spacing: 8) {
+            ForEach(images.indices, id: \.self) { index in
+                LearningImageChip(attachment: images[index], remove: remove.map { action in { action(index) } })
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+}
+
+struct LearningMessageImages: View {
+    let data: Data?
+    let maximumWidth: CGFloat
+    @State private var images: [LearningImageAttachment] = []
+
+    var body: some View {
+        LearningImageGrid(images: images)
+            .frame(maxWidth: max(0, min(maximumWidth, CGFloat(images.count) * 268 - 8)), alignment: .trailing)
+            .onChange(of: data, initial: true) { _, value in images = LearningImageAttachment.decodeAll(value) }
+    }
 }
 
 struct LearningImageChip: View {
@@ -97,7 +134,7 @@ struct LearningImageChip: View {
             if let remove {
                 Spacer(minLength: 4)
                 Button(action: remove) { Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary) }
-                    .buttonStyle(.plain).help("移除图片").accessibilityLabel("移除图片")
+                    .buttonStyle(.plain).help("移除图片").accessibilityLabel("移除图片：\(attachment.name)")
             }
         }
         .padding(8)

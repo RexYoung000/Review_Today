@@ -14,6 +14,7 @@ struct LearningComposerInput<Controls: View>: View {
     let onSubmit: () -> Void
     var preservesFocusOnClick: ((NSEvent) -> Bool)? = nil
     var onImagePaste: ((NSPasteboard) -> Bool)? = nil
+    var onImageDragTarget: ((Bool) -> Void)? = nil
     @ViewBuilder var controls: () -> Controls
     @State private var inputHeight: CGFloat = 64
     @State private var inputFocused = false
@@ -24,7 +25,7 @@ struct LearningComposerInput<Controls: View>: View {
             LearningTextInput(text: $text, height: $inputHeight, focused: $inputFocused,
                 focusRequest: focusRequest, sessionID: sessionID, placeholder: placeholder,
                 ink: NSColor(runway.ink), insertion: insertion, editable: editable,
-                onInsertionApplied: onInsertionApplied, preservesFocusOnClick: preservesFocusOnClick, onImagePaste: onImagePaste, onSubmit: onSubmit)
+                onInsertionApplied: onInsertionApplied, preservesFocusOnClick: preservesFocusOnClick, onImagePaste: onImagePaste, onImageDragTarget: onImageDragTarget, onSubmit: onSubmit)
                 .frame(height: inputHeight)
             controls()
         }

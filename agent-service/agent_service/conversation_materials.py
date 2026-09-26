@@ -113,7 +113,8 @@ def prepare(h, sid, rid, rev, decision, reader):
     new_material = 'material' in decision.intents
     from agent_service.image_inputs import source_text
     for item in context.get('image_materials', []):
-        source_id = str(uuid.uuid5(uuid.UUID(sid), 'image:' + item['message_id']))
+        suffix = ':' + str(item['image_index']) if item.get('image_index') else ''
+        source_id = str(uuid.uuid5(uuid.UUID(sid), 'image:' + item['message_id'] + suffix))
         sources = [s for s in sources if s.get('source_id') != source_id]
         sources.append(dict(source_id=source_id, type='user_material', version=1,
                             title='图片识读：' + item['name'], locator=item['message_id'], url='',

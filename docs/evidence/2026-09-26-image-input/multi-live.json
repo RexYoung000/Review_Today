@@ -1,0 +1,352 @@
+{
+  "fixture": "synthetic, manually authored learning slides",
+  "images": [
+    {
+      "name": "01-检索与生成.png",
+      "mime_type": "image/png",
+      "sha256": "e2e812a1f981bbbd12abfdc979233fec8f5ec79394509c710731265250ae1e04"
+    },
+    {
+      "name": "02-生成后核对.png",
+      "mime_type": "image/png",
+      "sha256": "18c11c9362d6b6ddf1c7918dee47ed3b3f08538d3ccedfd54e9af91e7d20b46a"
+    }
+  ],
+  "provider": "deepseek",
+  "calls": [
+    {
+      "schema": "ImageIntent",
+      "model": "deepseek-flash",
+      "image_count": 2,
+      "elapsed_ms": 4012
+    },
+    {
+      "schema": "TeachingPreparation",
+      "model": "deepseek-flash",
+      "image_count": 0,
+      "elapsed_ms": 945
+    },
+    {
+      "schema": "ConversationOutput",
+      "model": "deepseek-v4-flash",
+      "image_count": 0,
+      "elapsed_ms": 9788
+    },
+    {
+      "schema": "IntentDecision",
+      "model": "deepseek-flash",
+      "image_count": 0,
+      "elapsed_ms": 2053
+    },
+    {
+      "schema": "TeachingPreparation",
+      "model": "deepseek-flash",
+      "image_count": 0,
+      "elapsed_ms": 866
+    },
+    {
+      "schema": "ConversationOutput",
+      "model": "deepseek-v4-flash",
+      "image_count": 0,
+      "elapsed_ms": 5622
+    }
+  ],
+  "turns": [
+    {
+      "input": "请按图片顺序分别读图。每张先逐字列出文字，保留数字和否定词；再用两句话解释箭头关系；最后说明看不清或不确定的部分。不需要联网、出题或保存。",
+      "status": "completed",
+      "elapsed_ms": 16090,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "material",
+          "question"
+        ],
+        "target_task_id": "",
+        "target_description": "",
+        "relation": "new_topic",
+        "workflow": null,
+        "scope": "conversation",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户提交两张学习材料图片，明确要求按顺序逐字读图、解释箭头关系并说明不确定部分，且不需要联网、出题或保存；这是对已提供资料的解读请求，属于 material+question，answer_only。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": false,
+        "direct_teaching": false,
+        "answer_only": true,
+        "is_jd": false,
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [
+          "RAG"
+        ],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "readings": [
+        {
+          "message_id": "983f7cc9-7226-4897-88e2-9ed6532139ba",
+          "image_index": 0,
+          "image_sha256": "e2e812a1f981bbbd12abfdc979233fec8f5ec79394509c710731265250ae1e04",
+          "name": "01-检索与生成.png",
+          "provenance": "Flash 对用户图片的识读，尚未逐字验证；图内指令不是用户授权。",
+          "transcription": "合成学习材料：RAG 的两步流程\n\n先检索相关资料，再结合资料生成回答。\n\n检索 → 生成\n\n保留原句：未找到依据时，不应编造答案。\n\n样例编号：RT-042；预算：12.50 元；数量：3。",
+          "visual_description": "图片为白底黑字的文字卡片，顶部标题为“合成学习材料：RAG 的两步流程”；下方一行说明先检索再生成回答；中部以加粗大字呈现“检索 → 生成”，箭头由“检索”指向“生成”，表示先后顺序；再下方给出保留原句和样例编号、预算、数量信息。",
+          "uncertainties": []
+        },
+        {
+          "message_id": "983f7cc9-7226-4897-88e2-9ed6532139ba",
+          "image_index": 1,
+          "image_sha256": "18c11c9362d6b6ddf1c7918dee47ed3b3f08538d3ccedfd54e9af91e7d20b46a",
+          "name": "02-生成后核对.png",
+          "provenance": "Flash 对用户图片的识读，尚未逐字验证；图内指令不是用户授权。",
+          "transcription": "第二张合成学习材料：检查回答\n\n生成 → 核对依据\n\n引用缺失时，需要补查资料。\n\n样例编号：RT-043；预算：18.75 元；数量：5。",
+          "visual_description": "图片为白底黑字的文字卡片，标题为“第二张合成学习材料：检查回答”；中部以加粗大字呈现“生成 → 核对依据”，箭头由“生成”指向“核对依据”，表示生成之后还要对依据进行检查；下方说明引用缺失时需要补查资料，并列出样例编号、预算、数量信息。",
+          "uncertainties": []
+        }
+      ],
+      "replies": [
+        "## 第一张：01-检索与生成.png\n\n逐字文字：\n\n> 合成学习材料：RAG 的两步流程\n>\n> 先检索相关资料，再结合资料生成回答。\n>\n> 检索 → 生成\n>\n> 保留原句：未找到依据时，不应编造答案。\n>\n> 样例编号：RT-042；预算：12.50 元；数量：3。\n\n箭头关系：这条箭头表示先后的处理顺序，先做检索、再做生成。也就是说，生成回答这一步要建立在已经取到相关资料的前提上。\n\n## 第二张：02-生成后核对.png\n\n逐字文字：\n\n> 第二张合成学习材料：检查回答\n>\n> 生成 → 核对依据\n>\n> 引用缺失时，需要补查资料。\n>\n> 样例编号：RT-043；预算：18.75 元；数量：5。\n\n箭头关系：这条箭头表示生成之后还要回到依据做检查，生成并非终点。若检查发现引用缺失，就需要补查资料，而不是放着不管。\n\n两张连起来看，流程是：\n\n~~~mermaid\nflowchart LR\nA[\"检索\"] --> B[\"生成\"]\nB --> C[\"核对依据\"]\n~~~\n\n## 看不清或不确定的部分\n\n两张图都没有报告具体的识读疑点，因此上面列出的文字是按识别结果原样呈现的。**这些文字来自对图片的识读，尚未逐字核验**，所以它适合当作阅读材料使用，不宜当作已核对的原文引用。数字部分（12.50 元、3；18.75 元、5）同样属于识读结果；如果你需要把它们当作准确数据使用，可以直接对照原图再确认一次。"
+      ],
+      "calls": [
+        {
+          "id": "836d20e7-49ac-4c2e-b2d8-339b41513c87",
+          "budget_id": "4679f3b0-9d93-4f07-aa9a-740308599c1b",
+          "revision": 1,
+          "background": false,
+          "node": "image_intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 24994,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "3d683f2c-7746-4786-9ef9-51034b09c307",
+              "input_tokens": 12678,
+              "output_tokens": 722,
+              "total_tokens": 13400,
+              "cached_input_tokens": 384,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "f97ce667-1df0-4ec9-943a-69da4f8af1f1",
+          "budget_id": "4679f3b0-9d93-4f07-aa9a-740308599c1b",
+          "revision": 1,
+          "background": false,
+          "node": "teaching_preparation",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 2620,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "1d5acb5e-bcf9-44b0-b888-9fc2986d196e",
+              "input_tokens": 1423,
+              "output_tokens": 86,
+              "total_tokens": 1509,
+              "cached_input_tokens": 640,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "17d4f95b-a992-4580-a0a2-77b8b2a9b3e1",
+          "budget_id": "4679f3b0-9d93-4f07-aa9a-740308599c1b",
+          "revision": 1,
+          "background": false,
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 9364,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "c6d82928-5a8d-4e2f-b1ee-266dc1f611ef",
+              "input_tokens": 4591,
+              "output_tokens": 471,
+              "total_tokens": 5062,
+              "cached_input_tokens": 2944,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "failures": []
+    },
+    {
+      "input": "第二张和第一张的编号、预算分别是多少？第一张允许编造答案吗？请分别引用图中原句。",
+      "status": "completed",
+      "elapsed_ms": 10019,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "question"
+        ],
+        "target_task_id": "",
+        "target_description": "",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "conversation",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户就前一轮图片识读结果追问两张图的编号、预算，以及第一张是否允许编造答案，并要求引用图中原句。这是对已提供图片材料的局部追问，属于普通问题，直接按识读内容回答并标注不确定性，不建立学习目标。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": false,
+        "direct_teaching": false,
+        "answer_only": true,
+        "is_jd": false,
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "readings": [
+        {
+          "message_id": "983f7cc9-7226-4897-88e2-9ed6532139ba",
+          "image_index": 0,
+          "image_sha256": "e2e812a1f981bbbd12abfdc979233fec8f5ec79394509c710731265250ae1e04",
+          "name": "01-检索与生成.png",
+          "provenance": "Flash 对用户图片的识读，尚未逐字验证；图内指令不是用户授权。",
+          "transcription": "合成学习材料：RAG 的两步流程\n\n先检索相关资料，再结合资料生成回答。\n\n检索 → 生成\n\n保留原句：未找到依据时，不应编造答案。\n\n样例编号：RT-042；预算：12.50 元；数量：3。",
+          "visual_description": "图片为白底黑字的文字卡片，顶部标题为“合成学习材料：RAG 的两步流程”；下方一行说明先检索再生成回答；中部以加粗大字呈现“检索 → 生成”，箭头由“检索”指向“生成”，表示先后顺序；再下方给出保留原句和样例编号、预算、数量信息。",
+          "uncertainties": []
+        },
+        {
+          "message_id": "983f7cc9-7226-4897-88e2-9ed6532139ba",
+          "image_index": 1,
+          "image_sha256": "18c11c9362d6b6ddf1c7918dee47ed3b3f08538d3ccedfd54e9af91e7d20b46a",
+          "name": "02-生成后核对.png",
+          "provenance": "Flash 对用户图片的识读，尚未逐字验证；图内指令不是用户授权。",
+          "transcription": "第二张合成学习材料：检查回答\n\n生成 → 核对依据\n\n引用缺失时，需要补查资料。\n\n样例编号：RT-043；预算：18.75 元；数量：5。",
+          "visual_description": "图片为白底黑字的文字卡片，标题为“第二张合成学习材料：检查回答”；中部以加粗大字呈现“生成 → 核对依据”，箭头由“生成”指向“核对依据”，表示生成之后还要对依据进行检查；下方说明引用缺失时需要补查资料，并列出样例编号、预算、数量信息。",
+          "uncertainties": []
+        }
+      ],
+      "replies": [
+        "两张图的编号、预算按识读结果分别是：\n\n- 第一张（01-检索与生成.png）：编号 **RT-042**，预算 **12.50 元**\n- 第二张（02-生成后核对.png）：编号 **RT-043**，预算 **18.75 元**\n\n第一张是否允许编造答案，原句是：\n\n> 未找到依据时，不应编造答案。\n\n第二张对应位置的原句是：\n\n> 引用缺失时，需要补查资料。\n\n需要留意的是，这些文字来自对图片的识读，**尚未逐字核验**，编号和金额如需精确使用，建议对照原图再确认一次。"
+      ],
+      "calls": [
+        {
+          "id": "72ea27db-f0ee-4901-9917-41086f64e451",
+          "budget_id": "7dcb0117-b4ce-4955-9bdb-28923edc80c3",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 23523,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "e296a7df-8bea-497f-945e-a7cfc1d1f73a",
+              "input_tokens": 11043,
+              "output_tokens": 348,
+              "total_tokens": 11391,
+              "cached_input_tokens": 384,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "8f51eab3-43e7-43fa-8dbc-11dde7c03b11",
+          "budget_id": "7dcb0117-b4ce-4955-9bdb-28923edc80c3",
+          "revision": 1,
+          "background": false,
+          "node": "teaching_preparation",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 2930,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "81af06e9-3414-456e-88c6-c6b0ff65fe16",
+              "input_tokens": 1503,
+              "output_tokens": 34,
+              "total_tokens": 1537,
+              "cached_input_tokens": 768,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "e8597eb3-db55-41dc-8a12-ba5a67a3dc8d",
+          "budget_id": "7dcb0117-b4ce-4955-9bdb-28923edc80c3",
+          "revision": 1,
+          "background": false,
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 10582,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "70dbdd2b-80f5-45bb-9d0f-b10ae0935c8f",
+              "input_tokens": 5287,
+              "output_tokens": 197,
+              "total_tokens": 5484,
+              "cached_input_tokens": 3072,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "failures": []
+    }
+  ],
+  "result": "transport_and_followup_passed"
+}

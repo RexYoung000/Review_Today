@@ -103,7 +103,7 @@ def healthz() -> dict[str, object]:
         "harness": "v2",
         "conversation_protocol": 1,
         "response_stream_protocol": 1,
-        "image_input_protocol": 1 if PROVIDER == "deepseek" else 0,
+        "image_input_protocol": 2 if PROVIDER == "deepseek" else 0,
         "jev": runtime_status(conversation_harness.judgments),
         "model_roles": model_capability_snapshot(),
         "web_search": web_search_capability(),

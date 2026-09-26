@@ -43,9 +43,9 @@ def check_web(h, sid, rid, rev, value, *, operation, purpose='answer'):
         texts = [m['content'] for m in data['messages'] if m['message_id'] in run['input_ids']]
         # Visual extraction is material too: a confidential screenshot must not
         # become a public query just because its caption contains no secrets.
-        from agent_service.image_inputs import material, source_text
+        from agent_service.image_inputs import materials, source_text
         texts += [source_text(image_material) for m in data['messages']
-                  if m['message_id'] in run['input_ids'] and (image_material := material(m))]
+                  if m['message_id'] in run['input_ids'] for image_material in materials(m)]
         if (run.get('intent') or {}).get('relation') != 'new_topic':
             task = h._task(data, run)
             prior = task['context'] if task else data.get('teaching_context', {})

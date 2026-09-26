@@ -22,6 +22,7 @@ struct LearningTextInput: NSViewRepresentable {
     var onInsertionApplied: ((String) -> Void)? = nil
     var preservesFocusOnClick: ((NSEvent) -> Bool)? = nil
     var onImagePaste: ((NSPasteboard) -> Bool)? = nil
+    var onImageDragTarget: ((Bool) -> Void)? = nil
     var onSubmit: () -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -33,6 +34,7 @@ struct LearningTextInput: NSViewRepresentable {
         scroll.autohidesScrollers = true
         scroll.hasHorizontalScroller = false
         let view = LearningEditor(frame: .zero)
+        view.registerForDraggedTypes(view.registeredDraggedTypes + LearningImageImport.pasteboardTypes)
         view.font = .systemFont(ofSize: 14)
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineSpacing = 4
@@ -67,6 +69,7 @@ struct LearningTextInput: NSViewRepresentable {
         view.onInsertionApplied = onInsertionApplied
         view.preservesFocusOnClick = preservesFocusOnClick
         view.onImagePaste = onImagePaste
+        view.onImageDragTarget = onImageDragTarget
         view.onFocus = { [weak coordinator, weak view] value in
             guard let coordinator else { return }
             let owner = coordinator.sessionID
@@ -163,6 +166,44 @@ struct LearningTextInput: NSViewRepresentable {
 
 final class LearningEditor: NSTextView {
     var onImagePaste: ((NSPasteboard) -> Bool)?
+    var onImageDragTarget: ((Bool) -> Void)?
+
+    override func draggingEntered(_ sender: any NSDraggingInfo) -> NSDragOperation {
+        if LearningImageImport.containsImages(sender.draggingPasteboard) {
+            let allowed = isEditable && onImagePaste != nil
+            onImageDragTarget?(allowed)
+            return allowed ? .copy : []
+        }
+        return super.draggingEntered(sender)
+    }
+
+    override func draggingUpdated(_ sender: any NSDraggingInfo) -> NSDragOperation {
+        if LearningImageImport.containsImages(sender.draggingPasteboard) { return draggingEntered(sender) }
+        return super.draggingUpdated(sender)
+    }
+
+    override func draggingExited(_ sender: (any NSDraggingInfo)?) {
+        onImageDragTarget?(false)
+        super.draggingExited(sender)
+    }
+
+    override func prepareForDragOperation(_ sender: any NSDraggingInfo) -> Bool {
+        if LearningImageImport.containsImages(sender.draggingPasteboard) { return isEditable && onImagePaste != nil }
+        return super.prepareForDragOperation(sender)
+    }
+
+    override func performDragOperation(_ sender: any NSDraggingInfo) -> Bool {
+        onImageDragTarget?(false)
+        if LearningImageImport.containsImages(sender.draggingPasteboard) {
+            return isEditable && (onImagePaste?(sender.draggingPasteboard) ?? false)
+        }
+        return super.performDragOperation(sender)
+    }
+
+    override func concludeDragOperation(_ sender: (any NSDraggingInfo)?) {
+        onImageDragTarget?(false)
+        super.concludeDragOperation(sender)
+    }
 
     override func paste(_ sender: Any?) {
         guard isEditable else { return }
@@ -172,7 +213,7 @@ final class LearningEditor: NSTextView {
 
     override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
         if item.action == #selector(paste(_:)), isEditable, onImagePaste != nil,
-           NSPasteboard.general.availableType(from: [.png, .tiff]) != nil { return true }
+           LearningImageImport.containsImages(NSPasteboard.general) { return true }
         return super.validateUserInterfaceItem(item)
     }
     var preservesFocusOnClick: ((NSEvent) -> Bool)?

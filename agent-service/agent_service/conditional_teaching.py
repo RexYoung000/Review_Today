@@ -178,12 +178,16 @@ class ConditionalTeaching:
         if self.judgments is not None:
             from agent_service.judgment_nodes import TeachingPreparationWithClaims, CLAIMS_RULE
             prep_schema, prep_system = TeachingPreparationWithClaims, PREPARE + CLAIMS_RULE
+        current_image_ids = {item['message_id'] for item in context.get('image_materials', [])}
         try:
             prep = self._call(sid, rid, rev, "teaching_preparation", prep_system,
                               json.dumps(dict(current_date=now_iso()[:10], topic=(task or {}).get("content") or context.get("session_goal") or decision.target_description,
                                               learning_purpose=prior.get("learning_goal"), instruction=instruction,
                                               user_input=context.get('current_inputs', [last["content"]]),
                                               image_materials=context.get('image_materials', []),
+                                              previous_image_materials=[{k: s[k] for k in ('source_id', 'title', 'content') if k in s}
+                                                  for s in prior.get('sources', []) if s.get('derived_from_image') and s.get('locator') not in current_image_ids]
+                                                  if decision.relation == 'continuation' and not prior.get('memory_invalidated') else [],
                                               requested_query=decision.public_search_query, relation=decision.relation,
                                               current_step=next((s for s in prior.get("learning_plan", {}).get("steps", []) if s["id"] == prior.get("learning_plan", {}).get("current_step_id")), None),
                                               previous_concepts=prior.get("taught_concepts", []), prior_queries=prior.get("verified_queries", [])), ensure_ascii=False), prep_schema, ROUTER_MODEL)

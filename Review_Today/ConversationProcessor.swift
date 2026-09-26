@@ -31,6 +31,16 @@ extension AgentAPI {
 }
 
 enum ConversationProcessor {
+    static func imageFields(_ raw: Data, protocolVersion: Int) throws -> [String: Any] {
+        let images = LearningImageAttachment.decodeAll(raw)
+        guard !images.isEmpty, images.count <= LearningImageAttachment.maximumCount else {
+            throw HarnessAPIError.server(code: "RT.IMAGE.INVALID_FORMAT", message: "本机图片无法读取，请重新添加")
+        }
+        guard protocolVersion >= (images.count > 1 ? 2 : 1) else {
+            throw HarnessAPIError.server(code: "RT.IMAGE.SERVICE_UPDATE_REQUIRED", message: "图片已保留，当前学习服务尚未支持这些图片，请重启应用后重试")
+        }
+        return images.count == 1 ? ["image": images[0].request] : ["images": images.map(\.request)]
+    }
     static func acceptedRunID(_ response: [String: Any]) throws -> UUID {
         guard let raw = response["run_id"] as? String, let id = UUID(uuidString: raw) else {
             throw HarnessAPIError.server(code: "RT.RUN.INVALID_ACCEPTANCE", message: "服务未返回有效的运行标识，输入已保留，可重试发送。")
@@ -171,9 +181,7 @@ enum ConversationProcessor {
                 ]
                 if let operation = object(message.operationJSON), !operation.isEmpty { body["operation"] = operation }
                 if let raw = message.imageAttachment {
-                    guard monitor.imageInputSupported else { throw HarnessAPIError.server(code: "RT.IMAGE.SERVICE_UPDATE_REQUIRED", message: "图片已保留，当前学习服务尚未支持识图，请重启应用后重试") }
-                    guard let image = LearningImageAttachment.decode(raw) else { throw HarnessAPIError.server(code: "RT.IMAGE.INVALID_FORMAT", message: "本机图片无法读取，请重新添加") }
-                    body["image"] = image.request
+                    body.merge(try imageFields(raw, protocolVersion: monitor.imageInputVersion)) { _, imageValue in imageValue }
                 }
                 if let handoff = object(session.handoffJSON), var supplied = body["context"] as? [String: Any] {
                     supplied["handoff"] = handoff
@@ -254,11 +262,17 @@ enum ConversationProcessor {
             for index in records.indices {
                 // Completed readings are sufficient for text continuation. Only
                 // unresolved image inputs need their original bytes restored.
-                guard let meta = records[index]["image"] as? [String: Any], records[index]["image_reading"] == nil,
-                      let id = uuid(records[index]["message_id"]),
-                      let image = LearningImageAttachment.decode(local.first(where: { $0.id == id })?.imageAttachment),
-                      image.sha256 == meta["sha256"] as? String else { continue }
-                records[index]["image"] = image.request
+                guard let id = uuid(records[index]["message_id"]) else { continue }
+                let images = LearningImageAttachment.decodeAll(local.first(where: { $0.id == id })?.imageAttachment)
+                if let metadata = records[index]["images"] as? [[String: Any]] {
+                    if (records[index]["image_readings"] as? [[String: Any]])?.count == metadata.count { continue }
+                    guard metadata.count == images.count,
+                          zip(metadata, images).allSatisfy({ $0.0["sha256"] as? String == $0.1.sha256 }) else { continue }
+                    records[index]["images"] = images.map(\.request)
+                } else if let meta = records[index]["image"] as? [String: Any], records[index]["image_reading"] == nil,
+                          let image = images.first, image.sha256 == meta["sha256"] as? String {
+                    records[index]["image"] = image.request
+                }
             }
             checkpoint["messages"] = records
         }

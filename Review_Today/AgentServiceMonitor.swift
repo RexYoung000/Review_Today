@@ -107,6 +107,7 @@ final class AgentServiceMonitor {
     private(set) var conversationSupported = false
     private(set) var responseStreamSupported = false
     private(set) var imageInputSupported = false
+    private(set) var imageInputVersion = 0
     private(set) var streamNotice = ""
     private(set) var capabilityNotice = ""
     private(set) var canSubmitMessages = false
@@ -218,7 +219,8 @@ final class AgentServiceMonitor {
             startup?.healthy(at: .now)
             conversationSupported = health.conversationProtocol == 1
             responseStreamSupported = health.responseStreamProtocol == 1
-            imageInputSupported = health.imageInputProtocol == 1
+            imageInputVersion = health.imageInputProtocol ?? 0
+            imageInputSupported = imageInputVersion >= 1
             if !responseStreamSupported {
                 streamNotice = "当前无法逐字显示回复，请重启应用后重试。"
             } else if let coach = health.modelRoles["coach"], coach.streaming == "buffered" {
