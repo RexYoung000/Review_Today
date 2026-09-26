@@ -40,7 +40,8 @@ def render_jd(value: dict) -> str:
     for key, title in [("competency_map", "能力地图"), ("risk_points", "风险点"), ("prioritized_questions", "优先问题")]:
         items = value.get(key)
         if isinstance(items, list) and any(isinstance(x, str) and x for x in items):
-            rendered = [f"{i}. {x}" if key == "prioritized_questions" else f"- {x}"
+            clean = lambda x: re.sub(r'^\s*(?:\d+[.、）)]\s*|[-*]\s+)', '', x)
+            rendered = [f"{i}. {clean(x)}" if key == "prioritized_questions" else f"- {clean(x)}"
                         for i, x in enumerate(items, 1) if isinstance(x, str) and x]
             parts.append(f"## {title}\n\n" + "\n".join(rendered))
     return "\n\n".join(x for x in parts if x)

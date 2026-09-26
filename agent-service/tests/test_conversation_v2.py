@@ -57,6 +57,13 @@ class ConversationTests(unittest.TestCase):
         from agent_service.schemas import TeachingPreparation, MemoryChoice, SourceList, EvidenceAssessmentV2
         from agent_service.goal_continuation import ContinuationRequest
         from agent_service.scope_reply import ScopeReply
+        from agent_service.conversation_materials import MaterialReadiness, MaterialFinding
+        if schema is MaterialReadiness:
+            from agent_service.capture.fetch import extract_urls
+            payload = json.loads(user)
+            findings = [MaterialFinding(source_id=s['source_id'], role='jd' if payload['kind'] == 'jd' else 'other',
+                                        sufficient=True, evidence=s['content'][:80]) for s in payload['sources'] if s.get('content') and not extract_urls(s['content'][:80])]
+            return MaterialReadiness(can_proceed=bool(findings), findings=findings, reply='' if findings else '这份链接没有可读正文，请提供公开链接或材料正文。')
         if schema is ScopeReply:
             programming = json.loads(user)['boundary']['domain'] == 'programming'
             return ScopeReply(message='这项开发交付我不能直接替你完成。' if programming else '这项资源获取或代办操作我不能替你完成。')
@@ -322,14 +329,15 @@ class ConversationTests(unittest.TestCase):
                 self.send(text)
                 self.capture.assert_not_called()
 
-    def test_unknown_understanding_blocks_even_bound_save_button(self):
+    def test_bound_save_keeps_understanding_unknown_without_entry_exam(self):
         self.decision = intent("material", scope="organize")
         self.send("我的笔记")
         pending = self.state()["pending"]
         self.decision = intent("confirm")
+        self.capture.return_value = committing_result("这是本轮真实回答。")
         self.send("加入知识库", operation=pending)
-        self.capture.assert_not_called()
-        self.assertFalse(self.state()["tasks"])
+        self.capture.assert_called_once()
+        self.assertEqual(self.state()['draft']['understanding'], 'unknown')
 
     def test_message_idempotency_is_atomic_and_conflicting_payload_rejected(self):
         body = SessionMessageRequest(client_message_id=str(uuid.uuid4()), content="你好")
@@ -737,12 +745,12 @@ class ConversationTests(unittest.TestCase):
         self.send("暂不保存", operation={**pending, "kind":"reject_save"})
         self.assertEqual(len([c for c in self.calls if c[0] is IntentDecision]), before)
 
-    def test_understanding_after_consent_uses_same_draft_without_reasking_consent(self):
+    def test_understanding_after_saved_draft_does_not_repeat_capture(self):
         self.decision = intent("material", scope="organize")
         self.send("RAG 笔记")
-        self.send("保存", operation=self.state()["pending"])
-        self.capture.assert_not_called()
         self.capture.return_value = committing_result("这是本轮真实回答。")
+        self.send("保存", operation=self.state()["pending"])
+        self.capture.assert_called_once()
         self.decision = intent("self_report", understanding="self_reported")
         self.send("我理解了")
         self.capture.assert_called_once()

@@ -210,6 +210,8 @@ def context(self, data, run):
     previous_run = data['runs'].get(previous.get('run_id'), {})
     recent_scope = {domain: True for domain in ('resource', 'programming') if previous_run.get(domain + '_scope_reply')}
     return dict(continuation_selection=data.get("continuation_selection"), mode=data["mode"], session_goal=current_learning_goal(data),
+                awaiting_material=({k: data.get('teaching_context', {}).get(k) for k in ('material_kind', 'material_goal', 'material_reads')}
+                                   if not task and data.get('teaching_context', {}).get('awaiting_material') else None),
                 runtime_models=dict(short_reply=ROUTER_MODEL, teaching=COACH_MODEL),
                 recent_scope_reply=dict(message_id=previous['message_id'], **recent_scope) if recent_scope else None,
                 capture_continuation=bool(run.get("capture_continuation")),

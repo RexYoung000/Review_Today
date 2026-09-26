@@ -127,6 +127,79 @@ class StreamingHarnessTests(unittest.TestCase):
         self.assertNotIn(IntentDecision, [schema for schema, _ in self.f.calls])
         self.assertEqual(len(self.f.state()["runs"][accepted.run_id]["attempt_durations"]), 2)
 
+    def test_schema_repair_buffers_partials_and_atomically_replaces_one_reply(self):
+        calls = []
+        def model(system, user, schema, **kw):
+            if schema is not ConversationOutput:
+                return self.f.model(system, user, schema, **kw)
+            calls.append((system, user, kw['model']))
+            if len(calls) == 1:
+                kw['on_partial']({'message': '旧的未完成段落'})
+                raise ModelCallError('SCHEMA')
+            self.assertIn('完整的 JSON', system)
+            kw['on_partial']({'message': '修复中不应显示的片段'})
+            response = self.f.state()['runs'][next(reversed(self.f.state()['runs']))]['active_response']
+            self.assertEqual(response['status'], 'recovering')
+            self.assertEqual(response['text'], '旧的未完成段落')
+            return ConversationOutput(message='新的完整回答')
+        with patch('agent_service.conversation.parse_model', side_effect=model):
+            accepted = self.f.send('解释 RAG')
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(calls[0][1:], calls[1][1:])
+        data = self.f.state()
+        replies = [m for m in data['messages'] if m['role'] == 'coach']
+        self.assertEqual([m['content'] for m in replies], ['新的完整回答'])
+        chunks = [e['payload']['response'] for e in data['events'] if 'response' in e['payload']]
+        self.assertEqual(len({c['response_id'] for c in chunks}), 1)
+        self.assertFalse(any('修复中' in c['text'] for c in chunks))
+        self.assertEqual(data['runs'][accepted.run_id]['status'], 'completed')
+        self.assertEqual(len([c for c in data['runs'][accepted.run_id]['model_calls'] if c['node'] == 'answer']), 2)
+
+    def test_stop_during_repair_discards_late_complete_replacement(self):
+        entered, release = threading.Event(), threading.Event()
+        attempts = 0
+        def model(system, user, schema, **kw):
+            nonlocal attempts
+            if schema is not ConversationOutput:
+                return self.f.model(system, user, schema, **kw)
+            attempts += 1
+            if attempts == 1:
+                kw['on_partial']({'message': '保留的未完成段落'})
+                raise ModelCallError('SCHEMA')
+            kw['on_cancel_handle'](release.set)
+            entered.set()
+            release.wait(2)
+            return ConversationOutput(message='停止后不得显示的新内容')
+        with patch('agent_service.conversation.parse_model', side_effect=model):
+            accepted = self.f.send('解释 RAG', drain=False)
+            thread = threading.Thread(target=self.h.drain, args=(self.f.sid,))
+            thread.start()
+            self.assertTrue(entered.wait(2))
+            self.f.control(accepted.run_id, 'stop')
+            thread.join(2)
+        self.assertFalse(thread.is_alive())
+        data = self.f.state()
+        self.assertFalse([m for m in data['messages'] if m['role'] == 'coach'])
+        self.assertEqual(data['runs'][accepted.run_id]['active_response']['status'], 'interrupted')
+        self.assertEqual(data['runs'][accepted.run_id]['active_response']['text'], '保留的未完成段落')
+
+    def test_repair_cannot_exceed_whole_turn_call_budget(self):
+        answers = []
+        def model(system, user, schema, **kw):
+            if schema is not ConversationOutput:
+                return self.f.model(system, user, schema, **kw)
+            answers.append(user)
+            kw['on_partial']({'message': '预算内的未完成内容'})
+            raise ModelCallError('SCHEMA')
+        # intent + preparation + answer exhaust this controlled turn.
+        with patch('agent_service.run_accounting.MODEL_ATTEMPTS', 3), patch('agent_service.conversation.parse_model', side_effect=model):
+            accepted = self.f.send('解释 RAG')
+        self.assertEqual(len(answers), 1)
+        run = self.f.state()['runs'][accepted.run_id]
+        self.assertEqual(run['status'], 'retryable_failed')
+        self.assertEqual(run['active_response']['status'], 'failed')
+        self.assertFalse([m for m in self.f.state()['messages'] if m['role'] == 'coach'])
+
     def test_crash_recovery_preserves_preview_and_requires_explicit_resume(self):
         accepted = self.f.send("RAG 是什么", drain=False)
         with self.f.store.transaction(self.f.sid) as data:
@@ -278,7 +351,7 @@ class AdapterStreamingTests(unittest.TestCase):
         stream.__iter__.return_value = iter([NS(type="response.completed", response=NS(output=[], status="completed"))])
         client.responses.parse.return_value = NS(output_parsed=ConversationOutput(message="整段"), output=[])
         modes = []
-        with patch("agent_service.openai_client._client", return_value=client):
+        with patch("agent_service.openai_client.PROVIDER", "openai_compatible"), patch("agent_service.openai_client._client", return_value=client):
             parse_model("s", "u", ConversationOutput, model="configured", on_partial=lambda _: None, on_transport=modes.append)
         self.assertEqual(modes, ["buffered"])
         self.assertEqual(client.responses.parse.call_args.kwargs["model"], "configured")

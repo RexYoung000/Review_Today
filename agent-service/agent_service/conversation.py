@@ -40,6 +40,7 @@ from agent_service.schemas import (
 )
 
 from agent_service import conversation_context, conversation_controls, conversation_model_call, topic_capture, dialogue_routing, goal_continuation
+from agent_service import conversation_materials
 from agent_service.conversation_controls import LABELS, FINISHED
 
 
@@ -475,7 +476,7 @@ class ConversationHarness(ConditionalTeaching):
 
     def _end_response(self, data, run, status):
         response = run.get("active_response")
-        if response and response["status"] == "streaming":
+        if response and response["status"] in {"streaming", "recovering"}:
             response.update(status=status, delta="", chunk_seq=response["chunk_seq"] + 1)
             self.store.event(data, run, f"response.{status}", "未完成内容已保留", payload={"response": dict(response)})
 
@@ -502,7 +503,7 @@ class ConversationHarness(ConditionalTeaching):
         with self.store.transaction(sid, rid, rev) as data:
             run = data["runs"][rid]
             response = run.get("active_response")
-            if response and response["revision"] == rev and response["status"] == "streaming":
+            if response and response["revision"] == rev and response["status"] in {"streaming", "recovering"}:
                 response.update(text=text, delta="", status="complete", chunk_seq=response["chunk_seq"] + 1)
                 event = self.store.event(data, run, "response.completed", "正文已完成校验", message=text,
                                         message_id=response["response_id"], payload={"response": dict(response)})
@@ -631,6 +632,7 @@ class ConversationHarness(ConditionalTeaching):
             with self.store.transaction(sid, rid, rev) as current:
                 current["runs"][rid]["judgment_policy"] = VERSION if self.judgments is not None else None
         decision = dialogue_routing.normalize(data, decision, last)
+        decision = conversation_materials.normalize(data, decision, last)
         with self.store.transaction(sid, rid, rev) as current:
             current['runs'][rid]['dialogue_policy'] = dialogue_routing.POLICY_VERSION
         from agent_service import resource_boundary
@@ -798,6 +800,11 @@ class ConversationHarness(ConditionalTeaching):
             if task["context"].get("memory_invalidated"):
                 self._publish(sid, rid, rev, "关联的旧学习内容已更新或不再用于关联；历史和学习进度仍保留。请提供接下来要使用的资料或明确的新问题，我不会沿用失效内容评价或入库。")
                 return
+            if decision.is_jd:
+                with self.store.transaction(sid, rid, rev) as current:
+                    self._task(current, current['runs'][rid])['mode'] = 'problem_solving'
+                self._problem(sid, rid, rev, decision)
+                return
             if intents & {"followup", "hint", "example", "correction"}:
                 if "correction" in intents:
                     with self.store.transaction(sid, rid, rev) as data:
@@ -887,10 +894,12 @@ class ConversationHarness(ConditionalTeaching):
         workflow = decision.workflow or "topic_exploration"
         if data["mode"] != "auto" and not decision.answer_only:
             workflow = data["mode"]
+        if decision.is_jd:
+            workflow = 'problem_solving'
         full_goal = (("goal" in intents and decision.scope in {"learning", "continue_goal"}) or (task is not None and decision.scope == "continue_goal") or
                      (data["mode"] != "auto" and decision.scope == "learning") or decision.direct_teaching or
                      (data["mode"] == "problem_solving" and "question" in intents)) and not decision.answer_only
-        if "material" in intents and not task and data["mode"] == "auto" and not full_goal:
+        if "material" in intents and not task and data["mode"] == "auto" and not full_goal and not decision.answer_only:
             workflow = "memory_organization"
         if "correction" in intents and data.get("draft") and not task:
             self._respond(sid, rid, rev, decision, "按用户纠正更新并展示完整的整理稿，不默认理解或入库。", node="organize", draft=True)
@@ -1111,6 +1120,14 @@ class ConversationHarness(ConditionalTeaching):
                         '不要泛化为不能阅读网页，不回显访问参数的值，不猜测正文。'
                         '若只是询问令牌或链接的知识，正常解释概念，无须读取该链接。')
                     break
+        material_sources, material_assessment, waiting = conversation_materials.prepare(self, sid, rid, rev, decision, fetch_public_url)
+        if waiting:
+            return
+        if material_assessment and material_assessment.missing:
+            instruction += "\n只根据实际已取得的材料回应；明确说明这些尚缺的范围，不推测其内容：" + json.dumps(material_assessment.missing, ensure_ascii=False)
+        data, run = self._snapshot(sid, rid, rev)
+        context, last = self._context(data, run)
+        task = self._task(data, run)
         if teaching and task and not task["context"].get("requires_mastery"):
             with self.store.transaction(sid, rid, rev) as current:
                 live_task = self._task(current, current["runs"][rid])
@@ -1130,26 +1147,7 @@ class ConversationHarness(ConditionalTeaching):
         context, last = self._context(data, run)
         task = self._task(data, run)
         prior = task["context"] if task else {}
-        urls = [looks_like_url(last["content"])] if "material" in decision.intents and looks_like_url(last["content"]) else prior.get("selected_sources", [])
-        for url in urls[:4]:
-            previous = next((s for s in sources if s.get("url") == url and s.get("content")), None)
-            if previous and not decision.refresh_sources:
-                continue
-            saved = run.get("source_cache", {}).get(url)
-            if saved is None:
-                try:
-                    title, body = self._read_page(sid, rid, rev, url, fetch_public_url)
-                except (ValueError, WebToolError) as exc:
-                    if str(exc) not in {'RT.WEB.PRIVATE_URL', 'RT.WEB.PRIVATE_INPUT'}:
-                        raise
-                    self._publish(sid, rid, rev, '这份材料包含私人信息或链接访问凭证，未发送给网页服务。可以提供公开链接，或去除敏感信息后的正文来继续理解。')
-                    return
-                saved = dict(source_id=str(uuid.uuid5(uuid.UUID(sid), url)), version=(previous or {}).get("version", 0) + 1, type="public_source", url=url, title=title, content=body[:10000], fetched_at=now_iso())
-                with self.store.transaction(sid, rid, rev) as current:
-                    current["runs"][rid].setdefault("source_cache", {})[url] = saved
-                    if previous and task:
-                        self._task(current, current["runs"][rid])["context"].setdefault("source_history", []).append(previous)
-            sources = [s for s in sources if s.get("url") != url] + [saved]
+        sources = [s for s in sources if s.get("source_id") not in {m.get("source_id") for m in material_sources}] + material_sources
         new_user_material = "material" in decision.intents and not looks_like_url(last["content"])
         source_type = "agent_generated" if generated else prior.get("source_type") or ("public_source" if sources else "user_material" if new_user_material else "agent_generated")
         if new_user_material:
@@ -1212,7 +1210,8 @@ class ConversationHarness(ConditionalTeaching):
                 source["locator"] = f"task:{task['task_id']}" if task else f"run:{rid}"
         if evidence["state"] in {"insufficient", "conflicting", "outdated"} and run.get("verification_notice"):
             text += "\n\n> [!NOTE]\n> " + run["verification_notice"].replace("\n", "\n> ")
-        cited = [source for source in sources if source.get("url") in evidence.get("sources", []) and source["url"] not in text]
+        direct_urls = {item['url'] for item in run.get('material_reads', []) if item['state'] == 'body_read'} if material_assessment else set()
+        cited = [source for source in sources if source.get("url") in set(evidence.get("sources", [])) | direct_urls and source["url"] not in text]
         if cited:
             text += render_sources(cited)
         with self.store.transaction(sid, rid, rev) as data:
@@ -1259,10 +1258,24 @@ class ConversationHarness(ConditionalTeaching):
         if not task:
             raise ValueError("RT.TASK.UNKNOWN")
         if decision.is_jd:
-            output = self._call(sid, rid, rev, "jd_analysis", JD_SYSTEM, task["content"], JDAnalysis)
-            text = render_jd(output.model_dump())
+            sources, assessment, waiting = conversation_materials.prepare(self, sid, rid, rev, decision, fetch_public_url)
+            if waiting:
+                return
+            data, run = self._snapshot(sid, rid, rev)
+            context, _ = self._context(data, run)
+            from agent_service.source_projection import answer_sources
+            output = self._call(sid, rid, rev, "jd_analysis", JD_SYSTEM,
+                json.dumps(dict(goal=task['content'], context=context, sources=answer_sources(sources),
+                                materials=assessment.model_dump()), ensure_ascii=False), JDAnalysis)
+            text = bound_source_links(render_jd(output.model_dump()), run['allowed_source_urls'])
+            if assessment.missing:
+                text += '\n\n### 待补材料\n\n' + '\n'.join('- ' + item for item in assessment.missing)
+            text += render_sources([s for s in sources if s.get('url')])
             with self.store.transaction(sid, rid, rev) as data:
-                data["pending"] = dict(kind="select_question", target_id=task["task_id"], version=1, options=output.prioritized_questions)
+                live_task = self._task(data, data['runs'][rid])
+                version = live_task['context'].get('jd_analysis_version', 0) + 1
+                live_task['context'].update(jd_analysis=output.model_dump(), jd_analysis_version=version, awaiting_material=False)
+                data["pending"] = dict(kind="select_question", target_id=task["task_id"], version=version, options=output.prioritized_questions)
                 self.store.event(data, data["runs"][rid], "question_choice", "请选择一道题", payload={"pending": data["pending"]})
             self._publish(sid, rid, rev, text, stage="jd_analysis", required={"type": "choose_question", "prompt": "先攻克哪一道？", "options": output.prioritized_questions})
             return
@@ -1408,6 +1421,9 @@ class ConversationHarness(ConditionalTeaching):
             started = time.monotonic()
             result = reader(url, on_cancel_handle=register)
             self._snapshot(sid, rid, rev)
+            if operation == 'read':
+                from agent_service.source_content import readable_page
+                result = readable_page(result)
             with self.store.transaction(sid, rid, rev) as current:
                 self.store.event(current, current["runs"][rid], "source_read", "网页内容已读取",
                                  duration_ms=int((time.monotonic() - started) * 1000))

@@ -603,6 +603,8 @@ class IntentDecision(BaseModel):
     direct_teaching: bool = False
     answer_only: bool = False
     is_jd: bool = False
+    jd_request: Literal['none', 'analyze', 'method'] = Field(default='none',
+        description='analyze: work on a concrete supplied job description for interview preparation; method: learn how to dissect a JD; none: mention/background or ordinary concepts.')
     needs_verification: bool = False
     cross_check_sources: bool = False
     requested_mode: SessionMode | None = None

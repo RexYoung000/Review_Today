@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from agent_service.call_errors import WebToolError
 from agent_service.execution_policy import budget_scope
 from agent_service.web_privacy import safe_public_query, require_public_query, require_public_url
+from agent_service.source_content import readable_page
 
 load_dotenv(Path(__file__).resolve().parent.parent / 'providers' / 'web' / '.env')
 PROTOCOL = 'harness_web_tools_v1'
@@ -126,15 +127,15 @@ def read_public_url(url: str, limit: int = 20000, *, on_cancel_handle=None) -> t
     chain = provider_chain('read')
     if chain == ['local']:
         from agent_service.capture.fetch import fetch_public_url
-        return fetch_public_url(url, limit=limit)
+        return readable_page(fetch_public_url(url, limit=limit))
     public_service_url(url)
     if len(chain) == 1:
         with budget_scope(seconds=30):
-            return _operation_backend(chain[0], 'read').read(url, limit=limit, on_cancel_handle=on_cancel_handle)
+            return readable_page(_operation_backend(chain[0], 'read').read(url, limit=limit, on_cancel_handle=on_cancel_handle))
     from agent_service.web_resilience import route
     def invoke(provider, backend, register):
         if backend is None: return _operation_backend(provider, 'read')
-        return backend.read(url, limit=limit, on_cancel_handle=register)
+        return readable_page(backend.read(url, limit=limit, on_cancel_handle=register))
     _, result = route(chain, 'read', invoke, on_cancel_handle=on_cancel_handle)
     return result
 

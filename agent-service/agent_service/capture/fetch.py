@@ -70,14 +70,20 @@ class _TextExtractor(HTMLParser):
 
 
 def looks_like_url(text: str) -> str | None:
-    stripped = text.strip()
-    match = re.search(r"https?://[^\s<>\"']+", stripped)
-    if match:
-        return match.group(0).rstrip(").,，。]」』")
-    match = re.search(r"(?:www\.)[^\s<>\"']+\.[a-zA-Z]{2,}[^\s<>\"']*", stripped)
-    if match:
-        return "https://" + match.group(0).rstrip(").,，。]」』")
-    return None
+    urls = extract_urls(text)
+    return urls[0] if urls else None
+
+
+def extract_urls(text: str) -> list[str]:
+    """Ordered, unique URL candidates; permission/privacy checks happen at read."""
+    urls = []
+    for match in re.finditer(r"https?://[^\s<>\"'\[\]，。；）】]+|\bwww\.[^\s<>\"'\[\]，。；）】]+", text):
+        url = match.group(0).rstrip(").,;，。]」』")
+        if url.startswith('www.'):
+            url = 'https://' + url
+        if url not in urls:
+            urls.append(url)
+    return urls
 
 
 def _is_blocked_ip(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:

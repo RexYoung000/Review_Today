@@ -179,7 +179,7 @@ def test_usage_is_actual_optional_and_reported_before_invalid_output():
         input_tokens=100, output_tokens=20, total_tokens=120,
         input_tokens_details=NS(cached_tokens=80), output_tokens_details=NS(reasoning_tokens=10)))
     rows=[]
-    with patch('agent_service.openai_client._client', return_value=client), pytest.raises(RuntimeError):
+    with patch('agent_service.openai_client.PROVIDER', 'openai_compatible'), patch('agent_service.openai_client._client', return_value=client), pytest.raises(RuntimeError):
         parse_model('system', 'user', ConversationOutput, on_usage=rows.append)
     assert rows == [dict(response_id='response', input_tokens=100, output_tokens=20,
         total_tokens=120, cached_input_tokens=80, reasoning_output_tokens=10)]

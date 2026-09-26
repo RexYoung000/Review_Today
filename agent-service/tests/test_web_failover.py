@@ -79,6 +79,15 @@ class FailoverTests(unittest.TestCase):
         for b in self.backends.values(): b.search.assert_not_called()
         self.assertEqual(policy.provider_state('exa').until, 0)
 
+    def test_script_only_success_uses_existing_fallback_for_same_url(self):
+        self.backends['exa'].read.return_value = ('招聘', 'var a=window.x; document.cookie="a"; function(){window.y=2;};')
+        self.assertEqual(web.read_public_url(URL), ('Docs', 'actual body'))
+        self.backends['exa'].read.assert_called_once()
+        self.backends['tavily'].read.assert_called_once()
+        for backend in self.backends.values():
+            backend.search.assert_not_called()
+        self.assertEqual(policy.provider_state('exa').until, 0)
+
     def test_empty_results_only_one_supplemental_search(self):
         for b in self.backends.values(): b.search.return_value=[]
         self.assertEqual(json.loads(web.web_search_text('topic'))['results'], [])

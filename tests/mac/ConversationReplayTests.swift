@@ -31,6 +31,7 @@ struct ConversationReplayTests {
                              AgentRunControl.self, SessionEventRecord.self])
         let container = try ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
         let context = container.mainContext
+        try verifyRecoveredResponse()
         let session = AgentSession(), other = AgentSession()
         context.insert(session); context.insert(other)
         try context.save()
@@ -162,4 +163,45 @@ struct ConversationReplayTests {
             print("PASS: real SSE Unicode transport, incremental delivery, max controlled receive delay \(Int(delays.max()! * 1000)) ms")
         }
     }
+}
+
+
+@MainActor private func verifyRecoveredResponse() throws {
+    let schema = Schema([Source.self, Knowledge.self, Question.self, CaptureTask.self, AppSettings.self,
+                 FsrsState.self, ReviewSession.self, ReviewAttempt.self, AgentSession.self,
+                 AgentMessage.self, LearningTask.self, TaskEventRecord.self, SourceReference.self,
+                 KnowledgeReference.self, SessionSummaryRecord.self, AgentRun.self,
+                 AgentRunControl.self, SessionEventRecord.self])
+    let container = try ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+    let context = container.mainContext
+    let session = AgentSession()
+    context.insert(session)
+    let runID = UUID(), responseID = UUID()
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    let now = formatter.string(from: .now)
+    func page(_ seq: Int, _ state: String, _ text: String, id: UUID = responseID) -> [String: Any] {
+        let response: [String: Any] = ["response_id": id.uuidString, "text": text, "status": state, "chunk_seq": seq, "revision": 1]
+        var event: [String: Any] = ["session_id": session.id.uuidString, "event_id": UUID().uuidString,
+            "run_id": runID.uuidString, "seq": seq, "revision": 1, "stage": "response." + state,
+            "occurred_at": now, "payload": ["response": response]]
+        if state == "complete" { event["message"] = ["message_id": id.uuidString, "content": text, "created_at": now] }
+        return ["session_id": session.id.uuidString, "events": [event], "paused": false, "mode": "auto",
+            "runs": [["session_id": session.id.uuidString, "run_id": runID.uuidString, "revision": 1, "status": "running", "updated_at": now]]]
+    }
+    try ConversationProcessor.persist(page(1, "streaming", "未完成的段落"), session: session, context: context)
+    try ConversationProcessor.persist(page(2, "recovering", "未完成的段落"), session: session, context: context)
+    var messages = try context.fetch(FetchDescriptor<AgentMessage>())
+    precondition(messages.count == 1 && messages[0].responseState == "recovering")
+    try ConversationProcessor.persist(page(3, "complete", "校验后的完整回答"), session: session, context: context)
+    messages = try context.fetch(FetchDescriptor<AgentMessage>())
+    precondition(messages.count == 1 && messages[0].id == responseID)
+    precondition(messages[0].content == "校验后的完整回答" && messages[0].responseState == "complete")
+    let stoppedID = UUID()
+    try ConversationProcessor.persist(page(4, "recovering", "另一条未完成回复", id: stoppedID), session: session, context: context)
+    let run = try context.fetch(FetchDescriptor<AgentRun>()).first!
+    ConversationProcessor.queueControl(run, action: "stop", context: context)
+    try ConversationProcessor.persist(page(5, "complete", "不允许迟到替换", id: stoppedID), session: session, context: context)
+    let stopped = try context.fetch(FetchDescriptor<AgentMessage>()).first { $0.id == stoppedID }!
+    precondition(stopped.responseState == "interrupted" && stopped.content == "另一条未完成回复")
 }

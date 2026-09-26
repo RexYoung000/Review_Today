@@ -51,11 +51,14 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
     started = time.monotonic()
     last_emit = 0.0
     latest = ""
+    recovering = False
 
     def emit(partial, *, force=False):
         nonlocal last_emit, latest
         # Check even non-public chunks: a stopped generation closes promptly.
         _, current_run = self._snapshot(session_id, run_id, revision)
+        if recovering and not force:
+            return  # A replacement is private until the entire schema validates.
         if getattr(schema, "defer_public_preview", False):
             return  # Quality-gated questions may also appear inside the prose.
         text = public_preview(node, partial)
@@ -69,14 +72,15 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
         with self.store.transaction(session_id, run_id, revision) as current:
             active = current["runs"][run_id]
             response = active.get("active_response")
-            if not response or response["revision"] != revision or response["status"] != "streaming":
+            if not response or response["revision"] != revision or response["status"] not in {"streaming", "recovering"}:
                 response = dict(response_id=str(uuid.uuid4()), revision=revision, chunk_seq=0, text="", delta="", status="streaming")
                 active["active_response"] = response
                 self.store.event(current, active, "response.started", "开始输出正文", payload={"response": dict(response)})
-            if response["text"] == text:
+            if response["text"] == text and response["status"] != "recovering":
                 return
             previous = response["text"]
-            response.update(chunk_seq=response["chunk_seq"] + 1, text=text, delta=text[len(previous):] if text.startswith(previous) else "")
+            response.update(chunk_seq=response["chunk_seq"] + 1, text=text, status="streaming",
+                            delta="" if recovering else text[len(previous):] if text.startswith(previous) else "")
             if active.get("first_text_ms") is None:
                 active["first_text_ms"] = self._elapsed(active)
             self.store.event(current, active, "response.delta", "正文增量", model=model, payload={"response": dict(response)})
@@ -153,6 +157,12 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                         return value
                     parsed = pool.invoke((session_id, run_id), invoke,
                         check=lambda: self._snapshot(session_id, run_id, revision), budget=budget)
+                    try:
+                        parsed = schema.model_validate(parsed.model_dump())
+                    except ValidationError:
+                        raise ModelCallError("SCHEMA", "ValidationError") from None
+                    if hasattr(parsed, 'validate_request'):
+                        parsed.validate_request(json.loads(prompt))
                     if schema is IntentDecision and "answer" in parsed.intents:
                         checked_context = intent_context
                         user_inputs = checked_context.get("current_inputs", [])
@@ -170,15 +180,22 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                                 error=error.code, detail=error.diagnostic,
                                 payload={"step": node, "step_attempt": index + 1, "diagnostic": diagnose(error)})
                             event["attempt"] = index + 1
-                    # Never splice a second generation into already shown text,
-                    # retry refusals/access restrictions or exceed shared budget.
-                    if error.code == "RT.MODEL.SCHEMA" and not latest and not repaired and budget.attempts < budget.limit:
+                    # Repair at most once with the same model. A shown preview is
+                    # replaced atomically, never spliced with another generation.
+                    if error.code == "RT.MODEL.SCHEMA" and not repaired and not budget.expired and budget.attempts < budget.limit:
                         repaired = True
+                        recovering = bool(latest)
                         choices[index + 1:] = [selected_model]
                         system += "\n" + schema_repair_instruction(error)
                         prompt, repaired_capacity = prepare_context(system, prompt, window=configured_window(model), schema=schema.model_json_schema())
                         with self.store.transaction(session_id, run_id, revision) as current:
-                            current["runs"][run_id]["context_capacity"] = repaired_capacity
+                            active = current["runs"][run_id]
+                            active["context_capacity"] = repaired_capacity
+                            response = active.get("active_response")
+                            if recovering and response:
+                                response.update(status="recovering", delta="", chunk_seq=response["chunk_seq"] + 1)
+                                self.store.event(current, active, "response.recovering", "正在整理完整回复",
+                                                 payload={"response": dict(response)})
                         continue
                     if budget.expired or latest or not diagnose(error)["retryable"] or index + 1 == len(choices) or budget.attempts >= budget.limit:
                         raise

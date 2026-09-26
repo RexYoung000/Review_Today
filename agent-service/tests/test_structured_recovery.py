@@ -160,10 +160,10 @@ class HarnessRecoveryTests(unittest.TestCase):
         self.assertNotEqual(run["status"], "completed")
         self.assertFalse([m for m in data["messages"] if m["role"] == "coach"])
 
-    def test_visible_preview_prevents_second_generation(self):
+    def test_visible_preview_allows_only_one_buffered_repair(self):
         from agent_service.execution_policy import current_budget
         accepted = self.accept()
-        # Exercise the answer call directly; the user-visible preview is the guard.
+        # Failed repair stays private; the original preview is retained.
         with self.store.transaction(self.sid) as data:
             data["runs"][accepted.run_id]["status"] = "running"
         def partial_then_invalid(system, prompt, schema, **kwargs):
@@ -173,7 +173,7 @@ class HarnessRecoveryTests(unittest.TestCase):
         with patch("agent_service.conversation.parse_model", side_effect=partial_then_invalid) as model, \
              self.assertRaises(llm.ModelCallError):
             self.harness._call(self.sid, accepted.run_id, 1, "answer", "rules", "{}", ConversationOutput)
-        self.assertEqual(model.call_count, 1)
+        self.assertEqual(model.call_count, 2)
         data, run = self.state(accepted)
         self.assertEqual(run["active_response"]["text"], "已显示正文")
-        self.assertEqual(len([e for e in data["events"] if e["stage"] == "model_attempt_failed"]), 1)
+        self.assertEqual(len([e for e in data["events"] if e["stage"] == "model_attempt_failed"]), 2)

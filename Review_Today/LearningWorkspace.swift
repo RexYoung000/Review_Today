@@ -484,6 +484,8 @@ struct LearningWorkspace: View {
                   Text(message.responseState == "interrupted" ? "回复已中断" : "回复未完成").font(.caption2).foregroundStyle(.secondary)
               } else if message.responseState == "streaming" {
                   Text("正在回复").font(.caption2).foregroundStyle(.secondary)
+              } else if message.responseState == "recovering" {
+                  Text("正在整理完整回复").font(.caption2).foregroundStyle(.secondary)
               }
             }
         }
@@ -736,7 +738,7 @@ struct LearningWorkspace: View {
         if !queueInput, let active = runs.last(where: { $0.sessionID == session.id && ["running", "accepted", "adjusting"].contains($0.status) }) {
             active.status = "adjusting"
             active.userSummary = "已收到补充，正在调整"
-            for response in messages(for: session.id) where response.runID == active.id && response.responseState == "streaming" {
+            for response in messages(for: session.id) where response.runID == active.id && ["streaming", "recovering"].contains(response.responseState) {
                 response.responseState = "interrupted"
             }
         }

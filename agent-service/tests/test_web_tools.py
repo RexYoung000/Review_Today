@@ -44,7 +44,8 @@ class IndependentWebTests(unittest.TestCase):
     def test_no_configuration_never_falls_back_to_model(self):
         from agent_service import openai_client
         for provider, key, error in [('none', '', 'NOT_CONFIGURED'), ('tavily', '', 'NO_KEY'), ('unknown', 'key', 'UNSUPPORTED')]:
-            with self.subTest(provider=provider), patch.dict(os.environ, {'REVIEW_TODAY_SEARCH_PROVIDER': provider, 'TAVILY_API_KEY': key}), patch.object(openai_client, '_client') as llm, patch.object(tavily_tools, '_client') as http:
+            with self.subTest(provider=provider), patch.dict(os.environ, {'REVIEW_TODAY_SEARCH_PROVIDER': provider, 'TAVILY_API_KEY': key,
+                'REVIEW_TODAY_SEARCH_FALLBACKS': '', 'REVIEW_TODAY_TAVILY_KEYLESS': '0'}), patch.object(openai_client, '_client') as llm, patch.object(tavily_tools, '_client') as http:
                 self.assertEqual(web.web_search_capability()['status'], 'unavailable')
                 with self.assertRaisesRegex(WebToolError, error):
                     web.web_search_text('public topic')

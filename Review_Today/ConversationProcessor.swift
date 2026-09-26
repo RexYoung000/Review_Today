@@ -280,7 +280,7 @@ enum ConversationProcessor {
             run.status = "stopping"
             run.userSummary = "停止请求已保存，等待服务确认"
             let rid = run.id
-            for message in (try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.runID == rid }))) ?? [] where message.responseState == "streaming" {
+            for message in (try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.runID == rid }))) ?? [] where ["streaming", "recovering"].contains(message.responseState) {
                 message.responseState = "interrupted"
             }
         } else if action == "resume" || action == "retry" {
@@ -343,7 +343,7 @@ enum ConversationProcessor {
             run.thinkingStrength = raw["thinking_strength"] as? String ?? run.thinkingStrength
             run.activityKind = rawActivityKind
             run.completedAt = rawCompletedAt
-            for message in messages where message.runID == id && message.responseState == "streaming" && message.responseRevision < run.revision {
+            for message in messages where message.runID == id && ["streaming", "recovering"].contains(message.responseState) && message.responseRevision < run.revision {
                 message.responseState = "interrupted"
             }
         }

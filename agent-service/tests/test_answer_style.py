@@ -30,6 +30,7 @@ class AnswerStyleTests(unittest.TestCase):
                      prioritized_questions=["问题C"])
         self.assertEqual(public_preview("jd_analysis", value), render_jd(value))
         self.assertIn("## 优先问题\n\n1. 问题C", render_jd(value))
+        self.assertIn("## 优先问题\n\n1. 问题C", render_jd({**value, 'prioritized_questions': ['1. 问题C']}))
         self.assertNotIn("None", render_jd(dict(role_goal=None, competency_map=[None])))
         self.assertEqual(public_preview("problem_answer", {"answer": {"direct_answer": "直接答案"}}), "直接答案")
 
