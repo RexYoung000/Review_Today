@@ -7,7 +7,7 @@ enum LearningSessionActions {
     static func archive(_ session: AgentSession, context: ModelContext) -> Bool {
         let sid = session.id
         let runs = (try? context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }))) ?? []
-        for run in runs where ["running", "accepted", "queued", "adjusting", "stopping"].contains(run.status) {
+        for run in runs where ["running", "accepted", "queued", "adjusting", "stopping", "resuming"].contains(run.status) {
             if let started = run.startedAt { run.elapsedMS = max(0, Int(Date.now.timeIntervalSince(started) * 1000)) }
             run.startedAt = nil
             run.status = "interrupted"

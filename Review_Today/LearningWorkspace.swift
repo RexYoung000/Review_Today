@@ -633,7 +633,7 @@ struct LearningWorkspace: View {
                 if runtime.isPreview { Text(runtime.isPerformanceQA ? "独立测试数据 · 不发送" : "仅供排版检查 · 不发送、不持久保存") }
                 Spacer()
                 if runtime.allowsSending, let run = runs.last(where: { $0.sessionID == selectedSessionID }),
-                   ["accepted", "running", "queued", "adjusting"].contains(run.status) {
+                   ["accepted", "running", "queued", "adjusting", "resuming"].contains(run.status) {
                     Toggle("排队发送", isOn: $queueInput).toggleStyle(.checkbox)
                     Button("停止回复") { ConversationProcessor.queueControl(run, action: "stop", context: modelContext) }
                         .buttonStyle(.borderless)

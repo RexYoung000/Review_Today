@@ -71,7 +71,7 @@ enum LocalDataReset {
         let sessions = try context.fetch(FetchDescriptor<AgentSession>())
         let attempts = try context.fetch(FetchDescriptor<ReviewAttempt>())
         let liveRounds = Set(try context.fetch(FetchDescriptor<ReviewSession>()).filter { !$0.paused && $0.endedAt == nil }.map(\.id))
-        if runs.contains(where: { ["accepted", "running", "queued", "adjusting", "stopping"].contains($0.status) })
+        if runs.contains(where: { ["accepted", "running", "queued", "adjusting", "stopping", "resuming"].contains($0.status) })
             || captures.contains(where: { ["queued", "retryable_failed", "uploading", "processing", "committing"].contains($0.status) || ($0.status == "completed" && !$0.localCommitDone) })
             || tasks.contains(where: { ["accepted", "running", "committing"].contains($0.status) })
             || messages.contains(where: { $0.role == "user" && ["local", "sending"].contains($0.deliveryStatus) })

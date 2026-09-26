@@ -1,6 +1,15 @@
 import Foundation
 import SwiftData
 
+struct ConversationEventSubscriptions {
+    private var requested: [UUID: Int] = [:]
+    private var completed: [UUID: Int] = [:]
+    func version(_ id: UUID) -> Int { requested[id, default: 0] }
+    func needsRefresh(_ id: UUID) -> Bool { completed[id] != version(id) }
+    mutating func refresh(_ id: UUID) { requested[id] = version(id) + 1 }
+    mutating func finish(_ id: UUID, version: Int) { completed[id] = version }
+}
+
 /// One outbox owner and one event consumer per Session. Network suspension never
 /// delays editor input, and the legacy capture/review loop cannot hold this queue.
 @MainActor
@@ -9,7 +18,7 @@ final class ConversationSync {
     static func wake() { NotificationCenter.default.post(name: wakeName, object: nil) }
 
     private var streams: [UUID: Task<Void, Never>] = [:]
-    private var synced = Set<UUID>()
+    private var subscriptions = ConversationEventSubscriptions()
     private var deletionCleaner: Task<Void, Never>?
     private var lookups: [UUID: Task<Void, Never>] = [:]
     private var senders: [UUID: Task<Void, Never>] = [:]
@@ -60,6 +69,13 @@ final class ConversationSync {
                     controllers[session.id] = Task {
                         defer { self.controllers[session.id] = nil }
                         await ConversationProcessor.tick(context: context, monitor: monitor, pollEvents: false, onlySession: session.id, controlsOnly: true, work: work)
+                        if (work.controlsBySession[session.id] ?? []).contains(where: { $0.sent }) {
+                            // A completed/failed Session has no live subscription.
+                            // Control acceptance reopens it even if retry finished
+                            // before its POST response reached the App.
+                            self.subscriptions.refresh(session.id)
+                            Self.wake()
+                        }
                     }
                 }
                 if senders[session.id] == nil && session.status == "active" && !(work.messagesBySession[session.id] ?? []).isEmpty {
@@ -72,9 +88,10 @@ final class ConversationSync {
             }
             for session in sessions {
                 guard let runs = work.runsBySession[session.id] else { continue }
-                let active = runs.contains { (["accepted", "running", "stopping", "adjusting"].contains($0.status) || ($0.status == "queued" && !session.runPaused)) }
+                let active = runs.contains { (["accepted", "running", "stopping", "adjusting", "resuming"].contains($0.status) || ($0.status == "queued" && !session.runPaused)) }
                 let awaitingCaptureReceipt = TopicCaptureOffer.read(session.captureOffersJSON).contains { $0.status == "saving" }
-                guard streams[session.id] == nil, active || awaitingCaptureReceipt || !synced.contains(session.id) else { continue }
+                guard streams[session.id] == nil, active || awaitingCaptureReceipt || subscriptions.needsRefresh(session.id) else { continue }
+                let subscriptionVersion = subscriptions.version(session.id)
                 streams[session.id] = Task {
                     defer { self.streams[session.id] = nil }
                     do {
@@ -86,7 +103,7 @@ final class ConversationSync {
                             let page = try await AgentAPI.conversationRequest("/v2/sessions/\(session.id.uuidString.lowercased())/events?after_seq=\(session.lastSessionEventSeq)&recovery_version=\(ConversationCheckpoint.version(session.checkpointJSON))")
                             try await self.consume(page, session: session, context: context)
                         }
-                        self.synced.insert(session.id)
+                        self.subscriptions.finish(session.id, version: subscriptionVersion)
                     } catch is CancellationError {
                         return
                     } catch {
@@ -97,7 +114,7 @@ final class ConversationSync {
                             catch { session.syncError = HarnessAPIError.code(for: error) }
                         }
                         try? context.save()
-                        self.synced.remove(session.id)
+                        self.subscriptions.refresh(session.id)
                     }
                 }
             }

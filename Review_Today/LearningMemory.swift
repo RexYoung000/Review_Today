@@ -137,7 +137,7 @@ enum LearningMemory {
                 session.pendingOperationJSON = nil
                 run.memoryInvalidationRevision = run.revision
             }
-            if ["running", "accepted", "adjusting", "queued"].contains(run.status) {
+            if ["running", "accepted", "adjusting", "queued", "resuming"].contains(run.status) {
                 run.status = "stopping"
                 if let started = run.startedAt { run.elapsedMS = max(0, Int(Date.now.timeIntervalSince(started) * 1000)) }
                 run.startedAt = nil

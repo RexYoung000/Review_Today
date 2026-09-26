@@ -45,12 +45,14 @@ struct LearningTaskCard: View {
                 if isSessionActive && (task.status == "retryable_failed" || task.status == "needs_attention") {
                     Button("重试") { onControl("retry") }
                         .buttonStyle(.borderless)
+                        .disabled(run.map { !["retryable_failed", "terminal_failed"].contains($0.status) } ?? false)
                     Button("取消目标") { onControl("cancel_task") }
                         .buttonStyle(.borderless)
+                        .disabled(run?.status == "stopping")
                 }
             }
 
-            if isSessionActive, let prompt = task.requiredActionPrompt, task.pendingActionID == nil {
+            if isSessionActive, task.status != "cancelled", let prompt = task.requiredActionPrompt, task.pendingActionID == nil {
                 if !taskAnswers.contains(where: { AnswerDocument.containsQuestion(prompt, in: $0.content) }) {
                     Text(prompt)
                         .font(.callout.weight(.medium))

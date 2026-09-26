@@ -110,13 +110,7 @@ enum ConversationProcessor {
         for control in controls where !skipControls && !control.sent && sessions.contains(where: { $0.id == control.sessionID }) {
             guard !blockedSessions.contains(control.sessionID) else { continue }
             do {
-                var body: [String: Any] = ["action_id": control.id.uuidString.lowercased(), "action": control.action]
-                if let mode = control.mode { body["mode"] = mode }
-                if let strength = control.thinkingStrength { body["thinking_strength"] = strength }
-                _ = try await AgentAPI.conversationRequest("/v2/runs/\(control.runID.uuidString.lowercased())/actions", body: body)
-                control.sent = true
-                control.lastError = nil
-                try context.save()
+                try await deliverControl(control, context: context)
             } catch {
                 // Preserve FIFO within this Session, without blocking unrelated
                 // Sessions or the event feed that explains a failed control.
@@ -256,7 +250,7 @@ enum ConversationProcessor {
         session.pendingOperationJSON = nil
         session.syncError = nil
         let sid = session.id
-        for run in try context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid })) where ["running", "accepted", "queued", "adjusting", "stopping"].contains(run.status) {
+        for run in try context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid })) where ["running", "accepted", "queued", "adjusting", "stopping", "resuming"].contains(run.status) {
             run.status = "interrupted"
             if let start = run.startedAt { run.elapsedMS = Int(Date.now.timeIntervalSince(start) * 1000) }
             run.startedAt = nil
@@ -265,12 +259,90 @@ enum ConversationProcessor {
         try context.save()
     }
 
+    /// A transport failure remains in the outbox. A rejected, obsolete recovery
+    /// is settled against server state, so it cannot block a later stop/cancel.
+    @MainActor
+    static func deliverControl(_ control: AgentRunControl, context: ModelContext,
+                               request: @MainActor (String, [String: Any]?) async throws -> [String: Any] = { path, body in
+                                   try await AgentAPI.conversationRequest(path, body: body)
+                               }) async throws {
+        var body: [String: Any] = ["action_id": control.id.uuidString.lowercased(), "action": control.action]
+        if let mode = control.mode { body["mode"] = mode }
+        if let strength = control.thinkingStrength { body["thinking_strength"] = strength }
+        let path = "/v2/runs/\(control.runID.uuidString.lowercased())"
+        let receipt: [String: Any]
+        var rejection: String?
+        do { receipt = try await request(path + "/actions", body) }
+        catch {
+            let code = HarnessAPIError.code(for: error)
+            guard ["retry", "resume"].contains(control.action),
+                  ["RT.RUN.NOT_RETRYABLE", "RT.RUN.ALREADY_RUNNING", "RT.GOAL.CONTINUED_ELSEWHERE"].contains(code) else { throw error }
+            receipt = try await request(path, nil)
+            rejection = code
+        }
+        guard uuid(receipt["run_id"]) == control.runID, uuid(receipt["session_id"]) == control.sessionID,
+              let status = receipt["status"] as? String,
+              ["accepted", "queued", "running", "completed", "interrupted", "retryable_failed", "terminal_failed", "cancelled"].contains(status),
+              let revision = receipt["revision"] as? Int, revision > 0 else {
+            throw HarnessAPIError.server(code: "RT.RUN.INVALID_ACCEPTANCE", message: "服务未返回有效的操作结果，操作已保留。")
+        }
+        let sid = control.sessionID, rid = control.runID
+        guard try !SessionDeletion.contains(sid, context: context),
+              let session = try context.fetch(FetchDescriptor<AgentSession>(predicate: #Predicate { $0.id == sid })).first,
+              session.status == "active",
+              (receipt["lifecycle_revision"] as? Int ?? 0) >= session.lifecycleRevision else { return }
+        let run = try context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.id == rid })).first
+        let prior = (control.sent, control.lastError)
+        control.sent = true
+        control.lastError = rejection // settled is distinct from successful execution
+        if let run, revision > run.revision || (revision == run.revision && date(receipt["updated_at"]) >= run.updatedAt) {
+            run.revision = revision
+            run.status = status
+            run.stage = receipt["stage"] as? String ?? run.stage
+            run.userSummary = receipt["user_summary"] as? String ?? "操作已确认"
+            run.errorCode = receipt["error_code"] as? String
+            run.startedAt = optionalDate(receipt["started_at"])
+            run.elapsedMS = receipt["elapsed_ms"] as? Int ?? run.elapsedMS
+            // Do not advance updatedAt/cursor: the event feed still hydrates the
+            // full projection and every message, including a fast final answer.
+        }
+        let pending = try context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { $0.sessionID == sid && !$0.sent }))
+        if let run { projectPendingControls(pending, runs: [run]) }
+        do { try context.save() }
+        catch { context.rollback(); control.sent = prior.0; control.lastError = prior.1; throw error }
+        ConversationSync.wake()
+    }
+
+    @MainActor
+    static func projectPendingControls(_ controls: [AgentRunControl], runs: [AgentRun]) {
+        for run in runs {
+            let pending = controls.filter { !$0.sent && $0.runID == run.id }.sorted { $0.createdAt < $1.createdAt }
+            guard let control = pending.first(where: { ["stop", "cancel_task"].contains($0.action) }) ?? pending.first else { continue }
+            if ["stop", "cancel_task"].contains(control.action) {
+                run.status = "stopping"
+                run.userSummary = control.lastError == nil ? "停止请求已保存，等待服务确认" : "停止请求尚未送达，操作已保留"
+            } else if ["retry", "resume"].contains(control.action) {
+                run.status = "resuming"
+                run.userSummary = control.lastError == nil ? (control.action == "retry" ? "正在重试，等待服务确认" : "正在恢复，等待服务确认") : "恢复请求尚未送达，操作已保留"
+            } else {
+                run.userSummary = control.lastError == nil ? "操作已保存在本机，等待服务确认" : "控制请求尚未送达，操作已保留，将继续重试"
+            }
+        }
+    }
+
     @MainActor
     @discardableResult
     static func queueControl(_ run: AgentRun, action: String, mode: String? = nil, thinkingStrength: String? = nil, context: ModelContext) -> Bool {
         let sid = run.sessionID
         guard let session = try? context.fetch(FetchDescriptor<AgentSession>(predicate: #Predicate { $0.id == sid })).first,
               session.status == "active" else { return false }
+        let rid = run.id
+        guard let pending = try? context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { $0.runID == rid && !$0.sent })) else { return false }
+        if ["retry", "resume"].contains(action) {
+            guard !pending.contains(where: { ["stop", "cancel_task"].contains($0.action) }) else { return false }
+            if pending.contains(where: { ["retry", "resume"].contains($0.action) }) { return true }
+            guard (action == "retry" ? ["retryable_failed", "terminal_failed"].contains(run.status) : ["interrupted", "queued"].contains(run.status)) else { return false }
+        } else if ["stop", "cancel_task"].contains(action), pending.contains(where: { $0.action == action }) { return true }
         let control = AgentRunControl(runID: run.id, sessionID: run.sessionID, action: action, mode: mode)
         control.thinkingStrength = thinkingStrength
         context.insert(control)
@@ -284,7 +356,8 @@ enum ConversationProcessor {
                 message.responseState = "interrupted"
             }
         } else if action == "resume" || action == "retry" {
-            run.userSummary = "恢复请求已保存"
+            run.status = "resuming"
+            run.userSummary = action == "retry" ? "正在重试，等待服务确认" : "正在恢复，等待服务确认"
         }
         do {
             try context.save()
@@ -504,12 +577,7 @@ enum ConversationProcessor {
         if session.status != "archived" && (page["lifecycle_revision"] as? Int ?? 0) >= session.lifecycleRevision {
             session.runPaused = page["paused"] as? Bool ?? false
         }
-        for control in pendingControls {
-            if let run = runs.first(where: { $0.id == control.runID }) {
-                run.userSummary = control.lastError != nil ? "控制请求尚未送达，操作已保留，将继续重试" : "操作已保存在本机，等待服务确认"
-                if ["stop", "cancel_task"].contains(control.action) { run.status = "stopping" }
-            }
-        }
+        projectPendingControls(pendingControls, runs: runs)
         for run in runs where steering.contains(run.id) {
             run.status = "adjusting"
             run.userSummary = "已收到补充，正在调整"

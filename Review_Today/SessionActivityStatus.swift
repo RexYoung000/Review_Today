@@ -34,7 +34,7 @@ private struct SessionActivityContent: View {
         guard let run = runs.first else { return ("circle", "尚未运行", false) }
         if ["retryable_failed", "terminal_failed"].contains(run.status) { return ("exclamationmark.triangle", "运行失败", true) }
         if ["interrupted", "cancelled"].contains(run.status) { return ("pause.circle", "已停止", false) }
-        if ["running", "accepted", "queued", "adjusting", "stopping"].contains(run.status) { return ("circle.dotted", run.userSummary, false) }
+        if ["running", "accepted", "queued", "adjusting", "stopping", "resuming"].contains(run.status) { return ("circle.dotted", run.userSummary, false) }
         if let task = tasks.first, task.status == "awaiting_user" {
             return ("bubble.left", task.requiredActionType == "submit_answer" ? "等待作答" : "可继续学习", false)
         }
