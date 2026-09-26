@@ -1,0 +1,40 @@
+{
+  "commit": "04c708a",
+  "status": "ok",
+  "image_input_protocol": 2,
+  "provider": "deepseek",
+  "jev": "off",
+  "models": {
+    "router": {
+      "model": "deepseek-flash",
+      "status": "ready",
+      "streaming": "not_applicable"
+    },
+    "coach": {
+      "model": "deepseek-v4-flash",
+      "status": "ready",
+      "streaming": "ready"
+    },
+    "risk": {
+      "model": "deepseek-v4-pro",
+      "status": "ready",
+      "streaming": "not_applicable"
+    }
+  },
+  "bundle_id": "Rex.Review-Today",
+  "database_quick_check": "ok",
+  "model_record_counts_unchanged": true,
+  "service_record_counts_unchanged": true,
+  "persistent_history_table_growth": {
+    "ACHANGE": {
+      "before": 273062,
+      "after": 273085
+    },
+    "ATRANSACTION": {
+      "before": 268408,
+      "after": 268429
+    }
+  },
+  "backup_directory_name": "before-jpeg-drag-04c708a-20260926-184341",
+  "debug_library_sha256": "2fa6cfb29b22c2bb4912f55758a20167ca2a3b8a95702bc1d937a0c4039645b8"
+}
