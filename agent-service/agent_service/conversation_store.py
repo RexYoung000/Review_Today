@@ -55,6 +55,19 @@ class ConversationStore:
             row = db.execute("SELECT payload FROM agent_memory_policy_v2 WHERE session_id=?", (sid,)).fetchone()
             return json.loads(row[0]) if row else None
 
+    def compact_completed_images(self):
+        """One-time idempotent cleanup for checkpoints written before image compaction."""
+        from agent_service.image_inputs import strip_completed_image_bytes
+        changed = 0
+        with self._lock, self.tasks._connection() as db:
+            for sid, payload in db.execute("SELECT session_id, payload FROM agent_sessions_v2").fetchall():
+                data = json.loads(payload)
+                if strip_completed_image_bytes(data.get("messages", [])):
+                    db.execute("UPDATE agent_sessions_v2 SET payload=? WHERE session_id=?",
+                               (json.dumps(data, ensure_ascii=False), sid))
+                    changed += 1
+        return changed
+
     def set_memory_policy(self, sid, value):
         if self.deleted(sid):
             raise ValueError("RT.SESSION.DELETED")
@@ -132,6 +145,8 @@ class ConversationStore:
             if run_id is not None and (data["runs"][run_id].get("memory_invalidated") or not self.memory_valid(data["runs"][run_id].get("memory_references", []))):
                 raise Superseded()
             # Both projections are committed together; an exception above writes neither.
+            from agent_service.image_inputs import strip_completed_image_bytes
+            strip_completed_image_bytes(data["messages"])
             with self.tasks._connection() as db:
                 for task in data["tasks"].values():
                     if prior_tasks.get(task["task_id"]) == json.dumps(task, ensure_ascii=False):
@@ -152,8 +167,10 @@ class ConversationStore:
 
     def write_batch(self, states):
         """Caller holds _lock; every Session projection shares one SQLite commit."""
+        from agent_service.image_inputs import strip_completed_image_bytes
         with self._lock, self.tasks._connection() as db:
             for data in states:
+                strip_completed_image_bytes(data["messages"])
                 for task in data['tasks'].values():
                     prior = db.execute('SELECT payload FROM harness_tasks WHERE task_id=?', (task['task_id'],)).fetchone()
                     if prior and json.loads(prior[0]) == task:

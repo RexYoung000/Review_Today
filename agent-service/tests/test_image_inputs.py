@@ -115,9 +115,10 @@ def test_reading_is_source_data_cached_and_usage_is_recorded(harness, monkeypatc
     result = image_inputs.resolve(h, sid, rid, 1, context, "规则")
     assert result.intents == ["question", "material"]
     # A crash between successful model checkpointing and reading publication
-    # reuses the completed step instead of sending the pixels again.
+    # restores the missing original from the Mac and reuses the completed step.
     with h.store.transaction(sid) as data:
         data["messages"][0].pop("image_reading")
+        data["messages"][0]["image"] = request.image.model_dump()
     image_inputs.resolve(h, sid, rid, 1, context, "规则")
     assert len(calls) == 1, "same successful step must not incur another request"
     state = h.store.get(sid)
@@ -127,6 +128,8 @@ def test_reading_is_source_data_cached_and_usage_is_recorded(harness, monkeypatc
     assert request.image.data_base64 not in json.dumps(projected)
     assert "data_base64" not in last["image"]
     assert state["runs"][rid]["context_capacity"]["image_tokens"] == 1024
+    assert "data_base64" not in state["messages"][0]["image"]
+    assert state["messages"][0]["image"]["sha256"] == request.image.sha256
     call = state["runs"][rid]["model_calls"][0]
     assert call["transport_requests"] == 1 and call["usage"][0]["input_tokens"] == 1200
     assert request.image.data_base64 not in json.dumps(state["events"])
@@ -142,6 +145,32 @@ def test_cancelled_image_result_cannot_publish(harness, monkeypatch):
     with pytest.raises(Superseded):
         image_inputs.resolve(h, sid, rid, 1, {}, "规则")
     assert "image_reading" not in h.store.get(sid)["messages"][0]
+    assert h.store.get(sid)["messages"][0]["image"]["data_base64"] == request.image.data_base64
+
+
+def test_existing_completed_image_state_is_compacted_once_without_changing_reading(harness, monkeypatch):
+    h, sid, rid, request = harness
+    install_reader(monkeypatch, request)
+    data, run = h._snapshot(sid, rid, 1)
+    context, _ = h._context(data, run)
+    image_inputs.resolve(h, sid, rid, 1, context, "规则")
+    original = h.store.get(sid)["messages"][0]
+    with h.store.tasks._connection() as db:
+        payload = json.loads(db.execute("SELECT payload FROM agent_sessions_v2 WHERE session_id=?", (sid,)).fetchone()[0])
+        payload["messages"][0]["image"]["data_base64"] = request.image.data_base64
+        db.execute("UPDATE agent_sessions_v2 SET payload=? WHERE session_id=?", (json.dumps(payload), sid))
+    assert h.store.compact_completed_images() == 1
+    assert h.store.compact_completed_images() == 0
+    compacted = h.store.get(sid)["messages"][0]
+    assert compacted == original
+    assert compacted["image_reading"]["transcription"] == "第一步：检索。第二步：生成。"
+
+
+def test_partial_multi_image_reading_keeps_all_originals():
+    images = [picture(0), picture(255)]
+    messages = [dict(images=images, image_readings=[dict(transcription="第一张")])]
+    assert image_inputs.strip_completed_image_bytes(messages) == 0
+    assert all(image["data_base64"] for image in images)
 
 
 def test_wrong_image_identity_is_repaired_once_then_rejected(harness, monkeypatch):
@@ -165,6 +194,21 @@ def test_recovery_excludes_binary_and_requires_original_for_unread_image(harness
     assert request.image.data_base64 not in json.dumps(restored)
     assert other.store.get(sid)["messages"][0]["image"]["sha256"] == request.image.sha256
     assert other.store.get(sid)["paused"]
+
+
+def test_completed_image_restores_from_metadata_and_reading(harness, monkeypatch, tmp_path):
+    h, sid, rid, request = harness
+    install_reader(monkeypatch, request)
+    data, run = h._snapshot(sid, rid, 1)
+    context, _ = h._context(data, run)
+    image_inputs.resolve(h, sid, rid, 1, context, "规则")
+    snapshot = h.export_snapshot(sid)
+    other = ConversationHarness(ConversationStore(HarnessStore(str(tmp_path / "completed-restore.sqlite3"))))
+    other.restore_snapshot(sid, snapshot)
+    restored = other.store.get(sid)["messages"][0]
+    assert restored["image"]["sha256"] == request.image.sha256
+    assert "data_base64" not in restored["image"]
+    assert restored["image_reading"]["transcription"] == "第一步：检索。第二步：生成。"
 
 
 def test_image_tokens_cannot_overrun_input_budget():
@@ -312,6 +356,7 @@ def test_multi_image_reading_order_context_and_checkpoint(harness, monkeypatch, 
     assert [m["image_index"] for m in context["image_materials"]] == [0, 1]
     assert len(calls) == 1
     assert state["runs"][rid]["context_capacity"]["image_tokens"] == 2048
+    assert all("data_base64" not in image for image in state["messages"][0]["images"])
     assert all("data_base64" not in i for i in last["images"])
     snapshot = h.export_snapshot(sid)
     assert "data_base64" not in json.dumps(snapshot)

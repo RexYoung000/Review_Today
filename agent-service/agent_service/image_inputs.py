@@ -187,6 +187,17 @@ def strip_image_bytes(messages):
             image.pop("data_base64", None)
 
 
+def strip_completed_image_bytes(messages):
+    """Keep pixels only until every attachment has a committed reading."""
+    removed = 0
+    for message in messages:
+        if has_reading(message):
+            for image in attachments(message):
+                if image.pop("data_base64", None) is not None:
+                    removed += 1
+    return removed
+
+
 def validate_restored_message(message):
     if message.get("image") and message.get("images"):
         raise ValueError("RT.IMAGE.INVALID_MESSAGE")

@@ -86,6 +86,7 @@ _grade_lock = threading.Lock()
 
 @app.on_event("startup")
 def check_model_capabilities() -> None:
+    conversation_harness.store.compact_completed_images()
     start_probe()
     threading.Thread(target=resume_incomplete_tasks, name="review-today-task-recovery", daemon=True).start()
     threading.Thread(target=conversation_harness.recover, name="review-today-run-recovery", daemon=True).start()
