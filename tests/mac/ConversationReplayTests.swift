@@ -12,6 +12,8 @@ struct ConversationReplayTests {
             ["op": "append", "path": ["runs", "r", "text"], "value": "😀"],
             ["op": "set", "path": ["event_base_seq"], "value": 2]]]]]
         let caughtUp = try ConversationCheckpoint.merge(delta, into: base, sessionID: recoveryID, cursor: 2)
+        let backgroundMerge = try await ConversationCheckpoint.mergeOffMain(delta, into: base, sessionID: recoveryID, cursor: 2)
+        precondition(ConversationProcessor.object(backgroundMerge)?["recovery_version"] as? Int == 2)
         precondition(ConversationCheckpoint.version(caughtUp) == 2)
         precondition(caughtUp.contains("中文😀"))
         let repeated = try ConversationCheckpoint.merge(delta, into: caughtUp, sessionID: recoveryID, cursor: 2)
@@ -54,10 +56,15 @@ struct ConversationReplayTests {
         }
         let start = ContinuousClock.now
         try ConversationProcessor.persist(page([event(1, text: "中", chunk: 1)]), session: session, context: context)
-        try ConversationProcessor.persist(page([event(3, text: "中文😀 **尚未闭合", chunk: 3), event(2, text: "中文", chunk: 2)]), session: session, context: context)
+        var compactPage = page([event(3, text: "中文😀 **尚未闭合", chunk: 3), event(2, text: "中文", chunk: 2)])
+        compactPage["runs"] = [] // SSE omits unchanged Run headers on text-only pages.
+        try ConversationProcessor.persist(compactPage, session: session, context: context)
         let rows = try context.fetch(FetchDescriptor<AgentMessage>())
         precondition(rows.count == 1 && rows[0].content == "中文😀 **尚未闭合")
         precondition(rows[0].responseChunkSeq == 3 && session.lastSessionEventSeq == 3)
+        let fragmentEvents = try context.fetch(FetchDescriptor<SessionEventRecord>())
+        precondition(fragmentEvents.isEmpty,
+                     "text fragments must not invalidate the invisible Run details query")
         // Duplicate delivery is harmless even when the event ID differs.
         try ConversationProcessor.persist(page([event(3, text: "不应覆盖", chunk: 3)]), session: session, context: context)
         precondition(rows[0].content == "中文😀 **尚未闭合")
@@ -70,6 +77,8 @@ struct ConversationReplayTests {
         let finalized = try context.fetch(FetchDescriptor<AgentMessage>())
         precondition(finalized.count == 1)
         precondition(rows[0].responseState == "complete")
+        let completedEvents = try context.fetch(FetchDescriptor<SessionEventRecord>())
+        precondition(completedEvents.count == 1)
 
         let secondResponse = UUID()
         try ConversationProcessor.persist(page([event(5, text: "新回复的首段", chunk: 1, id: secondResponse)]), session: session, context: context)

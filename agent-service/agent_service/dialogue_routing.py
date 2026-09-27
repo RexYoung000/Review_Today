@@ -3,7 +3,7 @@ from agent_service.schemas import IntentDecision
 
 LEGACY_QUESTION = '你希望继续刚才的内容，还是开始一个新的学习问题？'
 LOCAL_QUESTIONS = {'question', 'followup', 'example', 'hint'}
-POLICY_VERSION = 'dialogue-materials-5'
+POLICY_VERSION = 'dialogue-materials-6'
 
 
 def pure_conversational_reply(decision, last):
@@ -45,6 +45,18 @@ def ordinary_question(data, decision, last):
 
 
 def normalize(data, decision, last):
+    # A bare continuation has no object of its own. The latest completed
+    # exchange wins over an older awaiting_user Task and its pending JD card.
+    # Explicit JD/lesson requests still follow the ordinary intent route.
+    if (not last.get('operation') and not (last.get('image') or last.get('images'))
+            and last['content'].strip().rstrip('。！？!?') == '继续'):
+        previous = next((m for m in reversed(data['messages']) if m['role'] == 'coach'), None)
+        prior_run = data['runs'].get(previous.get('run_id'), {}) if previous else {}
+        if (prior_run.get('status') == 'completed' and prior_run.get('material_followup')
+                and (prior_run.get('intent') or {}).get('material_focus') == 'product'):
+            return IntentDecision(intents=['followup'], relation='continuation',
+                scope='conversation', answer_only=True, material_focus='product',
+                rationale='短句继续承接最近的产品讨论，不恢复旧 JD 分析。')
     if (decision.reply_purpose == 'product_information' and pure_conversational_reply(decision, last)
             and decision.programming_boundary == decision.resource_boundary == 'none'):
         return decision.model_copy(update=dict(intents=['capabilities'], conversation_kind='ordinary',

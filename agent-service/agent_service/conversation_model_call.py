@@ -7,6 +7,7 @@ import uuid
 from pydantic import ValidationError
 from agent_service.config import COACH_MODEL
 from agent_service.conversation_store import Superseded
+from agent_service.harness_store import now_iso
 from agent_service.openai_client import ModelCallError
 from agent_service.execution_policy import budget_scope
 from agent_service.service_diagnostics import diagnose
@@ -78,6 +79,7 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
             if not response or response["revision"] != revision or response["status"] not in {"streaming", "recovering"}:
                 response = dict(response_id=str(uuid.uuid4()), revision=revision, chunk_seq=0, text="", delta="", status="streaming")
                 active["active_response"] = response
+                active.update(stage="responding", user_summary="正在回答", updated_at=now_iso())
                 self.store.event(current, active, "response.started", "开始输出正文", payload={"response": dict(response)})
             if response["text"] == text and response["status"] != "recovering":
                 return

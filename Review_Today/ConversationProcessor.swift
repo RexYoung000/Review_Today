@@ -417,7 +417,8 @@ enum ConversationProcessor {
     }
 
     @MainActor
-    static func persist(_ page: [String: Any], session: AgentSession, context: ModelContext) throws {
+    static func persist(_ page: [String: Any], session: AgentSession, context: ModelContext,
+                        premergedCheckpoint: String? = nil) throws {
         guard try !SessionDeletion.contains(session.id, context: context) else { return }
         let sid = session.id
         guard uuid(page["session_id"]) == sid else { throw HarnessAPIError.http(409) }
@@ -473,25 +474,28 @@ enum ConversationProcessor {
             guard let id = uuid(raw["event_id"]), let runID = uuid(raw["run_id"]), let seq = raw["seq"] as? Int else { continue }
             if seq <= session.lastSessionEventSeq { continue }
             guard seq == session.lastSessionEventSeq + 1 else { throw HarnessAPIError.http(409) }
-            let event = SessionEventRecord(id: id, sessionID: session.id, runID: runID, seq: seq)
-            event.stage = raw["stage"] as? String ?? ""
-            event.summary = raw["user_summary"] as? String ?? ""
-            event.detail = raw["detail_summary"] as? String ?? ""
-            event.model = raw["model"] as? String ?? ""
-            event.attempt = raw["attempt"] as? Int ?? 1
-            event.durationMS = raw["duration_ms"] as? Int
-            event.errorCode = raw["error_code"] as? String
-            var audit = raw
-            if var auditPayload = audit["payload"] as? [String: Any],
-               var auditResponse = auditPayload["response"] as? [String: Any] {
-                auditResponse.removeValue(forKey: "text")
-                auditResponse.removeValue(forKey: "delta")
-                auditPayload["response"] = auditResponse
-                audit["payload"] = auditPayload
+            let occurredAt = date(raw["occurred_at"])
+            if raw["stage"] as? String != "response.delta" {
+                let event = SessionEventRecord(id: id, sessionID: session.id, runID: runID, seq: seq)
+                event.stage = raw["stage"] as? String ?? ""
+                event.summary = raw["user_summary"] as? String ?? ""
+                event.detail = raw["detail_summary"] as? String ?? ""
+                event.model = raw["model"] as? String ?? ""
+                event.attempt = raw["attempt"] as? Int ?? 1
+                event.durationMS = raw["duration_ms"] as? Int
+                event.errorCode = raw["error_code"] as? String
+                var audit = raw
+                if var auditPayload = audit["payload"] as? [String: Any],
+                   var auditResponse = auditPayload["response"] as? [String: Any] {
+                    auditResponse.removeValue(forKey: "text")
+                    auditResponse.removeValue(forKey: "delta")
+                    auditPayload["response"] = auditResponse
+                    audit["payload"] = auditPayload
+                }
+                event.payloadJSON = json(audit) // no repeated answer body or hidden reasoning
+                event.occurredAt = occurredAt
+                context.insert(event)
             }
-            event.payloadJSON = json(audit) // event metadata only; no repeated answer body or hidden reasoning
-            event.occurredAt = date(raw["occurred_at"])
-            context.insert(event)
             let payload = raw["payload"] as? [String: Any] ?? [:]
             let revision = raw["revision"] as? Int ?? 1
             let currentRevision = runs.first(where: { $0.id == runID })?.revision ?? revision
@@ -533,7 +537,7 @@ enum ConversationProcessor {
                 let state = response["status"] as? String ?? "streaming"
                 let chunk = response["chunk_seq"] as? Int ?? 0
                 if !blocked && (revision >= currentRevision || ["interrupted", "failed"].contains(state)) {
-                    let saved = messages.first(where: { $0.id == messageID }) ?? AgentMessage(id: messageID, sessionID: sid, role: "assistant", content: "", createdAt: event.occurredAt, deliveryStatus: "received")
+                    let saved = messages.first(where: { $0.id == messageID }) ?? AgentMessage(id: messageID, sessionID: sid, role: "assistant", content: "", createdAt: occurredAt, deliveryStatus: "received")
                     if !messages.contains(where: { $0.id == messageID }) { context.insert(saved); messages.append(saved) }
                     if revision >= saved.responseRevision && chunk > saved.responseChunkSeq {
                         saved.runID = runID
@@ -622,7 +626,8 @@ enum ConversationProcessor {
             session.lastSessionEventSeq = seq
         }
         if session.status != "archived" && (page["lifecycle_revision"] as? Int ?? 0) >= session.lifecycleRevision {
-            session.runPaused = page["paused"] as? Bool ?? false
+            let paused = page["paused"] as? Bool ?? false
+            if session.runPaused != paused { session.runPaused = paused }
         }
         projectPendingControls(pendingControls, runs: runs)
         for run in runs where steering.contains(run.id) {
@@ -630,14 +635,16 @@ enum ConversationProcessor {
             run.userSummary = "已收到补充，正在调整"
         }
         if session.status != "archived" && (page["lifecycle_revision"] as? Int ?? 0) >= session.lifecycleRevision {
-            if !pendingControls.contains(where: { $0.action == "set_mode" }), let mode = page["mode"] as? String { session.modePreset = mode }
+            if !pendingControls.contains(where: { $0.action == "set_mode" }), let mode = page["mode"] as? String,
+               session.modePreset != mode { session.modePreset = mode }
             if !pendingControls.contains(where: { $0.action == "set_thinking" }), let strength = page["thinking_strength"] as? String {
-                session.thinkingStrength = strength
+                if session.thinkingStrength != strength { session.thinkingStrength = strength }
             }
             if let offers = page["capture_offers"] as? [[String: Any]],
                let revision = page["capture_offers_revision"] as? Int, revision >= session.captureOffersRevision {
-                session.captureOffersJSON = json(offers)
-                session.captureOffersRevision = revision
+                let encoded = json(offers)
+                if session.captureOffersJSON != encoded { session.captureOffersJSON = encoded }
+                if session.captureOffersRevision != revision { session.captureOffersRevision = revision }
             }
             if !invalidMemoryInPage {
                 let pending = page["pending"] as? [String: Any]
@@ -646,12 +653,13 @@ enum ConversationProcessor {
                 let targetRun = runs.first { $0.id.uuidString.lowercased() == target }
                 let references = LearningMemory.array(targetTask?.memoryReferencesJSON ?? targetRun?.memoryReferencesJSON ?? "[]")
                 let valid = try references.isEmpty || LearningMemory.valid(references, sessions: context.fetch(FetchDescriptor<AgentSession>()), knowledge: context.fetch(FetchDescriptor<Knowledge>()))
-                session.pendingOperationJSON = valid ? pending.map(json) : nil
+                let projected = valid ? pending.map(json) : nil
+                if session.pendingOperationJSON != projected { session.pendingOperationJSON = projected }
             }
         }
         if let recovery = page["recovery"] as? [String: Any] {
-            session.checkpointJSON = try ConversationCheckpoint.merge(recovery, into: session.checkpointJSON,
-                                                                      sessionID: sid, cursor: session.lastSessionEventSeq)
+            session.checkpointJSON = try premergedCheckpoint ?? ConversationCheckpoint.merge(recovery, into: session.checkpointJSON,
+                                                                                              sessionID: sid, cursor: session.lastSessionEventSeq)
         }
         try LearningGoalContinuity.apply(page["goal_ownership"] as? [[String: Any]] ?? [], context: context)
         try context.save()

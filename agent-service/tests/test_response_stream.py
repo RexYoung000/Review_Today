@@ -31,6 +31,7 @@ class StreamingHarnessTests(unittest.TestCase):
             kw["on_partial"]({"message": "这是"})
             self.assertFalse([m for m in self.f.state()["messages"] if m["role"] == "coach"])
             self.assertIsNone(self.f.state()["pending"])
+            self.assertEqual(next(reversed(self.f.state()["runs"].values()))["user_summary"], "正在回答")
             kw["on_partial"]({"message": result.message})
         return result
 
@@ -58,6 +59,16 @@ class StreamingHarnessTests(unittest.TestCase):
             if event["stage"] == "response.delta":
                 self.assertEqual(event["payload"]["response"]["text"], "")
         self.assertEqual([m["content"] for m in acked["messages"] if m["role"] == "coach"], ["这是本轮真实回答。"])
+
+    def test_stream_text_page_omits_old_runs_but_keeps_running_signal(self):
+        page = {"events": [{"stage": "response.delta"}], "runs": [{"status": "running", "source_cache": "large"}],
+                "recovery": {"version": 3}, "last_seq": 7}
+        slim = main._stream_page(page)
+        self.assertEqual(slim["runs"], [])
+        self.assertTrue(slim["has_running_run"])
+        self.assertEqual(page["runs"][0]["source_cache"], "large")
+        stage = main._stream_page({**page, "events": [{"stage": "response.started"}]})
+        self.assertEqual(stage["runs"], page["runs"])
 
     def test_stop_fences_late_chunks_and_preserves_incomplete_history(self):
         accepted = self.f.send("RAG 是什么", drain=False)

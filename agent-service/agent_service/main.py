@@ -241,6 +241,14 @@ def session_events(session_id: str, after_seq: int = 0, recovery_version: int = 
                 pending=data["pending"], runs=[conversation_harness.public_run(r) for r in data["runs"].values()])
 
 
+def _stream_page(page: dict) -> dict:
+    """Keep stage pages complete; a text-only page needs no old Run snapshots."""
+    running = any(run["status"] in {"running", "accepted"} for run in page["runs"])
+    if page["events"] and all(event["stage"] == "response.delta" for event in page["events"]):
+        return {**page, "runs": [], "has_running_run": running}
+    return page
+
+
 @app.get("/v2/sessions/{session_id}/events/stream")
 async def stream_session_events(session_id: str, request: Request, after_seq: int = 0, recovery_version: int = 0):
     # Validate before headers; callers receive the same cursor errors as polling.
@@ -252,7 +260,7 @@ async def stream_session_events(session_id: str, request: Request, after_seq: in
             if page["events"] or page["recovery"]["version"] != recovered:
                 cursor = page["last_seq"]
                 recovered = page["recovery"]["version"]
-                yield f"id: {cursor}\nevent: session\ndata: {json.dumps(page, ensure_ascii=False)}\n\n"
+                yield f"id: {cursor}\nevent: session\ndata: {json.dumps(_stream_page(page), ensure_ascii=False)}\n\n"
             active = any(run["status"] in {"running", "accepted"} for run in page["runs"])
             queued = not page["paused"] and any(run["status"] == "queued" for run in page["runs"])
             if not active and not queued:

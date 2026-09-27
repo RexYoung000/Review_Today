@@ -123,19 +123,33 @@ final class ConversationSync {
 
     private func consume(_ page: [String: Any], session: AgentSession, context: ModelContext) async throws {
         guard try !SessionDeletion.contains(session.id, context: context) else { return }
+        var checkpoint: String?
+        if let recovery = page["recovery"] as? [String: Any] {
+            let savedCursor = session.lastSessionEventSeq
+            let savedCheckpoint = session.checkpointJSON
+            let cursor = max(savedCursor,
+                             (page["events"] as? [[String: Any]] ?? []).compactMap { $0["seq"] as? Int }.max() ?? 0)
+            checkpoint = try await ConversationCheckpoint.mergeOffMain(recovery, into: savedCheckpoint,
+                                                                       sessionID: session.id, cursor: cursor)
+            // A local stop/archive or checkpoint refresh may run while the
+            // detached merge is in flight. Rebase inside the save if so.
+            if session.lastSessionEventSeq != savedCursor || session.checkpointJSON != savedCheckpoint { checkpoint = nil }
+        }
         // No suspension until all content, revisions and cursor are durable.
         do {
-            try ConversationProcessor.persist(page, session: session, context: context)
-            session.syncError = nil
-            try context.save()
+            if session.syncError != nil { session.syncError = nil }
+            try ConversationProcessor.persist(page, session: session, context: context, premergedCheckpoint: checkpoint)
         } catch {
             context.rollback()
             throw error
         }
-        respondToLookups(context: context)
+        let events = page["events"] as? [[String: Any]] ?? []
+        if events.isEmpty || !events.allSatisfy({ $0["stage"] as? String == "response.delta" }) {
+            respondToLookups(context: context)
+        }
         ackTargets[session.id] = max(ackTargets[session.id] ?? 0, session.lastSessionEventSeq)
         scheduleACK(session.id)
-        let active = (page["runs"] as? [[String: Any]] ?? []).contains { ["running", "accepted"].contains($0["status"] as? String ?? "") }
+        let active = page["has_running_run"] as? Bool ?? (page["runs"] as? [[String: Any]] ?? []).contains { ["running", "accepted"].contains($0["status"] as? String ?? "") }
         if page["recovery"] == nil && !active && snapshotters[session.id] == nil {
             snapshotters[session.id] = Task {
                 defer { self.snapshotters[session.id] = nil }

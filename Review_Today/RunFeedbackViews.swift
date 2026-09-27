@@ -60,12 +60,13 @@ struct RunPhaseLine: View {
     @Environment(\.runway) private var runway
     @Environment(\.brandReduceMotion) private var systemReduced
     private var reduceMotion: Bool { reducedOverride ?? systemReduced }
-    private var running: Bool { MascotMotionConfiguration.phase(runStatus: run.status, started: run.startedAt != nil) == .thinking }
+    private var inProgress: Bool { MascotMotionConfiguration.phase(runStatus: run.status, started: run.startedAt != nil) == .thinking }
+    private var running: Bool { inProgress && run.stage != "responding" }
 
     var body: some View {
         RunMascotIndicator(active: running, reduced: reduceMotion,
             color: run.errorCode == nil ? runway.agent : .orange,
-            size: running ? CGSize(width: 64, height: 56) : CGSize(width: 12, height: 20))
+            size: inProgress ? CGSize(width: 64, height: 56) : CGSize(width: 12, height: 20))
             .accessibilityHidden(true)
     }
 }
@@ -81,7 +82,7 @@ private struct RunStatusText: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 0) {
             Text("（")
-            StageSummary(text: run.userSummary, animate: running && !reduced)
+            StageSummary(text: run.userSummary, animate: running && run.stage != "responding" && !reduced)
             if running {
                 LoadingEllipsis(reduced: reduced)
                 TimelineView(.periodic(from: .now, by: 1)) { tick in

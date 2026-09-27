@@ -7,7 +7,15 @@ enum ConversationCheckpoint {
         ConversationProcessor.object(raw)?["recovery_version"] as? Int ?? 0
     }
 
-    static func merge(_ recovery: [String: Any], into raw: String?, sessionID: UUID, cursor: Int) throws -> String {
+    static func mergeOffMain(_ recovery: [String: Any], into raw: String?, sessionID: UUID, cursor: Int) async throws -> String {
+        let encoded = try JSONSerialization.data(withJSONObject: recovery)
+        return try await Task.detached(priority: .userInitiated) {
+            guard let value = try JSONSerialization.jsonObject(with: encoded) as? [String: Any] else { throw invalid() }
+            return try merge(value, into: raw, sessionID: sessionID, cursor: cursor)
+        }.value
+    }
+
+    nonisolated static func merge(_ recovery: [String: Any], into raw: String?, sessionID: UUID, cursor: Int) throws -> String {
         let saved = ConversationProcessor.object(raw) ?? [:]
         var version = saved["recovery_version"] as? Int ?? 0
         var state = saved["checkpoint"] as? [String: Any] ?? [:]
@@ -34,7 +42,7 @@ enum ConversationCheckpoint {
                                             "recovery_version": version, "checkpoint": state])
     }
 
-    private static func apply(_ op: String, path: ArraySlice<String>, value: Any?, to object: inout [String: Any]) throws {
+    nonisolated private static func apply(_ op: String, path: ArraySlice<String>, value: Any?, to object: inout [String: Any]) throws {
         guard let key = path.first else {
             guard op == "set", let full = value as? [String: Any] else { throw invalid() }
             object = full
@@ -60,7 +68,7 @@ enum ConversationCheckpoint {
         }
     }
 
-    private static func invalid() -> HarnessAPIError {
+    nonisolated private static func invalid() -> HarnessAPIError {
         .server(code: "RT.SESSION.INVALID_RECOVERY_DELTA", message: "恢复记录未连续保存，正在重新同步")
     }
 }

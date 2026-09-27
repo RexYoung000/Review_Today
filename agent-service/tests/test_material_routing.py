@@ -190,6 +190,33 @@ class MaterialRoutingTests(unittest.TestCase):
         self.assertTrue(self.readiness[-1]['reads'])
         self.assertEqual(self.jd_inputs, [])
 
+    def test_bare_continue_after_product_discussion_does_not_reopen_old_jd(self):
+        self.jd()
+        self.f.send('请根据岗位正文分析面试：' + JD)
+        before = self.f.state()
+        task_id = before['active_task_id']
+        self.assertEqual(before['pending']['kind'], 'select_question')
+        self.f.decision = base.intent('material', 'followup', scope='conversation', material_focus='product')
+        self.f.send(PRODUCT + '\nEMOX 角色抽象，用户为什么要主动打开它？')
+        self.assertTrue(self.f.state()['runs'][next(reversed(self.f.state()['runs']))]['material_followup'])
+        analyzed = len(self.jd_inputs)
+        self.f.decision = base.intent('continue', 'material', 'goal', scope='continue_goal',
+                                      workflow='problem_solving', material_focus='jd', jd_request='analyze',
+                                      is_jd=True, target_task_id=task_id)
+        from agent_service.dialogue_routing import normalize
+        with_image = normalize(self.f.state(), self.f.decision, {'content': '继续', 'images': [{'name': '新材料.png'}]})
+        self.assertEqual(with_image.material_focus, 'jd', 'an attached image needs its own material routing')
+        continued = self.f.send('继续')
+        state = self.f.state()
+        routed = state['runs'][continued.run_id]
+        self.assertEqual(routed['intent']['material_focus'], 'product')
+        self.assertEqual(routed['intent']['scope'], 'conversation')
+        self.assertTrue(routed['material_followup'])
+        self.assertEqual(len(self.jd_inputs), analyzed)
+        self.assertEqual(state['active_task_id'], task_id)
+        self.assertEqual(state['pending'], before['pending'])
+        self.assertEqual(state['messages'][-1]['content'], '这是本轮真实回答。')
+
     def test_four_url_limit_records_unread_source_without_claiming_success(self):
         self.jd()
         urls = [URL + str(i) for i in range(5)]
