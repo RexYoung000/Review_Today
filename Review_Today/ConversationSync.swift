@@ -1,6 +1,21 @@
 import Foundation
 import SwiftData
 
+/// Drain the network while SwiftData and SwiftUI finish the previous frame.
+private actor ConversationPageInbox {
+    private var pages: [Data] = []
+    private var finished = false
+    private var failure: Error?
+
+    func append(_ page: Data) { pages.append(page) }
+    func finish(_ error: Error? = nil) { failure = error; finished = true }
+    func drain() -> (pages: [Data], finished: Bool, failure: Error?) {
+        let result = pages
+        pages.removeAll(keepingCapacity: true)
+        return (result, finished, failure)
+    }
+}
+
 struct ConversationEventSubscriptions {
     private var requested: [UUID: Int] = [:]
     private var completed: [UUID: Int] = [:]
@@ -217,15 +232,80 @@ extension AgentAPI {
             throw HarnessAPIError.http((response as? HTTPURLResponse)?.statusCode ?? 0)
         }
         guard response.mimeType == "text/event-stream" else { throw HarnessAPIError.http(415) }
-        for try await line in bytes.lines {
-            try Task.checkCancellation()
-            if line.hasPrefix("data:") {
-                // Our service emits exactly one compact JSON data line per event.
-                // Foundation's AsyncLineSequence omits empty separator lines, so
-                // waiting for a blank line would buffer every event until EOF.
-                let data = Data(String(line.dropFirst(5)).trimmingCharacters(in: .whitespaces).utf8)
-                if let page = try JSONSerialization.jsonObject(with: data) as? [String: Any] { try await receive(page) }
+        let inbox = ConversationPageInbox()
+        let (signals, signal) = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(1))
+        let reader = Task.detached {
+            do {
+                for try await line in bytes.lines {
+                    try Task.checkCancellation()
+                    guard line.hasPrefix("data:") else { continue }
+                    // Foundation omits SSE blank lines; each data line is a page.
+                    let data = Data(String(line.dropFirst(5)).trimmingCharacters(in: .whitespaces).utf8)
+                    await inbox.append(data)
+                    // Stage and terminal pages should not wait for the next tick.
+                    if let page = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                        let events = page["events"] as? [[String: Any]] ?? []
+                        if events.isEmpty || !events.allSatisfy({ $0["stage"] as? String == "response.delta" }) {
+                            signal.yield(())
+                        }
+                    }
+                }
+                await inbox.finish()
+            } catch {
+                await inbox.finish(error)
             }
+            signal.yield(())
+        }
+        let cadence = Task.detached {
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .milliseconds(80))
+                if !Task.isCancelled { signal.yield(()) }
+            }
+        }
+        defer { reader.cancel(); cadence.cancel(); signal.finish() }
+        for await _ in signals {
+            try Task.checkCancellation()
+            let batch = await inbox.drain()
+            var pending: [String: Any]?
+            var deltas: [[String: Any]] = []
+            func flush() async throws {
+                guard var latest = pending else { return }
+                latest["events"] = deltas
+                pending = nil
+                deltas.removeAll(keepingCapacity: true)
+                try await receive(latest)
+            }
+            for data in batch.pages {
+                guard let page = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { continue }
+                let events = page["events"] as? [[String: Any]] ?? []
+                let deltaOnly = !events.isEmpty && events.allSatisfy { $0["stage"] as? String == "response.delta" }
+                if deltaOnly {
+                    var combined = page
+                    if let old = pending?["recovery"] as? [String: Any],
+                       let newer = page["recovery"] as? [String: Any] {
+                        if newer["checkpoint"] != nil {
+                            // A full checkpoint supersedes earlier deltas.
+                        } else if old["checkpoint"] != nil {
+                            // A full base plus later deltas must be saved in
+                            // order; the wire format cannot carry both.
+                            try await flush()
+                        } else {
+                            let earlier = old["deltas"] as? [[String: Any]] ?? []
+                            let later = newer["deltas"] as? [[String: Any]] ?? []
+                            combined["recovery"] = ["version": newer["version"] ?? 0,
+                                                    "deltas": earlier + later]
+                        }
+                    }
+                    pending = combined
+                    deltas.append(contentsOf: events)
+                } else {
+                    try await flush()
+                    try await receive(page)
+                }
+            }
+            try await flush()
+            if let failure = batch.failure { throw failure }
+            if batch.finished { break }
         }
     }
 }

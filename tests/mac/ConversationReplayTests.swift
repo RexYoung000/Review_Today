@@ -170,6 +170,21 @@ struct ConversationReplayTests {
                          "real events must arrive before the entire response ends")
             precondition(delays.max()! < 0.2, "received events must not queue behind display animation")
             print("PASS: real SSE Unicode transport, incremental delivery, max controlled receive delay \(Int(delays.max()! * 1000)) ms")
+
+            let coalescedSession = UUID()
+            var checkpoint: String?
+            var batches: [[Int]] = []
+            try await AgentAPI.consumeSessionEvents(coalescedSession, after: 99, endpoint: endpoint) { page in
+                let events = page["events"] as? [[String: Any]] ?? []
+                let sequences = events.compactMap { $0["seq"] as? Int }
+                precondition(!sequences.isEmpty)
+                batches.append(sequences)
+                checkpoint = try await ConversationCheckpoint.mergeOffMain(page["recovery"] as! [String: Any],
+                    into: checkpoint, sessionID: coalescedSession, cursor: sequences.last!)
+            }
+            precondition(batches == [[1], [2, 3]], "adjacent text snapshots should merge without losing event order")
+            precondition(ConversationCheckpoint.version(checkpoint) == 3)
+            print("PASS: burst deltas coalesced; full checkpoint and successive recovery versions merged in order")
         }
     }
 }

@@ -469,6 +469,18 @@ enum ConversationProcessor {
             }
         }
         let events = (page["events"] as? [[String: Any]] ?? []).sorted { ($0["seq"] as? Int ?? 0) < ($1["seq"] as? Int ?? 0) }
+        // A batched delta page is a sequence of full text snapshots. Keep the
+        // cursor for every event, but publish only its newest visible snapshot.
+        let deltaOnly = !events.isEmpty && events.allSatisfy { $0["stage"] as? String == "response.delta" }
+        var newestDelta: [UUID: Int] = [:]
+        if deltaOnly {
+            for raw in events {
+                if let response = (raw["payload"] as? [String: Any])?["response"] as? [String: Any],
+                   let id = uuid(response["response_id"]), let seq = raw["seq"] as? Int {
+                    newestDelta[id] = seq
+                }
+            }
+        }
         for raw in events {
             guard uuid(raw["session_id"]) == sid else { throw HarnessAPIError.http(409) }
             guard let id = uuid(raw["event_id"]), let runID = uuid(raw["run_id"]), let seq = raw["seq"] as? Int else { continue }
@@ -533,7 +545,8 @@ enum ConversationProcessor {
                 session.setAutomaticTopicTags(tags)
             }
             if let response = payload["response"] as? [String: Any], let messageID = uuid(response["response_id"]),
-               let text = response["text"] as? String, !text.isEmpty {
+               let text = response["text"] as? String, !text.isEmpty,
+               (!deltaOnly || newestDelta[messageID] == seq) {
                 let state = response["status"] as? String ?? "streaming"
                 let chunk = response["chunk_seq"] as? Int ?? 0
                 if !blocked && (revision >= currentRevision || ["interrupted", "failed"].contains(state)) {
