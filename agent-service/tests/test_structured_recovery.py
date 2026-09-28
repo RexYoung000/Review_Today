@@ -77,6 +77,23 @@ class OutputDiagnosticTests(unittest.TestCase):
         self.assertNotIn('PRIVATE_SECRET',schema_repair_instruction(error))
         self.assertIn('字符计数',schema_repair_instruction(error))
 
+    def test_learning_plan_array_repair_separates_article_headings_from_internal_steps(self):
+        raw = json.dumps(dict(message='PRIVATE_SECRET', learning_plan=dict(
+            goal='分析虚构产品', steps=[f'第{i}节' for i in range(10)],
+            step_ids=[f'not-an-existing-id-{i}' for i in range(10)], success_check='按需核对')))
+        with self.assertRaises(llm.ModelCallError) as failure:
+            llm._validate_output(ConversationOutput, raw, response(raw))
+        error = failure.exception
+        diagnostic = json.loads(error.diagnostic)
+        self.assertEqual({tuple(d['field']) for d in diagnostic},
+                         {('learning_plan', 'steps'), ('learning_plan', 'step_ids')})
+        self.assertTrue(all(d['max_length'] == 8 for d in diagnostic))
+        instruction = schema_repair_instruction(error)
+        self.assertIn('按元素个数计', instruction)
+        self.assertIn('正文的小标题只放在 message', instruction)
+        self.assertIn('step_ids 返回空数组', instruction)
+        self.assertNotIn('PRIVATE_SECRET', instruction)
+
     def test_streaming_final_uses_same_diagnostic_and_does_not_accept_fence(self):
         raw = "```json\n" + greeting().model_dump_json() + "\n```"
         manager = MagicMock()

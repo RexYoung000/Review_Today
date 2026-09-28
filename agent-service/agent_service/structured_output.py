@@ -61,6 +61,13 @@ def schema_repair_instruction(error):
     length_hint = ""
     if any(isinstance(d, dict) and d.get("type") == "string_too_long" for d in details):
         length_hint = "字符串的 max_length 按字符计数，包含空格和标点，不是英文单词数。证据只取原文中最短的连续必要片段，不要重复整段。"
-    return ("输出结构校验失败：" + error.diagnostic + "\n" + common + length_hint +
+    array_hint = ""
+    if any(isinstance(d, dict) and d.get("type") == "too_long" for d in details):
+        array_hint = "数组的 max_length 按元素个数计；严格压到诊断给出的上限内，不能仅删去正文或只改一个超长数组。"
+        if any(isinstance(d, dict) and d.get("field") in (["learning_plan", "steps"], ["learning_plan", "step_ids"])
+               for d in details):
+            array_hint += ("learning_plan 是内部学习进度，不是用户要求的文章目录；正文的小标题只放在 message。"
+                           "新计划的 step_ids 返回空数组，已有计划仅填实际存在的步骤 ID。")
+    return ("输出结构校验失败：" + error.diagnostic + "\n" + common + length_hint + array_hint +
             "修复标出的字段并严格使用 schema 的枚举；工作流放 workflow，"
             "直接教学放 direct_teaching 布尔字段。")
