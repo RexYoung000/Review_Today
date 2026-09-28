@@ -273,6 +273,43 @@ class MaterialRoutingTests(unittest.TestCase):
         self.assertEqual(data['tasks'][task_id]['stage'], 'jd_analysis')
         self.assertNotIn('learning_plan', data['tasks'][task_id]['context'])
 
+    def test_retry_failed_article_reclassifies_and_retires_empty_learning_task(self):
+        article = '请按十个小标题写完整产品分析，每节给一个行为、指标和边界；不要教我课程。'
+        ack = self.f.send(article, drain=False)
+        task_id = str(uuid.uuid4())
+        with self.f.store.transaction(self.f.sid) as data:
+            task = asdict(HarnessTaskRecord(task_id=task_id, session_id=self.f.sid,
+                client_message_id=ack.message_id, content=article, content_type='text',
+                primary_language='zh', mode_preset='auto', mode='topic_exploration',
+                context={'conversation_managed': True, 'origin_run_id': ack.run_id, 'understanding': 'unknown'}))
+            task.update(status='retryable_failed', stage='accepted', error_code='RT.MODEL.SCHEMA')
+            data['tasks'][task_id] = task
+            data['active_task_id'] = task_id
+            run = data['runs'][ack.run_id]
+            run.update(task_id=task_id, status='retryable_failed', error_code='RT.MODEL.SCHEMA',
+                       dialogue_policy='dialogue-materials-6',
+                       intent=base.intent('goal', scope='learning', workflow='topic_exploration',
+                                          direct_teaching=True, learning_goal_ready=True).model_dump(),
+                       decision_mode='auto', decision_input_ids=list(run['input_ids']))
+            data['foreground'] = None
+            data['paused'] = True
+        self.f.decision = base.intent('question', scope='conversation', answer_only=True)
+        self.f.control(ack.run_id, 'retry')
+        self.f.harness.drain(self.f.sid)
+        data = self.f.state()
+        run = data['runs'][ack.run_id]
+        self.assertEqual(run['status'], 'completed')
+        self.assertEqual(run['intent']['intents'], ['question'])
+        self.assertIsNone(run['task_id'])
+        self.assertIsNone(data['active_task_id'])
+        self.assertEqual(data['tasks'][task_id]['stage'], 'routing_corrected')
+        self.assertEqual(data['tasks'][task_id]['status'], 'cancelled')
+        self.assertTrue(any(m['role'] == 'coach' and m.get('run_id') == ack.run_id for m in data['messages']))
+        reroute_inputs = [payload for schema, payload in self.f.calls if schema is base.IntentDecision]
+        self.assertTrue(reroute_inputs)
+        self.assertIsNone(reroute_inputs[-1]['task'])
+        self.assertEqual(reroute_inputs[-1]['session_goal'], '')
+
     def test_schema_repair_does_not_reread_or_change_question_version(self):
         self.jd()
         self.outputs = [ModelCallError('SCHEMA')]

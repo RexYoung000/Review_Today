@@ -3,7 +3,7 @@ from agent_service.schemas import IntentDecision
 
 LEGACY_QUESTION = '你希望继续刚才的内容，还是开始一个新的学习问题？'
 LOCAL_QUESTIONS = {'question', 'followup', 'example', 'hint'}
-POLICY_VERSION = 'dialogue-materials-6'
+POLICY_VERSION = 'dialogue-materials-7'
 
 
 def pure_conversational_reply(decision, last):
@@ -77,7 +77,7 @@ def retire_misrouted_task(harness, sid, rid, rev):
     with harness.store.transaction(sid, rid, rev) as data:
         run = data['runs'][rid]
         task = harness._task(data, run)
-        if not task or task['stage'] != 'clarify_goal' or task['status'] != 'awaiting_user':
+        if not task:
             return
         context = task['context']
         if any(context.get(k) for k in ('learning_plan', 'sources', 'draft', 'check_question', 'learning_outcome')):
@@ -88,9 +88,14 @@ def retire_misrouted_task(harness, sid, rid, rev):
         if not raw or not original or origin.get('decision_mode') != 'auto':
             return
         prior = IntentDecision.model_validate(raw)
-        location_only = (conversational_goal(prior) and origin.get('resolved_input') == task['content']
+        stale_clarification = task['stage'] == 'clarify_goal' and task['status'] == 'awaiting_user'
+        failed_same_run = (task['status'] == 'retryable_failed' and context.get('origin_run_id') == rid
+                           and task.get('error_code') == 'RT.MODEL.SCHEMA')
+        location_only = (stale_clarification and conversational_goal(prior)
+                         and origin.get('resolved_input') == task['content']
                          and (original.get('operation') or {}).get('kind') == 'continue_session')
-        if not (ordinary_question({'mode': 'auto'}, prior, original) or location_only):
+        if not ((stale_clarification or failed_same_run) and
+                (ordinary_question({'mode': 'auto'}, prior, original) or location_only)):
             return
         task.update(status='cancelled', stage='routing_corrected', required_action=None,
                     user_summary='已取消误建的学习任务')
@@ -104,10 +109,21 @@ def retire_misrouted_task(harness, sid, rid, rev):
             run['task_id'] = None
 
 
-def intent_context(context):
+def intent_context(context, *, retry_run_id=None):
     # Cross-session retrieval content must not determine current-session intent.
-    return {k: v for k, v in context.items() if k not in {
+    result = {k: v for k, v in context.items() if k not in {
         'memory_candidates', 'related_knowledge', 'related_learning', 'continuation_candidates'}}
+    task = result.get('task') or {}
+    progress = (task.get('context') or {})
+    if (retry_run_id and task.get('status') == 'retryable_failed'
+            and progress.get('origin_run_id') == retry_run_id
+            and not any(progress.get(k) for k in ('learning_plan', 'sources', 'draft', 'check_question', 'learning_outcome'))):
+        # A task inferred from this same failed request is not prior user intent.
+        # Re-evaluate the original words without feeding that stale inference
+        # back as the session's goal. Valid learning requests still say so.
+        result['task'] = None
+        result['session_goal'] = ''
+    return result
 
 
 def handle(harness, sid, rid, rev, decision, last):

@@ -650,15 +650,15 @@ class ConversationHarness(ConditionalTeaching):
         elif run.get("intent") and {"programming_boundary", "conversation_kind", "resource_boundary", "reply_feedback"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"] and self._intent_policy_matches(run):
             decision = IntentDecision.model_validate(run["intent"])
         elif any(not image_inputs.has_reading(m) for m in image_inputs.current_images(data, run)):
-            decision = image_inputs.resolve(self, sid, rid, rev, dialogue_routing.intent_context(context), INTENT_SYSTEM)
+            decision = image_inputs.resolve(self, sid, rid, rev, dialogue_routing.intent_context(context, retry_run_id=rid), INTENT_SYSTEM)
             data, run = self._snapshot(sid, rid, rev)
             context, last = self._context(data, run)
         elif self.judgments is not None:
             from agent_service.judgment_nodes import resolve_entry
-            decision = resolve_entry(self, sid, rid, rev, dialogue_routing.intent_context(context), INTENT_SYSTEM, ROUTER_MODEL)
+            decision = resolve_entry(self, sid, rid, rev, dialogue_routing.intent_context(context, retry_run_id=rid), INTENT_SYSTEM, ROUTER_MODEL)
         else:
             decision = self._call(sid, rid, rev, "intent", INTENT_SYSTEM,
-                                  json.dumps(dialogue_routing.intent_context(context), ensure_ascii=False), IntentDecision, ROUTER_MODEL)
+                                  json.dumps(dialogue_routing.intent_context(context, retry_run_id=rid), ensure_ascii=False), IntentDecision, ROUTER_MODEL)
         if self.judgments is not None or run.get("judgment_policy"):
             from agent_service.judgment_types import VERSION
             with self.store.transaction(sid, rid, rev) as current:
