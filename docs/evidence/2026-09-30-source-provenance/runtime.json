@@ -1,0 +1,11 @@
+{
+  "status": "ok",
+  "provider": "deepseek",
+  "jev": "off",
+  "roles": {
+    "router": "ready",
+    "coach": "ready",
+    "risk": "ready"
+  },
+  "service_pid": 74834
+}

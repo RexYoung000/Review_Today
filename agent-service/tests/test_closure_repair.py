@@ -1,6 +1,7 @@
 """Product regressions from the M1 audit. No provider or real user database."""
 import unittest
 import uuid
+from copy import deepcopy
 from unittest.mock import patch
 
 from tests import test_conversation_v2 as fixture
@@ -29,22 +30,74 @@ class ClosureRepairTests(unittest.TestCase):
             self.control(accepted.run_id, "retry")
             self.harness.drain(self.sid)
             self.assertEqual(fetch.call_count, 1, "retry must reuse the completed fetch step")
+            task = self.state()["tasks"][self.state()["active_task_id"]]
+            original = deepcopy(next(s for s in task["context"]["sources"] if s.get("url") == "https://example.com/rag"))
             self.decision = intent("followup", refresh_sources=True)
             fetch.return_value = ("公开资料", "版本二")
             with self.store.transaction(self.sid) as data:
                 data["tasks"][data["active_task_id"]]["context"]["selected_sources"] = ["https://example.com/rag"]
             self.send("刷新资料再解释")
+            self.assertEqual(fetch.call_count, 2, "explicit refresh must read a new page snapshot")
         task = self.state()["tasks"][self.state()["active_task_id"]]
-        self.assertEqual(task["context"]["sources"][0]["version"], 2)
-        self.assertEqual(task["context"]["source_history"][0]["content"], "版本一")
+        public = [s for s in task["context"]["sources"] if s.get("url") == "https://example.com/rag"]
+        self.assertEqual(len(public), 1)
+        self.assertEqual(public[0]["type"], "public_source")
+        self.assertEqual(public[0]["source_id"], original["source_id"])
+        self.assertEqual(public[0]["version"], 2)
+        self.assertEqual(public[0]["content"], "版本二")
+        self.assertEqual(task["context"]["source_history"], [original])
 
     def test_mixed_material_keeps_generated_identity(self):
         self.decision = intent("goal", workflow="source_learning", scope="learning", direct_teaching=True)
         self.send("直接教我 RAG")
+        original = deepcopy(self.state()["tasks"][self.state()["active_task_id"]]["context"]["sources"][0])
         self.decision = intent("material", "followup")
-        self.send("补充资料：检索可能采用关键词与向量混合")
+        result = self.send("补充资料：检索可能采用关键词与向量混合")
         task = self.state()["tasks"][self.state()["active_task_id"]]
         self.assertEqual({s["type"] for s in task["context"]["sources"]}, {"agent_generated", "user_material"})
+        self.assertEqual(next(s for s in task["context"]["sources"] if s["type"] == "agent_generated"), original)
+        self.assertEqual(self.state()["runs"][result.run_id]["answer_source_type"], "mixed")
+        answer = next(payload for schema, payload in reversed(self.calls)
+                      if schema is fixture.ConversationOutput)
+        self.assertEqual(next(s for s in answer["sources"] if s["type"] == "agent_generated"), original)
+
+    def test_mixed_source_retry_preserves_generated_identity_without_duplicates(self):
+        from agent_service.openai_client import ModelCallError
+        self.decision = intent("goal", workflow="source_learning", scope="learning", direct_teaching=True)
+        self.send("直接教我 RAG")
+        original = deepcopy(self.state()["tasks"][self.state()["active_task_id"]]["context"]["sources"][0])
+        self.decision = intent("material", "followup")
+        def fail_answer(*args, **kwargs):
+            if args[2] is fixture.ConversationOutput:
+                raise ModelCallError("TIMEOUT")
+            return self.model(*args, **kwargs)
+        with patch("agent_service.conversation.parse_model", side_effect=fail_answer):
+            result = self.send("补充资料：检索可能采用关键词与向量混合")
+        self.assertEqual(self.state()["runs"][result.run_id]["status"], "retryable_failed")
+        self.control(result.run_id, "retry")
+        self.harness.drain(self.sid)
+        sources = self.state()["tasks"][self.state()["active_task_id"]]["context"]["sources"]
+        self.assertEqual(len(sources), 2)
+        self.assertEqual(next(s for s in sources if s["type"] == "agent_generated"), original)
+        self.assertEqual(self.state()["runs"][result.run_id]["status"], "completed")
+        reopened = fixture.ConversationStore(fixture.HarnessStore(self.tmp.name + "/test.sqlite3"))
+        restored = reopened.get(self.sid)
+        self.assertEqual(restored["tasks"][restored["active_task_id"]]["context"]["sources"], sources)
+
+    def test_generated_lecture_is_not_evidence_for_missing_supplied_material(self):
+        from agent_service.conversation_materials import MaterialReadiness
+        self.decision = intent("goal", workflow="source_learning", scope="learning", direct_teaching=True)
+        self.send("直接教我 RAG")
+        original = deepcopy(self.state()["tasks"][self.state()["active_task_id"]]["context"]["sources"][0])
+        self.decision = intent("material", "followup")
+        with patch("agent_service.conversation.fetch_public_url", return_value=("登录", "请先登录")):
+            result = self.send("https://example.com/rag")
+        run = self.state()["runs"][result.run_id]
+        self.assertFalse(run["material_readiness"]["can_proceed"])
+        assessment = next(payload for schema, payload in reversed(self.calls) if schema is MaterialReadiness)
+        self.assertFalse(any(s["type"] == "agent_generated" for s in assessment["sources"]))
+        sources = self.state()["tasks"][self.state()["active_task_id"]]["context"]["sources"]
+        self.assertEqual(next(s for s in sources if s["type"] == "agent_generated"), original)
 
     def test_search_uses_minimal_public_topic_not_private_material(self):
         self.decision = intent("question", needs_verification=True, public_search_query="贷款基准利率 官方标准")

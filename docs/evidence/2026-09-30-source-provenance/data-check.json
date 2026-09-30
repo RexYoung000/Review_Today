@@ -1,0 +1,37 @@
+{
+  "service": {
+    "integrity": "ok",
+    "counts_unchanged": true,
+    "changed_tables": [],
+    "messages_unchanged": true,
+    "changed_session_fields": []
+  },
+  "app": {
+    "integrity": "ok",
+    "counts_unchanged": false,
+    "changed_tables": [
+      "ACHANGE",
+      "ATRANSACTION",
+      "ZLEARNINGTASK",
+      "Z_PRIMARYKEY"
+    ],
+    "learning_counts": {
+      "ZAGENTMESSAGE": 30,
+      "ZAGENTSESSION": 4,
+      "ZFSRSSTATE": 8,
+      "ZKNOWLEDGE": 8,
+      "ZQUESTION": 11,
+      "ZREVIEWATTEMPT": 3,
+      "ZREVIEWSESSION": 4
+    },
+    "task_changes": {
+      "task_count_before": 2,
+      "task_count_after": 2,
+      "changed_task_fields": [
+        "ZUPDATEDAT",
+        "Z_OPT"
+      ],
+      "changed_task_count": 2
+    }
+  }
+}

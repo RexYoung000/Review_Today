@@ -109,8 +109,6 @@ def prepare(h, sid, rid, rev, decision, reader):
         prior = {}
     sources, states = [], [dict(item) for item in prior.get('material_reads', [])]
     for source in prior.get('sources', []):
-        if source.get('type') == 'agent_generated':
-            continue
         if source.get('url') and source.get('content'):
             try:
                 _, body = readable_page((source.get('title', ''), source['content']))
@@ -185,9 +183,12 @@ def prepare(h, sid, rid, rev, decision, reader):
         and set(decision.intents) & {'material', 'continue', 'confirm', 'goal'} and not decision.direct_teaching)
     assessment = None
     if needs_check:
+        # Keep prior lectures as learning provenance, but they cannot establish
+        # that a requested external material has actually been supplied/read.
+        supplied_sources = [s for s in sources if s.get('type') != 'agent_generated']
         assessment = h._call(sid, rid, rev, 'material_readiness', READINESS,
             json.dumps(dict(kind='product' if product_focus else 'jd' if decision.is_jd else 'source', context=context,
-                            sources=answer_sources(sources), reads=states,
+                            sources=answer_sources(supplied_sources), reads=states,
                             original_request=last['content'] if product_focus else prior.get('material_goal', last['content'])), ensure_ascii=False), MaterialReadiness, ROUTER_MODEL)
     with h.store.transaction(sid, rid, rev) as current:
         active = current['runs'][rid]
