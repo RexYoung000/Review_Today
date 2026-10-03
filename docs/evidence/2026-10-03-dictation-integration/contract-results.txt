@@ -1,0 +1,8 @@
+CFFIXED_USER_HOME: /tmp/review-today-dictation-contract-home.w58ldbrt
+PASS: real hosted composer identity, hidden geometry/hit testing/focus, cancel draft/selection, processing insertion/save, no auto-send, single native undo
+Dictation contracts passed: permission, cancellation, retention, fallback notices, cached compatibility, timing, duplicate callbacks, append and undo
+  3 | // Run as an isolated AppKit/SwiftData test executable, not against user data.
+PASS: 12 scenarios, 6-card refresh, protected prefill/IME/undo, sidebar preference, native input, atomic first-send failure/retry, no empty Sessions, independent drafts/preferences, tags, partial persistence, activity
+PASS: initial/explicit/outside/locked/stale focus, protected text and selection, complete legacy titles and explanations without writes, exact capsule geometry, native book configuration
+PASS: deletion preview, rollback, scope revalidation, shared/unknown protection, batch purge, preview removal, durable offline tombstones and no index resurrection
+All 5 selected native contracts passed.

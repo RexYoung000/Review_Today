@@ -643,13 +643,11 @@ struct LearningWorkspace: View {
                     .font(.caption)
                     .foregroundStyle(.orange)
             }
-            if runtime.allowsSending, dictation.busy || dictation.pending || dictation.settling || dictation.error != nil || dictation.notice != nil {
-                HStack(spacing: 8) {
-                    MascotMotion(surface: .voice, phase: dictation.mascotPhase, level: dictation.level, reduced: reduceMotion)
-                        .frame(width: 120, height: 65)
-                    Text(dictation.title).font(.caption).foregroundStyle(.secondary)
-                    Spacer(minLength: 0)
-                }.accessibilityElement(children: .combine)
+            if runtime.allowsSending, !dictation.busy,
+               dictation.pending || dictation.error != nil || dictation.notice != nil {
+                Label(dictation.title, systemImage: dictation.error != nil ? "exclamationmark.circle" : dictation.pending ? "mic" : "checkmark.circle")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             if !draftImages.isEmpty {
                 LearningImageGrid(images: draftImages) { index in
@@ -659,28 +657,35 @@ struct LearningWorkspace: View {
                     .font(.caption2).foregroundStyle(.secondary)
             }
             if imageImports.isLoading { Text("正在准备图片…").font(.caption).foregroundStyle(.secondary) }
-            LearningComposerInput(text: $draft, focusRequest: focusRequest,
-                sessionID: selectedSessionID ?? draftSettings?.agentDraftID, placeholder: activeActionPlaceholder,
-                insertion: dictation.insertion ?? insertion, editable: !dictation.busy,
-                onInsertionApplied: acceptDictation, onSubmit: submitDraft,
-                preservesFocusOnClick: titleMascot.preservesInputFocus, onImagePaste: pasteImage, onImageDrop: dropImages, onImageDragTarget: { editorImageDropTargeted = $0 }) {
-                HStack {
-                  composerControls.disabled(dictation.busy)
-                  Spacer(minLength: 8)
-                  if runtime.allowsSending { dictationControls }
-                Button(action: submitDraft) {
-                    Image(systemName: "arrow.up")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(runway.onAction)
-                        .frame(width: 34, height: 34)
-                        .background(runway.action, in: Circle())
+            DictationComposerSurface(active: runtime.allowsSending && dictation.busy) {
+                LearningComposerInput(text: $draft, focusRequest: focusRequest,
+                    sessionID: selectedSessionID ?? draftSettings?.agentDraftID, placeholder: activeActionPlaceholder,
+                    insertion: dictation.insertion ?? insertion, editable: !dictation.busy,
+                    onInsertionApplied: acceptDictation, onSubmit: submitDraft,
+                    preservesFocusOnClick: titleMascot.preservesInputFocus, onImagePaste: pasteImage,
+                    onImageDrop: dropImages, onImageDragTarget: { editorImageDropTargeted = $0 }) {
+                    HStack {
+                        composerControls.disabled(dictation.busy)
+                        Spacer(minLength: 8)
+                        if runtime.allowsSending { dictationControls }
+                        Button(action: submitDraft) {
+                            Image(systemName: "arrow.up")
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundStyle(canSendDraft ? runway.onAction : runway.ink.opacity(0.35))
+                                .frame(width: 34, height: 34)
+                                .background(canSendDraft ? runway.action : runway.field, in: Circle())
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(!canSendDraft)
+                        .help(runtime.isPreview ? "界面预览不可发送" : "发送（Return 或 ⌘ Return）")
+                        .accessibilityLabel("发送")
+                    }
+                    .padding(.horizontal, 8)
                 }
-                .buttonStyle(.plain)
-                .disabled(dictation.busy || imageImports.isLoading || !runtime.allowsSending || (draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && draftImages.isEmpty))
-                .help(runtime.isPreview ? "界面预览不可发送" : "发送（Return 或 ⌘ Return）")
-                .accessibilityLabel("发送")
-                }
-                .padding(.horizontal, 8)
+            } status: {
+                DictationComposerStatus(phase: dictationPanelPhase, level: dictation.level,
+                    elapsed: dictation.elapsed, error: dictation.error,
+                    onCancel: cancelDictation, onFinish: dictation.finish, onRetry: retryDictation)
             }
             HStack(spacing: 10) {
                 if runtime.isPreview { Text(runtime.isPerformanceQA ? "独立测试数据 · 不发送" : "仅供排版检查 · 不发送、不持久保存") }
@@ -703,21 +708,43 @@ struct LearningWorkspace: View {
 
     @ViewBuilder
     private var dictationControls: some View {
-        if dictation.busy {
-            if dictation.phase == .recording {
-                Button("结束录音") { dictation.finish() }.buttonStyle(.borderless)
-            }
-            Button("取消听写") { dictation.cancel() }.buttonStyle(.borderless)
-        } else {
+        if !dictation.busy {
             ChromeIconButton(title: dictation.pending ? "重新录制听写" : "开始听写", symbol: "mic") {
                 insertion = nil; dictationOriginal = draft; dictation.start()
             }
                 .help("录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟")
             if dictation.pending {
-                Button("重试听写") { insertion = nil; dictationOriginal = draft; dictation.retry() }.buttonStyle(.borderless)
-                Button("删除录音") { dictation.cancel() }.buttonStyle(.borderless)
+                Button("重试听写", action: retryDictation).buttonStyle(.borderless)
+                Button("丢弃录音", action: cancelDictation).buttonStyle(.borderless)
             }
         }
+    }
+
+    private var canSendDraft: Bool {
+        !dictation.busy && !imageImports.isLoading && runtime.allowsSending &&
+            (!draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !draftImages.isEmpty)
+    }
+
+    private var dictationPanelPhase: DictationComposerPhase {
+        switch dictation.phase {
+        case .permission: .permission
+        case .recording: .recording
+        case .transcribing: .transcribing
+        case .cleaning: .cleaning
+        case .applying: .applying
+        case .idle: .failed
+        }
+    }
+
+    private func cancelDictation() {
+        dictation.cancel()
+        focusRequest += 1
+    }
+
+    private func retryDictation() {
+        insertion = nil
+        dictationOriginal = draft
+        dictation.retry()
     }
 
     private func acceptDictation(_ text: String) {

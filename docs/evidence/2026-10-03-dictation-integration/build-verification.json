@@ -1,0 +1,30 @@
+{
+  "build_exit_code": 0,
+  "app": "/tmp/review-today-dictation-b-build.6543dd8e/Build/Products/Debug/Review_Today.app",
+  "bundle_id": "Rex.Review-Today",
+  "minimum_system": "26.5",
+  "signature_verified": true,
+  "signing": {
+    "Identifier": "Rex.Review-Today",
+    "TeamIdentifier": "7NDKLL3UJK",
+    "Format": "app bundle with Mach-O thin (arm64)",
+    "AppleDevelopment": true
+  },
+  "binary_sha256": "391a4eaac61e2c51ea123f11f69bf020e867b3346352f49d136c1f1e8354c0cb",
+  "warning_lines": [
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayActivitySource.swift:97:31: warning: reference to captured var 'self' in concurrently-executing code; this is an error in the Swift 6 language mode [#SendableClosureCaptures]",
+    "    |                               `- warning: reference to captured var 'self' in concurrently-executing code; this is an error in the Swift 6 language mode [#SendableClosureCaptures]",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:182:13: warning: result of 'try?' is unused [#NoUsage]",
+    "    |             `- warning: result of 'try?' is unused [#NoUsage]",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ContextCapacityIndicator.swift:27:75: warning: call to main actor-isolated static method 'compact' in a synchronous nonisolated context [#ActorIsolatedCall]",
+    "    |                                                                         `- warning: call to main actor-isolated static method 'compact' in a synchronous nonisolated context [#ActorIsolatedCall]",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]",
+    "    |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:219:18: warning: call to main actor-isolated static method 'parseLine' in a synchronous nonisolated context [#ActorIsolatedCall]",
+    "    |                  `- warning: call to main actor-isolated static method 'parseLine' in a synchronous nonisolated context [#ActorIsolatedCall]"
+  ],
+  "initial_error_count": 2,
+  "recheck_exit_code": 0,
+  "recheck_error_count": 0,
+  "initial_diagnostics": "Two pre-existing-file Xcode scheduling diagnostics reported exit code 0; clean incremental recheck completed."
+}

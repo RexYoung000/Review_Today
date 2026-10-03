@@ -1,0 +1,27 @@
+{
+  "app": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "backup": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/dictation-b-local-backup-20261003-205356",
+  "binary_sha256": "391a4eaac61e2c51ea123f11f69bf020e867b3346352f49d136c1f1e8354c0cb",
+  "table_count_changes": {
+    "ACHANGE": [
+      555116,
+      555192
+    ],
+    "ATRANSACTION": [
+      542867,
+      542940
+    ]
+  },
+  "health": {
+    "status": "ok",
+    "jev": "off",
+    "model_roles": {
+      "router": "ready",
+      "coach": "ready",
+      "risk": "ready"
+    }
+  },
+  "native_check": "Original RAG conversation reopened; empty draft retained; dictation entry visible; empty send is visibly disabled. No real microphone or send.",
+  "source": "Normal local Debug; no fixture or Jev launch overrides",
+  "business_table_counts_unchanged": true
+}

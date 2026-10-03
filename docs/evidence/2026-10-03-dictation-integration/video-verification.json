@@ -1,0 +1,115 @@
+{
+  "scope": "Native current-process window captures of synthetic dictation interactions. No audio, real microphone, model or cloud request. Pixel changes confirm visible motion or UI changes, not transcription accuracy or real audio linkage.",
+  "verification": "ffprobe metadata and decoded presentation timestamps; ffmpeg null decode and framemd5 use -fps_mode passthrough -enc_time_base demux.",
+  "videos": [
+    {
+      "file": "listening-to-draft.mp4",
+      "original_file": "native-interaction-1791031924.mp4",
+      "bytes": 784338,
+      "sha256": "3583f5f08b717a531cdcaafe275d1b0e3e7fa577a90f6f818fa5f47decffd99d",
+      "codec": "h264",
+      "width": 1036,
+      "height": 732,
+      "container_duration_seconds": 21.183333,
+      "stream_duration_seconds": 21.183333,
+      "declared_average_frame_rate": "36960/1271",
+      "time_base": "1/600",
+      "audio_streams": 0,
+      "decoded_frame_count": 616,
+      "presentation_timestamps": {
+        "first_seconds": 0.0,
+        "last_seconds": 21.15,
+        "last_frame_duration_seconds": 0.001667,
+        "strictly_increasing": true,
+        "frame_interval_min_seconds": 0.031666,
+        "frame_interval_median_seconds": 0.033334,
+        "frame_interval_max_seconds": 0.046666,
+        "measured_average_fps": 29.078
+      },
+      "decode": {
+        "command": [
+          "ffmpeg",
+          "-v",
+          "error",
+          "-i",
+          "docs/evidence/2026-10-03-dictation-integration/listening-to-draft.mp4",
+          "-map",
+          "0:v:0",
+          "-fps_mode",
+          "passthrough",
+          "-enc_time_base",
+          "demux",
+          "-f",
+          "null",
+          "-"
+        ],
+        "exit_code": 0,
+        "stderr": ""
+      },
+      "dynamic_pixels": {
+        "method": "Decoded framemd5 with original timestamp time base; no frame resampling.",
+        "exit_code": 0,
+        "stderr": "",
+        "frames_hashed": 616,
+        "unique_frame_hashes": 420,
+        "consecutive_pixel_changes": 481,
+        "nonempty_and_changing": true
+      }
+    },
+    {
+      "file": "reduced-cancel-retry.mp4",
+      "original_file": "native-interaction-1791031975.mp4",
+      "bytes": 1096874,
+      "sha256": "d5b04fba275ed4bc5b27a65d73a4c5d07cbc6a57582fe6385fa46116b24e0ef8",
+      "codec": "h264",
+      "width": 436,
+      "height": 792,
+      "container_duration_seconds": 45.963333,
+      "stream_duration_seconds": 45.963333,
+      "declared_average_frame_rate": "800400/27589",
+      "time_base": "1/600",
+      "audio_streams": 0,
+      "decoded_frame_count": 1334,
+      "presentation_timestamps": {
+        "first_seconds": 0.0,
+        "last_seconds": 45.946667,
+        "last_frame_duration_seconds": 0.033333,
+        "strictly_increasing": true,
+        "frame_interval_min_seconds": 0.031666,
+        "frame_interval_median_seconds": 0.033334,
+        "frame_interval_max_seconds": 0.04,
+        "measured_average_fps": 29.0119
+      },
+      "decode": {
+        "command": [
+          "ffmpeg",
+          "-v",
+          "error",
+          "-i",
+          "docs/evidence/2026-10-03-dictation-integration/reduced-cancel-retry.mp4",
+          "-map",
+          "0:v:0",
+          "-fps_mode",
+          "passthrough",
+          "-enc_time_base",
+          "demux",
+          "-f",
+          "null",
+          "-"
+        ],
+        "exit_code": 0,
+        "stderr": ""
+      },
+      "dynamic_pixels": {
+        "method": "Decoded framemd5 with original timestamp time base; no frame resampling.",
+        "exit_code": 0,
+        "stderr": "",
+        "frames_hashed": 1334,
+        "unique_frame_hashes": 753,
+        "consecutive_pixel_changes": 864,
+        "nonempty_and_changing": true
+      }
+    }
+  ],
+  "passed": true
+}
