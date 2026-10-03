@@ -68,6 +68,11 @@ def schema_repair_instruction(error):
                for d in details):
             array_hint += ("learning_plan 是内部学习进度，不是用户要求的文章目录；正文的小标题只放在 message。"
                            "新计划的 step_ids 返回空数组，已有计划仅填实际存在的步骤 ID。")
-    return ("输出结构校验失败：" + error.diagnostic + "\n" + common + length_hint + array_hint +
+    plan_hint = ""
+    if any(isinstance(d, dict) and (d.get("field") == ["learning_plan"] and d.get("type") == "value_error"
+            or d.get("field") == ["learning_plan", "success_check"] and d.get("type") == "missing") for d in details):
+        plan_hint = ("learning_plan 的 goal 和 success_check 是必填字符串；steps 和 step_conditions 都是字符串数组，"
+                     "每个步骤须有一条非空的对应条件，两个数组元素数量必须相同。step_conditions 不能替代 success_check。")
+    return ("输出结构校验失败：" + error.diagnostic + "\n" + common + length_hint + array_hint + plan_hint +
             "修复标出的字段并严格使用 schema 的枚举；工作流放 workflow，"
             "直接教学放 direct_teaching 布尔字段。")

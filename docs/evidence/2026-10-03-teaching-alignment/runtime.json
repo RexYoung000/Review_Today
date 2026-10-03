@@ -1,0 +1,30 @@
+{
+  "pid": "66656",
+  "status": "ok",
+  "provider": "deepseek",
+  "jev": {
+    "status": "off",
+    "model": null,
+    "entry_rule": null
+  },
+  "model_roles": {
+    "router": {
+      "model": "deepseek-flash",
+      "status": "ready",
+      "streaming": "not_applicable",
+      "checked_at": 1790990471.0684202
+    },
+    "coach": {
+      "model": "deepseek-v4-flash",
+      "status": "ready",
+      "streaming": "ready",
+      "checked_at": 1790990471.06904
+    },
+    "risk": {
+      "model": "deepseek-v4-pro",
+      "status": "ready",
+      "streaming": "not_applicable",
+      "checked_at": 1790990471.533875
+    }
+  }
+}

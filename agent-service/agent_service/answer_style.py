@@ -35,6 +35,36 @@ def with_question(text: str, question: str, title: str = "想一想") -> str:
     return text.rstrip() + f"\n\n---\n\n### {title}\n\n" + question.strip()
 
 
+def separate_lesson_check(text: str, question: str) -> tuple[str, str]:
+    """Recover only our explicit trailing check paragraph, never infer a question."""
+    if question.strip():
+        return text, question
+    lines = text.splitlines(keepends=True)
+    fence, markers = None, []
+    for index, line in enumerate(lines):
+        match = re.match(r"^\s*(`{3,}|~{3,})", line)
+        if match:
+            token = match.group(1)
+            if fence is None:
+                fence = token
+            elif token[0] == fence[0] and len(token) >= len(fence):
+                fence = None
+            continue
+        if fence is None and re.fullmatch(r" {0,3}#{2,3}[ \t]+想一想[ \t]*", line.rstrip("\r\n")):
+            markers.append(index)
+    if len(markers) != 1 or fence is not None:
+        return text, question
+    marker = markers[0]
+    paragraph = "".join(lines[marker + 1:]).strip()
+    if (not paragraph or re.search(r"\n\s*\n", paragraph)
+            or re.search(r"(?m)^\s*(?:[#>`~]|[-*]\s|\d+[.)、]\s)", paragraph)):
+        return text, question
+    body = "".join(lines[:marker]).rstrip()
+    if body.endswith("\n---"):
+        body = body[:-4].rstrip()
+    return body, paragraph
+
+
 def render_jd(value: dict) -> str:
     """The final answer and its public streaming preview use identical headings."""
     parts = [value.get("role_goal", "") if isinstance(value.get("role_goal"), str) else ""]

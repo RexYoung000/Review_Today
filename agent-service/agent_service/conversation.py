@@ -17,7 +17,7 @@ from datetime import datetime
 from agent_service.capture import run_capture
 from agent_service.capture.fetch import looks_like_url
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL
-from agent_service.answer_style import render_jd, render_sources, with_question
+from agent_service.answer_style import render_jd, render_sources, separate_lesson_check, with_question
 from agent_service.source_links import bound_source_links
 from agent_service.conversation_prompts import COACH_SYSTEM, EVALUATION_SYSTEM, INTENT_SYSTEM
 from agent_service.conditional_teaching import ConditionalTeaching
@@ -30,7 +30,7 @@ from agent_service.call_errors import CallError, WebToolError
 from agent_service.web_tools import web_search_text, web_search_capability, read_public_url as fetch_public_url
 from agent_service.model_capabilities import require_model
 from agent_service.service_diagnostics import diagnose
-from agent_service.learning_progress import set_plan, current_step, record_understanding, advance, outcome
+from agent_service.learning_progress import set_plan, current_step, step_target, record_understanding, advance, outcome
 from agent_service.learning_memory import make_evidence, select_references, merge_references
 from agent_service.execution_policy import budget_scope, alternatives
 from agent_service.context_budget import configured_window
@@ -986,7 +986,7 @@ class ConversationHarness(ConditionalTeaching):
                 self._publish(sid, rid, rev, output.message, stage="clarify_goal",
                               required={"type": "respond", "prompt": "补充学习方向", "options": []})
         elif full_goal and workflow in {"source_learning", "topic_exploration"}:
-            self._respond(sid, rid, rev, decision, "按目标分段教学，先给学习地图和第一段讲解；检查可选。", node="lesson", teaching=True,
+            self._respond(sid, rid, rev, decision, "按目标分段教学：先用简短定义或直观例子说明主题，再给紧凑地图并讲当前第一步；检查题只覆盖本步已教内容，检查可选。", node="lesson", teaching=True,
                           generated=decision.direct_teaching or "material" not in intents)
         else:
             self._respond(sid, rid, rev, decision, "直接回答本轮问题，深入学习可选；不要强制进入完整训练。", node="answer")
@@ -1234,14 +1234,22 @@ class ConversationHarness(ConditionalTeaching):
             current["runs"][rid]["allowed_source_urls"] = readable_urls
         from agent_service.source_projection import answer_sources
         instruction += "\n标有 content_excerpted 的网页仅向本次回答提供节选；结合 evidence 的核验范围回答，不补写未见原文或声称节选是全文。"
+        lesson_target = step_target(task) if teaching and task else None
+        if lesson_target and not task["context"].get("requires_mastery"):
+            instruction += ("\n本轮实际要讲解和检查的步骤以 learning_step 为准。用户要求继续或跳过时，程序已选择应讲步骤，"
+                            "不能因历史检查未答或未通过而留在旧步骤；最多一句承接旧疑点，主体讲当前步骤，检查题也只针对当前步骤。"
+                            "历史 check_question 和 last_lesson 不是本轮要重复的题目或讲义；尚未验证的旧步骤保持未知。")
         output_schema, output_system = ConversationOutput, COACH_SYSTEM
         if self.judgments is not None and teaching:
             from agent_service.judgment_grading import ScoredConversationOutput, RUBRIC_RULE
             output_schema, output_system = ScoredConversationOutput, COACH_SYSTEM + RUBRIC_RULE
         output = self._call(sid, rid, rev, node, output_system,
                             json.dumps(dict(instruction=instruction, context=context, sources=answer_sources(sources),
+                                            learning_step=lesson_target,
                                             source_type=source_type, evidence=coach_evidence,
                                             verification_notice=run.get("verification_notice", "")), ensure_ascii=False), output_schema)
+        if teaching:
+            output.message, output.check_question = separate_lesson_check(output.message, output.check_question)
         if self.judgments is not None and teaching:
             from agent_service.judgment_quality import checked_question, synchronize_question
             old_question = output.check_question
@@ -1281,7 +1289,8 @@ class ConversationHarness(ConditionalTeaching):
                 task["context"]["evidence"] = evidence
                 if teaching:
                     if output.learning_plan and (not task["context"].get("learning_plan") or "correction" in decision.intents):
-                        set_plan(task, output.learning_plan.steps, output.learning_plan.success_check, output.learning_plan.step_ids)
+                        set_plan(task, output.learning_plan.steps, output.learning_plan.success_check, output.learning_plan.step_ids,
+                                 step_conditions=output.learning_plan.step_conditions)
                     elif not task["context"].get("learning_plan"):
                         set_plan(task, ["当前资料讲解"], output.check_question)
                     task["context"].setdefault("understanding_by_lesson", {})[str(task["context"].get("lesson_index", 0))] = task["context"].get("understanding", "unknown")
@@ -1354,7 +1363,9 @@ class ConversationHarness(ConditionalTeaching):
             task["context"].update(reference_answer=output.answer.direct_answer, requires_mastery=True,
                                     evidence=evidence, calibration_question=output.analysis.calibration_question)
             set_plan(task, output.learning_plan.steps + ["独立作答", "迁移追问"], output.learning_plan.success_check,
-                     (output.learning_plan.step_ids or [""] * len(output.learning_plan.steps)) + ["", ""])
+                     (output.learning_plan.step_ids or [""] * len(output.learning_plan.steps)) + ["", ""],
+                     step_conditions=(output.learning_plan.step_conditions + ["能独立回答当前问题并说明依据", "能将已教原理应用于不同情境并说明局限"]
+                                      if output.learning_plan.step_conditions else None))
             if self.judgments is not None:
                 from agent_service.judgment_grading import bind_standard
                 bind_standard(task, output.analysis.calibration_question, output.analysis.check_scoring_spec)
@@ -1369,6 +1380,19 @@ class ConversationHarness(ConditionalTeaching):
     def _evaluate(self, sid, rid, rev, decision, last):
         data, run = self._snapshot(sid, rid, rev)
         task = self._task(data, run)
+        ctx = task["context"]
+        if ctx.get("requires_mastery"):
+            reference = "\n\n".join(dict.fromkeys(part for part in
+                (ctx.get("reference_answer", ""), ctx.get("last_lesson", "")) if part and part.strip()))
+        else:
+            reference = ctx.get("last_lesson") or ctx.get("reference_answer") or ""
+        if not reference.strip():
+            self._publish(sid, rid, rev, "这道题缺少对应的讲解依据，暂时不能据此判断你是否掌握。可以请我补讲这一节，也可以继续下一节；这次不会记为验证通过。",
+                          stage=task["stage"], required={"type": "respond", "prompt": "补讲这一节或继续下一节", "options": []})
+            return
+        learning_step = step_target(task)
+        if learning_step:
+            learning_step.pop("completion_condition", None)  # A lesson objective is not this question's rubric.
         result = None
         evaluation_schema, evaluation_system = MasteryEvaluation, EVALUATION_SYSTEM
         if self.judgments is not None:
@@ -1378,7 +1402,7 @@ class ConversationHarness(ConditionalTeaching):
         if result is None:
             result = self._call(sid, rid, rev, "evaluate", evaluation_system,
                             json.dumps(dict(question=task["context"].get("check_question") or task["content"],
-                                            reference=task["context"].get("reference_answer", "") or (task["context"].get("last_lesson", "") if self.judgments else ""),
+                                            reference=reference, learning_step=learning_step,
                                             answer=last["content"]), ensure_ascii=False), evaluation_schema)
         effective_pass = result.passed and not task["context"].get("hint_used", False)
         will_ask_followup = not effective_pass or (task["context"].get("requires_mastery") and not (

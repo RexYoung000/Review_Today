@@ -3,10 +3,14 @@ import uuid
 from copy import deepcopy
 
 
-def set_plan(task, titles, success_check="", step_ids=None):
+def set_plan(task, titles, success_check="", step_ids=None, *, step_conditions=None):
     old = task["context"].get("learning_plan") or {}
     old_steps = {s["title"]: s for s in old.get("steps", [])}
     by_id = {s["id"]: s for s in old.get("steps", [])}
+    conditions = step_conditions or []
+    if conditions and (len(conditions) != len(titles)
+                       or any(not isinstance(condition, str) or not condition.strip() for condition in conditions)):
+        raise ValueError("RT.PLAN.INVALID_STEP_CONDITIONS")
     step_ids = step_ids or [""] * len(titles)
     if not by_id and len(step_ids) == len(titles):
         # There is no prior evidence to inherit on first creation. Model-generated
@@ -16,18 +20,21 @@ def set_plan(task, titles, success_check="", step_ids=None):
     if len(step_ids) != len(titles) or len(set(explicit)) != len(explicit) or any(value not in by_id for value in explicit):
         raise ValueError("RT.PLAN.INVALID_STEP_REFERENCE")
     steps, seen = [], set()
-    for title, identity in zip(titles, step_ids):
+    for index, (title, identity) in enumerate(zip(titles, step_ids)):
         if not title.strip() or title in seen or len(steps) == 10:
             continue
         seen.add(title)
         prior = by_id.get(identity) if identity else old_steps.get(title)
         step = deepcopy(prior) if prior else dict(
-            id=str(uuid.uuid4()), state="pending", understanding="unknown", message_ids=[], completion_condition=success_check)
+            id=str(uuid.uuid4()), state="pending", understanding="unknown", message_ids=[], completion_condition="")
         if any(s["id"] == step["id"] for s in steps):
             raise ValueError("RT.PLAN.INVALID_STEP_REFERENCE")
         step["title"] = title
+        if conditions:
+            step["completion_condition"] = conditions[index]
         steps.append(step)
-    unchanged = [(s["id"], s["title"]) for s in old.get("steps", [])] == [(s["id"], s["title"]) for s in steps]
+    unchanged = [(s["id"], s["title"], s.get("completion_condition", "")) for s in old.get("steps", [])] == [
+        (s["id"], s["title"], s.get("completion_condition", "")) for s in steps]
     task["context"]["learning_plan"] = dict(
         id=task["context"].get("goal_ownership", {}).get("goal_id", task["task_id"]), version=old.get("version", 0) + (0 if unchanged else 1),
         goal=task["context"].get("learning_goal") or task["content"], steps=steps,
@@ -39,6 +46,19 @@ def set_plan(task, titles, success_check="", step_ids=None):
 def current_step(task):
     plan = task["context"].get("learning_plan") or {}
     return next((s for s in plan.get("steps", []) if s["id"] == plan.get("current_step_id")), None)
+
+
+def step_target(task):
+    """Project the current objective without promoting legacy global placeholders."""
+    step = current_step(task)
+    if not step:
+        return None
+    target = {key: step.get(key, "") for key in ("id", "title", "completion_condition")}
+    plan = task["context"].get("learning_plan") or {}
+    if len(plan.get("steps", [])) > 1 and all(
+            item.get("completion_condition") == plan.get("success_check") for item in plan["steps"]):
+        target["completion_condition"] = ""
+    return target
 
 
 def record_understanding(task, understanding, skipped=False):

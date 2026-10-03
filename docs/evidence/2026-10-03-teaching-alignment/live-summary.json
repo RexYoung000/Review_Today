@@ -1,0 +1,51 @@
+[
+  {
+    "batch": "a",
+    "automatic_result": "FAIL",
+    "turns": 1,
+    "model_calls": 4,
+    "semantic_review": "failed schema"
+  },
+  {
+    "batch": "b",
+    "automatic_result": "FAIL",
+    "turns": 4,
+    "model_calls": 11,
+    "semantic_review": "failed unbound check"
+  },
+  {
+    "batch": "c",
+    "automatic_result": "PASS",
+    "turns": 4,
+    "model_calls": 11,
+    "semantic_review": "failed lesson target despite structural PASS"
+  },
+  {
+    "batch": "d",
+    "automatic_result": "FAIL",
+    "turns": 4,
+    "model_calls": 11,
+    "semantic_review": "failed continuation routing"
+  },
+  {
+    "batch": "e",
+    "automatic_result": "PASS",
+    "turns": 4,
+    "model_calls": 11,
+    "semantic_review": "flow aligned; grading criterion overreach found"
+  },
+  {
+    "batch": "f",
+    "automatic_result": "FAIL",
+    "turns": 2,
+    "model_calls": 0,
+    "semantic_review": "fixture setup failed before model call"
+  },
+  {
+    "batch": "g",
+    "automatic_result": "PASS",
+    "turns": 2,
+    "model_calls": 4,
+    "semantic_review": "short correct answer passed; misconception rejected without whole-lesson criterion"
+  }
+]

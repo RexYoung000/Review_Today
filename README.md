@@ -4,6 +4,8 @@ Review Today 是“个人学习教练”的项目仓库。它帮助用户理解�
 
 ## 当前阶段
 
+2026-10-03 教学与检查对齐修复已完成：首轮先建立直观概念，教学和题目绑定当前步骤，判题使用真实讲解，新计划分别保存步骤完成条件；继续／跳过不升级掌握。全量受控回归 886 passed、4 skipped、365 subtests passed，最终定向 126 passed、31 subtests passed。隔离真实多轮及正误答案对照已检查，开发中的失败一并保留；日常服务已加载最终代码，模型 ready、Jev off。[修复、证据与体验入口](docs/evidence/2026-10-03-teaching-alignment/README.md)。最终原生体验及 M1 总体验收仍开放。
+
 2026-09-30 当前开发基线仍在 `codex/jev-comparison-evaluation`，近期增量尚未合入 main；下方“已合入 main／分支清理”的 9 月 6 日记录属于较早批次。来源回归收尾已完成：补材料时保留生成讲义身份，材料充分性检查不将讲义当外部证据；网页刷新本身正确，已修正依赖列表顺序的断言并加强版本／历史检查。全量受控回归 866 passed、4 skipped、354 subtests passed；日常服务已重新加载并就绪，原学习数据保持。[本批证据与验收入口](docs/evidence/2026-09-30-source-provenance/README.md)。M1 总体验收保持开放。
 
 当前采用**本地自动化测试与真实 Mac 验收**。按 Rex 的选择停用 GitHub Actions 云端测试，不再在 push / PR 时启动云端任务。服务回归、Mac 契约、旧库迁移与构建检查仍按改动范围在本机执行，测试入口见下方；GitHub 继续承载代码、PR 和 Issue。

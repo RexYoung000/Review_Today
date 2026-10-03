@@ -1,0 +1,212 @@
+{
+  "service": {
+    "agent_memory_policy_v2": {
+      "before_count": 32,
+      "after_count": 32,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "agent_session_deletions": {
+      "before_count": 0,
+      "after_count": 0,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "agent_sessions_v2": {
+      "before_count": 32,
+      "after_count": 32,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "harness_tasks": {
+      "before_count": 12,
+      "after_count": 12,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    }
+  },
+  "mac": {
+    "ACHANGE": {
+      "before_count": 528608,
+      "after_count": 528904,
+      "exact_same": false,
+      "business_same": false,
+      "ignored_sync_columns": []
+    },
+    "ATRANSACTION": {
+      "before_count": 516501,
+      "after_count": 516797,
+      "exact_same": false,
+      "business_same": false,
+      "ignored_sync_columns": []
+    },
+    "ATRANSACTIONSTRING": {
+      "before_count": 21,
+      "after_count": 21,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZAGENTMESSAGE": {
+      "before_count": 10,
+      "after_count": 10,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZAGENTRUN": {
+      "before_count": 5,
+      "after_count": 5,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZAGENTRUNCONTROL": {
+      "before_count": 0,
+      "after_count": 0,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZAGENTSESSION": {
+      "before_count": 4,
+      "after_count": 4,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZAPPSETTINGS": {
+      "before_count": 1,
+      "after_count": 1,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZCAPTURETASK": {
+      "before_count": 0,
+      "after_count": 0,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZFSRSSTATE": {
+      "before_count": 8,
+      "after_count": 8,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZKNOWLEDGE": {
+      "before_count": 8,
+      "after_count": 8,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZKNOWLEDGEREFERENCE": {
+      "before_count": 0,
+      "after_count": 0,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZLEARNINGTASK": {
+      "before_count": 2,
+      "after_count": 2,
+      "exact_same": false,
+      "business_same": true,
+      "ignored_sync_columns": [
+        "ZUPDATEDAT",
+        "Z_OPT"
+      ]
+    },
+    "ZQUESTION": {
+      "before_count": 11,
+      "after_count": 11,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZREVIEWATTEMPT": {
+      "before_count": 3,
+      "after_count": 3,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZREVIEWSESSION": {
+      "before_count": 4,
+      "after_count": 4,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZSESSIONEVENTRECORD": {
+      "before_count": 75,
+      "after_count": 75,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZSESSIONFOLDER": {
+      "before_count": 0,
+      "after_count": 0,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZSESSIONSUMMARYRECORD": {
+      "before_count": 0,
+      "after_count": 0,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZSOURCE": {
+      "before_count": 1,
+      "after_count": 1,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZSOURCEREFERENCE": {
+      "before_count": 2,
+      "after_count": 2,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "ZTASKEVENTRECORD": {
+      "before_count": 0,
+      "after_count": 0,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "Z_METADATA": {
+      "before_count": 1,
+      "after_count": 1,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "Z_MODELCACHE": {
+      "before_count": 1,
+      "after_count": 1,
+      "exact_same": true,
+      "business_same": true,
+      "ignored_sync_columns": []
+    },
+    "Z_PRIMARYKEY": {
+      "before_count": 22,
+      "after_count": 22,
+      "exact_same": false,
+      "business_same": false,
+      "ignored_sync_columns": []
+    }
+  }
+}

@@ -461,8 +461,17 @@ class LearningPlan(BaseModel):
     goal: str
     steps: list[str] = Field(min_length=1, max_length=8)
     success_check: str
+    step_conditions: list[str] = Field(default_factory=list, max_length=8,
+        description="Observable completion condition for each step, aligned with steps. Describe only that step's capability, not the overall success_check. Empty list is supported for legacy plans.")
     # Existing IDs only. Empty entries create new steps; title edits retain ID.
     step_ids: list[str] = Field(default_factory=list, max_length=8, description="Only IDs of existing steps from context, aligned with steps. For a new plan return an empty list. Never invent existing IDs.")
+
+    @model_validator(mode="after")
+    def aligned_step_conditions(self):
+        if self.step_conditions and (len(self.step_conditions) != len(self.steps)
+                                     or any(not condition.strip() for condition in self.step_conditions)):
+            raise ValueError("step_conditions must contain one nonempty condition per step")
+        return self
 
 
 class LessonStep(BaseModel):

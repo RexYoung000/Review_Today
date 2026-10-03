@@ -1,11 +1,23 @@
 import unittest
 from types import SimpleNamespace as NS
-from agent_service.answer_style import with_question, render_jd, render_sources
+from agent_service.answer_style import with_question, render_jd, render_sources, separate_lesson_check
 from agent_service.harness import _render_problem
 from agent_service.response_projection import public_preview
 
 
 class AnswerStyleTests(unittest.TestCase):
+    def test_only_explicit_single_trailing_check_is_recovered(self):
+        body, question = separate_lesson_check("本节正文。\n\n---\n\n### 想一想\n\n如何使用资料？", "")
+        self.assertEqual((body, question), ("本节正文。", "如何使用资料？"))
+        for text in ("正文中反问为什么？", "示例：\n```markdown\n### 想一想\n问题？\n```",
+                     "### 想一想\n第一段？\n\n第二段？", "### 想一想\n- 第一题？\n- 第二题？",
+                     "示例：\n\n    ### 想一想\n    如何使用资料？",
+                     "示例：\n\n\t### 想一想\n\t如何使用资料？",
+                     "### 想一想\n第一题？\n\n### 想一想\n第二题？"):
+            self.assertEqual(separate_lesson_check(text, ""), (text, ""))
+        text = "### 想一想\n正文里的问题？"
+        self.assertEqual(separate_lesson_check(text, "已提供的独立问题？"), (text, "已提供的独立问题？"))
+
     def test_question_appears_once_and_stays_in_history(self):
         text = with_question("解释内容。", "为什么需要检索？")
         self.assertEqual(text.count("为什么需要检索？"), 1)
