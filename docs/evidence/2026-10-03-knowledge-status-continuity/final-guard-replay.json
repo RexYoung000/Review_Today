@@ -1,0 +1,18 @@
+{
+  "layer": "offline replay of preserved live B output",
+  "model_calls": 0,
+  "checks": [
+    {
+      "id": "legacy_claim_status",
+      "latest_validation_passed": true,
+      "reply_unchanged": true,
+      "correction_message_id": "synthetic-old-card-claim"
+    },
+    {
+      "id": "repeat_status",
+      "latest_validation_passed": true,
+      "reply_unchanged": true,
+      "correction_message_id": null
+    }
+  ]
+}

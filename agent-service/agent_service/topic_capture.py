@@ -15,8 +15,25 @@ LIMITED_COVERAGE_NOTE = '部分旧题反馈未能与讲解核对，暂仅整理�
 
 def source_transparent(run):
     """These local explanations do not replace the current knowledge anchor."""
-    return bool(run.get('knowledge_status_reply') or
-                run.get('reply_feedback_handled') and run.get('dialogue_only'))
+    if run.get('knowledge_status_reply') or run.get('reply_feedback_handled') and run.get('dialogue_only'):
+        return True
+    intent = run.get('intent') or {}
+    intents = set(intent.get('intents', []))
+    # Before dedicated card status existed, those questions went through the
+    # product-information route. Recognize that complete, side-effect-free
+    # contract; a capabilities label alone must never skip a real topic.
+    return bool(run.get('status') == 'completed' and not run.get('task_id')
+                and intent.get('reply_purpose') == 'product_information'
+                and intent.get('scope') == 'conversation' and intent.get('relation') == 'continuation'
+                and 'capabilities' in intents and intents <= {'capabilities', 'greeting', 'thanks'}
+                and not any(run.get(key) for key in ('activity_kind', 'activity_candidate', 'learning_concepts',
+                    'teaching_step_id', 'teaching_plan_version', 'evaluated_step_id', 'evaluation_message_id',
+                    'capture_offer_id', 'capture_continuation'))
+                and 'evaluated_binding' not in run
+                and not any(intent.get(key) for key in ('workflow', 'proposed_actions', 'topic_closure',
+                    'target_task_id', 'target_description', 'direct_teaching',
+                    'answer_evidence', 'continuation_evidence', 'requested_mode', 'conversation_repair',
+                    'needs_verification', 'refresh_sources', 'cross_check_sources', 'is_jd')))
 
 
 def offers(data):

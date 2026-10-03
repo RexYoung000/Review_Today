@@ -248,6 +248,6 @@ def context(self, data, run):
                 summary=data["summary"] if data.get("summary_invalidated") else data["summary"] or external.get("summary", ""),
                 recent_messages=recent if data.get("summary_invalidated") else recent or (external.get("recent_messages", []) if not eligible and not data.get("summary") else []),
                 related_knowledge=external.get("knowledge_summaries", [])[:5],
-                knowledge_capture_status=knowledge_capture_status.facts(data, related_knowledge=external.get("knowledge_summaries", [])),
+                knowledge_capture_status=knowledge_capture_status.facts(data, related_knowledge=external.get("knowledge_summaries", []), valid_run=self._memory_run_valid),
                 memory_candidates=[c for c in external.get("memory_candidates", [])[:12] if self.store.memory_valid([c])] if not run.get("intent") else [],
                 related_learning=run.get("memory_references", []), handoff=external.get("handoff")), last

@@ -28,7 +28,19 @@ EntryUpdates = create_model("EntryUpdates", __config__=ConfigDict(extra="forbid"
     key: (create_model("EntryUpdate_" + key, __config__=ConfigDict(extra="forbid"),
                        value=(Literal[values], ...), reason=(str, Field(min_length=1))) | None, None)
     for key, values in ENTRY_CHOICES.items()})
-IntentRemainder = create_model("IntentRemainder",
+class _IntentRemainderValidation(BaseModel):
+    def validate_request(self, payload):
+        # Keep contextual status grounding inside the existing one-repair call,
+        # including full decisions embedded in Jev's reserved replacement path.
+        value = self.replacement or self
+        if value.status_context is not None and not value.knowledge_card_status:
+            from agent_service.openai_client import ModelCallError
+            raise ModelCallError('SCHEMA', json.dumps([dict(
+                field=['status_context'], type='knowledge_status_context_requires_status_query')]))
+        IntentDecision.validate_request(value, payload.get('context', payload))
+
+
+IntentRemainder = create_model("IntentRemainder", __base__=_IntentRemainderValidation,
     **{k: (field.annotation, deepcopy(field)) for k, field in IntentDecision.model_fields.items() if k not in OWNED},
     updates=(EntryUpdates, Field(default_factory=EntryUpdates)),
     replacement=(IntentDecision | None, Field(default=None, description="Only reserved, mixed, unsafe-to-compose or ambiguous routes need a complete LLM decision.")))

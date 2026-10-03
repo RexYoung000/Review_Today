@@ -22,7 +22,51 @@ def _is_learning(run):
                      or run.get('learning_concepts') or run.get('evaluated_binding')))
 
 
-def facts(data, *, related_knowledge=None):
+def _discussion_context(data, valid_run=None):
+    """Identify the live discussion without borrowing a possibly stale plan title.
+
+    Old evaluations can identify what was discussed, but are not promoted to
+    verified knowledge or used as card facts by this read-only projection.
+    """
+    from agent_service.topic_capture import source_transparent
+    sources, statuses, owner = [], [], None
+    corrected = {run.get('knowledge_status_correction_message_id') for run in data.get('runs', {}).values()
+                 if run.get('status') == 'completed'}
+    delivered = {event['message']['message_id']: event.get('revision') for event in data.get('events', [])
+                 if event.get('message')}
+    for message in data.get('messages', []):
+        if message.get('role') != 'coach':
+            continue
+        run = data.get('runs', {}).get(message.get('run_id'), {})
+        intent = run.get('intent') or {}
+        task = data.get('tasks', {}).get(run.get('task_id'), {})
+        if (run.get('status') != 'completed' or run.get('memory_invalidated')
+                or task.get('context', {}).get('memory_invalidated')
+                or valid_run is not None and not valid_run(run)
+                or message['message_id'] in delivered and delivered[message['message_id']] != run.get('revision')):
+            sources, statuses, owner = [], [], None
+            continue
+        if source_transparent(run):
+            if sources and not run.get('knowledge_status_reply') and message['message_id'] not in corrected:
+                statuses.append(dict(message_id=message['message_id'], content=message['content']))
+            continue
+        feedback = ('answer' in intent.get('intents', []) and any(
+            entry.get('message_id') in run.get('input_ids', []) and entry.get('evaluation')
+            for entry in task.get('context', {}).get('practice', [])))
+        if not (_is_learning(run) or feedback):
+            sources, statuses, owner = [], [], None
+            continue
+        if intent.get('relation') == 'new_topic' or sources and owner != run.get('task_id'):
+            sources = []
+        # A previous save claim cannot refer to teaching delivered after it.
+        statuses, owner = [], run.get('task_id')
+        sources.append(dict(message_id=message['message_id'], content=message['content'],
+                            concepts=list(run.get('learning_concepts') or []),
+                            evidence_kind='discussion_only_feedback' if feedback else 'teaching'))
+    return sources[-4:], statuses[-3:]
+
+
+def facts(data, *, related_knowledge=None, valid_run=None):
     """Return plain state for the intent/context projection; do not mutate it."""
     messages = data.get('messages', [])
     positions = {message['message_id']: index for index, message in enumerate(messages)}
@@ -105,7 +149,11 @@ def facts(data, *, related_knowledge=None):
             if card.get('id') in knowledge_ids:
                 title = (card.get('title') or card.get('learning_goal') or '').strip()
                 current_cards[card['id']] = dict(id=card['id'], title=title)
+    discussion, prior_statuses = _discussion_context(data, valid_run)
     return dict(stage=stage, current_knowledge_ids=knowledge_ids, current_cards=list(current_cards.values())[:8],
+                discussion_sources=discussion, prior_status_messages=prior_statuses,
+                session_has_generated_package=any(task.get('memory_package') for task in tasks.values()
+                    if task.get('session_id') == data.get('session_id')),
                 session_saved_knowledge_ids=saved_ids,
                 latest_learning_message_id=(latest or {}).get('message_id'),
                 capture_offer=({key: deepcopy(current_offer[key]) for key in ('id', 'version', 'title', 'status')
@@ -118,7 +166,54 @@ def facts(data, *, related_knowledge=None):
                        '确认保存成功后才显示已写入知识库'])
 
 
-def reply(state):
+def _claim_quote_keeps_context(content, quote):
+    """Do not let a substring remove the sentence's negation or attribution.
+
+    Whether the intact assertion is positive remains the same-call semantic
+    judgment; a reference check alone cannot establish that meaning.
+    """
+    if not quote:
+        return False
+    start = content.find(quote)
+    while start >= 0:
+        prefix = content[:start].rstrip(' \t\r')
+        suffix = content[start + len(quote):].lstrip(' \t\r')
+        sentence_start = not prefix or prefix[-1] in '.!?。！？\n'
+        clause_end = not suffix or suffix[0] in ',;:.!?，；：。！？\n' or quote[-1] in '.!?。！？'
+        if sentence_start and clause_end:
+            return True
+        start = content.find(quote, start + 1)
+    return False
+
+
+def validate_context(state, proposal):
+    """Accept same-call semantic selections only when tied to local candidates."""
+    value = proposal.model_dump() if hasattr(proposal, 'model_dump') else proposal or {}
+    sources = {source['message_id']: source for source in state.get('discussion_sources', [])}
+    labels = []
+    for item in value.get('focus', [])[:3]:
+        source = sources.get(item.get('message_id'), {})
+        quote, label = item.get('quote', '').strip(), item.get('label', '').strip()
+        if (quote and quote in source.get('content', '') and label and len(label) <= 60
+                and (label in source.get('concepts', []) or label in quote) and label not in labels):
+            labels.append(label)
+    claim = value.get('prior_claim') or {}
+    candidate = next((item for item in state.get('prior_status_messages', [])
+                      if item['message_id'] == claim.get('message_id')), {})
+    quote = claim.get('quote', '').strip()
+    kind = claim.get('kind')
+    # A real receipt anywhere in this session makes an old statement ambiguous;
+    # do not falsely retract it just because the current segment is unsaved.
+    correction = (bool(labels) and _claim_quote_keeps_context(candidate.get('content', ''), quote)
+                  and not state.get('session_saved_knowledge_ids')
+                  and kind in {'recorded', 'generated', 'saved'}
+                  and not (kind == 'generated' and state.get('session_has_generated_package')))
+    return dict(focus_labels=labels,
+                correction_message_id=claim['message_id'] if correction else None,
+                correction_quote=quote if correction else '')
+
+
+def reply(state, status_context=None):
     """The visible status answer deliberately uses no free-form model claims."""
     stage = state['stage']
     messages = {
@@ -134,7 +229,13 @@ def reply(state):
         'deferred': '这段内容已选择「稍后录入」，来源仍保留，但还没有写入知识库。可以回到这段的收尾面板选择「录入知识」。',
         'skipped': '这段内容已跳过录入，聊天记录仍在，但没有因此生成知识卡。',
     }
-    text = messages[stage]
+    context = validate_context(state, status_context)
+    text = ''
+    if context['correction_quote']:
+        text = '前面说「' + context['correction_quote'] + '」不准确；没有可确认的本轮知识卡保存记录。\n\n'
+    if context['focus_labels']:
+        text += '刚才讨论的是' + '、'.join(context['focus_labels']) + '。'
+    text += messages[stage]
     if stage == 'saved':
         titles = [' '.join(card['title'].split()) for card in state.get('current_cards', []) if card.get('title')]
         if titles:

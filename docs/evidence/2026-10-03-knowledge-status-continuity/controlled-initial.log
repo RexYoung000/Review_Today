@@ -1,0 +1,73 @@
+{"cases": 17, "fixed_scenarios": 31, "result": "VALID", "note": "Offline structure only; no model behavior evaluated."}
+{"result": "VALID", "cases": 55, "judgments": 299, "kinds": {"dialogue": 31, "memory": 6, "source": 6, "grading": 12}, "note": "Offline structure only; no provider/config/database access."}
+{"result": "VALID", "scenarios": 55, "trials": 165, "questions": 1430, "note": "Offline only; no provider configuration, model call or database."}
+{"result": "VALID", "scenarios": 103, "trials": 515, "questions": 3605, "variants": ["v0", "v1", "scope", "resource", "progress"], "note": "Offline only; default is structure inventory, not an execution authorization."}
+{"result": "VALID", "dialogues": 31, "node_cases": 27, "paired_runs": 116, "note": "Offline inventory only; no providers or stores imported."}
+................................................................ssss................................................................................................................................................................................... [ 24%]
+................................................................. [ 31%]
+.................................................................. [ 37%]
+.................................................. [ 42%]
+........................................................................................................................................................... [ 57%]
+....................................................... [ 63%]
+.................................................................................................................................................................................. [ 81%]
+............................................................................................... [ 90%]
+...........F......................................... [ 95%]
+..........................................   [100%]
+=================================== FAILURES ===================================
+_ TopicCaptureTests.test_answer_then_status_question_can_close_current_teaching_segment _
+
+self = <test_topic_capture.TopicCaptureTests testMethod=test_answer_then_status_question_can_close_current_teaching_segment>
+
+    original = self.close()
+    self.act(original, 'capture_later')
+    self.f.capture.return_value = committing_result(original['draft']['content'])
+    self.f.decision = intent('confirm', proposed_actions=[dict(kind='save', disposition='request', evidence='请保存')])
+    self.f.send('请保存刚才保留的知识')
+    state = self.f.state()
+    self.assertEqual(list(state['capture_offers']), [original['id']])
+    current = state['capture_offers'][original['id']]
+    self.assertEqual(current['status'], 'saving')
+    self.assertEqual(current['draft'], original['draft'])
+    self.ack(current)
+>   self.assertEqual(self.f.state()['capture_offers'][original['id']]['status'], 'saved')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'knowledge_status_reply'
+
+tests/test_topic_capture.py:252: KeyError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:89
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:89: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:118
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:118: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_topic_capture.py::TopicCaptureTests::test_answer_then_status_question_can_close_current_teaching_segment
+1 failed, 1001 passed, 4 skipped, 5 warnings, 432 subtests passed in 136.30s (0:02:16)

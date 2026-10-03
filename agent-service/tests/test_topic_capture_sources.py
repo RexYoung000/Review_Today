@@ -3,7 +3,7 @@ import copy
 from types import SimpleNamespace
 import unittest
 
-from agent_service.topic_capture import collect_source
+from agent_service.topic_capture import collect_source, source_transparent
 
 
 class CaptureSourceTests(unittest.TestCase):
@@ -133,6 +133,37 @@ class CaptureSourceTests(unittest.TestCase):
         self.data['events'].append(dict(revision=1, message=dict(message_id='lesson')))
         self.data['runs']['teach']['revision'] = 2
         self.assertIsNone(self.source())
+
+    def test_legacy_product_information_is_transparent_only_when_side_effect_free(self):
+        run = dict(status='completed', task_id=None, intent=dict(intents=['capabilities'],
+            reply_purpose='product_information', scope='conversation', relation='continuation', learning_goal_ready=True))
+        self.assertTrue(source_transparent(run))
+        variants = [dict(status='interrupted'), dict(task_id='learning'), dict(activity_kind='knowledge_answer'),
+                    dict(activity_candidate='lesson_step'), dict(learning_concepts=['真实知识']),
+                    dict(teaching_step_id='index'), dict(evaluated_binding=None), dict(capture_offer_id='write')]
+        for fields in variants:
+            with self.subTest(fields=fields):
+                self.assertFalse(source_transparent(dict(run, **fields)))
+        for fields in [dict(relation='new_topic'), dict(workflow='topic_exploration'), dict(direct_teaching=True),
+                       dict(proposed_actions=[dict(kind='save')]), dict(topic_closure=dict(evidence='明白了')),
+                       dict(intents=['capabilities', 'question']), dict(reply_purpose='none')]:
+            with self.subTest(fields=fields):
+                self.assertFalse(source_transparent(dict(run, intent=dict(run['intent'], **fields))))
+
+    def test_legacy_status_between_learning_and_new_status_preserves_only_real_source(self):
+        self.data['runs']['evaluate']['evaluated_binding'] = None
+        self.data['messages'].extend([
+            dict(message_id='old-status', role='coach', run_id='old-status', content='之前错误地称已保存了两张卡。'),
+            dict(message_id='new-status', role='coach', run_id='new-status', content='还未整理成卡。')])
+        self.data['runs']['old-status'] = dict(status='completed', task_id=None, intent=dict(intents=['capabilities'],
+            reply_purpose='product_information', scope='conversation', relation='continuation'))
+        self.data['runs']['new-status'] = dict(status='completed', knowledge_status_reply=True)
+        result = self.source()
+        self.assertEqual(result['message_ids'], ['lesson'])
+        self.assertEqual(result['excluded_unbound_feedback_ids'], ['feedback'])
+        self.assertNotIn('错误地称已保存', result['content'])
+        self.assertNotIn('还未整理成卡', result['content'])
+        self.assertNotIn('用户错答', result['content'])
 
 
 if __name__ == '__main__':

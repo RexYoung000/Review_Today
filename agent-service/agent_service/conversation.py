@@ -700,10 +700,13 @@ class ConversationHarness(ConditionalTeaching):
                               decision_mode=current['mode'], task_id=None, dialogue_only=True,
                               knowledge_status_reply=True)
                 state = knowledge_capture_status.facts(current,
-                    related_knowledge=last.get('context', {}).get('knowledge_summaries', []))
+                    related_knowledge=last.get('context', {}).get('knowledge_summaries', []), valid_run=self._memory_run_valid)
+                explanation = knowledge_capture_status.validate_context(state, decision.status_context)
+                active['knowledge_status_context'] = explanation
+                active['knowledge_status_correction_message_id'] = explanation['correction_message_id']
                 self.store.event(current, active, 'knowledge_status', '已核对当前知识卡状态',
                                  payload={'stage': state['stage']})
-            self._publish(sid, rid, rev, knowledge_capture_status.reply(state))
+            self._publish(sid, rid, rev, knowledge_capture_status.reply(state, decision.status_context))
             return
         if resource_boundary.handle(self, sid, rid, rev, decision, last):
             return
@@ -1087,16 +1090,19 @@ class ConversationHarness(ConditionalTeaching):
                 continue
             if op["kind"] == "save" and op["disposition"] == "request" and not pending and self._explicit(op, last["content"]):
                 task = self._task(data, run)
+                source = topic_capture.collect_source(self, data, task, include_captured=True)
                 previous = next((m for m in reversed(data["messages"]) if m["role"] == "coach"
                                  and not topic_capture.source_transparent(data['runs'].get(m.get('run_id'), {}))), None)
                 known_ids = {"", task["task_id"] if task else "", previous["message_id"] if previous else ""}
+                if source:
+                    known_ids.update(source['message_ids'])
+                    known_ids.update(source.get('excluded_unbound_feedback_ids', []))
                 if op.get("target_id") not in known_ids:
                     self._publish(sid, rid, rev, "你希望保存哪一份具体内容？这次不会自动提交。", complete=False)
                     return True
                 if data.get("draft", {}) and data["draft"].get("invalidated"):
                     self._publish(sid, rid, rev, "整理稿的修订尚未完成，请先完成修订，旧版不会入库。", complete=False)
                     return True
-                source = topic_capture.collect_source(self, data, task, include_captured=True)
                 if source:
                     with self.store.transaction(sid, rid, rev) as data:
                         value = dict(id=source.get('draft_id') or str(uuid.uuid5(uuid.UUID(sid), 'knowledge-source:' + source['source_key'])),

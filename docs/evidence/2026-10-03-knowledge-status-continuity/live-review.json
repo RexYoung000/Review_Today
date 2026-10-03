@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "layer": "live_fixed_context",
+  "fixture": "authored synthetic 12-message legacy prefix; no private data",
+  "reports": {
+    "A": {
+      "file": "/tmp/review-today-knowledge-status-history-live-a.jsonl",
+      "totals": {
+        "semantic_calls": 1,
+        "transport_requests": 1,
+        "input_tokens": 14309,
+        "output_tokens": 532,
+        "total_tokens": 14841,
+        "cached_input_tokens": 384,
+        "elapsed_ms": 2690
+      },
+      "results": [
+        {
+          "id": "legacy_claim_status",
+          "automatic_result": "FAIL",
+          "replies": [
+            "前面说「有的。这个会话里已经记录了两张 RAG 知识卡：一张讲“什么是检索增强生成及其核心机制”，一张讲“检索与生成阶段分别做什么”，都标注为前置知识。」不准确；没有可确认的本轮知识卡保存记录。\n\n刚才讨论的是资料切块、关键词检索、向量检索。刚才的讲解和作答已留在聊天记录中，但这段内容还没有整理成知识卡。你可以明确说「把刚才内容整理成知识卡」。系统会按确认的内容整理、核验并保存到本机知识库；确认保存成功后才算完成。"
+          ]
+        }
+      ]
+    },
+    "B": {
+      "file": "/tmp/review-today-knowledge-status-history-live-b.jsonl",
+      "totals": {
+        "semantic_calls": 2,
+        "transport_requests": 2,
+        "input_tokens": 29245,
+        "output_tokens": 1043,
+        "total_tokens": 30288,
+        "cached_input_tokens": 12800,
+        "elapsed_ms": 5335
+      },
+      "results": [
+        {
+          "id": "legacy_claim_status",
+          "automatic_result": "PASS",
+          "replies": [
+            "前面说「这个会话里已经记录了两张 RAG 知识卡」不准确；没有可确认的本轮知识卡保存记录。\n\n刚才讨论的是关键词检索、向量检索。刚才的讲解和作答已留在聊天记录中，但这段内容还没有整理成知识卡。你可以明确说「把刚才内容整理成知识卡」。系统会按确认的内容整理、核验并保存到本机知识库；确认保存成功后才算完成。"
+          ]
+        },
+        {
+          "id": "repeat_status",
+          "automatic_result": "PASS",
+          "replies": [
+            "刚才讨论的是关键词检索、向量检索。刚才的讲解和作答已留在聊天记录中，但这段内容还没有整理成知识卡。你可以明确说「把刚才内容整理成知识卡」。系统会按确认的内容整理、核验并保存到本机知识库；确认保存成功后才算完成。"
+          ]
+        }
+      ]
+    }
+  },
+  "totals": {
+    "semantic_calls": 3,
+    "transport_requests": 3,
+    "input_tokens": 43554,
+    "output_tokens": 1575,
+    "total_tokens": 45129,
+    "cached_input_tokens": 13184,
+    "elapsed_ms": 8025
+  },
+  "semantic_review": {
+    "A": {
+      "result": "FAIL",
+      "finding": "The old false card claim was corrected and current retrieval topics were named, but an earlier unanswered chunking topic was incorrectly included for the latest-answer reference. The first failure stopped the planned second call."
+    },
+    "B": {
+      "result": "PASS_FOR_TARGETED_CASES",
+      "findings": [
+        "Shortest necessary old card assertion is quoted and corrected.",
+        "Both current retrieval topics are named without the earlier chunking topic.",
+        "Second status turn continues the same topic without repeating the correction.",
+        "No card generation, save, learning-progress or historical-message changes.",
+        "One normal IntentDecision call per turn; no schema repair or extra call chain."
+      ],
+      "residuals": [
+        "Second model proposal repeats the vector topic; deterministic validation deduplicates the visible labels.",
+        "Generation instructions remain the existing explicit-save workflow and repeat in the second status answer."
+      ]
+    }
+  },
+  "limitations": [
+    "Three synthetic fixed-context semantic calls are not a broad reliability benchmark.",
+    "No native UI, SwiftData, microphone, or capture-generation validation in this replay.",
+    "Provider capability probes are excluded from semantic-call usage. Monetary cost not estimated."
+  ]
+}

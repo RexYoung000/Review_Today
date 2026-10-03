@@ -16,9 +16,14 @@ class KnowledgeStatusRoutingTests(unittest.TestCase):
         self.f.tearDown()
 
     def query(self, text='你有记录刚才相关知识卡吗', **overrides):
+        from agent_service.knowledge_capture_status import facts
+        sources = facts(self.f.state() or {})['discussion_sources']
+        focus = [dict(label=source['concepts'][0], message_id=source['message_id'], quote=source['content'])
+                 for source in sources[-1:] if source['concepts']]
         values = dict(scope='conversation', knowledge_card_status=True,
                       reply_purpose='product_information', answer_only=True,
-                      light_reply='有的，本轮已经保存了两张知识卡。')
+                      light_reply='有的，本轮已经保存了两张知识卡。',
+                      status_context=dict(focus=focus) if focus else None)
         values.update(overrides)
         self.f.decision = fixtures.intent('capabilities', **values)
         request = SessionMessageRequest(client_message_id=str(uuid.uuid4()), content=text,

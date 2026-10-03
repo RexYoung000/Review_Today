@@ -24,6 +24,19 @@ class TopicCaptureTests(unittest.TestCase):
     def act(self, offer, kind):
         self.f.decision = intent('question')
         return self.f.send(kind, operation=dict(kind=kind, target_id=offer['id'], version=offer['version']))
+    def query_unsaved_status(self, text):
+        from agent_service.knowledge_capture_status import facts
+        state = facts(self.f.state())
+        source = next(item for item in reversed(state['discussion_sources']) if item.get('concepts'))
+        self.f.decision = intent('capabilities', knowledge_card_status=True, status_context=dict(focus=[dict(
+            message_id=source['message_id'], label=source['concepts'][0], quote=source['content'][:300])]))
+        accepted = self.f.send(text)
+        current = self.f.state()
+        self.assertEqual(current['runs'][accepted.run_id]['status'], 'completed')
+        self.assertTrue(current['runs'][accepted.run_id]['knowledge_status_reply'])
+        self.assertEqual(current['messages'][-1]['run_id'], accepted.run_id)
+        self.assertIn('还没有整理成知识卡', current['messages'][-1]['content'])
+        return accepted
     def test_real_defer_with_continue_goal_is_short_and_does_not_teach(self):
         self.f.decision = intent('question', scope='learning', workflow='problem_solving')
         self.f.send('学习检索增强生成', mode='problem_solving')
@@ -247,9 +260,7 @@ class TopicCaptureTests(unittest.TestCase):
         state = self.f.state()
         feedback = [message for message in state['messages'] if message['role'] == 'coach'][-1]
         self.assertTrue(state['runs'][feedback['run_id']].get('evaluated_binding'))
-        self.f.decision = intent('question', knowledge_card_status=True)
-        self.f.send('刚才的内容已经变成知识卡了吗？')
-        self.assertTrue(self.f.state()['runs'][self.f.state()['messages'][-1]['run_id']]['knowledge_status_reply'])
+        self.query_unsaved_status('刚才的内容已经变成知识卡了吗？')
         self.f.decision = IntentDecision(intents=['self_report'], understanding='self_reported', relation='continuation',
             scope='conversation', rationale='收尾', topic_closure=dict(evidence='明白了', title='RAG', message_ids=[feedback['message_id']]))
         self.f.send('明白了')
@@ -295,8 +306,7 @@ class TopicCaptureTests(unittest.TestCase):
 
     def test_save_can_target_lesson_after_read_only_card_status(self):
         answer = self.teach()
-        self.f.decision = intent('capabilities', knowledge_card_status=True)
-        self.f.send('刚才讲解有生成知识卡吗？')
+        self.query_unsaved_status('刚才讲解有生成知识卡吗？')
         self.f.capture.return_value = committing_result(answer['content'])
         self.f.decision = intent('confirm', proposed_actions=[dict(kind='save', disposition='request',
                                  target_id=answer['message_id'], evidence='请保存')])
@@ -327,6 +337,56 @@ class TopicCaptureTests(unittest.TestCase):
         self.f.decision = intent('confirm', proposed_actions=[dict(kind='save', disposition='request',
                                  target_id=answer['message_id'], evidence='请保存')])
         self.f.send('请保存')
+        self.f.capture.assert_not_called()
+        self.assertIn('希望保存哪一份', self.f.state()['messages'][-1]['content'])
+
+    def _legacy_wrong_status_then_save(self, target_kind):
+        self.f.decision = intent('goal', workflow='topic_exploration', direct_teaching=True,
+                                 learning_goal_ready=True, target_description='理解 RAG')
+        self.f.send('直接教我 RAG', mode='topic_exploration')
+        lesson = [message for message in self.f.state()['messages'] if message['role'] == 'coach'][-1]
+        self.f.decision = intent('answer', scope='continue_goal')
+        self.f.send('先检索资料，再依据上下文生成')
+        feedback = [message for message in self.f.state()['messages'] if message['role'] == 'coach'][-1]
+        with self.f.store.transaction(self.f.sid) as data:
+            data['runs'][feedback['run_id']]['evaluated_binding'] = None
+        self.f.decision = intent('capabilities', reply_purpose='product_information',
+                                 learning_goal_ready=True, light_reply='之前错误地说这轮已经记录两张卡。')
+        self.f.send('你有记录相关知识卡吗')
+        legacy = self.f.state()['messages'][-1]
+        self.assertIsNone(self.f.state()['runs'][legacy['run_id']]['task_id'])
+        self.query_unsaved_status('刚才的知识点有没有生成卡片')
+        self.f.capture.return_value = committing_result('这是本轮真实回答。')
+        self.f.decision = intent('confirm', proposed_actions=[dict(kind='save', disposition='request',
+                                 target_id=(lesson if target_kind == 'lesson' else feedback)['message_id'], evidence='请保存')])
+        self.f.send('请保存刚才学的内容')
+        self.f.capture.assert_called_once()
+        current = list(self.f.state()['capture_offers'].values())[-1]
+        self.assertIn('这是本轮真实回答', current['draft']['content'])
+        self.assertNotIn('这轮已经记录两张卡', current['draft']['content'])
+        self.assertNotIn('先检索资料，再依据上下文生成', current['draft']['content'])
+        self.assertEqual(current['draft']['excluded_unbound_feedback_ids'], [feedback['message_id']])
+        self.assertIn('旧题反馈待核对', current['title'])
+        self.assertEqual(current['status'], 'saving')
+        self.assertEqual(self.f.state()['tasks'][current['save_task_id']]['status'], 'committing')
+        knowledge_ids = self.ack(current)
+        saved = self.f.state()['capture_offers'][current['id']]
+        self.assertEqual(saved['status'], 'saved')
+        self.assertEqual(saved['knowledge_ids'], knowledge_ids)
+
+    def test_legacy_wrong_product_status_then_new_status_can_save_original_learning(self):
+        self._legacy_wrong_status_then_save('feedback')
+
+    def test_same_segment_lesson_is_valid_save_target_after_legacy_feedback_and_status(self):
+        self._legacy_wrong_status_then_save('lesson')
+
+    def test_explicit_target_from_closed_segment_cannot_save_the_new_segment(self):
+        closed = self.close()
+        self.act(closed, 'capture_skip')
+        self.teach()
+        self.f.decision = intent('confirm', proposed_actions=[dict(kind='save', disposition='request',
+                                 target_id=closed['message_ids'][0], evidence='请保存')])
+        self.f.send('请保存之前那段')
         self.f.capture.assert_not_called()
         self.assertIn('希望保存哪一份', self.f.state()['messages'][-1]['content'])
 

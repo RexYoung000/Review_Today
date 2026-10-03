@@ -610,6 +610,30 @@ class TopicClosure(BaseModel):
     next_request: str = Field(default="", max_length=1000)
 
 
+class KnowledgeStatusFocus(BaseModel):
+    label: str = Field(min_length=1, max_length=60,
+        description='Short knowledge topic copied verbatim from the cited discussion source concepts or a contiguous part of its quote; never a save state, plan title or mastery claim.')
+    message_id: str = Field(min_length=1,
+        description='Copy a message_id from knowledge_capture_status.discussion_sources.')
+    quote: str = Field(min_length=1, max_length=300,
+        description='Exact contiguous excerpt from that coach message supporting the topic label; preserve its wording and punctuation.')
+
+
+class KnowledgeStatusPriorClaim(BaseModel):
+    message_id: str = Field(min_length=1,
+        description='Copy a message_id from knowledge_capture_status.prior_status_messages, only when its coach-authored card claim needs clarification now.')
+    quote: str = Field(min_length=1, max_length=300,
+        description='Shortest exact contiguous prior coach assertion about cards, starting at a sentence or paragraph boundary and preserving all leading qualifiers. Omit separate preamble sentences and trailing card descriptions; never clip off negation or attribution. Not a quoted source, hypothetical example, user statement or negation.')
+    kind: Literal['recorded', 'generated', 'saved'] = Field(
+        description='Meaning of the historical positive card assertion: recorded, generated or saved. A proposal for program verification, never proof of any current state.')
+
+
+class KnowledgeStatusContext(BaseModel):
+    focus: list[KnowledgeStatusFocus] = Field(default_factory=list, max_length=3,
+        description='Select only topics referred to by this query. A query about the just-answered question centers on the latest question, user answer and feedback, not every earlier lesson candidate. Three is a maximum, not a target.')
+    prior_claim: KnowledgeStatusPriorClaim | None = None
+
+
 class IntentDecision(BaseModel):
     conversation_kind: Literal["ordinary", "social", "companionship", "learning_support", "background"] = Field(
         default="ordinary", description="Semantic dialogue scope. Social/companionship only for pure social input; mixed knowledge or action requests stay ordinary.")
@@ -621,6 +645,8 @@ class IntentDecision(BaseModel):
         description='Pure conversation only: product_information asks about this assistant identity, capabilities, memory or configured model; boundary_confirmation only confirms the immediately preceding product limit. Any independent knowledge question or operation must use none.')
     knowledge_card_status: bool = Field(default=False,
         description='Pure enquiry about whether the current conversation content has become knowledge cards, what was saved, or the steps to generate/save those cards. No save authorization. False for a request to actually organize/save, mixed substantive requests, or generic assistant memory capabilities.')
+    status_context: KnowledgeStatusContext | None = Field(default=None,
+        description='For knowledge_card_status only: grounded topic and historical-claim references for a contextual status reply. The program validates all references and supplies the actual save state; this field authorizes no action.')
     repair_target_message_id: str = ""
     continuation_evidence: str = ""
     continuation_topic: str = ""
@@ -673,6 +699,24 @@ class IntentDecision(BaseModel):
         if info.data.get("knowledge_card_status") and value:
             raise ValueError("knowledge_card_status is a read-only enquiry and cannot authorize proposed_actions; re-evaluate the current user's request")
         return value
+
+    @field_validator('status_context')
+    @classmethod
+    def status_context_requires_status_query(cls, value, info):
+        if value is not None and not info.data.get('knowledge_card_status'):
+            raise ValueError('status_context is only available for a read-only knowledge_card_status enquiry')
+        return value
+
+    def validate_request(self, payload):
+        state = payload.get('knowledge_capture_status') or {}
+        if not self.knowledge_card_status or not state.get('discussion_sources'):
+            return
+        from agent_service.knowledge_capture_status import validate_context
+        if not validate_context(state, self.status_context)['focus_labels']:
+            import json
+            from agent_service.openai_client import ModelCallError
+            raise ModelCallError('SCHEMA', json.dumps([dict(
+                field=['status_context', 'focus'], type='knowledge_status_focus_grounding')]))
 
 
 class BoundOperation(BaseModel):

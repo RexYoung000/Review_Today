@@ -1,0 +1,207 @@
+{
+  "backup_path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-status-continuity-20261003-235753",
+  "mac_hash_excludes": [
+    "Z_OPT"
+  ],
+  "phase": "after capability checks and app resynchronization",
+  "tables": {
+    "service": {
+      "harness_tasks": {
+        "before_count": 13,
+        "after_count": 13,
+        "before_sha256": "5953dcdcfb032d503f9e5b81b08d76e7e5787923037eb820bf8cc59d15949c83",
+        "after_sha256": "5953dcdcfb032d503f9e5b81b08d76e7e5787923037eb820bf8cc59d15949c83",
+        "same": true,
+        "changed_columns": []
+      },
+      "agent_sessions_v2": {
+        "before_count": 33,
+        "after_count": 33,
+        "before_sha256": "8cf96f44b5e66e008a181b2e19aeb0c636f9c6ce75e760fc30cdfb3891de6d80",
+        "after_sha256": "8cf96f44b5e66e008a181b2e19aeb0c636f9c6ce75e760fc30cdfb3891de6d80",
+        "same": true,
+        "changed_columns": []
+      },
+      "agent_memory_policy_v2": {
+        "before_count": 33,
+        "after_count": 33,
+        "before_sha256": "0eb66885f2df01e48af5d72e70f539844624d0e3c7c763260a098d13ec93e843",
+        "after_sha256": "0eb66885f2df01e48af5d72e70f539844624d0e3c7c763260a098d13ec93e843",
+        "same": true,
+        "changed_columns": []
+      },
+      "agent_session_deletions": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "agent_voice_usage": {
+        "before_count": 1,
+        "after_count": 1,
+        "before_sha256": "7cf3aba96414129244d5817daf5fb8ff9b836a1575f4946852647df1851ebdf0",
+        "after_sha256": "7cf3aba96414129244d5817daf5fb8ff9b836a1575f4946852647df1851ebdf0",
+        "same": true,
+        "changed_columns": []
+      }
+    },
+    "mac": {
+      "ZSOURCE": {
+        "before_count": 1,
+        "after_count": 1,
+        "before_sha256": "2fbf7d56c226f1a140749ab62ccf90c0d46009f799dc84427b9d992b4331e394",
+        "after_sha256": "2fbf7d56c226f1a140749ab62ccf90c0d46009f799dc84427b9d992b4331e394",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZREVIEWSESSION": {
+        "before_count": 4,
+        "after_count": 4,
+        "before_sha256": "d13dbe1dfb1d241bcd2e44edcf8835652b753c1e2bbeebd2c85d3dd23621078a",
+        "after_sha256": "d13dbe1dfb1d241bcd2e44edcf8835652b753c1e2bbeebd2c85d3dd23621078a",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZREVIEWATTEMPT": {
+        "before_count": 3,
+        "after_count": 3,
+        "before_sha256": "16f76eb90918201a08870b654c7b338abb36acc6229325527ffc8743ff517ea3",
+        "after_sha256": "16f76eb90918201a08870b654c7b338abb36acc6229325527ffc8743ff517ea3",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZQUESTION": {
+        "before_count": 11,
+        "after_count": 11,
+        "before_sha256": "9c4f06d7e10afec8b3c7124dc5ad5464cc703c1f1953e59ad08ed340df58bbe4",
+        "after_sha256": "9c4f06d7e10afec8b3c7124dc5ad5464cc703c1f1953e59ad08ed340df58bbe4",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZKNOWLEDGE": {
+        "before_count": 8,
+        "after_count": 8,
+        "before_sha256": "9dc05fb366583031fd8bce51fbfebcebdcd2438a514eb1a9b5f72861fcd49d73",
+        "after_sha256": "9dc05fb366583031fd8bce51fbfebcebdcd2438a514eb1a9b5f72861fcd49d73",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZFSRSSTATE": {
+        "before_count": 8,
+        "after_count": 8,
+        "before_sha256": "e6a7b322b888e6bec390687796f0afe1714edef97f048cf319b1ebebc13b076f",
+        "after_sha256": "e6a7b322b888e6bec390687796f0afe1714edef97f048cf319b1ebebc13b076f",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZCAPTURETASK": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZAPPSETTINGS": {
+        "before_count": 1,
+        "after_count": 1,
+        "before_sha256": "b5638cbab8ce5011746d678834760dca74391c3dc66adba7c240040fa30f1b6b",
+        "after_sha256": "b5638cbab8ce5011746d678834760dca74391c3dc66adba7c240040fa30f1b6b",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZTASKEVENTRECORD": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZSOURCEREFERENCE": {
+        "before_count": 3,
+        "after_count": 3,
+        "before_sha256": "94e7576bbad5760074ba6c8cb28e4ba4acb8be9b8d80f91b9711757bb1c69f5f",
+        "after_sha256": "94e7576bbad5760074ba6c8cb28e4ba4acb8be9b8d80f91b9711757bb1c69f5f",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZSESSIONSUMMARYRECORD": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZKNOWLEDGEREFERENCE": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZAGENTMESSAGE": {
+        "before_count": 22,
+        "after_count": 22,
+        "before_sha256": "a18e4e72be172c62a3c06f28c3e496e466034c77113f5477c792f552b2717a20",
+        "after_sha256": "a18e4e72be172c62a3c06f28c3e496e466034c77113f5477c792f552b2717a20",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZSESSIONEVENTRECORD": {
+        "before_count": 168,
+        "after_count": 168,
+        "before_sha256": "e2967d9fec694c9569f6d6a4d1cfd0c854398980a7e8c428c58c4091513d66fe",
+        "after_sha256": "e2967d9fec694c9569f6d6a4d1cfd0c854398980a7e8c428c58c4091513d66fe",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZAGENTRUNCONTROL": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZAGENTRUN": {
+        "before_count": 11,
+        "after_count": 11,
+        "before_sha256": "fa8857090574a5e76dd8226b3acbfff9776eb8319656794e4b188b2f3dfd4fd2",
+        "after_sha256": "fa8857090574a5e76dd8226b3acbfff9776eb8319656794e4b188b2f3dfd4fd2",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZLEARNINGTASK": {
+        "before_count": 3,
+        "after_count": 3,
+        "before_sha256": "472d95b7d9118f7cae2923207b6e078184a5d3c97f051a23672db8bbfca2cae6",
+        "after_sha256": "3e210d0b197485549675cf37fbfe5925653f4169e42865343c91b963de839b1a",
+        "same": false,
+        "changed_columns": [
+          "ZUPDATEDAT"
+        ]
+      },
+      "ZAGENTSESSION": {
+        "before_count": 5,
+        "after_count": 5,
+        "before_sha256": "e6acafcdf77c64c0492566e33a46284890fc9895298cb768cc51a948768b3254",
+        "after_sha256": "e6acafcdf77c64c0492566e33a46284890fc9895298cb768cc51a948768b3254",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZSESSIONFOLDER": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      }
+    }
+  }
+}
