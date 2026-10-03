@@ -21,7 +21,7 @@ class DialogueRoutingTests(unittest.TestCase):
         self.assertIsNone(state['pending'])
         self.assertTrue(state['runs'][accepted.run_id]['intent']['answer_only'])
         self.assertFalse(any(e['node']=='clarify_goal' for e in state['events']))
-        self.assertIn('直接回答', [p for s,p in self.f.calls if s is ConversationOutput][-1]['instruction'])
+        self.assertIn('直接回答', [p for s,p in self.f.calls if issubclass(s, ConversationOutput)][-1]['instruction'])
 
     def test_new_topic_question_does_not_force_session_choice(self):
         self.f.decision = f.intent('question', answer_only=True)
@@ -89,7 +89,7 @@ class DialogueRoutingTests(unittest.TestCase):
     def test_independent_question_uncertain_relation_still_answers(self):
         self.f.decision=f.intent('question', answer_only=True).model_copy(update={'relation':'uncertain'})
         self.f.send('什么叫 harness')
-        self.assertTrue(any(s is ConversationOutput for s,_ in self.f.calls))
+        self.assertTrue(any(issubclass(s, ConversationOutput) for s,_ in self.f.calls))
         self.assertNotIn('继续刚才', self.f.state()['messages'][-1]['content'])
         self.assertFalse(self.f.state()['tasks'])
     def test_router_does_not_receive_external_memory_bodies(self):
@@ -107,7 +107,7 @@ class DialogueRoutingTests(unittest.TestCase):
         self.f.decision=f.intent('correction', reply_feedback='with_request').model_copy(update={'conversation_repair':True})
         before=copy.deepcopy(self.f.state()['tasks'])
         self.f.send('我不是才和你聊天吗')
-        answers=[p for s,p in self.f.calls if s is ConversationOutput]
+        answers=[p for s,p in self.f.calls if issubclass(s, ConversationOutput)]
         self.assertIn('纠正',answers[-1]['instruction'])
         self.assertIn('什么叫 harness',str(answers[-1]))
         self.assertEqual(before,self.f.state()['tasks'])
@@ -116,7 +116,7 @@ class DialogueRoutingTests(unittest.TestCase):
         self.f.send('这个接口怎么用')
         self.assertEqual(self.f.state()['messages'][-1]['content'],'你指哪个领域的接口？')
         self.f.send('就这个啊')
-        self.assertTrue(any(s is ConversationOutput for s,_ in self.f.calls))
+        self.assertTrue(any(issubclass(s, ConversationOutput) for s,_ in self.f.calls))
     def test_state_change_clarification_is_not_auto_confirmed(self):
         self.f.decision=f.intent('confirm',clarification='你希望保存哪一版？').model_copy(update={'clarification_kind':'operation'})
         self.f.send('保存那个')

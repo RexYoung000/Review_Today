@@ -21,7 +21,7 @@ class ClosureRepairTests(unittest.TestCase):
         from agent_service.schemas import ConversationOutput
         self.decision = intent("material", workflow="source_learning", scope="learning")
         def fail_answer(*args, **kwargs):
-            if args[2] is ConversationOutput: raise ModelCallError("TIMEOUT")
+            if issubclass(args[2], ConversationOutput): raise ModelCallError("TIMEOUT")
             return self.model(*args, **kwargs)
         with patch("agent_service.conversation.fetch_public_url", return_value=("公开资料", "版本一")) as fetch:
             with patch("agent_service.conversation.parse_model", side_effect=fail_answer):
@@ -58,7 +58,7 @@ class ClosureRepairTests(unittest.TestCase):
         self.assertEqual(next(s for s in task["context"]["sources"] if s["type"] == "agent_generated"), original)
         self.assertEqual(self.state()["runs"][result.run_id]["answer_source_type"], "mixed")
         answer = next(payload for schema, payload in reversed(self.calls)
-                      if schema is fixture.ConversationOutput)
+                      if issubclass(schema, fixture.ConversationOutput))
         self.assertEqual(next(s for s in answer["sources"] if s["type"] == "agent_generated"), original)
 
     def test_mixed_source_retry_preserves_generated_identity_without_duplicates(self):
@@ -68,7 +68,7 @@ class ClosureRepairTests(unittest.TestCase):
         original = deepcopy(self.state()["tasks"][self.state()["active_task_id"]]["context"]["sources"][0])
         self.decision = intent("material", "followup")
         def fail_answer(*args, **kwargs):
-            if args[2] is fixture.ConversationOutput:
+            if issubclass(args[2], fixture.ConversationOutput):
                 raise ModelCallError("TIMEOUT")
             return self.model(*args, **kwargs)
         with patch("agent_service.conversation.parse_model", side_effect=fail_answer):
@@ -176,7 +176,7 @@ class ClosureRepairTests(unittest.TestCase):
         self.assertFalse(self.state()["paused"])
         self.assertIn("summary_error", self.state())
 
-    def test_one_verified_lesson_does_not_complete_remaining_plan(self):
+    def test_replaced_plan_does_not_inherit_old_question_verification(self):
         from agent_service.learning_progress import set_plan
         self.decision = intent("goal", workflow="source_learning", scope="learning", direct_teaching=True)
         self.send("直接教我 RAG")
@@ -185,7 +185,7 @@ class ClosureRepairTests(unittest.TestCase):
         self.decision = intent("answer")
         self.send("检索是从资料中取得相关片段")
         task = self.state()["tasks"][self.state()["active_task_id"]]
-        self.assertEqual(task["context"]["learning_plan"]["steps"][0]["understanding"], "verified")
+        self.assertEqual(task["context"]["learning_plan"]["steps"][0]["understanding"], "unknown")
         self.assertEqual(task["context"]["learning_plan"]["steps"][1]["state"], "pending")
         self.assertNotEqual(task["status"], "completed")
         self.assertIsNone(self.state()["pending"])

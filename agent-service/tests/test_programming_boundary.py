@@ -67,7 +67,7 @@ class ProgrammingBoundaryTests(unittest.TestCase):
                 self.f.decision = self.decision('none', 'question', answer_only=True)
                 before = len(self.f.calls)
                 self.f.send(text)
-                self.assertTrue(any(s is ConversationOutput for s, _ in self.f.calls[before:]))
+                self.assertTrue(any(issubclass(s, ConversationOutput) for s, _ in self.f.calls[before:]))
 
     def test_defer_and_stop_keep_priority_over_conflicting_boundary(self):
         self.f.decision = self.decision('development_delivery', 'defer')
@@ -114,7 +114,7 @@ class ProgrammingBoundaryTests(unittest.TestCase):
         self.f.decision = self.decision('mixed_learning', 'goal', scope='learning',
             workflow='problem_solving', programming_learning_request='先解释闭包原理')
         self.f.send('先解释闭包原理，再帮我把项目部署上线')
-        outputs = [p for s, p in self.f.calls if s is ConversationOutput]
+        outputs = [p for s, p in self.f.calls if issubclass(s, ConversationOutput)]
         self.assertEqual(len(outputs), 1)
         self.assertEqual(outputs[0]['context']['current_inputs'], ['先解释闭包原理'])
         self.assertIn('不执行', outputs[0]['instruction'])
@@ -139,7 +139,7 @@ class ProgrammingBoundaryTests(unittest.TestCase):
         before = copy.deepcopy(self.f.state()['tasks'])
         self.f.decision = self.decision('mixed_learning', 'goal', programming_learning_request='解释闭包')
         def fail_answer(system, user, schema, **kwargs):
-            if schema is ConversationOutput:
+            if issubclass(schema, ConversationOutput):
                 raise ModelCallError('TIMEOUT')
             return self.f.model(system, user, schema, **kwargs)
         with patch('agent_service.conversation.parse_model', side_effect=fail_answer):
@@ -149,7 +149,7 @@ class ProgrammingBoundaryTests(unittest.TestCase):
         self.f.harness.drain(self.f.sid)
         state = self.f.state()
         self.assertEqual(state['runs'][result.run_id]['status'], 'completed')
-        outputs = [p for s, p in self.f.calls if s is ConversationOutput]
+        outputs = [p for s, p in self.f.calls if issubclass(s, ConversationOutput)]
         self.assertEqual(outputs[-1]['context']['current_inputs'], ['解释闭包'])
         self.assertIsNone(outputs[-1]['context']['task'])
         self.assertEqual(before, state['tasks'])

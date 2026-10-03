@@ -1,0 +1,26 @@
+{
+  "source": "review-today-knowledge-closure-capture-e.jsonl",
+  "source_sha256": "74874d3b2a32a7e9ce13cb974e75cf03b6650305590fd265ed6445ff30e532c4",
+  "structural_result": "PASS: 3 of 3",
+  "semantic_result": "PASS for repaired concept integrity, card relevance and question scope in this sample",
+  "network_calls_for_this_review": 0,
+  "findings": [
+    "Three cards cover keyword matching, vector matching and their comparison.",
+    "Definition, mechanism and key limits are together within each concept card.",
+    "No separate memorization card for the illustrative flight-ticket wording.",
+    "Table values are expressed as natural propositions; malformed 两者都是否 is absent.",
+    "Only each primary question is generated; it asks for the aspects in its shared must_cover.",
+    "The current conversation, constraints and feedback are represented; saved state follows the temporary-client receipt."
+  ],
+  "limitations": [
+    "Native SwiftData persistence and actual review grading were not exercised.",
+    "The comparison card still overlaps with the two concept cards; this sample does not settle preferred card granularity.",
+    "scoring_spec.evidence is a short source excerpt; full source and explanation retain additional limits. This is not an exhaustive scoring-evidence audit."
+  ],
+  "titles": [
+    "关键词检索",
+    "向量检索",
+    "两种检索对比"
+  ],
+  "native_persistence_verified": false
+}

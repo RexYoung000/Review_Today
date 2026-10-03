@@ -6,6 +6,19 @@ from agent_service.response_projection import public_preview
 
 
 class AnswerStyleTests(unittest.TestCase):
+    def test_check_variant_removes_only_exact_echo_and_preserves_examples_and_other_sections(self):
+        question = "在这些条件下为什么可能漏检？"
+        for heading in ("## 检查一下", "### 检查一下", "### 想一想"):
+            body, actual = separate_lesson_check("正文。\n\n" + heading + "\n\n**" + question + "**", question)
+            self.assertEqual(body, "正文。")
+            self.assertEqual(actual, question)
+            self.assertEqual(with_question(body, actual).count(question), 1)
+        for body in ("示例：\n```markdown\n### 检查一下\n" + question + "\n```",
+                     "### 检查一下状态\n" + question,
+                     "正文。\n\n### 检查一下\n条件尚未说明，不能回答。\n\n## 实际限制\n保留说明。",
+                     "正文。\n\n### 检查一下\n不同的问题，不能擅自删掉？"):
+            self.assertEqual(separate_lesson_check(body, question), (body, question))
+
     def test_only_explicit_single_trailing_check_is_recovered(self):
         body, question = separate_lesson_check("本节正文。\n\n---\n\n### 想一想\n\n如何使用资料？", "")
         self.assertEqual((body, question), ("本节正文。", "如何使用资料？"))

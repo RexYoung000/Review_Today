@@ -22,10 +22,28 @@ class LearningMemoryTests(unittest.TestCase):
         self.assertEqual(selected[0]["kind"], "explained")
 
     def test_evaluation_evidence_points_to_answered_not_next_step(self):
-        run = dict(run_id="r", status="completed", evaluated_step_id="first", intent={"intents": ["answer"]})
+        binding = dict(step_id="first", concepts=["已回答的概念"])
+        run = dict(run_id="r", revision=1, status="completed", evaluated_step_id="first", evaluated_binding=binding,
+                   evaluation_message_id="u", verified_concepts=["已回答的概念"], intent={"intents": ["answer"]})
         task = dict(task_id="t", context={"learning_plan": {"current_step_id": "next", "steps": [
             {"id": "first", "title": "刚才的作答"}, {"id": "next", "title": "待做的追问"}]},
-            "practice": [{"hint_used": False, "evaluation": {"passed": True}}]})
+            "practice": [{"run_id": "r", "revision": 1, "message_id": "u", "binding": binding,
+                          "hint_used": False, "evaluation": {"passed": True}}]})
         result = make_evidence(run, task, "m", "评价", "s")
         self.assertEqual(result["step_id"], "first")
         self.assertEqual(result["kind"], "independently_verified")
+        self.assertEqual(result["concept"], "已回答的概念")
+        self.assertEqual(result["concepts"], ["已回答的概念"])
+
+    def test_legacy_or_wrong_answer_receipt_cannot_borrow_previous_pass(self):
+        for mutation in ({"evaluated_binding": None}, {"evaluation_message_id": "new-answer"}, {"run_id": "other-run"}, {"revision": 2}):
+            binding = dict(step_id="first", concepts=["向量检索"])
+            run = dict(run_id="r", revision=1, status="completed", evaluated_binding=binding, evaluation_message_id="u",
+                       verified_concepts=["向量检索"], intent={"intents": ["answer"]})
+            run.update(mutation)
+            task = dict(task_id="t", context={"learning_plan": {"current_step_id": "first", "steps": [
+                {"id": "first", "title": "切块"}]}, "practice": [dict(run_id="r", revision=1, message_id="u", binding=binding,
+                                                                      evaluation=dict(passed=True))]})
+            result = make_evidence(run, task, "m", "评价", "s")
+            self.assertNotEqual(result["kind"], "independently_verified")
+            self.assertNotEqual(result["concept"], "切块")

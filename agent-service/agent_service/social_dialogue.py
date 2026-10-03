@@ -21,15 +21,25 @@ _UNSUITABLE_ACK = re.compile(
 )
 
 
-def bounded_reply(reply, fallback, *, allow_introduction=False):
+def bounded_reply(reply, fallback, *, allow_introduction=False, truncate=False):
     reply = reply.strip()
-    if not reply or len(reply) > 120:
+    if not reply or (len(reply) > 120 and not truncate):
         return fallback
     # Greetings/capability questions can carry useful orientation. A response
     # complaint or simple thanks must not turn into another product pitch.
     if not allow_introduction and re.search(r"学习教练|Review\s*Today", reply, re.I):
         return fallback
     sentences = re.findall(r"[^。！？.!?；;～~\n]+[。！？.!?；;～~]?", reply)
+    if truncate:
+        # Keep useful complete sentences if a local repair exceeds its style
+        # budget. Never cut a sentence mid-condition, negation or explanation,
+        # or pull a later conclusion forward after filtering earlier sentences.
+        prefix = []
+        for sentence in sentences:
+            if len(''.join(prefix) + sentence) > 120:
+                break
+            prefix.append(sentence)
+        sentences = prefix
     kept = [sentence for sentence in sentences
             if not re.search(r"[?？]", sentence) and not _UNSUITABLE_ACK.search(sentence)]
     return "".join(kept).strip() or fallback

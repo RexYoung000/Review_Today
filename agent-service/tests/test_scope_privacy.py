@@ -64,7 +64,7 @@ def test_bare_continue_carries_last_blocked_scope_but_named_learning_does_not(f)
     assert f.state()['runs'][ack.run_id]['resource_scope_reply']
     f.decision = fixtures.intent('question', answer_only=True)
     f.send('继续解释 RAG 的原理')
-    assert any(s is ConversationOutput for s, _ in f.calls)
+    assert any(issubclass(s, ConversationOutput) for s, _ in f.calls)
 
 
 def test_existing_programming_boundary_uses_same_control_gate(f):
@@ -152,7 +152,7 @@ def test_mixed_learning_rebuilds_query_from_projection_and_retry_keeps_mode_idem
         if schema is TeachingPreparation:
             preparations.append(json.loads(user))
             return TeachingPreparation(concepts=['RAG'], public_query='RAG 原理')
-        if schema is ConversationOutput and fail:
+        if issubclass(schema, ConversationOutput) and fail:
             from agent_service.openai_client import ModelCallError
             raise ModelCallError('TIMEOUT')
         return f.model(system, user, schema, **kw)
@@ -218,8 +218,8 @@ def test_private_material_cannot_be_disguised_as_a_short_public_query(f):
     assert run['status'] == 'completed' and run['search_state'] == 'not_called'
     assert '私人资料' in run['verification_notice']
     search.assert_not_called()
-    assert any(schema is ConversationOutput for schema, _ in f.calls)
-    answer = next(p for schema, p in f.calls if schema is ConversationOutput)
+    assert any(issubclass(schema, ConversationOutput) for schema, _ in f.calls)
+    answer = next(p for schema, p in f.calls if issubclass(schema, ConversationOutput))
     assert '仍可根据用户已经提供的内容做解释' in answer['instruction']
 
 

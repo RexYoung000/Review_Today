@@ -10,6 +10,7 @@ from agent_service.execution_policy import budget_scope
 from agent_service.learning_memory import merge_references
 from agent_service.context_budget import OUTPUT_RESERVE, count_request, policy, prepare as prepare_context
 from agent_service import run_accounting
+from agent_service import knowledge_capture_status
 from agent_service.interruptible_call import pool
 
 def maintain_summary(self, sid):
@@ -247,5 +248,6 @@ def context(self, data, run):
                 summary=data["summary"] if data.get("summary_invalidated") else data["summary"] or external.get("summary", ""),
                 recent_messages=recent if data.get("summary_invalidated") else recent or (external.get("recent_messages", []) if not eligible and not data.get("summary") else []),
                 related_knowledge=external.get("knowledge_summaries", [])[:5],
+                knowledge_capture_status=knowledge_capture_status.facts(data, related_knowledge=external.get("knowledge_summaries", [])),
                 memory_candidates=[c for c in external.get("memory_candidates", [])[:12] if self.store.memory_valid([c])] if not run.get("intent") else [],
                 related_learning=run.get("memory_references", []), handoff=external.get("handoff")), last

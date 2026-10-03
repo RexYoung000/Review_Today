@@ -1,0 +1,33 @@
+{
+  "source": "review-today-knowledge-closure-live-d.jsonl",
+  "source_sha256": "bceff01ced8b9b866ea760025237fa1d37bc9e113aafb34603b0de226586157b",
+  "structural_result": "PASS: 9 of 9",
+  "semantic_result": "FAIL: generated-card concept integrity and question/rubric coverage",
+  "review": {
+    "teaching": "Question, lesson and concept binding aligned; conditional retrieval limits stated; question displayed once.",
+    "clarification": "Explained the same task and expected answer scope without supplying the concrete retrieval conclusion; longer than desired 80 characters.",
+    "clarification_characters": 112,
+    "evaluation": "Accepted conditional response; only named concepts verified, chapter and later steps not promoted.",
+    "status_and_closure": "Explicitly distinguished answer record from saved cards; status question preserved draft eligibility; save state followed real temporary-client ACK."
+  },
+  "card_findings": [
+    {
+      "title": "关键词检索（字词匹配） / 关键词检索的边界",
+      "issue": "One complete concept split into definition and limits; variant asking only to correct exact-sentence matching shares unrelated frequency/rarity scoring requirements."
+    },
+    {
+      "title": "向量检索（语义匹配） / 向量相似的边界",
+      "issue": "One complete concept split into mechanism and limits."
+    },
+    {
+      "title": "退机票与航班退款示例",
+      "issue": "Illustration promoted to standalone memorization item; rubric requires specific example strings."
+    },
+    {
+      "title": "两种检索的对比维度",
+      "issue": "Malformed prose and rubric: 两者都是否."
+    }
+  ],
+  "native_persistence_verified": false,
+  "network_calls_for_this_review": 0
+}

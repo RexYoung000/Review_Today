@@ -23,12 +23,19 @@ def make_evidence(run, task, message_id, text, sid):
         return None
     ctx = (task or {}).get("context", {})
     plan = ctx.get("learning_plan") or {}
-    step_id = run.get("evaluated_step_id") or plan.get("current_step_id")
+    binding = run.get("evaluated_binding") or {}
+    step_id = (binding.get("step_id") if "answer" in intents else
+               run.get("teaching_step_id") or plan.get("current_step_id"))
     step = next((s for s in plan.get("steps", []) if s["id"] == step_id), {})
-    practice = ctx.get("practice", [])
-    hint = bool(ctx.get("hint_used") or intents & {"hint", "example"} or "answer" in intents and practice and practice[-1].get("hint_used"))
+    practice = next((p for p in reversed(ctx.get("practice", [])) if p.get("run_id") == run["run_id"] and
+                     p.get("revision") == run.get("revision") and
+                     p.get("message_id") == run.get("evaluation_message_id")), {})
+    hint = bool(ctx.get("hint_used") or intents & {"hint", "example"} or "answer" in intents and practice.get("hint_used"))
     kind = "explained"
-    if "answer" in intents and not hint and ctx.get("practice") and ctx["practice"][-1].get("evaluation", {}).get("passed"):
+    concepts = run.get("verified_concepts", []) if "answer" in intents else run.get("learning_concepts", [])
+    if ("answer" in intents and not hint and binding and concepts and practice.get("binding") == binding
+            and practice.get("evaluation", {}).get("passed") and
+            practice.get("evaluation", {}).get("question_validity", "valid") == "valid"):
         kind = "independently_verified"
     elif intent.get("understanding") == "self_reported":
         kind = "self_reported"
@@ -36,8 +43,9 @@ def make_evidence(run, task, message_id, text, sid):
         kind = "skipped_check"
     return dict(id=message_id, session_id=sid, run_id=run["run_id"], message_id=message_id,
                 task_id=(task or {}).get("task_id"), step_id=step.get("id"),
-                concept=step.get("title") or (task or {}).get("content") or intent.get("target_description") or text[:80],
-                concepts=run.get("learning_concepts", []), kind=kind, hint_used=hint,
+                concept="、".join(concepts) or ("本题反馈（未验证）" if "answer" in intents else
+                    step.get("title") or (task or {}).get("content") or intent.get("target_description") or text[:80]),
+                concepts=concepts, kind=kind, hint_used=hint,
                 excerpt=text[:1600], source_ids=[s["source_id"] for s in ctx.get("sources", []) if s.get("source_id")],
                 evidence_message_ids=run.get("input_ids", []) if "answer" in intents else [message_id],
                 dependencies=run.get("memory_references", []), occurred_at=now_iso(), revision=run.get("revision", 1))

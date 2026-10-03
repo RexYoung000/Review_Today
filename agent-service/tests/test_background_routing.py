@@ -63,7 +63,7 @@ class BackgroundRoutingTests(unittest.TestCase):
     def test_missing_background_reply_uses_context_without_teaching_preparation(self):
         self.f.decision = background().model_copy(update={'light_reply': ''})
         self.f.send(BACKGROUND)
-        prompts = [p for s, p in self.f.calls if s is ConversationOutput]
+        prompts = [p for s, p in self.f.calls if issubclass(s, ConversationOutput)]
         self.assertEqual(len(prompts), 1)
         self.assertEqual(prompts[0]['context']['current_inputs'], [BACKGROUND])
         self.assertIn('已知在准备面试', prompts[0]['instruction'])
@@ -101,7 +101,7 @@ class BackgroundRoutingTests(unittest.TestCase):
         state = self.f.state()
         self.assertFalse(state['tasks'])
         self.assertNotIn('social_reply_kind', next(iter(state['runs'].values())))
-        self.assertTrue(any(s is ConversationOutput for s, _ in self.f.calls))
+        self.assertTrue(any(issubclass(s, ConversationOutput) for s, _ in self.f.calls))
 
     def test_clarification_uses_known_purpose_and_only_asks_missing_information(self):
         self.f.decision = f.intent('goal', workflow='topic_exploration', target_description='准备 AI 产品经理面试')
@@ -109,7 +109,7 @@ class BackgroundRoutingTests(unittest.TestCase):
         state = self.f.state()
         task = state['tasks'][state['active_task_id']]
         self.assertEqual(task['stage'], 'clarify_goal')
-        prompt = next(p for s, p in self.f.calls if s is ConversationOutput)
+        prompt = next(p for s, p in self.f.calls if issubclass(s, ConversationOutput))
         self.assertIn('AI 产品经理面试', prompt['context']['task']['content'])
         self.assertIn('不得再问学完要做什么', prompt['instruction'])
         self.assertEqual(state['messages'][-1]['content'], '这是本轮真实回答。')
@@ -137,7 +137,7 @@ class BackgroundRoutingTests(unittest.TestCase):
         self.assertIsNone(state['pending'])
         self.assertFalse(state['tasks'])
         self.assertFalse(state.get('focus_goal'))
-        prompt = [p for s, p in self.f.calls if s is ConversationOutput][-1]
+        prompt = [p for s, p in self.f.calls if issubclass(s, ConversationOutput)][-1]
         self.assertEqual(prompt['context']['current_inputs'], [BACKGROUND])
         self.assertEqual(prompt['context']['session_goal'], '')
 

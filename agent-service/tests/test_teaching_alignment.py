@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from agent_service.learning_progress import current_step
 from agent_service.openai_client import ModelCallError, schema_diagnostic
-from agent_service.schemas import ConversationOutput, LearningPlan, MasteryEvaluation
+from agent_service.schemas import ConversationOutput, TeachingConversationOutput, LearningPlan, MasteryEvaluation, CheckBinding
 from tests import test_conversation_v2 as fixture
 from tests.test_conversation_v2 import intent
 
@@ -24,16 +24,27 @@ class TeachingAlignmentTests(unittest.TestCase):
     state = fixture.ConversationTests.state
 
     def model(self, system, user, schema, **kwargs):
-        if schema is ConversationOutput:
+        if issubclass(schema, ConversationOutput):
             payload = json.loads(user)
             existing = ((payload.get("context", {}).get("task") or {}).get("context", {}).get("learning_plan"))
             return ConversationOutput(message=LESSON if not existing else "本节讲解检索与生成各自的职责。",
                                       check_question=QUESTION if not existing else "检索和生成各负责什么？",
+                                      learning_concepts=["外部资料作用"] if not existing else ["检索与生成职责"],
+                                      check_binding=dict(step_title="为什么需要 RAG" if not existing else payload["learning_step"]["title"],
+                                          concepts=["外部资料作用"] if not existing else ["检索与生成职责"],
+                                          evidence_quotes=[LESSON] if not existing else ["本节讲解检索与生成各自的职责。"],
+                                          scope="concept"),
                                       learning_plan=None if existing else LearningPlan(
                                           goal="理解 RAG 的作用和流程", steps=["为什么需要 RAG", "检索与生成的职责"],
                                           success_check="能解释作用并串起完整流程",
                                           step_conditions=["能举例说明外部资料的作用", "能区分检索和生成的职责"]))
         result = fixture.ConversationTests.model(self, system, user, schema, **kwargs)
+        if schema is MasteryEvaluation:
+            payload = json.loads(user)
+            target = payload.get("retry_step" if getattr(self, "partial_answer", False) or payload.get("hint_used") else "followup_step")
+            if target:
+                result.followup_binding = CheckBinding(step_title=target["title"], concepts=["本题已教概念"],
+                                                       evidence_quotes=[payload["reference"]])
         if schema is MasteryEvaluation and getattr(self, "partial_answer", False):
             return result.model_copy(update={"passed": False, "feedback": "已经提到外部资料，还缺少如何用资料回答。"})
         return result
@@ -48,7 +59,91 @@ class TeachingAlignmentTests(unittest.TestCase):
         self.decision = intent("answer", workflow="source_learning", scope="continue_goal")
         self.send("先查到昨天的新说明，再依据说明回答。")
 
-    def test_daily_grading_receives_current_lesson_and_step_and_verifies_only_that_step(self):
+    def test_coach_call_keeps_simplified_retrieval_assumptions_and_real_system_limits(self):
+        systems = []
+        base = self.model
+        def capture(system, user, schema, **kwargs):
+            if issubclass(schema, ConversationOutput):
+                systems.append(system)
+            return base(system, user, schema, **kwargs)
+        with patch("agent_service.conversation.parse_model", side_effect=capture):
+            self.start_lesson()
+        self.assertEqual(len(systems), 1, "Grounding rules must not add a model call")
+        for rule in ("简化模型必须先说明假设", "文档词项、查询词项、分词与匹配规则",
+                     "同义词、翻译和查询扩展", "可能漏召回或误召回", "先检查实际共有字词",
+                     "不保证命中、相关或正确", "step_conditions、检查题和讲解都须保留这些边界"):
+            self.assertIn(rule, systems[0])
+
+    def test_missing_binding_and_echoed_variant_repair_once_before_final_question(self):
+        systems = []
+        base = self.model
+        def missing_once(system, user, schema, **kwargs):
+            result = base(system, user, schema, **kwargs)
+            if schema is TeachingConversationOutput:
+                systems.append(system)
+                if len(systems) == 1:
+                    malformed = result.model_copy(update={"check_binding": None,
+                        "message": LESSON + "\n\n### 检查一下\n\n先看这一情境：\n\n> 昨天更新了内部说明。\n\n请回答：" + QUESTION})
+                    kwargs.get("on_partial", lambda value: None)(malformed.model_dump())
+                    return malformed
+            return result
+        with patch("agent_service.conversation.parse_model", side_effect=missing_once):
+            task = self.start_lesson()
+        state = self.state()
+        self.assertEqual(len(systems), 2)
+        self.assertIn("本轮教学检查题必须提供非空 check_binding", systems[-1])
+        self.assertIsNotNone(task["context"].get("check_binding"))
+        coaches = [m for m in state["messages"] if m["role"] == "coach"]
+        self.assertEqual(len(coaches), 1)
+        self.assertEqual(coaches[0]["content"].count(QUESTION), 1)
+        self.assertNotIn("检查一下", task["context"]["last_lesson"])
+
+    def test_permanently_missing_binding_has_bounded_failure_without_publishing_check(self):
+        attempts = []
+        base = self.model
+        def always_missing(system, user, schema, **kwargs):
+            result = base(system, user, schema, **kwargs)
+            if schema is TeachingConversationOutput:
+                attempts.append(schema)
+                return result.model_copy(update={"check_binding": None})
+            return result
+        self.decision = intent("goal", workflow="source_learning", direct_teaching=True)
+        with patch("agent_service.conversation.parse_model", side_effect=always_missing):
+            accepted = self.send("直接教我 RAG", mode="source_learning")
+        state = self.state()
+        self.assertEqual(len(attempts), 2)
+        self.assertEqual(state["runs"][accepted.run_id]["status"], "retryable_failed")
+        self.assertFalse(any(m["role"] == "coach" and QUESTION in m["content"] for m in state["messages"]))
+        task = state["tasks"][state["active_task_id"]]
+        self.assertFalse(task["context"].get("check_question"))
+
+    def test_ordinary_and_legacy_output_remain_readable_without_binding(self):
+        old = dict(message="普通说明。", check_question="历史题目？")
+        self.assertIsNone(ConversationOutput.model_validate(old).check_binding)
+        self.assertIn("check_binding", TeachingConversationOutput.model_json_schema()["required"])
+
+    def test_followup_missing_binding_uses_same_single_repair_before_issuing_new_check(self):
+        task = self.start_lesson()
+        self.partial_answer = True
+        attempts = []
+        base = self.model
+        def missing_once(system, user, schema, **kwargs):
+            value = base(system, user, schema, **kwargs)
+            if schema is MasteryEvaluation:
+                attempts.append(system)
+                if len(attempts) == 1:
+                    value.followup_binding = None
+            return value
+        with patch("agent_service.conversation.parse_model", side_effect=missing_once):
+            self.answer()
+        after = self.state()["tasks"][task["task_id"]]
+        self.assertEqual(len(attempts), 2)
+        self.assertIn("同步填写 followup_binding", attempts[-1])
+        self.assertTrue(after["context"]["check_binding"])
+        self.assertEqual(after["context"]["check_binding"]["question"], after["required_action"]["prompt"])
+        self.assertEqual(after["context"]["understanding"], "unknown")
+
+    def test_daily_grading_receives_current_lesson_and_step_and_verifies_only_question_concepts(self):
         task = self.start_lesson()
         before_step = current_step(task)
         self.assertEqual(task["context"]["understanding"], "unknown")
@@ -61,7 +156,8 @@ class TeachingAlignmentTests(unittest.TestCase):
         self.assertNotIn("completion_condition", grading["learning_step"])
         self.assertNotIn("能区分检索和生成", str(grading))
         task = self.state()["tasks"][task["task_id"]]
-        self.assertEqual(current_step(task)["understanding"], "verified")
+        self.assertEqual(current_step(task)["understanding"], "unknown")
+        self.assertEqual(current_step(task)["verified_concepts"][0]["concept"], "外部资料作用")
         self.assertEqual(task["context"]["understanding"], "unknown")
         self.assertEqual(task["context"]["learning_plan"]["steps"][1]["state"], "pending")
 
@@ -92,7 +188,7 @@ class TeachingAlignmentTests(unittest.TestCase):
         payloads = []
         base = self.model
         def capture(system, user, schema, **kwargs):
-            if schema is ConversationOutput:
+            if issubclass(schema, ConversationOutput):
                 payloads.append(json.loads(user))
             return base(system, user, schema, **kwargs)
         self.decision = intent("continue", workflow="source_learning", scope="continue_goal")
@@ -135,7 +231,7 @@ class TeachingAlignmentTests(unittest.TestCase):
         base = self.model
         def inline_check(system, user, schema, **kwargs):
             result = base(system, user, schema, **kwargs)
-            if schema is ConversationOutput:
+            if issubclass(schema, ConversationOutput):
                 return result.model_copy(update={"message": LESSON + "\n\n---\n\n### 想一想\n\n" + QUESTION,
                                                  "check_question": ""})
             return result
@@ -167,7 +263,7 @@ class TeachingAlignmentTests(unittest.TestCase):
         calls = []
         base = self.model
         def capture(system, user, schema, **kwargs):
-            if schema is ConversationOutput:
+            if issubclass(schema, ConversationOutput):
                 calls.append(json.loads(user))
             return base(system, user, schema, **kwargs)
         self.decision = intent("continue", workflow="source_learning", scope="continue_goal")
@@ -185,7 +281,7 @@ class TeachingAlignmentTests(unittest.TestCase):
                 self.sid = str(uuid.uuid4())
                 systems = []
                 def malformed_once(system, user, schema, **kwargs):
-                    if schema is ConversationOutput:
+                    if issubclass(schema, ConversationOutput):
                         systems.append(system)
                         if len(systems) == 1:
                             plan = dict(goal="理解 RAG", steps=["作用", "流程"], success_check="说明整体流程",

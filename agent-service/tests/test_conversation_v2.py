@@ -84,13 +84,22 @@ class ConversationTests(unittest.TestCase):
         if schema is ProblemCoachBundle:
             return bundle()
         if schema is MasteryEvaluation:
+            payload = json.loads(user)
+            target = payload.get("retry_step" if payload.get("hint_used") else "followup_step") or {}
             return MasteryEvaluation(passed=True, correctness="正确", completeness="完整", expression="清楚",
-                                     transfer="待验证", feedback="本次回答核心正确", followup_question="换一个场景有哪些局限？")
+                                     transfer="待验证", feedback="本次回答核心正确", followup_question="换一个场景有哪些局限？",
+                                     followup_binding=dict(step_title=target["title"], concepts=["本轮原理"],
+                                         evidence_quotes=["这是本轮真实回答。"]) if target else None)
         if schema is ConversationSummary:
             return ConversationSummary(goal="RAG", confirmed_decisions=[], open_questions=["原理"], summary="当前主题是 RAG。")
         if schema is JDAnalysis:
             return JDAnalysis(role_goal="RAG 工程师", competency_map=["检索"], risk_points=["无项目经验"], prioritized_questions=["RAG 是什么？", "如何评估检索？"])
-        return ConversationOutput(message="这是本轮真实回答。", check_question="请用自己的话说明原理。")
+        payload = json.loads(user) if user.startswith("{") else {}
+        current = payload.get("learning_step") or {}
+        return ConversationOutput(message="这是本轮真实回答。", check_question="请用自己的话说明原理。",
+                                  learning_concepts=["本轮原理"], check_binding=dict(
+                                      step_title=current.get("title", "当前资料讲解"), concepts=["本轮原理"],
+                                      evidence_quotes=["这是本轮真实回答。"], scope="concept"))
 
     def send(self, text="你好", *, mode="auto", delivery="steer", sid=None, drain=True, operation=None):
         body = SessionMessageRequest(client_message_id=str(uuid.uuid4()), content=text, mode_preset=mode,
@@ -368,7 +377,7 @@ class ConversationTests(unittest.TestCase):
         self.decision = intent("confirm", "followup", proposed_actions=[IntentOperation(kind="save", disposition="confirm",
                                target_id=pending["target_id"], version=pending["version"], evidence="保存这版")])
         def fail_answer(system, user, schema, **kwargs):
-            if schema is ConversationOutput:
+            if issubclass(schema, ConversationOutput):
                 from agent_service.openai_client import ModelCallError
                 raise ModelCallError("TIMEOUT")
             return self.model(system, user, schema, **kwargs)
@@ -462,14 +471,15 @@ class ConversationTests(unittest.TestCase):
         self.send("没有相关证据时应明确边界")
         task = self.state()["tasks"][self.state()["active_task_id"]]
         self.assertEqual(task["context"]["understanding"], "verified")
-        self.assertEqual(self.state()["draft"]["content"], "先检索相关资料，再基于上下文生成回答。")
+        self.assertTrue(self.state()["draft"]["content"].startswith("先检索相关资料，再基于上下文生成回答。"))
+        self.assertIn("本次回答核心正确", self.state()["draft"]["content"])
         self.capture.assert_not_called()
 
     def test_stop_fences_late_model_and_keeps_queue_paused(self):
         accepted = self.send(drain=False)
         entered, release = threading.Event(), threading.Event()
         def slow_model(*args, **kwargs):
-            if args[2] is ConversationOutput:
+            if issubclass(args[2], ConversationOutput):
                 entered.set()
                 self.assertTrue(release.wait(5))
             return self.model(*args, **kwargs)
@@ -493,7 +503,7 @@ class ConversationTests(unittest.TestCase):
         count = 0
         def slow_model(*args, **kwargs):
             nonlocal count
-            if args[2] is ConversationOutput:
+            if issubclass(args[2], ConversationOutput):
                 count += 1
                 if count == 1:
                     entered.set()
@@ -513,7 +523,7 @@ class ConversationTests(unittest.TestCase):
     def test_failed_run_retries_without_rerouting_completed_intent(self):
         accepted = self.send(drain=False)
         def failing(*args, **kwargs):
-            if args[2] is ConversationOutput:
+            if issubclass(args[2], ConversationOutput):
                 raise RuntimeError("RT.MODEL.EMPTY")
             return self.model(*args, **kwargs)
         with patch("agent_service.conversation.parse_model", side_effect=failing):
@@ -669,7 +679,7 @@ class ConversationTests(unittest.TestCase):
         self.send("继续放在这里", operation={"kind":"continue_session", "target_id":pending["target_id"], "version":pending["version"]})
         self.assertIsNone(self.state()["pending"])
         self.assertEqual(self.state()["focus_goal"], "请带我系统学习吉他")
-        last_coach = [c for schema,c in self.calls if schema is ConversationOutput][-1]
+        last_coach = [c for schema,c in self.calls if issubclass(schema, ConversationOutput)][-1]
         self.assertEqual(last_coach["context"]["current_inputs"], ["请带我系统学习吉他"])
 
     def test_first_direct_teaching_goal_does_not_require_a_nonexistent_confirmation(self):
@@ -720,12 +730,13 @@ class ConversationTests(unittest.TestCase):
         for i in range(11): self.send(f"你好 {i}")
         with self.store.transaction(self.sid) as data:
             for m in data["messages"]:
-                if m["role"] == "user": m["content"] = "a" * 42000
+                if m["role"] == "user": m["content"] = "a" * 40000
         normal = self.model
         def fail_summary(*args, **kwargs):
             if args[2] is ConversationSummary: raise RuntimeError("RT.MODEL.TIMEOUT")
             return normal(*args, **kwargs)
-        # This deliberately huge history isolates summary-failure recovery.
+        # This history is above the compaction threshold but below the hard input
+        # limit, including the current router/schema overhead. It isolates summary recovery.
         # Whole-turn admission limits are tested separately; allow the raw
         # context fallback here so the already-published-answer invariant runs.
         with patch("agent_service.conversation.parse_model", side_effect=fail_summary), \

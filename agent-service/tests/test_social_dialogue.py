@@ -160,7 +160,7 @@ class SocialDialogueTests(unittest.TestCase):
                                          light_reply='这条短回复不能吞掉知识问题。')
         text = '别再只回你好了，请用一句话解释 RAG'
         accepted = self.f.send(text)
-        answers = [p for s, p in self.f.calls if s is ConversationOutput]
+        answers = [p for s, p in self.f.calls if issubclass(s, ConversationOutput)]
         self.assertIn(text, str(answers[-1]))
         self.assertNotIn('reply_feedback_handled', self.f.state()['runs'][accepted.run_id])
         self.assertFalse(self.f.state()['tasks'])
@@ -236,7 +236,7 @@ class SocialDialogueTests(unittest.TestCase):
             self.f.calls.clear()
             self.f.decision = self.social(kind, 'social', 'question', workflow='topic_exploration', scope='learning')
             self.f.send('今天很烦，顺便解释一下 RAG')
-            self.assertTrue(any(s is ConversationOutput for s, _ in self.f.calls))
+            self.assertTrue(any(issubclass(s, ConversationOutput) for s, _ in self.f.calls))
             self.assertFalse(self.f.state()['tasks'])
             self.assertNotIn('social_reply_kind', list(self.f.state()['runs'].values())[-1])
 
@@ -265,7 +265,7 @@ class SocialDialogueTests(unittest.TestCase):
         self.f.decision = fixtures.intent('continue', scope='continue_goal', conversation_kind='companionship')
         self.f.calls.clear()
         self.f.send('继续学习', mode='problem_solving')
-        self.assertTrue(any(s is ConversationOutput for s, _ in self.f.calls))
+        self.assertTrue(any(issubclass(s, ConversationOutput) for s, _ in self.f.calls))
 
     def test_bound_save_keeps_version_checks_despite_social_words(self):
         self.f.decision = fixtures.intent('question')
@@ -299,7 +299,7 @@ class SocialDialogueTests(unittest.TestCase):
         from agent_service.openai_client import ModelCallError
         self.f.decision = self.social('learning_support', 'question')
         def fail(system, user, schema, **kwargs):
-            if schema is ConversationOutput:
+            if issubclass(schema, ConversationOutput):
                 raise ModelCallError('TIMEOUT')
             return self.f.model(system, user, schema, **kwargs)
         with patch('agent_service.conversation.parse_model', side_effect=fail):

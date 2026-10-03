@@ -141,7 +141,7 @@ class SelectiveWebTests(unittest.TestCase):
     def test_no_search_answer_cannot_invent_clickable_reference(self):
         original = self.model
         def model(system, user, schema, **kw):
-            if schema is ConversationOutput:
+            if issubclass(schema, ConversationOutput):
                 return ConversationOutput(message='基础知识。[伪造来源](https://invented.example/source)', evidence_state='unverified')
             return original(system, user, schema, **kw)
         self.decision = intent('question')

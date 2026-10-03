@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field, create_model
 from agent_service.judgment_types import JudgmentRequest, digest, question
 from agent_service.learning_progress import current_step
 from agent_service.schemas import (ScoringSpec, ConversationOutput, QuestionAnalysis,
-                                  ProblemCoachBundle, MasteryEvaluation)
+                                  ProblemCoachBundle, MasteryEvaluation, CheckBinding)
 
 
 class ScoredConversationOutput(ConversationOutput):
@@ -40,6 +40,9 @@ class JudgmentFeedback(BaseModel):
     feedback: str
     followup_question: str = ""
     followup_scoring_spec: ScoringSpec | None = None
+    question_validity: Literal["valid", "ambiguous", "out_of_scope"] = "valid"
+    step_completion_demonstrated: bool = False
+    followup_binding: CheckBinding | None = None
 
 
 RUBRIC_RULE = """
@@ -150,7 +153,8 @@ def evaluate(h, sid, rid, rev, task, answer, system):
     effective = passed and not task["context"].get("hint_used", False)
     feedback = h._call(sid, rid, rev, "evaluate",
         "依据程序提供的逐项结论和 effective_passed 生成解释反馈，不重新判定通过，不升级掌握状态。"
-        "未知项明确说明尚不能验证。使用提示时不称独立通过。" + FOLLOWUP_RULE,
+        "未知项明确说明尚不能验证。使用提示时不称独立通过。若题面条件不足或超出已教范围，"
+        "即使逐项看似覆盖也将 question_validity 标为 ambiguous/out_of_scope，不判用户错误。" + system + FOLLOWUP_RULE,
         json.dumps(dict(question=text, answer=answer, scoring_spec=spec.model_dump(),
                         judgments=labels, effective_passed=effective, hint_used=task["context"].get("hint_used", False),
                         reference=task["context"].get("reference_answer") or task["context"].get("last_lesson", "")),
@@ -158,4 +162,4 @@ def evaluate(h, sid, rid, rev, task, answer, system):
     with h.store.transaction(sid, rid, rev) as data:
         data["runs"][rid]["point_evaluation"] = dict(labels=labels, passed=passed, effective_passed=effective,
             standard_fingerprint=task["context"]["check_standard"]["fingerprint"], llm_fallback_items=list(pending))
-    return ScoredMasteryEvaluation(passed=passed, **feedback.model_dump())
+    return ScoredMasteryEvaluation(passed=passed and feedback.question_validity == "valid", **feedback.model_dump())

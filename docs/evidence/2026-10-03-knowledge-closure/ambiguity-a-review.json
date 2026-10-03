@@ -1,0 +1,178 @@
+{
+  "source": "review-today-knowledge-closure-ambiguity-a.jsonl",
+  "source_sha256": "b2df20d01630047eb08ad18f6bf4d7ed17df551b163481ffbb35a40739c4c88c",
+  "layer": "offline replay of captured real output",
+  "network_calls": 0,
+  "original_assertions": "overly restrictive ambiguous+false required; original evidence retained",
+  "review": "Accepted a conditional answer and explicitly rejected an unsupported inevitable-miss conclusion; not negative evidence.",
+  "checks": {
+    "accepts_answer_or_qualifies_question": true,
+    "no_whole_step_claim": true,
+    "explains_judgment": true,
+    "no_unjustified_progress": true
+  },
+  "offline_progress_replay": [
+    {
+      "scope": "concept",
+      "binding": {
+        "question": "文档里写的是‘如何安装电池’，用户搜‘电池怎么装’。如果只用关键词检索，会怎样？",
+        "step_id": "33b8f34b-bd40-4418-ad6c-b9a5c208721c",
+        "step_title": "关键词与向量匹配差异",
+        "concepts": [
+          "关键词检索"
+        ],
+        "evidence_quotes": [
+          "关键词检索主要根据字词匹配查找内容。向量检索把内容和问题转成向量，利用语义相似性召回不同措辞但意思相关的内容。"
+        ],
+        "scope": "concept",
+        "reference_stamp": "8be20958ae84c908af3f780f1f53e70a5a39c5d8998b4f45c8c55891721950e9",
+        "plan_version": 1,
+        "completion_condition": ""
+      },
+      "preserved_current_step": true,
+      "no_whole_step_verified": true,
+      "no_task_completion": true,
+      "no_card_draft": true,
+      "evaluator_calls_intercepted": 1,
+      "step": {
+        "id": "33b8f34b-bd40-4418-ad6c-b9a5c208721c",
+        "state": "explained",
+        "understanding": "unknown",
+        "message_ids": [
+          "3acaf7b8-cdea-43ac-ac00-64fe7e31cecc"
+        ],
+        "completion_condition": "比较两种检索的召回机制和局限",
+        "title": "关键词与向量匹配差异",
+        "verified_concepts": [
+          {
+            "concept": "关键词检索",
+            "message_id": "640e828a-a11f-45d0-94a1-a63a4e9c58ec",
+            "question": "文档里写的是‘如何安装电池’，用户搜‘电池怎么装’。如果只用关键词检索，会怎样？"
+          }
+        ]
+      },
+      "practice": [
+        {
+          "message_id": "640e828a-a11f-45d0-94a1-a63a4e9c58ec",
+          "run_id": "01dd3a58-1b5d-4eaf-9815-add16516a1fa",
+          "revision": 1,
+          "hint_used": false,
+          "binding": {
+            "question": "文档里写的是‘如何安装电池’，用户搜‘电池怎么装’。如果只用关键词检索，会怎样？",
+            "step_id": "33b8f34b-bd40-4418-ad6c-b9a5c208721c",
+            "step_title": "关键词与向量匹配差异",
+            "concepts": [
+              "关键词检索"
+            ],
+            "evidence_quotes": [
+              "关键词检索主要根据字词匹配查找内容。向量检索把内容和问题转成向量，利用语义相似性召回不同措辞但意思相关的内容。"
+            ],
+            "scope": "concept",
+            "reference_stamp": "8be20958ae84c908af3f780f1f53e70a5a39c5d8998b4f45c8c55891721950e9",
+            "plan_version": 1,
+            "completion_condition": ""
+          },
+          "verified_concepts": [
+            "关键词检索"
+          ],
+          "evaluation": {
+            "passed": true,
+            "correctness": "回答正确。关键词检索依赖字词匹配，文档标题和查询虽然措辞不同但共享“电池”，因此确实可能混入其他电池相关段落；同时用户正确指出在分词和匹配规则未说明时，不能断言一定找不到目标段落。",
+            "completeness": "回答覆盖了本题核心：关键词检索可能命中其他相关内容，以及在规则未说明时无法给出确定性结论。未展开向量检索的语义召回，但题目只问“只用关键词检索会怎样”，因此不构成缺漏。",
+            "expression": "表达简洁，先给主要结论，再补充不确定性条件，逻辑清晰。",
+            "transfer": "能把关键词匹配基于字词重合这一原理应用到具体检索场景，并识别规则未明带来的边界。",
+            "feedback": "回答准确抓住了关键词检索“按字面重合匹配”的特点，并注意到分词和匹配规则未明时结果存在不确定性。",
+            "followup_question": "如果同一个需求改用向量检索，用户搜‘电池怎么装’时，为什么更可能直接召回‘如何安装电池’这一段？",
+            "question_validity": "valid",
+            "step_completion_demonstrated": false,
+            "followup_binding": null
+          }
+        }
+      ],
+      "replies": [
+        "回答准确抓住了关键词检索“按字面重合匹配”的特点，并注意到分词和匹配规则未明时结果存在不确定性。\n\n这道题覆盖的知识点已通过检查：关键词检索。本节其他内容仍未验证。你可以继续下一节，也可以继续追问。\n\n答题结果已记录。结束这一段后可确认录入知识卡，也可以直接要求保存；当前尚未入库。"
+      ]
+    },
+    {
+      "scope": "step",
+      "binding": {
+        "question": "文档里写的是‘如何安装电池’，用户搜‘电池怎么装’。如果只用关键词检索，会怎样？",
+        "step_id": "8181b671-6ba0-447a-8039-84e4924e9218",
+        "step_title": "关键词与向量匹配差异",
+        "concepts": [
+          "关键词检索"
+        ],
+        "evidence_quotes": [
+          "关键词检索主要根据字词匹配查找内容。向量检索把内容和问题转成向量，利用语义相似性召回不同措辞但意思相关的内容。"
+        ],
+        "scope": "step",
+        "reference_stamp": "8be20958ae84c908af3f780f1f53e70a5a39c5d8998b4f45c8c55891721950e9",
+        "plan_version": 1,
+        "completion_condition": "比较两种检索的召回机制和局限"
+      },
+      "preserved_current_step": true,
+      "no_whole_step_verified": true,
+      "no_task_completion": true,
+      "no_card_draft": true,
+      "evaluator_calls_intercepted": 1,
+      "step": {
+        "id": "8181b671-6ba0-447a-8039-84e4924e9218",
+        "state": "explained",
+        "understanding": "unknown",
+        "message_ids": [
+          "6e041681-8fdc-435e-a425-8ec03cec3f5a"
+        ],
+        "completion_condition": "比较两种检索的召回机制和局限",
+        "title": "关键词与向量匹配差异",
+        "verified_concepts": [
+          {
+            "concept": "关键词检索",
+            "message_id": "65b8c65e-db41-45cf-ab55-e886e81336ac",
+            "question": "文档里写的是‘如何安装电池’，用户搜‘电池怎么装’。如果只用关键词检索，会怎样？"
+          }
+        ]
+      },
+      "practice": [
+        {
+          "message_id": "65b8c65e-db41-45cf-ab55-e886e81336ac",
+          "run_id": "4357237c-83f3-4c13-a5fc-d17749d873b5",
+          "revision": 1,
+          "hint_used": false,
+          "binding": {
+            "question": "文档里写的是‘如何安装电池’，用户搜‘电池怎么装’。如果只用关键词检索，会怎样？",
+            "step_id": "8181b671-6ba0-447a-8039-84e4924e9218",
+            "step_title": "关键词与向量匹配差异",
+            "concepts": [
+              "关键词检索"
+            ],
+            "evidence_quotes": [
+              "关键词检索主要根据字词匹配查找内容。向量检索把内容和问题转成向量，利用语义相似性召回不同措辞但意思相关的内容。"
+            ],
+            "scope": "step",
+            "reference_stamp": "8be20958ae84c908af3f780f1f53e70a5a39c5d8998b4f45c8c55891721950e9",
+            "plan_version": 1,
+            "completion_condition": "比较两种检索的召回机制和局限"
+          },
+          "verified_concepts": [
+            "关键词检索"
+          ],
+          "evaluation": {
+            "passed": true,
+            "correctness": "回答正确。关键词检索依赖字词匹配，文档标题和查询虽然措辞不同但共享“电池”，因此确实可能混入其他电池相关段落；同时用户正确指出在分词和匹配规则未说明时，不能断言一定找不到目标段落。",
+            "completeness": "回答覆盖了本题核心：关键词检索可能命中其他相关内容，以及在规则未说明时无法给出确定性结论。未展开向量检索的语义召回，但题目只问“只用关键词检索会怎样”，因此不构成缺漏。",
+            "expression": "表达简洁，先给主要结论，再补充不确定性条件，逻辑清晰。",
+            "transfer": "能把关键词匹配基于字词重合这一原理应用到具体检索场景，并识别规则未明带来的边界。",
+            "feedback": "回答准确抓住了关键词检索“按字面重合匹配”的特点，并注意到分词和匹配规则未明时结果存在不确定性。",
+            "followup_question": "如果同一个需求改用向量检索，用户搜‘电池怎么装’时，为什么更可能直接召回‘如何安装电池’这一段？",
+            "question_validity": "valid",
+            "step_completion_demonstrated": false,
+            "followup_binding": null
+          }
+        }
+      ],
+      "replies": [
+        "回答准确抓住了关键词检索“按字面重合匹配”的特点，并注意到分词和匹配规则未明时结果存在不确定性。\n\n这道题覆盖的知识点已通过检查：关键词检索。本节其他内容仍未验证。你可以继续下一节，也可以继续追问。\n\n答题结果已记录。结束这一段后可确认录入知识卡，也可以直接要求保存；当前尚未入库。"
+      ]
+    }
+  ]
+}

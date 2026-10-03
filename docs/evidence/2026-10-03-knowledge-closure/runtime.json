@@ -1,0 +1,113 @@
+{
+  "checked_at": "2026-10-03T23:39:08.522738+08:00",
+  "old_pid": 29126,
+  "new_pid": [
+    51853
+  ],
+  "app_pid": 29112,
+  "reload": "SIGTERM then existing app supervisor recovery",
+  "idle_before_reload": true,
+  "backup_path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-closure-20261003-233901",
+  "recovery_seconds": 6.48,
+  "health": {
+    "status": "ok",
+    "provider": "deepseek",
+    "jev": {
+      "status": "off",
+      "model": null,
+      "entry_rule": null
+    },
+    "model_roles": {
+      "router": {
+        "model": "deepseek-flash",
+        "status": "ready",
+        "error": "",
+        "streaming": "not_applicable",
+        "category": null,
+        "retryable": false,
+        "recovery": null,
+        "strengths": {
+          "smart": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          },
+          "deep": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          }
+        },
+        "checked_at": 1791041945.9916291,
+        "elapsed_ms": 1612,
+        "next_probe_at": null
+      },
+      "coach": {
+        "model": "deepseek-v4-flash",
+        "status": "ready",
+        "error": "",
+        "streaming": "ready",
+        "category": null,
+        "retryable": false,
+        "recovery": null,
+        "strengths": {
+          "smart": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          },
+          "deep": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null,
+            "streaming": "ready",
+            "stream_error": "",
+            "stream_retryable": false
+          }
+        },
+        "checked_at": 1791041946.204801,
+        "elapsed_ms": 1825,
+        "stream_error": "",
+        "stream_retryable": false,
+        "next_probe_at": null
+      },
+      "risk": {
+        "model": "deepseek-v4-pro",
+        "status": "ready",
+        "error": "",
+        "streaming": "not_applicable",
+        "category": null,
+        "retryable": false,
+        "recovery": null,
+        "strengths": {
+          "smart": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          },
+          "deep": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          }
+        },
+        "checked_at": 1791041946.7538931,
+        "elapsed_ms": 2374,
+        "next_probe_at": null
+      }
+    }
+  },
+  "readiness_verified_at": "2026-10-03T23:40:08.111084+08:00"
+}

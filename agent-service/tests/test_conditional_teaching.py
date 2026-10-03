@@ -201,7 +201,7 @@ class ConditionalTeachingTests(unittest.TestCase):
         base = self.model
         invented = "说明。\n\n[官方文档](https://unread.example/doc)"
         def streamed(system, prompt, schema, **kwargs):
-            if schema is ConversationOutput:
+            if issubclass(schema, ConversationOutput):
                 for end in range(1, len(invented) + 1):
                     kwargs['on_partial']({'message': invented[:end]})
                 return ConversationOutput(message=invented)

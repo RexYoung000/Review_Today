@@ -3,7 +3,23 @@ from agent_service.schemas import IntentDecision
 
 LEGACY_QUESTION = '你希望继续刚才的内容，还是开始一个新的学习问题？'
 LOCAL_QUESTIONS = {'question', 'followup', 'example', 'hint'}
-POLICY_VERSION = 'dialogue-materials-7'
+POLICY_VERSION = 'dialogue-materials-8'
+FEEDBACK_INTENTS = {'question', 'followup', 'correction', 'social', 'greeting', 'thanks'}
+
+
+def response_feedback_only(decision, last):
+    """A local reply repair cannot authorize a conflicting teaching suggestion.
+
+    Actual control, material, verification and operation requests retain their
+    routes. The entry model marks feedback with an independent request as
+    with_request; this guard only resolves conflicts within its local feedback.
+    """
+    return (decision.reply_feedback == 'response_only' and not last.get('operation')
+        and not decision.conversation_repair and set(decision.intents) <= FEEDBACK_INTENTS
+        and not (decision.proposed_actions or decision.requested_mode or decision.continuation_evidence
+                 or decision.clarification or decision.is_jd or decision.needs_verification
+                 or decision.refresh_sources or decision.cross_check_sources)
+        and decision.programming_boundary == decision.resource_boundary == 'none')
 
 
 def pure_conversational_reply(decision, last):
@@ -45,6 +61,16 @@ def ordinary_question(data, decision, last):
 
 
 def normalize(data, decision, last):
+    if response_feedback_only(decision, last):
+        # response_only explicitly says there is no independent learning or
+        # state-changing request. Stale target/workflow/direct_teaching fields
+        # must not turn a clarification of our question into a new lesson.
+        return decision.model_copy(update=dict(intents=['question'], conversation_kind='ordinary',
+            relation='continuation', scope='conversation', workflow=None, answer_only=True,
+            direct_teaching=False, learning_goal_ready=False, target_task_id='', target_description='',
+            understanding='unknown', answer_evidence='', topic_closure=None, reply_purpose='none',
+            material_focus='none', jd_request='none', repair_target_message_id='', session_tags=[],
+            handoff_source_ids=[], handoff_step_ids=[], memory_selections=[]))
     # A bare continuation has no object of its own. The latest completed
     # exchange wins over an older awaiting_user Task and its pending JD card.
     # Explicit JD/lesson requests still follow the ordinary intent route.
@@ -130,14 +156,10 @@ def handle(harness, sid, rid, rev, decision, last):
     data, run = harness._snapshot(sid, rid, rev)
     if last.get('operation') or set(decision.intents) & {'stop', 'pause', 'cancel', 'defer', 'queue'}:
         return False
-    if (decision.reply_feedback == 'response_only' and not decision.conversation_repair
-            and set(decision.intents) <= {'question', 'followup', 'correction', 'social', 'greeting', 'thanks'}
-            and not (decision.proposed_actions or decision.requested_mode or decision.continuation_evidence
-                     or decision.direct_teaching or decision.clarification or decision.is_jd
-                     or decision.needs_verification or decision.refresh_sources or decision.cross_check_sources)
-            and decision.programming_boundary == decision.resource_boundary == 'none'):
+    if response_feedback_only(decision, last):
         from agent_service.social_dialogue import bounded_reply
-        reply = bounded_reply(decision.light_reply, '抱歉，刚才的回应没接住你的意思。我会回应你问的内容，避免机械重复。')
+        reply = bounded_reply(decision.light_reply,
+            '抱歉，刚才的回应没接住你的意思。我会回应你问的内容，避免机械重复。', truncate=True)
         with harness.store.transaction(sid, rid, rev) as current:
             active = current['runs'][rid]
             active.update(intent=decision.model_dump(), decision_input_ids=list(active['input_ids']),

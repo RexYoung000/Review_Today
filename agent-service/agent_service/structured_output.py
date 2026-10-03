@@ -73,6 +73,22 @@ def schema_repair_instruction(error):
             or d.get("field") == ["learning_plan", "success_check"] and d.get("type") == "missing") for d in details):
         plan_hint = ("learning_plan 的 goal 和 success_check 是必填字符串；steps 和 step_conditions 都是字符串数组，"
                      "每个步骤须有一条非空的对应条件，两个数组元素数量必须相同。step_conditions 不能替代 success_check。")
-    return ("输出结构校验失败：" + error.diagnostic + "\n" + common + length_hint + array_hint + plan_hint +
+    teaching_hint = ""
+    if any(isinstance(d, dict) and d.get("type", "").startswith("teaching_check_") for d in details):
+        teaching_hint = ("本轮教学检查题必须提供非空 check_binding：step_title 原样使用当前 learning_step.title，"
+                         "首次教学使用 learning_plan.steps[0]；concepts 仅取本轮 learning_concepts；"
+                         "evidence_quotes 摘录 message 中实际讲过的依据，不能摘检查题或补造内容。"
+                         "题目及判断所需条件完整保留在 check_question；message 只留讲解，不重复输出想一想/检查一下题目段。"
+                         "不要删除讲解里的代码示例或无关标题；确实无法依据讲解出题时才将 check_question 留空。")
+    status_hint = ""
+    if any(isinstance(d, dict) and d.get("field") == ["proposed_actions"] and d.get("type") == "value_error" for d in details):
+        status_hint = ("knowledge_card_status=true 只表示询问状态或生成步骤，不能同时提出任何操作。"
+                       "重新依据当前用户原话判断：纯询问时 proposed_actions 留空；只有用户明确要求实际操作时才将 knowledge_card_status 设为 false 并保留有依据的动作。")
+    followup_hint = ""
+    if any(isinstance(d, dict) and d.get("type", "").startswith("followup_check_") for d in details):
+        followup_hint = ("需要给后续检查时同步填写 followup_binding；未通过、条件不足或使用提示时 step_title 用 retry_step.title，"
+                         "独立通过后用 followup_step.title。concepts 仅限实际已教内容，evidence_quotes 摘自 reference。"
+                         "如果没有可靠依据，followup_question 留空并说明需要补讲，不能只给新题不绑定。")
+    return ("输出结构校验失败：" + error.diagnostic + "\n" + common + length_hint + array_hint + plan_hint + teaching_hint + status_hint + followup_hint +
             "修复标出的字段并严格使用 schema 的枚举；工作流放 workflow，"
             "直接教学放 direct_teaching 布尔字段。")

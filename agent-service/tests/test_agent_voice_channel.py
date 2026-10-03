@@ -105,7 +105,7 @@ class VoiceChannelContracts(unittest.TestCase):
             systems.clear()
             self.send('text')
             self.h.drain(self.sid)
-        self.assertTrue(any(schema is ConversationOutput and VOICE_PUBLIC_STYLE in system for schema, system in voice_systems))
+        self.assertTrue(any(issubclass(schema, ConversationOutput) and VOICE_PUBLIC_STYLE in system for schema, system in voice_systems))
         self.assertTrue(any(schema is IntentDecision for schema, _ in voice_systems))
         self.assertTrue(all(VOICE_PUBLIC_STYLE not in system for schema, system in voice_systems if schema is IntentDecision))
         self.assertTrue(all(VOICE_PUBLIC_STYLE not in system for _, system in systems))

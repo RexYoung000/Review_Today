@@ -30,12 +30,13 @@ from agent_service.call_errors import CallError, WebToolError
 from agent_service.web_tools import web_search_text, web_search_capability, read_public_url as fetch_public_url
 from agent_service.model_capabilities import require_model
 from agent_service.service_diagnostics import diagnose
-from agent_service.learning_progress import set_plan, current_step, step_target, record_understanding, advance, outcome
+from agent_service.learning_progress import (set_plan, current_step, step_target, record_understanding, advance, outcome,
+                                             bind_check, bound_check, check_reference, record_check, mastery_material)
 from agent_service.learning_memory import make_evidence, select_references, merge_references
 from agent_service.execution_policy import budget_scope, alternatives
 from agent_service.context_budget import configured_window
 from agent_service.schemas import (
-    ConversationOutput, IntentDecision, JDAnalysis, MasteryEvaluation,
+    ConversationOutput, TeachingConversationOutput, IntentDecision, JDAnalysis, MasteryEvaluation,
     MessageAccepted, ProblemCoachBundle, RunActionRequest, SessionMessageRequest, TaskEvent,
 )
 
@@ -551,7 +552,11 @@ class ConversationHarness(ConditionalTeaching):
                 event = self.store.event(data, run, stage or "response", "已回应", message=text)
             task = self._task(data, run)
             if task and stage:
-                step = current_step(task)
+                bound_step_id = run.get("teaching_step_id") or run.get("evaluated_step_id")
+                step = next((item for item in (task["context"].get("learning_plan") or {}).get("steps", [])
+                             if item["id"] == bound_step_id), None)
+                if not bound_step_id and "evaluated_binding" not in run and stage not in {"practice", "transfer", "lesson_checked", "mastered"}:
+                    step = current_step(task)
                 if step:
                     if event["message"]["message_id"] not in step["message_ids"]:
                         step["message_ids"].append(event["message"]["message_id"])
@@ -572,6 +577,8 @@ class ConversationHarness(ConditionalTeaching):
                              source_type=source_type or "user_material")
                 value["memory_references"] = run.get("memory_references", [])
                 value["public_search_query"] = (run.get("intent") or {}).get("public_search_query", "")
+                value["source_message_ids"] = [event["message"]["message_id"]]
+                value["answer_sources"] = run.get("answer_sources", []) or (task or {}).get("context", {}).get("sources", [])
                 if task:
                     task["context"]["draft"] = value
                 data["draft"] = value
@@ -683,6 +690,21 @@ class ConversationHarness(ConditionalTeaching):
         decision = resource_boundary.normalize(data, decision, last)
         from agent_service import request_scope
         request_scope.remember(self, sid, rid, rev, decision)
+        if (decision.knowledge_card_status and dialogue_routing.pure_conversational_reply(decision, last)
+                and decision.programming_boundary == decision.resource_boundary == 'none'
+                and not image_inputs.current_images(data, run)):
+            from agent_service import knowledge_capture_status
+            with self.store.transaction(sid, rid, rev) as current:
+                active = current['runs'][rid]
+                active.update(intent=decision.model_dump(), decision_input_ids=list(active['input_ids']),
+                              decision_mode=current['mode'], task_id=None, dialogue_only=True,
+                              knowledge_status_reply=True)
+                state = knowledge_capture_status.facts(current,
+                    related_knowledge=last.get('context', {}).get('knowledge_summaries', []))
+                self.store.event(current, active, 'knowledge_status', '已核对当前知识卡状态',
+                                 payload={'stage': state['stage']})
+            self._publish(sid, rid, rev, knowledge_capture_status.reply(state))
+            return
         if resource_boundary.handle(self, sid, rid, rev, decision, last):
             return
         if social_dialogue.handle(self, sid, rid, rev, decision, last):
@@ -1065,7 +1087,8 @@ class ConversationHarness(ConditionalTeaching):
                 continue
             if op["kind"] == "save" and op["disposition"] == "request" and not pending and self._explicit(op, last["content"]):
                 task = self._task(data, run)
-                previous = next((m for m in reversed(data["messages"]) if m["role"] == "coach"), None)
+                previous = next((m for m in reversed(data["messages"]) if m["role"] == "coach"
+                                 and not topic_capture.source_transparent(data['runs'].get(m.get('run_id'), {}))), None)
                 known_ids = {"", task["task_id"] if task else "", previous["message_id"] if previous else ""}
                 if op.get("target_id") not in known_ids:
                     self._publish(sid, rid, rev, "你希望保存哪一份具体内容？这次不会自动提交。", complete=False)
@@ -1073,18 +1096,23 @@ class ConversationHarness(ConditionalTeaching):
                 if data.get("draft", {}) and data["draft"].get("invalidated"):
                     self._publish(sid, rid, rev, "整理稿的修订尚未完成，请先完成修订，旧版不会入库。", complete=False)
                     return True
-                content = task["context"].get("last_lesson") if task else None
-                if content or previous:
+                source = topic_capture.collect_source(self, data, task, include_captured=True)
+                if source:
                     with self.store.transaction(sid, rid, rev) as data:
-                        value = dict(id=task["task_id"] if task else previous["message_id"],
-                                     version=task["context"].get("lesson_index", 1) if task else 1,
-                                     content=content or previous["content"],
+                        value = dict(id=source.get('draft_id') or str(uuid.uuid5(uuid.UUID(sid), 'knowledge-source:' + source['source_key'])),
+                                     version=source.get('draft_version', 1),
+                                     content=source['content'],
                                      understanding=task["context"].get("understanding", "unknown") if task else "unknown",
-                                     source_type=task["context"].get("source_type", "agent_generated") if task else "agent_generated")
+                                     source_type=source['source_type'],
+                                     source_message_ids=source['message_ids'], answer_sources=source['sources'],
+                                     excluded_unbound_feedback_ids=source.get('excluded_unbound_feedback_ids', []),
+                                     memory_references=source['memory_references'])
                         data["draft"] = value
                         data["pending"] = dict(kind="save", target_id=value["id"], version=value["version"], consent_received=True)
                     self._save_memory(sid, rid, rev, decision)
                     return True
+                self._publish(sid, rid, rev, "还没有找到可确认的完整知识讲解。请先说明要整理哪一段内容；这次尚未生成或保存知识卡。", complete=False)
+                return True
             if not pending or op.get("target_id") != pending["target_id"] or op.get("version") != pending["version"]:
                 if op["disposition"] in {"request", "confirm"}:
                     self._publish(sid, rid, rev, "当前没有与这次确认对应的待办版本。请先确认具体内容；我不会据此保存、切换目标或新建会话。", complete=False)
@@ -1260,7 +1288,12 @@ class ConversationHarness(ConditionalTeaching):
             instruction += ("\n本轮实际要讲解和检查的步骤以 learning_step 为准。用户要求继续或跳过时，程序已选择应讲步骤，"
                             "不能因历史检查未答或未通过而留在旧步骤；最多一句承接旧疑点，主体讲当前步骤，检查题也只针对当前步骤。"
                             "历史 check_question 和 last_lesson 不是本轮要重复的题目或讲义；尚未验证的旧步骤保持未知。")
-        output_schema, output_system = ConversationOutput, COACH_SYSTEM
+        output_schema, output_system = (TeachingConversationOutput if teaching else ConversationOutput), COACH_SYSTEM
+        if teaching:
+            # Version this node's cache through its actual contract instruction;
+            # pre-binding ConversationOutput checkpoints remain readable elsewhere.
+            output_system += ("\n本轮使用可验证的教学输出：只要给出检查题就必须同时提供 check_binding，不能为 null。"
+                              "题目完整条件只放 check_question，不在 message 末尾另写想一想或检查一下。")
         if self.judgments is not None and teaching:
             from agent_service.judgment_grading import ScoredConversationOutput, RUBRIC_RULE
             output_schema, output_system = ScoredConversationOutput, COACH_SYSTEM + RUBRIC_RULE
@@ -1271,6 +1304,12 @@ class ConversationHarness(ConditionalTeaching):
                                             verification_notice=run.get("verification_notice", "")), ensure_ascii=False), output_schema)
         if teaching:
             output.message, output.check_question = separate_lesson_check(output.message, output.check_question)
+        elif not draft:
+            # Follow-ups explain the existing question. An incidental model field
+            # cannot replace it or manufacture a new required action.
+            output.message, _ = separate_lesson_check(output.message, "")
+            output.check_question = ""
+            output.check_binding = None
         if self.judgments is not None and teaching:
             from agent_service.judgment_quality import checked_question, synchronize_question
             old_question = output.check_question
@@ -1320,6 +1359,10 @@ class ConversationHarness(ConditionalTeaching):
                     task["context"]["last_lesson"] = text
                     task["context"]["source_type"] = source_type
                     task["context"]["lesson_index"] = task["context"].get("lesson_index", 0) + 1
+                    bind_check(task, output.check_question, output.check_binding, output.learning_concepts)
+                    plan = task["context"].get("learning_plan") or {}
+                    data["runs"][rid]["teaching_step_id"] = plan.get("current_step_id")
+                    data["runs"][rid]["teaching_plan_version"] = plan.get("version", 0)
                 if sources:
                     task["context"]["sources"] = sources
                 if self.judgments is not None and teaching:
@@ -1402,18 +1445,22 @@ class ConversationHarness(ConditionalTeaching):
         data, run = self._snapshot(sid, rid, rev)
         task = self._task(data, run)
         ctx = task["context"]
-        if ctx.get("requires_mastery"):
-            reference = "\n\n".join(dict.fromkeys(part for part in
-                (ctx.get("reference_answer", ""), ctx.get("last_lesson", "")) if part and part.strip()))
-        else:
-            reference = ctx.get("last_lesson") or ctx.get("reference_answer") or ""
+        reference = check_reference(task)
         if not reference.strip():
             self._publish(sid, rid, rev, "这道题缺少对应的讲解依据，暂时不能据此判断你是否掌握。可以请我补讲这一节，也可以继续下一节；这次不会记为验证通过。",
                           stage=task["stage"], required={"type": "respond", "prompt": "补讲这一节或继续下一节", "options": []})
             return
-        learning_step = step_target(task)
-        if learning_step:
-            learning_step.pop("completion_condition", None)  # A lesson objective is not this question's rubric.
+        binding = bound_check(task)
+        learning_step = ({"id": binding["step_id"], "title": binding["step_title"]} if binding else None)
+        followup_step = learning_step
+        retry_step = learning_step
+        if ctx.get("requires_mastery") and not (ctx.get("independent_passed") and task["stage"] == "transfer"):
+            followup_step = next(({"id": s["id"], "title": s["title"]} for s in
+                                  (ctx.get("learning_plan") or {}).get("steps", []) if s["title"] == "迁移追问"), learning_step)
+        if ctx.get("requires_mastery"):
+            retry_title = "迁移追问" if ctx.get("independent_passed") else "独立作答"
+            retry_step = next(({"id": s["id"], "title": s["title"]} for s in
+                               (ctx.get("learning_plan") or {}).get("steps", []) if s["title"] == retry_title), learning_step)
         result = None
         evaluation_schema, evaluation_system = MasteryEvaluation, EVALUATION_SYSTEM
         if self.judgments is not None:
@@ -1421,68 +1468,104 @@ class ConversationHarness(ConditionalTeaching):
             result = evaluate(self, sid, rid, rev, task, last["content"], EVALUATION_SYSTEM)
             evaluation_schema, evaluation_system = ScoredMasteryEvaluation, EVALUATION_SYSTEM + FOLLOWUP_RULE
         if result is None:
+            if binding:
+                evaluation_system += "\n本轮后续检查若会实际发出，必须同步提供有效 followup_binding，不能留下无依据的新题。"
             result = self._call(sid, rid, rev, "evaluate", evaluation_system,
-                            json.dumps(dict(question=task["context"].get("check_question") or task["content"],
+                            json.dumps(dict(question=ctx.get("check_question") or task["content"],
                                             reference=reference, learning_step=learning_step,
+                                            check_binding=binding, followup_step=followup_step, retry_step=retry_step,
+                                            hint_used=ctx.get("hint_used", False),
+                                            followup_required_on_pass=bool(ctx.get("requires_mastery") and not (
+                                                ctx.get("independent_passed") and task["stage"] == "transfer")),
                                             answer=last["content"]), ensure_ascii=False), evaluation_schema)
-        effective_pass = result.passed and not task["context"].get("hint_used", False)
-        will_ask_followup = not effective_pass or (task["context"].get("requires_mastery") and not (
-            task["context"].get("independent_passed") and task["stage"] == "transfer"))
+        if result.question_validity != "valid":
+            result.passed = False
+            result.feedback = "这道题的条件或讲解依据还不充分，不能据此判定你答错，也不记为验证通过。\n\n" + result.feedback
+        effective_pass = result.passed and bool(binding) and not ctx.get("hint_used", False)
+        will_ask_followup = bool(binding) and (not effective_pass or (ctx.get("requires_mastery") and not (
+            ctx.get("independent_passed") and task["stage"] == "transfer")))
         if self.judgments is not None and will_ask_followup:
             from agent_service.judgment_quality import checked_question, synchronize_question
             old_question = result.followup_question
             result.followup_question, result.followup_scoring_spec = checked_question(
                 self, sid, rid, rev, old_question, result.followup_scoring_spec,
-                task["context"].get("reference_answer") or task["context"].get("last_lesson", ""), owner=task["task_id"])
+                reference, owner=task["task_id"])
             result.feedback = synchronize_question(result.feedback, old_question, result.followup_question)
         with self.store.transaction(sid, rid, rev) as data:
             task = self._task(data, data["runs"][rid])
             ctx = task["context"]
-            data["runs"][rid]["evaluated_step_id"] = (ctx.get("learning_plan") or {}).get("current_step_id")
+            active_run = data["runs"][rid]
+            active_run.update(evaluated_step_id=binding["step_id"] if binding else None,
+                              evaluated_binding=binding, evaluation_message_id=last["message_id"],
+                              verified_concepts=binding["concepts"] if effective_pass else [])
             previous_pass = ctx.get("independent_passed", False)
             hint_used = ctx.get("hint_used", False)
             if hint_used and result.passed:
                 result.passed = False
                 result.feedback += "\n这次使用过提示，不计为独立验证。请尝试下一道不带提示的追问。"
-            if result.passed and ctx.get("requires_mastery"):
-                if previous_pass and task["stage"] == "transfer":
-                    ctx["transfer_passed"] = True
-                    ctx["understanding"] = "verified"
+            if not binding:
+                result.passed = False
+            if effective_pass:
+                record_check(task, binding, last["message_id"], step_completion_demonstrated=result.step_completion_demonstrated)
+                if ctx.get("requires_mastery"):
+                    if previous_pass and task["stage"] == "transfer":
+                        ctx["transfer_passed"] = True
+                        ctx["understanding"] = "verified"
+                    else:
+                        ctx["independent_passed"] = True
                 else:
-                    ctx["independent_passed"] = True
-            elif result.passed:
-                record_understanding(task, "verified")
-                steps = (ctx.get("learning_plan") or {}).get("steps", [])
-                ctx["understanding"] = "verified" if all(s["understanding"] == "verified" for s in steps) else "unknown"
-            ctx.setdefault("practice", []).append(dict(message_id=last["message_id"], hint_used=hint_used, evaluation=result.model_dump()))
-            ctx["hint_used"] = False  # the next distinct check starts without a hint
-            mastered = ctx.get("understanding") == "verified"
+                    steps = (ctx.get("learning_plan") or {}).get("steps", [])
+                    ctx["understanding"] = "verified" if steps and all(s["understanding"] == "verified" for s in steps) else "unknown"
+            ctx.setdefault("practice", []).append(dict(message_id=last["message_id"], run_id=rid, revision=rev,
+                hint_used=hint_used, binding=binding, verified_concepts=active_run["verified_concepts"],
+                evaluation=result.model_dump()))
+            ctx["hint_used"] = False
+            mastered = effective_pass and ctx.get("understanding") == "verified"
+            capture_notice = ""
+            if effective_pass and not ctx.get("knowledge_capture_explained"):
+                ctx["knowledge_capture_explained"] = True
+                capture_notice = ("\n\n本次已留下答题记录，已准备待确认内容；确认保存后才会生成并入库知识卡。" if mastered else
+                                  "\n\n答题结果已记录。结束这一段后可确认录入知识卡，也可以直接要求保存；当前尚未入库。")
             plan = ctx.get("learning_plan")
-            if plan and ctx.get("requires_mastery"):
+            if binding and plan and ctx.get("requires_mastery"):
+                # The independent/transfer gates certify the problem. They do not
+                # retrospectively certify every prerequisite chapter in its plan.
                 for step in plan["steps"]:
-                    if mastered or step["title"] == "独立作答" and ctx.get("independent_passed"):
+                    if (step["title"] == "独立作答" and ctx.get("independent_passed") or
+                            step["title"] == "迁移追问" and ctx.get("transfer_passed")):
                         step.update(state="verified", understanding="verified")
                 target = "迁移追问" if ctx.get("independent_passed") else "独立作答"
                 selected = next((s for s in plan["steps"] if s["title"] == target), None)
                 if selected:
                     plan["current_step_id"] = selected["id"]
-            if ctx.get("requires_mastery"):
-                record_understanding(task, ctx.get("understanding", "unknown"))
-            if self.judgments is None or will_ask_followup:
-                ctx["check_question"] = result.followup_question or "请换一个应用场景，解释你的判断与局限。"
+            if will_ask_followup:
+                ctx["check_question"] = result.followup_question
+                bind_check(task, result.followup_question, result.followup_binding)
                 if self.judgments is not None:
                     from agent_service.judgment_grading import bind_standard
-                    bind_standard(task, ctx["check_question"], result.followup_scoring_spec if result.followup_question else None)
-        if mastered:
-            self._publish(sid, rid, rev, result.feedback + "\n\n这次理解检查已通过。",
+                    bind_standard(task, result.followup_question, result.followup_scoring_spec if result.followup_question else None)
+            mastery_content = None
+            if mastered:
+                mastery_content, source_runs = mastery_material(task, data["runs"], rid, self._memory_run_valid)
+                active_run["memory_references"] = merge_references(active_run.get("memory_references", []),
+                    *(data["runs"][source_id].get("memory_references", []) for source_id in source_runs))
+        if not binding:
+            self._publish(sid, rid, rev, result.feedback + "\n\n这道题与对应讲解尚未核对一致，本次只给反馈，不更新学习进度。可以先补讲本节，再做对应检查，也可以继续下一节。",
+                          stage=task["stage"], required={"type": "respond", "prompt": "补讲本节或继续下一节", "options": []})
+        elif mastered:
+            self._publish(sid, rid, rev, result.feedback + "\n\n这次理解检查已通过。" + capture_notice,
                           stage="mastered", task_status="completed", draft=True,
-                          draft_content=ctx.get("reference_answer") or ctx.get("last_lesson") or task["content"], source_type=ctx.get("source_type"))
-        elif result.passed and not ctx.get("requires_mastery"):
-            self._publish(sid, rid, rev, result.feedback + "\n\n这一节的理解检查已通过。你可以继续下一节，也可以继续追问。",
+                          draft_content=mastery_content, source_type=ctx.get("source_type"))
+        elif effective_pass and not ctx.get("requires_mastery"):
+            scope_note = ("这一节的理解检查已通过。" if binding["scope"] == "step" and result.step_completion_demonstrated else
+                          "这道题覆盖的知识点已通过检查：" + "、".join(binding["concepts"]) + "。本节其他内容仍未验证。")
+            self._publish(sid, rid, rev, result.feedback + "\n\n" + scope_note + "你可以继续下一节，也可以继续追问。" + capture_notice,
                           stage="lesson_checked", required={"type": "respond", "prompt": "继续下一节或追问", "options": []})
         else:
-            self._publish(sid, rid, rev, with_question(result.feedback, ctx["check_question"], "独立回答"), stage="transfer" if result.passed else "practice",
-                          required={"type": "submit_answer", "prompt": ctx["check_question"], "options": []})
+            question = ctx.get("check_question", "")
+            self._publish(sid, rid, rev, with_question(result.feedback, question, "独立回答") + capture_notice, stage="transfer" if effective_pass else "practice",
+                          required={"type": "submit_answer" if question else "respond",
+                                    "prompt": question or "补讲本节或继续下一节", "options": []})
 
     def _sources(self, sid, rid, rev, goal):
         with self.store.transaction(sid, rid, rev) as data:

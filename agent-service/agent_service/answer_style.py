@@ -35,10 +35,8 @@ def with_question(text: str, question: str, title: str = "想一想") -> str:
     return text.rstrip() + f"\n\n---\n\n### {title}\n\n" + question.strip()
 
 
-def separate_lesson_check(text: str, question: str) -> tuple[str, str]:
-    """Recover only our explicit trailing check paragraph, never infer a question."""
-    if question.strip():
-        return text, question
+def trailing_lesson_check(text: str):
+    """Locate one explicit final check section outside examples and code fences."""
     lines = text.splitlines(keepends=True)
     fence, markers = None, []
     for index, line in enumerate(lines):
@@ -50,18 +48,32 @@ def separate_lesson_check(text: str, question: str) -> tuple[str, str]:
             elif token[0] == fence[0] and len(token) >= len(fence):
                 fence = None
             continue
-        if fence is None and re.fullmatch(r" {0,3}#{2,3}[ \t]+想一想[ \t]*", line.rstrip("\r\n")):
+        if fence is None and re.fullmatch(r" {0,3}#{2,3}[ \t]+(?:想一想|检查一下)[ \t]*", line.rstrip("\r\n")):
             markers.append(index)
     if len(markers) != 1 or fence is not None:
-        return text, question
+        return None
     marker = markers[0]
     paragraph = "".join(lines[marker + 1:]).strip()
-    if (not paragraph or re.search(r"\n\s*\n", paragraph)
-            or re.search(r"(?m)^\s*(?:[#>`~]|[-*]\s|\d+[.)、]\s)", paragraph)):
-        return text, question
+    # A later section is ordinary content, not part of a trailing check.
+    if not paragraph or re.search(r"(?m)^ {0,3}#{1,6}[ \t]+", paragraph):
+        return None
     body = "".join(lines[:marker]).rstrip()
     if body.endswith("\n---"):
         body = body[:-4].rstrip()
+    return body, paragraph
+
+
+def separate_lesson_check(text: str, question: str) -> tuple[str, str]:
+    """Recover a simple explicit check; remove only an exactly equivalent echo."""
+    section = trailing_lesson_check(text)
+    if section is None:
+        return text, question
+    body, paragraph = section
+    if question.strip():
+        return (body, question) if normalized_text(paragraph) == normalized_text(question) else (text, question)
+    if (not paragraph or re.search(r"\n\s*\n", paragraph)
+            or re.search(r"(?m)^\s*(?:[#>`~]|[-*]\s|\d+[.)、]\s)", paragraph)):
+        return text, question
     return body, paragraph
 
 

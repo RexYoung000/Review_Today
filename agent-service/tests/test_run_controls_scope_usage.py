@@ -37,7 +37,7 @@ def test_switch_during_request_keeps_current_run_and_next_turn_uses_preference(f
     strengths = []
     def model(system, user, schema, **kw):
         strengths.append(kw.get('reasoning_effort'))
-        if schema is ConversationOutput:
+        if issubclass(schema, ConversationOutput):
             kw['on_cancel_handle'](closed.set)
             if streaming: kw['on_partial']({'message': '正在解释'})
             entered.set()
@@ -73,7 +73,7 @@ def test_uncooperative_old_request_does_not_hold_session_or_publish_late_text(f,
     calls = 0
     def model(system, user, schema, **kw):
         nonlocal calls
-        if schema is not ConversationOutput: return f.model(system, user, schema, **kw)
+        if not issubclass(schema, ConversationOutput): return f.model(system, user, schema, **kw)
         calls += 1
         if calls == 1:
             kw['on_cancel_handle'](closed.set)
@@ -153,7 +153,7 @@ def test_resource_mixed_keeps_only_explicit_learning_without_changing_existing_g
         resource_learning_request='解释下载和流式读取的区别', answer_only=True)
     f.calls.clear()
     ack = f.send('帮我下载书籍，再解释下载和流式读取的区别')
-    answer = next(p for schema, p in f.calls if schema is ConversationOutput)
+    answer = next(p for schema, p in f.calls if issubclass(schema, ConversationOutput))
     assert answer['context']['current_inputs'] == ['解释下载和流式读取的区别']
     assert f.state()['tasks'] == before
     assert f.state()['runs'][ack.run_id]['intent']['target_description'] == '解释下载和流式读取的区别'
@@ -163,7 +163,7 @@ def test_resource_mixed_keeps_only_explicit_learning_without_changing_existing_g
 def test_knowledge_and_quoted_download_text_are_not_keyword_blocked(f, text):
     f.decision = fixtures.intent('question', resource_boundary='none', answer_only=True)
     f.send(text)
-    assert any(s is ConversationOutput for s, _ in f.calls)
+    assert any(issubclass(s, ConversationOutput) for s, _ in f.calls)
 
 
 @pytest.mark.parametrize('intent', ['stop', 'defer', 'reject'])

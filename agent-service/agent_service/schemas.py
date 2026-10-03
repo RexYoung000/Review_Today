@@ -525,6 +525,21 @@ class ProblemCoachBundle(BaseModel):
     learning_plan: LearningPlan
 
 
+class CheckBinding(BaseModel):
+    """The scope of a question, declared before the learner answers it."""
+    step_title: str = Field(min_length=1, max_length=160)
+    concepts: list[str] = Field(min_length=1, max_length=6)
+    evidence_quotes: list[str] = Field(min_length=1, max_length=6)
+    scope: Literal["concept", "step"] = "concept"
+
+    @field_validator("concepts", "evidence_quotes")
+    @classmethod
+    def nonblank_check_evidence(cls, values):
+        if any(not value.strip() for value in values):
+            raise ValueError("check concepts and evidence must be nonblank")
+        return values
+
+
 class MasteryEvaluation(BaseModel):
     passed: bool
     correctness: str
@@ -533,6 +548,28 @@ class MasteryEvaluation(BaseModel):
     transfer: str
     feedback: str
     followup_question: str = ""
+    question_validity: Literal["valid", "ambiguous", "out_of_scope"] = "valid"
+    step_completion_demonstrated: bool = False
+    followup_binding: CheckBinding | None = None
+
+    def validate_request(self, payload):
+        # Legacy/non-conversation evaluations have no frozen incoming binding.
+        if not payload.get("check_binding") or not self.followup_question.strip():
+            return
+        effective = self.passed and self.question_validity == "valid" and not payload.get("hint_used")
+        if effective and not payload.get("followup_required_on_pass"):
+            return  # The optional question will not be issued after a small pass.
+        if getattr(self, "followup_scoring_spec", None) is not None:
+            return  # Jev validates and freezes this equivalent rubric separately.
+        import json
+        from agent_service.learning_progress import _visible_quote
+        from agent_service.openai_client import ModelCallError
+        target = payload.get("followup_step" if effective else "retry_step") or payload.get("learning_step") or {}
+        binding = self.followup_binding
+        if (binding is None or binding.step_title != target.get("title") or
+                any(_visible_quote(quote.strip()) not in _visible_quote(payload.get("reference", ""))
+                    for quote in binding.evidence_quotes)):
+            raise ModelCallError("SCHEMA", json.dumps([dict(field=["followup_binding"], type="followup_check_grounding")]))
 
 
 class MemoryPackage(BaseModel):
@@ -582,6 +619,8 @@ class IntentDecision(BaseModel):
         default="none", description="Feedback on repetitive, curt or otherwise unhelpful replies. response_only has no independent knowledge or action request; with_request must retain that request. Not a keyword match or a learning outcome.")
     reply_purpose: Literal['none', 'product_information', 'boundary_confirmation'] = Field(default='none',
         description='Pure conversation only: product_information asks about this assistant identity, capabilities, memory or configured model; boundary_confirmation only confirms the immediately preceding product limit. Any independent knowledge question or operation must use none.')
+    knowledge_card_status: bool = Field(default=False,
+        description='Pure enquiry about whether the current conversation content has become knowledge cards, what was saved, or the steps to generate/save those cards. No save authorization. False for a request to actually organize/save, mixed substantive requests, or generic assistant memory capabilities.')
     repair_target_message_id: str = ""
     continuation_evidence: str = ""
     continuation_topic: str = ""
@@ -627,6 +666,13 @@ class IntentDecision(BaseModel):
     handoff_source_ids: list[str] = Field(default_factory=list, max_length=8)
     handoff_step_ids: list[str] = Field(default_factory=list, max_length=10)
     memory_selections: list[MemorySelection] = Field(default_factory=list, max_length=2)
+
+    @field_validator("proposed_actions")
+    @classmethod
+    def knowledge_status_is_read_only(cls, value, info):
+        if info.data.get("knowledge_card_status") and value:
+            raise ValueError("knowledge_card_status is a read-only enquiry and cannot authorize proposed_actions; re-evaluate the current user's request")
+        return value
 
 
 class BoundOperation(BaseModel):
@@ -687,6 +733,35 @@ class ConversationOutput(BaseModel):
     evidence_state: EvidenceState = "unverified"
     learning_plan: LearningPlan | None = None
     learning_concepts: list[str] = Field(default_factory=list, max_length=6)
+    check_binding: CheckBinding | None = None
+
+
+class TeachingConversationOutput(ConversationOutput):
+    """A newly issued teaching check must be grounded before publication."""
+    check_binding: CheckBinding | None = Field(description="有检查题时必须给出真实讲义、步骤和概念绑定；只有不出题时才能为 null。")
+
+    def validate_request(self, payload):
+        import json
+        from agent_service.answer_style import separate_lesson_check, trailing_lesson_check
+        from agent_service.learning_progress import _visible_quote
+        from agent_service.openai_client import ModelCallError
+        self.message, self.check_question = separate_lesson_check(self.message, self.check_question)
+        errors = []
+        section = trailing_lesson_check(self.message)
+        if section and (self.check_question.strip() or any(mark in section[1] for mark in ("?", "？"))):
+            errors.append(dict(field=["message"], type="teaching_check_echo"))
+        if self.check_question.strip():
+            target = payload.get("learning_step") or {}
+            title = target.get("title") or (self.learning_plan.steps[0] if self.learning_plan else "当前资料讲解")
+            binding = self.check_binding
+            if binding is None:
+                errors.append(dict(field=["check_binding"], type="teaching_check_missing"))
+            elif (binding.step_title != title or not set(binding.concepts).issubset(self.learning_concepts) or
+                    any(not quote.strip() or _visible_quote(quote.strip()) not in _visible_quote(self.message)
+                        for quote in binding.evidence_quotes)):
+                errors.append(dict(field=["check_binding"], type="teaching_check_grounding"))
+        if errors:
+            raise ModelCallError("SCHEMA", json.dumps(errors, ensure_ascii=False))
 
 
 class EvidenceAssessmentV2(BaseModel):

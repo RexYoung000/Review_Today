@@ -1,0 +1,95 @@
+{
+  "reports": [
+    {
+      "file": "review-today-knowledge-closure-live-a.jsonl",
+      "result": "FAIL",
+      "model_calls": 3,
+      "transport_requests": 3,
+      "usage": {
+        "input_tokens": 17010,
+        "output_tokens": 1268,
+        "total_tokens": 18278,
+        "cached_input_tokens": 1408
+      },
+      "call_ms": 9506
+    },
+    {
+      "file": "review-today-knowledge-closure-live-b.jsonl",
+      "result": "FAIL",
+      "model_calls": 4,
+      "transport_requests": 4,
+      "usage": {
+        "input_tokens": 30458,
+        "output_tokens": 1720,
+        "total_tokens": 32178,
+        "cached_input_tokens": 26368
+      },
+      "call_ms": 12000
+    },
+    {
+      "file": "review-today-knowledge-closure-live-c.jsonl",
+      "result": "FAIL",
+      "model_calls": 3,
+      "transport_requests": 3,
+      "usage": {
+        "input_tokens": 17377,
+        "output_tokens": 1458,
+        "total_tokens": 18835,
+        "cached_input_tokens": 8576
+      },
+      "call_ms": 9661
+    },
+    {
+      "file": "review-today-knowledge-closure-live-d.jsonl",
+      "result": "PASS",
+      "model_calls": 12,
+      "transport_requests": 12,
+      "usage": {
+        "input_tokens": 104459,
+        "output_tokens": 7054,
+        "total_tokens": 111513,
+        "cached_input_tokens": 71936
+      },
+      "call_ms": 35885
+    },
+    {
+      "file": "review-today-knowledge-closure-ambiguity-a.jsonl",
+      "result": "FAIL",
+      "model_calls": 1,
+      "transport_requests": 1,
+      "usage": {
+        "input_tokens": 2027,
+        "output_tokens": 273,
+        "total_tokens": 2300,
+        "cached_input_tokens": 0
+      },
+      "call_ms": 2249
+    },
+    {
+      "file": "review-today-knowledge-closure-capture-e.jsonl",
+      "result": "PASS",
+      "model_calls": 4,
+      "transport_requests": 4,
+      "usage": {
+        "input_tokens": 24566,
+        "output_tokens": 2878,
+        "total_tokens": 27444,
+        "cached_input_tokens": 17280
+      },
+      "call_ms": 13818
+    }
+  ],
+  "model_calls": 27,
+  "transport_requests": 27,
+  "tokens": {
+    "input_tokens": 195897,
+    "output_tokens": 14651,
+    "total_tokens": 210548,
+    "cached_input_tokens": 125568
+  },
+  "notes": [
+    "Provider capability probes excluded, as recorded in headers.",
+    "No cost estimate; cached counts are reported separately.",
+    "A/B/C and D semantic failures retained; ambiguity A underwent offline rubric review with no new network calls."
+  ]
+}

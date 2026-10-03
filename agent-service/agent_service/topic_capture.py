@@ -10,6 +10,14 @@ import uuid
 from agent_service.learning_memory import merge_references
 from agent_service.learning_progress import current_step, record_understanding, advance
 
+LIMITED_COVERAGE_NOTE = '部分旧题反馈未能与讲解核对，暂仅整理已确认的讲解；可先补讲再完整整理。'
+
+
+def source_transparent(run):
+    """These local explanations do not replace the current knowledge anchor."""
+    return bool(run.get('knowledge_status_reply') or
+                run.get('reply_feedback_handled') and run.get('dialogue_only'))
+
 
 def offers(data):
     return data.setdefault('capture_offers', {})
@@ -42,6 +50,148 @@ def invalidate(h, data, run):
             emit(h, data, run, offer)
 
 
+def _source_run_valid(h, data, message, run):
+    if (run.get('status') != 'completed' or not h._memory_run_valid(run)
+            or run.get('session_id', data['session_id']) != data['session_id']):
+        return False
+    # Retained events bind a delivered message to its actual run revision.
+    event = next((event for event in reversed(data.get('events', []))
+                  if (event.get('message') or {}).get('message_id') == message['message_id']), None)
+    return not event or event.get('revision') == run.get('revision')
+
+
+def _evaluation_for(task, run):
+    """Require a real evaluation record; an `answer` routing label is not one."""
+    ctx = (task or {}).get('context', {})
+    binding = run.get('evaluated_binding')
+    if not binding or binding.get('plan_version') != (ctx.get('learning_plan') or {}).get('version'):
+        return None
+    answer_id = run.get('evaluation_message_id')
+    if answer_id not in run.get('input_ids', []):
+        return None
+    return next((entry.get('evaluation') for entry in reversed(ctx.get('practice', []))
+                 if entry.get('message_id') == answer_id and entry.get('run_id') == run.get('run_id')
+                 and entry.get('revision') == run.get('revision') and entry.get('binding') == binding
+                 and entry.get('evaluation')), None)
+
+
+def collect_source(h, data, task=None, *, message_ids=None, include_captured=False):
+    """Freeze the current learning segment without treating user answers as facts.
+
+    New runs use explicit step/version bindings. Old completed teaching can be
+    recovered from the step's delivered-message list, but unbound evaluations
+    cannot silently become authoritative corrections or mastery evidence.
+    """
+    ctx = (task or {}).get('context', {})
+    if ctx.get('memory_invalidated') or (task and task.get('session_id') != data['session_id']):
+        return None
+    task_id = (task or {}).get('task_id')
+    step = current_step(task) if task else None
+    plan = ctx.get('learning_plan') or {}
+    step_id = (step or {}).get('id')
+    mastered = bool(ctx.get('transfer_passed') and ctx.get('draft') and task and task.get('status') == 'completed')
+    messages = data.get('messages', [])
+    positions = {message['message_id']: index for index, message in enumerate(messages)}
+    coaches = [message for message in messages if message.get('role') == 'coach'
+               and not source_transparent(data['runs'].get(message.get('run_id'), {}))]
+    if not coaches:
+        return None
+    latest = coaches[-1]
+    requested = list(dict.fromkeys(message_ids or [latest['message_id']]))
+    if latest['message_id'] not in requested:
+        return None
+    # A model may select only the last feedback message. Reconstruct its actual
+    # teaching source, rather than dropping it or using the feedback alone.
+    boundary = max((positions.get(mid, -1) for offer in data.get('capture_offers', {}).values()
+                    for mid in offer.get('message_ids', []) + offer.get('draft', {}).get('excluded_unbound_feedback_ids', [])), default=-1)
+    if include_captured:
+        matching = next((offer for offer in reversed(list(data.get('capture_offers', {}).values()))
+                         if latest['message_id'] in offer.get('message_ids', []) + offer.get('draft', {}).get('excluded_unbound_feedback_ids', [])
+                         and offer.get('origin_task_id') == task_id), None)
+        if matching:
+            draft = matching.get('draft') or {}
+            if (matching.get('status') == 'invalidated' or draft.get('invalidated')
+                    or matching.get('lifecycle_revision', 0) != data.get('lifecycle_revision', 0)
+                    or not h.store.memory_valid(draft.get('memory_references', []))):
+                return None
+            if set(requested) <= set(matching.get('message_ids', []) + draft.get('excluded_unbound_feedback_ids', [])):
+                return dict(content=draft['content'], message_ids=list(matching['message_ids']),
+                            memory_references=deepcopy(draft.get('memory_references', [])),
+                            sources=deepcopy(matching.get('sources', [])), source_type=draft.get('source_type', 'agent_generated'),
+                            draft_id=draft['id'], draft_version=draft['version'], source_key=matching.get('source_key', ''),
+                            excluded_unbound_feedback_ids=list(draft.get('excluded_unbound_feedback_ids', [])))
+    selected, source_runs, taught, unbound_feedback = [], [], False, []
+    for message in coaches:
+        if positions[message['message_id']] <= boundary:
+            continue
+        run = data['runs'].get(message.get('run_id'), {})
+        owner = run.get('task_id')
+        if owner != task_id:
+            # Never traverse another task to recover an older segment.
+            selected, source_runs, taught, unbound_feedback = [], [], False, []
+            continue
+        if not _source_run_valid(h, data, message, run):
+            selected, source_runs, taught, unbound_feedback = [], [], False, []
+            continue
+        if (run.get('intent') or {}).get('relation') == 'new_topic':
+            selected, source_runs, taught, unbound_feedback = [], [], False, []
+        evaluation = _evaluation_for(task, run) if task else None
+        bound_step = run.get('teaching_step_id') or (run.get('evaluated_binding') or {}).get('step_id')
+        bound_version = run.get('teaching_plan_version') if run.get('teaching_step_id') else (run.get('evaluated_binding') or {}).get('plan_version')
+        if not mastered and bound_step and (bound_step != step_id or bound_version != plan.get('version')):
+            selected, source_runs, taught, unbound_feedback = [], [], False, []
+            continue
+        teaching = bool(run.get('learning_concepts') or run.get('activity_kind') in {'knowledge_answer', 'lesson_step'})
+        continuing_explanation = (taught and (run.get('intent') or {}).get('relation') == 'continuation'
+                                  and set((run.get('intent') or {}).get('intents', [])) & {'question', 'followup', 'example', 'correction'})
+        if teaching and task and step and not bound_step and message['message_id'] not in step.get('message_ids', []) and not continuing_explanation:
+            # Legacy step membership is only a conservative teaching fallback.
+            teaching = False
+        if not teaching and not evaluation:
+            # A legacy grading turn may anchor the user's explicit closure,
+            # but its unbound feedback is excluded from the factual source.
+            if taught and 'answer' in (run.get('intent') or {}).get('intents', []) and any(
+                    entry.get('message_id') in run.get('input_ids', []) and entry.get('evaluation')
+                    for entry in ctx.get('practice', [])):
+                unbound_feedback.append(message['message_id'])
+            continue
+        if evaluation and not (taught or mastered):
+            continue
+        if teaching:
+            taught = True
+        selected.append(message)
+        source_runs.append(run)
+    ids = [message['message_id'] for message in selected]
+    allowed_anchors = set(ids + unbound_feedback)
+    if not ids or not set(requested) <= allowed_anchors or latest['message_id'] not in allowed_anchors:
+        return None
+    if mastered:
+        # Problem-solving keeps its independently checked reference draft. The
+        # answer's raw wording and generic success feedback are not new facts.
+        content = ctx['draft']['content']
+    else:
+        parts = []
+        for message, run in zip(selected, source_runs):
+            if _evaluation_for(task, run):
+                feedback = _evaluation_for(task, run).get('feedback', '').strip()
+                if feedback:
+                    parts.append('答题反馈中的解释与纠正（不把用户答案或评分描述当作知识事实）：\n' + feedback)
+            else:
+                parts.append(message['content'])
+        content = '\n\n'.join(parts)
+    if not content.strip():
+        return None
+    references = merge_references(*(run.get('memory_references', []) for run in source_runs),
+                                  ctx.get('draft', {}).get('memory_references', []) if mastered else [])
+    sources = {(source['source_id'], source.get('version', 1)): deepcopy(source)
+               for run in source_runs for source in run.get('answer_sources', [])}
+    return dict(content=content, message_ids=ids, memory_references=references,
+                sources=list(sources.values()) or deepcopy(ctx.get('sources', [])),
+                source_type=source_runs[-1].get('answer_source_type', ctx.get('source_type', 'agent_generated')),
+                excluded_unbound_feedback_ids=unbound_feedback,
+                source_key=hashlib.sha256(('\n'.join(ids) + content).encode()).hexdigest())
+
+
 def maybe_offer(h, sid, rid, rev, decision, last):
     closure = decision.topic_closure
     if not closure or last.get('operation') or decision.proposed_actions:
@@ -57,27 +207,10 @@ def maybe_offer(h, sid, rid, rev, decision, last):
         task = data['tasks'].get(decision.target_task_id or data.get('active_task_id'))
         ctx = (task or {}).get('context', {})
         understood = decision.understanding if decision.understanding == 'self_reported' else ctx.get('understanding', 'unknown')
-        # Saving reference material does not certify understanding.
-        ids = list(dict.fromkeys(closure.message_ids))
-        messages = [m for m in data['messages'] if m['message_id'] in ids and m['role'] == 'coach']
-        if not ids or len(messages) != len(ids):
+        source = collect_source(h, data, task, message_ids=closure.message_ids)
+        if not source:
             return False
-        source_runs = [data['runs'].get(m.get('run_id'), {}) for m in messages]
-        if any(r.get('status') != 'completed' or not h._memory_run_valid(r) for r in source_runs):
-            return False
-        # A closing turn can only refer to the current completed learning segment.
-        latest = next((m for m in reversed(data['messages']) if m['role'] == 'coach'), None)
-        if not latest or latest['message_id'] not in ids:
-            return False
-        mastered_closure = bool(ctx.get('transfer_passed') and ctx.get('draft') and task and task['status'] == 'completed' and all(r.get('task_id') == task['task_id'] for r in source_runs))
-        if not mastered_closure and any(not r.get('learning_concepts') and r.get('activity_kind') not in {'knowledge_answer', 'lesson_step'} for r in source_runs):
-            return False
-        positions = {m['message_id']: i for i, m in enumerate(data['messages'])}
-        boundary = max((positions.get(mid, -1) for o in offers(data).values() for mid in o.get('message_ids', [])), default=-1)
-        if any(positions[mid] <= boundary for mid in ids):
-            return False
-        content = ctx['draft']['content'] if mastered_closure else '\n\n'.join(m['content'] for m in messages)
-        key = hashlib.sha256(('\n'.join(ids) + content).encode()).hexdigest()
+        ids, content, key = source['message_ids'], source['content'], source['source_key']
         if any(o.get('source_key') == key for o in offers(data).values()):
             return False
         next_request = closure.next_request.strip()
@@ -85,14 +218,15 @@ def maybe_offer(h, sid, rid, rev, decision, last):
             next_request = ''
         identity = str(uuid.uuid4())
         step = current_step(task) if task else None
-        references = merge_references(*(r.get('memory_references', []) for r in source_runs), ctx.get('draft', {}).get('memory_references', []) if mastered_closure else [])
-        source_map = {(s['source_id'], s.get('version', 1)): deepcopy(s) for r in source_runs for s in r.get('answer_sources', [])}
-        sources = list(source_map.values()) or deepcopy(ctx.get('sources', []))
         draft = dict(id=identity, version=1, content=content, understanding=understood,
-                     source_type=source_runs[-1].get('answer_source_type', ctx.get('source_type', 'agent_generated')), memory_references=references,
+                     source_type=source['source_type'], memory_references=source['memory_references'],
+                     source_message_ids=ids, answer_sources=source['sources'],
+                     excluded_unbound_feedback_ids=source.get('excluded_unbound_feedback_ids', []),
                      public_search_query=ctx.get('public_search_query', ''))
-        offer = dict(id=identity, version=1, title=closure.title, anchor_message_id=last['message_id'],
-                     message_ids=ids, source_key=key, draft=draft, sources=sources,
+        limited = bool(draft['excluded_unbound_feedback_ids'])
+        offer = dict(id=identity, version=1, title=closure.title + ('（暂仅已确认讲解，旧题反馈待核对）' if limited else ''), anchor_message_id=last['message_id'],
+                     message_ids=ids, source_key=key, draft=draft, sources=source['sources'],
+                     coverage_note=LIMITED_COVERAGE_NOTE if limited else '',
                      origin_task_id=(task or {}).get('task_id'), step_id=(step or {}).get('id'),
                      requires_mastery=ctx.get('requires_mastery', False), transfer_passed=ctx.get('transfer_passed', False),
                      lifecycle_revision=data.get('lifecycle_revision', 0), status='offered',
@@ -217,14 +351,19 @@ def adopt_explicit(h, data, run, draft, task):
     existing = offers(data).get(run.get('capture_offer_id'))
     if existing:
         return existing
-    identity = str(uuid.uuid5(uuid.UUID(data['session_id']), f"explicit:{draft['id']}:{draft['version']}"))
+    matching = next((value for value in offers(data).values()
+                     if value.get('draft', {}).get('id') == draft['id']
+                     and value.get('draft', {}).get('version') == draft['version']), None)
+    identity = matching['id'] if matching else str(uuid.uuid5(uuid.UUID(data['session_id']), f"explicit:{draft['id']}:{draft['version']}"))
     offer = offers(data).get(identity)
     if not offer:
         ctx = (task or {}).get('context', {})
         latest = next((m for m in reversed(data['messages']) if m['role'] == 'coach'), None)
-        offer = dict(id=identity, version=draft['version'], title='本次确认的知识',
-                     anchor_message_id=run['input_ids'][-1], message_ids=[latest['message_id']] if latest else [], draft=deepcopy(draft),
-                     sources=deepcopy(ctx.get('sources', [])), origin_task_id=(task or {}).get('task_id'),
+        limited = bool(draft.get('excluded_unbound_feedback_ids'))
+        offer = dict(id=identity, version=draft['version'], title='本次确认的知识' + ('（暂仅已确认讲解，旧题反馈待核对）' if limited else ''),
+                     anchor_message_id=run['input_ids'][-1], message_ids=draft.get('source_message_ids', [latest['message_id']] if latest else []), draft=deepcopy(draft),
+                     coverage_note=LIMITED_COVERAGE_NOTE if limited else '',
+                     sources=deepcopy(draft.get('answer_sources', ctx.get('sources', []))), origin_task_id=(task or {}).get('task_id'),
                      lifecycle_revision=data.get('lifecycle_revision', 0), status='saving', next_request='',
                      continuation_consumed=True, error='', knowledge_ids=[])
         offers(data)[identity] = offer

@@ -1,0 +1,206 @@
+{
+  "backup_path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-closure-20261003-233901",
+  "mac_hash_excludes": [
+    "Z_OPT"
+  ],
+  "tables": {
+    "service": {
+      "harness_tasks": {
+        "before_count": 13,
+        "after_count": 13,
+        "before_sha256": "5953dcdcfb032d503f9e5b81b08d76e7e5787923037eb820bf8cc59d15949c83",
+        "after_sha256": "5953dcdcfb032d503f9e5b81b08d76e7e5787923037eb820bf8cc59d15949c83",
+        "same": true,
+        "changed_columns": []
+      },
+      "agent_sessions_v2": {
+        "before_count": 33,
+        "after_count": 33,
+        "before_sha256": "045f0314d4ed447109303fe5ea37ce03c2ebc25ce69438f3731df5e95d96137b",
+        "after_sha256": "045f0314d4ed447109303fe5ea37ce03c2ebc25ce69438f3731df5e95d96137b",
+        "same": true,
+        "changed_columns": []
+      },
+      "agent_memory_policy_v2": {
+        "before_count": 33,
+        "after_count": 33,
+        "before_sha256": "0eb66885f2df01e48af5d72e70f539844624d0e3c7c763260a098d13ec93e843",
+        "after_sha256": "0eb66885f2df01e48af5d72e70f539844624d0e3c7c763260a098d13ec93e843",
+        "same": true,
+        "changed_columns": []
+      },
+      "agent_session_deletions": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "agent_voice_usage": {
+        "before_count": 1,
+        "after_count": 1,
+        "before_sha256": "7cf3aba96414129244d5817daf5fb8ff9b836a1575f4946852647df1851ebdf0",
+        "after_sha256": "7cf3aba96414129244d5817daf5fb8ff9b836a1575f4946852647df1851ebdf0",
+        "same": true,
+        "changed_columns": []
+      }
+    },
+    "mac": {
+      "ZSOURCE": {
+        "before_count": 1,
+        "after_count": 1,
+        "before_sha256": "2fbf7d56c226f1a140749ab62ccf90c0d46009f799dc84427b9d992b4331e394",
+        "after_sha256": "2fbf7d56c226f1a140749ab62ccf90c0d46009f799dc84427b9d992b4331e394",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZREVIEWSESSION": {
+        "before_count": 4,
+        "after_count": 4,
+        "before_sha256": "d13dbe1dfb1d241bcd2e44edcf8835652b753c1e2bbeebd2c85d3dd23621078a",
+        "after_sha256": "d13dbe1dfb1d241bcd2e44edcf8835652b753c1e2bbeebd2c85d3dd23621078a",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZREVIEWATTEMPT": {
+        "before_count": 3,
+        "after_count": 3,
+        "before_sha256": "16f76eb90918201a08870b654c7b338abb36acc6229325527ffc8743ff517ea3",
+        "after_sha256": "16f76eb90918201a08870b654c7b338abb36acc6229325527ffc8743ff517ea3",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZQUESTION": {
+        "before_count": 11,
+        "after_count": 11,
+        "before_sha256": "9c4f06d7e10afec8b3c7124dc5ad5464cc703c1f1953e59ad08ed340df58bbe4",
+        "after_sha256": "9c4f06d7e10afec8b3c7124dc5ad5464cc703c1f1953e59ad08ed340df58bbe4",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZKNOWLEDGE": {
+        "before_count": 8,
+        "after_count": 8,
+        "before_sha256": "9dc05fb366583031fd8bce51fbfebcebdcd2438a514eb1a9b5f72861fcd49d73",
+        "after_sha256": "9dc05fb366583031fd8bce51fbfebcebdcd2438a514eb1a9b5f72861fcd49d73",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZFSRSSTATE": {
+        "before_count": 8,
+        "after_count": 8,
+        "before_sha256": "e6a7b322b888e6bec390687796f0afe1714edef97f048cf319b1ebebc13b076f",
+        "after_sha256": "e6a7b322b888e6bec390687796f0afe1714edef97f048cf319b1ebebc13b076f",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZCAPTURETASK": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZAPPSETTINGS": {
+        "before_count": 1,
+        "after_count": 1,
+        "before_sha256": "b5638cbab8ce5011746d678834760dca74391c3dc66adba7c240040fa30f1b6b",
+        "after_sha256": "b5638cbab8ce5011746d678834760dca74391c3dc66adba7c240040fa30f1b6b",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZTASKEVENTRECORD": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZSOURCEREFERENCE": {
+        "before_count": 3,
+        "after_count": 3,
+        "before_sha256": "94e7576bbad5760074ba6c8cb28e4ba4acb8be9b8d80f91b9711757bb1c69f5f",
+        "after_sha256": "94e7576bbad5760074ba6c8cb28e4ba4acb8be9b8d80f91b9711757bb1c69f5f",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZSESSIONSUMMARYRECORD": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZKNOWLEDGEREFERENCE": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZAGENTMESSAGE": {
+        "before_count": 20,
+        "after_count": 20,
+        "before_sha256": "f8c9f76ff6e433fca21cc91e4d4828195e27f3341a458087fff29435b299bb77",
+        "after_sha256": "f8c9f76ff6e433fca21cc91e4d4828195e27f3341a458087fff29435b299bb77",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZSESSIONEVENTRECORD": {
+        "before_count": 160,
+        "after_count": 160,
+        "before_sha256": "eb2ecf43e5597938781860ca218ee9d25e04c4d76bedd1842fa8e292bbc7dbde",
+        "after_sha256": "eb2ecf43e5597938781860ca218ee9d25e04c4d76bedd1842fa8e292bbc7dbde",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZAGENTRUNCONTROL": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZAGENTRUN": {
+        "before_count": 10,
+        "after_count": 10,
+        "before_sha256": "288bb0449db386ecbf837dd4117fc86655c6b7fb9ddee2b1269cc8f87a95f38c",
+        "after_sha256": "288bb0449db386ecbf837dd4117fc86655c6b7fb9ddee2b1269cc8f87a95f38c",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZLEARNINGTASK": {
+        "before_count": 3,
+        "after_count": 3,
+        "before_sha256": "517fa605d9b95b50d411872a186148aa70b6f42c0bea95414b578dba26fe5c49",
+        "after_sha256": "5d4d4d6bedb2142280439f14fb04ec4f55b06effe9c2fd3407c8fcd324593088",
+        "same": false,
+        "changed_columns": [
+          "ZUPDATEDAT"
+        ]
+      },
+      "ZAGENTSESSION": {
+        "before_count": 5,
+        "after_count": 5,
+        "before_sha256": "a5aae958c479c0e5f3baf8ab07eed9801d684c7da53b7058f58a89b24788bae4",
+        "after_sha256": "a5aae958c479c0e5f3baf8ab07eed9801d684c7da53b7058f58a89b24788bae4",
+        "same": true,
+        "changed_columns": []
+      },
+      "ZSESSIONFOLDER": {
+        "before_count": 0,
+        "after_count": 0,
+        "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "same": true,
+        "changed_columns": []
+      }
+    }
+  }
+}

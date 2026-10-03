@@ -92,7 +92,7 @@ def test_mixed_learning_keeps_explicit_sentence_limit_without_rejoining_delivery
     f.decision = fixtures.intent('question', programming_boundary='mixed_learning',
         programming_learning_request='解释 viewBox', learning_reply_sentence_limit=1)
     ack = f.send('解释 viewBox，再帮我做完整网页。解释只要一句话')
-    answer = next(p for s, p in f.calls if s is ConversationOutput)
+    answer = next(p for s, p in f.calls if issubclass(s, ConversationOutput))
     assert answer['context']['current_inputs'] == ['解释 viewBox']
     assert '不超过 1 句话' in answer['instruction']
     assert f.state()['runs'][ack.run_id]['request_scope']['learning_request'] == '解释 viewBox'
@@ -236,7 +236,7 @@ def test_conversational_act_cannot_swallow_mixed_knowledge_or_bound_control(f, p
     f.decision = fixtures.intent('question', reply_purpose=purpose,
         programming_learning_request='解释闭包', programming_boundary='mixed_learning')
     f.send('那解释闭包，再帮我部署')
-    assert any(s is ConversationOutput for s, _ in f.calls)
+    assert any(issubclass(s, ConversationOutput) for s, _ in f.calls)
     f.decision = fixtures.intent('stop', reply_purpose=purpose)
     ack = f.send('停止')
     assert f.state()['runs'][ack.run_id]['status'] == 'interrupted'
@@ -247,4 +247,4 @@ def test_confirmation_without_a_real_previous_scope_cannot_invent_one(f):
         light_reply='不能做。')
     ack = f.send('你说的是什么意思？')
     assert not f.state()['runs'][ack.run_id].get('scope_reply')
-    assert any(s is ConversationOutput for s, _ in f.calls)
+    assert any(issubclass(s, ConversationOutput) for s, _ in f.calls)

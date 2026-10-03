@@ -27,7 +27,7 @@ class StreamingHarnessTests(unittest.TestCase):
 
     def streaming_model(self, system, user, schema, **kw):
         result = self.f.model(system, user, schema, **kw)
-        if schema is ConversationOutput:
+        if issubclass(schema, ConversationOutput):
             kw["on_partial"]({"message": "这是"})
             self.assertFalse([m for m in self.f.state()["messages"] if m["role"] == "coach"])
             self.assertIsNone(self.f.state()["pending"])
@@ -74,7 +74,7 @@ class StreamingHarnessTests(unittest.TestCase):
         accepted = self.f.send("RAG 是什么", drain=False)
 
         def model(system, user, schema, **kw):
-            if schema is not ConversationOutput: return self.f.model(system, user, schema, **kw)
+            if not issubclass(schema, ConversationOutput): return self.f.model(system, user, schema, **kw)
             kw["on_partial"]({"message": "先检索"})
             before = time.monotonic()
             self.f.control(accepted.run_id, "stop")
@@ -98,7 +98,7 @@ class StreamingHarnessTests(unittest.TestCase):
 
         def model(system, user, schema, **kw):
             nonlocal answer_calls
-            if schema is not ConversationOutput: return self.f.model(system, user, schema, **kw)
+            if not issubclass(schema, ConversationOutput): return self.f.model(system, user, schema, **kw)
             answer_calls += 1
             if answer_calls == 1:
                 kw["on_cancel_handle"](closed.set)
@@ -123,7 +123,7 @@ class StreamingHarnessTests(unittest.TestCase):
 
     def test_failure_then_retry_reuses_validated_intent_not_partial_answer(self):
         def failing(system, user, schema, **kw):
-            if schema is not ConversationOutput: return self.f.model(system, user, schema, **kw)
+            if not issubclass(schema, ConversationOutput): return self.f.model(system, user, schema, **kw)
             kw["on_partial"]({"message": "未完成预览"})
             raise ModelCallError("SCHEMA")
         with patch("agent_service.conversation.parse_model", side_effect=failing):
@@ -141,7 +141,7 @@ class StreamingHarnessTests(unittest.TestCase):
     def test_schema_repair_buffers_partials_and_atomically_replaces_one_reply(self):
         calls = []
         def model(system, user, schema, **kw):
-            if schema is not ConversationOutput:
+            if not issubclass(schema, ConversationOutput):
                 return self.f.model(system, user, schema, **kw)
             calls.append((system, user, kw['model']))
             if len(calls) == 1:
@@ -171,7 +171,7 @@ class StreamingHarnessTests(unittest.TestCase):
         attempts = 0
         def model(system, user, schema, **kw):
             nonlocal attempts
-            if schema is not ConversationOutput:
+            if not issubclass(schema, ConversationOutput):
                 return self.f.model(system, user, schema, **kw)
             attempts += 1
             if attempts == 1:
@@ -197,7 +197,7 @@ class StreamingHarnessTests(unittest.TestCase):
     def test_repair_cannot_exceed_whole_turn_call_budget(self):
         answers = []
         def model(system, user, schema, **kw):
-            if schema is not ConversationOutput:
+            if not issubclass(schema, ConversationOutput):
                 return self.f.model(system, user, schema, **kw)
             answers.append(user)
             kw['on_partial']({'message': '预算内的未完成内容'})
