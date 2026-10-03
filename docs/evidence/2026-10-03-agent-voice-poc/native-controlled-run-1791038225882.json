@@ -1,0 +1,82 @@
+{
+  "active" : false,
+  "draft_preserved" : true,
+  "messages" : [
+    {
+      "content" : "先解释一下 RAG 的作用。",
+      "role" : "user",
+      "state" : "complete"
+    },
+    {
+      "content" : "RAG 会先检索相关资料，再让模型根据资料回答。\n这能让回答更容易核对来源。",
+      "role" : "coach",
+      "state" : "complete"
+    },
+    {
+      "content" : "先停一下，换个例子。",
+      "role" : "user",
+      "state" : "complete"
+    },
+    {
+      "content" : "好的，我们换一个例子。\n先查资料，再组织回答，就像开卷作答。",
+      "role" : "coach",
+      "state" : "complete"
+    },
+    {
+      "content" : "帮我用一句话记住它。",
+      "role" : "user",
+      "state" : "complete"
+    },
+    {
+      "content" : "先找资料，再结合资料作答，就是 RAG 的基本流程。\n这句话保留在同一段聊天里。",
+      "role" : "coach",
+      "state" : "complete"
+    }
+  ],
+  "mode" : "Actual production audio\/coordinator\/panel; synthetic input, fake socket and device; no microphone, network, model or speaker playback.",
+  "pending_transcriptions" : 0,
+  "playback" : [
+    {
+      "message_id" : "DD2ACFB8-C20D-4192-B675-D99C9CB6038C",
+      "record" : "{\"interrupted\":\"RAG 会先检索相关资料，再让模型根据资料回答。\",\"state\":\"interrupted\",\"played\":[]}"
+    },
+    {
+      "message_id" : "506A04F4-9C98-4193-AE5C-11F2C336323E",
+      "record" : "{\"state\":\"played\",\"played\":[\"好的，我们换一个例子。\",\"先查资料，再组织回答，就像开卷作答。\"]}"
+    },
+    {
+      "message_id" : "91C44AAD-18BE-44EF-8BF1-BF37ABD5B1A4",
+      "record" : "{\"state\":\"played\",\"played\":[\"先找资料，再结合资料作答，就是 RAG 的基本流程。\",\"这句话保留在同一段聊天里。\"]}"
+    }
+  ],
+  "submitted_turns" : 3,
+  "trace" : [
+    "start",
+    "synthetic-input",
+    "submitted:1",
+    "playback:playing:0",
+    "automatic_barge_in_while_playing=true",
+    "synthetic-barge-in",
+    "playback:interrupted:0",
+    "stop-reply",
+    "automatic_barge_in_completed=true",
+    "submitted:2",
+    "playback:playing:0",
+    "playback:playing:1",
+    "playback:playing:1",
+    "playback:playing:2",
+    "playback:played:2",
+    "synthetic-input",
+    "stop-reply",
+    "submitted:3",
+    "playback:playing:0",
+    "automatic_mute_while_playing=true",
+    "toggle-mute",
+    "automatic_mute_kept_playing=true",
+    "playback:playing:1",
+    "playback:playing:1",
+    "playback:playing:2",
+    "playback:played:2",
+    "end:draft-preserved=true"
+  ]
+}

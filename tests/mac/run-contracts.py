@@ -20,6 +20,7 @@ DEFAULT_TESTS = [
     "SessionListSelectionTests", "SessionOrganizationContractTests", "IndependentSessionContractTests",
     "LibraryManagementContractTests", "KnowledgeDeckNavigationTests", "KnowledgeIngestionTests",
     "DictationContractTests", "DictationSurfaceContractTests", "TopicCaptureContractTests", "LearningGoalContinuityTests", "ReviewFlowContractTests", "ReviewControllerContractTests", "ReviewUIIntegrationContracts", "ReviewMigrationContractTests",
+    "AgentVoiceAudioContractTests", "AgentSpeechSegmentsTests", "AgentVoiceConversationTests", "AgentVoiceStoreTests",
 ]
 names = sys.argv[1:] or DEFAULT_TESTS
 for name in names:

@@ -1,0 +1,1 @@
+PASS: explicit fixture auto-barge-in waits for real playingSpeech and stops playback; auto-mute retains playback; draft retained; no UI/hardware/network/evidence writes

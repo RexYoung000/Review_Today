@@ -1,0 +1,166 @@
+{
+  "backup": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/agent-voice-local-backup-20261003-223735",
+  "app": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "candidate": "/tmp/review-today-agent-voice-build.i6twjajt/Build/Products/Debug/Review_Today.app",
+  "counts": {
+    "ZAGENTSESSION": 5,
+    "ZAGENTMESSAGE": 14,
+    "ZAGENTRUN": 7,
+    "ZKNOWLEDGE": 8,
+    "ZQUESTION": 11,
+    "ZREVIEWSESSION": 4,
+    "ZREVIEWATTEMPT": 3
+  },
+  "post_update_data": {
+    "ZAGENTSESSION": {
+      "before": 5,
+      "after": 5,
+      "existing_fields_unchanged": true
+    },
+    "ZAGENTMESSAGE": {
+      "before": 14,
+      "after": 14,
+      "existing_fields_unchanged": true
+    },
+    "ZAGENTRUN": {
+      "before": 7,
+      "after": 7,
+      "existing_fields_unchanged": true
+    },
+    "ZKNOWLEDGE": {
+      "before": 8,
+      "after": 8,
+      "existing_fields_unchanged": true
+    },
+    "ZQUESTION": {
+      "before": 11,
+      "after": 11,
+      "existing_fields_unchanged": true
+    },
+    "ZREVIEWSESSION": {
+      "before": 4,
+      "after": 4,
+      "existing_fields_unchanged": true
+    },
+    "ZREVIEWATTEMPT": {
+      "before": 3,
+      "after": 3,
+      "existing_fields_unchanged": true
+    }
+  },
+  "integrity": "ok",
+  "new_fields": {
+    "ZAGENTMESSAGE": [
+      "ZINPUTCHANNEL",
+      "ZVOICEPLAYBACKJSON"
+    ],
+    "ZAGENTRUN": [
+      "ZVOICEINPUTIDSJSON"
+    ]
+  },
+  "signature": {
+    "identifier": "Rex.Review-Today",
+    "team": "7NDKLL3UJK"
+  },
+  "binary_sha256": "0adfc739e29d3e43bd3f7b456d0b9630f867d841346f04e386514675d7ddc11f",
+  "health": {
+    "status": "ok",
+    "provider": "deepseek",
+    "jev": {
+      "status": "off",
+      "model": null,
+      "entry_rule": null
+    },
+    "model_roles": {
+      "router": {
+        "model": "deepseek-flash",
+        "status": "ready",
+        "error": "",
+        "streaming": "not_applicable",
+        "category": null,
+        "retryable": false,
+        "recovery": null,
+        "strengths": {
+          "smart": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          },
+          "deep": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          }
+        },
+        "checked_at": 1791038283.960684,
+        "elapsed_ms": 2324,
+        "next_probe_at": null
+      },
+      "coach": {
+        "model": "deepseek-v4-flash",
+        "status": "ready",
+        "error": "",
+        "streaming": "ready",
+        "category": null,
+        "retryable": false,
+        "recovery": null,
+        "strengths": {
+          "smart": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          },
+          "deep": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null,
+            "streaming": "ready",
+            "stream_error": "",
+            "stream_retryable": false
+          }
+        },
+        "checked_at": 1791038283.422234,
+        "elapsed_ms": 1786,
+        "stream_error": "",
+        "stream_retryable": false,
+        "next_probe_at": null
+      },
+      "risk": {
+        "model": "deepseek-v4-pro",
+        "status": "ready",
+        "error": "",
+        "streaming": "not_applicable",
+        "category": null,
+        "retryable": false,
+        "recovery": null,
+        "strengths": {
+          "smart": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          },
+          "deep": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          }
+        },
+        "checked_at": 1791038283.636995,
+        "elapsed_ms": 2000,
+        "next_probe_at": null
+      }
+    }
+  }
+}

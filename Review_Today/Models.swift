@@ -435,6 +435,8 @@ final class AgentMessage {
     var role: String
     var content: String
     var contentType: String
+    var inputChannel: String = "text"
+    var voicePlaybackJSON: String?
     @Attribute(.externalStorage) var imageAttachment: Data?
     var createdAt: Date
     var deliveryStatus: String

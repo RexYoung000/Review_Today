@@ -1,0 +1,50 @@
+[
+  {
+    "file": "native-interaction-1791037912.mp4",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1036,
+        "height": 792,
+        "r_frame_rate": "600/1",
+        "nb_frames": "2636"
+      }
+    ],
+    "format": {
+      "duration": "90.088333"
+    }
+  },
+  {
+    "file": "native-interaction-1791038007.mp4",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 436,
+        "height": 824,
+        "r_frame_rate": "117/4",
+        "nb_frames": "720"
+      }
+    ],
+    "format": {
+      "duration": "24.548333"
+    }
+  },
+  {
+    "file": "native-interaction-1791038154.mp4",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1036,
+        "height": 792,
+        "r_frame_rate": "88/3",
+        "nb_frames": "1199"
+      }
+    ],
+    "format": {
+      "duration": "41.298333"
+    }
+  }
+]

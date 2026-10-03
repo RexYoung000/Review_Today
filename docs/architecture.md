@@ -1,5 +1,15 @@
 # Review Today Agent 与系统架构
 
+## Agent 连续语音 POC（2026-10-03，已实现／隔离验证与本机接入）
+
+新增独立 AgentVoiceAudio 音频生命周期与同 Session 语音协调器。语音入口使用现有 Session UUID，空白输入区使用持久草稿 UUID；首个转写通过与文本相同的本机原子消息／outbox提交才建会话，并保留未发送草稿与附件。听写路径不变。退出停止音频，不取消已提交的学习目标；切页、会话变化、隐藏或休眠清理采音和排队播放。
+
+本地服务提供 `/v2/agent/voice/{owner_id}/audio`，沿用现有实时供应商配置，仅转写与逐句照稿播报。未知草稿 UUID 可连接但不创建服务器聊天记录，删除／归档／生命周期版本变化立即失效。PCM16 16kHz 输入、24kHz 输出；客户端 `audio / commit_audio(utterance_id,generation) / clear(cancel_transcripts) / interrupt / speak(text,speech_id) / close`，服务返回 `ready / transcript / audio / speech_done / speech_blocked / error`。interrupt 只取消播放与待播队列，不废弃已提交转写；clear 默认废弃旧转写，静音 clear(false) 仅清未提交输入。旧 commit ACK 保留作废绑定占位以防错配新 utterance。输入、短句、缓存与排队有界，控制与采音不被播报等待阻塞。
+
+原生音频层提供权限／连接／设备注入，隔离合同不用真实麦克风。实际播放结束回执用于记录完整播出句；打断清当前与待播句，迟到音频凭 lifetime/speech_id拒绝。协调器以消息ID／修订和音频utterance绑定防重，不将历史回答或新会话内容加入旧音频。现有Agent保留推理与工具职责，语音轮次携带输入渠道用于简短口语表达；Run 的 voice_input_ids 明确本轮语音触发的恢复／自动续接，仅命中当前语音输入的回复可播；文本正文与播放记录分别保存，保存与评分权限不变。
+
+新播报等待已完成行／段落，末行等待换行或回复最终完成后再按稳定完整句切分，对代码／表格／图示提供查看文字提示；每句在服务核对返回文字一致后才播放，不能声称任意音频chunk直出或保证固定延迟。首版按句串行准备，尚无句间预取；停顿判断、转写、Agent 推理和每句核对均会累积等待。优先验证首句等待、连续三轮、打断停止和失败回退；实际麦克风／扬声器回声与自然程度由真人配合完成。提供隔离服务与原生证据后再记录本机安装状态。
+
 ## 设置、清理事务与专属存储（2026-09-25）
 
 SettingsView 使用现有 AppSettings 与 Runway；新增 localDataCleanupJSON 默认空队列。LocalDataReset 在同一 MainActor 事务中复核范围、写入无正文删除标记与清理队列、删除业务记录并原子保存；回滚不返回成功。复习控制器的 generation 和既有会话 tombstone 阻止迟到回复恢复记录。清理仅携带 UUID 到 /v2/local-data/cleanup；ReviewStore 保留无正文删除标记，拒绝旧轮次重建，CaptureStore 丢弃被清除的工作结果。后台确认成功后才移除 outbox。

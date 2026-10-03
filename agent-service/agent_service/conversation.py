@@ -44,8 +44,10 @@ from agent_service import conversation_materials, image_inputs
 from agent_service.conversation_controls import LABELS, FINISHED
 
 
-def _new_run(session_id: str, message_id: str, status: str) -> dict:
+def _new_run(session_id: str, message_id: str, status: str, *, input_channel="text") -> dict:
     return dict(run_id=str(uuid.uuid4()), session_id=session_id, task_id=None, input_ids=[message_id],
+                input_channel=input_channel,
+                voice_input_ids=[message_id] if input_channel == "voice" else [],
                 revision=1, status=status, stage="accepted", user_summary="已保存", attempt=0,
                 intent=None, steps={}, action_ids=[], error_code=None, created_at=now_iso(), updated_at=now_iso(),
                 started_at=None, elapsed_ms=0, attempt_durations=[], first_text_ms=None,
@@ -73,6 +75,10 @@ class ConversationHarness(ConditionalTeaching):
                 raise ValueError("RT.SESSION.ARCHIVED")
             receipts = data.setdefault("message_receipts", {})
             identity = dict(content=body.content, operation=body.operation.model_dump() if body.operation else None)
+            # Keep historical text receipt hashes valid; changing the channel
+            # with the same message ID is nevertheless a different request.
+            if body.input_channel != "text":
+                identity["input_channel"] = body.input_channel
             pictures = body.images or ([body.image] if body.image else [])
             if len(pictures) == 1:
                 identity["image"] = pictures[0].metadata()
@@ -88,7 +94,8 @@ class ConversationHarness(ConditionalTeaching):
             existing = next((m for m in data["messages"] if m.get("message_id") == body.client_message_id), None)
             if existing:
                 # Same key with a different payload is not a second user instruction.
-                if existing["content"] != body.content or [i["sha256"] for i in image_inputs.attachments(existing)] != [i.sha256 for i in pictures]:
+                if (existing["content"] != body.content or existing.get("input_channel", "text") != body.input_channel
+                        or [i["sha256"] for i in image_inputs.attachments(existing)] != [i.sha256 for i in pictures]):
                     raise ValueError("RT.MESSAGE.IDEMPOTENCY_CONFLICT")
                 run = data["runs"][existing["run_id"]]
             else:
@@ -134,7 +141,8 @@ class ConversationHarness(ConditionalTeaching):
                 if not body.operation:
                     topic_capture.interrupt(data)
                 message = dict(message_id=body.client_message_id, role="user", content=body.content,
-                               content_type=body.content_type, created_at=now_iso(), run_id=run["run_id"],
+                               content_type=body.content_type, input_channel=body.input_channel,
+                               created_at=now_iso(), run_id=run["run_id"],
                                task_id=body.task_id, context=body.context.model_dump(),
                                operation=body.operation.model_dump() if body.operation else None)
                 if len(pictures) == 1:
@@ -142,6 +150,10 @@ class ConversationHarness(ConditionalTeaching):
                 elif pictures:
                     message["images"] = [image.model_dump() for image in pictures]
                 data["messages"].append(message)
+                run["input_channel"] = body.input_channel
+                # Playback provenance is independent of the prompt's input_ids.
+                # A new text supplement must not inherit an earlier voice grant.
+                run["voice_input_ids"] = [body.client_message_id] if body.input_channel == "voice" else []
                 run["lifecycle_revision"] = data.get("lifecycle_revision", 0)
                 if body.task_id:
                     data["tasks"][body.task_id]["context"]["latest_run_id"] = run["run_id"]
@@ -727,9 +739,13 @@ class ConversationHarness(ConditionalTeaching):
             with self.store.transaction(sid, rid, rev) as data:
                 current = data["runs"][rid]
                 later_id = current["input_ids"].pop()
-                later = _new_run(sid, later_id, "queued")
+                later_message = next(m for m in data["messages"] if m["message_id"] == later_id)
+                later = _new_run(sid, later_id, "queued", input_channel=later_message.get("input_channel", "text"))
                 data["runs"][later["run_id"]] = later
-                next(m for m in data["messages"] if m["message_id"] == later_id)["run_id"] = later["run_id"]
+                later_message["run_id"] = later["run_id"]
+                prior_message = next(m for m in data["messages"] if m["message_id"] == current["input_ids"][-1])
+                current["input_channel"] = prior_message.get("input_channel", "text")
+                current["voice_input_ids"] = [prior_message["message_id"]] if current["input_channel"] == "voice" else []
                 data["message_receipts"][later_id]["run_id"] = later["run_id"]
                 current["revision"] += 1
                 current["status"] = "accepted"
@@ -768,6 +784,9 @@ class ConversationHarness(ConditionalTeaching):
             if set(decision.intents) & {"stop", "pause", "cancel"}:
                 if len(run["input_ids"]) > 1:
                     run["input_ids"].pop()  # consumed control, not a prompt to replay on resume
+                    prior_message = next(m for m in data["messages"] if m["message_id"] == run["input_ids"][-1])
+                    run["input_channel"] = prior_message.get("input_channel", "text")
+                    run["voice_input_ids"] = [prior_message["message_id"]] if run["input_channel"] == "voice" else []
                 else:
                     run["control_only"] = True
                 self._stop(data, run, cancel="cancel" in decision.intents)
@@ -778,6 +797,8 @@ class ConversationHarness(ConditionalTeaching):
                 if previous:
                     previous["revision"] += 1
                     previous["status"] = "accepted"
+                    previous["input_channel"] = run.get("input_channel", "text")
+                    previous["voice_input_ids"] = list(run.get("voice_input_ids", []))
                     self.store.event(data, run, "resuming", "已收到继续指令，将续接停止的步骤", message="好的，继续刚才未完成的步骤。")
                     return
         if decision.direct_teaching and decision.relation != "uncertain" and (data.get("active_task_id") or data.get("goal_clarification") or decision.target_description):

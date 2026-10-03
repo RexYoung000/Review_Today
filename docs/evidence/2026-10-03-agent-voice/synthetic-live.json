@@ -1,0 +1,126 @@
+{
+  "synthetic": true,
+  "audio_retained": false,
+  "microphone_used": false,
+  "audio_played": false,
+  "semantic_review": "pending; no keyword-based semantic pass",
+  "limitations": [
+    "No real microphone, echo, speaker or conversational-pause measurement",
+    "Only provider-reported numeric token usage is retained; no pricing estimate"
+  ],
+  "model": "qwen3.8-omni-flash-realtime",
+  "started_at": "2026-10-03T22:24:05+0800",
+  "owner_id": "608774ae-63bc-4f0c-aec4-442e3b6cafce",
+  "ready_ms": 1054,
+  "opening_does_not_create_session": true,
+  "turns": [
+    {
+      "index": 1,
+      "synthetic_input": "接下来只讨论光合作用，请先用一句话说明它做什么。",
+      "input_seconds": 5.4270625,
+      "transcript": "接下来之讨论光合作用，请先用一句话说明它做什么。",
+      "transcription_ms": 631,
+      "agent_ms": 5639,
+      "run_status": "completed",
+      "replies": [
+        "光合作用是植物、藻类等生物利用光能，把二氧化碳和水转化成含能量的有机物（主要是葡萄糖）并释放氧气的过程。"
+      ],
+      "spoken_sentences": [
+        {
+          "text": "光合作用是植物、藻类等生物利用光能，把二氧化碳和水转化成含能量的有机物（主要是葡萄糖）并释放氧气的过程。",
+          "speech_id": "889b73ad-e3ae-4f2c-8370-2dea22e554fa",
+          "bytes": 545280,
+          "first_audio_ms": 3122,
+          "completed_ms": 3156,
+          "audio_seconds": 11.36
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "synthetic_input": "那它的原料和能量分别是什么？",
+      "input_seconds": 2.907625,
+      "transcript": "那它的原料和能量分别是什么？",
+      "transcription_ms": 398,
+      "agent_ms": 6185,
+      "run_status": "completed",
+      "replies": [
+        "这里“原料”指的是被消耗、被转化掉的物质，“能量”则来自太阳光。\n\n具体来说，原料是二氧化碳和水；能量是光能，叶绿素等色素把它吸收下来，用来驱动反应。产物则是葡萄糖和氧气——所以氧气算“排出物”，不是原料。\n\n如果你问的是更细的另一些含义，比如化能合成细菌用的是化学能而非光能，那套体系就不叫光合作用了。"
+      ],
+      "spoken_sentences": [
+        {
+          "text": "这里“原料”指的是被消耗、被转化掉的物质，“能量”则来自太阳光。",
+          "speech_id": "3a2fb3fd-1897-4211-be2a-df9f5c4a854b",
+          "bytes": 295680,
+          "first_audio_ms": 2046,
+          "completed_ms": 2080,
+          "audio_seconds": 6.16
+        },
+        {
+          "text": "具体来说，原料是二氧化碳和水；能量是光能，叶绿素等色素把它吸收下来，用来驱动反应。",
+          "speech_id": "9d0fb5be-f8d6-40eb-8cf4-9a6fb0f65b0d",
+          "bytes": 414720,
+          "first_audio_ms": 2728,
+          "completed_ms": 2765,
+          "audio_seconds": 8.64
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "synthetic_input": "请用一句话把我们刚才讨论的过程串起来。",
+      "input_seconds": 4.196375,
+      "transcript": "请用一句话把我们刚才讨论的过程串起来。",
+      "transcription_ms": 393,
+      "agent_ms": 5182,
+      "run_status": "completed",
+      "replies": [
+        "光合作用先把原料（二氧化碳和水）和能量（光能）一起交给叶绿素，再借助这些光能把两者转化为葡萄糖并排出氧气。"
+      ],
+      "spoken_sentences": [
+        {
+          "text": "光合作用先把原料（二氧化碳和水）和能量（光能）一起交给叶绿素，再借助这些光能把两者转化为葡萄糖并排出氧气。",
+          "speech_id": "811e5d18-4522-4193-97b8-b2796e2cfb39",
+          "bytes": 529920,
+          "first_audio_ms": 3021,
+          "completed_ms": 3070,
+          "audio_seconds": 11.04
+        }
+      ]
+    }
+  ],
+  "after_interrupt": {
+    "text": "现在继续。",
+    "speech_id": "9d60b958-dd30-4199-b1c0-d3069a74234f",
+    "bytes": 57600,
+    "first_audio_ms": 1438,
+    "completed_ms": 1438,
+    "audio_seconds": 1.2
+  },
+  "agent_structural_pass": true,
+  "reconnect_ready": true,
+  "synthetic_messages": 3,
+  "passed": true,
+  "voice_usage": [
+    {
+      "model": "qwen3.8-omni-flash-realtime",
+      "duration_ms": 39414,
+      "calls": 6,
+      "input_bytes": 400994,
+      "output_bytes": 1843200,
+      "usage": {
+        "input_tokens": 5354,
+        "output_tokens": 593,
+        "total_tokens": 5947
+      }
+    },
+    {
+      "model": "qwen3.8-omni-flash-realtime",
+      "duration_ms": 2277,
+      "calls": 0,
+      "input_bytes": 0,
+      "output_bytes": 0,
+      "usage": {}
+    }
+  ]
+}

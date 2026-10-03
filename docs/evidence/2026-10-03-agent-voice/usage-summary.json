@@ -1,0 +1,50 @@
+{
+  "synthetic": true,
+  "monetary_cost": null,
+  "monetary_cost_reason": "No billing receipt or verified tariff used; token counts are not a price.",
+  "text_configured_model_usage": {
+    "deepseek-flash": {
+      "requests": 8,
+      "input_tokens": 47141,
+      "output_tokens": 1582,
+      "total_tokens": 48723,
+      "cached_input_tokens": 44800
+    },
+    "deepseek-v4-flash": {
+      "requests": 4,
+      "input_tokens": 16719,
+      "output_tokens": 371,
+      "total_tokens": 17090,
+      "cached_input_tokens": 12672
+    }
+  },
+  "voice_provider_reported_usage": [
+    {
+      "model": "qwen3.8-omni-flash-realtime",
+      "duration_ms": 39414,
+      "calls": 6,
+      "input_bytes": 400994,
+      "output_bytes": 1843200,
+      "usage": {
+        "input_tokens": 5354,
+        "output_tokens": 593,
+        "total_tokens": 5947
+      }
+    },
+    {
+      "model": "qwen3.8-omni-flash-realtime",
+      "duration_ms": 2277,
+      "calls": 0,
+      "input_bytes": 0,
+      "output_bytes": 0,
+      "usage": {}
+    }
+  ],
+  "semantics": "manual observations only; transport and structural assertions are separate",
+  "sha256": {
+    "synthetic-live.json": "baac0b71e068d8f75a45c0bd25fc81b9adb48d554dedd1f8edb532e1b9a58dc7",
+    "synthetic-agent-runs.jsonl": "82e7afbb62acffe953b0eef4414bc74103ec71c10e877a27d4ca23f6c3bc7b6f",
+    "synthetic-style-turn2.jsonl": "f0ff1791cf75272319d0ee1d1d87ddb93892cb9b114b6838a58a5b613a671f24",
+    "synthetic-style-fixture-failure.jsonl": "372eba9d6dace7109cdf5f367f15cce942370aeba59e40acad0f0a185bf7f466"
+  }
+}

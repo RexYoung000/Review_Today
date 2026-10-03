@@ -142,7 +142,8 @@ enum AgentComposerStore {
     }
 
     static func sendInitial(_ text: String, in session: AgentSession, context: ModelContext,
-                            image: Data? = nil, runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> AgentMessage {
+                            image: Data? = nil, consumesDraft: Bool = true, inputChannel: String = "text",
+                            runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> AgentMessage {
         try (runtime ?? .current).requireSending()
         let content = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !content.isEmpty else { throw Failure.blankInput }
@@ -151,11 +152,11 @@ enum AgentComposerStore {
         let message = AgentMessage(sessionID: session.id, role: "user", content: content,
                                    contentType: TodayView.firstURL(in: content) == nil ? "text" : "url")
         message.clientMessageID = message.id
+        message.inputChannel = inputChannel
         message.imageAttachment = image
         if image != nil { message.contentType = "image" }
         context.insert(message)
-        session.composerDraft = ""
-        session.composerImage = nil
+        if consumesDraft { session.composerDraft = ""; session.composerImage = nil }
         if ["新会话", "新学习 Session"].contains(session.title) { session.title = String(content.prefix(28)) }
         session.updatedAt = .now
         do {
@@ -194,7 +195,8 @@ enum AgentComposerStore {
 
     /// One local transaction owns first message, Session and outbox. The unsent
     /// landing-page fallback creates a session only when no explicit session exists.
-    static func sendFirst(_ text: String, context: ModelContext, image: Data? = nil, runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> (AgentSession, AgentMessage) {
+    static func sendFirst(_ text: String, context: ModelContext, image: Data? = nil, consumesDraft: Bool = true,
+                          inputChannel: String = "text", runtime: AppRuntime? = nil, save: (() throws -> Void)? = nil) throws -> (AgentSession, AgentMessage) {
         try (runtime ?? .current).requireSending()
         let content = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !content.isEmpty else { throw Failure.blankInput }
@@ -204,9 +206,11 @@ enum AgentComposerStore {
         do {
             let session = AgentSession(id: sid, title: String(content.prefix(28)), modePreset: row.agentDraftMode)
             session.thinkingStrength = row.agentDraftThinking
+            if !consumesDraft { session.composerDraft = row.agentDraftText; session.composerImage = row.agentDraftImage }
             let message = AgentMessage(id: mid, clientMessageID: mid, sessionID: sid, role: "user", content: content,
                                        contentType: TodayView.firstURL(in: content) == nil ? "text" : "url")
             message.imageAttachment = image
+            message.inputChannel = inputChannel
             if image != nil { message.contentType = "image" }
             context.insert(session); context.insert(message)
             row.agentDraftText = ""

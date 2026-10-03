@@ -169,6 +169,7 @@ enum ConversationProcessor {
                 var body: [String: Any] = [
                     "client_message_id": (message.clientMessageID ?? message.id).uuidString.lowercased(),
                     "content": message.content, "content_type": message.contentType,
+                    "input_channel": message.inputChannel,
                     "mode_preset": session.modePreset, "delivery": message.deliveryMode,
                     "thinking_strength": session.thinkingStrength,
                     "primary_language": UserLanguage.primaryCode,
@@ -453,6 +454,7 @@ enum ConversationProcessor {
             run.attempt = raw["attempt"] as? Int ?? 1
             run.errorCode = raw["error_code"] as? String
             run.inputMessageIDsJSON = json(raw["input_ids"] ?? [])
+            run.voiceInputIDsJSON = json(raw["voice_input_ids"] ?? [])
             run.updatedAt = date(raw["updated_at"])
             if !stopping.contains(id) {
                 run.startedAt = (raw["started_at"] as? String).map { date($0) }

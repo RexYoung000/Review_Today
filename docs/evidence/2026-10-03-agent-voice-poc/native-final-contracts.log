@@ -1,0 +1,185 @@
+Isolated contract directory: /tmp/review-today-shared-contracts.j9fek27h
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:423:16: warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+421 |         }
+422 |         engine.attach(player); attached = true
+423 |         engine.connect(player, to: engine.mainMixerNode, format: outputFormat)
+    |                `- warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+424 |         inputGate.update(enabled: true); outputGate.update(enabled: true)
+425 |         let inputGate = inputGate, outputGate = outputGate
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:426:26: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+424 |         inputGate.update(enabled: true); outputGate.update(enabled: true)
+425 |         let inputGate = inputGate, outputGate = outputGate
+426 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: inputFormat) { buffer, _ in
+    |                          `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+427 |             guard let ticket = inputGate.ticket(), let sample = converter.convert(buffer) else { return }
+428 |             Task { @MainActor in if inputGate.accepts(ticket) { input(sample) } }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:431:16: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+429 |         }
+430 |         hasInputTap = true
+431 |         player.installTap(onBus: 0, bufferSize: 1024, format: outputFormat) { buffer, _ in
+    |                `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+432 |             guard let ticket = outputGate.ticket() else { return }
+433 |             let level = AgentVoicePCMConverter.level(buffer)
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:437:36: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+435 |         }
+436 |         hasOutputTap = true
+437 |         try engine.start(); player.play()
+    |                                    `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+438 |     }
+439 |
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:460:53: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+458 |     func interrupt() {
+459 |         outputGate.update(enabled: true)
+460 |         player.stop(); if engine.isRunning { player.play() }
+    |                                                     `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+461 |     }
+462 |
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+177 |
+178 |     private static func isWeak(_ text: String) -> Bool {
+179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+180 |         if value.count < 2 { return true }
+181 |         if genericTitles.contains(value) { return true }
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningImageImport.swift:158:26: warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+156 |             switch representation {
+157 |             case .fileURL:
+158 |                 provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { [self] value, error in
+    |                          `- warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+159 |                     accept(Result {
+160 |                         if let error { throw error }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningImageImport.swift:187:26: warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+185 |                 }
+186 |             case .item(let type):
+187 |                 provider.loadItem(forTypeIdentifier: type, options: nil) { [self] value, error in
+    |                          `- warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+188 |                     accept(Result {
+189 |                         if let error { throw error }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:182:13: warning: result of 'try?' is unused [#NoUsage]
+180 |             task.updatedAt = .now
+181 |             try? modelContext.save()
+182 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#NoUsage]
+183 |             return
+184 |         }
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:78:16: warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 76 |         self.converter = converter
+ 77 |         engine.attach(player)
+ 78 |         engine.connect(player, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: 24000, channels: 1))
+    |                `- warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 79 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: input) { [weak self, converter] buffer, _ in
+ 80 |             guard let sample = converter.convert(buffer) else { return }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:79:26: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 77 |         engine.attach(player)
+ 78 |         engine.connect(player, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: 24000, channels: 1))
+ 79 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: input) { [weak self, converter] buffer, _ in
+    |                          `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 80 |             guard let sample = converter.convert(buffer) else { return }
+ 81 |             Task { @MainActor [weak self] in
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:88:36: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 86 |         capturing = true
+ 87 |         self.engine = engine
+ 88 |         try engine.start(); player.play()
+    |                                    `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 89 |         status = "正在聆听"
+ 90 |     }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:94:31: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 92 |     func say(_ text: String) {
+ 93 |         guard connected else { return }
+ 94 |         player.stop(); player.play()
+    |                               `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 95 |         pendingBuffers = 0; speechFinished = false
+ 96 |         let id = UUID(); speechID = id
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:115:47: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+113 |     func interrupt() {
+114 |         speechID = nil; player.stop()
+115 |         if engine?.isRunning == true { player.play() }
+    |                                               `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+116 |         if connected { enqueue(["type": "interrupt"]); status = muted ? "已静音" : "正在聆听" }
+117 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/tmp/review-today-shared-contracts.j9fek27h/AgentVoiceAudioContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'AgentVoiceAudioContractTests/AgentVoiceAudioContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/AgentVoiceAudioContractTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'AgentVoiceAudioContractTests/AgentVoiceAudioContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.j9fek27h/AgentVoiceAudioContractTests.swift'
+  3 | import Foundation
+  4 |
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.j9fek27h' ignored
+PASS: injected production audio lifecycle; permission cancellation, owner binding, VAD/pause/noise, ASR ordering/deduplication, mute preservation, actual playback completion, barge-in, reconnect/late callbacks, timeouts and bounded queues; no hardware/network
+PASS executable: AgentVoiceAudioContractTests
+/tmp/review-today-shared-contracts.j9fek27h/AgentSpeechSegmentsTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'AgentSpeechSegmentsTests/AgentSpeechSegmentsTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/AgentSpeechSegmentsTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'AgentSpeechSegmentsTests/AgentSpeechSegmentsTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.j9fek27h/AgentSpeechSegmentsTests.swift'
+ 3 | import Foundation
+ 4 |
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.j9fek27h' ignored
+PASS: speech projection, stable streaming prefixes, UTF-16 offsets, Markdown, explicit omissions, negation/numbers and bounded sentences
+PASS executable: AgentSpeechSegmentsTests
+/tmp/review-today-shared-contracts.j9fek27h/AgentVoiceStoreTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'AgentVoiceStoreTests/AgentVoiceStoreTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/AgentVoiceStoreTests.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'AgentVoiceStoreTests/AgentVoiceStoreTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.j9fek27h/AgentVoiceStoreTests.swift'
+ 3 | import Foundation
+ 4 | import SwiftData
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.j9fek27h' ignored
+PASS: first voice atomic promotion, rollback, original text/images and channel preserved across reopen, actual playback metadata roundtrip
+PASS executable: AgentVoiceStoreTests
+/tmp/review-today-shared-contracts.j9fek27h/AgentVoiceConversationTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'AgentVoiceConversationTests/AgentVoiceConversationTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/AgentVoiceConversationTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'AgentVoiceConversationTests/AgentVoiceConversationTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.j9fek27h/AgentVoiceConversationTests.swift'
+  3 | import Foundation
+  4 |
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.j9fek27h' ignored
+PASS: same-owner first promotion, three turns, resumed-run voice causality, out-of-order/duplicate ASR, playback receipts, barge-in/revision fences, end without cancelling submitted work, unsent retry, lifecycle and persistence failures; fake permission/socket/device only
+PASS executable: AgentVoiceConversationTests
+/tmp/review-today-shared-contracts.j9fek27h/ConversationReplayTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'ConversationReplayTests/ConversationReplayTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/ConversationReplayTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'ConversationReplayTests/ConversationReplayTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.j9fek27h/ConversationReplayTests.swift'
+  3 | import Foundation
+  4 | import SwiftData
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.j9fek27h' ignored
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+Controlled stop save: 0.000899625 seconds; full replay suite: 0.022548916 seconds
+PASS executable: ConversationReplayTests
+/tmp/review-today-shared-contracts.j9fek27h/DictationSurfaceContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'DictationSurfaceContractTests/DictationSurfaceContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/DictationSurfaceContractTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'DictationSurfaceContractTests/DictationSurfaceContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.j9fek27h/DictationSurfaceContractTests.swift'
+  3 | import AppKit
+  4 | import Observation
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.j9fek27h' ignored
+PASS: real hosted composer identity, hidden geometry/hit testing/focus, cancel draft/selection, processing insertion/save, no auto-send, single native undo
+PASS executable: DictationSurfaceContractTests
+SSE frames: 3, span: 0.45187199115753174, delays: [0.023381948471069336, 0.021227121353149414, 0.0231630802154541]
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+Controlled stop save: 0.002879708 seconds; full replay suite: 0.064444917 seconds
+PASS: real SSE Unicode transport, incremental delivery, max controlled receive delay 23 ms
+PASS: burst deltas coalesced; full checkpoint and successive recovery versions merged in order
+All selected contracts complete: /tmp/review-today-shared-contracts.j9fek27h

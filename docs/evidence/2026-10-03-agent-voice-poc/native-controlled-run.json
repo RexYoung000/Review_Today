@@ -1,0 +1,103 @@
+{
+  "active" : false,
+  "draft_preserved" : true,
+  "messages" : [
+    {
+      "content" : "先解释一下 RAG 的作用。",
+      "role" : "user",
+      "state" : "complete"
+    },
+    {
+      "content" : "RAG 会先检索相关资料，再让模型根据资料回答。\n这能让回答更容易核对来源。",
+      "role" : "coach",
+      "state" : "complete"
+    },
+    {
+      "content" : "那检索这一步具体做什么？",
+      "role" : "user",
+      "state" : "complete"
+    },
+    {
+      "content" : "检索会从资料中找到与问题相关的片段。\n上一轮说的生成阶段，随后就会使用这些片段。",
+      "role" : "coach",
+      "state" : "complete"
+    },
+    {
+      "content" : "帮我用一句话记住它。",
+      "role" : "user",
+      "state" : "complete"
+    },
+    {
+      "content" : "先找资料，再结合资料作答，就是 RAG 的基本流程。\n这句话保留在同一段聊天里。",
+      "role" : "coach",
+      "state" : "complete"
+    },
+    {
+      "content" : "帮我用一句话记住它。",
+      "role" : "user",
+      "state" : "complete"
+    },
+    {
+      "content" : "先找资料，再结合资料作答，就是 RAG 的基本流程。\n这句话保留在同一段聊天里。",
+      "role" : "coach",
+      "state" : "complete"
+    }
+  ],
+  "mode" : "Actual production audio\/coordinator\/panel; synthetic input, fake socket and device; no microphone, network, model or speaker playback.",
+  "pending_transcriptions" : 0,
+  "playback" : [
+    {
+      "message_id" : "0AC0DAD1-C679-4E0A-8512-6A8A367A3E48",
+      "record" : "{\"state\":\"played\",\"played\":[\"先找资料，再结合资料作答，就是 RAG 的基本流程。\",\"这句话保留在同一段聊天里。\"]}"
+    },
+    {
+      "message_id" : "46A521AA-707F-4011-994B-0927641C7AC8",
+      "record" : "{\"state\":\"played\",\"played\":[\"RAG 会先检索相关资料，再让模型根据资料回答。\",\"这能让回答更容易核对来源。\"]}"
+    },
+    {
+      "message_id" : "63AA4AB6-BE8A-4005-80EF-2883F8A2E69A",
+      "record" : "{\"state\":\"played\",\"played\":[\"检索会从资料中找到与问题相关的片段。\",\"上一轮说的生成阶段，随后就会使用这些片段。\"]}"
+    },
+    {
+      "message_id" : "B84DC3D6-8BA8-496E-8C23-31F1F4CED2EE",
+      "record" : "{\"state\":\"played\",\"played\":[\"先找资料，再结合资料作答，就是 RAG 的基本流程。\",\"这句话保留在同一段聊天里。\"]}"
+    }
+  ],
+  "submitted_turns" : 4,
+  "trace" : [
+    "start",
+    "synthetic-input",
+    "submitted:1",
+    "playback:playing:0",
+    "playback:playing:1",
+    "playback:playing:1",
+    "playback:playing:2",
+    "playback:played:2",
+    "synthetic-input",
+    "stop-reply",
+    "submitted:2",
+    "playback:playing:0",
+    "playback:playing:1",
+    "playback:playing:1",
+    "playback:playing:2",
+    "playback:played:2",
+    "synthetic-input",
+    "stop-reply",
+    "submitted:3",
+    "playback:playing:0",
+    "playback:playing:1",
+    "playback:playing:1",
+    "playback:playing:2",
+    "playback:played:2",
+    "synthetic-input",
+    "stop-reply",
+    "submitted:4",
+    "playback:playing:0",
+    "playback:playing:1",
+    "playback:playing:1",
+    "playback:playing:2",
+    "playback:played:2",
+    "toggle-mute",
+    "end:draft-preserved=true"
+  ]
+}

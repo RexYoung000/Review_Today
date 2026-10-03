@@ -19,8 +19,12 @@ from agent_service.source_links import bound_source_links
 from agent_service import run_accounting
 from agent_service.interruptible_call import pool
 
+VOICE_PUBLIC_STYLE = """本轮输入渠道是语音对话，仅调整面向用户的公开文字表达：先直接回应眼前一个核心点，一般先用一个短段、两到四句自然口语。不补充用户没问的旁枝、例外或下一话题，不罗列长篇清单；只有用户明确要求展开或本轮既有教学规则要求时才增加必要内容。代码、表格、图示和链接细节保留在屏幕文字，并简短提示查看。口语化不牺牲事实精确，不能用比喻改写知识含义。不得因此删去本轮必要答案、教学依据或检查题，必要检查题可单独一行；不改变原教学、评价、结构化字段与证据规则，不增加工具、目标、记忆、评分或保存权限。内部判断字段仍按原要求填写。"""
+
 def call(self, session_id, run_id, revision, node, system, prompt, schema, model=COACH_MODEL, *, parse_model, configured_window, alternatives, require_model, images=None):
     data, run = self._snapshot(session_id, run_id, revision)
+    if run.get("input_channel", "text") == "voice" and node in {"answer", "lesson", "organize", "problem_answer", "evaluate", "jd_analysis"}:
+        system += "\n\n" + VOICE_PUBLIC_STYLE
     strength = run.get("thinking_strength", data.get("thinking_strength", "smart"))
     try:
         payload = json.loads(prompt)

@@ -119,7 +119,10 @@ def queue_next(h, data, offer):
     if task and (current_step(task) or {}).get('id') == offer.get('step_id'):
         advance(task)
     from agent_service.conversation import _new_run
-    run = _new_run(data['session_id'], offer['anchor_message_id'], 'queued')
+    run = _new_run(data['session_id'], offer['anchor_message_id'], 'queued', input_channel=offer.get('continuation_input_channel', 'text'))
+    # The prompt still refers to the original topic boundary. Playback belongs
+    # to the later explicit continue/save operation, including delayed ACKs.
+    run['voice_input_ids'] = list(offer.get('continuation_voice_input_ids', []))
     run.update(resolved_input=offer['next_request'], capture_continuation=True,
                lifecycle_revision=data.get('lifecycle_revision', 0), task_id=offer.get('origin_task_id'))
     data['runs'][run['run_id']] = run
@@ -147,6 +150,8 @@ def handle_action(h, sid, rid, rev, last):
             return True
         if run.get('paused_entry'):
             data['paused'] = False  # explicit retry/skip resumes only this user-selected operation
+        offer['continuation_input_channel'] = run.get('input_channel', 'text')
+        offer['continuation_voice_input_ids'] = list(run.get('voice_input_ids', []))
         if action['kind'] != 'capture_save':
             offer['status'] = 'deferred' if action['kind'] == 'capture_later' else 'skipped'
             queue_next(h, data, offer)
@@ -225,6 +230,8 @@ def adopt_explicit(h, data, run, draft, task):
         offers(data)[identity] = offer
     if offer['status'] != 'saved':
         offer.update(status='saving', action_input_id=run['input_ids'][-1], error='')
+        offer['continuation_input_channel'] = run.get('input_channel', 'text')
+        offer['continuation_voice_input_ids'] = list(run.get('voice_input_ids', []))
     run['capture_offer_id'] = identity
     emit(h, data, run, offer)
     return offer

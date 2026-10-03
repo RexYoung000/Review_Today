@@ -639,6 +639,7 @@ class BoundOperation(BaseModel):
 
 class SessionMessageRequest(SessionTurnRequest):
     content_type: Literal["text", "url", "image"] = "text"
+    input_channel: Literal["text", "voice"] = "text"
     image: ImageAttachment | None = None
     images: list[ImageAttachment] = Field(default_factory=list, max_length=8)
     delivery: Literal["steer", "queue"] = "steer"

@@ -31,6 +31,7 @@ struct LearningWorkspace: View {
     @State private var imageDropTargeted = false
     @State private var editorImageDropTargeted = false
     @State private var dictation = DictationController()
+    @State private var voice = AgentVoiceConversation()
     @State private var dictationOriginal = ""
     @State private var localError: String?
     @State private var deletionImpact: SessionDeletionImpact?
@@ -140,7 +141,7 @@ struct LearningWorkspace: View {
             }
         }
         .onChange(of: selectedSession?.status) { _, status in
-            if status != nil && status != "active" { imageImports.cancel(); imageDropTargeted = false; editorImageDropTargeted = false }
+            if status != nil && status != "active" { voice.end(); imageImports.cancel(); imageDropTargeted = false; editorImageDropTargeted = false }
         }
         .navigationTitle((selectedSession?.title ?? "Agent") + runtime.windowSuffix)
         .toolbar(removing: .title)
@@ -148,7 +149,8 @@ struct LearningWorkspace: View {
         .onChange(of: entryFocusRequest, initial: true) { _, value in
             if value > 0 { focusRequest += 1; onEntryFocusConsumed() }
         }
-        .onChange(of: selectedSessionID) { _, _ in
+        .onChange(of: selectedSessionID) { _, newID in
+            if voice.active, voice.ownerID != newID { voice.end() }
             imageImports.cancel(); imageDropTargeted = false; editorImageDropTargeted = false
             localError = nil
             dictation.leave()
@@ -168,11 +170,16 @@ struct LearningWorkspace: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .prepareNewConversation)) { _ in saveDraft() }
-        .onDisappear { dictation.leave(); imageImports.cancel(); imageDropTargeted = false; editorImageDropTargeted = false; saveDraft() }
+        .onDisappear { voice.end(); dictation.leave(); imageImports.cancel(); imageDropTargeted = false; editorImageDropTargeted = false; saveDraft() }
         .onReceive(NotificationCenter.default.publisher(for: .dictationSessionsDeleted)) { note in
             if let ids = note.object as? Set<UUID>, let owner = dictation.owner, ids.contains(owner) { dictation.cancel() }
+            if let ids = note.object as? Set<UUID>, let owner = voice.ownerID, ids.contains(owner) { voice.end() }
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in dictation.leave(); saveDraft() }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in voice.end(); dictation.leave(); saveDraft() }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didHideNotification)) { _ in voice.end() }
+        .onReceive(NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.willSleepNotification)) { _ in voice.end() }
+        .onReceive(NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.sessionDidResignActiveNotification)) { _ in voice.end() }
+        .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name("com.apple.screenIsLocked"))) { _ in voice.end() }
         .sheet(item: $deletionImpact) { impact in
             SessionDeletionSheet(impact: impact) { _ in selectedSessionID = nil }
         }
@@ -240,7 +247,7 @@ struct LearningWorkspace: View {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 200), spacing: 12)], spacing: 12) {
                         ForEach(quickStarts) { start in
                             QuickStartCard(start: start) {
-                                if !dictation.busy { insertion = EditorInsertion(text: start.prompt, templateID: start.id) }
+                                if !dictation.busy && !voice.active { insertion = EditorInsertion(text: start.prompt, templateID: start.id) }
                             }
                         }
                     }
@@ -382,7 +389,7 @@ struct LearningWorkspace: View {
                             .id(message.id)
                         ForEach(captureOffers.filter { $0.anchorMessageID == message.id }) { offer in
                             TopicCapturePanel(offer: offer, focused: captureDestination == offer.id,
-                                enabled: selectedSession?.status == "active" && runtime.allowsSending && !dictation.busy,
+                                enabled: selectedSession?.status == "active" && runtime.allowsSending && !dictation.busy && !voice.active,
                                 persistenceError: sessionTasks.first(where: { $0.id == offer.saveTaskID && !$0.memoryCommitted })?.errorCode,
                                 deliveryError: sessionMessages.last(where: { ConversationProcessor.object($0.operationJSON)?["target_id"] as? String == offer.id.uuidString.lowercased() })?.lastDeliveryError, onAction: { rawKind in
                                     let enrollReview = rawKind == "capture_save_review"
@@ -489,7 +496,7 @@ struct LearningWorkspace: View {
             Text("从一个问题开始，或把资料放在这里。学习成果由你决定是否保存。")
                 .font(.callout).foregroundStyle(.secondary)
             ForEach(["RAG 是什么？", "带我学习 RAG 的基本原理", "帮我准备 RAG 面试题"], id: \.self) { example in
-                Button { guard !dictation.busy else { return }; draft = example; focusRequest += 1 } label: {
+                Button { guard !dictation.busy && !voice.active else { return }; draft = example; focusRequest += 1 } label: {
                     Label(example, systemImage: "arrow.up.left").font(.callout)
                 }.buttonStyle(.borderless)
             }
@@ -516,6 +523,13 @@ struct LearningWorkspace: View {
                   LearningAnswerText(content: message.content, availableWidth: bubbleWidth)
                       .foregroundStyle(runway.ink)
                       .frame(maxWidth: bubbleWidth, alignment: .leading)
+              }
+              if isUser, message.inputChannel == "voice" {
+                  Label("语音", systemImage: "waveform").font(.caption2).foregroundStyle(.secondary)
+              } else if let playback = AgentVoicePlayback.read(message.voicePlaybackJSON) {
+                  Label(playback.caption, systemImage: "speaker.wave.2")
+                      .font(.caption2).foregroundStyle(.secondary)
+                      .help((["已完整播完："] + playback.played + (playback.interrupted.map { ["未完整播完：\($0)"] } ?? [])).joined(separator: "\n"))
               }
               if ["interrupted", "failed"].contains(message.responseState) {
                   if message.responseState == "failed" {
@@ -652,20 +666,37 @@ struct LearningWorkspace: View {
             if !draftImages.isEmpty {
                 LearningImageGrid(images: draftImages) { index in
                     var updated = draftImages; updated.remove(at: index); updateImages(updated)
-                }.disabled(dictation.busy)
-                Text("已添加 \(draftImages.count) 张图片 · 发送后由 DeepSeek 理解")
+                }.disabled(dictation.busy || voice.active)
+                Text(voice.active ? "\(draftImages.count) 张图片保留在原草稿中" : "已添加 \(draftImages.count) 张图片 · 发送后由 DeepSeek 理解")
                     .font(.caption2).foregroundStyle(.secondary)
             }
             if imageImports.isLoading { Text("正在准备图片…").font(.caption).foregroundStyle(.secondary) }
-            DictationComposerSurface(active: runtime.allowsSending && dictation.busy) {
+            if let unsent = voice.unsentText {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("这句语音尚未提交").font(.caption.weight(.medium))
+                    Text(unsent).font(.callout).textSelection(.enabled)
+                    HStack {
+                        Button("重试提交") {
+                            if let owner = selectedSessionID ?? draftSettings?.agentDraftID {
+                                voice.retryUnsent(ownerID: owner) { sendMessage($0, consumesDraft: false, inputChannel: "voice")?.id }
+                            }
+                        }.disabled(voice.unsentOwnerID != (selectedSessionID ?? draftSettings?.agentDraftID))
+                        Button("复制并关闭提示") {
+                            NSPasteboard.general.clearContents()
+                            if NSPasteboard.general.setString(unsent, forType: .string) { voice.dismissCopiedInput() }
+                        }
+                    }.buttonStyle(.borderless)
+                }.padding(10).background(runway.field, in: RoundedRectangle(cornerRadius: 10))
+            }
+            DictationComposerSurface(active: runtime.allowsSending && (dictation.busy || voice.active)) {
                 LearningComposerInput(text: $draft, focusRequest: focusRequest,
                     sessionID: selectedSessionID ?? draftSettings?.agentDraftID, placeholder: activeActionPlaceholder,
-                    insertion: dictation.insertion ?? insertion, editable: !dictation.busy,
+                    insertion: dictation.insertion ?? insertion, editable: !dictation.busy && !voice.active,
                     onInsertionApplied: acceptDictation, onSubmit: submitDraft,
                     preservesFocusOnClick: titleMascot.preservesInputFocus, onImagePaste: pasteImage,
                     onImageDrop: dropImages, onImageDragTarget: { editorImageDropTargeted = $0 }) {
                     HStack {
-                        composerControls.disabled(dictation.busy)
+                        composerControls.disabled(dictation.busy || voice.active)
                         Spacer(minLength: 8)
                         if runtime.allowsSending { dictationControls }
                         Button(action: submitDraft) {
@@ -683,16 +714,24 @@ struct LearningWorkspace: View {
                     .padding(.horizontal, 8)
                 }
             } status: {
-                DictationComposerStatus(phase: dictationPanelPhase, level: dictation.level,
-                    elapsed: dictation.elapsed, error: dictation.error,
-                    onCancel: cancelDictation, onFinish: dictation.finish, onRetry: retryDictation)
+                if voice.active {
+                    AgentVoiceComposerStatus(phase: voice.phase, inputLevel: voice.audio.inputLevel,
+                        outputLevel: voice.audio.outputLevel, muted: voice.audio.muted,
+                        isCapturing: voice.audio.capturingSpeech, statusDetail: voice.statusDetail,
+                        onToggleMute: voice.audio.toggleMute, onFinishUtterance: voice.audio.finishUtterance,
+                        onEnd: { voice.end(); focusRequest += 1 })
+                } else {
+                    DictationComposerStatus(phase: dictationPanelPhase, level: dictation.level,
+                        elapsed: dictation.elapsed, error: dictation.error,
+                        onCancel: cancelDictation, onFinish: dictation.finish, onRetry: retryDictation)
+                }
             }
             HStack(spacing: 10) {
                 if runtime.isPreview { Text(runtime.isPerformanceQA ? "独立测试数据 · 不发送" : "仅供排版检查 · 不发送、不持久保存") }
                 Spacer()
                 if runtime.allowsSending, let run = runs.last(where: { $0.sessionID == selectedSessionID }),
                    ["accepted", "running", "queued", "adjusting", "resuming"].contains(run.status) {
-                    Toggle("排队发送", isOn: $queueInput).toggleStyle(.checkbox)
+                    if !voice.active { Toggle("排队发送", isOn: $queueInput).toggleStyle(.checkbox) }
                     Button("停止回复") { ConversationProcessor.queueControl(run, action: "stop", context: modelContext) }
                         .buttonStyle(.borderless)
                 }
@@ -713,6 +752,9 @@ struct LearningWorkspace: View {
                 insertion = nil; dictationOriginal = draft; dictation.start()
             }
                 .help("录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟")
+            ChromeIconButton(title: "开始语音对话", symbol: "waveform") { startVoice() }
+                .disabled(imageImports.isLoading || dictation.pending || voice.unsentText != nil)
+                .help("连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理")
             if dictation.pending {
                 Button("重试听写", action: retryDictation).buttonStyle(.borderless)
                 Button("丢弃录音", action: cancelDictation).buttonStyle(.borderless)
@@ -721,7 +763,7 @@ struct LearningWorkspace: View {
     }
 
     private var canSendDraft: Bool {
-        !dictation.busy && !imageImports.isLoading && runtime.allowsSending &&
+        !dictation.busy && !voice.active && !imageImports.isLoading && runtime.allowsSending &&
             (!draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !draftImages.isEmpty)
     }
 
@@ -771,7 +813,7 @@ struct LearningWorkspace: View {
     }
 
     private func submitDraft() {
-        guard !dictation.busy, !imageImports.isLoading else { return }
+        guard !dictation.busy, !voice.active, !imageImports.isLoading else { return }
         let content = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !content.isEmpty || !draftImages.isEmpty else { return }
         let defaultRequest = draftImages.count == 1 ? "请帮我理解这张图片中的内容" : "请帮我理解这些图片中的内容"
@@ -779,7 +821,7 @@ struct LearningWorkspace: View {
     }
 
     private var acceptsImageInput: Bool {
-        !dictation.busy && (selectedSessionID == nil || selectedSession?.status == "active")
+        !dictation.busy && !voice.active && (selectedSessionID == nil || selectedSession?.status == "active")
     }
 
     private func reserveImages(_ count: Int) -> LearningImageImportQueue.Ticket? {
@@ -845,49 +887,64 @@ struct LearningWorkspace: View {
         } catch { localError = "图片草稿尚未保存，请保留当前窗口并重试。" }
     }
 
-    private func sendMessage(_ content: String, operation: [String: Any]? = nil, reviewRequested: Bool = false, image: Data? = nil, consumesDraft: Bool = true) {
-        guard !dictation.busy else { return }
-        guard runtime.allowsSending else { localError = "界面预览不发送消息，输入仅用于排版检查。"; return }
+    @discardableResult
+    private func sendMessage(_ content: String, operation: [String: Any]? = nil, reviewRequested: Bool = false,
+                             image: Data? = nil, consumesDraft: Bool = true, inputChannel: String = "text") -> AgentMessage? {
+        guard !dictation.busy, !voice.active || inputChannel == "voice" else { return nil }
+        guard runtime.allowsSending else { localError = "界面预览不发送消息，输入仅用于排版检查。"; return nil }
         let started = Date.now
-        guard let session = selectedSession else {
+        // A first voice turn promotes the draft to a Session without rebuilding
+        // the audio coordinator; read its owner from the saved graph each time.
+        let currentID = selectedSessionID
+        let currentSession = currentID.flatMap { id in
+            try? modelContext.fetch(FetchDescriptor<AgentSession>(predicate: #Predicate { $0.id == id })).first
+        }
+        guard let session = currentSession else {
+            guard currentID == nil else { return nil }
             do {
-                let (session, message) = try AgentComposerStore.sendFirst(content, context: modelContext, image: image)
-                draft = ""
-                draftImages = []; draftStore.imageSent(sessionID: nil)
+                let (session, message) = try AgentComposerStore.sendFirst(content, context: modelContext, image: image,
+                    consumesDraft: consumesDraft, inputChannel: inputChannel)
+                if consumesDraft { draft = ""; draftImages = []; draftStore.imageSent(sessionID: nil) }
                 draftSessionID = session.id
                 selectedSessionID = session.id
                 sentMessageID = message.id
                 focusRequest += 1
                 onMessageSaved(message, false)
                 ConversationSync.wake()
+                return message
             } catch { localError = "本机保存失败，草稿仍保留，请重试。" }
-            return
+            return nil
         }
         guard session.status == "active" else {
             localError = "请先恢复归档的会话，再继续输入。"
-            return
+            return nil
         }
         if operation == nil && messages(for: session.id).isEmpty {
             do {
-                let message = try AgentComposerStore.sendInitial(content, in: session, context: modelContext, image: image)
-                draft = ""; sentMessageID = message.id; localError = nil
-                draftImages = []; draftStore.imageSent(sessionID: session.id)
+                let message = try AgentComposerStore.sendInitial(content, in: session, context: modelContext, image: image,
+                    consumesDraft: consumesDraft, inputChannel: inputChannel)
+                sentMessageID = message.id; localError = nil
+                if consumesDraft { draft = ""; draftImages = []; draftStore.imageSent(sessionID: session.id) }
                 focusRequest += 1
                 onMessageSaved(message, false)
                 ConversationSync.wake()
+                return message
             } catch { localError = "本机保存失败，输入仍保留，请重试。" }
-            return
+            return nil
         }
         let message = AgentMessage(sessionID: session.id, role: "user", content: content,
                                    contentType: TodayView.firstURL(in: content) == nil ? "text" : "url")
         message.clientMessageID = message.id
-        message.deliveryMode = queueInput ? "queue" : "steer"
+        message.inputChannel = inputChannel
+        message.deliveryMode = inputChannel == "voice" ? "steer" : queueInput ? "queue" : "steer"
         message.operationJSON = operation.map(ConversationProcessor.json)
         message.reviewRequested = reviewRequested
         message.imageAttachment = image
         if image != nil { message.contentType = "image" }
         modelContext.insert(message)
-        if !queueInput, let active = runs.last(where: { $0.sessionID == session.id && ["running", "accepted", "adjusting"].contains($0.status) }) {
+        let sid = session.id
+        let currentRuns = (try? modelContext.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
+        if message.deliveryMode == "steer", let active = currentRuns.last(where: { ["running", "accepted", "adjusting"].contains($0.status) }) {
             active.status = "adjusting"
             active.userSummary = "已收到补充，正在调整"
             for response in messages(for: session.id) where response.runID == active.id && ["streaming", "recovering"].contains(response.responseState) {
@@ -909,10 +966,50 @@ struct LearningWorkspace: View {
             }
             onMessageSaved(message, operation?["kind"] as? String == "save")
             ConversationSync.wake()
+            return message
         } catch {
             modelContext.rollback()
             localError = "本机保存失败，输入仍保留，请重试。"
+            return nil
         }
+    }
+
+    private func startVoice() {
+        guard runtime.allowsSending, !dictation.busy, !dictation.pending, !imageImports.isLoading,
+              !voice.active, let owner = selectedSessionID ?? draftSettings?.agentDraftID else { return }
+        draftSave?.cancel()
+        do { try draftStore.save(draft, sessionID: draftSessionID, context: modelContext) }
+        catch { localError = "草稿尚未保存，请保留当前窗口并重试。"; return }
+        queueInput = false
+        voice.start(ownerID: owner, read: {
+            let session = try? modelContext.fetch(FetchDescriptor<AgentSession>(predicate: #Predicate { $0.id == owner })).first
+            let settings = try? AgentComposerStore.settings(modelContext)
+            let valid = session.map { $0.status == "active" } ?? (settings?.agentDraftID == owner)
+            let chat = messages(for: owner).map {
+                AgentVoiceConversation.Message(id: $0.id, runID: $0.runID, role: $0.role, content: $0.content,
+                    state: $0.responseState, revision: $0.responseRevision, delivery: $0.deliveryStatus)
+            }
+            let currentRuns = (try? modelContext.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == owner }))) ?? []
+            return .init(messages: chat, active: valid,
+                runningIDs: Set(currentRuns.filter { ["accepted", "running", "queued", "adjusting", "resuming", "stopping"].contains($0.status) }.map(\.id)),
+                failedIDs: Set(currentRuns.filter { ["retryable_failed", "terminal_failed"].contains($0.status) }.map(\.id)),
+                voiceOrigins: Dictionary(uniqueKeysWithValues: currentRuns.map { run in
+                    (run.id, Set((try? JSONDecoder().decode([UUID].self, from: Data(run.voiceInputIDsJSON.utf8))) ?? []))
+                }))
+        }, submit: { text in
+            guard (selectedSessionID ?? draftSettings?.agentDraftID) == owner else { return nil }
+            return sendMessage(text, consumesDraft: false, inputChannel: "voice")?.id
+        }, stopReply: {
+            let currentRuns = (try? modelContext.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == owner }, sortBy: [SortDescriptor(\.createdAt)]))) ?? []
+            guard let run = currentRuns.last(where: { ["accepted", "running", "queued", "adjusting", "resuming"].contains($0.status) }) else { return true }
+            return ConversationProcessor.queueControl(run, action: "stop", context: modelContext)
+        }, persist: { id, record in
+            guard let message = try? modelContext.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.id == id })).first else { return false }
+            let before = message.voicePlaybackJSON
+            message.voicePlaybackJSON = record.json
+            do { try modelContext.save(); return true }
+            catch { message.voicePlaybackJSON = before; return false }
+        })
     }
 
     private func respond(_ content: String, to task: LearningTask) {
@@ -1031,7 +1128,10 @@ struct LearningWorkspace: View {
             draftSettings = selectedSessionID == nil ? try AgentComposerStore.prepare(modelContext) : try AgentComposerStore.settings(modelContext)
             draftSessionID = selectedSessionID
             draftImages = LearningImageAttachment.decodeAll(try draftStore.image(sessionID: draftSessionID, context: modelContext))
-            draft = draftStore.unsavedText(sessionID: draftSessionID) ?? selectedSession?.composerDraft ?? draftSettings?.agentDraftText ?? ""
+            let persisted = selectedSessionID.flatMap { id in
+                try? modelContext.fetch(FetchDescriptor<AgentSession>(predicate: #Predicate { $0.id == id })).first
+            }
+            draft = draftStore.unsavedText(sessionID: draftSessionID) ?? persisted?.composerDraft ?? draftSettings?.agentDraftText ?? ""
             if draftStore.unsavedText(sessionID: draftSessionID) != nil {
                 do { try draftStore.save(draft, sessionID: draftSessionID, context: modelContext) }
                 catch { localError = "草稿尚未保存，输入已恢复，请保留当前窗口并重试。" }

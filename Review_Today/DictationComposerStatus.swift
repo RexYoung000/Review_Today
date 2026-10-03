@@ -190,7 +190,7 @@ struct DictationComposerStatus: View {
     }
 }
 
-private struct DictationComposerWaveform: View {
+struct DictationComposerWaveform: View {
     let level: Double
     let time: Double
     let reduced: Bool
@@ -227,7 +227,7 @@ private struct DictationComposerWaveform: View {
 
 /// Observes this surface's actual window, including AppKit-hosted test windows.
 /// It never intercepts input or asks for microphone/screen access.
-private struct DictationComposerVisibility: NSViewRepresentable {
+struct DictationComposerVisibility: NSViewRepresentable {
     var changed: (Bool) -> Void
 
     func makeNSView(context: Context) -> Probe { Probe() }

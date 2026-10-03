@@ -7,6 +7,7 @@ final class AgentRun {
     var sessionID: UUID
     var taskID: UUID?
     var inputMessageIDsJSON: String
+    var voiceInputIDsJSON: String = "[]"
     var status: String
     var stage: String
     var userSummary: String

@@ -1,0 +1,14 @@
+[
+  {
+    "kind": "old",
+    "module": "/tmp/review-today-shared-contracts.pboh4n7h",
+    "result": 0,
+    "output": "Seeded previous production schema\n"
+  },
+  {
+    "kind": "new",
+    "module": "/tmp/review-today-shared-contracts.j9fek27h",
+    "result": 0,
+    "output": "PASS: previous dictation build disk schema migrates, old chat/draft/message preserved, default text channel and optional playback metadata work\n"
+  }
+]
