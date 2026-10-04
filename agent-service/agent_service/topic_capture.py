@@ -9,6 +9,7 @@ import uuid
 
 from agent_service.learning_memory import merge_references
 from agent_service.learning_progress import current_step, record_understanding, advance
+from agent_service import capture_preview
 
 LIMITED_COVERAGE_NOTE = '部分旧题反馈未能与讲解核对，暂仅整理已确认的讲解；可先补讲再完整整理。'
 
@@ -45,7 +46,9 @@ def emit(h, data, run, offer):
 
 
 def public(offer):
-    return {k: deepcopy(offer[k]) for k in ('id', 'version', 'title', 'anchor_message_id', 'status', 'next_request', 'continuation_consumed', 'save_task_id', 'action_input_id', 'error', 'knowledge_ids', 'trigger', 'scope_summary') if k in offer}
+    value = {k: deepcopy(offer[k]) for k in ('id', 'version', 'title', 'anchor_message_id', 'status', 'next_request', 'continuation_consumed', 'save_task_id', 'action_input_id', 'error', 'knowledge_ids', 'trigger', 'scope_summary') if k in offer}
+    value.update(capture_preview.public(offer))
+    return value
 
 
 def interrupt(data):
@@ -69,6 +72,7 @@ def invalidate(h, data, run):
                 offer.update(status_before_correction=offer['status'], correction_pending=True,
                              correction_run_id=run['run_id'],
                              version=offer['version'] + 1)
+                capture_preview.clear(offer)
             offer.update(status='invalidated', continuation_consumed=True, error='内容已修正，请在新的话题收尾处确认。')
             if offer.get('trigger') == 'verified_check':
                 offer['error'] = '正在核对纠正后的保存范围，完成前暂不能录入。'

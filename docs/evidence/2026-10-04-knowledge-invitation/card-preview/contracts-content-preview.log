@@ -1,0 +1,196 @@
+Isolated contract directory: /tmp/review-today-shared-contracts.irbenprw
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:423:16: warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+421 |         }
+422 |         engine.attach(player); attached = true
+423 |         engine.connect(player, to: engine.mainMixerNode, format: outputFormat)
+    |                `- warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+424 |         inputGate.update(enabled: true); outputGate.update(enabled: true)
+425 |         let inputGate = inputGate, outputGate = outputGate
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:426:26: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+424 |         inputGate.update(enabled: true); outputGate.update(enabled: true)
+425 |         let inputGate = inputGate, outputGate = outputGate
+426 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: inputFormat) { buffer, _ in
+    |                          `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+427 |             guard let ticket = inputGate.ticket(), let sample = converter.convert(buffer) else { return }
+428 |             Task { @MainActor in if inputGate.accepts(ticket) { input(sample) } }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:431:16: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+429 |         }
+430 |         hasInputTap = true
+431 |         player.installTap(onBus: 0, bufferSize: 1024, format: outputFormat) { buffer, _ in
+    |                `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+432 |             guard let ticket = outputGate.ticket() else { return }
+433 |             let level = AgentVoicePCMConverter.level(buffer)
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:437:36: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+435 |         }
+436 |         hasOutputTap = true
+437 |         try engine.start(); player.play()
+    |                                    `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+438 |     }
+439 | 
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:460:53: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+458 |     func interrupt() {
+459 |         outputGate.update(enabled: true)
+460 |         player.stop(); if engine.isRunning { player.play() }
+    |                                                     `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+461 |     }
+462 | 
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+177 | 
+178 |     private static func isWeak(_ text: String) -> Bool {
+179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+180 |         if value.count < 2 { return true }
+181 |         if genericTitles.contains(value) { return true }
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningImageImport.swift:158:26: warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+156 |             switch representation {
+157 |             case .fileURL:
+158 |                 provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { [self] value, error in
+    |                          `- warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+159 |                     accept(Result {
+160 |                         if let error { throw error }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningImageImport.swift:187:26: warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+185 |                 }
+186 |             case .item(let type):
+187 |                 provider.loadItem(forTypeIdentifier: type, options: nil) { [self] value, error in
+    |                          `- warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+188 |                     accept(Result {
+189 |                         if let error { throw error }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:182:13: warning: result of 'try?' is unused [#NoUsage]
+180 |             task.updatedAt = .now
+181 |             try? modelContext.save()
+182 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#NoUsage]
+183 |             return
+184 |         }
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:78:16: warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 76 |         self.converter = converter
+ 77 |         engine.attach(player)
+ 78 |         engine.connect(player, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: 24000, channels: 1))
+    |                `- warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 79 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: input) { [weak self, converter] buffer, _ in
+ 80 |             guard let sample = converter.convert(buffer) else { return }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:79:26: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 77 |         engine.attach(player)
+ 78 |         engine.connect(player, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: 24000, channels: 1))
+ 79 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: input) { [weak self, converter] buffer, _ in
+    |                          `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 80 |             guard let sample = converter.convert(buffer) else { return }
+ 81 |             Task { @MainActor [weak self] in
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:88:36: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 86 |         capturing = true
+ 87 |         self.engine = engine
+ 88 |         try engine.start(); player.play()
+    |                                    `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 89 |         status = "正在聆听"
+ 90 |     }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:94:31: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 92 |     func say(_ text: String) {
+ 93 |         guard connected else { return }
+ 94 |         player.stop(); player.play()
+    |                               `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 95 |         pendingBuffers = 0; speechFinished = false
+ 96 |         let id = UUID(); speechID = id
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:115:47: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+113 |     func interrupt() {
+114 |         speechID = nil; player.stop()
+115 |         if engine?.isRunning == true { player.play() }
+    |                                               `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+116 |         if connected { enqueue(["type": "interrupt"]); status = muted ? "已静音" : "正在聆听" }
+117 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/tmp/review-today-shared-contracts.irbenprw/TopicCaptureContractTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'TopicCaptureContractTests/TopicCaptureContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/TopicCaptureContractTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'TopicCaptureContractTests/TopicCaptureContractTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.irbenprw/TopicCaptureContractTests.swift'
+  3 | import Foundation
+  4 | import SwiftData
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.irbenprw' ignored
+PASS: old/new preview compatibility and roundtrip, visible range refresh, saved/failed content preservation, displayed-version actions, pending outbox/acceptance/retry boundaries, receipt-only once attention/detail viewing, stale/archived page fencing, no knowledge writes
+PASS executable: TopicCaptureContractTests
+/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/KnowledgeIngestionTests.swift:25:79: warning: capture of 'c' with non-Sendable type 'ModelContext' in a '@Sendable' closure [#SendableClosureCaptures]
+ 25 |         let observer = NotificationCenter.default.addObserver(forName: .knowledgeIngestionSaved, object: nil, queue: .main) { note in
+ 26 |             MainActor.assumeIsolated {
+ 27 |                 guard let context = note.object as? ModelContext, context === c,
+    |                                                                               `- warning: capture of 'c' with non-Sendable type 'ModelContext' in a '@Sendable' closure [#SendableClosureCaptures]
+ 28 |                       let receipt = note.userInfo?["receipt"] as? KnowledgeIngestionReceipt else { return }
+ 29 |                 // A separate disk reader must see all cards at the event boundary.
+
+SwiftData.ModelContext:3:14: note: class 'ModelContext' does not conform to the 'Sendable' protocol
+ 1 | @available(swift 5.9)
+ 2 | @available(macOS 14, iOS 17, tvOS 17, watchOS 10, *)
+ 3 | public class ModelContext : Equatable, SendableMetatype {
+   |              `- note: class 'ModelContext' does not conform to the 'Sendable' protocol
+ 4 |     @available(swift 5.9)
+ 5 |     @available(macOS 15, iOS 18, tvOS 18, watchOS 11, visionOS 2, *)
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/KnowledgeIngestionTests.swift:31:30: warning: capture of 'task' with non-Sendable type 'LearningTask' in a '@Sendable' closure [#SendableClosureCaptures]
+ 31 |                 let savedIDs = Set((try! reader.fetch(FetchDescriptor<Knowledge>())).map(\.id))
+ 32 |                 precondition(Set(receipt.knowledgeIDs).isSubset(of: savedIDs))
+ 33 |                 precondition(task.memoryCommitted)
+    |                              `- warning: capture of 'task' with non-Sendable type 'LearningTask' in a '@Sendable' closure [#SendableClosureCaptures]
+ 34 |                 receipts += 1
+ 35 |                 state.receive(receipt, eligible: true, compact: false)
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/Models.swift:479:13: note: class 'LearningTask' does not conform to the 'Sendable' protocol
+477 | 
+478 | @Model
+479 | final class LearningTask {
+    |             `- note: class 'LearningTask' does not conform to the 'Sendable' protocol
+480 |     @Attribute(.unique) var id: UUID
+481 |     var sessionID: UUID
+
+/tmp/review-today-shared-contracts.irbenprw/KnowledgeIngestionTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'KnowledgeIngestionTests/KnowledgeIngestionTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/KnowledgeIngestionTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'KnowledgeIngestionTests/KnowledgeIngestionTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.irbenprw/KnowledgeIngestionTests.swift'
+  3 | import Foundation
+  4 | import SwiftData
+
+/tmp/review-today-shared-contracts.irbenprw/KnowledgeIngestionFixture.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'KnowledgeIngestionTests/KnowledgeIngestionFixture.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/KnowledgeIngestionFixture.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'KnowledgeIngestionTests/KnowledgeIngestionFixture.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.irbenprw/KnowledgeIngestionFixture.swift'
+ 3 | import Foundation
+ 4 | 
+
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+/tmp/review-today-shared-contracts.irbenprw/KnowledgeIngestionTests.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'KnowledgeIngestionTests/KnowledgeIngestionTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+  1 | @testable import ReviewTodayContractSupport
+  2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/KnowledgeIngestionTests.swift", line: 1)
+    |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'KnowledgeIngestionTests/KnowledgeIngestionTests.swift', which conflicts with '#fileID' strings produced by other paths in the module
+    |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.irbenprw/KnowledgeIngestionTests.swift'
+  3 | import Foundation
+  4 | import SwiftData
+
+/tmp/review-today-shared-contracts.irbenprw/KnowledgeIngestionFixture.swift:2:23: warning: '#sourceLocation' directive produces '#fileID' string of 'KnowledgeIngestionTests/KnowledgeIngestionFixture.swift', which conflicts with '#fileID' strings produced by other paths in the module
+ 1 | @testable import ReviewTodayContractSupport
+ 2 | #sourceLocation(file: "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/KnowledgeIngestionFixture.swift", line: 1)
+   |                       |- warning: '#sourceLocation' directive produces '#fileID' string of 'KnowledgeIngestionTests/KnowledgeIngestionFixture.swift', which conflicts with '#fileID' strings produced by other paths in the module
+   |                       `- note: change file in '#sourceLocation' to '/tmp/review-today-shared-contracts.irbenprw/KnowledgeIngestionFixture.swift'
+ 3 | import Foundation
+ 4 | 
+ld: warning: duplicate -rpath '/tmp/review-today-shared-contracts.irbenprw' ignored
+PASS: atomic disk save/rollback and post-save receipt; references/ownership; duplicate and ACK retry; immediate results; read-only replay; close/history/background/modal/navigation; failure/needs-attention; natural-message gating; first-full preference; reopened store
+PASS executable: KnowledgeIngestionTests
+All selected contracts complete: /tmp/review-today-shared-contracts.irbenprw

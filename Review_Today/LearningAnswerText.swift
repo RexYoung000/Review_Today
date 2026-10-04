@@ -1,23 +1,35 @@
 import AppKit
 import SwiftUI
 
+struct LearningAnswerCopyButton: View {
+    let content: String
+    @Environment(\.runway) private var runway
+    @State private var copied = false
+
+    var body: some View {
+        Button(copied ? "已复制" : "复制", systemImage: copied ? "checkmark" : "doc.on.doc") {
+            NSPasteboard.general.clearContents()
+            copied = NSPasteboard.general.setString(content, forType: .string)
+        }
+        .font(.caption).buttonStyle(.borderless).foregroundStyle(runway.copy)
+        .help("复制完整回答，保留格式与来源链接")
+        .accessibilityLabel("复制完整回答")
+        .onChange(of: content) { _, _ in copied = false }
+    }
+}
+
 struct LearningAnswerText: View {
     let content: String
     var availableWidth: CGFloat = 780
+    var showsCopyButton = true
     @Environment(\.runway) private var runway
-    @State private var copied = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             ForEach(AnswerDocument.parse(content)) { block in
                 blockView(block.kind).frame(maxWidth: .infinity, alignment: .leading)
             }
-            Button(copied ? "已复制" : "复制", systemImage: copied ? "checkmark" : "doc.on.doc") {
-                copyAnswer()
-            }
-            .font(.caption).buttonStyle(.borderless).foregroundStyle(runway.copy)
-            .help("复制完整回答，保留格式与来源链接")
-            .accessibilityLabel("复制完整回答")
+            if showsCopyButton { LearningAnswerCopyButton(content: content) }
         }
         .textSelection(.enabled)
         .contextMenu {
@@ -25,12 +37,11 @@ struct LearningAnswerText: View {
                 copyAnswer()
             }
         }
-        .onChange(of: content) { _, _ in copied = false }
     }
 
     private func copyAnswer() {
         NSPasteboard.general.clearContents()
-        copied = NSPasteboard.general.setString(content, forType: .string)
+        NSPasteboard.general.setString(content, forType: .string)
     }
 
     private func inline(_ value: String) -> Text {

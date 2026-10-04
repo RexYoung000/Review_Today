@@ -1,0 +1,135 @@
+Isolated contract directory: /tmp/review-today-shared-contracts.h3tvblrz
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:423:16: warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+421 |         }
+422 |         engine.attach(player); attached = true
+423 |         engine.connect(player, to: engine.mainMixerNode, format: outputFormat)
+    |                `- warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+424 |         inputGate.update(enabled: true); outputGate.update(enabled: true)
+425 |         let inputGate = inputGate, outputGate = outputGate
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:426:26: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+424 |         inputGate.update(enabled: true); outputGate.update(enabled: true)
+425 |         let inputGate = inputGate, outputGate = outputGate
+426 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: inputFormat) { buffer, _ in
+    |                          `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+427 |             guard let ticket = inputGate.ticket(), let sample = converter.convert(buffer) else { return }
+428 |             Task { @MainActor in if inputGate.accepts(ticket) { input(sample) } }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:431:16: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+429 |         }
+430 |         hasInputTap = true
+431 |         player.installTap(onBus: 0, bufferSize: 1024, format: outputFormat) { buffer, _ in
+    |                `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+432 |             guard let ticket = outputGate.ticket() else { return }
+433 |             let level = AgentVoicePCMConverter.level(buffer)
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:437:36: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+435 |         }
+436 |         hasOutputTap = true
+437 |         try engine.start(); player.play()
+    |                                    `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+438 |     }
+439 | 
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift:460:53: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+458 |     func interrupt() {
+459 |         outputGate.update(enabled: true)
+460 |         player.stop(); if engine.isRunning { player.play() }
+    |                                                     `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+461 |     }
+462 | 
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+177 | 
+178 |     private static func isWeak(_ text: String) -> Bool {
+179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+180 |         if value.count < 2 { return true }
+181 |         if genericTitles.contains(value) { return true }
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningImageImport.swift:158:26: warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+156 |             switch representation {
+157 |             case .fileURL:
+158 |                 provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { [self] value, error in
+    |                          `- warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+159 |                     accept(Result {
+160 |                         if let error { throw error }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningImageImport.swift:187:26: warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+185 |                 }
+186 |             case .item(let type):
+187 |                 provider.loadItem(forTypeIdentifier: type, options: nil) { [self] value, error in
+    |                          `- warning: 'loadItem(forTypeIdentifier:options:completionHandler:)' was deprecated in macOS 27.0: Use loadObjectOfClass:completionHandler: instead. [#DeprecatedDeclaration]
+188 |                     accept(Result {
+189 |                         if let error { throw error }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift:182:13: warning: result of 'try?' is unused [#NoUsage]
+180 |             task.updatedAt = .now
+181 |             try? modelContext.save()
+182 |             try? await AgentAPI.captureAction(taskId: task.id, action: "delete")
+    |             `- warning: result of 'try?' is unused [#NoUsage]
+183 |             return
+184 |         }
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:78:16: warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 76 |         self.converter = converter
+ 77 |         engine.attach(player)
+ 78 |         engine.connect(player, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: 24000, channels: 1))
+    |                `- warning: 'connect(_:to:format:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 79 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: input) { [weak self, converter] buffer, _ in
+ 80 |             guard let sample = converter.convert(buffer) else { return }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:79:26: warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 77 |         engine.attach(player)
+ 78 |         engine.connect(player, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: 24000, channels: 1))
+ 79 |         engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: input) { [weak self, converter] buffer, _ in
+    |                          `- warning: 'installTap(onBus:bufferSize:format:block:)' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 80 |             guard let sample = converter.convert(buffer) else { return }
+ 81 |             Task { @MainActor [weak self] in
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:88:36: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 86 |         capturing = true
+ 87 |         self.engine = engine
+ 88 |         try engine.start(); player.play()
+    |                                    `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 89 |         status = "正在聆听"
+ 90 |     }
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:94:31: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 92 |     func say(_ text: String) {
+ 93 |         guard connected else { return }
+ 94 |         player.stop(); player.play()
+    |                               `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+ 95 |         pendingBuffers = 0; speechFinished = false
+ 96 |         let id = UUID(); speechID = id
+
+/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift:115:47: warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+113 |     func interrupt() {
+114 |         speechID = nil; player.stop()
+115 |         if engine?.isRunning == true { player.play() }
+    |                                               `- warning: 'play()' was deprecated in macOS 27.0 [#DeprecatedDeclaration]
+116 |         if connected { enqueue(["type": "interrupt"]); status = muted ? "已静音" : "正在聆听" }
+117 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+error: input file '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TopicCapture.swift' was modified during the build
+error: input file '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TopicCapture.swift' was modified during the build
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/tests/mac/run-contracts.py", line 37, in <module>
+    subprocess.run([
+    ~~~~~~~~~~~~~~^^
+        "xcrun", "swiftc", *flags, "-enable-testing", "-emit-library", "-emit-module",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        "-o", str(build / "libReviewTodayContractSupport.dylib"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ], check=True, cwd=ROOT)
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['xcrun', 'swiftc', '-parse-as-library', '-D', 'DEBUG', '-swift-version', '5', '-default-isolation', 'MainActor', '-enable-upcoming-feature', 'MemberImportVisibility', '-I', '/tmp/review-today-shared-contracts.h3tvblrz', '-L', '/tmp/review-today-shared-contracts.h3tvblrz', '-lFSRS', '-Xlinker', '-rpath', '-Xlinker', '/tmp/review-today-shared-contracts.h3tvblrz', '-enable-testing', '-emit-library', '-emit-module', '-module-name', 'ReviewTodayContractSupport', '-emit-module-path', '/tmp/review-today-shared-contracts.h3tvblrz/ReviewTodayContractSupport.swiftmodule', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ActivityDayGrid.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentAPI.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentComposerStore.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentServiceMonitor.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentSpeechSegments.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentTitleMascot.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceAudio.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceComposerStatus.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AgentVoiceConversation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AnswerDocument.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AnswerReadabilitySamples.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AppRuntime.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/AppSidebar.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ArchivedConversations.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/BrandMark.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/BrandMaterialTrial.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/BrandTypography.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/CaptureProcessor.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/CoachMark.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ComposerControlsLayout.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ComposerKnowledgePicker.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ContentView.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ContextCapacityIndicator.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ConversationCheckpoint.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ConversationModels.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ConversationProcessor.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ConversationSync.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ConversationWorkSnapshot.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/DeckRenderProbe.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/DepthCarousel.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/DictationComposerStatus.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/DictationComposerSurface.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/DictationController.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ExamEntrySpine.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ExamSelectionView.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/Fsrs.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/GlassPreviewStyle.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/HarnessProcessor.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/InteractionChrome.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeCardReader.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeDeckInput.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeDeckNavigation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeIngestion.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLibrary.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLocator.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeManagement.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgePaperPresentation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningAnswerText.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningComposerInput.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningDraftStore.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningGoalContinuity.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningImageAttachment.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningImageDrop.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningImageImport.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningMemory.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningSessionActions.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningSessionProgress.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningTaskCard.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningTextInput.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LearningWorkspace.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LibraryInboxSettings.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/LocalDataReset.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/M1DebugFixture.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MascotAnimationPOC.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MascotMotion.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MascotMotionPreview.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MascotSpeechDemoController.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MessageDeliveryPresentation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/Models.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/MrBPresentation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/NavigationPerformance.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/PageArrivalFade.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/RecentLearningDetail.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReminderNotifications.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewAPI.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewController.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewCoordinator.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewFlow.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewMaintenance.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewMigration.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewPreparationView.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewPresentation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewSummaryView.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewView.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ReviewVoice.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/RunFeedbackViews.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/RunwayChrome.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SessionActivityStatus.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SessionDeletion.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SessionListSelection.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SessionOrganization.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SessionTagEditor.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SettingsView.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SidebarNavigation.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/SidebarWindowControls.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/ThemeToggle.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayActivityHeatmap.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayActivitySnapshot.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayActivitySource.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayGlassEntry.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TodayView.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/TopicCapture.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/UserLanguage.swift', '/Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/VoiceRecorder.swift', '-o', '/tmp/review-today-shared-contracts.h3tvblrz/libReviewTodayContractSupport.dylib']' returned non-zero exit status 1.

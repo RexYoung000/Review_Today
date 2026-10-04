@@ -388,19 +388,25 @@ struct LearningWorkspace: View {
                         messageBubble(message, contentWidth: contentWidth)
                             .id(message.id)
                         ForEach(captureOffers.filter { $0.anchorMessageID == message.id }) { offer in
+                            let captureTask = sessionTasks.first(where: { $0.id == offer.saveTaskID })
+                            let captureAction = sessionMessages.last(where: {
+                                let action = ConversationProcessor.object($0.operationJSON)
+                                return action?["target_id"] as? String == offer.id.uuidString.lowercased()
+                                    && action?["version"] as? Int == offer.version
+                            })
+                            let captureRun = runs.first(where: { $0.id == captureAction?.runID })
                             TopicCapturePanel(offer: offer, focused: captureDestination == offer.id,
                                 enabled: selectedSession?.status == "active" && runtime.allowsSending && !dictation.busy && !voice.active,
-                                persistenceError: sessionTasks.first(where: { $0.id == offer.saveTaskID && !$0.memoryCommitted })?.errorCode,
-                                deliveryError: sessionMessages.last(where: {
-                                    let action = ConversationProcessor.object($0.operationJSON)
-                                    return action?["target_id"] as? String == offer.id.uuidString.lowercased()
-                                        && action?["version"] as? Int == offer.version
-                                })?.lastDeliveryError, onAction: { rawKind in
+                                persistenceError: captureTask?.memoryCommitted == false ? captureTask?.errorCode : nil,
+                                deliveryError: captureAction?.lastDeliveryError,
+                                processingStage: captureTask?.stage,
+                                pendingOperation: offer.pendingOperation(for: captureAction, runStatus: captureRun?.status),
+                                operationNotice: captureOperationNotice(offer, action: captureAction, run: captureRun), onAction: { rawKind in
                                     let enrollReview = rawKind == "capture_save_review"
                                     let kind = enrollReview ? "capture_save" : rawKind
                                     if kind == "capture_save", !offer.isCheckInvitation { followsLatest = false; activeCaptureID = offer.id }
                                     else { activeCaptureID = nil }
-                                    let actionTitle = kind == "capture_save" ? (offer.isCheckInvitation ? "新增知识" : "录入这段知识") : kind == "capture_later" ? "稍后录入" : "跳过录入"
+                                    let actionTitle = kind == "capture_save" ? (offer.isCheckInvitation ? "保存为知识卡" : "录入这段知识") : kind == "capture_later" ? "稍后录入" : "跳过录入"
                                     sendMessage(actionTitle, operation: offer.boundOperation(kind), reviewRequested: enrollReview)
                                     if kind == "capture_save", !offer.isCheckInvitation, localError == nil {
                                         Task { @MainActor in await Task.yield(); proxy.scrollTo(offer.id, anchor: .top) }
@@ -409,6 +415,9 @@ struct LearningWorkspace: View {
                                 }, onOpenKnowledge: onOpenKnowledge)
                                 .id(offer.id)
                                 .transition(.opacity.combined(with: .offset(y: reduceMotion ? 0 : 8)))
+                        }
+                        if message.role != "user", captureOffers.contains(where: { $0.anchorMessageID == message.id }) {
+                            LearningAnswerCopyButton(content: message.content)
                         }
                         if message.role == "user" {
                             let task = sessionTasks.first(where: { $0.inputMessageID == message.id })
@@ -494,6 +503,14 @@ struct LearningWorkspace: View {
         }
     }
 
+    private func captureOperationNotice(_ offer: TopicCaptureOffer, action: AgentMessage?, run: AgentRun?) -> String? {
+        guard let action, let run, action.deliveryStatus != "local",
+              offer.pendingOperation(for: action) != nil,
+              offer.pendingOperation(for: action, runStatus: run.status) == nil else { return nil }
+        return ["interrupted", "cancelled"].contains(run.status)
+            ? "操作已停止，可以重新选择。" : "操作尚未完成，可以重新选择。"
+    }
+
     private var emptyConversation: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("今天，想弄懂什么？").font(.title2.weight(.semibold))
@@ -524,7 +541,8 @@ struct LearningWorkspace: View {
                       .background(runway.field, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
                       .frame(maxWidth: bubbleWidth, alignment: .trailing)
               } else {
-                  LearningAnswerText(content: message.content, availableWidth: bubbleWidth)
+                  LearningAnswerText(content: message.content, availableWidth: bubbleWidth,
+                                     showsCopyButton: !captureOffers.contains(where: { $0.anchorMessageID == message.id }))
                       .foregroundStyle(runway.ink)
                       .frame(maxWidth: bubbleWidth, alignment: .leading)
               }

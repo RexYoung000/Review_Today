@@ -1,0 +1,4 @@
+QA isolated store: /tmp/review-today-topic-native-982E2BE7-1831-4D9F-B798-3B9B9C62569C
+sandbox_extension_issue_file_to_process failed for /tmp/review-today-topic-qa.jcnljy/TopicCaptureQA.app: 1 (Operation not permitted)
+QA {"cards_created":0,"daily_data_used":false,"event":"reset","invitation":true,"phase":"idle","sequence":1,"synthetic_backend":true}
+QA {"anchor_retained":true,"cards_created":0,"daily_data_used":false,"event":"scope_refreshed","phase":"idle","sequence":1,"synthetic_backend":true,"version":2}

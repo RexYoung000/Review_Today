@@ -1,0 +1,641 @@
+{
+  "kind": "real_model_synthetic_session",
+  "native_write": false,
+  "turns": [
+    {
+      "input": "直接教我一个小知识点：向量检索中，相似度高为什么不保证答案正确？只讲这个知识点，简短解释后出一道让我用自己的话复述的检查题。讲稳定原理，不需要网页搜索。",
+      "seconds": 7.39,
+      "status": "completed",
+      "error": null,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "goal"
+        ],
+        "target_task_id": "",
+        "target_description": "向量检索中相似度高不保证答案正确的原因，含复述检查题",
+        "relation": "new_topic",
+        "workflow": "topic_exploration",
+        "scope": "learning",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户明确要求直接教一个具体知识点并出复述检查题，主题与用途清晰，无需澄清，进入直接教学；明确说明讲稳定原理、不需要网页搜索。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": true,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [
+          "向量检索",
+          "相似度与正确性"
+        ],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "run_state": {
+        "run_id": "a556bce8-b7ab-4409-b3f9-75eda6a7cec4",
+        "revision": 1,
+        "task_id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+        "lifecycle_revision": 0,
+        "dialogue_only": null,
+        "knowledge_status_reply": null,
+        "execution_complete": true,
+        "capture_scope_update": null,
+        "evaluated_binding": null,
+        "verified_concepts": null,
+        "capture_quotes": null,
+        "capture_feedback_quotes": null
+      },
+      "session_state": {
+        "active_task_id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+        "lifecycle_revision": 0,
+        "draft_id": null,
+        "draft_version": null
+      },
+      "task_states": [
+        {
+          "task_id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+          "mode": "source_learning",
+          "stage": "teaching",
+          "status": "awaiting_user",
+          "understanding": "unknown",
+          "requires_mastery": false,
+          "memory_invalidated": false,
+          "learning_plan": {
+            "id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+            "version": 1,
+            "goal": "向量检索中相似度高不保证答案正确的原因，含复述检查题",
+            "steps": [
+              {
+                "id": "7cb23d0e-5763-4d99-a27a-a9a0b9477c7c",
+                "state": "explained",
+                "understanding": "unknown",
+                "message_ids": [
+                  "5e085520-19a0-4526-8a5f-f91f8775b245"
+                ],
+                "completion_condition": "能说明相似度衡量的是向量距离，不等同于答案对错",
+                "title": "理解向量相似度衡量的是什么，以及它与答案正确性的区别"
+              },
+              {
+                "id": "1f5ddc1e-10ed-4e59-9455-98e0334f1953",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能指出向量压缩时会丢失的具体信息类型，如否定、数字、条件",
+                "title": "掌握向量压缩语义时会丢失的具体信息类型"
+              },
+              {
+                "id": "c3b26640-0c33-43e5-a594-7d9494f901df",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能说明共同套话或领域词会导致高分但内容不回答问题的情形",
+                "title": "掌握“相似但不正确”的可能来源：共同套话、领域词、模板"
+              },
+              {
+                "id": "8530062e-a9de-4b63-9291-5515a1826ea2",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能用自己的话复述核心原因并给出一个合理反例",
+                "title": "能用自己的话复述核心原因并举一个例子"
+              }
+            ],
+            "current_step_id": "7cb23d0e-5763-4d99-a27a-a9a0b9477c7c",
+            "success_check": "能说明相似度是距离度量而非正确性判断，指出至少两类会丢失或误导的信息，并用自己的话举出一个相似但不正确的情形。"
+          }
+        }
+      ],
+      "coach_calls": [
+        {
+          "node": "lesson",
+          "schema": "TeachingConversationOutput",
+          "task_id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+          "task_status": "accepted",
+          "task_stage": "accepted",
+          "capture_candidates": [],
+          "update_instruction_present": false,
+          "returned_capture_update": null,
+          "returned_learning_concepts": [
+            "向量相似度",
+            "语义压缩",
+            "相似度与正确性的区别",
+            "高分但不相关的召回"
+          ]
+        }
+      ],
+      "replies": [
+        "## 向量检索中，相似度高为什么不保证答案正确\n\n先看一个直观画面：你把一句话变成一串数字（向量），意思相近的句子在向量空间里靠得近，于是检索系统就用“距离近/相似度高”来判断一段内容可能相关。**但“表达上靠得近”和“内容上真能回答问题”是两件事。**\n\n为什么会出现偏差？主要有三个稳定原因。\n\n- **向量只压缩了语义的一部分。** 它由模型训练目标决定，偏向捕捉整体语义风格，容易丢掉数字、否定、时间、条件这类关键约束。“支持退货”和“不支持退货”在向量上可能很近。\n- **相似度高不等于与问题相关。** 一段话可能和问题用词、话题都接近，但没有真正回答提问；它只是“像相关”。\n- **高分可能来自共同套话或领域词。** 格式模板、常见表述会让多条内容在向量上彼此靠近，检索排序就会把它们排前面。\n\n一句话概括：**相似度衡量的是“距离”，不是“答案对不对”。** 高分只说明“值得一看”，最终答案是否成立，还要经过事实核对或推理验证。\n\n## 用你自己的话复述\n\n请用自己的话回答下面这道题，不用背原文。\n\n**检查题：** 为什么两段话的向量相似度很高，却不能直接判定其中一段就是正确答案？请说明理由，并至少举出一个会“相似但不正确”的情形。"
+      ],
+      "offers": [],
+      "public_offers": [],
+      "model_calls": 3,
+      "model_usage": [
+        {
+          "id": "6e2fa587-1b32-48b9-820e-5236d7709be3",
+          "budget_id": "480a37c3-00f1-459d-a80c-e2fce826a5f4",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 27962,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 12701,
+              "output_tokens": 378,
+              "total_tokens": 13079,
+              "cached_input_tokens": 12544,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "ff3f756d-f7b4-49cc-b5d5-6d7534a182a9",
+          "budget_id": "480a37c3-00f1-459d-a80c-e2fce826a5f4",
+          "revision": 1,
+          "background": false,
+          "node": "teaching_preparation",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 1800,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 921,
+              "output_tokens": 81,
+              "total_tokens": 1002,
+              "cached_input_tokens": 512,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "075c8ea3-9d61-4da6-82ba-5989f10dbb34",
+          "budget_id": "480a37c3-00f1-459d-a80c-e2fce826a5f4",
+          "revision": 1,
+          "background": false,
+          "node": "lesson",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 11909,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 5842,
+              "output_tokens": 718,
+              "total_tokens": 6560,
+              "cached_input_tokens": 3968,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "evaluation_and_memory_outputs": [],
+      "errors": []
+    },
+    {
+      "input": "相似度高只说明向量表示接近，可能有助于找相关材料，但相关不等于材料真实，生成回答也可能出错，所以还需要核对来源、适用条件和答案依据。",
+      "seconds": 8.49,
+      "status": "completed",
+      "error": null,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "answer"
+        ],
+        "target_task_id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+        "target_description": "回答当前检查题：相似度高不保证答案正确的原因并举例",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "continue_goal",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户本轮用自己组织的话回答当前检查题，说明理由并隐含举例方向，属于对进行中检查题的实际作答，交评价节点判断。",
+        "understanding": "unknown",
+        "answer_evidence": "相似度高只说明向量表示接近，可能有助于找相关材料，但相关不等于材料真实，生成回答也可能出错，所以还需要核对来源、适用条件和答案依据。",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": false,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "run_state": {
+        "run_id": "2d31ebf9-7f39-42df-82c8-d84f6efe3177",
+        "revision": 1,
+        "task_id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+        "lifecycle_revision": 0,
+        "dialogue_only": null,
+        "knowledge_status_reply": null,
+        "execution_complete": true,
+        "capture_scope_update": null,
+        "evaluated_binding": {
+          "question": "为什么两段话的向量相似度很高，却不能直接判定其中一段就是正确答案？请说明理由，并至少举出一个会“相似但不正确”的情形。",
+          "step_id": "7cb23d0e-5763-4d99-a27a-a9a0b9477c7c",
+          "step_title": "理解向量相似度衡量的是什么，以及它与答案正确性的区别",
+          "concepts": [
+            "向量相似度",
+            "相似度与正确性的区别"
+          ],
+          "evidence_quotes": [
+            "**但“表达上靠得近”和“内容上真能回答问题”是两件事。**",
+            "**相似度衡量的是“距离”，不是“答案对不对”。**"
+          ],
+          "scope": "concept",
+          "reference_stamp": "6bbffcbb8e4de313d5effd9dedb10d53ac0efb02670578c0fa05f62332494b6a",
+          "plan_version": 1,
+          "completion_condition": ""
+        },
+        "verified_concepts": [
+          "向量相似度",
+          "相似度与正确性的区别"
+        ],
+        "capture_quotes": [
+          "**但“表达上靠得近”和“内容上真能回答问题”是两件事。**",
+          "**相似度衡量的是“距离”，不是“答案对不对”。**",
+          "**向量只压缩了语义的一部分。** 它由模型训练目标决定，偏向捕捉整体语义风格，容易丢掉数字、否定、时间、条件这类关键约束。“支持退货”和“不支持退货”在向量上可能很近。",
+          "**相似度高不等于与问题相关。** 一段话可能和问题用词、话题都接近，但没有真正回答提问；它只是“像相关”。"
+        ],
+        "capture_feedback_quotes": [
+          "相似度高只是向量表示接近，不能保证材料真实或确实回答问题，最终还要核对来源与适用条件。",
+          "比如“支持退货”和“不支持退货”向量可能很近，但意思相反；或者一段话话题相近、用词相似，却没有真正回答提问。"
+        ]
+      },
+      "session_state": {
+        "active_task_id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+        "lifecycle_revision": 0,
+        "draft_id": null,
+        "draft_version": null
+      },
+      "task_states": [
+        {
+          "task_id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+          "mode": "source_learning",
+          "stage": "lesson_checked",
+          "status": "awaiting_user",
+          "understanding": "unknown",
+          "requires_mastery": false,
+          "memory_invalidated": false,
+          "learning_plan": {
+            "id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+            "version": 1,
+            "goal": "向量检索中相似度高不保证答案正确的原因，含复述检查题",
+            "steps": [
+              {
+                "id": "7cb23d0e-5763-4d99-a27a-a9a0b9477c7c",
+                "state": "explained",
+                "understanding": "unknown",
+                "message_ids": [
+                  "5e085520-19a0-4526-8a5f-f91f8775b245",
+                  "29c5fa5b-983e-4acc-9523-89dfa2ef485b"
+                ],
+                "completion_condition": "能说明相似度衡量的是向量距离，不等同于答案对错",
+                "title": "理解向量相似度衡量的是什么，以及它与答案正确性的区别",
+                "verified_concepts": [
+                  {
+                    "concept": "向量相似度",
+                    "message_id": "45bd2985-9b61-4887-96b5-49c733d793e8",
+                    "question": "为什么两段话的向量相似度很高，却不能直接判定其中一段就是正确答案？请说明理由，并至少举出一个会“相似但不正确”的情形。"
+                  },
+                  {
+                    "concept": "相似度与正确性的区别",
+                    "message_id": "45bd2985-9b61-4887-96b5-49c733d793e8",
+                    "question": "为什么两段话的向量相似度很高，却不能直接判定其中一段就是正确答案？请说明理由，并至少举出一个会“相似但不正确”的情形。"
+                  }
+                ]
+              },
+              {
+                "id": "1f5ddc1e-10ed-4e59-9455-98e0334f1953",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能指出向量压缩时会丢失的具体信息类型，如否定、数字、条件",
+                "title": "掌握向量压缩语义时会丢失的具体信息类型"
+              },
+              {
+                "id": "c3b26640-0c33-43e5-a594-7d9494f901df",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能说明共同套话或领域词会导致高分但内容不回答问题的情形",
+                "title": "掌握“相似但不正确”的可能来源：共同套话、领域词、模板"
+              },
+              {
+                "id": "8530062e-a9de-4b63-9291-5515a1826ea2",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能用自己的话复述核心原因并给出一个合理反例",
+                "title": "能用自己的话复述核心原因并举一个例子"
+              }
+            ],
+            "current_step_id": "7cb23d0e-5763-4d99-a27a-a9a0b9477c7c",
+            "success_check": "能说明相似度是距离度量而非正确性判断，指出至少两类会丢失或误导的信息，并用自己的话举出一个相似但不正确的情形。"
+          }
+        }
+      ],
+      "coach_calls": [],
+      "replies": [
+        "方向对了：相似度高只是向量表示接近，不能保证材料真实或确实回答问题，最终还要核对来源与适用条件。\n\n不过题目明确要求**至少举出一个情形**，你的回答还停留在抽象层面，没有给出具体例子。补一个短例即可，比如“支持退货”和“不支持退货”向量可能很近，但意思相反；或者一段话话题相近、用词相似，却没有真正回答提问。"
+      ],
+      "offers": [
+        {
+          "id": "e9ea840b-1c9c-4244-a645-1afb6a1242dd",
+          "version": 1,
+          "trigger": "verified_check",
+          "title": "向量相似度、相似度与正确性的区别",
+          "scope_summary": "向量相似度衡量的是向量表示距离，接近不等于内容真实或能回答问题；否定差异、话题相近但不直接回答等都可能造成相似但不正确。",
+          "status": "offered",
+          "origin_task_id": "bcac5058-593b-47fe-ac45-4971c76f0f8b",
+          "lifecycle_revision": 0,
+          "anchor_message_id": "29c5fa5b-983e-4acc-9523-89dfa2ef485b",
+          "correction_pending": null,
+          "correction_run_id": null,
+          "fragments": [
+            {
+              "id": "da0a4e7f-278f-46d0-a022-a0e493007a72",
+              "text": "**但“表达上靠得近”和“内容上真能回答问题”是两件事。**",
+              "message_id": "5e085520-19a0-4526-8a5f-f91f8775b245",
+              "run_id": "a556bce8-b7ab-4409-b3f9-75eda6a7cec4",
+              "kind": "teaching",
+              "memory_references": [],
+              "sources": [
+                {
+                  "source_id": "6730ae85-539f-5bb8-8fb9-f48d2be42bb5",
+                  "version": 1,
+                  "type": "agent_generated",
+                  "url": "",
+                  "title": "Agent 生成讲义",
+                  "fetched_at": "2026-10-04T14:18:30.717521+00:00",
+                  "locator": "task:bcac5058-593b-47fe-ac45-4971c76f0f8b",
+                  "content": "## 向量检索中，相似度高为什么不保证答案正确\n\n先看一个直观画面：你把一句话变成一串数字（向量），意思相近的句子在向量空间里靠得近，于是检索系统就用“距离近/相似度高”来判断一段内容可能相关。**但“表达上靠得近”和“内容上真能回答问题”是两件事。**\n\n为什么会出现偏差？主要有三个稳定原因。\n\n- **向量只压缩了语义的一部分。** 它由模型训练目标决定，偏向捕捉整体语义风格，容易丢掉数字、否定、时间、条件这类关键约束。“支持退货”和“不支持退货”在向量上可能很近。\n- **相似度高不等于与问题相关。** 一段话可能和问题用词、话题都接近，但没有真正回答提问；它只是“像相关”。\n- **高分可能来自共同套话或领域词。** 格式模板、常见表述会让多条内容在向量上彼此靠近，检索排序就会把它们排前面。\n\n一句话概括：**相似度衡量的是“距离”，不是“答案对不对”。** 高分只说明“值得一看”，最终答案是否成立，还要经过事实核对或推理验证。\n\n## 用你自己的话复述\n\n请用自己的话回答下面这道题，不用背原文。\n\n**检查题：** 为什么两段话的向量相似度很高，却不能直接判定其中一段就是正确答案？请说明理由，并至少举出一个会“相似但不正确”的情形。"
+                }
+              ],
+              "source_type": "agent_generated"
+            },
+            {
+              "id": "8da43f3b-6001-488c-9012-97a00e72fdb5",
+              "text": "**相似度衡量的是“距离”，不是“答案对不对”。**",
+              "message_id": "5e085520-19a0-4526-8a5f-f91f8775b245",
+              "run_id": "a556bce8-b7ab-4409-b3f9-75eda6a7cec4",
+              "kind": "teaching",
+              "memory_references": [],
+              "sources": [
+                {
+                  "source_id": "6730ae85-539f-5bb8-8fb9-f48d2be42bb5",
+                  "version": 1,
+                  "type": "agent_generated",
+                  "url": "",
+                  "title": "Agent 生成讲义",
+                  "fetched_at": "2026-10-04T14:18:30.717521+00:00",
+                  "locator": "task:bcac5058-593b-47fe-ac45-4971c76f0f8b",
+                  "content": "## 向量检索中，相似度高为什么不保证答案正确\n\n先看一个直观画面：你把一句话变成一串数字（向量），意思相近的句子在向量空间里靠得近，于是检索系统就用“距离近/相似度高”来判断一段内容可能相关。**但“表达上靠得近”和“内容上真能回答问题”是两件事。**\n\n为什么会出现偏差？主要有三个稳定原因。\n\n- **向量只压缩了语义的一部分。** 它由模型训练目标决定，偏向捕捉整体语义风格，容易丢掉数字、否定、时间、条件这类关键约束。“支持退货”和“不支持退货”在向量上可能很近。\n- **相似度高不等于与问题相关。** 一段话可能和问题用词、话题都接近，但没有真正回答提问；它只是“像相关”。\n- **高分可能来自共同套话或领域词。** 格式模板、常见表述会让多条内容在向量上彼此靠近，检索排序就会把它们排前面。\n\n一句话概括：**相似度衡量的是“距离”，不是“答案对不对”。** 高分只说明“值得一看”，最终答案是否成立，还要经过事实核对或推理验证。\n\n## 用你自己的话复述\n\n请用自己的话回答下面这道题，不用背原文。\n\n**检查题：** 为什么两段话的向量相似度很高，却不能直接判定其中一段就是正确答案？请说明理由，并至少举出一个会“相似但不正确”的情形。"
+                }
+              ],
+              "source_type": "agent_generated"
+            },
+            {
+              "id": "324132c5-a358-434c-b91a-79eaaceeeee0",
+              "text": "**向量只压缩了语义的一部分。** 它由模型训练目标决定，偏向捕捉整体语义风格，容易丢掉数字、否定、时间、条件这类关键约束。“支持退货”和“不支持退货”在向量上可能很近。",
+              "message_id": "5e085520-19a0-4526-8a5f-f91f8775b245",
+              "run_id": "a556bce8-b7ab-4409-b3f9-75eda6a7cec4",
+              "kind": "teaching",
+              "memory_references": [],
+              "sources": [
+                {
+                  "source_id": "6730ae85-539f-5bb8-8fb9-f48d2be42bb5",
+                  "version": 1,
+                  "type": "agent_generated",
+                  "url": "",
+                  "title": "Agent 生成讲义",
+                  "fetched_at": "2026-10-04T14:18:30.717521+00:00",
+                  "locator": "task:bcac5058-593b-47fe-ac45-4971c76f0f8b",
+                  "content": "## 向量检索中，相似度高为什么不保证答案正确\n\n先看一个直观画面：你把一句话变成一串数字（向量），意思相近的句子在向量空间里靠得近，于是检索系统就用“距离近/相似度高”来判断一段内容可能相关。**但“表达上靠得近”和“内容上真能回答问题”是两件事。**\n\n为什么会出现偏差？主要有三个稳定原因。\n\n- **向量只压缩了语义的一部分。** 它由模型训练目标决定，偏向捕捉整体语义风格，容易丢掉数字、否定、时间、条件这类关键约束。“支持退货”和“不支持退货”在向量上可能很近。\n- **相似度高不等于与问题相关。** 一段话可能和问题用词、话题都接近，但没有真正回答提问；它只是“像相关”。\n- **高分可能来自共同套话或领域词。** 格式模板、常见表述会让多条内容在向量上彼此靠近，检索排序就会把它们排前面。\n\n一句话概括：**相似度衡量的是“距离”，不是“答案对不对”。** 高分只说明“值得一看”，最终答案是否成立，还要经过事实核对或推理验证。\n\n## 用你自己的话复述\n\n请用自己的话回答下面这道题，不用背原文。\n\n**检查题：** 为什么两段话的向量相似度很高，却不能直接判定其中一段就是正确答案？请说明理由，并至少举出一个会“相似但不正确”的情形。"
+                }
+              ],
+              "source_type": "agent_generated"
+            },
+            {
+              "id": "8a7ca924-1ca7-463b-a591-fe3b512493ac",
+              "text": "**相似度高不等于与问题相关。** 一段话可能和问题用词、话题都接近，但没有真正回答提问；它只是“像相关”。",
+              "message_id": "5e085520-19a0-4526-8a5f-f91f8775b245",
+              "run_id": "a556bce8-b7ab-4409-b3f9-75eda6a7cec4",
+              "kind": "teaching",
+              "memory_references": [],
+              "sources": [
+                {
+                  "source_id": "6730ae85-539f-5bb8-8fb9-f48d2be42bb5",
+                  "version": 1,
+                  "type": "agent_generated",
+                  "url": "",
+                  "title": "Agent 生成讲义",
+                  "fetched_at": "2026-10-04T14:18:30.717521+00:00",
+                  "locator": "task:bcac5058-593b-47fe-ac45-4971c76f0f8b",
+                  "content": "## 向量检索中，相似度高为什么不保证答案正确\n\n先看一个直观画面：你把一句话变成一串数字（向量），意思相近的句子在向量空间里靠得近，于是检索系统就用“距离近/相似度高”来判断一段内容可能相关。**但“表达上靠得近”和“内容上真能回答问题”是两件事。**\n\n为什么会出现偏差？主要有三个稳定原因。\n\n- **向量只压缩了语义的一部分。** 它由模型训练目标决定，偏向捕捉整体语义风格，容易丢掉数字、否定、时间、条件这类关键约束。“支持退货”和“不支持退货”在向量上可能很近。\n- **相似度高不等于与问题相关。** 一段话可能和问题用词、话题都接近，但没有真正回答提问；它只是“像相关”。\n- **高分可能来自共同套话或领域词。** 格式模板、常见表述会让多条内容在向量上彼此靠近，检索排序就会把它们排前面。\n\n一句话概括：**相似度衡量的是“距离”，不是“答案对不对”。** 高分只说明“值得一看”，最终答案是否成立，还要经过事实核对或推理验证。\n\n## 用你自己的话复述\n\n请用自己的话回答下面这道题，不用背原文。\n\n**检查题：** 为什么两段话的向量相似度很高，却不能直接判定其中一段就是正确答案？请说明理由，并至少举出一个会“相似但不正确”的情形。"
+                }
+              ],
+              "source_type": "agent_generated"
+            },
+            {
+              "id": "402028bf-0839-4b00-8ea4-4a8b6321b012",
+              "text": "相似度高只是向量表示接近，不能保证材料真实或确实回答问题，最终还要核对来源与适用条件。",
+              "message_id": "29c5fa5b-983e-4acc-9523-89dfa2ef485b",
+              "run_id": "2d31ebf9-7f39-42df-82c8-d84f6efe3177",
+              "kind": "evaluation",
+              "memory_references": [],
+              "sources": [],
+              "source_type": "agent_generated"
+            },
+            {
+              "id": "73af9d8f-3171-4678-8467-730b2457f076",
+              "text": "比如“支持退货”和“不支持退货”向量可能很近，但意思相反；或者一段话话题相近、用词相似，却没有真正回答提问。",
+              "message_id": "29c5fa5b-983e-4acc-9523-89dfa2ef485b",
+              "run_id": "2d31ebf9-7f39-42df-82c8-d84f6efe3177",
+              "kind": "evaluation",
+              "memory_references": [],
+              "sources": [],
+              "source_type": "agent_generated"
+            }
+          ],
+          "preview": null,
+          "preview_version": null,
+          "preview_points": null,
+          "preview_summary": null
+        }
+      ],
+      "public_offers": [
+        {
+          "id": "e9ea840b-1c9c-4244-a645-1afb6a1242dd",
+          "version": 1,
+          "title": "向量相似度、相似度与正确性的区别",
+          "anchor_message_id": "29c5fa5b-983e-4acc-9523-89dfa2ef485b",
+          "status": "offered",
+          "next_request": "",
+          "continuation_consumed": true,
+          "error": "",
+          "knowledge_ids": [],
+          "trigger": "verified_check",
+          "scope_summary": "向量相似度衡量的是向量表示距离，接近不等于内容真实或能回答问题；否定差异、话题相近但不直接回答等都可能造成相似但不正确。"
+        }
+      ],
+      "model_calls": 2,
+      "model_usage": [
+        {
+          "id": "33f40f53-a7fa-4f1c-aaf1-c521b9d1bcd3",
+          "budget_id": "8ca03e75-55cb-4b4e-b636-c6a889f5ebd5",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 32358,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 15019,
+              "output_tokens": 417,
+              "total_tokens": 15436,
+              "cached_input_tokens": 12160,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "a7e66e9b-6284-4a1f-9712-f77d61b3b544",
+          "budget_id": "8ca03e75-55cb-4b4e-b636-c6a889f5ebd5",
+          "revision": 1,
+          "background": false,
+          "node": "evaluate",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 7714,
+          "transport_requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "input_tokens": 3994,
+              "output_tokens": 1019,
+              "total_tokens": 5013,
+              "cached_input_tokens": 1408,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "evaluation_and_memory_outputs": [
+        {
+          "node": "evaluate",
+          "output": {
+            "passed": true,
+            "correctness": "回答的核心判断正确：把“向量表示接近”与“材料真实/能回答问题”区分开，并指出相关不等于真实、生成回答也可能出错，最终仍需核对来源与适用条件。这与参考中“表达上靠得近”不等于“内容上真能回答问题”、“相似度衡量的是距离，不是答案对不对”一致。",
+            "completeness": "题目要求“说明理由”和“至少举出一个相似但不正确的情形”。理由部分已答到，但只给出抽象表述，没有举出具体例子（如“支持退货/不支持退货”这类否定差异，或只谈相关话题却不直接回答问题的内容）。作为概念检查，理由正确但举例义务未完成，完整性有缺。",
+            "expression": "表达简洁、逻辑连贯，用“相关不等于真实”“需要核对来源和条件”清楚传达了意思，术语使用不影响理解。",
+            "transfer": "回答把相似度用于“找相关材料”的位置说清楚了，也指出生成回答可能出错，有一定迁移意识；但没有落到具体反例，迁移深度有限。",
+            "feedback": "方向对了：相似度高只是向量表示接近，不能保证材料真实或确实回答问题，最终还要核对来源与适用条件。\n\n不过题目明确要求**至少举出一个情形**，你的回答还停留在抽象层面，没有给出具体例子。补一个短例即可，比如“支持退货”和“不支持退货”向量可能很近，但意思相反；或者一段话话题相近、用词相似，却没有真正回答提问。",
+            "followup_question": "请举一个具体的“相似但不正确”的例子，并说明为什么向量相似度高却没有把正确答案区分出来。",
+            "question_validity": "valid",
+            "step_completion_demonstrated": false,
+            "followup_binding": {
+              "step_title": "理解向量相似度衡量的是什么，以及它与答案正确性的区别",
+              "concepts": [
+                "向量相似度",
+                "相似度与正确性的区别"
+              ],
+              "evidence_quotes": [
+                "**但“表达上靠得近”和“内容上真能回答问题”是两件事。**",
+                "**相似度衡量的是“距离”，不是“答案对不对”。**"
+              ],
+              "scope": "concept"
+            },
+            "capture_quotes": [
+              "**但“表达上靠得近”和“内容上真能回答问题”是两件事。**",
+              "**相似度衡量的是“距离”，不是“答案对不对”。**",
+              "**向量只压缩了语义的一部分。** 它由模型训练目标决定，偏向捕捉整体语义风格，容易丢掉数字、否定、时间、条件这类关键约束。“支持退货”和“不支持退货”在向量上可能很近。",
+              "**相似度高不等于与问题相关。** 一段话可能和问题用词、话题都接近，但没有真正回答提问；它只是“像相关”。"
+            ],
+            "capture_feedback_quotes": [
+              "相似度高只是向量表示接近，不能保证材料真实或确实回答问题，最终还要核对来源与适用条件。",
+              "比如“支持退货”和“不支持退货”向量可能很近，但意思相反；或者一段话话题相近、用词相似，却没有真正回答提问。"
+            ],
+            "capture_scope_summary": "向量相似度衡量的是向量表示距离，接近不等于内容真实或能回答问题；否定差异、话题相近但不直接回答等都可能造成相似但不正确。",
+            "capture_preview": null
+          }
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "checks": {
+    "pass_invites_without_generation": true,
+    "scored_public_preview_with_current_witnesses": false
+  },
+  "evidence_scope": {
+    "synthetic_inputs_only": true,
+    "daily_data_used": false,
+    "native_write": false,
+    "card_generation": false,
+    "save_action": false,
+    "provider_response_ids_removed": true
+  }
+}

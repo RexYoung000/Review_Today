@@ -19,6 +19,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--live', action='store_true', required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--preview-only', action='store_true',
+        help='Stop after first scored invitation and one same-topic correction; no capture save or simulated ACK.')
     args = parser.parse_args()
     load_dotenv(Path(__file__).resolve().parent.parent / '.env')
     with tempfile.TemporaryDirectory(prefix='review-today-knowledge-invitation-live-') as directory:
@@ -27,6 +29,9 @@ def main():
         from agent_service.conversation_store import ConversationStore
         from agent_service.harness_store import HarnessStore
         from agent_service.schemas import SessionMessageRequest
+        from agent_service.topic_capture import public as public_offer
+        from agent_service.capture_preview import grounded_fields
+        from agent_service.capture_preview import CapturePreview, optional_preview
         harness = ConversationHarness(ConversationStore(HarnessStore(os.environ['REVIEW_TODAY_HARNESS_DB'])))
         sid = str(uuid.uuid4())
         report = dict(kind='real_model_synthetic_session', native_write=False, turns=[], checks={})
@@ -39,6 +44,21 @@ def main():
                 content=text, mode_preset='source_learning', operation=operation))
             coach_calls = []
             evaluation_and_memory_outputs = []
+            preview_parse_diagnostics = []
+            def trace_preview(value):
+                normalized = optional_preview(value)
+                entry = dict(raw_type=type(value).__name__, raw_is_null=value is None,
+                             normalized_present=normalized is not None)
+                if value is not None and normalized is None:
+                    try:
+                        CapturePreview.model_validate(value)
+                    except Exception as error:
+                        if hasattr(error, 'errors'):
+                            entry['errors'] = [{k: e[k] for k in ('loc', 'type')} for e in error.errors(include_input=False)]
+                        else:
+                            entry['errors'] = [dict(type=type(error).__name__)]
+                preview_parse_diagnostics.append(entry)
+                return normalized
             original_call = harness._call
             def trace_call(call_sid, rid, revision, node, system, prompt, schema, *positional, **kwargs):
                 try:
@@ -61,7 +81,9 @@ def main():
                     trace['returned_capture_update'] = update.model_dump() if update else None
                     trace['returned_learning_concepts'] = getattr(output, 'learning_concepts', [])
                 return output
-            with patch.object(harness, '_call', side_effect=trace_call):
+            with (patch.object(harness, '_call', side_effect=trace_call),
+                  patch('agent_service.schemas.optional_preview', side_effect=trace_preview),
+                  patch('agent_service.judgment_grading.optional_preview', side_effect=trace_preview)):
                 harness.drain(sid)
             data = harness.store.get(sid)
             run = data['runs'][accepted.run_id]
@@ -80,11 +102,13 @@ def main():
                 replies=[m['content'] for m in data['messages'] if m['role'] == 'coach' and m['run_id'] == accepted.run_id],
                 offers=[{k: o.get(k) for k in ('id', 'version', 'trigger', 'title', 'scope_summary', 'status',
                     'origin_task_id', 'lifecycle_revision', 'anchor_message_id', 'correction_pending',
-                    'correction_run_id', 'fragments')}
+                    'correction_run_id', 'fragments', 'preview', 'preview_version', 'preview_points', 'preview_summary')}
                         for o in data.get('capture_offers', {}).values()],
+                public_offers=[public_offer(o) for o in data.get('capture_offers', {}).values()],
                 model_calls=len(run.get('model_calls', [])))
             row['model_usage'] = run.get('model_calls', [])
             row['evaluation_and_memory_outputs'] = evaluation_and_memory_outputs
+            row['preview_parse_diagnostics'] = preview_parse_diagnostics
             row['errors'] = [{k: e.get(k) for k in ('stage', 'error', 'detail', 'payload')}
                              for e in data['events'] if e.get('run_id') == accepted.run_id and e.get('error')]
             report['turns'].append(row)
@@ -94,11 +118,40 @@ def main():
             return data
         data = turn('直接教我一个小知识点：向量检索中，相似度高为什么不保证答案正确？只讲这个知识点，简短解释后出一道让我用自己的话复述的检查题。讲稳定原理，不需要网页搜索。')
         assert not data.get('capture_offers')
-        data = turn('相似度高只说明向量表示接近，可能有助于找相关材料，但相关不等于材料真实，生成回答也可能出错，所以还需要核对来源、适用条件和答案依据。')
+        answer = '相似度高只说明向量表示接近，可能有助于找相关材料，但相关不等于材料真实，生成回答也可能出错，所以还需要核对来源、适用条件和答案依据。'
+        if args.preview_only:
+            answer += '例如“支持退货”和“不支持退货”可能因表达接近而有高相似度，但否定改变了实际含义，不能把前者当作后者的答案。'
+        data = turn(answer)
         offer = next(o for o in data.get('capture_offers', {}).values() if o.get('trigger') == 'verified_check')
         identity, version = offer['id'], offer['version']
         report['checks']['pass_invites_without_generation'] = not any(t['mode'] == 'memory_organization' for t in data['tasks'].values())
         assert report['checks']['pass_invites_without_generation']
+        if args.preview_only:
+            before = public_offer(offer)
+            report['checks']['scored_public_preview_with_current_witnesses'] = (
+                bool(before.get('preview_points')) and bool(before.get('preview_summary'))
+                and grounded_fields(offer.get('preview'), offer['fragments']) ==
+                    {k: before[k] for k in ('preview_points', 'preview_summary') if k in before})
+            record()
+            assert report['checks']['scored_public_preview_with_current_witnesses']
+            data = turn('请补充并纠正刚才这个知识点的适用边界：不能把高相似度说成材料一定正确，也不能笼统说向量完全没有时间信息；向量编码可能捕捉文本中的时间信息，但相似度仍不保证资料时效。请准确解释这个边界，不开始其他知识点，也先不保存。')
+            corrected = data['capture_offers'][identity]
+            visible = public_offer(corrected)
+            report['checks']['same_invitation_corrected_preview_version'] = (
+                corrected['version'] > version and corrected.get('preview_version') == corrected['version']
+                and not corrected.get('correction_pending')
+                and bool(visible.get('preview_points')) and bool(visible.get('preview_summary'))
+                and grounded_fields(corrected.get('preview'), corrected['fragments']) ==
+                    {k: visible[k] for k in ('preview_points', 'preview_summary') if k in visible})
+            report['checks']['preview_chain_never_generated_or_saved'] = (
+                not any(t['mode'] == 'memory_organization' for t in data['tasks'].values())
+                and all(o['status'] != 'saved' for o in data['capture_offers'].values())
+                and data.get('draft') is None)
+            record()
+            assert report['checks']['same_invitation_corrected_preview_version']
+            assert report['checks']['preview_chain_never_generated_or_saved']
+            print('PASS: real scored invitation and same-topic corrected source-backed preview; no card generation/save/native write', flush=True)
+            return
         data = turn('继续补充刚才这个知识点：为什么相关的材料也可能过时？请把这个边界解释清楚，不开始新知识点。')
         updated = data['capture_offers'][identity]
         report['checks']['same_invitation_scope_updated'] = updated['version'] > version

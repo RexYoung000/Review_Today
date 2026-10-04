@@ -1,0 +1,15 @@
+Evidence: faithful transcript of execution tool output; no original on-disk log was created.
+Tool execution session: 48898; completion exit_code: 0.
+Working directory: <project>/agent-service
+This targeted run preceded the final prompt revision; the later 318-test final run includes these same 47 tests.
+The 47 tests are a subset of 318, not an additional total.
+
+Command:
+qa_preview_dir="$(mktemp -d /tmp/review-today-preview-targeted.XXXXXX)"
+REVIEW_TODAY_HARNESS_DB="$qa_preview_dir/checkpoint.sqlite3" .venv/bin/python -m unittest tests.test_knowledge_invitation_preview tests.test_knowledge_invitation_scope tests.test_knowledge_invitation tests.test_capture_evaluation_quotes -q
+
+Original tool output:
+----------------------------------------------------------------------
+Ran 47 tests in 11.110s
+
+OK

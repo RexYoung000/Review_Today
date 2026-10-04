@@ -1,0 +1,50 @@
+{
+  "kind": "synthetic_real_model_preview_review",
+  "automated_checks": {
+    "pass_invites_without_generation": true,
+    "scored_public_preview_with_current_witnesses": true,
+    "same_invitation_corrected_preview_version": true,
+    "preview_chain_never_generated_or_saved": true
+  },
+  "model_calls": 8,
+  "seconds": 27.79,
+  "tokens": {
+    "input_tokens": 69191,
+    "output_tokens": 4236,
+    "total_tokens": 73427,
+    "cached_input_tokens": 47616
+  },
+  "public_previews": [
+    {
+      "version": 1,
+      "points": [
+        "向量相似度衡量向量空间中的距离或方向，不是对问题意图的判断。",
+        "相似度高只代表召回候选，不等于答案正确。",
+        "最终正确性需要核对来源、适用条件和答案依据。"
+      ],
+      "summary": "向量相似度是召回信号而非正确性证明，答案正确性还需进一步核对来源、适用条件和依据。"
+    },
+    {
+      "version": 3,
+      "points": [
+        "向量相似度衡量向量空间中的距离或方向，是对文本的统计压缩，不是对问题意图的判断。",
+        "相似度高只是召回候选的信号，不等于答案正确。",
+        "正确性还需另行核对来源、适用条件和答案依据。",
+        "不能笼统说向量完全没有时间信息：时间线索可能被部分捕捉，但相似度仍不保证时效适用。"
+      ],
+      "summary": "向量相似度是召回信号而非正确性或时效的证明；向量可能捕捉部分时间线索，但正确性与时效仍需单独核对。"
+    }
+  ],
+  "manual_review": {
+    "preview_statements_trace_to_current_selected_fragments": true,
+    "correction_added_time_boundary_in_same_invitation": true,
+    "generated_cards": false,
+    "native_write": false,
+    "daily_data_used": false,
+    "limits": [
+      "单个真实合成链通过，不代表全部概括语义已被程序证明。",
+      "本例纠正保留了仍有效旧片段；排除旧错误片段的具体组合由受控回归覆盖。",
+      "引文归属校验不能证明外部事实正确；正式知识生成与核验仍在用户点击之后。"
+    ]
+  }
+}

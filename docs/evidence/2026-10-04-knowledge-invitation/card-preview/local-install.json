@@ -1,0 +1,732 @@
+{
+  "status": "backup_complete_install_paused_original_app_restored",
+  "backup": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447",
+  "app": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "candidate": "/tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app",
+  "daily_signature_before": {
+    "identifier": "Rex.Review-Today",
+    "team": "7NDKLL3UJK",
+    "apple_development": true,
+    "strict_verified": true,
+    "binary_sha256": "e064a9b0d23458ca20c6bcd272d905d5cf8609ed4b12bb4dd29876490cf28f9e"
+  },
+  "candidate_signature": {
+    "identifier": "Rex.Review-Today",
+    "team": "7NDKLL3UJK",
+    "apple_development": true,
+    "strict_verified": true,
+    "binary_sha256": "ea16555d01f5a4ee3258a0aa7aea4c326f65220d0b8dd53047ff361390930bc2"
+  },
+  "project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "provider_files_accessed": false,
+  "source_databases_modified": false,
+  "before": {
+    "Data/ReviewToday.store": {
+      "integrity": [
+        "ok"
+      ],
+      "tables": {
+        "ACHANGE": {
+          "count": 589498,
+          "digest": "edc30f52f59173e834481b24783d2227e2b08811815bb249909808c0c3580f50",
+          "columns": {
+            "Z_PK": "68915b91f7750a3f483875dafdcd532bf8ca30db81610032dcb80904bd3dab50",
+            "Z_ENT": "7ccbe33370c01aa2e0afba9eb62c4033155097055bad01ee3c7ddf7d8c7ab6c2",
+            "Z_OPT": "537f12beec981266424ce90a17d599788024b1f6e1c3286f4f7dff88e5cef638",
+            "ZCHANGETYPE": "9e1bde7ea4af976b50564a1a842084aa3ab2acc091322e3e7c29c07dde876629",
+            "ZENTITY": "ad2201fe6a162d9566a21526202db13d455871b7a6e723f99738afe5bbd2e2d9",
+            "ZENTITYPK": "56bcde13b25bea4e913c31b96c9969e6e222264ca2694c410f15ddc220ed5f21",
+            "ZTRANSACTIONID": "4ed563c2aa6abe7f22a68e982e71c871fa1f441c0e61d6b1ea781df2008f89fb",
+            "ZCOLUMNS": "e88fbacaa99663419749adc85b6a8efe5853733af1900b5a27fb5b86baf40faf"
+          }
+        },
+        "ATRANSACTION": {
+          "count": 577126,
+          "digest": "d9f18d4a570a9522a9d730fed1579b91ab5b6d22ca07011f2cc5a5383f010a01",
+          "columns": {
+            "Z_PK": "6b054b4b63645006928af5d5bf25a3b465dbcf856b7f49f68fdac7bdd1ac7662",
+            "Z_ENT": "f6c4549f5529e01c91a5a1f576035e4f3247e6aba9a7b2cbcaa35dbfc26cfd01",
+            "Z_OPT": "90dd158ad054d194b150fb8d46ec5b467a20cf106a2c66d90f21741214c4c1fa",
+            "ZAUTHORTS": "91b057dfb23aa426089d71d82464db7ace52141a82879693eef7c406c86820fc",
+            "ZBUNDLEIDTS": "d3c06b5fb0dfcb277ee8dad9df789b1e01356b668d69bd24f3549dd164e8a066",
+            "ZCONTEXTNAMETS": "90dd158ad054d194b150fb8d46ec5b467a20cf106a2c66d90f21741214c4c1fa",
+            "ZPROCESSIDTS": "28ff45940ff5215e7820a4519cce9fe20511877e506f077a3eff2e8333fb3ffd",
+            "ZTIMESTAMP": "dff92c55148014af1b3af0605cb208eb7357dd78a582f1f2a5673960b1bf0dca",
+            "ZAUTHOR": "90dd158ad054d194b150fb8d46ec5b467a20cf106a2c66d90f21741214c4c1fa",
+            "ZBUNDLEID": "90dd158ad054d194b150fb8d46ec5b467a20cf106a2c66d90f21741214c4c1fa",
+            "ZCONTEXTNAME": "90dd158ad054d194b150fb8d46ec5b467a20cf106a2c66d90f21741214c4c1fa",
+            "ZPROCESSID": "90dd158ad054d194b150fb8d46ec5b467a20cf106a2c66d90f21741214c4c1fa",
+            "ZQUERYGEN": "90dd158ad054d194b150fb8d46ec5b467a20cf106a2c66d90f21741214c4c1fa"
+          }
+        },
+        "ATRANSACTIONSTRING": {
+          "count": 22,
+          "digest": "d7a39688ae93e0c221a58ccaea64e21db2db0190612a015ff4c501f0659f4a56",
+          "columns": {
+            "Z_PK": "0230d4ca9f20e251e0d737aacfa5fb880fbd358b2acc0cf02e57ff8e65d00e85",
+            "Z_ENT": "409bc73280f6e0b6dcba2e5f8658381214cdbad235e2c20c9ad8731e8073bd0b",
+            "Z_OPT": "c890653b95fe8b638e9f1a0e4d03646d965e53323c03cc77442a6215121efbb4",
+            "ZNAME": "a01576d930d2b7505553487e3af89eef94cdd8bb6430958c5d544934e8c6d990"
+          }
+        },
+        "ZAGENTMESSAGE": {
+          "count": 24,
+          "digest": "76debbe942c39bb5f3e5e373e7308cb397b05c4b9ff269d078c62dcb0edcbe2c",
+          "columns": {
+            "Z_PK": "7946b796c529271edfaaf982f8cbf28e6ffb8c1c26dd9b652ccefb539a541d62",
+            "Z_ENT": "5e4dbbf2b3110522c40261ca284b73d503f59061fdd3eb974cbc6dd5a2ab69ce",
+            "Z_OPT": "4c2cccadb445df0c270b988651dec4df22dc3277713231031705f228a36360e2",
+            "ZCREATEDAT": "be350696c8717eb2c906c5ab02a6bcedec1dc146acc52767b124358c7ddd2f6b",
+            "ZCONTENT": "1678b1d3e280a23956d0bca7329f4e7b5fa5303b4da46a9c623d0f1712d3a537",
+            "ZCONTENTTYPE": "7c62479c0721fac1c7251560a3d7594a3ba9847270d50afc8b3f3241c266d2a0",
+            "ZDELIVERYSTATUS": "0169df5b1b330f8d08e5b2fd2e0a5640b6243a3c0434d11734a16964787b050a",
+            "ZROLE": "1ebdfc8c006c1d347944a7d09192985df75c538a60154b00611a0800e4c9e009",
+            "ZCLIENTMESSAGEID": "cff168cd2705ce565c4324419e7101bb0b858b22b6432f7fc268ee89b6018d7f",
+            "ZID": "9b778271ec5a59326bb5a43c62b40c033cdefa9df9ba3abe0a005e3555236b89",
+            "ZSESSIONID": "49014163c08759e4ae6c698e2b8f7fc959dd238527a90b77f2bc715f16d49004",
+            "ZTASKID": "b9c46b1f8f454869e6267877ad8bd658c716b3e0b045b224f19a48c74a5d0b21",
+            "ZRUNID": "6e6fa0890330b41af89309301a24db6ceb44669d5b89616a1d2e770043c68661",
+            "ZOPERATIONJSON": "b9c46b1f8f454869e6267877ad8bd658c716b3e0b045b224f19a48c74a5d0b21",
+            "ZDELIVERYMODE": "da5932f3323c9f1aaee0878aa21ecfc2b0da85742b6897fcef2d1c40f81b5795",
+            "ZLASTDELIVERYERROR": "b9c46b1f8f454869e6267877ad8bd658c716b3e0b045b224f19a48c74a5d0b21",
+            "ZFIRSTDISPLAYEDAT": "55cb093833f9e4b247fe142e47f07727feef972befe4e2a540c5d09dd650911a",
+            "ZLOCALSAVEDMS": "d1a66fde2def366ee0b8464b9ede89a775d4ee6b85be96817c76961ba31195a9",
+            "ZLOCALECHOMS": "8afb395ff00eb3c5fa7be4984e54041f81b49ee1feb934a450c8ba436fd2302f",
+            "ZRESPONSECHUNKSEQ": "6fa897257155c278fca0e97fa31e533d3b5a5b26a7b9d454950a200c0d16b5e0",
+            "ZRESPONSESTATE": "7d535b35abd0e500574b800246895cde63931980fffe05925914bdaa119eacee",
+            "ZRESPONSEREVISION": "0cc1d8119c59eb9ad10280b943ece1c60f9ef4b8194e2c80db8dbfc0e1e253d8",
+            "ZFIRSTRECEIVEDAT": "9bddf4c1120d5ab921903496cc01937da0eddc8b546a6ebe4811a0cb2322a991",
+            "ZREVIEWREQUESTED": "c0f17be733e87a69acba2afd4b104aebaca60419ad08536307fcf9471090533a",
+            "ZIMAGEATTACHMENT": "b9c46b1f8f454869e6267877ad8bd658c716b3e0b045b224f19a48c74a5d0b21",
+            "ZINPUTCHANNEL": "7c62479c0721fac1c7251560a3d7594a3ba9847270d50afc8b3f3241c266d2a0",
+            "ZVOICEPLAYBACKJSON": "b9c46b1f8f454869e6267877ad8bd658c716b3e0b045b224f19a48c74a5d0b21"
+          }
+        },
+        "ZAGENTRUN": {
+          "count": 12,
+          "digest": "7a2873e12f190e0acf6458b2d6fd1b49495c986b992638bf60eb8349fcdbb4d5",
+          "columns": {
+            "Z_PK": "a7e47c1cfe243f2311f35e8093592c615ae65f41245c0bd9209a28f610c48b55",
+            "Z_ENT": "cbcc5a64b67efc8d1dcaad1a6b2fa2227f9015eb64cfcaa05edfbf057bc4fdf7",
+            "Z_OPT": "adcf3f9d38bd85e7e053c1019360f044644d4d152202abfd240b13c0f8969c93",
+            "ZATTEMPT": "8826bae8a79ac125fa26962a79471c83fcd8ab05985e6dbea67943e7c7198acb",
+            "ZREVISION": "8826bae8a79ac125fa26962a79471c83fcd8ab05985e6dbea67943e7c7198acb",
+            "ZCREATEDAT": "2e9896efa557f48c4d1357c4b6754882e4817ef35a88fe38ac767f9e344bd4fc",
+            "ZUPDATEDAT": "0ac3b92bbf06c9d34eeace7a0cce577bdb1c8a2ec981baf4ad33926555aad3fc",
+            "ZERRORCODE": "e8e67f77c7df82f43ac7fa176356d1fa181fdbf259807be5a382b5858c839821",
+            "ZINPUTMESSAGEIDSJSON": "8bfc9ab3e2aa0b65956cd08ba4914ef55078ac8ad08f869713a73ff445cc6458",
+            "ZSTAGE": "d1a8991be3bd362fa64a497e21e5db5a2a569d5677b808b4371a3a9b8b368b9a",
+            "ZSTATUS": "d1a8991be3bd362fa64a497e21e5db5a2a569d5677b808b4371a3a9b8b368b9a",
+            "ZUSERSUMMARY": "a97d353e4eddca6bb51ad57b638955b51da14c02ca3e126bb189579d7961fd9b",
+            "ZID": "0b5450fdb2b1098d7f42863954c59cea17d96eb3875947d4098c6f5e01ee3478",
+            "ZSESSIONID": "d2638a989c4d945a7959a0e93bf9799ad33d142f734681127f3c5c04a2189a9d",
+            "ZTASKID": "65d87ab388525d3531eb358f68265c7011e9b025c110d1ff16c67a155b9817f9",
+            "ZATTEMPTDURATIONSJSON": "033d2804bbed4a28db560257de8897eb3530fe8e4a7072a465690c4aa167470f",
+            "ZTRANSPORT": "9c157eee1cdc35bf6805d4d964e55d609743b06372e0707adff31250eb9c5ee4",
+            "ZFIRSTTEXTMS": "dfcf09bbb9c8bab7c424f11097cc9c7b71916340e7d2aa06ab5138ee923360cc",
+            "ZSTARTEDAT": "e8e67f77c7df82f43ac7fa176356d1fa181fdbf259807be5a382b5858c839821",
+            "ZELAPSEDMS": "a7c0a5cbece9127201c47ce7ac7322b7d0be1d47b52eb62a039316bf874b1c0d",
+            "ZACTIVITYKIND": "fd4205dd26147673c7381f6c5dece7361507e74d0f7622e21134d16911c187cb",
+            "ZCOMPLETEDAT": "68a168ec44df7654f0875488f03e79946a8de30fc0a542824b444a2e25eed581",
+            "ZTHINKINGSTRENGTH": "ab62dba39d3508042b9a79a39cc997147bacf9bcafa665151b5ee786e2c51b4e",
+            "ZMEMORYINVALIDATIONREVISION": "894eff9428370e549aea172d4c9cc5a97c4a5533a62fdf45f849187119f0ee6a",
+            "ZMEMORYREFERENCESJSON": "4dc71ec3523efa1881f25b239d2e3bf255e0cc9c659252093dc1446f8049ba9e",
+            "ZMEMORYLOOKUPJSON": "e8e67f77c7df82f43ac7fa176356d1fa181fdbf259807be5a382b5858c839821",
+            "ZVOICEINPUTIDSJSON": "9f97ed8c9c069dbd5f3de4fddb1be570bfe72b7d70385010d6c85f2687bca93a"
+          }
+        },
+        "ZAGENTRUNCONTROL": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "Z_PK": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_ENT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_OPT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSENT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZCREATEDAT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZACTION": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZMODE": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZRUNID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSESSIONID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZLASTERROR": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZTHINKINGSTRENGTH": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "ZAGENTSESSION": {
+          "count": 5,
+          "digest": "2cd2c78e00c7b9c7eb2e230d1b57d4e66bca2245613816b9e2955c741eb0c441",
+          "columns": {
+            "Z_PK": "6ee589f574c4f114ee2763a22ef85c145c8773279018b1eee7db530b99c16da7",
+            "Z_ENT": "33ea1de210a7c9aebb30b7fa63c6355f52150e07a3274242b37983ef31737e2c",
+            "Z_OPT": "6285c9dab7517321631900c2acac73c92f6fef3e8f6465df7db9c188fe2e805a",
+            "ZLASTSESSIONEVENTSEQ": "29c0d83d3d5ffb7ba77c9dcca375d6a4b25cb2b7934b0a336fb42a77e73af813",
+            "ZLEARNINGCHECKLISTEXPANDED": "fd76db5c8ad0929aeca788d3e83adb863069b1dc11c4c707e9c14286388dc970",
+            "ZLIFECYCLEREVISION": "3404d3bfd3c7f4315b41e4c6d2f4d0e3bbbe8a4c884df36ac042490ae960913b",
+            "ZLIFECYCLESYNCEDREVISION": "3404d3bfd3c7f4315b41e4c6d2f4d0e3bbbe8a4c884df36ac042490ae960913b",
+            "ZMEMORYCONTENTREVISION": "fd76db5c8ad0929aeca788d3e83adb863069b1dc11c4c707e9c14286388dc970",
+            "ZMEMORYCONTENTSYNCEDREVISION": "e810d5802f713c8bcc5e3feb1cc1621713266da8472a94d0fe9d78d781e2e86c",
+            "ZMEMORYPOLICYREVISION": "fd76db5c8ad0929aeca788d3e83adb863069b1dc11c4c707e9c14286388dc970",
+            "ZMEMORYPOLICYSYNCEDREVISION": "e810d5802f713c8bcc5e3feb1cc1621713266da8472a94d0fe9d78d781e2e86c",
+            "ZMEMORYUSEALLOWED": "cc4da5498be93ad25b8e364e679352ce9e067127c2afb1adf21702b42f2f8794",
+            "ZRUNPAUSED": "3404d3bfd3c7f4315b41e4c6d2f4d0e3bbbe8a4c884df36ac042490ae960913b",
+            "ZTOPICTAGREVISION": "6e37c2f65c1af37c0e254c2f64cab7646cadb50b761fe0cec6f631dfeffe5313",
+            "ZARCHIVEDAT": "a1824b269fc407e31cc3480199a15cf0987fc9c26e43d72e5a8ae449bf7989b7",
+            "ZCREATEDAT": "6517681ff17f0f175aeb60a56bbd02232b7b7f3da72d123a9f6fe6d29573fde5",
+            "ZTOPICTAGSUPDATEDAT": "777614fbe32318cf5c59dbbf8e29d0bf5fb6ebc138ad57be5f1b67d526a646de",
+            "ZUPDATEDAT": "ec5b04310df6d7a36e0431b24a34b568450550d0f2835745e2a85c91c111c421",
+            "ZAUTOTOPICTAGSJSON": "315a088c195530ab8362c0f893f3398f01dfddd97a0bb0b30b32865d20dd5bbc",
+            "ZCHECKPOINTJSON": "65b9becd52c8c32676bd6943b0ddce327cc8a6807efc45f38f9e2713db4622f8",
+            "ZCOMPOSERDRAFT": "6cfebf804e787d7f6f42ab4ec170a33635fc041b4fc37ad1e2f3c4a2b5bc8ece",
+            "ZCONTEXTCAPACITYJSON": "8210e817cf1843b77141dbc07d20970097496b41fe5bcf72b77120c40079c3ab",
+            "ZHANDOFFID": "9318536c7a8f9758f3329da9580904b7e529bae5172d5307049f3bb2fb782486",
+            "ZHANDOFFJSON": "9318536c7a8f9758f3329da9580904b7e529bae5172d5307049f3bb2fb782486",
+            "ZLEARNINGEVIDENCEJSON": "234a188a540231e22cbb72e6604fb4269d594ea70339812d5040d100cf2f9331",
+            "ZLIFECYCLEACTIONSJSON": "1197c1540f32c97767efb3e47605e8dd9b6bd3809cb148677c9ae09ea9e7865b",
+            "ZMANUALTOPICTAGSJSON": "9318536c7a8f9758f3329da9580904b7e529bae5172d5307049f3bb2fb782486",
+            "ZMODEPRESET": "b3faa5ec2dcfc5bb37c4a1843f7872fb8119815c1526f176e0573c272c94860e",
+            "ZPENDINGOPERATIONJSON": "9318536c7a8f9758f3329da9580904b7e529bae5172d5307049f3bb2fb782486",
+            "ZSTATUS": "a7edb6988b7d4260bae22dd1261c2d043da5ad68c665fc6aba8d01d2ef477af1",
+            "ZSUMMARYTEXT": "6cfebf804e787d7f6f42ab4ec170a33635fc041b4fc37ad1e2f3c4a2b5bc8ece",
+            "ZSYNCERROR": "9318536c7a8f9758f3329da9580904b7e529bae5172d5307049f3bb2fb782486",
+            "ZTHINKINGSTRENGTH": "019d670df84959f0daf48d9d9b5d24d22ece959e1fea249040905fb06e28405a",
+            "ZTITLE": "5960b0fe6828e3116b2152ec8e213fd9f69498722d090a4eb79f90b5fd341e70",
+            "ZID": "48b4d7b233f8872b55aac04f324fe6369abfd2c24c08bf953cb015eaac75f029",
+            "ZSOURCESESSIONID": "9318536c7a8f9758f3329da9580904b7e529bae5172d5307049f3bb2fb782486",
+            "ZFOLDERID": "9318536c7a8f9758f3329da9580904b7e529bae5172d5307049f3bb2fb782486",
+            "ZCAPTUREOFFERSREVISION": "9b3a917c96e8d3e6db8dace6c3db995eb920ccf34cf3b5c70edb83e1ea15faa7",
+            "ZCAPTUREOFFERSJSON": "681e6058bf3d30fcf73d79b436cb473bd5c551a3fbe6b3cb9aac1f2bf6ee5521",
+            "ZCOMPOSERIMAGE": "9318536c7a8f9758f3329da9580904b7e529bae5172d5307049f3bb2fb782486"
+          }
+        },
+        "ZAPPSETTINGS": {
+          "count": 1,
+          "digest": "204ba27aa3c3ed4e9d9f1eed3c8f3ac020edec0e38853d855c9a407c6d652945",
+          "columns": {
+            "Z_PK": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+            "Z_ENT": "1ae3592f8248c3f879b56afe3f2ce6aad45ba898434796d35c565684397fb3e6",
+            "Z_OPT": "8d0148e05e2e50b93847e1788a2fb32699fc7e412598d446840ee62b7624856d",
+            "ZDAILYREMINDERMINUTES": "1af1f404aa517c972064dda6843ac6438ff7b64bdb925a99a423f9384f67ea98",
+            "ZDEVELOPERMODE": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+            "ZNOTIFICATIONGRANTED": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+            "ZSNOOZECOUNT": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+            "ZREVIEWLANGUAGEOVERRIDE": "35a44328e7a8f252ee54f7d37d31bb7f34302e01c55df5718459b19f82cd4459",
+            "ZSKIPTODAY": "055539df4a0b804c58caf46c0cd2941af10d64c1395ddd8e50b5f55d945841e6",
+            "ZSNOOZEDAY": "055539df4a0b804c58caf46c0cd2941af10d64c1395ddd8e50b5f55d945841e6",
+            "ZAGENTDRAFTTHINKING": "3e77f78a02941015cc096882941b12508c42434016ae0fc7ae36cf9e17130ce1",
+            "ZAGENTDRAFTTEXT": "055539df4a0b804c58caf46c0cd2941af10d64c1395ddd8e50b5f55d945841e6",
+            "ZAGENTDRAFTMODE": "c18d84550fe0a60dcdba790a5e9348dc64c81b90bfbd1b1f8c1f3c5fef2700d7",
+            "ZAGENTDRAFTMESSAGEID": "4cf6c4a2008b13d3d43423579b03ac71518ae1180723773fa11df97c5c373ff3",
+            "ZLASTTHINKINGSTRENGTH": "3e77f78a02941015cc096882941b12508c42434016ae0fc7ae36cf9e17130ce1",
+            "ZAGENTDRAFTID": "19de96537c664f20d02bba4c36d9e16bd40fb4a67f4ce538165ebcb43b8abd53",
+            "ZSESSIONDELETIONSJSON": "2d6d1ccb7a1d4f736c664ee6c9ea62a81df7a5cbc0bb51d1cd7e172f4be1da3b",
+            "ZREVIEWGOALVALUE": "1ae3592f8248c3f879b56afe3f2ce6aad45ba898434796d35c565684397fb3e6",
+            "ZREVIEWGOAL": "522a90224b7457a15c987c38a6fb6c183c37ae39dd627bdc46e9120dedda7504",
+            "ZLOCALDATACLEANUPJSON": "ce6558960ff0913e86513e872bdd93bf836981d16dff0eee8d8d8d37c57d3972",
+            "ZAGENTDRAFTIMAGE": "1d8fc6ceb1f94c6326d6d5483d258fcb2e179e9869325b245d105c2219bf69fd"
+          }
+        },
+        "ZCAPTURETASK": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "Z_PK": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_ENT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_OPT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZLOCALCOMMITDONE": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZRETRYCOUNT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSOURCE": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZCREATEDAT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZUPDATEDAT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZERRORCODE": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZEVENTSJSON": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZINTENT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZPAYLOADJSON": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZRECEIPTJSON": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSTATUS": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSTATUSTRAILJSON": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZUSERSTATUS": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "ZFSRSSTATE": {
+          "count": 8,
+          "digest": "b04da165379945c9218c6970b1e54971ac25becbe143f80ca2e22ae8037e0a78",
+          "columns": {
+            "Z_PK": "b2ddd6543011e658aaebc223b42021e89fa9a18bd1f2207f6cb68e73ca5688b3",
+            "Z_ENT": "cd93bac810470f12553ca1351c6004f03574a851e8f535cb6c3f5f4bebd5c7a6",
+            "Z_OPT": "3c1425b38d52d1967a20a1ce4abe58b11af7d5260e368e378cbbc12574a967e8",
+            "ZLAPSES": "677fa2df2254c7ad2cfdcf25373a5c0dc259d0a092f9b2e46ffca8b72a1b4bbc",
+            "ZREPS": "677fa2df2254c7ad2cfdcf25373a5c0dc259d0a092f9b2e46ffca8b72a1b4bbc",
+            "ZDIFFICULTY": "55270232b6dc2bae9fb55eec0426ef514613de5a94e9a8ac22a813ce41c11bc7",
+            "ZDUEAT": "1f91fcaa7349c83176e82d3db128ae661ee09b2740b33e20a94d3f606dec974e",
+            "ZSTABILITY": "8dc824b105925b7e0e37130e197ba8308f3a6be2ed23921e2ca5a660fb7aa04f",
+            "ZALGORITHMVERSION": "a69c4ef208b051910fe60fc2f9a74be3dff97b3060d6e7516d402b729dbd676c",
+            "ZLASTEFFECTIVEGRADE": "5c9ff34e9e1abd50c456f61c699f25107f9e7a42201070117e1c8ad964485031",
+            "ZPARAMETERVERSION": "93473fa10ccc6cd8276ddf2c00579ae1e1884618336df55949adc45e67be5a5d",
+            "ZKNOWLEDGEID": "08bfb3f33bcf68dcb8aea12e590d8215f9372ef7de1599c018d3000b9baf43fe",
+            "ZSCHEDULERJSON": "574fee1a0aba0d9a42e3c4b5e191bb8ebabe6578cf58009020a837ae9901f682"
+          }
+        },
+        "ZKNOWLEDGE": {
+          "count": 8,
+          "digest": "5576667052f164e342693b91f61b33846e2a1a493410ea876e03fb2ef666cd61",
+          "columns": {
+            "Z_PK": "b2ddd6543011e658aaebc223b42021e89fa9a18bd1f2207f6cb68e73ca5688b3",
+            "Z_ENT": "355d07fa606531f96bb17ecb89e9e60344810958b45fe43a61e659bed52a4a21",
+            "Z_OPT": "3c1425b38d52d1967a20a1ce4abe58b11af7d5260e368e378cbbc12574a967e8",
+            "ZFORCEDUE": "677fa2df2254c7ad2cfdcf25373a5c0dc259d0a092f9b2e46ffca8b72a1b4bbc",
+            "ZSKIPTWOHOURWAIT": "677fa2df2254c7ad2cfdcf25373a5c0dc259d0a092f9b2e46ffca8b72a1b4bbc",
+            "ZVERSION": "3c1425b38d52d1967a20a1ce4abe58b11af7d5260e368e378cbbc12574a967e8",
+            "ZSOURCE": "59211373337588b744c63af0b382307a79936287d29a27508fa2302d4cb373cb",
+            "ZCREATEDAT": "fbc992c335269017e7d4ba3a754b0845e42c3a76982778b3f9ab7d422850a216",
+            "ZDUEAT": "b048b8a0579d0eadb262d644200ac97e63a50568dbb11e580c31ea32766f4eb6",
+            "ZANSWERLANGUAGE": "5810c626763d74bf1db527ae69483e870255f697ae79f545a05a6638636db7e4",
+            "ZCONTENTLANGUAGE": "5810c626763d74bf1db527ae69483e870255f697ae79f545a05a6638636db7e4",
+            "ZEVIDENCEEXCERPT": "30ad05aa3072ede2de2747e516da5b1d64f84e50e96f183faad20f6207bd03c4",
+            "ZEVIDENCELOCATOR": "d1ad4ae3fe09a40aa0fd036cd2d330a9f0e07a3a93e3a2f66c1399e36363b87a",
+            "ZEXPLANATION": "5c9ff34e9e1abd50c456f61c699f25107f9e7a42201070117e1c8ad964485031",
+            "ZKNOWLEDGETYPE": "60112ac4e2d74de00c4a20efcf9ccf7c2050ce89ad1f551cd4b08de33945a3ec",
+            "ZLEARNINGGOAL": "0361084835b61db748d9da9784966cf3f7ffba673c804490af58493cb13a5bb8",
+            "ZLIFECYCLE": "4f2a53a0913253dc1a9c7160f80f706802361807e8ecc2c632649270a2fb2646",
+            "ZQUESTIONLANGUAGE": "5810c626763d74bf1db527ae69483e870255f697ae79f545a05a6638636db7e4",
+            "ZTHEME": "599280f7820dd7e69f58ed2a917b05d71454023be5de20ca877e7fbe154fab2f",
+            "ZTITLE": "5c9ff34e9e1abd50c456f61c699f25107f9e7a42201070117e1c8ad964485031",
+            "ZID": "783e3945d525887a06b6d4a3d228e1acef05558279c0544e233104ed0b660352",
+            "ZORIGINSESSIONID": "574fee1a0aba0d9a42e3c4b5e191bb8ebabe6578cf58009020a837ae9901f682",
+            "ZORIGINTASKID": "574fee1a0aba0d9a42e3c4b5e191bb8ebabe6578cf58009020a837ae9901f682",
+            "ZSTUDIEDAT": "574fee1a0aba0d9a42e3c4b5e191bb8ebabe6578cf58009020a837ae9901f682",
+            "ZREVIEWENROLLMENT": "574fee1a0aba0d9a42e3c4b5e191bb8ebabe6578cf58009020a837ae9901f682"
+          }
+        },
+        "ZKNOWLEDGEREFERENCE": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "Z_PK": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_ENT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_OPT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZCREATEDAT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZRELATION": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZKNOWLEDGEID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSESSIONID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZTASKID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "ZLEARNINGTASK": {
+          "count": 3,
+          "digest": "6ea32985ef73482913cc432b6ae41166adb521fbcbb242e9587475fb21fd2d8a",
+          "columns": {
+            "Z_PK": "45ef248d6c30f780aaaa04cf2a10745ea5ed3cc337ab0ea4ff90e7e0253fc042",
+            "Z_ENT": "a6fb35a21ba46b22a47ae04f939dbdca2476eb348aa6aafc118b82e73ddf0848",
+            "Z_OPT": "b083e25a23e756a5543058b132305c7a511729efd067de1be72d0752590de5d2",
+            "ZCONVERSATIONMANAGED": "9e07ab64261fb6803c6572f7b5c3098ea68fb45873128af820d42a2262eb900b",
+            "ZLASTACKEDSEQ": "92f8883eacc79423d25d70e40aba39d64e5a2a644d7661823b046dc52e3c5737",
+            "ZLASTEVENTSEQ": "92f8883eacc79423d25d70e40aba39d64e5a2a644d7661823b046dc52e3c5737",
+            "ZLIFECYCLEREVISION": "2a08979e8002252124e861b2816490b04fe03b6b779f9287fb7c25652bbc4052",
+            "ZMEMORYCOMMITTED": "2a08979e8002252124e861b2816490b04fe03b6b779f9287fb7c25652bbc4052",
+            "ZRETRYCOUNT": "2a08979e8002252124e861b2816490b04fe03b6b779f9287fb7c25652bbc4052",
+            "ZCREATEDAT": "0991a22bc91bcfa7127a5c4526f7e5cf3276587b7de1508c45a9e378644edbdb",
+            "ZUPDATEDAT": "dcf9338e0abadb3118045a7ed70f44b1ce39a69926c42279f18813de237d7a17",
+            "ZDRAFTTARGETID": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZERRORCODE": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZLEARNINGOUTCOMEJSON": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZLEARNINGPLANJSON": "fc8e83652740c52554b7f596ff2868646011af1151afc9c7f2204c230d757572",
+            "ZMEMORYREFERENCESJSON": "7a9e77eba22295035b7bd18d466ad7f78c52ffa14ede211da410e4fc524a340a",
+            "ZMODE": "41d847502ba9e97368fc1ec749ca0769551fb08ba1866902d7a3bbd968053a3f",
+            "ZPENDINGACTIONCONTENT": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZPENDINGACTIONTYPE": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZREQUIREDACTIONOPTIONSJSON": "e837040b74a6d8386806c60c304aa362195be9b25faae9024dc3bb437f77ec7b",
+            "ZREQUIREDACTIONPROMPT": "d50e5cd0df7e04dbc222a69ac7904606b65f3293d27df2c7e820b9896617c7f4",
+            "ZREQUIREDACTIONTYPE": "e2c8238f0dba7628d6fde2c0d41fe0cdfbcb9803e179cf1a06d0f0d6e5b82727",
+            "ZRESULTSUMMARY": "799c55d702efedb7750db18b36386fc3a3f4be7dddcfb649adeb41a3ed0da228",
+            "ZSOURCESJSON": "10f63087188568b8fa8d1be552fe095e9f57f152697116af36af99196257ad21",
+            "ZSTAGE": "8cbc4e3ef4ff28e695d2033e8772949861d37f8e919e1e1966f9345f76094872",
+            "ZSTATUS": "49e57643e37d266ec35bf0600635f3edf70362a8b1030b18d04885c9e0bfeaf1",
+            "ZUNDERSTANDING": "87ebf569fc8c49a7ac429657b525bcd8b8af84feb0eb2d3a4dfbbefd332fea68",
+            "ZUSERSUMMARY": "88b16553893fe39f952fdae01168268f74ce87095e6210ab885fcb92de6f4d87",
+            "ZID": "90317bcde7e09e8b0027a1400fabdb3d094b6d5901e5b2a661ff9e6ee33788f8",
+            "ZINPUTMESSAGEID": "4575a4640526cefc1659715157126ed464418621293dba0a0d62d8b7d8f6e1b9",
+            "ZPENDINGACTIONID": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZSESSIONID": "d1c1d305c11c6cd8e2a22450cd77a06f4360f937f3ceceb0ae41b5054161e35d",
+            "ZSOURCEID": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZGOALOWNERSHIPJSON": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692"
+          }
+        },
+        "ZQUESTION": {
+          "count": 11,
+          "digest": "f98cc1ae5de1973e64ce8853c83228b5d5395260cf5d108f81d3a932ad5bdc2a",
+          "columns": {
+            "Z_PK": "e1330a9fe8a1883cb0bdc41e4fb5d25cf1c4fcd4c48b2c360d6da717513e1e4e",
+            "Z_ENT": "9c211f6026753c9c9186aede7f60ec8a22e6890f94f33304741f49912243ac0c",
+            "Z_OPT": "d124fa2628a818b2bbe8c0418f663933c21044061f62178eca3121a8251280e5",
+            "ZKNOWLEDGEVERSION": "d124fa2628a818b2bbe8c0418f663933c21044061f62178eca3121a8251280e5",
+            "ZVARIANTINDEX": "5274492e698c6606b1a28d227787c7d184f958d9848d05113a1cb486ac94f508",
+            "ZKNOWLEDGE": "daa32bd68cabed592bb2c2572d1e4113f2704e30d36e063df179c372398b3248",
+            "ZPROMPTTEXT": "fde74e16220b039d818cafb1bc0625eaad721f9e9bd2be06610e417ea8f21e26",
+            "ZSCORINGSPECJSON": "ee5406b2393eb31009d2b74f56aefab6d3d305bf81d2477615a6132bac1edc63",
+            "ZID": "4b8a0aefc42d574447d8c5b391b3c176bde89ab78aade72c80f144b5d6363fb7"
+          }
+        },
+        "ZREVIEWATTEMPT": {
+          "count": 3,
+          "digest": "fbde0608c206e1fc4075ee110a66dee1a1a9b7b89d8bce6aade1c69784197812",
+          "columns": {
+            "Z_PK": "a615eeaee21de5179de080de8c3052c8da901138406ba71c38c032845f7d54f4",
+            "Z_ENT": "33434474faf8caf709337f8f06e15f6b9126e97e876097c286d8e0864041fc6a",
+            "Z_OPT": "9e07ab64261fb6803c6572f7b5c3098ea68fb45873128af820d42a2262eb900b",
+            "ZACKED": "7ead7f2ac1f175e1650b7a7b433f7cbdca3ae29ff06e6ff5c5199d17b731658c",
+            "ZEARLYREVIEW": "2a08979e8002252124e861b2816490b04fe03b6b779f9287fb7c25652bbc4052",
+            "ZHINTUSED": "2a08979e8002252124e861b2816490b04fe03b6b779f9287fb7c25652bbc4052",
+            "ZKNOWLEDGEVERSION": "9e07ab64261fb6803c6572f7b5c3098ea68fb45873128af820d42a2262eb900b",
+            "ZTRANSCRIPTRETRYCOUNT": "2a08979e8002252124e861b2816490b04fe03b6b779f9287fb7c25652bbc4052",
+            "ZAGENTGRADE": "9fb06ab5410d7bc7ffa6868c11a313c3cf9c7e918d1762731d53037cb8ae06cb",
+            "ZANSWERTEXT": "cfda8bb901086e9eddb54f9d393921e0cc8ee1db3871a1c28921ae17519fc4e0",
+            "ZDEGRADEDPATH": "0cabaef2f195933687c2ad8557bd9aca72296f6e2802cd80802f0ed74a5d12bc",
+            "ZEFFECTIVEGRADE": "a7095e31ca5b26d3563b4be7ea73716bac1b217e301800ac705a81c5467affbb",
+            "ZMODE": "fe5a8673f42987323d952eaa883fcc9f8eb796f731045372a0d12b6f3cef06c4",
+            "ZATTEMPTID": "65afa716476c51816e84ee0af7c310a67b69bce33fc7479443ff929b93cb6932",
+            "ZKNOWLEDGEID": "d6bcee1ba51478a25f3ee26ced954117420870dd01e6c081ae54310b6cb6c180",
+            "ZQUESTIONID": "be0ec6ccec9940ecb0cd0fda82771f5f30b523938bee4e9d81a462d19d453e6b",
+            "ZSESSIONID": "95f9c3942e7c6fe7c8ceec79dcaee5ebf003f58e26b228c926a72dc0520b6e48",
+            "ZREVIEWUSERSTATUS": "799c55d702efedb7750db18b36386fc3a3f4be7dddcfb649adeb41a3ed0da228",
+            "ZREVIEWSTATE": "385acea4bab86fb189a99124afb675993b979ae68aabc01b2f79821d14631c9d",
+            "ZREVIEWERRORCODE": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZPENDINGGRADE": "799c55d702efedb7750db18b36386fc3a3f4be7dddcfb649adeb41a3ed0da228",
+            "ZCREATEDAT": "92581640660f923eccb8da01e8001fca026b8c0a068e31799fc923fd015308ab",
+            "ZCOMPLETEDAT": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZINDEPENDENTGRADE": "799c55d702efedb7750db18b36386fc3a3f4be7dddcfb649adeb41a3ed0da228",
+            "ZRUBRICJSON": "799c55d702efedb7750db18b36386fc3a3f4be7dddcfb649adeb41a3ed0da228",
+            "ZJUDGEDAT": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZRUBRICVERSION": "799c55d702efedb7750db18b36386fc3a3f4be7dddcfb649adeb41a3ed0da228",
+            "ZCORRECTEDANSWER": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZSCHEDULERAFTERJSON": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZCORRECTIONREVISION": "2a08979e8002252124e861b2816490b04fe03b6b779f9287fb7c25652bbc4052",
+            "ZSCHEDULERBEFOREJSON": "fe44a8cccd89edae70b54c5e58399979bd7d8b12643a8396ad62d089a781b692",
+            "ZSERVICECOMMITPENDING": "2a08979e8002252124e861b2816490b04fe03b6b779f9287fb7c25652bbc4052",
+            "ZORIGINALANSWER": "799c55d702efedb7750db18b36386fc3a3f4be7dddcfb649adeb41a3ed0da228",
+            "ZDIALOGJSON": "e837040b74a6d8386806c60c304aa362195be9b25faae9024dc3bb437f77ec7b",
+            "ZPROMPTSNAPSHOT": "799c55d702efedb7750db18b36386fc3a3f4be7dddcfb649adeb41a3ed0da228",
+            "ZEVALUATIONJSON": "2079ad2b7f67514fc925282fc25521d09b00e6dcfe4a5320604443b008c3acbe",
+            "ZFEEDBACKTEXT": "799c55d702efedb7750db18b36386fc3a3f4be7dddcfb649adeb41a3ed0da228",
+            "ZASSISTANCEJSON": "e837040b74a6d8386806c60c304aa362195be9b25faae9024dc3bb437f77ec7b"
+          }
+        },
+        "ZREVIEWSESSION": {
+          "count": 4,
+          "digest": "cbdf4e69f66566e26cd8ed425df383231e81e588df00b179291e3904ce28ae9c",
+          "columns": {
+            "Z_PK": "f6bd10506e9a4daed7c03eda2f2fde54be3bd58eee49dab471c18a888ffbdb6f",
+            "Z_ENT": "58d52ea12ebd8eccb94ab8a9b9ccc68347040c9fffd68105258dd855b28fbff1",
+            "Z_OPT": "36f5da0095c3fc4221c72a1c657982661b12c2ea421b05c12ff62d2242d49ce8",
+            "ZPAUSED": "4a09c971672901816cf9043fd2d02e6bf4657585be4be39027eabad7e7e11752",
+            "ZENDEDAT": "41614c5e2152174123f55b085cb4749e445852b7d7060c5b35569ae475d9bcc8",
+            "ZSTARTEDAT": "c4e953943462747a6f078d6237255116dc24e4a8d5e0e845645e7cc5a7d7691c",
+            "ZWINDOWSTARTEDAT": "38ee46f6182cdab48875b8ef2455a904a7395d8803392416cfce77d55ffac7bb",
+            "ZENDREASON": "2b106947513c6b63efc7967edd958baa53fe8571cee2a8991e0d625a9122c051",
+            "ZMODE": "f6ce4b55ed8d35325f43ddf6d7ea6cdc77e479d2c96ff3f39a96a55be9b95bfe",
+            "ZSNAPSHOTJSON": "1dd58ecc11a2f6b12c69193cb1d2c2a7926f9874770ec7502303294997c249b9",
+            "ZID": "7a3c307146df37e494dae3726cc7e6eb51b23d29f54442f6fee3e579b203df14",
+            "ZGOALVALUE": "9cbffec8e9d540c8bf5b4ab1696c29e01b816018445190203d9fa91390e711bf",
+            "ZREVISION": "e14515b2ed0522cad4d22786eaaeb1b620545f3bd57640d1a2871f0846cddcca",
+            "ZCURRENTINDEX": "1c10b03518fff8fc374a20bbf5107c66496656bec0662d6c6db123d4a898f121",
+            "ZGOAL": "a3c3109da9e0d22a87a892a8141b2b100b8e5b94b93b90a1c7b9a33b621aa60f",
+            "ZACTIVESECONDS": "ab5bf271376583a2e9e8ef93e7b1ee199789798118395afebfe69c600518c8c9",
+            "ZRECORDSJSON": "436ae55282373a140e3a808de729ad88ae9094be28fea1e43f2943f366d32bb7",
+            "ZACTIVESINCE": "6cd8cec706fa11110d83fb46f97df1f9be43b4c570f3390e7c7f6a5173f595e6",
+            "ZPROTOCOLVERSION": "b4c2d86b0d6ef6c3ab233b9b447ed394193922f74e01a644cd03e4d85eb8f056"
+          }
+        },
+        "ZSESSIONEVENTRECORD": {
+          "count": 176,
+          "digest": "68f08614a48566018c3864c742583270113e0e59960b978df5046e8101679301",
+          "columns": {
+            "Z_PK": "2a548ffbdcd89f95574f2bd74f4bff9083e9914538ec3ce1be92e207162ca6e5",
+            "Z_ENT": "4cd06fd3ac11edc2afe3db60a649bdbee0c75405dfbe57a67423feb6474b5d19",
+            "Z_OPT": "c2fcf9ee6a35d7cb0ae4af05b8e26756cf15f631e4dc49a42a37ec03dddea969",
+            "ZATTEMPT": "48cc4cf8b42f75b09e0746b78b23fcff08ab2c8798c2dcd2786b07e04882048c",
+            "ZDURATIONMS": "46f02dc7deadcf906291d1527abd04322f747c0f57bea56438472882fb534543",
+            "ZSEQ": "8205f714d677270c947bc02207119351897e73038818d7f18abfca38503ecf68",
+            "ZOCCURREDAT": "b21e20fae90ec683ae251024cbcd1701edd67cf86fc5789e689a6023215fa3d0",
+            "ZDETAIL": "69a47f536f4e0d93f55db96ccdcaccd043cac19f717d2f625343a18ca1badc76",
+            "ZERRORCODE": "fed24cb01d200a744cd7e7e47ba2427034a66e6c27275d9d9ecc21ed7a557aad",
+            "ZMODEL": "24726987a9dbcdbd39e12017e8b9e0213714641329882825a7df5aaf1ef8d883",
+            "ZPAYLOADJSON": "c18ae6be49f2566e545f3910e3fb2a6cb1e2d4c927e4c9c2827da0ddf7bc7cdc",
+            "ZSTAGE": "d02c67a7ff8d74ae8b1cc3eadf3f69184fd528935670860bed8e67c833b99e89",
+            "ZSUMMARY": "e0e12a24b642a72f463f8a4cf9a21cd7f590427921cf62b3c01c85a4b3265dfd",
+            "ZID": "d53b431898f3e032553eedd7f67e23b36d71479f0f5679c8e37697e745910e98",
+            "ZRUNID": "7fbc0bff6540e47be7274a6e7171e00c914c40d54079703a13606b0a20eec0b7",
+            "ZSESSIONID": "a938ba384ba154121fb4ac3080578ff032903c7d676a405c1bead3b9c485a5d2"
+          }
+        },
+        "ZSESSIONFOLDER": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "Z_PK": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_ENT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_OPT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZCREATEDAT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZNAME": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "ZSESSIONSUMMARYRECORD": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "Z_PK": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_ENT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_OPT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZVERSION": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZUPDATEDAT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZCONFIRMEDDECISIONSJSON": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZGOAL": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZKNOWLEDGEREFSJSON": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZOPENQUESTIONSJSON": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSOURCEREFSJSON": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSESSIONID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "ZSOURCE": {
+          "count": 1,
+          "digest": "7581b8477e7991dc39279570dcfb007ec6cebff587d66cf5ea5a8330a2a30162",
+          "columns": {
+            "Z_PK": "46b1884167c4edd308bcf0c04163dd02d05c9742b35e86b57b5f7ed1b82f3850",
+            "Z_ENT": "fe3b7b3db0778380f48e04b7f215ea1ac524bf0a846bcf78f8e3da2727707f1a",
+            "Z_OPT": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+            "ZCREATEDAT": "2ad0f0cf42c726ddea7a0f6fd46149b252d808266fc78eb5d896144a99180db5",
+            "ZATTRIBUTION": "a1e1754af70d1d70fcbd0c0c503e1a375f6ff923aa4f974b62cc39cc06d9b6dd",
+            "ZAUDIOPATH": "1d8fc6ceb1f94c6326d6d5483d258fcb2e179e9869325b245d105c2219bf69fd",
+            "ZINPUTTYPE": "172f6d9f96f85f976267f4ceeebd48e9049ee1427ca4b1a7d80026b40ce04211",
+            "ZRAWTEXT": "afbc30ac0778c90bed9afb5e983a77b9bbfdc3f28cd55aca4bbee29b365943b3",
+            "ZURL": "afbc30ac0778c90bed9afb5e983a77b9bbfdc3f28cd55aca4bbee29b365943b3",
+            "ZID": "d35c08eee72124cf9a780691dd7c2793c0f47a30fd69095b2ab1d285d10a7a76"
+          }
+        },
+        "ZSOURCEREFERENCE": {
+          "count": 3,
+          "digest": "45e443869beaf927dde7a59cbe78d1fb535c2b40e1801980ecfd14f06ca13a03",
+          "columns": {
+            "Z_PK": "dd301426e9dd4a884e646a1e2ea7f1d0f9db9514f49de7cf6e24bf1062e35b18",
+            "Z_ENT": "532f76c715d0a1a5069464dcc61214ae4a8709affc9a9579254d879bccddc118",
+            "Z_OPT": "1725b035cada5eb4ac5484a20a15c2525db0606b736ec83326bcff3806262ef9",
+            "ZCREATEDAT": "de25566dda389d558c82667b4a458f919a18b2fb7581be78da311dd3317cd394",
+            "ZEVIDENCESTATE": "9ce99b9b3044e9c6de56ce7c8aabd96e085deb8d38427d2de14879d7653931ce",
+            "ZLOCATOR": "1f663dc8aed18f779eba1e9776389ae5b58ba9f93dfa537d97ae312ea8042882",
+            "ZTITLE": "233b81f912877a54572182e73a595ac11df0e9a57a2624ce669943e3d9a80717",
+            "ZURL": "799c55d702efedb7750db18b36386fc3a3f4be7dddcfb649adeb41a3ed0da228",
+            "ZID": "e996a880631f3c7f23adff57760341175cbdae256571ef75215f5129e4f348e5",
+            "ZSESSIONID": "d1c1d305c11c6cd8e2a22450cd77a06f4360f937f3ceceb0ae41b5054161e35d",
+            "ZTASKID": "90317bcde7e09e8b0027a1400fabdb3d094b6d5901e5b2a661ff9e6ee33788f8",
+            "ZSOURCETYPE": "58b2431ea9e0a10ac8ce2aaeff9e6db7b2c0bea29c3166ca5cd98e7160745a9b",
+            "ZSOURCEVERSION": "9e07ab64261fb6803c6572f7b5c3098ea68fb45873128af820d42a2262eb900b",
+            "ZCONTENTSNAPSHOT": "f81688bebff20779bc02bcb79c4216f0c51fef41869e1ae08318821d655aa6b8",
+            "ZFETCHEDAT": "9e13f0e899c052ec200ba0cb8306409eb4cd15e5a4a38316d14aef665a143ee6",
+            "ZVERSIONHISTORYJSON": "e837040b74a6d8386806c60c304aa362195be9b25faae9024dc3bb437f77ec7b"
+          }
+        },
+        "ZTASKEVENTRECORD": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "Z_PK": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_ENT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "Z_OPT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZATTEMPT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZDURATIONMS": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSEQ": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZOCCURREDAT": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZDETAILSUMMARY": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZERRORCODE": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZNODE": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZRECOVERYACTION": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZREQUIREDACTIONJSON": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSTAGE": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSTATE": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZUSERSUMMARY": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZEVENTID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZMESSAGEID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZSESSIONID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "ZTASKID": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "Z_METADATA": {
+          "count": 1,
+          "digest": "e52173f7df623d162284a581e5554fad1067aed3445f107b5b13154573321128",
+          "columns": {
+            "Z_VERSION": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+            "Z_UUID": "27dbc4d9ab5ee3689467d22c7d50001661695c2c554ef25698ab88b0e313a7d0",
+            "Z_PLIST": "893d0564f05fec641cca2f399804de6a885a104278ed04aa3744ec4cf34f89ef"
+          }
+        },
+        "Z_MODELCACHE": {
+          "count": 1,
+          "digest": "f83202d2eff803817d184726d3ad81467f10749cc7cc45be275ded7877f1b63d",
+          "columns": {
+            "Z_CONTENT": "0a08b01477de7b06877df5f7746c76c738c2689448677f1125799b06e0dad88a"
+          }
+        },
+        "Z_PRIMARYKEY": {
+          "count": 22,
+          "digest": "d4c1ab535cb0ac3dd63d9ff545e3b36f281ddd2d77f5bb4c3f1ea4aeba6baec7",
+          "columns": {
+            "Z_ENT": "2a75ef2207f17c421cc427e98a1ba3915c41e5b1debab63592bdd4c099a4c099",
+            "Z_NAME": "f9ce9857bd44f44e4b05cbde51045dc6aea6d282e102e9b2707d79bb08252af2",
+            "Z_SUPER": "a4ba07df73e3f27106f9b6a3a3ef8bed2aa1b731103403994c12ff27cb8a5c27",
+            "Z_MAX": "497c4df9cf1bf7e1d27271f4cc13c7d43ac828ac205f0826eab0edfe84a4cef3"
+          }
+        }
+      }
+    },
+    "agent-harness.sqlite3": {
+      "integrity": [
+        "ok"
+      ],
+      "tables": {
+        "agent_memory_policy_v2": {
+          "count": 33,
+          "digest": "496e8472cdb32a4f8136318ebe43e86e1d9ec603134b96cc2cd92a134a0bd900",
+          "columns": {
+            "session_id": "3ce06a81805c75239161e838560be05fc9e6c5a829de7d0eaf467e985e6ad986",
+            "payload": "9f06f249dc432f0eddfc0c370e471395f6e097d0940d5b4b32c5373850c046fa"
+          }
+        },
+        "agent_session_deletions": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "session_id": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "action_id": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "lifecycle_revision": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "deleted_at": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "agent_sessions_v2": {
+          "count": 33,
+          "digest": "6b1e0ccfa6d6f22316f9c91207e245fb50a16d84f2851d4f906d80328ee689cb",
+          "columns": {
+            "session_id": "35b34b3ad5d5ea0322f2c412647d81c9222e8531c63e533a4d845996b6ab29f6",
+            "payload": "7350c1a77ef9198933d1b8529ddf2335a0f28b935cbb6e10c3c9082f2c923685"
+          }
+        },
+        "agent_voice_usage": {
+          "count": 1,
+          "digest": "8d11b00192fba3fb0d453a158e5fdcce9cf48cd5ba21d76d5c448fcf86361e25",
+          "columns": {
+            "model": "02bc47c6baa190f39add476625df0c6ea82ae7d5b56624706dbba9588e66b802",
+            "duration_ms": "1ff5aa982b5b5eaa036229e4c774f6a485e4bd0f49e34aed0d3735862f3de742",
+            "calls": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+            "input_bytes": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+            "output_bytes": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+            "usage": "06d303a9b27b9a13deb84c837b84a50d7d4423393aae3f9b03a73543785ee0b3"
+          }
+        },
+        "harness_tasks": {
+          "count": 13,
+          "digest": "c4d1e0a2a7e6d71a2a0816650fd1c55e9c7a534b41562dd973bf20d78119a686",
+          "columns": {
+            "task_id": "ddafdfe50ecd7aa46b440272a2d75e19318f6e724c184224550819503144ecee",
+            "session_id": "030fa542318b1ac2445820e810fa20411e428135d285e149a79659dc1308c1cc",
+            "client_message_id": "db33aa65c780313af7ac431aa5e8ac4b2a63bf6d98dd7d3ed175bd5fa5844126",
+            "updated_at": "dac7c58cd6c841c22a3a55231c93b6a29e57952999aafe0019e814579e0268b4",
+            "payload": "b2221e5b7539349c38c19c424cdc02e72256b714c1b7fa507cac82fd91fc769b"
+          }
+        }
+      }
+    },
+    "agent-harness.review.sqlite3": {
+      "integrity": [
+        "ok"
+      ],
+      "tables": {
+        "review_commits": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "id": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "revision": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "payload": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "review_deleted_sessions": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "id": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "review_inputs": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "id": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "payload": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "review_sessions": {
+          "count": 1,
+          "digest": "a6801a91b490166f4bda48f9d0ac316e201233b4287927a43ab2f5767f4090c1",
+          "columns": {
+            "id": "081e4a0e9e458263c4780139700d1450db89a09146b542219c3b0a1fa827de6f",
+            "revision": "06d033ece6645de592db973644cf7357255f24536ff7b03c3b2ace10736f7636",
+            "paused": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+            "binding": "834080d306fa9b56b10f667c87331c857e7929b153722db0ccd2c0630cce4e1d"
+          }
+        },
+        "review_turns": {
+          "count": 0,
+          "digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "columns": {
+            "id": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "session_id": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "result": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "review_voice_usage": {
+          "count": 2,
+          "digest": "74e2c2956489c169d8341cf6b4c726a73b61bb0087c83dda6b10dcbfb739b3e7",
+          "columns": {
+            "session_id": "c9f722a38605ad7990c580d0fe97880337eba5faf0edd5b81a3bf21c3dc72602",
+            "model": "d76ef8e1b8067c9d1cae83243a9606b4878e671de33cafa7461fcbdab1ee5636",
+            "duration_ms": "d9c8c715541c47b1cc4902fa6de6cf5712a2b4c85ee23ab3ca2e0eec5fb188bf",
+            "calls": "3d5812abc84c11768aa73a732c85d75dbed439188f5bb3239e9b762ea31d9862",
+            "usage": "598e3b659eac3a572ae3955e506ba61a32e093347d38f8ba02b80ba6911d61d1"
+          }
+        }
+      }
+    }
+  },
+  "backup_checks": {
+    "Data/ReviewToday.store": true,
+    "agent-harness.sqlite3": true,
+    "agent-harness.review.sqlite3": true
+  },
+  "support_file_count": 189,
+  "support_bytes": 1552402686,
+  "source_unchanged_during_backup": true,
+  "installed": false,
+  "replacement_paused_reason": "用户反馈预览卡结构仍需重评；本轮仅安全备份并恢复旧日常 App",
+  "original_app_binary_unchanged": true,
+  "restored_original_app": {
+    "method": "CUA getApp exact original path",
+    "path": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+    "window": "今天",
+    "visible_knowledge_count": 8,
+    "no_user_message_sent": true
+  },
+  "backup_integrity": {
+    "Data/ReviewToday.store": [
+      "ok"
+    ],
+    "agent-harness.sqlite3": [
+      "ok"
+    ],
+    "agent-harness.review.sqlite3": [
+      "ok"
+    ]
+  }
+}

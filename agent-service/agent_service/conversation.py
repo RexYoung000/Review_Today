@@ -129,7 +129,7 @@ class ConversationHarness(ConditionalTeaching):
                     # learning-only projection from the superseded attempt.
                     for key in ("resolved_input", "resource_scope_reply", "programming_scope_reply", "request_scope",
                                 "dialogue_only", "social_reply_kind", "activity_candidate", "learning_concepts", "material_followup",
-                                "capture_scope_update", "evaluated_binding", "verified_concepts", "capture_quotes", "capture_feedback_quotes", "capture_scope_summary"):
+                                "capture_scope_update", "evaluated_binding", "verified_concepts", "capture_quotes", "capture_feedback_quotes", "capture_scope_summary", "capture_preview"):
                         run.pop(key, None)
                     summary = "已收到补充，正在调整"
                 else:
@@ -1347,6 +1347,8 @@ class ConversationHarness(ConditionalTeaching):
             current["runs"][rid]["learning_concepts"] = output.learning_concepts
             if output.capture_update:
                 current['runs'][rid]['capture_scope_update'] = output.capture_update.model_dump()
+            else:
+                current['runs'][rid].pop('capture_scope_update', None)
         intro = run.get("continuation_intro")
         text = (intro + "\n\n" if intro else "") + output.message
         text = bound_source_links(text, readable_urls)
@@ -1530,6 +1532,7 @@ class ConversationHarness(ConditionalTeaching):
                               capture_quotes=getattr(result, 'capture_quotes', []),
                               capture_feedback_quotes=getattr(result, 'capture_feedback_quotes', []),
                               capture_scope_summary=getattr(result, 'capture_scope_summary', ''),
+                              capture_preview=(result.capture_preview.model_dump() if getattr(result, 'capture_preview', None) else None),
                               verified_concepts=binding["concepts"] if effective_pass else [])
             previous_pass = ctx.get("independent_passed", False)
             hint_used = ctx.get("hint_used", False)

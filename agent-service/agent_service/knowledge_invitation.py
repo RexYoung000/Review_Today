@@ -9,6 +9,7 @@ import uuid
 
 from agent_service.learning_memory import merge_references
 from agent_service.learning_progress import _visible_quote
+from agent_service import capture_preview
 
 
 UPDATE_INSTRUCTION = """\n本轮 capture_candidates 是尚未保存的知识点邀请，不是已生成卡片。
@@ -16,6 +17,9 @@ UPDATE_INSTRUCTION = """\n本轮 capture_candidates 是尚未保存的知识点�
 retained_fragment_ids 只保留仍成立且属于该知识点的旧来源片段 ID；evidence_quotes 从本轮 message
 逐字连续摘录该知识点的新解释。纠正时排除已推翻的旧片段，不将旧错误与新结论一起保留。
 scope_summary 用一句简短的具体知识概括更新后内容，包含本次补充的要点；不重复标题，不写“对应讲解、有效纠正、保存范围”等流程词，不宣称已保存或已掌握。
+preview 同步重新概括更新后仍成立的全部内容：points 为少量自然要点，summary 为一句总结；每项 text 附 evidence_quotes，逐字引文只能来自本次保留的旧片段或新 evidence_quotes。
+更新已有可靠片段时必须给 preview，不能只改 scope_summary 或因为尚未保存返回 null；这只是允许的简略内容概括，仍未生成完整卡片。
+纠正时整组替换预览，不把排除的旧错误留在要点或总结里；保留会改变结论的条件，不为凑条数重复、补写知识或机械截句。无可靠预览时为 null，保留原一句范围兼容；不要生成完整卡片、评分标准或题目。
 同一知识点的适用条件、限制、反例和时效边界都是对原内容的补充，已经解释这些内容时必须更新，不能返回 null。
 范围只能属于原 concepts；其他新知识点即使同属一节也不合并。没有对应的有效补充时 capture_update=null。
 这只是选择来源与说明范围，不生成知识卡，不改写已保存内容，不重发新增知识邀请。
@@ -106,6 +110,7 @@ def published(h, data, run, message):
         offer.update(version=offer['version'] + 1, fragments=kept + added,
                      scope_summary=update['scope_summary'], error='',
                      status=offer.pop('status_before_correction', offer['status']))
+        capture_preview.replace(offer, update.get('preview'))
         offer.pop('correction_pending', None)
         offer.pop('correction_run_id', None)
         _sync_source(offer)
@@ -167,6 +172,7 @@ def published(h, data, run, message):
                  lifecycle_revision=data.get('lifecycle_revision', 0), status='offered', next_request='',
                  continuation_consumed=True, requires_mastery=False, error='', knowledge_ids=[],
                  public_search_query=task['context'].get('public_search_query', ''))
+    capture_preview.replace(offer, run.get('capture_preview'))
     _sync_source(offer)
     topic_capture.offers(data)[identity] = offer
     topic_capture.emit(h, data, run, offer)

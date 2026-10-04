@@ -1,0 +1,18 @@
+QA isolated store: /tmp/review-today-topic-native-60F22301-0D3A-40FB-848C-962583559E4F
+sandbox_extension_issue_file_to_process failed for /tmp/review-today-topic-qa.sufb5c/TopicCaptureQA.app: 1 (Operation not permitted)
+QA {"cards_created":0,"daily_data_used":false,"event":"reset","invitation":true,"phase":"idle","sequence":1,"synthetic_backend":true}
+QA {"anchor_retained":true,"cards_created":0,"daily_data_used":false,"event":"scope_refreshed","phase":"idle","sequence":1,"synthetic_backend":true,"version":2}
+QA {"daily_data_used":false,"event":"bound_action","kind":"capture_save","phase":"idle","review_requested":false,"sequence":1,"synthetic_backend":true,"version":2}
+QA {"cards_created":0,"daily_data_used":false,"event":"generation_started","generation_is_simulated":true,"phase":"memory_generation","sequence":1,"synthetic_backend":true}
+QA {"cards_created":0,"daily_data_used":false,"event":"local_save_started","phase":"committing","sequence":1,"success_receipt":false,"synthetic_backend":true}
+QA {"cards":2,"daily_data_used":false,"event":"durable_receipt","phase":"committing","receipts":1,"sequence":1,"synthetic_backend":true}
+QA {"cards":2,"daily_data_used":false,"event":"commit_completed","generation_is_simulated":true,"phase":"saved","receipt_verified":true,"sequence":1,"synthetic_backend":true}
+QA {"callbacks":1,"card_on_disk":true,"daily_data_used":false,"event":"open_knowledge_callback","phase":"saved","sequence":1,"synthetic_backend":true,"target_in_saved_receipt":true}
+QA {"cards_created":0,"daily_data_used":false,"event":"reset","invitation":true,"phase":"idle","sequence":2,"synthetic_backend":true}
+QA {"daily_data_used":false,"event":"bound_action","kind":"capture_later","phase":"idle","review_requested":false,"sequence":2,"synthetic_backend":true,"version":1}
+QA {"cards_created":0,"daily_data_used":false,"event":"capture_deferred_or_skipped","phase":"deferred","sequence":2,"status":"deferred","success_receipt":false,"synthetic_backend":true}
+QA {"daily_data_used":false,"event":"bound_action","kind":"capture_save","phase":"deferred","review_requested":false,"sequence":2,"synthetic_backend":true,"version":1}
+QA {"cards_created":0,"daily_data_used":false,"event":"generation_started","generation_is_simulated":true,"phase":"memory_generation","sequence":2,"synthetic_backend":true}
+QA {"cards_created":0,"daily_data_used":false,"event":"local_save_started","phase":"committing","sequence":2,"success_receipt":false,"synthetic_backend":true}
+QA {"cards":2,"daily_data_used":false,"event":"durable_receipt","phase":"committing","receipts":1,"sequence":2,"synthetic_backend":true}
+QA {"cards":2,"daily_data_used":false,"event":"commit_completed","generation_is_simulated":true,"phase":"saved","receipt_verified":true,"sequence":2,"synthetic_backend":true}

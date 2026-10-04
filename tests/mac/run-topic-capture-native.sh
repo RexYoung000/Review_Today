@@ -1,5 +1,10 @@
 #!/bin/bash
 set -euo pipefail
+qa_mode="${1:-run}"
+if [[ "$#" -gt 1 || ( "$qa_mode" != "run" && "$qa_mode" != "--build-only" && "$qa_mode" != "--check" ) ]]; then
+    echo "Usage: $0 [--build-only|--check]" >&2
+    exit 2
+fi
 cd "$(dirname "$0")/../.."
 qa_dir="$(mktemp -d /tmp/review-today-topic-qa.XXXXXX)"
 python3 - "$qa_dir" <<'PY'
@@ -15,4 +20,8 @@ with (contents/'Info.plist').open('wb') as f: plistlib.dump(dict(CFBundleIdentif
 subprocess.run(['codesign','--force','--sign','-',str(app)],check=True)
 print(app,flush=True)
 PY
-"$qa_dir/TopicCaptureQA.app/Contents/MacOS/TopicCaptureQA"
+if [[ "$qa_mode" == "--check" ]]; then
+    "$qa_dir/TopicCaptureQA.app/Contents/MacOS/TopicCaptureQA" --fixture-check
+elif [[ "$qa_mode" != "--build-only" ]]; then
+    "$qa_dir/TopicCaptureQA.app/Contents/MacOS/TopicCaptureQA"
+fi

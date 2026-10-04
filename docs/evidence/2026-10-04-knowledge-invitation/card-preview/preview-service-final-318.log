@@ -1,0 +1,14 @@
+Evidence: original redirected process log, copied with redaction.
+Original: /tmp/review-today-preview-service-final.log
+Working directory: <project>/agent-service
+Final prompt revision was already applied before this run.
+
+Command:
+qa_preview_final="$(mktemp -d /tmp/review-today-preview-final.XXXXXX)"
+REVIEW_TODAY_HARNESS_DB="$qa_preview_final/checkpoint.sqlite3" .venv/bin/python -m unittest tests.test_knowledge_invitation_preview tests.test_knowledge_invitation tests.test_knowledge_invitation_scope tests.test_capture_evaluation_quotes tests.test_topic_capture tests.test_topic_capture_sources tests.test_check_binding tests.test_teaching_alignment tests.test_knowledge_capture_status tests.test_knowledge_status_continuity tests.test_knowledge_status_context tests.test_knowledge_status_routing tests.test_conversation_v2 tests.test_conversation_http tests.test_checkpoint_delta tests.test_judgment_harness tests.test_judgment_quality -q > /tmp/review-today-preview-service-final.log 2>&1
+
+Original output:
+----------------------------------------------------------------------
+Ran 318 tests in 117.362s
+
+OK

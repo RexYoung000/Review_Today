@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field, create_model, field_validator
 
 from agent_service.judgment_types import JudgmentRequest, digest, question
 from agent_service.learning_progress import current_step, check_reference
+from agent_service.capture_preview import CapturePreview, optional_preview
 from agent_service.schemas import (ScoringSpec, ConversationOutput, QuestionAnalysis,
                                   ProblemCoachBundle, MasteryEvaluation, CheckBinding,
                                   validate_capture_quote_fields)
@@ -50,6 +51,13 @@ class JudgmentFeedback(BaseModel):
         description="本次 feedback 内对应知识点的解释或纠正的连续逐字选段；排除评分、鼓励和新题，没有时为空。")
     capture_scope_summary: str = Field(default="", max_length=160,
         description="用一句具体知识说明所选来源的保存范围，不写流程、评分或保存承诺。")
+    capture_preview: CapturePreview | None = Field(default=None,
+        description="所选知识片段的少量要点与一句总结，每项附当前连续逐字引文；只作简略邀请预览，不生成完整卡片。无可靠内容时为 null。")
+
+    @field_validator('capture_preview', mode='before')
+    @classmethod
+    def safe_capture_preview(cls, value):
+        return optional_preview(value)
 
     @field_validator("capture_quotes", "capture_feedback_quotes")
     @classmethod
@@ -71,6 +79,10 @@ capture_feedback_quotes 只从你本次输出的 feedback 连续逐字摘录这�
 这两个字段只是新增知识邀请的来源范围，不生成知识卡，不改变原始判题标准、通过判定或理解状态。
 capture_scope_summary 用一句简短的具体知识概括所选来源，例如“RAG 检索资料辅助回答；微调通过训练调整模型参数。”
 不重复标题，不说“对应讲解、有效纠正、保存范围、通过检查”，保留必要条件，不添加选段以外的知识。
+capture_preview 只概括 capture_quotes 与 capture_feedback_quotes 选中的实际知识：points 给少量简短自然要点，summary 给一句总结。
+有可靠的所选知识片段时必须同时给出 capture_preview，不能只给 capture_scope_summary 或因为“尚未生成卡片”返回 null；简略预览是允许的知识概括，仍未生成完整卡片。
+每项使用 text 与 evidence_quotes，引文必须连续逐字来自这些已选片段；概括可以用自然说法，但不能扩大引文含义或漏掉会改变结论的条件。
+只选实际存在的要点，不凑固定条数，不机械截句或重复凑数，不生成完整卡片、评分标准或题目；没有可靠预览时为 null，仍保留原 scope_summary。
 本题答对时 feedback 用一两句点明答对之处或必要纠正；无需复述整节讲义、列出已通过知识点、声明其他章节未验证或反复邀请继续追问。
 """
 

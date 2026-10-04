@@ -3,6 +3,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 from agent_service.image_inputs import ImageAttachment
+from agent_service.capture_preview import CapturePreview, optional_preview
 
 KnowledgeType = Literal["fact", "concept", "procedure"]
 Attribution = Literal["claim", "source_view", "personal"]
@@ -571,6 +572,13 @@ class MasteryEvaluation(BaseModel):
         description="仅取本次 feedback 中对应知识点的解释或纠正，连续逐字摘录；排除评分、通过描述、鼓励和新题。没有时为空。")
     capture_scope_summary: str = Field(default="", max_length=160,
         description="用一句具体知识说明 capture_quotes 与 capture_feedback_quotes 的保存范围；不写流程、评分或保存承诺。无选段时为空。")
+    capture_preview: CapturePreview | None = Field(default=None,
+        description="对应所选有效知识片段的简略要点与一句总结，每项附真实引文；仅邀请预览，不生成完整卡片。无可靠预览时为 null。")
+
+    @field_validator('capture_preview', mode='before')
+    @classmethod
+    def safe_capture_preview(cls, value):
+        return optional_preview(value)
 
     @field_validator("capture_quotes", "capture_feedback_quotes")
     @classmethod
@@ -806,6 +814,13 @@ class CaptureScopeUpdate(BaseModel):
     retained_fragment_ids: list[str] = Field(default_factory=list, max_length=12)
     evidence_quotes: list[str] = Field(min_length=1, max_length=6)
     scope_summary: str = Field(min_length=1, max_length=240)
+    preview: CapturePreview | None = Field(default=None,
+        description="更新后仍有效的全部简略要点与一句总结，只引用 retained_fragment_ids 或本轮 evidence_quotes 内的真实选段；无可靠预览时为 null。")
+
+    @field_validator('preview', mode='before')
+    @classmethod
+    def safe_preview(cls, value):
+        return optional_preview(value)
 
 
 class ConversationOutput(BaseModel):
