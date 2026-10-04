@@ -306,7 +306,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ FSRS (in target 'FSRS' from 
 
 SwiftCompile normal arm64 (in target 'FSRS' from project 'FSRS')
     cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today.xcodeproj
-    
+
 
 SwiftCompile normal arm64 Compiling\ FSRSReschedule.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Vendor/SwiftFSRS/Sources/FSRS/Scheduler/FSRSReschedule.swift (in target 'FSRS' from project 'FSRS')
 
@@ -396,14 +396,14 @@ Copy /tmp/review-today-card-preview-build/Build/Products/Debug/FSRS.swiftmodule/
 
 ProcessProductPackaging "" /tmp/review-today-card-preview-build/Build/Intermediates.noindex/Review_Today.build/Debug/Review_Today.build/Review_Today.app.xcent (in target 'Review_Today' from project 'Review_Today')
     cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
-    
+
     Entitlements:
-    
+
     {
     "com.apple.security.get-task-allow" = 1;
     "com.apple.security.network.client" = 1;
 }
-    
+
     builtin-productPackagingUtility -entitlements -format xml -o /tmp/review-today-card-preview-build/Build/Intermediates.noindex/Review_Today.build/Debug/Review_Today.build/Review_Today.app.xcent
 
 ProcessProductPackagingDER /tmp/review-today-card-preview-build/Build/Intermediates.noindex/Review_Today.build/Debug/Review_Today.build/Review_Today.app.xcent /tmp/review-today-card-preview-build/Build/Intermediates.noindex/Review_Today.build/Debug/Review_Today.build/Review_Today.app.xcent.der (in target 'Review_Today' from project 'Review_Today')
@@ -676,7 +676,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ Review_Today (in target 'Rev
 
 SwiftCompile normal arm64 (in target 'Review_Today' from project 'Review_Today')
     cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
-    
+
 
 SwiftCompile normal arm64 Compiling\ MascotMotionPreview.swift,\ MascotSpeechDemoController.swift,\ MessageDeliveryPresentation.swift,\ Models.swift,\ MrBPresentation.swift,\ NavigationPerformance.swift,\ PageArrivalFade.swift,\ RecentLearningDetail.swift,\ ReminderNotifications.swift,\ Review_TodayApp.swift,\ ReviewAPI.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MascotMotionPreview.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MascotSpeechDemoController.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MessageDeliveryPresentation.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Models.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/MrBPresentation.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/NavigationPerformance.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/PageArrivalFade.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/RecentLearningDetail.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ReminderNotifications.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Review_TodayApp.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ReviewAPI.swift (in target 'Review_Today' from project 'Review_Today')
 
@@ -885,7 +885,7 @@ SwiftCompile normal arm64 /tmp/review-today-card-preview-build/Build/Intermediat
 
 SwiftCompile normal arm64 Compiling\ ExamEntrySpine.swift,\ ExamSelectionView.swift,\ Fsrs.swift,\ GlassPreviewStyle.swift,\ HarnessProcessor.swift,\ InteractionChrome.swift,\ KnowledgeCardReader.swift,\ KnowledgeDeckInput.swift,\ KnowledgeDeckNavigation.swift,\ KnowledgeIngestion.swift,\ KnowledgeLexicon.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ExamEntrySpine.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/ExamSelectionView.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/Fsrs.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/GlassPreviewStyle.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/HarnessProcessor.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/InteractionChrome.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeCardReader.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeDeckInput.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeDeckNavigation.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeIngestion.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/KnowledgeLexicon.swift (in target 'Review_Today' from project 'Review_Today')
 /Users/rexyoung/Desktop/vibe coding/Review_Today/Review_Today/KnowledgeLexicon.swift:179:13: warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
-177 | 
+177 |
 178 |     private static func isWeak(_ text: String) -> Bool {
 179 |         var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
     |             `- warning: variable 'value' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
@@ -898,7 +898,7 @@ SwiftCompile normal arm64 Compiling\ ExamEntrySpine.swift,\ ExamSelectionView.sw
 219 |             .map(parseLine)
     |                  `- warning: call to main actor-isolated static method 'parseLine' in a synchronous nonisolated context [#ActorIsolatedCall]
 220 |     }
-221 | 
+221 |
 222 |     private static func parseLine(_ line: String) -> ExplanationPiece {
     |                         `- note: calls to static method 'parseLine' from outside of its actor context are implicitly asynchronous
 223 |         // A dot immediately followed by a digit may be a decimal or a version.
@@ -1257,23 +1257,23 @@ ExtractAppIntentsMetadata (in target 'Review_Today' from project 'Review_Today')
 
 CodeSign /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/Review_Today.debug.dylib (in target 'Review_Today' from project 'Review_Today')
     cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
-    
+
     Signing Identity:     "Apple Development: a17415991@gmail.com (L486BYR7S7)"
-    
+
     /usr/bin/codesign --force --sign AF533FFD9CA2C374CAC7054AE00E006413550827 --timestamp\=none --generate-entitlement-der /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/Review_Today.debug.dylib
 
 CodeSign /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/__preview.dylib (in target 'Review_Today' from project 'Review_Today')
     cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
-    
+
     Signing Identity:     "Apple Development: a17415991@gmail.com (L486BYR7S7)"
-    
+
     /usr/bin/codesign --force --sign AF533FFD9CA2C374CAC7054AE00E006413550827 --timestamp\=none --generate-entitlement-der /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/__preview.dylib
 
 CodeSign /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app (in target 'Review_Today' from project 'Review_Today')
     cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
-    
+
     Signing Identity:     "Apple Development: a17415991@gmail.com (L486BYR7S7)"
-    
+
     /usr/bin/codesign --force --sign AF533FFD9CA2C374CAC7054AE00E006413550827 --entitlements /tmp/review-today-card-preview-build/Build/Intermediates.noindex/Review_Today.build/Debug/Review_Today.build/Review_Today.app.xcent --timestamp\=none --generate-entitlement-der /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app
 
 RegisterExecutionPolicyException /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app (in target 'Review_Today' from project 'Review_Today')
@@ -1299,4 +1299,3 @@ PruneExplicitPrecompiledModules /tmp/review-today-card-preview-build/Build/Inter
 PruneExplicitPrecompiledModules /tmp/review-today-card-preview-build/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
 
 ** BUILD SUCCEEDED **
-

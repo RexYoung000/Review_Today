@@ -43,7 +43,7 @@ SwiftEmitModule normal arm64 Emitting\ module\ for\ Review_Today (in target 'Rev
 
 SwiftCompile normal arm64 (in target 'Review_Today' from project 'Review_Today')
     cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
-    
+
 
 SwiftCompile normal arm64 Compiling\ TopicCapture.swift /Users/rexyoung/Desktop/vibe\ coding/Review_Today/Review_Today/TopicCapture.swift (in target 'Review_Today' from project 'Review_Today')
 
@@ -96,24 +96,24 @@ CopySwiftLibs /tmp/review-today-card-preview-build/Build/Products/Debug/Review_T
 
 CodeSign /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/Review_Today.debug.dylib (in target 'Review_Today' from project 'Review_Today')
     cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
-    
+
     Signing Identity:     "Apple Development: a17415991@gmail.com (L486BYR7S7)"
-    
+
     /usr/bin/codesign --force --sign AF533FFD9CA2C374CAC7054AE00E006413550827 --timestamp\=none --generate-entitlement-der /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/Review_Today.debug.dylib
 
 CodeSign /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/__preview.dylib (in target 'Review_Today' from project 'Review_Today')
     cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
-    
+
     Signing Identity:     "Apple Development: a17415991@gmail.com (L486BYR7S7)"
-    
+
     /usr/bin/codesign --force --sign AF533FFD9CA2C374CAC7054AE00E006413550827 --timestamp\=none --generate-entitlement-der /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/__preview.dylib
 /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app/Contents/MacOS/__preview.dylib: replacing existing signature
 
 CodeSign /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app (in target 'Review_Today' from project 'Review_Today')
     cd /Users/rexyoung/Desktop/vibe\ coding/Review_Today
-    
+
     Signing Identity:     "Apple Development: a17415991@gmail.com (L486BYR7S7)"
-    
+
     /usr/bin/codesign --force --sign AF533FFD9CA2C374CAC7054AE00E006413550827 --entitlements /tmp/review-today-card-preview-build/Build/Intermediates.noindex/Review_Today.build/Debug/Review_Today.build/Review_Today.app.xcent --timestamp\=none --generate-entitlement-der /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app
 
 Validate /tmp/review-today-card-preview-build/Build/Products/Debug/Review_Today.app (in target 'Review_Today' from project 'Review_Today')
@@ -131,4 +131,3 @@ PruneExplicitPrecompiledModules /tmp/review-today-card-preview-build/Build/Inter
 PruneExplicitPrecompiledModules /tmp/review-today-card-preview-build/SDKExplicitPrecompiledModules
 
 ** BUILD SUCCEEDED **
-
