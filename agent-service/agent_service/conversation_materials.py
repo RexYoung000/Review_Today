@@ -9,7 +9,7 @@ from agent_service.call_errors import WebToolError, ModelCallError
 from agent_service.config import ROUTER_MODEL
 from agent_service.harness_store import now_iso
 from agent_service.source_content import readable_page
-from agent_service.source_projection import answer_sources
+from agent_service.source_projection import project_for_run
 from agent_service.web_resilience import web_round_scope
 from agent_service import run_accounting
 
@@ -155,7 +155,7 @@ def prepare(h, sid, rid, rev, decision, reader):
                     title, body = page
                     details = getattr(page, 'details', {})
                     saved = dict(source_id=str(uuid.uuid5(uuid.UUID(sid), url)), version=(previous or {}).get('version', 0) + 1,
-                                 type='public_source', url=details.get('final_url', url), title=title, content=body[:20000], fetched_at=now_iso())
+                                 type='public_source', url=details.get('final_url', url), title=title, content=body, fetched_at=now_iso())
                     if details:
                         saved.update(requested_url=url, read_details=details)
                 except (ValueError, WebToolError, OSError) as error:
@@ -186,9 +186,11 @@ def prepare(h, sid, rid, rev, decision, reader):
         # Keep prior lectures as learning provenance, but they cannot establish
         # that a requested external material has actually been supplied/read.
         supplied_sources = [s for s in sources if s.get('type') != 'agent_generated']
+        projected = project_for_run(h, sid, rid, rev, supplied_sources, stage='material_readiness',
+            query='\n'.join([*context['current_inputs'], decision.public_search_query]))
         assessment = h._call(sid, rid, rev, 'material_readiness', READINESS,
             json.dumps(dict(kind='product' if product_focus else 'jd' if decision.is_jd else 'source', context=context,
-                            sources=answer_sources(supplied_sources), reads=states,
+                            sources=projected, reads=states,
                             original_request=last['content'] if product_focus else prior.get('material_goal', last['content'])), ensure_ascii=False), MaterialReadiness, ROUTER_MODEL)
     with h.store.transaction(sid, rid, rev) as current:
         active = current['runs'][rid]

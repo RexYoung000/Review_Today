@@ -15,8 +15,8 @@ ZCode 的参考价值在于把模型判断、工具执行、结果回传、停�
 
 | 条目 | 源码中看到的做法 | Review Today 的参考方向 | 本轮状态 |
 |---|---|---|---|
-| 1. 根据结果决定下一步 | 模型判断、工具执行、结果回传后继续或停止；轮次结束与持续目标完成分开 | 区分回答完成、等待用户、理解验证和知识保存；每次推进有对应依据 | 已逐条讨论；新增知识提示已确认，尚未实施 |
-| 2. 长对话与上下文 | 区分输入组成、工具结果压缩、会话摘要、压缩后恢复 | 先看每类内容占多少，再保留与当前问题相关的证据 | 已研究；下一条待讲 |
+| 1. 根据结果决定下一步 | 模型判断、工具执行、结果回传后继续或停止；轮次结束与持续目标完成分开 | 区分回答完成、等待用户、理解验证和知识保存；每次推进有对应依据 | 已逐条讨论；[KT-01](../work-status.md#kt-01) 已实现并分层自测，Rex 原生体验仍开放 |
+| 2. 长对话与上下文 | 区分输入组成、工具结果压缩、会话摘要、压缩后恢复 | 先看每类内容占多少，再保留与当前问题相关的证据 | [CTX-01](../work-status.md#ctx-01) 公开选段已实现并分项验证，待本机重开体验；其他机制未授权实施 |
 | 3. 工具执行与取消 | 验证、权限、执行、结果记录及恢复分层 | 分清未执行、执行失败、结果未知；保存失败不能直接假设没有写入 | 已研究，尚未逐条对齐 |
 | 4. Skills、子任务与工作流 | 按需加载指令，隔离子任务上下文，显式任务结果 | 仅在有独立子任务需求时考虑；先改善单条教学链路 | 已研究，未批准引入 |
 | 5. 事件、恢复与用户补充 | 有序事件、选定持久化记录、恢复与引导输入 | 区分收到、执行、显示、可靠保存；恢复不重复副作用 | 已研究，尚未逐条对齐 |
@@ -46,7 +46,7 @@ Rex 进一步确认了可见的保存时机：知识点首次通过有效检查�
 源码入口：[主循环](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/methods/turn-loop.ts)、[停止条件](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/methods/turn-stop.ts)、[持续目标](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/methods/target.ts)。
 
 <a id="topic-2"></a>
-## 第 2 条：长对话怎样保留重要信息（下次从这里讲）
+## 第 2 条：长对话怎样保留重要信息（2026-10-05，公开选段已实现并分项验证）
 
 已查清的机制：
 
@@ -55,7 +55,11 @@ Rex 进一步确认了可见的保存时机：知识点首次通过有效检查�
 - 微压缩可清理旧工具输出，但需要配置启用；自动会话摘要是另一条机制。
 - 自动／响应式压缩在有足够轮组时保留最近完整问答组，手动压缩不采用同样的保留策略；压缩后恢复计划和部分近期文件。重要含义是否保留仍需检验，源码不能证明语义永不丢失。
 
-Review Today 已有上下文预算、整组问答摘要与独立学习状态。下一步应讨论是否先补“输入由哪些内容组成”的观测，再验证当前问题相关选段；不是重新建设整套摘要系统。公开来源现有首部选段限制是否造成实际漏证据，需要独立样本验证，尚未认定为真实产品缺陷。
+Review Today 已有上下文预算、整组问答摘要与独立学习状态。2026-10-05 已先做隔离输入体检：继续追问、刚纠正和切换主题三个请求装配场景正常；未发现最新纠正被旧摘要覆盖。另已复现公开来源首部截取使正文尾部相关事实未进入回答输入的缺口。该结果验证的是输入选择，尚不能据此断言实际模型答错或优化后的回答质量通过。
+
+本轮采用方向是：公开来源在既有预算内按问题做本地词项相关选段，保留可回查原文，核验和回答共用，输入不变的重试／恢复复用；不增加模型调用或重建摘要系统。选段实现、重试漂移修复与最终受控回归已完成；单组合成资料中，两个真实模型节点共用正文尾部窗口并正确回答两项条件。该方法不是语义检索，不保证同义词／跨语言匹配，简洁度和完整原生链路未据此验收，本机重开体验仍待确认。
+
+详细契约只在 [Harness 公开来源选段](../agent-harness-v2.md#public-evidence-selection)维护，实证见[选段证据](../evidence/2026-10-05-source-selection/README.md)，当前结果和续接见 [CTX-01](../work-status.md#ctx-01)。第 2 条其他机制及第 3 条尚未获实现授权，后续继续逐项讨论。
 
 源码入口：[上下文构建](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/context/builder.ts)、[组成统计](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/helpers/context-usage-breakdown.ts)、[压缩选择](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/helpers/compact-selection.ts)、[工具结果处理](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/tool/executor/result-serialization.ts)。
 
@@ -71,4 +75,4 @@ Review Today 已有上下文预算、整组问答摘要与独立学习状态。�
 | 项目记忆 | Markdown 索引与受限记忆维护 | 按空白计词使连续中文可能不达提取门槛；可参考事实不应被提升为指令 | [extraction](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/memory/extraction.ts) |
 | 目标核验与形式模型 | 区分轮次与目标，枚举产品状态 | 核验异常存在按通过处理的路径，不能照搬到掌握／保存判断；状态枚举不等于真实运行已证明正确 | [核验契约](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/contracts/src/tools/target.ts)、[形式模型](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/packages/formal-proof/src/model.ts) |
 
-本轮未建议整体引入子 Agent、自动后台记忆或通用工作流。独立教学质量用例、上下文观测、问题相关选段只是后续研究建议，尚未成为已批准实现项。第一方源码采用 Apache-2.0；如未来采用代码，还须逐项核对第三方声明，不以主仓库许可覆盖全部依赖。
+本轮未建议整体引入子 Agent、自动后台记忆或通用工作流。独立教学质量用例与整套上下文观测仍为后续研究建议；问题相关选段仅上述公开来源范围获准实施，不扩大到其他内容。第一方源码采用 Apache-2.0；如未来采用代码，还须逐项核对第三方声明，不以主仓库许可覆盖全部依赖。

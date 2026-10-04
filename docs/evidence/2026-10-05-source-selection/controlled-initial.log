@@ -1,0 +1,138 @@
+{"cases": 17, "fixed_scenarios": 31, "result": "VALID", "note": "Offline structure only; no model behavior evaluated."}
+{"result": "VALID", "cases": 55, "judgments": 299, "kinds": {"dialogue": 31, "memory": 6, "source": 6, "grading": 12}, "note": "Offline structure only; no provider/config/database access."}
+{"result": "VALID", "scenarios": 55, "trials": 165, "questions": 1430, "note": "Offline only; no provider configuration, model call or database."}
+{"result": "VALID", "scenarios": 103, "trials": 515, "questions": 3605, "variants": ["v0", "v1", "scope", "resource", "progress"], "note": "Offline only; default is structure inventory, not an execution authorization."}
+{"result": "VALID", "dialogues": 31, "node_cases": 27, "paired_runs": 116, "note": "Offline inventory only; no providers or stores imported."}
+................................................................ssss............................ [  8%]
+........................................................ [ 13%]
+...................................................................... [ 20%]
+................................................................... [ 26%]
+...................................................................... [ 32%]
+................................................ [ 37%]
+.................................................................... [ 43%]
+....................................................................................... [ 51%]
+.................................................................. [ 57%]
+................................................................................................. [ 66%]
+.................................................. [ 70%]
+............................................................. [ 76%]
+........................................................................ [ 82%]
+........................................................................F....FF...............................................................................................................                                                               [100%]
+=================================== FAILURES ===================================
+_ test_tail_fact_is_shared_by_assessment_and_answer_without_extra_calls[True] __
+
+flow = namespace(core=<tests.test_conversation_v2.ConversationTests testMethod=runTest>, traces=[('IntentDecision', {'continu...edged.\nEnd of the synthetic specification.'}, urls=['https://example.com/synthetic-specification'], fail_answer=False)
+teaching = True
+
+
+
+    @pytest.mark.parametrize("teaching", [False, True])
+>   def test_tail_fact_is_shared_by_assessment_and_answer_without_extra_calls(flow, teaching):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_source_selection_flow.py:137:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+flow = namespace(core=<tests.test_conversation_v2.ConversationTests testMethod=runTest>, traces=[('IntentDecision', {'continu...edged.\nEnd of the synthetic specification.'}, urls=['https://example.com/synthetic-specification'], fail_answer=False)
+teaching = True, question = 'Explain the quantum checksum activation condition.'
+refresh = False
+
+
+
+    def verify(flow, *, teaching=False, question=QUESTION_ALPHA, refresh=False):
+        flow.core.decision = base.intent("goal" if teaching else "question",
+            workflow="source_learning" if teaching else None, scope="learning" if teaching else "conversation",
+            direct_teaching=teaching, needs_verification=True, refresh_sources=refresh,
+>           public_search_query="public specification")
+E       AssertionError: assert 'retryable_failed' == 'completed'
+E
+E         - completed
+E         + retryable_failed
+
+tests/test_source_selection_flow.py:130: AssertionError
+_________ test_mixed_sources_obey_budget_and_keep_user_material_whole __________
+
+flow = namespace(core=<tests.test_conversation_v2.ConversationTests testMethod=runTest>, traces=[('IntentDecision', {'continu...edged.\nEnd of the synthetic specification.'}, urls=['https://example.com/synthetic-specification'], fail_answer=False)
+
+
+
+    def test_mixed_sources_obey_budget_and_keep_user_material_whole(flow):
+        sources = [dict(source_id=f"public-{i}", version=1, type="public_source", url=f"https://example.com/source-{i}",
+            title="Synthetic source", content=BODY if i == 3 else ("Irrelevant background.\n" * 900).strip()) for i in range(4)]
+        user = dict(source_id="user-source", version=1, type="user_material", url="", title="User material",
+                    content="Explicit synthetic user constraints.\n" * 600)
+        original = copy.deepcopy(sources + [user])
+        with flow.core.store.transaction(flow.core.sid) as data:
+            data["teaching_context"] = dict(sources=copy.deepcopy(original))
+        flow.core.decision = base.intent("followup")
+        accepted = flow.core.send(QUESTION_ALPHA)
+        answer = calls(flow, "ConversationOutput")[-1]
+        projected = public(answer)
+        assert sum(len(s["content"]) for s in projected) <= 12_000
+        assert all(len(s["content"]) <= 4_000 for s in projected)
+        assert ALPHA in next(s for s in projected if s["source_id"] == "public-3")["content"]
+        assert next(s for s in answer["sources"] if s["source_id"] == "user-source") == user
+        omitted = [s for s in projected if not s["content"]]
+        assert omitted and all(s["source_selection"]["reason"] == "budget_exhausted" for s in omitted)
+>       run = flow.core.state()["runs"][accepted.run_id]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert [{'source_id'...rl': '', ...}] == [{'source_id'...rl': '', ...}]
+E
+E         At index 0 diff: {'source_id': 'public-0', 'version': 1, 'type': 'public_source', 'url': 'https://example.com/source-0', 'title': 'Synthetic source', 'content': 'Irrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrelevant background.\nIrrele...
+E
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_source_selection_flow.py:227: AssertionError
+_________ test_refresh_changes_version_hash_and_rebinds_new_assessment _________
+
+flow = namespace(core=<tests.test_conversation_v2.ConversationTests testMethod=runTest>, traces=[('IntentDecision', {'continu...edged.\nEnd of the synthetic specification.'}, urls=['https://example.com/synthetic-specification'], fail_answer=False)
+
+
+
+    def test_refresh_changes_version_hash_and_rebinds_new_assessment(flow):
+        first = verify(flow)
+        old = public(calls(flow, "ConversationOutput")[-1])[0]
+        flow.bodies[URL] = BODY.replace(ALPHA, ALPHA + " The revised requirement is explicit approval.")
+        refreshed = verify(flow, refresh=True)
+>       fresh = calls(flow, "ConversationOutput")[-1]
+E       assert 1 == (1 + 1)
+
+tests/test_source_selection_flow.py:238: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:89
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:89: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:118
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:118: DeprecationWarning:
+          on_event is deprecated, use lifespan event handlers instead.
+
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_source_selection_flow.py::test_tail_fact_is_shared_by_assessment_and_answer_without_extra_calls[True]
+FAILED tests/test_source_selection_flow.py::test_mixed_sources_obey_budget_and_keep_user_material_whole
+FAILED tests/test_source_selection_flow.py::test_refresh_changes_version_hash_and_rebinds_new_assessment
+3 failed, 1091 passed, 4 skipped, 5 warnings, 496 subtests passed in 160.20s (0:02:40)

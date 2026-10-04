@@ -1,0 +1,27 @@
+{
+  "synthetic_input": true,
+  "reader_and_intent_controlled": true,
+  "real_model_nodes": [
+    "EvidenceAssessmentV2",
+    "ConversationOutput"
+  ],
+  "run_status": "completed",
+  "error_code": null,
+  "body_chars": 13355,
+  "fact_offset": 12600,
+  "fact_in_assessment": true,
+  "fact_in_answer_input": true,
+  "same_source_packet": true,
+  "selected_chars": 4000,
+  "ranges": [
+    {
+      "start": 9355,
+      "end": 13355,
+      "reason": "query_match"
+    }
+  ],
+  "evidence_state": "scoped",
+  "reply": "根据这份材料，“蓝灯校验”的启动条件是连续观测到 7 次银色闪烁，且记录值为 314。\n\n需要说明的是，该说法仅来自这次读到的节选片段，且页面为合成材料，其原始出处和权威性无法确认，因此只能视为该材料内的规定，不宜当作可靠的操作规范。\n\n### 参考资料\n\n- [合成蓝灯校验说明](https://example.org/synthetic-blue-light-manual)",
+  "reply_has_both_conditions": true,
+  "no_knowledge_saved": true
+}

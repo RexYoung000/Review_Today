@@ -1266,7 +1266,14 @@ class ConversationHarness(ConditionalTeaching):
         context, last = self._context(data, run)
         task = self._task(data, run)
         prior = task["context"] if task else {}
-        sources = [s for s in sources if s.get("source_id") not in {m.get("source_id") for m in material_sources}] + material_sources
+        # Material preparation can return an older cached page before teaching
+        # refreshes it. Never replace the just-assessed version with that cache.
+        merged_sources = {s['source_id']: s for s in material_sources}
+        for source in sources:
+            previous = merged_sources.get(source['source_id'])
+            if previous is None or (source.get('version') or 0) >= (previous.get('version') or 0):
+                merged_sources[source['source_id']] = source
+        sources = list(merged_sources.values())
         new_user_material = "material" in decision.intents and not looks_like_url(last["content"])
         source_type = "agent_generated" if generated else prior.get("source_type") or ("public_source" if sources else "user_material" if new_user_material else "agent_generated")
         if new_user_material:
@@ -1282,6 +1289,12 @@ class ConversationHarness(ConditionalTeaching):
         types = {s.get("type", "public_source") for s in sources}
         if len(types) > 1:
             source_type = "mixed"
+        from agent_service.source_projection import project_for_run, align_evidence
+        projected_sources = project_for_run(self, sid, rid, rev, sources, stage=node,
+            query='\n'.join([*context['current_inputs'], decision.public_search_query]))
+        evidence = align_evidence(evidence, projected_sources)
+        if context.get('task'):
+            context['task']['context']['evidence'] = evidence
         coach_evidence = dict(evidence)
         if run.get('search_state') == 'unavailable':
             instruction += "\n本轮检索工具不可用，没有取得检索结果。必须说这次未能执行查询，不能说已搜索但结果为空、没有官方介绍或没有相关产品。简短说明一次后仅回应已有材料可支持的部分，不重复索要已经提供的内容，不扩大为收集完整产品档案。"
@@ -1297,12 +1310,11 @@ class ConversationHarness(ConditionalTeaching):
             }:
                 coach_evidence["summary"] = ""
             instruction += "\n本轮无需新增网页检索，可讲解稳定知识或沿用适用的已有依据，不重复网页检索状态。不要追加‘本次未做网页核验’‘依据通用原理’‘需要另行查证’等通用尾注；只在实际讲到某条具体不确定结论时说明该结论的具体限制。证据不足状态仍保留，不能宣称已核验。"
-        readable_urls = [s["url"] for s in sources if s.get("url") and s.get("content")]
+        readable_urls = [s["url"] for s in projected_sources if s.get("url") and s.get("content")]
         instruction += "\n本轮实际已读网页 URL：" + json.dumps(readable_urls, ensure_ascii=False) + "。引用网页只能从此列表原样选取；列表为空时，不得凭记忆补充官方出处、链接或声称已查阅/核对。检索返回候选网页不等于读过网页。"
         # Only actual read URLs may become citations, including no-search answers.
         with self.store.transaction(sid, rid, rev) as current:
             current["runs"][rid]["allowed_source_urls"] = readable_urls
-        from agent_service.source_projection import answer_sources
         instruction += "\n标有 content_excerpted 的网页仅向本次回答提供节选；结合 evidence 的核验范围回答，不补写未见原文或声称节选是全文。"
         lesson_target = step_target(task) if teaching and task else None
         if lesson_target and not task["context"].get("requires_mastery"):
@@ -1322,7 +1334,7 @@ class ConversationHarness(ConditionalTeaching):
         if capture_candidates:
             output_system += knowledge_invitation.UPDATE_INSTRUCTION
         output = self._call(sid, rid, rev, node, output_system,
-                            json.dumps(dict(instruction=instruction, context=context, sources=answer_sources(sources),
+                            json.dumps(dict(instruction=instruction, context=context, sources=projected_sources,
                                             learning_step=lesson_target,
                                             capture_candidates=capture_candidates,
                                             source_type=source_type, evidence=coach_evidence,
@@ -1340,7 +1352,7 @@ class ConversationHarness(ConditionalTeaching):
             old_question = output.check_question
             output.check_question, output.check_scoring_spec = checked_question(
                 self, sid, rid, rev, old_question, output.check_scoring_spec,
-                "\n\n".join([output.message, *[s.get("content", "") for s in answer_sources(sources)]]),
+                "\n\n".join([output.message, *[s.get("content", "") for s in projected_sources]]),
                 owner=(task or run).get("task_id") or rid)
             output.message = synchronize_question(output.message, old_question, output.check_question)
         with self.store.transaction(sid, rid, rev) as current:
@@ -1359,7 +1371,7 @@ class ConversationHarness(ConditionalTeaching):
         if evidence["state"] in {"insufficient", "conflicting", "outdated"} and run.get("verification_notice"):
             text += "\n\n> [!NOTE]\n> " + run["verification_notice"].replace("\n", "\n> ")
         direct_urls = {item['url'] for item in run.get('material_reads', []) if item['state'] == 'body_read'} if material_assessment else set()
-        cited = [source for source in sources if source.get("url") in set(evidence.get("sources", [])) | direct_urls and source["url"] not in text]
+        cited = [source for source in projected_sources if source.get('content') and source.get("url") in set(evidence.get("sources", [])) | direct_urls and source["url"] not in text]
         if cited:
             text += render_sources(cited)
         with self.store.transaction(sid, rid, rev) as data:
@@ -1416,14 +1428,16 @@ class ConversationHarness(ConditionalTeaching):
                 return
             data, run = self._snapshot(sid, rid, rev)
             context, _ = self._context(data, run)
-            from agent_service.source_projection import answer_sources
+            from agent_service.source_projection import project_for_run
+            projected = project_for_run(self, sid, rid, rev, sources, stage='jd_analysis')
+            readable_urls = [s['url'] for s in projected if s.get('url') and s.get('content')]
             output = self._call(sid, rid, rev, "jd_analysis", JD_SYSTEM,
-                json.dumps(dict(goal=task['content'], context=context, sources=answer_sources(sources),
+                json.dumps(dict(goal=task['content'], context=context, sources=projected,
                                 materials=assessment.model_dump()), ensure_ascii=False), JDAnalysis)
-            text = bound_source_links(render_jd(output.model_dump()), run['allowed_source_urls'])
+            text = bound_source_links(render_jd(output.model_dump()), readable_urls)
             if assessment.missing:
                 text += '\n\n### 待补材料\n\n' + '\n'.join('- ' + item for item in assessment.missing)
-            text += render_sources([s for s in sources if s.get('url')])
+            text += render_sources([s for s in projected if s.get('url') and s.get('content')])
             with self.store.transaction(sid, rid, rev) as data:
                 live_task = self._task(data, data['runs'][rid])
                 version = live_task['context'].get('jd_analysis_version', 0) + 1
@@ -1433,12 +1447,22 @@ class ConversationHarness(ConditionalTeaching):
             self._publish(sid, rid, rev, text, stage="jd_analysis", required={"type": "choose_question", "prompt": "先攻克哪一道？", "options": output.prioritized_questions})
             return
         evidence = self._evidence(sid, rid, rev, decision, task["content"])
+        # Evidence preparation may have fetched new sources. Refresh the task and
+        # use the same bounded projection instead of embedding durable source text.
+        data, run = self._snapshot(sid, rid, rev)
+        context, _ = self._context(data, run)
+        task = self._task(data, run)
+        from agent_service.source_projection import project_for_run, align_evidence
+        projected = project_for_run(self, sid, rid, rev, task['context'].get('sources', []), stage='problem_answer')
+        evidence = align_evidence(evidence, projected)
+        context['task']['context']['evidence'] = evidence
         output_schema, output_system = ProblemCoachBundle, PROBLEM_SYSTEM
         if self.judgments is not None:
             from agent_service.judgment_grading import ScoredProblemCoachBundle, RUBRIC_RULE
             output_schema, output_system = ScoredProblemCoachBundle, PROBLEM_SYSTEM + RUBRIC_RULE
         output = self._call(sid, rid, rev, "problem_answer", output_system,
-                            json.dumps(dict(question=task["content"], evidence=evidence, context=task["context"]), ensure_ascii=False), output_schema)
+                            json.dumps(dict(question=task["content"], evidence=evidence,
+                                            context=context['task']['context'], sources=projected), ensure_ascii=False), output_schema)
         rendered = _render_problem(output, compact=True)
         if self.judgments is not None:
             from agent_service.judgment_quality import checked_question, synchronize_question
