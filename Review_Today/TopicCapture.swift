@@ -13,17 +13,28 @@ struct TopicCaptureOffer: Codable, Identifiable, Equatable {
     var actionInputID: UUID?
     var error: String?
     var knowledgeIDs: [UUID]?
+    var trigger: String?
+    var scopeSummary: String?
     enum CodingKeys: String, CodingKey {
         case id, version, title, status, error
         case anchorMessageID = "anchor_message_id", nextRequest = "next_request"
         case continuationConsumed = "continuation_consumed", saveTaskID = "save_task_id"
         case actionInputID = "action_input_id", knowledgeIDs = "knowledge_ids"
+        case trigger, scopeSummary = "scope_summary"
     }
     static func read(_ raw: String) -> [Self] {
         (try? JSONDecoder().decode([Self].self, from: Data(raw.utf8))) ?? []
     }
     var hasNext: Bool { !nextRequest.isEmpty && !continuationConsumed }
     var needsAttention: Bool { ["deferred", "failed"].contains(status) }
+    var isCheckInvitation: Bool { trigger == "verified_check" }
+    var visibleScope: String? {
+        let value = scopeSummary?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return value.isEmpty || value == title.trimmingCharacters(in: .whitespacesAndNewlines) ? nil : value
+    }
+    func boundOperation(_ kind: String) -> [String: Any] {
+        ["kind": kind, "target_id": id.uuidString.lowercased(), "version": version, "selection": [String]()]
+    }
 }
 
 /// A transcript item: visual state is local; the versioned Harness offer owns writes.
@@ -47,6 +58,9 @@ struct TopicCapturePanel: View {
     @State private var resourceFailed = false
     @AppStorage(KnowledgeIngestion.preferenceKey) private var seenFull = false
     private var saved: Bool { !receivedIDs.isEmpty || offer.status == "saved" }
+    private var compactInvitation: Bool {
+        offer.isCheckInvitation && offer.status == "offered" && persistenceError == nil && deliveryError == nil
+    }
     private var knowledgeIDs: [UUID] { receivedIDs.isEmpty ? offer.knowledgeIDs ?? [] : receivedIDs }
     private var outcome: String {
         if saved { return "saved" }
@@ -64,7 +78,7 @@ struct TopicCapturePanel: View {
         case "failed": return "这次录入尚未完成"
         case "invalidated": return "内容已更新"
         case "skipped", "dismissed": return "本次已跳过录入"
-        default: return "刚才的要点，要留下来吗？"
+        default: return offer.isCheckInvitation ? offer.title : "刚才的要点，要留下来吗？"
         }
     }
     var body: some View {
@@ -72,11 +86,21 @@ struct TopicCapturePanel: View {
             HStack {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(title).font(.headline)
-                    Text(offer.title).font(.callout).foregroundStyle(.secondary)
+                    if !compactInvitation {
+                        Text(offer.title).font(.callout).foregroundStyle(.secondary)
+                    }
                 }
                 Spacer()
                 if ["deferred", "dismissed"].contains(offer.status) {
                     Button(expanded ? "收起" : "查看") { expanded.toggle() }.controlSize(.small)
+                }
+            }
+            if let scope = offer.visibleScope {
+                VStack(alignment: .leading, spacing: 4) {
+                    if !offer.isCheckInvitation {
+                        Text("本次保存范围").font(.caption).foregroundStyle(.secondary)
+                    }
+                    Text(scope).font(.callout).textSelection(.enabled).id(scope)
                 }
             }
             if offer.hasNext && !saved { Text("之后：\(offer.nextRequest)").font(.caption).foregroundStyle(.secondary) }
@@ -97,12 +121,18 @@ struct TopicCapturePanel: View {
                     if let id = knowledgeIDs.first { Button("查看知识") { onOpenKnowledge(id) } }
                 }
             } else if offer.status == "saving" {
-                Text(persistenceError == nil ? "正在保存已确认的内容…" : "正在重试本机保存，成功后再继续。").font(.caption).foregroundStyle(.secondary)
+                Text(persistenceError == nil ? "正在保存已确认的内容…" : "正在重试本机保存，成功后更新结果。").font(.caption).foregroundStyle(.secondary)
             } else if offer.status == "invalidated" {
                 Text(offer.error ?? "请在新的话题收尾处确认内容。").font(.caption).foregroundStyle(.secondary)
             } else if offer.status == "offered" || offer.status == "failed" || (expanded && ["deferred", "dismissed"].contains(offer.status)) {
                 if let error = deliveryError ?? (offer.status == "failed" ? offer.error : nil) { Text(error).font(.caption).foregroundStyle(.secondary) }
-                Toggle("已学过，加入复习", isOn: $enrollReview).toggleStyle(.checkbox).disabled(!enabled)
+                if offer.isCheckInvitation {
+                    Toggle("已学过，加入复习", isOn: $enrollReview)
+                        .toggleStyle(.checkbox).font(.caption).foregroundStyle(.secondary)
+                        .controlSize(.small).disabled(!enabled)
+                } else {
+                    Toggle("已学过，加入复习", isOn: $enrollReview).toggleStyle(.checkbox).disabled(!enabled)
+                }
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 12) { actions }
                     VStack(alignment: .leading, spacing: 10) { actions }
@@ -126,13 +156,15 @@ struct TopicCapturePanel: View {
         }
     }
     @ViewBuilder private var actions: some View {
-        Button(offer.status == "failed" ? "重试录入" : offer.hasNext ? "录入并继续" : "录入知识") {
+        Button(offer.status == "failed" ? "重试录入" : offer.isCheckInvitation ? "新增知识" : offer.hasNext ? "录入并继续" : "录入知识") {
             token += 1; resourceFailed = false
             initiated = onAction(enrollReview ? "capture_save_review" : "capture_save")
         }.buttonStyle(.borderedProminent).tint(runway.ink)
         if offer.status != "deferred" {
-            Button("稍后录入") { _ = onAction("capture_later") }
+            Button(offer.isCheckInvitation ? "稍后" : "稍后录入") { _ = onAction("capture_later") }
         }
-        Button(offer.hasNext ? "跳过，继续" : "跳过") { _ = onAction("capture_skip") }
+        if !offer.isCheckInvitation {
+            Button(offer.hasNext ? "跳过，继续" : "跳过") { _ = onAction("capture_skip") }
+        }
     }
 }

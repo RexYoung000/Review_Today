@@ -35,7 +35,12 @@ class TopicCaptureTests(unittest.TestCase):
         self.assertEqual(current['runs'][accepted.run_id]['status'], 'completed')
         self.assertTrue(current['runs'][accepted.run_id]['knowledge_status_reply'])
         self.assertEqual(current['messages'][-1]['run_id'], accepted.run_id)
-        self.assertIn('还没有整理成知识卡', current['messages'][-1]['content'])
+        status = next(e for e in reversed(current['events']) if e['stage'] == 'knowledge_status')['payload']['stage']
+        self.assertIn(status, {'unorganized', 'awaiting_confirmation'})
+        if status == 'awaiting_confirmation':
+            self.assertIn('尚未', current['messages'][-1]['content'])
+        else:
+            self.assertIn('还没有整理成知识卡', current['messages'][-1]['content'])
         return accepted
     def test_real_defer_with_continue_goal_is_short_and_does_not_teach(self):
         self.f.decision = intent('question', scope='learning', workflow='problem_solving')
@@ -165,7 +170,7 @@ class TopicCaptureTests(unittest.TestCase):
             self.f.send(answer, mode='problem_solving')
         state = self.f.state(); task = state['tasks'][state['active_task_id']]
         self.assertTrue(task['context']['transfer_passed'])
-        self.assertFalse(state.get('capture_offers'))
+        self.assertTrue(all(o.get('trigger') == 'verified_check' for o in state.get('capture_offers', {}).values()))
         latest = state['messages'][-1]
         self.assertNotIn('是否要将', latest['content'])
         self.f.decision = IntentDecision(intents=['self_report'], understanding='self_reported', relation='continuation', scope='conversation', rationale='收尾',
@@ -293,6 +298,7 @@ class TopicCaptureTests(unittest.TestCase):
         feedback = [message for message in self.f.state()['messages'] if message['role'] == 'coach'][-1]
         with self.f.store.transaction(self.f.sid) as data:
             data['runs'][feedback['run_id']]['evaluated_binding'] = None
+            data['capture_offers'] = {}  # Historical unbound feedback predates check invitations.
         self.f.decision = IntentDecision(intents=['self_report'], understanding='self_reported', relation='continuation',
             scope='conversation', rationale='收尾', topic_closure=dict(evidence='明白了', title='RAG', message_ids=[feedback['message_id']]))
         self.f.send('明白了')
@@ -350,6 +356,7 @@ class TopicCaptureTests(unittest.TestCase):
         feedback = [message for message in self.f.state()['messages'] if message['role'] == 'coach'][-1]
         with self.f.store.transaction(self.f.sid) as data:
             data['runs'][feedback['run_id']]['evaluated_binding'] = None
+            data['capture_offers'] = {}  # Restore the actual pre-invitation history shape.
         self.f.decision = intent('capabilities', reply_purpose='product_information',
                                  learning_goal_ready=True, light_reply='之前错误地说这轮已经记录两张卡。')
         self.f.send('你有记录相关知识卡吗')

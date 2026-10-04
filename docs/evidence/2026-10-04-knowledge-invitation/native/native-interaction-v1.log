@@ -1,0 +1,21 @@
+QA isolated store: /tmp/review-today-topic-native-4CE2BF5D-EA21-40FA-9BF8-93901ACFC8E9
+sandbox_extension_issue_file_to_process failed for /tmp/review-today-kt01-native.eu0eu52q/TopicCaptureQA.app: 1 (Operation not permitted)
+QA reset 1; synthetic model state; isolated store
+QA same invitation range refreshed: version=2, anchor retained; no generation
+QA bound action: capture_save, version=2, reviewRequested=false
+QA real isolated commit: 2 cards
+QA reset 2; synthetic model state; isolated store
+QA bound action: capture_save, version=1, reviewRequested=false
+QA failed; no success receipt
+QA bound action: capture_save, version=1, reviewRequested=false
+QA real isolated commit: 2 cards
+QA reset 3; synthetic model state; isolated store
+QA bound action: capture_later, version=1, reviewRequested=false
+QA followup accepted without saving: 草稿验证：我还想追问 RAG 的检索阶段。
+QA reset 4; synthetic model state; isolated store
+QA reset 5; synthetic model state; isolated store
+QA reset 6; synthetic model state; isolated store
+QA reset 7; synthetic model state; isolated store
+QA bound action: capture_skip, version=1, reviewRequested=false
+QA continued once
+QA reset 8; synthetic model state; isolated store

@@ -5,7 +5,8 @@ import unittest
 from pydantic import ValidationError
 
 from agent_service.schemas import IntentDecision, KnowledgeStatusContext
-from tests.knowledge_status_history_fixture import CLAIM_ID, KEYWORD_ID, VECTOR_ID, QUERY, proposal, seed
+from tests.knowledge_status_history_fixture import (CLAIM_ID, KEYWORD_ID, VECTOR_ID, QUERY,
+    comparison_proposal, proposal, seed)
 
 
 def decision(**updates):
@@ -61,7 +62,9 @@ class KnowledgeStatusContextSchemaTests(unittest.TestCase):
             message_id=KEYWORD_ID, content=proposal()['focus'][0]['quote'], concepts=['关键词检索'])]))
         with self.assertRaises(ModelCallError):
             value.validate_request(payload)
-        decision(status_context=proposal()).validate_request(payload)
+        context = proposal()
+        context['focus'] = context['focus'][:1]
+        decision(status_context=context).validate_request(payload)
 
     def test_jev_replacement_and_partial_share_grounding_check(self):
         from agent_service.judgment_nodes import IntentRemainder
@@ -73,6 +76,14 @@ class KnowledgeStatusContextSchemaTests(unittest.TestCase):
                 value = IntentRemainder(scope='conversation', rationale='状态回放', **fields)
                 with self.assertRaises(ModelCallError):
                     value.validate_request(payload)
+
+    def test_one_valid_secondary_reference_cannot_hide_invalid_primary(self):
+        from agent_service.openai_client import ModelCallError
+        context = comparison_proposal()
+        payload = dict(knowledge_capture_status=dict(discussion_sources=[dict(
+            message_id=KEYWORD_ID, content=context['focus'][1]['quote'], concepts=['关键词检索'])]))
+        with self.assertRaises(ModelCallError):
+            decision(status_context=context).validate_request(payload)
 
     def test_jev_context_flag_conflict_is_schema_failure_before_final_assembly(self):
         from agent_service.judgment_nodes import IntentRemainder
@@ -158,6 +169,48 @@ class KnowledgeStatusHistoryRoutingTests(unittest.TestCase):
         self.assertEqual(state['runs'][accepted.run_id]['status'], 'completed')
         self.assertIn('关键词检索', state['messages'][-1]['content'])
         self.assertIn('不准确', state['messages'][-1]['content'])
+
+    def test_invalid_primary_reference_repairs_once_without_falling_back_to_old_topic(self):
+        from unittest.mock import patch
+        from agent_service.execution_policy import current_budget
+        calls = []
+        invalid = comparison_proposal()
+        invalid['focus'][0]['message_id'] = 'foreign'
+
+        def model(system, user, schema, **kwargs):
+            current_budget.get().take()
+            calls.append(schema)
+            return decision(status_context=invalid if len(calls) == 1 else comparison_proposal())
+
+        before = copy.deepcopy(self.f.state())
+        with patch('agent_service.conversation.parse_model', side_effect=model):
+            accepted = self.f.send(QUERY, mode='source_learning')
+        state = self.f.state()
+        self.assertEqual(calls, [IntentDecision, IntentDecision])
+        self.assertEqual(state['runs'][accepted.run_id]['status'], 'completed')
+        self.assertIn('刚才讨论的是关键词与向量检索的匹配差异', state['messages'][-1]['content'])
+        self.assertEqual(before['tasks'], state['tasks'])
+        self.assertFalse(state.get('capture_offers'))
+        self.f.capture.assert_not_called()
+
+    def test_unrepaired_primary_reference_stops_after_one_repair(self):
+        invalid = comparison_proposal()
+        invalid['focus'][0]['quote'] = '没有这段讲解'
+        self.f.decision = decision(status_context=invalid)
+        before = copy.deepcopy(self.f.state())
+        accepted = self.f.send(QUERY, mode='source_learning')
+        state = self.f.state()
+        self.assertEqual([schema for schema, _ in self.f.calls], [IntentDecision, IntentDecision])
+        self.assertEqual(state['runs'][accepted.run_id]['status'], 'retryable_failed')
+        self.assertEqual(state['runs'][accepted.run_id]['error_code'], 'RT.MODEL.SCHEMA')
+        self.assertFalse(state['runs'][accepted.run_id].get('knowledge_status_reply'))
+        tid = before['active_task_id']
+        for key in ('learning_plan', 'understanding', 'practice', 'last_lesson', 'check_question'):
+            self.assertEqual(state['tasks'][tid]['context'][key], before['tasks'][tid]['context'][key])
+        self.assertEqual(before['messages'], state['messages'][:len(before['messages'])])
+        for key in ('capture_offers', 'draft', 'pending'):
+            self.assertEqual(before.get(key), state.get(key))
+        self.f.capture.assert_not_called()
 
     def test_unrepaired_focus_does_not_silently_publish_generic_status(self):
         self.f.decision = decision()

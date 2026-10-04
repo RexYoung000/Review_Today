@@ -1,0 +1,205 @@
+{
+  "backup": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/knowledge-invitation-backup-20261004-211308",
+  "app": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "candidate": "/tmp/review-today-knowledge-invitation-build/Build/Products/Debug/Review_Today.app",
+  "old_service_pids": [],
+  "before": {
+    "ZAGENTSESSION": {
+      "count": 5,
+      "digest": "4d1522021d459268eb17625f7bc081cd2c5b050c8a27a621ee53794d832f6ec6"
+    },
+    "ZAGENTMESSAGE": {
+      "count": 24,
+      "digest": "ce14cabe9e415c4f1f9ff942b0891853afd59e0f635c587de7fe3dcfa0330b31"
+    },
+    "ZKNOWLEDGE": {
+      "count": 8,
+      "digest": "6d837a8f737679944c3990d3ecb0309d5c6ed800e3f595cebc9e7211f9f28625"
+    },
+    "ZQUESTION": {
+      "count": 11,
+      "digest": "0280a15023ec722453675c6f8b077335d1913c7be7785fc355fa9da2ee8fa642"
+    },
+    "ZREVIEWSESSION": {
+      "count": 4,
+      "digest": "aaebe8f0b26d5110001f3712ee95b9f1792495611027a838f2be1c0265ab1e94"
+    },
+    "ZREVIEWATTEMPT": {
+      "count": 3,
+      "digest": "f68f8427d95e3f0c72e514d16bc17e58e2b4cb6580cdb54fe018e2847f371a6d"
+    }
+  },
+  "signature": {
+    "identifier": "Rex.Review-Today",
+    "team": "7NDKLL3UJK"
+  },
+  "binary_sha256": "8638ca48d934fd4b3d2ccf3a58faf09ae5a582d008ff4be793690856a108f81d",
+  "integrity": "ok",
+  "post_update_data": {
+    "ZAGENTSESSION": {
+      "before": 5,
+      "after": 5,
+      "existing_fields_unchanged": false,
+      "changed_columns": [
+        "ZCAPTUREOFFERSREVISION",
+        "ZCHECKPOINTJSON"
+      ]
+    },
+    "ZAGENTMESSAGE": {
+      "before": 24,
+      "after": 24,
+      "existing_fields_unchanged": true,
+      "changed_columns": []
+    },
+    "ZKNOWLEDGE": {
+      "before": 8,
+      "after": 8,
+      "existing_fields_unchanged": true,
+      "changed_columns": []
+    },
+    "ZQUESTION": {
+      "before": 11,
+      "after": 11,
+      "existing_fields_unchanged": true,
+      "changed_columns": []
+    },
+    "ZREVIEWSESSION": {
+      "before": 4,
+      "after": 4,
+      "existing_fields_unchanged": true,
+      "changed_columns": []
+    },
+    "ZREVIEWATTEMPT": {
+      "before": 3,
+      "after": 3,
+      "existing_fields_unchanged": true,
+      "changed_columns": []
+    }
+  },
+  "health": {
+    "status": "ok",
+    "provider": "deepseek",
+    "jev": {
+      "status": "off",
+      "model": null,
+      "entry_rule": null
+    },
+    "model_roles": {
+      "router": {
+        "model": "deepseek-flash",
+        "status": "ready",
+        "error": "",
+        "streaming": "not_applicable",
+        "category": null,
+        "retryable": false,
+        "recovery": null,
+        "strengths": {
+          "smart": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          },
+          "deep": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          }
+        },
+        "checked_at": 1791119595.30369,
+        "elapsed_ms": 1587,
+        "next_probe_at": null
+      },
+      "coach": {
+        "model": "deepseek-v4-flash",
+        "status": "ready",
+        "error": "",
+        "streaming": "ready",
+        "category": null,
+        "retryable": false,
+        "recovery": null,
+        "strengths": {
+          "smart": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          },
+          "deep": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null,
+            "streaming": "ready",
+            "stream_error": "",
+            "stream_retryable": false
+          }
+        },
+        "checked_at": 1791119595.056179,
+        "elapsed_ms": 1339,
+        "stream_error": "",
+        "stream_retryable": false,
+        "next_probe_at": null
+      },
+      "risk": {
+        "model": "deepseek-v4-pro",
+        "status": "ready",
+        "error": "",
+        "streaming": "not_applicable",
+        "category": null,
+        "retryable": false,
+        "recovery": null,
+        "strengths": {
+          "smart": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          },
+          "deep": {
+            "status": "ready",
+            "error": "",
+            "category": null,
+            "retryable": false,
+            "recovery": null
+          }
+        },
+        "checked_at": 1791119596.676995,
+        "elapsed_ms": 2960,
+        "next_probe_at": null
+      }
+    }
+  },
+  "new_service_pids": [
+    "40525"
+  ],
+  "session_sync_changes": [
+    {
+      "changed_top_level_keys": [
+        "checkpoint",
+        "recovery_version"
+      ],
+      "changed_checkpoint_keys": [
+        "runs"
+      ]
+    }
+  ],
+  "service_data_check": {
+    "agent_sessions_v2": {
+      "before": 33,
+      "after": 33,
+      "unchanged": true
+    },
+    "harness_tasks": {
+      "before": 13,
+      "after": 13,
+      "unchanged": true
+    }
+  }
+}

@@ -1,0 +1,7 @@
+QA isolated store: /tmp/review-today-topic-native-CCD51D0B-B5C7-4181-BE7E-AEE6DC193EB1
+sandbox_extension_issue_file_to_process failed for /tmp/review-today-kt01-native.1z68yaug/TopicCaptureQA.app: 1 (Operation not permitted)
+QA reset 1; synthetic model state; isolated store
+QA same invitation range refreshed: version=2, anchor retained; no generation
+QA bound action: capture_save, version=2, reviewRequested=false
+QA real isolated commit: 2 cards
+QA reset 2; synthetic model state; isolated store

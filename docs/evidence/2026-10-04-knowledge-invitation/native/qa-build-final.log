@@ -1,0 +1,28 @@
+/tmp/review-today-kt01-native.1z68yaug/TopicCaptureNativeQA.swift:212:25: warning: capture of 'stream' with non-Sendable type 'SCStream' in a '@Sendable' closure [#SendableClosureCaptures]
+210 |                 try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+211 |                     DispatchQueue.global(qos: .userInitiated).async {
+212 |                         stream.startCapture { error in
+    |                         `- warning: capture of 'stream' with non-Sendable type 'SCStream' in a '@Sendable' closure [#SendableClosureCaptures]
+213 |                             if let error { continuation.resume(throwing: error) } else { continuation.resume() }
+214 |                         }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/ScreenCaptureKit.framework/Headers/SCStream.h:475:12: note: class 'SCStream' does not conform to the 'Sendable' protocol
+473 | @protocol SCStreamOutput;
+474 | API_AVAILABLE(macos(12.3), macCatalyst(18.2), ios(27.0), visionos(27.0), tvos(27.0))
+475 | @interface SCStream : NSObject
+    |            `- note: class 'SCStream' does not conform to the 'Sendable' protocol
+476 |
+477 | /*!
+
+/tmp/review-today-kt01-native.1z68yaug/TopicCaptureNativeQA.swift:5:1: warning: add '@preconcurrency' to suppress 'Sendable'-related warnings from module 'ScreenCaptureKit' [#AddPreconcurrencyImport]
+  3 | import SwiftUI
+  4 | import SwiftData
+  5 | import ScreenCaptureKit
+    | `- warning: add '@preconcurrency' to suppress 'Sendable'-related warnings from module 'ScreenCaptureKit' [#AddPreconcurrencyImport]
+  6 | import AVFoundation
+  7 |
+
+[#AddPreconcurrencyImport]: <https://docs.swift.org/compiler/documentation/diagnostics/add-preconcurrency-import>
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+/tmp/review-today-kt01-native.1z68yaug/TopicCaptureQA.app: replacing existing signature
+/tmp/review-today-kt01-native.1z68yaug/TopicCaptureQA.app

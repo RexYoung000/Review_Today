@@ -1,0 +1,37 @@
+{
+  "live-synthetic-r4": {
+    "turns": 6,
+    "model_calls": 17,
+    "seconds": 74.56,
+    "reported_tokens": {
+      "input_tokens": 133245,
+      "output_tokens": 8510,
+      "total_tokens": 141755
+    },
+    "checks": {
+      "pass_invites_without_generation": true,
+      "same_invitation_scope_updated": true,
+      "correction_updates_same_invitation": true,
+      "new_concept_not_merged": true
+    }
+  },
+  "live-synthetic-r5": {
+    "turns": 7,
+    "model_calls": 21,
+    "seconds": 83.45,
+    "reported_tokens": {
+      "input_tokens": 167646,
+      "output_tokens": 11422,
+      "total_tokens": 179068
+    },
+    "checks": {
+      "pass_invites_without_generation": true,
+      "same_invitation_scope_updated": true,
+      "correction_updates_same_invitation": true,
+      "new_concept_not_merged": true,
+      "before_receipt_not_saved": true,
+      "simulated_receipt_saved_no_auto_continue": true,
+      "queried_saved_topic_after_different_topic": true
+    }
+  }
+}

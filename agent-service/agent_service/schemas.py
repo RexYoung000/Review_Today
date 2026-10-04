@@ -540,6 +540,20 @@ class CheckBinding(BaseModel):
         return values
 
 
+def validate_capture_quote_fields(output, payload):
+    """Invitation excerpts retain literal provenance, independent of grading."""
+    import json
+    from agent_service.call_errors import ModelCallError
+
+    for field, source, diagnostic in (
+        ("capture_quotes", payload.get("reference", ""), "capture_reference_grounding"),
+        ("capture_feedback_quotes", output.feedback, "capture_feedback_grounding"),
+    ):
+        quotes = getattr(output, field)
+        if quotes and (not isinstance(source, str) or any(quote not in source for quote in quotes)):
+            raise ModelCallError("SCHEMA", json.dumps([dict(field=[field], type=diagnostic)]))
+
+
 class MasteryEvaluation(BaseModel):
     passed: bool
     correctness: str
@@ -551,8 +565,22 @@ class MasteryEvaluation(BaseModel):
     question_validity: Literal["valid", "ambiguous", "out_of_scope"] = "valid"
     step_completion_demonstrated: bool = False
     followup_binding: CheckBinding | None = None
+    capture_quotes: list[str] = Field(default_factory=list, max_length=6,
+        description="本题实际检查知识点所需的 reference 连续逐字选段；不取用户答案、无关整节内容或新题。无可靠选段时为空，不改变通过判定。")
+    capture_feedback_quotes: list[str] = Field(default_factory=list, max_length=6,
+        description="仅取本次 feedback 中对应知识点的解释或纠正，连续逐字摘录；排除评分、通过描述、鼓励和新题。没有时为空。")
+    capture_scope_summary: str = Field(default="", max_length=160,
+        description="用一句具体知识说明 capture_quotes 与 capture_feedback_quotes 的保存范围；不写流程、评分或保存承诺。无选段时为空。")
+
+    @field_validator("capture_quotes", "capture_feedback_quotes")
+    @classmethod
+    def nonblank_capture_quotes(cls, values):
+        if any(not value.strip() for value in values):
+            raise ValueError("capture quotes must be nonblank")
+        return values
 
     def validate_request(self, payload):
+        validate_capture_quote_fields(self, payload)
         # Legacy/non-conversation evaluations have no frozen incoming binding.
         if not payload.get("check_binding") or not self.followup_question.strip():
             return
@@ -612,7 +640,7 @@ class TopicClosure(BaseModel):
 
 class KnowledgeStatusFocus(BaseModel):
     label: str = Field(min_length=1, max_length=60,
-        description='Short knowledge topic copied verbatim from the cited discussion source concepts or a contiguous part of its quote; never a save state, plan title or mastery claim.')
+        description='Short faithful summary of the knowledge topic supported by the cited discussion excerpt. Natural paraphrases are allowed, including sources without concepts; never a save state, plan title or mastery claim.')
     message_id: str = Field(min_length=1,
         description='Copy a message_id from knowledge_capture_status.discussion_sources.')
     quote: str = Field(min_length=1, max_length=300,
@@ -630,7 +658,7 @@ class KnowledgeStatusPriorClaim(BaseModel):
 
 class KnowledgeStatusContext(BaseModel):
     focus: list[KnowledgeStatusFocus] = Field(default_factory=list, max_length=3,
-        description='Select only topics referred to by this query. A query about the just-answered question centers on the latest question, user answer and feedback, not every earlier lesson candidate. Three is a maximum, not a target.')
+        description='Select only topics referred to by this query, with the primary topic first. A query about the just-answered question centers on the latest question, user answer and feedback, not every earlier lesson candidate. Every selected reference must be valid; do not replace a missing primary reference with an older generic topic. Three is a maximum, not a target.')
     prior_claim: KnowledgeStatusPriorClaim | None = None
 
 
@@ -771,6 +799,15 @@ class SessionAckRequest(BaseModel):
     last_event_seq: int = Field(ge=0)
 
 
+class CaptureScopeUpdate(BaseModel):
+    """Select source excerpts for an existing invitation; this is not a card."""
+    offer_id: str
+    version: int = Field(ge=1)
+    retained_fragment_ids: list[str] = Field(default_factory=list, max_length=12)
+    evidence_quotes: list[str] = Field(min_length=1, max_length=6)
+    scope_summary: str = Field(min_length=1, max_length=240)
+
+
 class ConversationOutput(BaseModel):
     message: str = Field(min_length=1)
     check_question: str = ""
@@ -778,6 +815,13 @@ class ConversationOutput(BaseModel):
     learning_plan: LearningPlan | None = None
     learning_concepts: list[str] = Field(default_factory=list, max_length=6)
     check_binding: CheckBinding | None = None
+    capture_update: CaptureScopeUpdate | None = Field(default=None,
+        description="本轮解释补充或纠正 capture_candidates 中同一知识点时，必须更新原邀请的具体范围；仅无相关补充时为 null。")
+
+    def validate_request(self, payload):
+        if self.capture_update:
+            from agent_service.knowledge_invitation import validate_update
+            validate_update(self.capture_update.model_dump(), self.message, payload.get('capture_candidates', []))
 
 
 class TeachingConversationOutput(ConversationOutput):
@@ -785,6 +829,7 @@ class TeachingConversationOutput(ConversationOutput):
     check_binding: CheckBinding | None = Field(description="有检查题时必须给出真实讲义、步骤和概念绑定；只有不出题时才能为 null。")
 
     def validate_request(self, payload):
+        super().validate_request(payload)
         import json
         from agent_service.answer_style import separate_lesson_check, trailing_lesson_check
         from agent_service.learning_progress import _visible_quote

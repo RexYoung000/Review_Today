@@ -1,0 +1,31 @@
+{
+  "source": "status-history-r1.jsonl",
+  "fixture": "authored synthetic history; no daily database or private conversation",
+  "input": "刚才回答的知识点有没有生成卡片？",
+  "repeated_same_input": true,
+  "automatic_result": "PASS",
+  "executed": 2,
+  "model_calls": 2,
+  "model": "deepseek-flash",
+  "usage": {
+    "input_tokens": 29539,
+    "output_tokens": 920,
+    "total_tokens": 30459
+  },
+  "language_review": {
+    "status": "reviewed_within_fixture",
+    "observations": [
+      "Both turns name the discussed keyword/vector matching difference and avoid the stale chunking plan.",
+      "Natural primary summaries survive exact source-reference validation without requiring label text inside quote or concepts.",
+      "First turn corrects the old false save claim without copying the long quote; exact repeated turn does not repeat the correction.",
+      "No capture authorization, draft, offer, learning progress or old history is changed."
+    ]
+  },
+  "limitations": [
+    "Two-turn fixed synthetic history is a small semantic sample, not a general stability rate.",
+    "Reference validation confirms exact local evidence; faithfulness of the natural summary remains a model judgment.",
+    "Real model routing was exercised, but web and knowledge writes were blocked; native persistence and UI were not exercised.",
+    "Working tree was dirty; tested code is identified by the JSONL header source digest rather than HEAD alone."
+  ],
+  "rex_acceptance": "pending"
+}

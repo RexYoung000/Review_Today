@@ -1,0 +1,204 @@
+{
+  "kind": "real_model_synthetic_session",
+  "native_write": false,
+  "turns": [
+    {
+      "input": "直接教我一个小知识点：向量检索中，相似度高为什么不保证答案正确？只讲这个知识点，简短解释后出一道让我用自己的话复述的检查题。讲稳定原理，不需要网页搜索。",
+      "seconds": 14.03,
+      "status": "completed",
+      "error": null,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "goal"
+        ],
+        "target_task_id": "",
+        "target_description": "向量检索中相似度高不保证答案正确",
+        "relation": "new_topic",
+        "workflow": "topic_exploration",
+        "scope": "learning",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户明确要求直接教一个具体知识点并出复述检查题，主题与用途明确，直接开始教学，无需澄清；已说明讲稳定原理不需要搜索。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": true,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [
+          "向量检索",
+          "相似度"
+        ],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "replies": [
+        "**向量检索**的基本做法是：把问题和文档都转成一组数值（向量），再用相似度算谁离得近，取出最相近的几条当候选。相似度高只说明「表达/语义上靠近」，不等于「内容就是正确答案」——相似是排序信号，不是真值判断。\n\n## 紧凑地图\n\n1. 向量检索在做什么：相似度排序，取回候选\n2. 相似度衡量的是「像不像」，不是「对不对」\n3. 三个常见原因：问题与相似文本并不等价、检索到的是相关内容而非答案、模型把相似误当相关\n4. 怎么判断：相似度只是线索，正确性要另外核对\n\n## 第一步：相似度衡量的是「像不像」\n\n假设一个简化模型：文档和问题都被压成一个点，靠距离或夹角判断靠近程度。在这个假设内，相似度高只意味着它们在向量空间里位置接近。\n\n但「接近」可以来自很多原因：用词重叠、话题相同、语气类似、甚至只是训练数据里经常一起出现。它们都是「像」，不是「正确」。\n\n所以，**相似度高不保证答案正确**，主要有三层原因：\n\n- **不等价**：两个句子意思相近，但一个说「可以退」，一个说「不能退」，方向相反。\n- **只是相关，不是答案**：检索到的段落确实围绕话题，但没有回答你的具体问题。\n- **表达陷阱**：问题里有否定、条件、时间、范围时，向量未必精确捕捉，容易把「差不多」当成「就是它」。\n\n有些系统会用**重排序**或**生成阶段再判断**来缓解，但那属于额外步骤，不是向量相似度本身保证的能力。向量相似可以帮助召回近义表达，但不保证命中、相关或正确。\n\n用一句话记：相似度是「检索的入口」，不是「答案的裁判」。\n\n---\n\n### 想一想\n\n请用你自己的话复述：向量检索里相似度高，为什么不等于答案正确？可以举一个你想到的例子来说明。"
+      ],
+      "offers": [],
+      "model_calls": 3
+    },
+    {
+      "input": "相似度高只说明向量表示接近，可能有助于找相关材料，但相关不等于材料真实，生成回答也可能出错，所以还需要核对来源、适用条件和答案依据。",
+      "seconds": 11.52,
+      "status": "completed",
+      "error": null,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "answer"
+        ],
+        "target_task_id": "0b0f658b-b048-4936-b2d7-e91af86add91",
+        "target_description": "向量检索中相似度高不保证答案正确",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "continue_goal",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户用复述方式回答当前检查题：相似度只代表向量接近，相关不等于真实，生成也可能出错，需要核对来源与依据，符合题意，交由评价节点判定。",
+        "understanding": "unknown",
+        "answer_evidence": "相似度高只说明向量表示接近，可能有助于找相关材料，但相关不等于材料真实，生成回答也可能出错，所以还需要核对来源、适用条件和答案依据。",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": false,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "replies": [
+        "你的核心解释是对的：相似度衡量的是「像不像」，它只是把问题与文档转成向量后按接近程度排序、取出候选，并不能判断内容「对不对」。这个排序信号可以帮你召回近义表达，但不能保证候选就是答案，所以还需要核对来源、适用条件和答案依据。不过题目明确要求举一个例子，你没有给出具体情境。比如「退款政策」问题：文档写的是「可以退款」，另一篇写「不能退款」，两篇都围绕退款话题、用词高度重叠，向量相似度可能都很高，但结论相反，相似度无法替你判断哪个正确。\n\n这道题覆盖的知识点已通过检查：向量检索、相似度、检索候选。本节其他内容仍未验证。你可以继续下一节，也可以继续追问。"
+      ],
+      "offers": [
+        {
+          "id": "5543a523-b323-4fc0-bf84-b19c41337556",
+          "version": 1,
+          "trigger": "verified_check",
+          "title": "向量检索、相似度、检索候选",
+          "scope_summary": "整理“向量检索、相似度、检索候选”的对应讲解与答题中的有效纠正。",
+          "status": "offered"
+        }
+      ],
+      "model_calls": 2
+    },
+    {
+      "input": "继续补充刚才这个知识点：为什么相关的材料也可能过时？请把这个边界解释清楚，不开始新知识点。",
+      "seconds": 9.62,
+      "status": "completed",
+      "error": null,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "followup"
+        ],
+        "target_task_id": "0b0f658b-b048-4936-b2d7-e91af86add91",
+        "target_description": "补充讲解“材料相关但可能过时”的边界",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "continue_goal",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户明确要求继续补充当前知识点的边界（为什么相关材料也可能过时），不要新知识点，属于对现有讲解的局部追问，沿用当前目标。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": true,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "replies": [
+        "**过时是「相似度高但答案不对」的第三类边界：文本没变、表达也没错，只是它对世界的描述已经不再成立。**\n\n## 为什么向量抓不到时间\n\n向量是由文本本身算出来的。同一句话，今年算出的向量和明年算出的向量几乎一样——只要字没改、模型没换，位置就不动。所以相似度对「什么时候写的」基本无感。\n\n假设一个简化模型：文档被压成一个点，靠距离判断靠近程度。在这个假设内，一段关于「当前政策」的旧文档和一段新文档，只要措辞接近，就会落在相近的位置。时间信息不在这个坐标里，除非它恰好被写进文字。\n\n## 常见的三种过时\n\n- **版本过时**：政策、价格、费率、接口参数改了，旧文档还留在库里，措辞却和新问题高度匹配。\n- **条件过时**：原文说的是「暂定」「试行」「截至某日期」，这些限定词在压缩成向量时容易变淡，取回来就像一条通用结论。\n- **状态过时**：某件事当时成立、后来被撤销或推翻，但撤销公告没进库，或进了库却同样只被当成一个候选。\n\n关键点是，这些情况下相似度并没有算错：它确实找到了「讲同一件事的材料」，只是没判断这件事现在还算不算数。\n\n## 边界在哪里\n\n所以这条限制要加在结论上：**相似度只反映文本之间的接近，不携带文本的时效**。如果问题涉及会变动的事实（政策、价格、版本、状态、时间范围），候选排得再靠前也不能直接当答案，还得看文档日期、版本号、生效范围和是否被后续材料取代。反过来，对不随时间变化的稳定知识（数学定义、语法规则、算法原理），过时的风险就小得多——这是条件差异，不是相似度变准了。\n\n一句话记：相似度比较的是**文本的远近**，不是**文本的新旧**。"
+      ],
+      "offers": [
+        {
+          "id": "5543a523-b323-4fc0-bf84-b19c41337556",
+          "version": 1,
+          "trigger": "verified_check",
+          "title": "向量检索、相似度、检索候选",
+          "scope_summary": "整理“向量检索、相似度、检索候选”的对应讲解与答题中的有效纠正。",
+          "status": "offered"
+        }
+      ],
+      "model_calls": 3
+    }
+  ],
+  "checks": {
+    "pass_invites_without_generation": true
+  }
+}

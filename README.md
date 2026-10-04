@@ -17,7 +17,7 @@ Review Today 是原生 macOS 个人学习教练：帮助用户理解资料、探
 - 已有 SwiftUI App、SwiftData 长期数据、本机 Python Agent 服务及短期 SQLite checkpoint；学习、知识卡、复习和语音已有实现或已接入 POC，各自验证范围见功能索引。
 - M1 总体验收仍开放。代码存在、单项测试通过、模型回放通过和 Rex 体验验收是不同状态。
 - 开发分支为 `codex/jev-comparison-evaluation`。9 月 6 日的“已合入 main／分支清理”是[当时的快照](docs/m1-branch-audit.md)，不能代表之后的增量已合入。
-- 本轮已整理文档入口与续接记录。已确认的“答题通过后出现新增知识提示”尚未实施；知识卡状态回复的主题过滤缺陷已复现待修。详情统一记录在[当前工作](docs/work-status.md)。
+- 本轮“答题通过后出现新增知识提示”（KT-01）及知识卡状态指代修复（KT-02）已实现并更新本机，分项自测通过；真实模型与原生分别验证，完整单次链路和 Rex 体验仍开放。详情统一记录在[当前工作](docs/work-status.md)，验证边界见[本批证据](docs/evidence/2026-10-04-knowledge-invitation/README.md)。
 - GitHub 用于版本管理；验证在本地执行。普通提交推送不代表合并、最终发布或关闭验收。
 
 历史批次的结果、失败与限制保留在[迭代记录](docs/agent-iteration.md)、[验收契约](docs/m1-acceptance.md)及它们链接的证据目录中，不在主页重复维护测试数字或旧“当前状态”。

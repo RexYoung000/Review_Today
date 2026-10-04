@@ -22,6 +22,18 @@ def proposal():
                 prior_claim=dict(message_id=CLAIM_ID, quote=CLAIM_QUOTE, kind='recorded'))
 
 
+def comparison_proposal():
+    """A natural primary summary anchored to legacy feedback with no concepts.
+
+    The older verbatim topic deliberately remains as a secondary selection so
+    rejecting the primary cannot silently change what the status answer names.
+    """
+    value = proposal()
+    value['focus'] = [dict(label='关键词与向量检索的匹配差异', message_id=VECTOR_ID, quote=VECTOR_QUOTE),
+                      value['focus'][0]]
+    return value
+
+
 def seed(harness, sid=None):
     from agent_service.conversation import _new_run
     from agent_service.harness_store import HarnessTaskRecord, now_iso

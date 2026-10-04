@@ -391,14 +391,18 @@ struct LearningWorkspace: View {
                             TopicCapturePanel(offer: offer, focused: captureDestination == offer.id,
                                 enabled: selectedSession?.status == "active" && runtime.allowsSending && !dictation.busy && !voice.active,
                                 persistenceError: sessionTasks.first(where: { $0.id == offer.saveTaskID && !$0.memoryCommitted })?.errorCode,
-                                deliveryError: sessionMessages.last(where: { ConversationProcessor.object($0.operationJSON)?["target_id"] as? String == offer.id.uuidString.lowercased() })?.lastDeliveryError, onAction: { rawKind in
+                                deliveryError: sessionMessages.last(where: {
+                                    let action = ConversationProcessor.object($0.operationJSON)
+                                    return action?["target_id"] as? String == offer.id.uuidString.lowercased()
+                                        && action?["version"] as? Int == offer.version
+                                })?.lastDeliveryError, onAction: { rawKind in
                                     let enrollReview = rawKind == "capture_save_review"
                                     let kind = enrollReview ? "capture_save" : rawKind
-                                    if kind == "capture_save" { followsLatest = false; activeCaptureID = offer.id }
+                                    if kind == "capture_save", !offer.isCheckInvitation { followsLatest = false; activeCaptureID = offer.id }
                                     else { activeCaptureID = nil }
-                                    sendBound(kind, title: kind == "capture_save" ? "录入这段知识" : kind == "capture_later" ? "稍后录入" : "跳过录入",
-                                              target: offer.id.uuidString.lowercased(), version: offer.version, reviewRequested: enrollReview)
-                                    if kind == "capture_save", localError == nil {
+                                    let actionTitle = kind == "capture_save" ? (offer.isCheckInvitation ? "新增知识" : "录入这段知识") : kind == "capture_later" ? "稍后录入" : "跳过录入"
+                                    sendMessage(actionTitle, operation: offer.boundOperation(kind), reviewRequested: enrollReview)
+                                    if kind == "capture_save", !offer.isCheckInvitation, localError == nil {
                                         Task { @MainActor in await Task.yield(); proxy.scrollTo(offer.id, anchor: .top) }
                                     }
                                     return localError == nil

@@ -40,7 +40,7 @@ from agent_service.schemas import (
     MessageAccepted, ProblemCoachBundle, RunActionRequest, SessionMessageRequest, TaskEvent,
 )
 
-from agent_service import conversation_context, conversation_controls, conversation_model_call, topic_capture, dialogue_routing, goal_continuation
+from agent_service import conversation_context, conversation_controls, conversation_model_call, topic_capture, knowledge_invitation, dialogue_routing, goal_continuation
 from agent_service import conversation_materials, image_inputs
 from agent_service.conversation_controls import LABELS, FINISHED
 
@@ -128,7 +128,8 @@ class ConversationHarness(ConditionalTeaching):
                     # Recompute its scope from all current inputs, not a stale
                     # learning-only projection from the superseded attempt.
                     for key in ("resolved_input", "resource_scope_reply", "programming_scope_reply", "request_scope",
-                                "dialogue_only", "social_reply_kind", "activity_candidate", "learning_concepts", "material_followup"):
+                                "dialogue_only", "social_reply_kind", "activity_candidate", "learning_concepts", "material_followup",
+                                "capture_scope_update", "evaluated_binding", "verified_concepts", "capture_quotes", "capture_feedback_quotes", "capture_scope_summary"):
                         run.pop(key, None)
                     summary = "已收到补充，正在调整"
                 else:
@@ -284,7 +285,10 @@ class ConversationHarness(ConditionalTeaching):
         return conversation_controls.cancel_older(self, sid, rid, revision)
 
     def _stop(self, data: dict, run: dict, *, cancel: bool = False):
-        return conversation_controls.stop(self, data, run, cancel=cancel)
+        result = conversation_controls.stop(self, data, run, cancel=cancel)
+        knowledge_invitation.pause_refresh(self, data, run)
+        topic_capture.interrupt_unstarted_save(self, data, run)
+        return result
 
     def start(self, session_id: str):
         from agent_service.model_capabilities import snapshot
@@ -585,6 +589,7 @@ class ConversationHarness(ConditionalTeaching):
                 data["pending"] = dict(kind="save", target_id=value["id"], version=value["version"])
                 self.store.event(data, run, "draft", "整理结果尚未入库", payload={"draft": value, "pending": data["pending"]})
             if complete:
+                knowledge_invitation.published(self, data, run, event['message'])
                 # Publishing the final answer and marking its generation complete
                 # share one commit. A crash before the worker's final status/summary
                 # must not replay an answer the Mac may already have consumed.
@@ -700,7 +705,8 @@ class ConversationHarness(ConditionalTeaching):
                               decision_mode=current['mode'], task_id=None, dialogue_only=True,
                               knowledge_status_reply=True)
                 state = knowledge_capture_status.facts(current,
-                    related_knowledge=last.get('context', {}).get('knowledge_summaries', []), valid_run=self._memory_run_valid)
+                    related_knowledge=last.get('context', {}).get('knowledge_summaries', []), valid_run=self._memory_run_valid,
+                    status_context=decision.status_context)
                 explanation = knowledge_capture_status.validate_context(state, decision.status_context)
                 active['knowledge_status_context'] = explanation
                 active['knowledge_status_correction_message_id'] = explanation['correction_message_id']
@@ -800,11 +806,20 @@ class ConversationHarness(ConditionalTeaching):
                 if data["draft"]["understanding"] != "verified":
                     data["draft"]["understanding"] = "self_reported"
             if "correction" in decision.intents and data.get("draft"):
-                data["draft"].update(version=data["draft"]["version"] + 1, invalidated=True, understanding="unknown")
-                owner = data["tasks"].get(data["draft"]["id"])
-                if owner:
-                    owner["context"]["draft"] = dict(data["draft"])
-                    owner["context"].update(understanding="unknown", independent_passed=False, transfer_passed=False)
+                invitation = data.get("capture_offers", {}).get(data["draft"]["id"], {})
+                if (invitation.get("trigger") == "verified_check"
+                        and (invitation.get("status") in knowledge_invitation.EDITABLE
+                             or invitation.get("status") == "invalidated" and invitation.get("correction_pending"))):
+                    # A failed save leaves a source snapshot here, not a separate
+                    # editable card. Correct the original invitation through its
+                    # versioned source selection instead of generating a new draft.
+                    data["draft"] = None
+                else:
+                    data["draft"].update(version=data["draft"]["version"] + 1, invalidated=True, understanding="unknown")
+                    owner = data["tasks"].get(data["draft"]["id"])
+                    if owner:
+                        owner["context"]["draft"] = dict(data["draft"])
+                        owner["context"].update(understanding="unknown", independent_passed=False, transfer_passed=False)
                 data["pending"] = None
             if set(decision.intents) & {"stop", "pause", "cancel"}:
                 if len(run["input_ids"]) > 1:
@@ -1303,9 +1318,13 @@ class ConversationHarness(ConditionalTeaching):
         if self.judgments is not None and teaching:
             from agent_service.judgment_grading import ScoredConversationOutput, RUBRIC_RULE
             output_schema, output_system = ScoredConversationOutput, COACH_SYSTEM + RUBRIC_RULE
+        capture_candidates = knowledge_invitation.candidates(self, data, run, decision) if not draft else []
+        if capture_candidates:
+            output_system += knowledge_invitation.UPDATE_INSTRUCTION
         output = self._call(sid, rid, rev, node, output_system,
                             json.dumps(dict(instruction=instruction, context=context, sources=answer_sources(sources),
                                             learning_step=lesson_target,
+                                            capture_candidates=capture_candidates,
                                             source_type=source_type, evidence=coach_evidence,
                                             verification_notice=run.get("verification_notice", "")), ensure_ascii=False), output_schema)
         if teaching:
@@ -1326,6 +1345,8 @@ class ConversationHarness(ConditionalTeaching):
             output.message = synchronize_question(output.message, old_question, output.check_question)
         with self.store.transaction(sid, rid, rev) as current:
             current["runs"][rid]["learning_concepts"] = output.learning_concepts
+            if output.capture_update:
+                current['runs'][rid]['capture_scope_update'] = output.capture_update.model_dump()
         intro = run.get("continuation_intro")
         text = (intro + "\n\n" if intro else "") + output.message
         text = bound_source_links(text, readable_urls)
@@ -1469,6 +1490,8 @@ class ConversationHarness(ConditionalTeaching):
                                (ctx.get("learning_plan") or {}).get("steps", []) if s["title"] == retry_title), learning_step)
         result = None
         evaluation_schema, evaluation_system = MasteryEvaluation, EVALUATION_SYSTEM
+        from agent_service.judgment_grading import CAPTURE_QUOTE_RULE
+        evaluation_system += CAPTURE_QUOTE_RULE
         if self.judgments is not None:
             from agent_service.judgment_grading import evaluate, ScoredMasteryEvaluation, FOLLOWUP_RULE
             result = evaluate(self, sid, rid, rev, task, last["content"], EVALUATION_SYSTEM)
@@ -1480,6 +1503,7 @@ class ConversationHarness(ConditionalTeaching):
                             json.dumps(dict(question=ctx.get("check_question") or task["content"],
                                             reference=reference, learning_step=learning_step,
                                             check_binding=binding, followup_step=followup_step, retry_step=retry_step,
+                                            capture_concepts=knowledge_invitation.unoffered_concepts(data, task['task_id'], binding),
                                             hint_used=ctx.get("hint_used", False),
                                             followup_required_on_pass=bool(ctx.get("requires_mastery") and not (
                                                 ctx.get("independent_passed") and task["stage"] == "transfer")),
@@ -1503,6 +1527,9 @@ class ConversationHarness(ConditionalTeaching):
             active_run = data["runs"][rid]
             active_run.update(evaluated_step_id=binding["step_id"] if binding else None,
                               evaluated_binding=binding, evaluation_message_id=last["message_id"],
+                              capture_quotes=getattr(result, 'capture_quotes', []),
+                              capture_feedback_quotes=getattr(result, 'capture_feedback_quotes', []),
+                              capture_scope_summary=getattr(result, 'capture_scope_summary', ''),
                               verified_concepts=binding["concepts"] if effective_pass else [])
             previous_pass = ctx.get("independent_passed", False)
             hint_used = ctx.get("hint_used", False)
@@ -1527,11 +1554,8 @@ class ConversationHarness(ConditionalTeaching):
                 evaluation=result.model_dump()))
             ctx["hint_used"] = False
             mastered = effective_pass and ctx.get("understanding") == "verified"
-            capture_notice = ""
             if effective_pass and not ctx.get("knowledge_capture_explained"):
                 ctx["knowledge_capture_explained"] = True
-                capture_notice = ("\n\n本次已留下答题记录，已准备待确认内容；确认保存后才会生成并入库知识卡。" if mastered else
-                                  "\n\n答题结果已记录。结束这一段后可确认录入知识卡，也可以直接要求保存；当前尚未入库。")
             plan = ctx.get("learning_plan")
             if binding and plan and ctx.get("requires_mastery"):
                 # The independent/transfer gates certify the problem. They do not
@@ -1559,17 +1583,15 @@ class ConversationHarness(ConditionalTeaching):
             self._publish(sid, rid, rev, result.feedback + "\n\n这道题与对应讲解尚未核对一致，本次只给反馈，不更新学习进度。可以先补讲本节，再做对应检查，也可以继续下一节。",
                           stage=task["stage"], required={"type": "respond", "prompt": "补讲本节或继续下一节", "options": []})
         elif mastered:
-            self._publish(sid, rid, rev, result.feedback + "\n\n这次理解检查已通过。" + capture_notice,
+            self._publish(sid, rid, rev, result.feedback,
                           stage="mastered", task_status="completed", draft=True,
                           draft_content=mastery_content, source_type=ctx.get("source_type"))
         elif effective_pass and not ctx.get("requires_mastery"):
-            scope_note = ("这一节的理解检查已通过。" if binding["scope"] == "step" and result.step_completion_demonstrated else
-                          "这道题覆盖的知识点已通过检查：" + "、".join(binding["concepts"]) + "。本节其他内容仍未验证。")
-            self._publish(sid, rid, rev, result.feedback + "\n\n" + scope_note + "你可以继续下一节，也可以继续追问。" + capture_notice,
+            self._publish(sid, rid, rev, result.feedback,
                           stage="lesson_checked", required={"type": "respond", "prompt": "继续下一节或追问", "options": []})
         else:
             question = ctx.get("check_question", "")
-            self._publish(sid, rid, rev, with_question(result.feedback, question, "独立回答") + capture_notice, stage="transfer" if effective_pass else "practice",
+            self._publish(sid, rid, rev, with_question(result.feedback, question, "独立回答"), stage="transfer" if effective_pass else "practice",
                           required={"type": "submit_answer" if question else "respond",
                                     "prompt": question or "补讲本节或继续下一节", "options": []})
 

@@ -1,0 +1,41 @@
+{
+  "environment": {
+    "data": "isolated SwiftData",
+    "server": "synthetic offer and check outcome",
+    "model_calls": 0,
+    "native_test_port": 18764,
+    "module": "/tmp/review-today-shared-contracts.1bsyr327"
+  },
+  "contracts": {
+    "TopicCaptureContractTests": "passed",
+    "KnowledgeIngestionTests": "passed",
+    "diff_check": "passed"
+  },
+  "final_native_observations": {
+    "presentation": "knowledge name + one concrete scope + secondary review choice + add/later",
+    "scope_AX_before": "RAG 与微调的区别 RAG 先检索资料再生成回答；微调通过训练调整模型参数。",
+    "scope_AX_after": "RAG 与微调的区别 RAG 先检索资料再生成回答；微调通过训练调整模型参数。检索资料不足时应说明限制。",
+    "draft_before_and_after": "精简版草稿：继续问检索资料不足怎么办。",
+    "focused_AX_element_before_and_after": "39 text entry area 学习输入",
+    "scroll_value_before_and_after": 0.6470588235294118,
+    "actual_clicked_action": {
+      "kind": "capture_save",
+      "version": 2,
+      "reviewRequested": false
+    },
+    "real_isolated_commit_cards": 2,
+    "saved_UI_after_commit": "已加入知识库 / 2 张知识卡片 / 查看知识",
+    "dark_narrow_reduced_window_points": [
+      760,
+      680
+    ],
+    "scope_equal_title_fallback": "contract passed; not separately opened in UI"
+  },
+  "not_verified": [
+    "system VoiceOver full flow",
+    "real backend-to-native check invitation end-to-end",
+    "real teaching and generated knowledge quality",
+    "daily app final build and local update",
+    "Rex final visual acceptance"
+  ]
+}

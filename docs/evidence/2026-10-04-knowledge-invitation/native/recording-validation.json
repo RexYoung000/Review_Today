@@ -1,0 +1,32 @@
+{
+  "native-interaction-v1.mp4": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1040,
+        "height": 820,
+        "avg_frame_rate": "304650/10567"
+      }
+    ],
+    "format": {
+      "duration": "140.870000",
+      "size": "5733424"
+    }
+  },
+  "native-interaction-final.mp4": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1040,
+        "height": 820,
+        "avg_frame_rate": "768600/28073"
+      }
+    ],
+    "format": {
+      "duration": "46.771667",
+      "size": "1638061"
+    }
+  }
+}

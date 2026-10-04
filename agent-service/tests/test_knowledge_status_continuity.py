@@ -23,7 +23,8 @@ class StatusContinuityTests(unittest.TestCase):
         accepted = self.f.send(history.QUERY)
         state = self.f.state()
         text = state['messages'][-1]['content']
-        self.assertIn('前面说「' + history.CLAIM_QUOTE + '」不准确', text)
+        self.assertIn('前面关于本轮知识卡的说法不准确', text)
+        self.assertNotIn(history.CLAIM_QUOTE, text)
         self.assertIn('刚才讨论的是关键词检索、向量检索', text)
         self.assertIn('还没有整理成知识卡', text)
         self.assertNotIn('资料切块', text, 'a stale plan title is not the current discussion')
@@ -47,14 +48,63 @@ class StatusContinuityTests(unittest.TestCase):
             knowledge_card_status=True, status_context=history.proposal())
         self.f.send(history.QUERY)
         self.f.send(history.QUERY)
-        self.assertNotIn('前面说', self.f.state()['messages'][-1]['content'])
+        self.assertNotIn('不准确', self.f.state()['messages'][-1]['content'])
         self.assertIn('关键词检索', self.f.state()['messages'][-1]['content'])
 
-    def test_unrelated_ids_quotes_and_unanchored_labels_are_ignored(self):
+    def test_natural_primary_topic_survives_empty_concepts_and_repeat_query(self):
+        before = copy.deepcopy(self.f.state())
+        context = history.comparison_proposal()
+        self.assertNotIn(context['focus'][0]['label'], context['focus'][0]['quote'])
+        state = facts(before)
+        source = next(item for item in state['discussion_sources'] if item['message_id'] == history.VECTOR_ID)
+        self.assertEqual(source['concepts'], [])
+        self.assertEqual(validate_context(state, context)['focus_labels'],
+                         [item['label'] for item in context['focus']])
+        self.f.decision = fixtures.intent('capabilities', scope='conversation',
+            knowledge_card_status=True, status_context=context)
+        first = self.f.send(history.QUERY)
+        self.assertIn('刚才讨论的是关键词与向量检索的匹配差异、关键词检索',
+                      self.f.state()['messages'][-1]['content'])
+        second = self.f.send(history.QUERY)
+        after = self.f.state()
+        self.assertIn('关键词与向量检索的匹配差异', after['messages'][-1]['content'])
+        self.assertNotIn('不准确', after['messages'][-1]['content'])
+        self.assertEqual(after['runs'][first.run_id]['knowledge_status_correction_message_id'], history.CLAIM_ID)
+        self.assertIsNone(after['runs'][second.run_id]['knowledge_status_correction_message_id'])
+        self.assertEqual(before['tasks'], after['tasks'])
+        self.assertFalse(after.get('capture_offers'))
+        self.f.capture.assert_not_called()
+
+    def test_invalid_primary_reference_does_not_publish_older_secondary_topic(self):
+        state = facts(self.f.state())
+        for change in (dict(message_id='foreign'), dict(quote='未出现的比较讲解')):
+            with self.subTest(change=change):
+                context = history.comparison_proposal()
+                context['focus'][0].update(change)
+                result = validate_context(state, context)
+                self.assertEqual(result['focus_labels'], [])
+                self.assertIsNone(result['correction_message_id'])
+                self.assertNotIn('刚才讨论的是关键词检索', reply(state, context))
+
+    def test_long_prior_assertion_is_corrected_without_repeating_its_details(self):
+        state = facts(self.f.state())
+        context = history.proposal()
+        quote = '本会话已经记录了知识卡：' + '这些旧卡的定义、机制和用途说明。' * 8
+        state['prior_status_messages'] = [dict(message_id=history.CLAIM_ID, content=quote)]
+        context['prior_claim'].update(quote=quote)
+        self.assertEqual(validate_context(state, context)['correction_message_id'], history.CLAIM_ID)
+        text = reply(state, context)
+        self.assertIn('不准确', text)
+        self.assertIn('没有可确认的本轮知识卡保存记录', text)
+        self.assertNotIn(quote, text)
+        self.assertLess(len(text.split('\n\n')[0]), 80)
+
+    def test_unrelated_ids_quotes_and_invalid_label_shapes_are_ignored(self):
         state = facts(self.f.state())
         bad_focus = [dict(message_id='foreign', label='关键词检索', quote=history.KEYWORD_QUOTE),
                      dict(message_id=history.KEYWORD_ID, label='关键词检索', quote='并未说过这句'),
-                     dict(message_id=history.KEYWORD_ID, label='已经保存九张卡', quote=history.KEYWORD_QUOTE)]
+                     dict(message_id=history.KEYWORD_ID, label='', quote=history.KEYWORD_QUOTE),
+                     dict(message_id=history.KEYWORD_ID, label='主题' * 31, quote=history.KEYWORD_QUOTE)]
         for item in bad_focus:
             with self.subTest(item=item):
                 proposal = dict(history.proposal(), focus=[item])

@@ -45,14 +45,14 @@ def emit(h, data, run, offer):
 
 
 def public(offer):
-    return {k: deepcopy(offer[k]) for k in ('id', 'version', 'title', 'anchor_message_id', 'status', 'next_request', 'continuation_consumed', 'save_task_id', 'action_input_id', 'error', 'knowledge_ids') if k in offer}
+    return {k: deepcopy(offer[k]) for k in ('id', 'version', 'title', 'anchor_message_id', 'status', 'next_request', 'continuation_consumed', 'save_task_id', 'action_input_id', 'error', 'knowledge_ids', 'trigger', 'scope_summary') if k in offer}
 
 
 def interrupt(data):
     # New text supersedes deferred automatic teaching, but not already saved data.
     for offer in offers(data).values():
         offer['continuation_consumed'] = True
-        if offer['status'] == 'offered':
+        if offer['status'] == 'offered' and offer.get('trigger') != 'verified_check':
             offer['status'] = 'dismissed'
 
 
@@ -62,8 +62,16 @@ def invalidate(h, data, run):
     last_answer = next((m for m in reversed(data['messages']) if m['role'] == 'coach'), {})
     for offer in offers(data).values():
         matches = (step and offer.get('step_id') == step['id']) or last_answer.get('message_id') in offer.get('message_ids', [])
+        if offer.get('trigger') == 'verified_check':
+            matches = last_answer.get('message_id') in offer.get('message_ids', [])
         if matches and offer['status'] in {'offered', 'dismissed', 'deferred', 'failed'}:
+            if offer.get('trigger') == 'verified_check':
+                offer.update(status_before_correction=offer['status'], correction_pending=True,
+                             correction_run_id=run['run_id'],
+                             version=offer['version'] + 1)
             offer.update(status='invalidated', continuation_consumed=True, error='内容已修正，请在新的话题收尾处确认。')
+            if offer.get('trigger') == 'verified_check':
+                offer['error'] = '正在核对纠正后的保存范围，完成前暂不能录入。'
             emit(h, data, run, offer)
 
 
@@ -120,6 +128,7 @@ def collect_source(h, data, task=None, *, message_ids=None, include_captured=Fal
     # A model may select only the last feedback message. Reconstruct its actual
     # teaching source, rather than dropping it or using the feedback alone.
     boundary = max((positions.get(mid, -1) for offer in data.get('capture_offers', {}).values()
+                    if offer.get('trigger') != 'verified_check'
                     for mid in offer.get('message_ids', []) + offer.get('draft', {}).get('excluded_unbound_feedback_ids', [])), default=-1)
     if include_captured:
         matching = next((offer for offer in reversed(list(data.get('capture_offers', {}).values()))
@@ -261,7 +270,7 @@ def maybe_offer(h, sid, rid, rev, decision, last):
 def queue_next(h, data, offer):
     if offer.get('save_task_id') and data.get('active_task_id') == offer['save_task_id']:
         data['active_task_id'] = offer.get('resume_task_id', offer.get('origin_task_id'))
-    if offer.get('continuation_consumed'):
+    if offer.get('trigger') == 'verified_check' or offer.get('continuation_consumed'):
         return
     offer['continuation_consumed'] = True
     if not offer.get('next_request') or data.get('status') != 'active' or data.get('paused') or data.get('lifecycle_revision', 0) != offer['lifecycle_revision']:
@@ -336,10 +345,24 @@ def handle_action(h, sid, rid, rev, last):
 
 
 def failed(h, data, run, error):
+    from agent_service.knowledge_invitation import pause_refresh
+    pause_refresh(h, data, run)
     offer = offers(data).get(run.get('capture_offer_id'))
     if offer and offer['status'] == 'saving':
         offer.update(status='failed', error=error)
         data['active_task_id'] = offer.get('resume_task_id', offer.get('origin_task_id'))
+        emit(h, data, run, offer)
+
+
+def interrupt_unstarted_save(h, data, run):
+    """Revoke a stopped save attempt even when it retains an earlier task ID."""
+    offer = offers(data).get(run.get('capture_offer_id'))
+    task = data['tasks'].get((offer or {}).get('save_task_id'), {})
+    if (offer and offer['status'] == 'saving'
+            and not task.get('context', {}).get('commit_claimed') and task.get('status') != 'completed'):
+        offer.update(status='failed', continuation_consumed=True, error='录入已中断，尚未保存，可重试。')
+        if (data.get('pending') or {}).get('target_id') == offer['id']:
+            data['pending'] = None
         emit(h, data, run, offer)
 
 

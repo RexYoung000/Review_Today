@@ -131,6 +131,10 @@ def bound_check(task):
             binding = bind_check(deepcopy(task), ctx["check_question"], dict(
                 step_title=step["title"], concepts=spec.must_cover,
                 evidence_quotes=[check_reference(task)], scope="concept"))
+            if binding:
+                # This reference validates grading, but is not a knowledge-point
+                # excerpt. An invitation needs separately validated capture quotes.
+                binding["scope_source"] = "rubric_fallback"
     if (not binding or not step or binding.get("question") != ctx.get("check_question") or
             binding.get("step_id") != step["id"] or binding.get("step_title") != step["title"] or
             binding.get("reference_stamp") != _reference_stamp(task) or

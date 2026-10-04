@@ -106,7 +106,7 @@ class LearningCheckRegressionTests(unittest.TestCase):
         self.assertEqual(run["evaluation_message_id"], practice["message_id"])
         self.assertEqual(current_step(after)["understanding"], "unknown")
         self.assertEqual(after["stage"], "lesson_checked")
-        self.assertIn("本节其他内容仍未验证", state["messages"][-1]["content"])
+        self.assertNotIn("本节其他内容仍未验证", state["messages"][-1]["content"])
         self.assertIsNone(state["draft"])
         self.assertIsNone(state["pending"])
 
@@ -142,14 +142,16 @@ class LearningCheckRegressionTests(unittest.TestCase):
         self.assertEqual(step["verified_concepts"][0]["concept"], "外部资料作用")
         self.assertNotIn("这一节的理解检查已通过", self.state()["messages"][-1]["content"])
 
-    def test_first_pass_explains_card_generation_once_without_creating_a_draft(self):
+    def test_first_pass_offers_card_once_without_creating_a_draft(self):
         task = self.start_lesson()
         self.answer()
         first = self.state()["messages"][-1]["content"]
-        self.assertIn("结束这一段后可确认录入知识卡", first)
+        self.assertNotIn("结束这一段后可确认录入知识卡", first)
+        self.assertEqual(len(self.state()['capture_offers']), 1)
         self.assertIsNone(self.state()["draft"])
         self.assertIsNone(self.state()["pending"])
         self.answer()
+        self.assertEqual(len(self.state()['capture_offers']), 1)
         after = self.state()["tasks"][task["task_id"]]
         self.assertTrue(after["context"]["knowledge_capture_explained"])
         self.assertNotIn("结束这一段后可确认录入知识卡", self.state()["messages"][-1]["content"])

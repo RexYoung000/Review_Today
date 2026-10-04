@@ -17,6 +17,7 @@ from tests.knowledge_status_history_fixture import CLAIM_ID, QUERY, seed
 
 
 def checks_for(record, *, first):
+    from agent_service.knowledge_capture_status import validate_context
     before, after, run = record['before'], record['after'], record['run']
     intent = run.get('intent') or {}
     proposal = intent.get('status_context') or {}
@@ -31,9 +32,9 @@ def checks_for(record, *, first):
         one_entry_call=len(calls) == 1 and calls[0]['schema'] == 'IntentDecision',
         read_only_status=bool(intent.get('knowledge_card_status') and run.get('knowledge_status_reply')),
         references_exact=bool(focus) and all(item['message_id'] in sources
-            and item['quote'] in sources[item['message_id']]['content']
-            and (item['label'] in sources[item['message_id']].get('concepts', [])
-                 or item['label'] in item['quote']) for item in focus),
+            and item['quote'] in sources[item['message_id']]['content'] for item in focus),
+        selection_scope_preserved=bool(focus) and validate_context(
+            context.get('knowledge_capture_status', {}), proposal)['focus_labels'] == list(dict.fromkeys(labels)),
         current_topics_named=all(any(topic in label for label in labels) and topic in reply
                                 for topic in ('关键词', '向量')),
         no_earlier_unanswered_topic=not any('切块' in label for label in labels),
@@ -75,12 +76,12 @@ def main():
         with RunReport(args.output, layer='live_fixed_context', planned=planned,
                 fixture=dict(synthetic=True, jev=False, source='knowledge_status_history_fixture.py',
                     purpose='Historical false card claim, current retrieval concepts and mismatched old plan',
+                    repeat_same_input=True,
                     daily_data_used=False, native_persistence_verified=False)) as report:
             report.write(dict(type='prompt', system=INTENT_SYSTEM, schema=IntentDecision.model_json_schema()))
             for index, identity in enumerate(planned):
-                text = QUERY if index == 0 else '那现在刚才的知识点保存成功了吗？'
                 record = report.turn(harness, sid, SessionMessageRequest(
-                    client_message_id=str(uuid.uuid4()), content=text, mode_preset='source_learning'))
+                    client_message_id=str(uuid.uuid4()), content=QUERY, mode_preset='source_learning'))
                 checks = checks_for(record, first=index == 0)
                 report.add(identity, record, checks)
                 result = report.records[-1]
