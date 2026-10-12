@@ -17,7 +17,7 @@ ZCode 的参考价值在于把模型判断、工具执行、结果回传、停�
 |---|---|---|---|
 | 1. 根据结果决定下一步 | 模型判断、工具执行、结果回传后继续或停止；轮次结束与持续目标完成分开 | 区分回答完成、等待用户、理解验证和知识保存；每次推进有对应依据 | 已逐条讨论；[KT-01](../work-status.md#kt-01) 已实现并分层自测，Rex 原生体验仍开放 |
 | 2. 长对话与上下文 | 区分输入组成、工具结果压缩、会话摘要、压缩后恢复 | 先看每类内容占多少，再保留与当前问题相关的证据 | [CTX-01](../work-status.md#ctx-01) 公开选段已实现并分项验证，待本机重开体验；其他机制未授权实施 |
-| 3. 工具执行与取消 | 验证、权限、执行、结果记录及恢复分层 | 分清未执行、执行失败、结果未知；保存失败不能直接假设没有写入 | 已研究，尚未逐条对齐 |
+| 3. 工具执行与取消 | 验证、权限、执行、结果记录及恢复分层 | 分清未执行、执行失败、结果未知；保存失败不能直接假设没有写入 | 第一小点「停止与知识保存」已确认备案；下一小点「失败后怎样重试」待对齐，未授权代码修改，见 [TOOL-01](../work-status.md#tool-01) |
 | 4. Skills、子任务与工作流 | 按需加载指令，隔离子任务上下文，显式任务结果 | 仅在有独立子任务需求时考虑；先改善单条教学链路 | 已研究，未批准引入 |
 | 5. 事件、恢复与用户补充 | 有序事件、选定持久化记录、恢复与引导输入 | 区分收到、执行、显示、可靠保存；恢复不重复副作用 | 已研究，尚未逐条对齐 |
 | 6. 模型重试与预算 | 自管重试、流恢复、上下文与目标预算分层 | 分清用量观测、恢复次数与整任务费用；不照搬无上限恢复 | 已研究，尚未逐条对齐 |
@@ -62,6 +62,11 @@ Review Today 已有上下文预算、整组问答摘要与独立学习状态。2
 详细契约只在 [Harness 公开来源选段](../agent-harness-v2.md#public-evidence-selection)维护，实证见[选段证据](../evidence/2026-10-05-source-selection/README.md)，当前结果和续接见 [CTX-01](../work-status.md#ctx-01)。第 2 条其他机制及第 3 条尚未获实现授权，后续继续逐项讨论。
 
 源码入口：[上下文构建](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/context/builder.ts)、[组成统计](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/helpers/context-usage-breakdown.ts)、[压缩选择](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/helpers/compact-selection.ts)、[工具结果处理](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/tool/executor/result-serialization.ts)。
+
+<a id="topic-3"></a>
+## 第 3 条：工具执行与取消（2026-10-12，逐项对齐中）
+
+第一小点已确认：停止后续处理，已保存知识卡保留，删除由用户单独操作。规则回到 [Harness](../agent-harness-v2.md#stop-knowledge-contract)，确认见决策 220，当前只读检查与未复现风险见 [TOOL-01](../work-status.md#tool-01)。尚未授权本条代码修改；下一小点是失败后怎样重试，不把本条整体标为完成。
 
 ## 其余研究结论备查
 
