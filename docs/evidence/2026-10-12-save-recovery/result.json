@@ -1,0 +1,36 @@
+[
+  {
+    "case": "mac_saved_ack_missing",
+    "initial_claim": "success",
+    "stopped_task": "committing",
+    "commit_claimed": true,
+    "old_run_revision": 1,
+    "stopped_run_revision": 2,
+    "commit_revision": 1,
+    "reclaimed_error": "RT.TASK.COMMIT_REVOKED",
+    "knowledge_ids": [
+      "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+    ],
+    "mac_layer": "not executed; native call order reviewed from source",
+    "direct_ack": "success",
+    "task_after_ack": "completed",
+    "session_after_ack_paused": true,
+    "foreground_after_ack": null
+  },
+  {
+    "case": "claimed_before_mac_write",
+    "initial_claim": "success",
+    "stopped_task": "committing",
+    "commit_claimed": true,
+    "old_run_revision": 1,
+    "stopped_run_revision": 2,
+    "commit_revision": 1,
+    "reclaimed_error": "RT.TASK.COMMIT_REVOKED",
+    "knowledge_ids": [
+      "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+    ],
+    "mac_layer": "not executed; native call order reviewed from source",
+    "direct_ack": "not sent: no native write was assumed",
+    "memory_package_retained": true
+  }
+]
