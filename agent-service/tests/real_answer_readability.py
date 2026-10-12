@@ -9,7 +9,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
-from agent_service.conversation_prompts import COACH_SYSTEM, EVALUATION_SYSTEM
+from agent_service.conversation_prompts import coach_system, EVALUATION_SYSTEM
 from agent_service.openai_client import parse_model, ModelCallError
 from agent_service.schemas import ConversationOutput, MasteryEvaluation
 from agent_service.config import COACH_MODEL
@@ -38,7 +38,8 @@ def main():
         result = None
         for attempt in range(1, 3):
             try:
-                result = parse_model(COACH_SYSTEM, json.dumps(dict(instruction=instruction, sources=[dict(type="user_material", content=MATERIAL)],
+                scene = "teaching" if label == "lesson" else "organize" if label == "organize" else "answer"
+                result = parse_model(coach_system(scene), json.dumps(dict(instruction=instruction, sources=[dict(type="user_material", content=MATERIAL)],
                     context=dict(recent_messages=history[-2:]), evidence=dict(state="unverified")), ensure_ascii=False),
                     ConversationOutput, model=COACH_MODEL, on_partial=lambda value: previews.append(time.monotonic()))
                 break

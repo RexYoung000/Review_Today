@@ -63,6 +63,27 @@ class KnowledgeInvitationTests(unittest.TestCase):
         events = [e for e in state['events'] if e['stage'] == 'capture_offer']
         self.assertEqual(events[-1]['payload']['capture_offer']['scope_summary'], offer['scope_summary'])
 
+    def test_invitation_update_adds_rules_to_answer_without_loading_teaching(self):
+        from agent_service.conversation_prompts import coach_system
+        from agent_service.knowledge_invitation import UPDATE_INSTRUCTION
+        self.start_offer()
+        systems = []
+        original_call = self.harness._call
+
+        def observe(sid, rid, rev, node, system, *args, **kwargs):
+            if node == 'answer':
+                systems.append(system)
+            return original_call(sid, rid, rev, node, system, *args, **kwargs)
+
+        with patch.object(self.harness, '_call', side_effect=observe):
+            self.followup('外部资料仅在可访问且检索到时才能作为回答依据。')
+        self.assertEqual(len(systems), 1)
+        self.assertTrue(systems[0].startswith(coach_system('answer')))
+        self.assertIn(UPDATE_INSTRUCTION, systems[0])
+        self.assertNotIn('首次教学返回 learning_plan', systems[0])
+        self.assertEqual(self.offer()['version'], 2)
+        self.capture.assert_not_called()
+
     def test_repeat_pass_does_not_create_duplicate_invitation(self):
         _, offer = self.start_offer()
         self.answer()

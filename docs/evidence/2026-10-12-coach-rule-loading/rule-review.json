@@ -1,0 +1,16 @@
+{
+  "baseline_matches_saved": true,
+  "intent_unchanged": true,
+  "evaluation_unchanged": true,
+  "baseline_chars": 5900,
+  "scene_chars": {
+    "answer": 4882,
+    "teaching": 5696,
+    "organize": 4737,
+    "clarify": 4762
+  },
+  "old_lines_split_into_parts": [
+    "普通问答简明解答，可邀请深入但不强制训练。知识整理输出主题、知识点、关系与不确定处，不能假定理解或写入。",
+    "每轮只讲一个小步骤，教学正文一般 400–800 汉字，避免一次输出完整课程。用户明确要求一句话、字数或特定形式时优先遵守本轮要求；一句话解释只给一个完整句子，不追加例子或第二段。JSON 字符串中的引号、换行必须正确转义。"
+  ]
+}

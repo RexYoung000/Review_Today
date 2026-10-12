@@ -1,0 +1,33 @@
+{
+  "local_links_checked": 202,
+  "local_link_errors": [],
+  "full_tests": {
+    "passed": 1122,
+    "skipped": 4,
+    "warnings": 5,
+    "subtests": 508
+  },
+  "targeted_tests": {
+    "passed": 93,
+    "subtests": 16
+  },
+  "real_requests": 4,
+  "new_fixed_scene_structure_passed": 2,
+  "real_semantic_scope_acceptance": "open",
+  "native_acceptance": "not_run",
+  "normal_app": "not_running",
+  "service_8742": "not_running",
+  "project_existing_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "log_normalization": {
+    "targeted-tests.log": {
+      "operation": "trailing whitespace only",
+      "raw_sha256": "f27891ff7f7a92f9b7b0f0a2bed78d25806700ffe3fae971970857d2ec3f1b14",
+      "normalized_sha256": "865e2ae3cc049b8ad64f2636674a280996d1f7d7feee6f06eb635dcfb1025b4f"
+    },
+    "full-tests.log": {
+      "operation": "trailing whitespace only",
+      "raw_sha256": "c1216447d12d552c5bd7ceacec151030296d2309becb220bd921315206b553eb",
+      "normalized_sha256": "27b60ec6dba41a48792712d3c8ac1eaa07a66068d5ba5d1352c677e49e8b3c1d"
+    }
+  }
+}

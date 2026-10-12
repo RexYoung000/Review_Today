@@ -3,7 +3,7 @@ import json
 import re
 
 from agent_service.config import ROUTER_MODEL
-from agent_service.conversation_prompts import COACH_SYSTEM
+from agent_service.conversation_prompts import coach_system
 from agent_service.schemas import ConversationOutput
 from agent_service.source_links import bound_source_links
 
@@ -102,7 +102,7 @@ def handle(h, sid, rid, rev, decision, last):
         if not reply or len(reply) > 240:
             context = {k: v for k, v in context.items() if k not in {
                 'memory_candidates', 'related_knowledge', 'related_learning', 'continuation_candidates'}}
-            output = h._call(sid, rid, rev, 'answer', COACH_SYSTEM, json.dumps(dict(context=context,
+            output = h._call(sid, rid, rev, 'answer', coach_system("answer"), json.dumps(dict(context=context,
                 instruction='用户仅补充背景、经验或用途。用一两句自然承接，可以问一个尚未说明、具体且有助于下一步的问题。'
                     '已知在准备面试时，不再问学完要做什么；可以询问想聚焦的面试内容。'
                     '没有开始课程或切换目标的授权，不创建学习计划、不出题、不评价掌握。'
@@ -113,7 +113,7 @@ def handle(h, sid, rid, rev, decision, last):
     elif kind == "learning_support":
         context = {k: v for k, v in context.items() if k not in {
             "memory_candidates", "related_knowledge", "related_learning", "continuation_candidates"}}
-        output = h._call(sid, rid, rev, "answer", COACH_SYSTEM, json.dumps(dict(context=context,
+        output = h._call(sid, rid, rev, "answer", coach_system("answer"), json.dumps(dict(context=context,
             instruction="结合最近对话回应当前学习困难，不重复已经给过的建议。没有最低字数，也不要求每次给建议。"
                         "用户嫌建议复杂、拒绝继续听建议或只想停一下时，用一两句接住，停止追加任务、步骤或反问。"
                         "用户确实在求办法时，先回答当前障碍，再给至多一个低负担的小建议，通常150字以内。"

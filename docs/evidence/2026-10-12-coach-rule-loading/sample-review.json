@@ -1,0 +1,16 @@
+{
+  "case_count": 4,
+  "transport_requests": 4,
+  "new_structure_checks_passed": true,
+  "ordinary_review": "新旧均为一句 RAG 定义，没有课程或检查题；内容与给定合成材料一致。",
+  "teaching_review": "新版先定义再给四步地图，本轮正文以外部资料用途与限制为主；检查题、第一步标题、概念和讲义引文通过既有程序绑定检查。",
+  "teaching_scope_open": "新版将检查范围标为 step，但题目未明确逐项要求第一步条件中的三个模型限制。程序绑定检查通过不证明覆盖整节，不能把此样本记作范围语义全部通过；本轮不新增掌握证据或修改评分规则。",
+  "baseline_failure": "旧版教学在生成后的 check_binding 依据检查失败，诊断 teaching_check_grounding；这是单次生成组件，没有运行 Harness 既有修复流程。",
+  "baseline_recording_limit": "初次脚本在验证后才记录完整输出，旧版失败的完整对象未写入；字段诊断与用量已保留。脚本已调整为先记录输出，未重跑以取得通过结果。",
+  "controlled_initial_failures": "首轮定向 2 failed / 91 passed / 16 subtests：新夹具误把任务 clarify_goal 当成运行终态，并在 accepted 而非 running 状态调用缓存检查。两项夹具修正后 93 passed / 16 subtests；未因此修改运行状态机。",
+  "limits": [
+    "四次真实请求只覆盖两个固定生成场景；不代表一般回答质量、延迟、费用或完整原生链路。",
+    "整理、澄清、邀请更新和评分实验为受控请求检查，未进行额外真实模型样本。",
+    "实际调用继续用现有 DeepSeek 配置与 smart 对应 none，未修改供应商或凭证。"
+  ]
+}

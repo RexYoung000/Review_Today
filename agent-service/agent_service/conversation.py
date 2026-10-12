@@ -19,7 +19,7 @@ from agent_service.capture.fetch import looks_like_url
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL
 from agent_service.answer_style import render_jd, render_sources, separate_lesson_check, with_question
 from agent_service.source_links import bound_source_links
-from agent_service.conversation_prompts import COACH_SYSTEM, EVALUATION_SYSTEM, INTENT_SYSTEM
+from agent_service.conversation_prompts import coach_system, EVALUATION_SYSTEM, INTENT_SYSTEM
 from agent_service.conditional_teaching import ConditionalTeaching
 from agent_service import social_dialogue
 from agent_service.conversation_store import ConversationStore, Superseded, conversation_store
@@ -1039,7 +1039,7 @@ class ConversationHarness(ConditionalTeaching):
                 self._sources(sid, rid, rev, decision.target_description or last["content"])
             else:
                 context, _ = self._context(data, run)
-                output = self._call(sid, rid, rev, 'clarify_goal', COACH_SYSTEM,
+                output = self._call(sid, rid, rev, 'clarify_goal', coach_system("clarify"),
                     json.dumps(dict(context=context, instruction='用户已明确要开始学习。先承接其已给出的目标与用途，只问一个仍缺少且会影响下一步的具体问题。'
                         '已经说明面试、工作应用等用途时不得再问学完要做什么；主题过宽可问最想聚焦哪个具体部分。'
                         '不要讲课或生成检查题，learning_plan、check_question、learning_concepts 留空，通常一两句即可。'), ensure_ascii=False),
@@ -1321,7 +1321,9 @@ class ConversationHarness(ConditionalTeaching):
             instruction += ("\n本轮实际要讲解和检查的步骤以 learning_step 为准。用户要求继续或跳过时，程序已选择应讲步骤，"
                             "不能因历史检查未答或未通过而留在旧步骤；最多一句承接旧疑点，主体讲当前步骤，检查题也只针对当前步骤。"
                             "历史 check_question 和 last_lesson 不是本轮要重复的题目或讲义；尚未验证的旧步骤保持未知。")
-        output_schema, output_system = (TeachingConversationOutput if teaching else ConversationOutput), COACH_SYSTEM
+        scene = "teaching" if teaching else "organize" if draft else "answer"
+        output_schema = TeachingConversationOutput if teaching else ConversationOutput
+        output_system = coach_system(scene)
         if teaching:
             # Version this node's cache through its actual contract instruction;
             # pre-binding ConversationOutput checkpoints remain readable elsewhere.
@@ -1329,7 +1331,8 @@ class ConversationHarness(ConditionalTeaching):
                               "题目完整条件只放 check_question，不在 message 末尾另写想一想或检查一下。")
         if self.judgments is not None and teaching:
             from agent_service.judgment_grading import ScoredConversationOutput, RUBRIC_RULE
-            output_schema, output_system = ScoredConversationOutput, COACH_SYSTEM + RUBRIC_RULE
+            output_schema = ScoredConversationOutput
+            output_system += RUBRIC_RULE
         capture_candidates = knowledge_invitation.candidates(self, data, run, decision) if not draft else []
         if capture_candidates:
             output_system += knowledge_invitation.UPDATE_INSTRUCTION

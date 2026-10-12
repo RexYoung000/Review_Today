@@ -184,6 +184,29 @@ class HarnessJudgmentTests(unittest.TestCase):
         self.assertTrue(any(s is IntentDecision for s, _ in self.calls))
         self.assertFalse(any(s is IntentRemainder for s, _ in self.calls))
 
+    def test_scoring_overlay_keeps_selected_teaching_and_binding_contract(self):
+        from agent_service.conversation_prompts import coach_system
+        from agent_service.judgment_grading import RUBRIC_RULE
+        self.enable()
+        self.labels['intent'] = 'goal'
+        self.decision = legacy.intent('goal', workflow='source_learning', direct_teaching=True)
+        systems = []
+        original_model = self.model
+
+        def observe(system, user, schema, **kwargs):
+            if schema is ScoredConversationOutput:
+                systems.append(system)
+            return original_model(system, user, schema, **kwargs)
+
+        with patch('agent_service.conversation.parse_model', side_effect=observe):
+            result = self.send('直接教我 RAG', mode='source_learning')
+        self.assertEqual(self.state()['runs'][result.run_id]['status'], 'completed')
+        self.assertEqual(len(systems), 1)
+        self.assertTrue(systems[0].startswith(coach_system('teaching')))
+        self.assertIn(RUBRIC_RULE, systems[0])
+        self.assertIn('不能为 null', systems[0])
+        self.assertNotIn('本轮只回答局部请求', systems[0])
+
     def test_valid_entry_is_merged_and_ordinary_question_does_not_create_task(self):
         self.enable()
         self.decision = legacy.intent("question", answer_only=True)
