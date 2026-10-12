@@ -1,0 +1,34 @@
+PASS HTTP + SwiftData: saved
+PASS HTTP + SwiftData: unsaved
+[
+  {
+    "scenario": "saved",
+    "claims": 1,
+    "acks": 3,
+    "releases": 0,
+    "status": "completed",
+    "paused": true,
+    "foreground": null,
+    "capture_calls": 1
+  },
+  {
+    "scenario": "unsaved",
+    "claims": 2,
+    "acks": 0,
+    "releases": 1,
+    "status": "awaiting_user",
+    "paused": true,
+    "foreground": null,
+    "capture_calls": 1
+  },
+  {
+    "scenario": "unsaved",
+    "claims": 3,
+    "acks": 2,
+    "releases": 1,
+    "status": "completed",
+    "paused": false,
+    "foreground": null,
+    "capture_calls": 1
+  }
+]

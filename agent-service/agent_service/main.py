@@ -62,6 +62,7 @@ from agent_service.schemas import (
     SessionTurnAccepted,
     SessionTurnRequest,
     TaskAckRequest,
+    CommitReleaseRequest,
     TaskActionRequest,
     TaskEventPage,
 )
@@ -319,6 +320,15 @@ def claim_task_commit(task_id: str) -> dict:
         raise _http_error(409, str(exc), "this knowledge submission is no longer current") from None
 
 
+@app.post("/v2/tasks/{task_id}/commit-release", response_model=LearningTaskView)
+def release_task_commit(task_id: str, body: CommitReleaseRequest) -> dict:
+    task_id = _require_uuid(task_id, code="RT.TASK.INVALID_ID")
+    try:
+        return conversation_harness.release_commit(task_id, str(body.run_id), body.commit_revision)
+    except ValueError as exc:
+        raise _http_error(409, str(exc), "this unpersisted submission cannot be released") from None
+
+
 @app.post("/v2/sessions/{session_id}/turns", response_model=SessionTurnAccepted)
 def submit_session_turn(session_id: str, body: SessionTurnRequest, background: BackgroundTasks) -> dict:
     normalized_session = _require_uuid(session_id, code="RT.SESSION.INVALID_ID")
@@ -424,7 +434,8 @@ def submit_task_action(task_id: str, body: TaskActionRequest, background: Backgr
 def ack_learning_task(task_id: str, body: TaskAckRequest) -> dict:
     normalized = _require_uuid(task_id, code="RT.TASK.INVALID_ID")
     try:
-        return conversation_harness.acknowledge_task(normalized, body.last_event_seq, body.knowledge_ids)
+        return conversation_harness.acknowledge_task(normalized, body.last_event_seq, body.knowledge_ids,
+                                                      allow_continuation=body.allow_continuation)
     except ValueError as exc:
         raise _http_error(404 if str(exc) == "RT.TASK.UNKNOWN" else 409, str(exc), "task receipt does not match current state") from None
 

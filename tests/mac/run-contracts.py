@@ -18,7 +18,7 @@ DEFAULT_TESTS = [
     "ImageInputContractTests",
     "ConversationReplayTests", "ConversationControlTests", "LearningMemoryContractTests", "SessionDeletionContractTests", "LocalDataResetContractTests",
     "SessionListSelectionTests", "SessionOrganizationContractTests", "IndependentSessionContractTests",
-    "LibraryManagementContractTests", "KnowledgeDeckNavigationTests", "KnowledgeIngestionTests",
+    "LibraryManagementContractTests", "KnowledgeDeckNavigationTests", "KnowledgeIngestionTests", "SaveRecoveryContractTests", "SaveRecoveryHTTPTests",
     "DictationContractTests", "DictationSurfaceContractTests", "TopicCaptureContractTests", "LearningGoalContinuityTests", "ReviewFlowContractTests", "ReviewControllerContractTests", "ReviewUIIntegrationContracts", "ReviewMigrationContractTests",
     "AgentVoiceAudioContractTests", "AgentSpeechSegmentsTests", "AgentVoiceConversationTests", "AgentVoiceStoreTests",
 ]
@@ -43,7 +43,7 @@ subprocess.run([
 
 for name in names:
     paths = [ROOT / "tests/mac" / f"{name}.swift"]
-    if name == "KnowledgeIngestionTests":
+    if name in {"KnowledgeIngestionTests", "SaveRecoveryContractTests"}:
         paths.append(ROOT / "tests/mac/KnowledgeIngestionFixture.swift")
     copies = []
     for path in paths:
@@ -59,7 +59,10 @@ for name in names:
         "-lReviewTodayContractSupport", "-Xlinker", "-rpath", "-Xlinker", str(build),
         *copies, "-o", str(build / name),
     ], check=True, cwd=ROOT)
-    subprocess.run([str(build / name)], check=True, cwd=ROOT)
+    if name == "SaveRecoveryHTTPTests":
+        subprocess.run([str(ROOT / "agent-service/.venv/bin/python"), str(ROOT / "tests/mac/run-save-recovery-http.py"), str(build / name)], check=True, cwd=ROOT)
+    else:
+        subprocess.run([str(build / name)], check=True, cwd=ROOT)
     print(f"PASS executable: {name}", flush=True)
 
 if "ConversationReplayTests" in names:

@@ -308,6 +308,8 @@ enum AgentAPI {
     }
 
     struct LearningTaskView: Decodable {
+        var commitRunID: String?
+        var commitRevision: Int?
         var goalOwnershipJSON: String?
         var lifecycleRevision: Int?
         var learningPlanJSON: String?
@@ -334,6 +336,8 @@ enum AgentAPI {
         var memorySourceText: String
 
         enum CodingKeys: String, CodingKey {
+            case commitRunID = "commit_run_id"
+            case commitRevision = "commit_revision"
             case goalOwnershipJSON = "goal_ownership_json"
             case lifecycleRevision = "lifecycle_revision"
             case learningPlanJSON = "learning_plan_json"

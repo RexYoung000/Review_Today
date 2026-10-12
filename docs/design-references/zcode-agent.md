@@ -17,7 +17,7 @@ ZCode 的参考价值在于把模型判断、工具执行、结果回传、停�
 |---|---|---|---|
 | 1. 根据结果决定下一步 | 模型判断、工具执行、结果回传后继续或停止；轮次结束与持续目标完成分开 | 区分回答完成、等待用户、理解验证和知识保存；每次推进有对应依据 | 已逐条讨论；[KT-01](../work-status.md#kt-01) 已实现并分层自测，Rex 原生体验仍开放 |
 | 2. 长对话与上下文 | 区分输入组成、工具结果压缩、会话摘要、压缩后恢复 | 先看每类内容占多少，再保留与当前问题相关的证据 | [CTX-01](../work-status.md#ctx-01) 公开选段已实现并分项验证，待本机重开体验；其他机制未授权实施 |
-| 3. 工具执行与取消 | 验证、权限、执行、结果记录及恢复分层 | 分清未执行、执行失败、结果未知；保存失败不能直接假设没有写入 | 停止、重试范围与有限自动恢复三小点已确认；收敛回执恢复的实际缺口，未授权代码修改，见 [TOOL-01](../work-status.md#tool-01) |
+| 3. 工具执行与取消 | 验证、权限、执行、结果记录及恢复分层 | 分清未执行、执行失败、结果未知；保存失败不能直接假设没有写入 | 三小点已确认，Rex 已授权最小恢复修复；原生磁盘与受控 HTTP 故障链已通过，最终回归与本机交付见 [TOOL-01](../work-status.md#tool-01) |
 | 4. Skills、子任务与工作流 | 按需加载指令，隔离子任务上下文，显式任务结果 | 仅在有独立子任务需求时考虑；先改善单条教学链路 | 已研究，未批准引入 |
 | 5. 事件、恢复与用户补充 | 有序事件、选定持久化记录、恢复与引导输入 | 区分收到、执行、显示、可靠保存；恢复不重复副作用 | 已研究，尚未逐条对齐 |
 | 6. 模型重试与预算 | 自管重试、流恢复、上下文与目标预算分层 | 分清用量观测、恢复次数与整任务费用；不照搬无上限恢复 | 已研究，尚未逐条对齐 |
@@ -59,14 +59,14 @@ Review Today 已有上下文预算、整组问答摘要与独立学习状态。2
 
 本轮采用方向是：公开来源在既有预算内按问题做本地词项相关选段，保留可回查原文，核验和回答共用，输入不变的重试／恢复复用；不增加模型调用或重建摘要系统。选段实现、重试漂移修复与最终受控回归已完成；单组合成资料中，两个真实模型节点共用正文尾部窗口并正确回答两项条件。该方法不是语义检索，不保证同义词／跨语言匹配，简洁度和完整原生链路未据此验收，本机重开体验仍待确认。
 
-详细契约只在 [Harness 公开来源选段](../agent-harness-v2.md#public-evidence-selection)维护，实证见[选段证据](../evidence/2026-10-05-source-selection/README.md)，当前结果和续接见 [CTX-01](../work-status.md#ctx-01)。第 2 条其他机制及第 3 条尚未获实现授权，后续继续逐项讨论。
+详细契约只在 [Harness 公开来源选段](../agent-harness-v2.md#public-evidence-selection)维护，实证见[选段证据](../evidence/2026-10-05-source-selection/README.md)，当前结果和续接见 [CTX-01](../work-status.md#ctx-01)。第 2 条其他机制未授权实施；第 3 条仅后述最小恢复修复获准，不扩大到整个工具框架。
 
 源码入口：[上下文构建](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/context/builder.ts)、[组成统计](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/helpers/context-usage-breakdown.ts)、[压缩选择](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/helpers/compact-selection.ts)、[工具结果处理](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/tool/executor/result-serialization.ts)。
 
 <a id="topic-3"></a>
 ## 第 3 条：工具执行与取消（2026-10-12，逐项对齐中）
 
-前三小点已确认：停止保留已保存知识；同一内容重试只补仍未完成的部分；本轮内有限自动恢复，最终失败后由用户明确重试，主动停止优先。规则分别回到 Harness 的[停止边界](../agent-harness-v2.md#stop-knowledge-contract)、[重试范围](../agent-harness-v2.md#knowledge-retry-contract)与[自动恢复边界](../agent-harness-v2.md#bounded-recovery-contract)，确认见决策 220–222。当前检查、验证层级及后续优化范围见 [TOOL-01](../work-status.md#tool-01)；未授权本条代码修改，不把产品规则确认记为整体实现或验收完成。
+前三小点已确认：停止保留已保存知识；同一内容重试只补仍未完成的部分；本轮内有限自动恢复，最终失败后由用户明确重试，主动停止优先。规则分别回到 Harness 的[停止边界](../agent-harness-v2.md#stop-knowledge-contract)、[重试范围](../agent-harness-v2.md#knowledge-retry-contract)与[自动恢复边界](../agent-harness-v2.md#bounded-recovery-contract)，确认见决策 220–222；Rex 回复「开始」后，223 授权最小恢复修复。已实现持久化回执直补、失效未落盘领取释放与同版本显式重试复用，并完成原生磁盘与受控 HTTP 故障验证；分项及交付状态见 [TOOL-01](../work-status.md#tool-01)，不宣称整个工具主题或 Rex 体验已完成。
 
 ## 其余研究结论备查
 

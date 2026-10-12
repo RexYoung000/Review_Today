@@ -1,0 +1,173 @@
+{
+  "backup": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/save-recovery-backup-20261012-191225",
+  "app": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "candidate": "/tmp/review-today-save-recovery-build/Build/Products/Debug/Review_Today.app",
+  "before": [
+    {
+      "database": "Data/ReviewToday.store",
+      "tables": {
+        "ACHANGE": {
+          "count": 1073289,
+          "sha256": "581406a28f36223772f1e5297706ea0e646580058a319e966784518a0c1b57f1"
+        },
+        "ATRANSACTION": {
+          "count": 1060310,
+          "sha256": "e7dadfbdc963b144a7fae965b2cc61f40c53a400437a75437117ae3204d21170"
+        },
+        "ATRANSACTIONSTRING": {
+          "count": 22,
+          "sha256": "8939368a5fbca821400c149cba95e01de21ea6e85df15ed6c0388529754fe8fa"
+        },
+        "ZAGENTMESSAGE": {
+          "count": 37,
+          "sha256": "ee2e9d34519ecbe0fc4ed4d116a0896e148608bc337ab7545e0d38ccffddc68f"
+        },
+        "ZAGENTRUN": {
+          "count": 19,
+          "sha256": "9d35fa3f7f57e2e27fa2394d6672f0ed428df6e059dfcf632c3f51ffcdc722c0"
+        },
+        "ZAGENTRUNCONTROL": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "ZAGENTSESSION": {
+          "count": 7,
+          "sha256": "618fab249bd0cbabf1df90bea7d81cfecce919f28f2b1f95c442946af8146fe1"
+        },
+        "ZAPPSETTINGS": {
+          "count": 1,
+          "sha256": "3444867f0d2761aa2a6df80e6306c3e86fb1753a266f242ab2466f97400d8dce"
+        },
+        "ZCAPTURETASK": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "ZFSRSSTATE": {
+          "count": 11,
+          "sha256": "8d083557c2590c1b53bb36f4807fe67dd515b5d70ced38000e3ec24912ff8f28"
+        },
+        "ZKNOWLEDGE": {
+          "count": 11,
+          "sha256": "c656a4cedcc78c77af6f68c5cd0cef2f3c561ae8a3bc0c5c7ead07c6ee65d5fb"
+        },
+        "ZKNOWLEDGEREFERENCE": {
+          "count": 3,
+          "sha256": "cc8eefeda48a0ef97eb0366f9df8a3816bc675ae058d05d80f8484c5d6762437"
+        },
+        "ZLEARNINGTASK": {
+          "count": 5,
+          "sha256": "6286caacfcb7e860b68a9ff3af8a968a36d4a58c73b3ac507a57f7e0a4dc7e6b"
+        },
+        "ZQUESTION": {
+          "count": 14,
+          "sha256": "14fad807379eee29c8caefc4f852899715d658b07c97aa830b6a2efc187ba8d6"
+        },
+        "ZREVIEWATTEMPT": {
+          "count": 3,
+          "sha256": "4d4e62054e63a654037e8bb23eccbc8975c65cf01d7b34308a7533a74f97955f"
+        },
+        "ZREVIEWSESSION": {
+          "count": 4,
+          "sha256": "f65c4a5f28d713d8c0ee59c95d2c245b43e3cbccab2b0934ef831ee9c42e5543"
+        },
+        "ZSESSIONEVENTRECORD": {
+          "count": 341,
+          "sha256": "301d930a20034e357b9ed7af96f7912d0dca621b7da6b0dd00505f15d8e69b79"
+        },
+        "ZSESSIONFOLDER": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "ZSESSIONSUMMARYRECORD": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "ZSOURCE": {
+          "count": 2,
+          "sha256": "ce9ef51af93c4c9f8b6cf9520f04a795be1bb907a1e2a516a87a3ec71dba4f73"
+        },
+        "ZSOURCEREFERENCE": {
+          "count": 8,
+          "sha256": "d2a1c678d33ecb8e574edc49e9e6103c2a868c3efe9a48566c696fb80a9b81b9"
+        },
+        "ZTASKEVENTRECORD": {
+          "count": 1,
+          "sha256": "ca7807d7d33bd39b0b5cfef9d443fe1a3e190a6bee52d54d5fa9c91ee3da7b81"
+        },
+        "Z_METADATA": {
+          "count": 1,
+          "sha256": "c157f6035772cbd92b0e802f83a43074bb9c2333bcf78c8e59cdf07333a1d37b"
+        },
+        "Z_MODELCACHE": {
+          "count": 1,
+          "sha256": "5f63a7e0e02f4f2c029edf1c9d85e07b7cbbe3c36c783f9f851aaa70d7e966ca"
+        },
+        "Z_PRIMARYKEY": {
+          "count": 22,
+          "sha256": "e0f20037da465dc26c415c933d7c010412db861b46789c843f79128ebddbf7e4"
+        }
+      }
+    },
+    {
+      "database": "agent-harness.sqlite3",
+      "tables": {
+        "agent_memory_policy_v2": {
+          "count": 35,
+          "sha256": "33c39f989ed439bddd93324a16072128f7e758ab1ea85789acc32879f23b8031"
+        },
+        "agent_session_deletions": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "agent_sessions_v2": {
+          "count": 35,
+          "sha256": "6daf792333c26a45b998ff2c206320c44eb6e70bb769506cec46640feb9c60c7"
+        },
+        "agent_voice_usage": {
+          "count": 1,
+          "sha256": "b0d57d218aed7513f1afc577703bdbb2ffe34d96a984356cecf7f5f53e0086f4"
+        },
+        "harness_tasks": {
+          "count": 15,
+          "sha256": "41fdf8cc872a2e931a669ea1f09414e20a51e0a7eac923b43311c25373b9bff6"
+        }
+      }
+    },
+    {
+      "database": "agent-harness.review.sqlite3",
+      "tables": {
+        "review_commits": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "review_deleted_sessions": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "review_inputs": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "review_sessions": {
+          "count": 1,
+          "sha256": "1f78fc8409e0162dcf9090eca3dba2fa6fae6d08fc09ffe73c69449dc8e73976"
+        },
+        "review_turns": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "review_voice_usage": {
+          "count": 2,
+          "sha256": "257895074b1ef550e28fe53df5be256df7fdebfc1477df325ffc7f4465a969c5"
+        }
+      }
+    }
+  ],
+  "status": "installed_signed_app_database_contents_unchanged",
+  "binary_sha256": "f0f665e5f68bf71992f5872afa80fef470a8ad264cb3b082aba23e571ef95984",
+  "database_integrity": "all_three_ok",
+  "database_contents": "all_tables_unchanged",
+  "app_running": false,
+  "service_restart": "next_app_open",
+  "product_release": false
+}

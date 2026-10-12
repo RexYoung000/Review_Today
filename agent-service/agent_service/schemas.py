@@ -362,6 +362,8 @@ class SessionTurnAccepted(BaseModel):
 
 
 class LearningTaskView(BaseModel):
+    commit_run_id: str | None = None
+    commit_revision: int | None = None
     goal_ownership_json: str | None = None
     lifecycle_revision: int = 0
     learning_plan_json: str | None = None
@@ -426,6 +428,12 @@ class TaskActionRequest(BaseModel):
 class TaskAckRequest(BaseModel):
     last_event_seq: int = Field(ge=0)
     knowledge_ids: list[str] = Field(default_factory=list)
+    allow_continuation: bool = True
+
+
+class CommitReleaseRequest(BaseModel):
+    run_id: uuid.UUID
+    commit_revision: int = Field(ge=1)
 
 
 class ModeDecision(BaseModel):

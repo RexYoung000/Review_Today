@@ -1724,6 +1724,29 @@ class ConversationHarness(ConditionalTeaching):
             run["memory_references"] = draft.get("memory_references", [])
             commit_id = str(uuid.uuid5(uuid.UUID(sid), f"memory:{draft['id']}:{draft['version']}"))
             existing = data["tasks"].get(commit_id)
+            if (existing and existing["status"] == "awaiting_user"
+                    and existing["context"].get("commit_released") and existing.get("memory_package")
+                    and existing["context"].get("draft_id") == draft["id"]
+                    and existing["context"].get("draft_version") == draft["version"]
+                    and existing.get("memory_source_text") == draft["content"]
+                    and existing["context"].get("lifecycle_revision", 0) == data.get("lifecycle_revision", 0)
+                    and existing["context"].get("sources", []) == capture_offer["sources"]
+                    and self.store.memory_valid(draft.get("memory_references", []))):
+                # A bound user save retries the same completed package; it is not
+                # an automatic restart or permission to use changed evidence.
+                existing["context"].update(origin_run_id=rid, commit_revision=rev, commit_claimed=False,
+                                           capture_offer_id=capture_offer["id"])
+                existing["context"].pop("commit_released", None)
+                existing.update(status="committing", stage="committing", error_code=None,
+                                user_summary="已确认的知识等待本机保存", required_action=None)
+                capture_offer.update(save_task_id=commit_id, status="saving", knowledge_ids=[])
+                run["task_id"] = commit_id
+                data["active_task_id"] = commit_id
+                data["pending"] = None
+                self._project_event(data, run, existing)
+                topic_capture.emit(self, data, run, capture_offer)
+                self.store.event(data, run, "memory_reused", "沿用已完成的整理内容，等待本机保存")
+                return
             if existing and existing["status"] in {"completed", "committing"}:
                 capture_offer['save_task_id'] = commit_id
                 capture_offer['status'] = 'saved' if existing['status'] == 'completed' else 'saving'
@@ -1740,6 +1763,7 @@ class ConversationHarness(ConditionalTeaching):
                                                                                     lifecycle_revision=data.get("lifecycle_revision", 0)))
                 data["tasks"][commit_id] = asdict(record)
             data["tasks"][commit_id]["context"].update(origin_run_id=rid, lifecycle_revision=data.get("lifecycle_revision", 0), capture_offer_id=capture_offer["id"])
+            data["tasks"][commit_id]["context"].pop("commit_released", None)
             capture_offer["save_task_id"] = commit_id
             run["task_id"] = commit_id
             data["active_task_id"] = commit_id
@@ -1795,7 +1819,7 @@ class ConversationHarness(ConditionalTeaching):
         if origin and (origin["revision"] != task["context"].get("commit_revision") or origin["status"] in {"interrupted", "cancelled"}):
             raise ValueError("RT.TASK.COMMIT_REVOKED")
 
-    def acknowledge_task(self, task_id, last_event_seq, knowledge_ids):
+    def acknowledge_task(self, task_id, last_event_seq, knowledge_ids, *, allow_continuation=True):
         record = self.store.tasks.get(task_id)
         if not record:
             raise ValueError("RT.TASK.UNKNOWN")
@@ -1805,6 +1829,8 @@ class ConversationHarness(ConditionalTeaching):
             task = data["tasks"][task_id]
             if last_event_seq > len(task["events"]):
                 raise ValueError("RT.TASK.ACK_AHEAD")
+            if knowledge_ids and task["status"] not in {"committing", "completed"}:
+                raise ValueError("RT.TASK.COMMIT_REVOKED")
             if task["status"] == "committing":
                 expected = {item.get("id") for item in (task.get("memory_package") or {}).get("knowledge", [])}
                 if expected and set(knowledge_ids) != expected:
@@ -1823,6 +1849,10 @@ class ConversationHarness(ConditionalTeaching):
                 ).model_dump())
             task["last_acked_seq"] = max(task["last_acked_seq"], last_event_seq)
             if task["status"] == "completed":
+                if not allow_continuation:
+                    offer = topic_capture.offers(data).get(task["context"].get("capture_offer_id"))
+                    if offer:
+                        offer["continuation_consumed"] = True
                 continue_capture = topic_capture.acknowledged(self, data, task, knowledge_ids)
         if continue_capture:
             self.start(record.session_id)
@@ -1836,6 +1866,42 @@ class ConversationHarness(ConditionalTeaching):
             task = data["tasks"][task_id]
             self._validate_commit(data, task)
             task["context"]["commit_claimed"] = True
+            return HarnessTaskRecord(**task).view().model_dump()
+
+    def release_commit(self, task_id: str, run_id: str, commit_revision: int):
+        """Mac confirms no local write occurred; only release an obsolete claim.
+
+        Receipt recovery does not use this method. Bind both origin and revision
+        so a delayed release cannot cancel a newer save of the same draft.
+        """
+        record = self.store.tasks.get(task_id)
+        if not record:
+            raise ValueError("RT.TASK.UNKNOWN")
+        with self.store.transaction(record.session_id) as data:
+            task = data["tasks"][task_id]
+            context = task["context"]
+            binding = dict(run_id=run_id, revision=commit_revision)
+            if data.get("status", "active") != "active":
+                raise ValueError("RT.TASK.COMMIT_REVOKED")
+            if context.get("origin_run_id") != run_id or context.get("commit_revision") != commit_revision:
+                raise ValueError("RT.TASK.COMMIT_REVOKED")
+            if context.get("commit_released") == binding and task["status"] == "awaiting_user":
+                return HarnessTaskRecord(**task).view().model_dump()
+            if task["status"] != "committing" or not context.get("commit_claimed"):
+                raise ValueError("RT.TASK.COMMIT_NOT_CLAIMED")
+            try:
+                self._validate_commit(data, task)
+            except ValueError:
+                pass
+            else:
+                raise ValueError("RT.TASK.COMMIT_STILL_CURRENT")
+            context.update(commit_claimed=False, commit_released=binding)
+            task.update(status="awaiting_user", stage="stopped", error_code=None,
+                        required_action=None, user_summary="已停止，知识尚未保存，可重新保存")
+            origin = data["runs"].get(run_id)
+            if origin:
+                topic_capture.cancel_unclaimed(self, data, task, origin)
+                self._project_event(data, origin, task)
             return HarnessTaskRecord(**task).view().model_dump()
 
     @staticmethod

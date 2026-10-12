@@ -55,6 +55,8 @@ class HarnessTaskRecord:
 
     def view(self) -> LearningTaskView:
         return LearningTaskView(
+            commit_run_id=self.context.get("origin_run_id"),
+            commit_revision=self.context.get("commit_revision"),
             goal_ownership_json=json.dumps(self.context.get("goal_ownership"), ensure_ascii=False) if self.context.get("goal_ownership") else None,
             lifecycle_revision=self.context.get("lifecycle_revision", 0),
             learning_plan_json=json.dumps(self.context["learning_plan"], ensure_ascii=False) if self.context.get("learning_plan") else None,

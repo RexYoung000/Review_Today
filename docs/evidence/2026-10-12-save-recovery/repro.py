@@ -1,6 +1,7 @@
 """Reproduce two commit/stop service boundaries with synthetic temporary data.
 
-This checks the current defect, not a successful native save/recovery flow.
+This preserves the old repeated-claim sequence. The repaired native flow uses
+receipt recovery or bound release instead; obsolete claims still stay rejected.
 Run with agent-service/.venv/bin/python from any working directory.
 """
 import os

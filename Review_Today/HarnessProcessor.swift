@@ -150,13 +150,17 @@ enum HarnessProcessor {
         }
     }
 
+    typealias Request = (String, [String: Any]?) async throws -> [String: Any]
+
     @MainActor
-    private static func synchronize(_ task: LearningTask, context: ModelContext) async {
+    static func synchronize(_ task: LearningTask, context: ModelContext,
+                            request: Request = { try await AgentAPI.conversationRequest($0, body: $1) }) async {
+        let path = "/v2/tasks/\(task.id.uuidString.lowercased())"
         do {
-            let view = try await AgentAPI.getLearningTask(taskId: task.id)
+            let view: AgentAPI.LearningTaskView = try decode(await request(path, nil))
             guard writable(task, context: context), (view.lifecycleRevision ?? 0) >= task.lifecycleRevision else { return }
             apply(view, to: task)
-            let page = try await AgentAPI.getTaskEvents(taskId: task.id, afterSeq: task.lastEventSeq)
+            let page: AgentAPI.TaskEventPage = try decode(await request("\(path)/events?after_seq=\(task.lastEventSeq)", nil))
             guard writable(task, context: context) else { return }
             if !task.conversationManaged { try persist(page.events, for: task, context: context) }
             task.lastEventSeq = max(task.lastEventSeq, page.lastSeq)
@@ -164,6 +168,12 @@ enum HarnessProcessor {
             try context.save()
 
             if view.status == "committing" {
+                if let ids = try committedKnowledgeIDs(view, task: task, context: context) {
+                    // A durable save survives stops, new inputs and obsolete
+                    // write permissions. Only its real receipt needs recovery.
+                    try await acknowledgeMemory(ids, task: task, context: context, request: request)
+                    return
+                }
                 let controls = (try? context.fetch(FetchDescriptor<AgentRunControl>())) ?? []
                 let messages = fetchMessages(context)
                 guard !controls.contains(where: { $0.sessionID == task.sessionID && !$0.sent }),
@@ -171,11 +181,25 @@ enum HarnessProcessor {
                 guard LearningMemory.valid(LearningMemory.array(task.memoryReferencesJSON),
                                            sessions: try context.fetch(FetchDescriptor<AgentSession>()),
                                            knowledge: try context.fetch(FetchDescriptor<Knowledge>())) else { return }
-                let claimed = try await AgentAPI.conversationRequest("/v2/tasks/\(task.id.uuidString.lowercased())/commit-claim", body: [:])
-                let current = try JSONDecoder().decode(AgentAPI.LearningTaskView.self, from: JSONSerialization.data(withJSONObject: claimed))
-                try await commitMemory(current, task: task, context: context)
+                let current: AgentAPI.LearningTaskView
+                do {
+                    current = try decode(await request("\(path)/commit-claim", [:]))
+                } catch {
+                    guard HarnessAPIError.code(for: error) == "RT.TASK.COMMIT_REVOKED",
+                          let runID = view.commitRunID, let revision = view.commitRevision else { throw error }
+                    // No durable receipt exists. Release only this obsolete
+                    // claim, never ACK an expected-but-unwritten card ID.
+                    let released: AgentAPI.LearningTaskView = try decode(await request("\(path)/commit-release",
+                        ["run_id": runID, "commit_revision": revision]))
+                    guard writable(task, context: context) else { return }
+                    apply(released, to: task)
+                    try context.save()
+                    return
+                }
+                try await commitMemory(current, task: task, context: context, request: request)
             } else if page.lastSeq > task.lastAckedSeq {
-                let acked = try await AgentAPI.ackLearningTask(taskId: task.id, lastEventSeq: page.lastSeq)
+                let acked: AgentAPI.LearningTaskView = try decode(await request("\(path)/ack",
+                    ["last_event_seq": page.lastSeq, "knowledge_ids": []]))
                 task.lastAckedSeq = page.lastSeq
                 if writable(task, context: context) { apply(acked, to: task) }
                 try context.save()
@@ -191,7 +215,8 @@ enum HarnessProcessor {
     private static func commitMemory(
         _ view: AgentAPI.LearningTaskView,
         task: LearningTask,
-        context: ModelContext
+        context: ModelContext,
+        request: Request
     ) async throws {
         guard writable(task, context: context) else { throw HarnessProcessorError.invalidResponse }
         guard LearningMemory.valid(LearningMemory.array(task.memoryReferencesJSON),
@@ -204,29 +229,70 @@ enum HarnessProcessor {
               ((try? context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == sid && $0.role == "user" && $0.deliveryStatus == "local" }))) ?? []).isEmpty else {
             return // a new correction or stop gets priority over an uncommitted result
         }
+        if let raw = view.commitRunID, let runID = UUID(uuidString: raw), let revision = view.commitRevision,
+           let run = try context.fetch(FetchDescriptor<AgentRun>()).first(where: { $0.id == runID && $0.sessionID == sid }) {
+            guard run.revision == revision, !["stopping", "interrupted", "cancelled"].contains(run.status) else {
+                return // even an already-delivered stop invalidates an in-flight claim response
+            }
+        }
         guard let payload = view.memoryPackage else { throw HarnessProcessorError.invalidResponse }
         let ids = try persistMemory(payload, sourceText: view.memorySourceText, task: task, context: context)
+        try await acknowledgeMemory(ids, task: task, context: context, request: request, allowContinuation: true)
+    }
 
-        let acked = try await AgentAPI.ackLearningTask(
-            taskId: task.id,
-            lastEventSeq: task.lastEventSeq,
-            knowledgeIds: ids
-        )
+    @MainActor
+    private static func acknowledgeMemory(_ ids: [UUID], task: LearningTask, context: ModelContext,
+                                          request: Request, allowContinuation: Bool = false) async throws {
+        let path = "/v2/tasks/\(task.id.uuidString.lowercased())"
+        let body: [String: Any] = ["last_event_seq": task.lastEventSeq,
+                                  "knowledge_ids": ids.map { $0.uuidString.lowercased() },
+                                  "allow_continuation": allowContinuation]
+        let acked: AgentAPI.LearningTaskView = try decode(await request("\(path)/ack", body))
         task.lastAckedSeq = task.lastEventSeq
         guard writable(task, context: context) else { try context.save(); return }
         apply(acked, to: task)
-        let completionPage = try await AgentAPI.getTaskEvents(taskId: task.id, afterSeq: task.lastEventSeq)
+        let completionPage: AgentAPI.TaskEventPage = try decode(await request("\(path)/events?after_seq=\(task.lastEventSeq)", nil))
         try persist(completionPage.events, for: task, context: context)
         task.lastEventSeq = max(task.lastEventSeq, completionPage.lastSeq)
         if task.lastEventSeq > task.lastAckedSeq {
-            _ = try await AgentAPI.ackLearningTask(
-                taskId: task.id,
-                lastEventSeq: task.lastEventSeq,
-                knowledgeIds: ids
-            )
+            _ = try await request("\(path)/ack", ["last_event_seq": task.lastEventSeq,
+                "knowledge_ids": ids.map { $0.uuidString.lowercased() }, "allow_continuation": false])
             task.lastAckedSeq = task.lastEventSeq
         }
         try context.save()
+    }
+
+    @MainActor
+    static func committedKnowledgeIDs(_ view: AgentAPI.LearningTaskView, task: LearningTask,
+                                      context: ModelContext) throws -> [UUID]? {
+        // Read a separate context: pending in-memory flags or references cannot
+        // prove that the local transaction was committed to the store.
+        let reader = ModelContext(context.container)
+        guard let saved = try reader.fetch(FetchDescriptor<LearningTask>()).first(where: { $0.id == task.id }),
+              saved.memoryCommitted else {
+            if task.memoryCommitted { throw HarnessProcessorError.invalidResponse }
+            return nil
+        }
+        guard view.taskId.lowercased() == task.id.uuidString.lowercased(),
+              view.sessionId.lowercased() == task.sessionID.uuidString.lowercased(),
+              saved.sessionID == task.sessionID, let payload = view.memoryPackage else {
+            throw HarnessProcessorError.invalidResponse
+        }
+        let ids = payload.knowledge.compactMap { UUID(uuidString: $0.id) }
+        let expected = Set(ids)
+        let references = Set(try reader.fetch(FetchDescriptor<KnowledgeReference>()).filter {
+            $0.sessionID == task.sessionID && $0.taskID == task.id
+        }.map(\.knowledgeID))
+        let actual = Set(try reader.fetch(FetchDescriptor<Knowledge>()).map(\.id))
+        guard !ids.isEmpty, ids.count == payload.knowledge.count, expected.count == ids.count,
+              references == expected, expected.isSubset(of: actual) else {
+            throw HarnessProcessorError.invalidResponse
+        }
+        return ids
+    }
+
+    private static func decode<T: Decodable>(_ object: [String: Any]) throws -> T {
+        try JSONDecoder().decode(T.self, from: JSONSerialization.data(withJSONObject: object))
     }
 
     @MainActor
