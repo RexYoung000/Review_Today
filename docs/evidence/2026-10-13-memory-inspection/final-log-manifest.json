@@ -1,0 +1,20 @@
+{
+  "native-tests-final.log": {
+    "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-memory-contracts-ly689oln/native-tests-final.log",
+    "raw_sha256": "81f2d78ff55f5bf292fbba70aa8ed983940ce855c25eac7f76d0826fd0cf9e7d",
+    "tracked_sha256": "e7c94bc7adb6d133735d59d7549f87603ac57fb9d0f276cf2ed16f7cccdb250c",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  },
+  "service-tests-final.log": {
+    "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-memory-service-final-x68spuir/service-tests-final.log",
+    "raw_sha256": "baf50a4a28b76447781a3a0d983b4738fd52581ed7a89f455a68e2a2c7878606",
+    "tracked_sha256": "6c5469deda957cad50425e5654bc9887e645dd12f888d85a8be4952f18c415f2",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  },
+  "build.log": {
+    "raw_path": "/tmp/review-today-memory-build-r7y74vk1/build.log",
+    "raw_sha256": "50f41b43f1bd0c9d9b2c2c69ff4b1046178e6bee53c5e56d03a41dc89cd1dca9",
+    "tracked_sha256": "b790e16df9a89a65a8b2a897e3c0c0b4f7dfad2dc0aadb667329e560b3a8b8be",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  }
+}

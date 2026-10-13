@@ -1,0 +1,5 @@
+PASS: typed local recall, no drafts/consent, archive vs exclusion, policy/content versions, late-run fence, no formal review writes
+PASS executable: LearningMemoryContractTests
+PASS: deletion preview, rollback, scope revalidation, shared/unknown protection, batch purge, preview removal, durable offline tombstones and no index resurrection
+PASS executable: SessionDeletionContractTests
+PASS executable: LearningMemoryInspection

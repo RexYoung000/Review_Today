@@ -1,0 +1,13 @@
+{
+  "checked_files": [
+    "docs/agent-harness-v2.md",
+    "docs/agent-iteration.md",
+    "docs/architecture.md",
+    "docs/decision-log.md",
+    "docs/design-references/zcode-agent.md",
+    "docs/work-status.md",
+    "docs/evidence/2026-10-13-memory-inspection/README.md"
+  ],
+  "local_links": 331,
+  "errors": []
+}

@@ -1,0 +1,70 @@
+{
+  "cases" : [
+    {
+      "candidate_count" : 0,
+      "case" : "empty_memory"
+    },
+    {
+      "candidate_count" : 2,
+      "candidate_ids" : [
+        "28793bc1-e48b-4a5d-a833-724c3558fc96",
+        "1e269b38-5565-4732-b4b6-24028e45a0fe"
+      ],
+      "case" : "different_titles_two_selected_cards",
+      "selected_ids" : [
+        "1e269b38-5565-4732-b4b6-24028e45a0fe",
+        "28793bc1-e48b-4a5d-a833-724c3558fc96"
+      ]
+    },
+    {
+      "actual_candidate_count" : 1,
+      "available_count" : 2,
+      "candidate_ids" : [
+        "28793bc1-e48b-4a5d-a833-724c3558fc96"
+      ],
+      "candidate_limit" : 12,
+      "case" : "same_title_two_selected_cards",
+      "expected_candidate_count" : 2,
+      "missing_ids" : [
+        "1e269b38-5565-4732-b4b6-24028e45a0fe"
+      ],
+      "phase" : "gap_reproduced",
+      "selected_ids" : [
+        "1e269b38-5565-4732-b4b6-24028e45a0fe",
+        "28793bc1-e48b-4a5d-a833-724c3558fc96"
+      ]
+    },
+    {
+      "candidate_count" : 1,
+      "candidate_ids" : [
+        "1e269b38-5565-4732-b4b6-24028e45a0fe"
+      ],
+      "case" : "repeat_same_card_identity"
+    },
+    {
+      "candidate_count" : 2,
+      "case" : "updated_card_version",
+      "new_card_version" : 2,
+      "old_reference_valid" : false
+    },
+    {
+      "candidate_ids" : [
+        "1e269b38-5565-4732-b4b6-24028e45a0fe"
+      ],
+      "case" : "deleted_card",
+      "stale_reference_valid" : false
+    },
+    {
+      "candidate_count" : 1,
+      "case" : "learning_without_card_and_repeated_concept",
+      "formal_card_count" : 0,
+      "formal_review_count" : 0,
+      "kind" : "explained",
+      "newest_record_selected" : true
+    }
+  ],
+  "daily_database_written" : false,
+  "date" : "2026-10-13",
+  "kind" : "read_only_native_baseline",
+  "real_supplier_requests" : 0
+}

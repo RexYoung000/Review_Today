@@ -74,6 +74,82 @@ struct LearningMemoryContractTests {
         try context.save()
         let validReview = try LearningMemory.candidates(for: "RAG", excluding: target.id, context: context)
         precondition(validReview[0]["review"] != nil)
+
+        // Different cards can share a displayed title or learning goal. Their
+        // explicit links must still reach the downstream selector independently.
+        do {
+            let cardsContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+            let cardsContext = cardsContainer.mainContext
+            let destination = AgentSession(title: "比较检索卡片")
+            cardsContext.insert(destination)
+            func makeCard(_ explanation: String, at second: TimeInterval) -> Knowledge {
+                Knowledge(learningGoal: "比较检索策略", knowledgeType: "concept", theme: "检索",
+                          contentLanguage: "zh", questionLanguage: "zh", answerLanguage: "zh",
+                          evidenceExcerpt: explanation, evidenceLocator: "synthetic", title: "检索策略",
+                          explanation: explanation, createdAt: Date(timeIntervalSince1970: second))
+            }
+            let first = makeCard("依据字词进行匹配。", at: 10000)
+            let second = makeCard("依据语义相近程度进行匹配。", at: 10001)
+            cardsContext.insert(first); cardsContext.insert(second); try cardsContext.save()
+            let firstID = first.id.uuidString.lowercased(), secondID = second.id.uuidString.lowercased()
+            let bothLinks = "reviewtoday://knowledge/\(firstID) reviewtoday://knowledge/\(secondID)"
+            let sameTitle = try LearningMemory.candidates(for: bothLinks, excluding: destination.id, context: cardsContext)
+            precondition(sameTitle.count == 2 && sameTitle.compactMap { $0["knowledge_id"] as? String } == [secondID, firstID],
+                         "both explicitly selected same-title cards survive, preserving ranking")
+            let repeated = try LearningMemory.candidates(for: "reviewtoday://knowledge/\(firstID) reviewtoday://knowledge/\(firstID)", excluding: destination.id, context: cardsContext)
+            precondition(repeated.count == 1 && repeated[0]["knowledge_id"] as? String == firstID,
+                         "repeated links to one card still yield one candidate")
+            first.title = ""; second.title = ""; try cardsContext.save()
+            let sameGoal = try LearningMemory.candidates(for: bothLinks, excluding: destination.id, context: cardsContext)
+            precondition(sameGoal.count == 2 && Set(sameGoal.compactMap { $0["knowledge_id"] as? String }) == Set([firstID, secondID]),
+                         "untitled cards with the same learning goal retain their own identities")
+            first.title = "索引选型"; first.version += 1; try cardsContext.save()
+            precondition(!LearningMemory.valid(sameTitle, sessions: [destination], knowledge: [first, second]))
+            let refreshed = try LearningMemory.candidates(for: bothLinks, excluding: destination.id, context: cardsContext)
+            precondition(refreshed.count == 2 && refreshed.first(where: { $0["knowledge_id"] as? String == firstID })?["content_version"] as? Int == 2,
+                         "renaming and updating a card keeps its identity while fencing the old version")
+            first.lifecycle = "deleted"; try cardsContext.save()
+            precondition(!LearningMemory.valid(refreshed, sessions: [destination], knowledge: [first, second]))
+            let surviving = try LearningMemory.candidates(for: bothLinks, excluding: destination.id, context: cardsContext)
+            precondition(surviving.count == 1 && surviving[0]["knowledge_id"] as? String == secondID,
+                         "deleting one selected card does not remove the other")
+        }
+        do {
+            let historyContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+            let historyContext = historyContainer.mainContext
+            let first = AgentSession(title: "前一课"), second = AgentSession(title: "另一课"), destination = AgentSession(title: "本轮")
+            for session in [first, second, destination] { historyContext.insert(session) }
+            let older = UUID().uuidString.lowercased(), newer = UUID().uuidString.lowercased(), separate = UUID().uuidString.lowercased()
+            for (session, identity, timestamp) in [(first, older, "2026-10-12T00:00:00Z"), (first, newer, "2026-10-13T00:00:00Z"), (second, separate, "2026-10-13T01:00:00Z")] {
+                LearningMemory.store(["id": identity, "session_id": session.id.uuidString,
+                                      "concept": "数据库索引", "concepts": ["索引"], "kind": "explained",
+                                      "excerpt": "索引加快查找。", "dependencies": [], "occurred_at": timestamp], session: session)
+            }
+            try historyContext.save()
+            let grouped = try LearningMemory.candidates(for: "数据库索引", excluding: destination.id, context: historyContext)
+            precondition(grouped.count == 2 && Set(grouped.compactMap { $0["id"] as? String }) == Set([newer, separate]),
+                         "learning records still merge by session and concept; other sessions stay separate")
+        }
+        do {
+            let boundedContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+            let boundedContext = boundedContainer.mainContext
+            let destination = AgentSession(title: "候选上限")
+            boundedContext.insert(destination)
+            var identities: [String] = []
+            for index in 0..<13 {
+                let candidate = Knowledge(learningGoal: "检索策略", knowledgeType: "concept", theme: "检索",
+                                          contentLanguage: "zh", questionLanguage: "zh", answerLanguage: "zh",
+                                          evidenceExcerpt: "比较资料检索。", evidenceLocator: "synthetic", title: "检索策略",
+                                          createdAt: Date(timeIntervalSince1970: TimeInterval(10000 + index)))
+                boundedContext.insert(candidate); identities.append(candidate.id.uuidString.lowercased())
+            }
+            try boundedContext.save()
+            let links = identities.map { "reviewtoday://knowledge/" + $0 }.joined(separator: " ")
+            let bounded = try LearningMemory.candidates(for: links, excluding: destination.id, context: boundedContext)
+            precondition(bounded.count == 12 && bounded.compactMap { $0["knowledge_id"] as? String } == Array(identities.suffix(12).reversed()),
+                         "same-title cards still obey the twelve-candidate limit and timestamp order")
+        }
+        print("PASS: MEM-01 seven behavior groups: same title, repeated link, same goal, current version, deletion, learning record grouping, candidate limit")
         print("PASS: typed local recall, no drafts/consent, archive vs exclusion, policy/content versions, late-run fence, no formal review writes")
     }
 }

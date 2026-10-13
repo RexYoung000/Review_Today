@@ -63,7 +63,12 @@ enum LearningMemory {
         }.sorted { $0.1 == $1.1 ? ($0.0["occurred_at"] as? String ?? "") > ($1.0["occurred_at"] as? String ?? "") : $0.1 > $1.1 }
         var seen = Set<String>()
         // No related local evidence is a normal empty result.
-        return ranked.filter { $0.1 > 0 }.filter { seen.insert(($0.0["session_id"] as? String ?? "card") + ":" + ($0.0["concept"] as? String ?? "")).inserted }
+        return ranked.filter { $0.1 > 0 }.filter {
+            if let knowledgeID = $0.0["knowledge_id"] as? String {
+                return seen.insert("card:" + knowledgeID).inserted
+            }
+            return seen.insert(($0.0["session_id"] as? String ?? "card") + ":" + ($0.0["concept"] as? String ?? "")).inserted
+        }
             .prefix(12).map { $0.0 }
     }
 

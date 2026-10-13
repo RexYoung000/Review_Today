@@ -1,0 +1,82 @@
+{
+  "scope": "MEM-01 decision 231",
+  "confirmed_at": "2026-10-13",
+  "implemented_and_delivered_at": "2026-10-14",
+  "baseline_commit": "fabb2799d9d1909d15fa37529651386fd536fb3e",
+  "production_files_changed": [
+    "Review_Today/LearningMemory.swift"
+  ],
+  "source_sha256": {
+    "Review_Today/LearningMemory.swift": "7af7c1743dc1bf19701c310785284223792c53fa43173b9604d61ddc34e20964",
+    "tests/mac/LearningMemoryContractTests.swift": "a1031c14694b89f6b5c3aaebfd5b4d794c272d4dd97e92edbeafece341bb3d64",
+    "tests/mac/run-contracts.py": "7b55a0026b59c19ae906a9e88fd747fd3a3b3409f37be3048b60a52926213b01",
+    "agent-service/agent_service/learning_memory.py": "dc43a8860f565d11bf742dd5080f4b37195b168e01168139d7e484aa6faae991",
+    "Review_Today/ConversationProcessor.swift": "699d381a6b400bfef1345cb8bf0127fcca702bcd669e955b16b0aa1f5c109e90",
+    "Review_Today/LearningWorkspace.swift": "0ae1b518442170d5027249b9419ce85eb99b04e8ebbc4cce64e0c1b36a985afa"
+  },
+  "baseline_files_preserved": true,
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "unchanged": "learning record source/concept grouping; ranking; 12 native candidates; 2 service associations; version/exclusion guards; models/providers; UI; save authority",
+  "checks": {
+    "new_behavior_groups": 7,
+    "native_contracts": [
+      "LearningMemoryContractTests",
+      "SessionDeletionContractTests",
+      "LearningInputContractTests",
+      "ConversationReplayTests"
+    ],
+    "fresh_native_support": "/tmp/review-today-shared-contracts.fjtxna5v",
+    "controlled_sse": true,
+    "same_seven_scenarios": {
+      "passed": 7,
+      "same_card_ids_preserved": true,
+      "same_title_before_candidates": 1,
+      "same_title_after_candidates": 2,
+      "missing_ids": []
+    },
+    "service_selection_gate": {
+      "replays": 2,
+      "same_title_after_accepted": 2,
+      "non_identity_fields_synthetic": true
+    },
+    "service_memory_guards": {
+      "passed": 9,
+      "deselected": 48,
+      "warnings": 5,
+      "real_supplier_calls": 0
+    },
+    "signed_debug_build": {
+      "success": true,
+      "strict_signature_valid": true,
+      "installed_executable_sha256": "18a7711c3962deac0add6cec5ade080b5a1a537c8c2c8b86e4c6c3eb234bc65c"
+    },
+    "local_install": {
+      "backup": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742",
+      "databases": 3,
+      "all_table_contents_and_schemas_unchanged": true,
+      "daily_app_started": false,
+      "daily_service_started": false,
+      "release": false
+    },
+    "documents": {
+      "checked_files": [
+        "docs/agent-harness-v2.md",
+        "docs/agent-iteration.md",
+        "docs/architecture.md",
+        "docs/decision-log.md",
+        "docs/design-references/zcode-agent.md",
+        "docs/work-status.md",
+        "docs/evidence/2026-10-13-memory-inspection/README.md"
+      ],
+      "local_links": 331,
+      "errors": []
+    }
+  },
+  "limitations": [
+    "not full real model-to-native two-card answer",
+    "candidate retention does not compel model selection or semantic correctness",
+    "not new UI, multi-select picker, automatic background memory, or save authorization",
+    "not whole memory recall coverage or Rex final usage acceptance"
+  ],
+  "next_cursor": "topic 7 next point: inspect timing of stale memory invalidation after correction, exclusion and deletion; align any new rules before implementation"
+}

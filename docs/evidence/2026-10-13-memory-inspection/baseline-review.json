@@ -1,0 +1,49 @@
+{
+  "scope": "MEM-01 decision 231",
+  "baseline_commit": "fabb2799d9d1909d15fa37529651386fd536fb3e",
+  "phase": "pre-repair reproduced gap, approval received; production code unchanged at capture",
+  "baseline_files_sha256": {
+    "LearningMemoryInspection.swift": "e1e5cc8a852d30b2f3bf682bd8c3a888059e7ff969827cccee3a7656559622b8",
+    "native-baseline.json": "43654cfabec5d6436ccd3f08bc01872cda4d757bb4e44ce549e69c9a8cb1fa31",
+    "selection-probe.py": "f5710b085602ee3d58aaa11cef313fe21b3621de38e2eee2e501e8c5e97984c5",
+    "selection-baseline.json": "1a5ccc8a3e03c8d9c212017cbf27323435356e2a0e5dba64b79e16cfd00102e1",
+    "run-native.py": "632781d5709ffa7626c6bff885f1353d13d9e090d18ccd44271a3cc03d86b242"
+  },
+  "baseline_source_sha256": "e63fe04c601b92385ae0dc9496f27b8c81494c7dbb2fbf271374c2a2e9d848f5",
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "checks": {
+    "native_existing_contracts": [
+      "LearningMemoryContractTests",
+      "SessionDeletionContractTests"
+    ],
+    "native_baseline_cases": 7,
+    "service_memory_subset": {
+      "passed": 9,
+      "deselected": 48,
+      "warnings": 5
+    },
+    "same_title_available_cards": 2,
+    "same_title_actual_candidates": 1,
+    "downstream_supplied_two_requested_accepted": 1
+  },
+  "logs": {
+    "service-tests-baseline.log": {
+      "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-memory-tests-ftt1l9zb/tests.log",
+      "raw_sha256": "faf21ff8e4b020194588db3ee592afeaeccf8f1713337d420d6f4a65b30c1923",
+      "tracked_sha256": "f2a48fcf1858a0da8c4d203c26fe492adb3da1616cfa0ed051fb6b470e0d471d",
+      "normalization": "trailing_whitespace_only"
+    },
+    "native-tests-baseline.log": {
+      "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-memory-native-53j89x1s/native.log",
+      "raw_sha256": "ea39f324cf699fb740986078505ce6b3896d3f12a028b720af80e61b4f6b4731",
+      "tracked_sha256": "ea39f324cf699fb740986078505ce6b3896d3f12a028b720af80e61b4f6b4731",
+      "normalization": "trailing_whitespace_only"
+    }
+  },
+  "limitations": [
+    "synthetic in-memory native records",
+    "offline downstream selection metadata with actual native candidate IDs",
+    "not full HTTP payload or provider answer quality",
+    "no daily database written or supplier requests"
+  ]
+}
