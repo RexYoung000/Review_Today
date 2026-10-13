@@ -89,6 +89,14 @@ def schema_repair_instruction(error):
         followup_hint = ("需要给后续检查时同步填写 followup_binding；未通过、条件不足或使用提示时 step_title 用 retry_step.title，"
                          "独立通过后用 followup_step.title。concepts 仅限实际已教内容，evidence_quotes 摘自 reference。"
                          "如果没有可靠依据，followup_question 留空并说明需要补讲，不能只给新题不绑定。")
-    return ("输出结构校验失败：" + error.diagnostic + "\n" + common + length_hint + array_hint + plan_hint + teaching_hint + status_hint + followup_hint +
+    answer_hint = ""
+    if any(isinstance(d, dict) and d.get("type") == "current_answer_intent_conflict" for d in details):
+        answer_hint = ("当前任务正在等待综合题作答。若 answer_evidence 引用本轮完整作答，intents 必须包含 answer，"
+                       "不能误标为 goal/material 并继续教学；若确为新材料而非作答，answer_evidence 留空并据实际请求分类。")
+    completion_hint = ""
+    if any(isinstance(d, dict) and d.get("type") == "completion_answer_grounding" for d in details):
+        completion_hint = ("step_completion_evidence.answer_quotes 只能从本轮 answer 连续逐字复制，"
+                           "不能拼接分散句子、增删连接词或改标点；可选择较短的真实片段。没有用户答案依据的项目必须 demonstrated=false，不用讲义补答。")
+    return ("输出结构校验失败：" + error.diagnostic + "\n" + common + length_hint + array_hint + plan_hint + teaching_hint + status_hint + followup_hint + answer_hint + completion_hint +
             "修复标出的字段并严格使用 schema 的枚举；工作流放 workflow，"
             "直接教学放 direct_teaching 布尔字段。")

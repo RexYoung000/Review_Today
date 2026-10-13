@@ -8,7 +8,7 @@ import hashlib
 import uuid
 
 from agent_service.learning_memory import merge_references
-from agent_service.learning_progress import _visible_quote
+from agent_service.learning_progress import quote_matches
 from agent_service import capture_preview
 
 
@@ -43,7 +43,7 @@ def validate_update(update, message, candidates):
     quotes = update.get('evidence_quotes', [])
     if (not candidate or len(set(retained)) != len(retained)
             or not set(retained) <= {f['id'] for f in (candidate or {}).get('fragments', [])}
-            or not quotes or any(not q.strip() or _visible_quote(q.strip()) not in _visible_quote(message) for q in quotes)):
+            or not quotes or any(not quote_matches(q.strip(), message) for q in quotes)):
         raise ModelCallError('SCHEMA', 'field=capture_update; select an existing invitation version and real source excerpts only')
 
 
@@ -154,7 +154,7 @@ def published(h, data, run, message):
     for quote in quotes:
         source = next((m for m in reversed(data['messages']) if m['role'] == 'coach'
                        and m['message_id'] != message['message_id']
-                       and _visible_quote(quote) in _visible_quote(m['content'])
+                       and quote_matches(quote, m['content'])
                        and data['runs'].get(m.get('run_id'), {}).get('task_id') == task['task_id']
                        and topic_capture._source_run_valid(h, data, m, data['runs'][m['run_id']])), None)
         if not source:

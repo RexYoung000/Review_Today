@@ -110,7 +110,7 @@ class LearningCheckRegressionTests(unittest.TestCase):
         self.assertIsNone(state["draft"])
         self.assertIsNone(state["pending"])
 
-    def test_explicit_whole_step_check_can_complete_only_its_frozen_step(self):
+    def test_model_declared_whole_step_and_pass_cannot_complete_without_request(self):
         base = self.model
         def complete_step(system, user, schema, **kwargs):
             value = base(system, user, schema, **kwargs)
@@ -123,7 +123,9 @@ class LearningCheckRegressionTests(unittest.TestCase):
             task = self.start_lesson()
             self.answer()
         after = self.state()["tasks"][task["task_id"]]
-        self.assertEqual(current_step(after)["understanding"], "verified")
+        self.assertEqual(current_step(after)["understanding"], "unknown")
+        self.assertEqual(after["context"]["check_binding"]["scope"], "concept")
+        self.assertFalse(after["context"]["practice"][-1]["evaluation"]["step_completion_demonstrated"])
         self.assertEqual(after["context"]["learning_plan"]["steps"][1]["state"], "pending")
         self.assertNotEqual(after["status"], "completed")
 

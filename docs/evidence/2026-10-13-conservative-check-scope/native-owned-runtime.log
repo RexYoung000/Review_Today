@@ -1,0 +1,4 @@
+CoreData: debug: PostSaveMaintenance: incremental_vacuum with freelist_count - 30 and pages_to_free 6
+sandbox_extension_issue_file_to_process failed for /tmp/review-today-conservative-native-f2n1cmg5/NativeScopeQA.app: 1 (Operation not permitted)
+CoreData: debug: PostSaveMaintenance: incremental_vacuum with freelist_count - 33 and pages_to_free 6
+CoreData: debug: WAL checkpoint: Database did checkpoint. Log size: 1014 checkpointed: 1014

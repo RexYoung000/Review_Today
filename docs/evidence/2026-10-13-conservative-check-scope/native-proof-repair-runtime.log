@@ -1,0 +1,1 @@
+NativeScopeQA/NativeScopeQA.swift:20: Fatal error: 'try!' expression unexpectedly raised an error: NativeScopeQA.HarnessAPIError.server(code: "RT.SESSION.INVALID_RECOVERY_DELTA", message: "恢复记录未连续保存，正在重新同步")

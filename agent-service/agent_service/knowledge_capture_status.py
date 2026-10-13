@@ -72,10 +72,10 @@ def _offer_covers_focus(offer, item):
         return False
     if offer.get('trigger') != 'verified_check' or item['message_id'] == offer.get('anchor_message_id'):
         return True
-    from agent_service.learning_progress import _visible_quote
-    quote = _visible_quote(item.get('quote', ''))
+    from agent_service.learning_progress import quote_matches
+    quote = item.get('quote', '')
     return bool(quote and any(fragment.get('message_id') == item['message_id']
-                            and quote in _visible_quote(fragment.get('text', ''))
+                            and quote_matches(quote, fragment.get('text', ''))
                             for fragment in offer.get('fragments', [])))
 
 

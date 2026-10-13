@@ -177,6 +177,16 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                         raise ModelCallError("SCHEMA", "ValidationError") from None
                     if hasattr(parsed, 'validate_request'):
                         parsed.validate_request(json.loads(prompt))
+                    if schema is IntentDecision:
+                        from agent_service.learning_progress import comprehensive_bound
+                        task_context = (intent_context.get("task") or {}).get("context", {})
+                        current_inputs = intent_context.get("current_inputs", [])
+                        if (comprehensive_bound(task_context.get("check_binding"))
+                                and parsed.relation == "continuation" and parsed.scope == "continue_goal"
+                                and set(parsed.intents) <= {"goal", "material"}
+                                and current_inputs and parsed.answer_evidence
+                                and parsed.answer_evidence == current_inputs[-1]):
+                            raise ModelCallError("SCHEMA", json.dumps([dict(field=["intents"], type="current_answer_intent_conflict")]))
                     if schema is IntentDecision and "answer" in parsed.intents:
                         checked_context = intent_context
                         user_inputs = checked_context.get("current_inputs", [])

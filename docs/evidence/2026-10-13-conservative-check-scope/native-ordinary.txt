@@ -1,0 +1,83 @@
+Window: "本节综合检查 · 隔离验证 · 真实模型隔离验收", App: NativeScopeQA.
+0 standard window 本节综合检查 · 隔离验证 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<NativeScopeQA.ScopeQARoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, NativeScopeQA.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 隔离验证 · 合成讲义 · 真实入口与评分 · 不访问日常数据
+		3 checkbox Description: 深色, Value: 0
+		4 checkbox Description: 减少动态, Value: 0
+		5 button 窄窗
+		6 button Description: 会话标签, ID: tag
+		7 button Description: 归档, ID: archivebox
+		8 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		9 button Description: 学习安排, 为什么需要外部资料, Value: 已展开
+		10 scroll area
+			11 button Description: 1, 为什么需要外部资料, 已讲解, Help: 查看对应内容，不会改变理解状态
+			12 button Description: 2, 一次 RAG 回答的完整流程, 待学习, Help: 查看对应内容，不会改变理解状态
+			13 button Description: 3, 检索在做什么：把问题与资料变成可匹配的形式, 待学习, Help: 查看对应内容，不会改变理解状态
+			14 button Description: 4, 检索到资料不等于回答正确, 待学习, Help: 查看对应内容，不会改变理解状态
+		15 text 点击步骤回看内容；要调整安排，直接告诉我。
+		16 scroll area Secondary Actions: Scroll Up, Scroll Down
+			17 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				18 text RAG（Retrieval-Augmented Generation，检索增强生成） 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。
+					19 text RAG（Retrieval-Augmented Generation，检索增强生成） 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。
+				20 heading 学习地图
+					21 text 学习地图
+				22 heading 这一步：为什么需要外部资料
+					23 text 这一步：为什么需要外部资料
+				24 text 模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：
+					25 text 模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：
+				26 text 外部资料的价值，就是在生成前提供一份可追溯的依据：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。 需要注意边界：检索到资料，并不保证资料相关、最新或回答正确。 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。
+				27 container
+					28 text 问题 检索外部资料 资料与问题一起交给模型 生成回答
+				29 text 这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。
+					30 text 这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。
+				31 heading 想一想
+					32 text 想一想
+				33 text 只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？
+					34 text 只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？
+				35 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				36 text RAG 引入外部资料是为了补充模型训练未涵盖或后来更新的知识；检索到资料仍不保证资料相关、最新或回答正确。
+					37 text RAG 引入外部资料是为了补充模型训练未涵盖或后来更新的知识；检索到资料仍不保证资料相关、最新或回答正确。
+				38 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				39 text 答对了。RAG 引入外部资料，是为了补上模型训练没覆盖或训练后才出现的知识缺口；但检索到资料并不保证资料相关、最新或回答正确，所以它改变的是手边可用依据，不等于把错误自动变成正确。
+					40 text 答对了。RAG 引入外部资料，是为了补上模型训练没覆盖或训练后才出现的知识缺口；但检索到资料并不保证资料相关、最新或回答正确，所以它改变的是手边可用依据，不等于把错误自动变成正确。
+				41 heading Description: 模型参数化知识的限制、外部资料的作用、RAG 的能力边界, ID: knowledge-invitation-F4CFFF18-9704-44BA-888F-7BC17851D282
+				42 unknown Description: 模型主要依赖训练阶段形成的参数化知识，因此受训练时间边界和训练数据范围限制。, ID: knowledge-invitation-F4CFFF18-9704-44BA-888F-7BC17851D282
+				43 unknown Description: 外部资料的价值是在生成前提供可追溯的依据，让回答有机会建立在更新或具体的文档上。, ID: knowledge-invitation-F4CFFF18-9704-44BA-888F-7BC17851D282
+				44 unknown Description: RAG 的边界是：检索到资料并不保证资料相关、最新或回答正确，它改变的是手边可用依据，不等于把错误自动变成正确。, ID: knowledge-invitation-F4CFFF18-9704-44BA-888F-7BC17851D282
+				45 text Value: 一句话记住 RAG 引入外部资料用于补上训练未覆盖或训练后才出现的知识缺口，但检索到资料不保证相关、最新或回答正确。 未保存, ID: knowledge-invitation-F4CFFF18-9704-44BA-888F-7BC17851D282
+				46 button Description: 稍后, ID: knowledge-invitation-F4CFFF18-9704-44BA-888F-7BC17851D282
+				47 button Description: 保存为知识卡, ID: knowledge-invitation-F4CFFF18-9704-44BA-888F-7BC17851D282
+				48 checkbox Description: 已学过，加入复习, Value: 0, ID: knowledge-invitation-F4CFFF18-9704-44BA-888F-7BC17851D282
+				49 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			50 scroll bar (settable, float) 0.7059436913451512
+				51 value indicator (settable, float) 0.7059436913451512
+				52 increment arrow button
+				53 decrement arrow button
+				54 increment page button
+				55 decrement page button
+		56 scroll area
+			57 text entry area (settable) 学习输入
+		58 button Description: 添加材料, Value: 已收起, ID: plus
+		59 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		60 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		61 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 9,331 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		62 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		63 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		64 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	65 close button
+	66 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	67 minimize button
+68 menu bar
+	69 NativeScopeQA
+	70 File
+	71 Edit
+	72 View
+	73 Window
+	74 Help
+
+The focused UI element is 57 text entry area (settable) 学习输入

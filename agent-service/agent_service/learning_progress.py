@@ -91,7 +91,89 @@ def _visible_quote(text):
     return text
 
 
-def bind_check(task, question, proposal, taught_concepts=None):
+def quote_matches(quote, reference):
+    """Accept exact raw excerpts or identical rendered words; never paraphrases."""
+    return bool(quote.strip() and (quote in reference or _visible_quote(quote) in _visible_quote(reference)))
+
+
+CHECK_SCOPE_POLICY = "explicit-comprehensive-1"
+
+
+def completion_requirements(condition):
+    """Keep the full condition plus its literal, explicitly enumerated details."""
+    items = [condition]
+    for group in re.findall(r"[（(]([^（）()]+)[）)]", condition):
+        # Examples and optional alternatives are not additional pass conditions.
+        if "、" in group and not re.search(r"例如|比如|如：|如:|可选|任选|或|等", group):
+            items.extend(part.strip() for part in group.split("、") if part.strip())
+    return list(dict.fromkeys(items))
+
+
+def comprehensive_bound(binding):
+    return bool(binding and binding.get("scope") == "step"
+        and binding.get("check_kind") == "comprehensive"
+        and binding.get("scope_policy") == CHECK_SCOPE_POLICY
+        and binding.get("request_message_id") and binding.get("request_run_id")
+        and binding.get("completion_condition", "").strip()
+        and binding["completion_condition"] in binding.get("question", "")
+        and binding.get("completion_requirements") == completion_requirements(binding["completion_condition"]))
+
+
+def binding_for_model(binding, reference):
+    """Locate rendered binding excerpts in raw Markdown before model selection.
+
+    This changes only the request projection. Saved bindings and literal capture
+    validation retain their original contracts; words and punctuation stay exact.
+    """
+    if not binding:
+        return None
+    visible, offsets = reference, list(range(len(reference)))
+    for pattern in (r"(\*\*|__)(?=\S)(.+?)(?<=\S)\1", r"(`+)([^`]+)\1"):
+        chunks, positions, cursor = [], [], 0
+        for match in re.finditer(pattern, visible):
+            chunks.extend([visible[cursor:match.start()], match[2]])
+            positions.extend(offsets[cursor:match.start()] + offsets[match.start(2):match.end(2)])
+            cursor = match.end()
+        chunks.append(visible[cursor:])
+        positions.extend(offsets[cursor:])
+        visible, offsets = "".join(chunks), positions
+    result = deepcopy(binding)
+    for index, quote in enumerate(result["evidence_quotes"]):
+        rendered = _visible_quote(quote)
+        start = visible.find(rendered)
+        if quote not in reference and rendered and start >= 0:
+            left, right = offsets[start], offsets[start + len(rendered) - 1] + 1
+            for pattern in (r"(\*\*|__)(?=\S)(.+?)(?<=\S)\1", r"(`+)([^`]+)\1"):
+                for marker in re.finditer(pattern, reference):
+                    if left <= marker.start(2) and right >= marker.end(2):
+                        left, right = min(left, marker.start()), max(right, marker.end())
+            result["evidence_quotes"][index] = reference[left:right]
+    return result
+
+
+def guard_completion(result, binding, answer):
+    """A model's whole-step flag requires every frozen item and learner quotes."""
+    if not comprehensive_bound(binding):
+        result.step_completion_demonstrated = False
+        return
+    rows = [row.model_dump() if hasattr(row, "model_dump") else row
+            for row in result.step_completion_evidence]
+    expected = set(range(len(binding["completion_requirements"])))
+    proof = (len(rows) == len(expected) and {r["requirement_index"] for r in rows} == expected
+        and all(r["demonstrated"] and r["answer_quotes"]
+                and all(q.strip() and q in answer for q in r["answer_quotes"]) for r in rows))
+    result.step_completion_demonstrated = bool(result.step_completion_demonstrated and proof
+                                               and getattr(result, "passed", True))
+    if getattr(result, "passed", False) and not result.step_completion_demonstrated:
+        result.passed = False
+        result.feedback = "这次还不能确认本节完整通过。请用自己的话逐项说明题面要求；已通过的小题记录保留。"
+        # The old positive feedback is no longer a source for an invitation.
+        result.capture_feedback_quotes = []
+        result.capture_preview = None
+        result.capture_scope_summary = ""
+
+
+def bind_check(task, question, proposal, taught_concepts=None, *, comprehensive=False):
     """Freeze only an explicit, locally grounded scope; never infer it from an answer."""
     ctx = task["context"]
     ctx.pop("check_binding", None)
@@ -103,17 +185,19 @@ def bind_check(task, question, proposal, taught_concepts=None):
     quotes = [q.strip() for q in value.get("evidence_quotes", []) if q.strip()]
     reference = check_reference(task)
     if (value.get("step_title") != step["title"] or not concepts or not quotes or
-            any(_visible_quote(quote) not in _visible_quote(reference) for quote in quotes) or
+            any(not quote_matches(quote, reference) for quote in quotes) or
             taught_concepts is not None and not set(concepts).issubset(taught_concepts)):
         return None
     # A missing/legacy global condition cannot certify an entire local step.
-    scope = value.get("scope", "concept")
-    if scope == "step" and not (step_target(task) or {}).get("completion_condition"):
-        scope = "concept"
+    scope = ("step" if comprehensive and value.get("scope") == "step"
+             and (step_target(task) or {}).get("completion_condition") else "concept")
     binding = dict(question=question, step_id=step["id"], step_title=step["title"], concepts=concepts,
                    evidence_quotes=quotes, scope=scope, reference_stamp=_reference_stamp(task),
                    plan_version=(ctx.get("learning_plan") or {}).get("version", 0),
-                   completion_condition=step.get("completion_condition", "") if scope == "step" else "")
+                   completion_condition=step.get("completion_condition", "") if scope == "step" else "",
+                   completion_requirements=completion_requirements(step["completion_condition"]) if scope == "step" else [],
+                   check_kind="comprehensive" if scope == "step" else "concept",
+                   scope_policy=CHECK_SCOPE_POLICY)
     ctx["check_binding"] = binding
     return binding
 
@@ -140,7 +224,15 @@ def bound_check(task):
             binding.get("reference_stamp") != _reference_stamp(task) or
             binding.get("plan_version") != (ctx.get("learning_plan") or {}).get("version", 0)):
         return None
-    return deepcopy(binding)
+    projected = deepcopy(binding)
+    if projected.get("scope") == "step":
+        if not comprehensive_bound(projected):
+            # Legacy pending checks remain readable; their label cannot grant
+            # whole-step progress under the current policy. Do not rewrite history.
+            projected.update(scope="concept", completion_condition="", check_kind="concept")
+        elif projected["completion_condition"] != step.get("completion_condition", ""):
+            return None
+    return projected
 
 
 def record_check(task, binding, message_id, *, step_completion_demonstrated=False):
@@ -155,7 +247,7 @@ def record_check(task, binding, message_id, *, step_completion_demonstrated=Fals
     for concept in binding["concepts"]:
         if not any(item["concept"] == concept and item["message_id"] == message_id for item in evidence):
             evidence.append(dict(concept=concept, message_id=message_id, question=binding["question"]))
-    if binding["scope"] == "step" and binding.get("completion_condition") and step_completion_demonstrated:
+    if comprehensive_bound(binding) and step_completion_demonstrated:
         step.update(state="verified", understanding="verified")
 
 

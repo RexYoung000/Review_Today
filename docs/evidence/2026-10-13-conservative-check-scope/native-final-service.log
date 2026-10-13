@@ -1,0 +1,97 @@
+INFO:     Started server process [33607]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:50699 (Press CTRL+C to quit)
+INFO:     127.0.0.1:54761 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54824 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54824 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54824 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54824 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54824 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55021 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55021 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55021 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55074 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55098 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55144 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55178 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55229 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55229 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55229 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55307 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55339 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55339 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55339 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55339 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55436 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55483 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55522 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55522 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55522 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55582 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55627 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55627 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55627 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55671 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55671 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55671 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55671 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55671 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55671 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55671 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55862 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55893 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55915 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55915 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55915 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55915 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55915 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55915 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55915 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55915 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55915 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56138 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56205 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56333 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56356 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56394 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56415 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56445 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56480 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56533 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56533 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56533 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56533 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56533 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56533 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56533 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56533 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56672 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56716 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56716 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56716 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56716 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56716 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56716 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56716 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56866 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56889 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56918 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56959 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56998 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56998 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56998 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57086 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57086 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57086 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57086 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57086 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [33607]

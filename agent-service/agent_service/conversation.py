@@ -544,9 +544,15 @@ class ConversationHarness(ConditionalTeaching):
                          payload={"task": HarnessTaskRecord(**task).view().model_dump(),
                                   "memory_references": task["context"].get("memory_references", run.get("memory_references", []))})
 
-    def _publish(self, sid, rid, rev, text, *, stage=None, task_status="awaiting_user", required=None, draft=False, source_type=None, draft_content=None, complete=True):
+    def _publish(self, sid, rid, rev, text, *, stage=None, task_status="awaiting_user", required=None, draft=False, source_type=None, draft_content=None, complete=True, comprehensive=None):
         with self.store.transaction(sid, rid, rev) as data:
             run = data["runs"][rid]
+            if comprehensive is not None:
+                from agent_service.comprehensive_check import activate
+                question = activate(data, run, comprehensive)
+                text = with_question("这次按本节的完整要求检查，请逐项作答。", question, "本节综合检查")
+                stage = "practice"
+                required = {"type": "submit_answer", "prompt": question, "options": []}
             response = run.get("active_response")
             if response and response["revision"] == rev and response["status"] in {"streaming", "recovering"}:
                 response.update(text=text, delta="", status="complete", chunk_seq=response["chunk_seq"] + 1)
@@ -854,6 +860,9 @@ class ConversationHarness(ConditionalTeaching):
             return
         if decision.clarification:
             self._publish(sid, rid, rev, decision.clarification)
+            return
+        from agent_service.comprehensive_check import handle as handle_comprehensive
+        if handle_comprehensive(self, sid, rid, rev, decision, last):
             return
         if decision.material_focus == 'product' and not decision.direct_teaching:
             with self.store.transaction(sid, rid, rev) as current:
@@ -1520,6 +1529,7 @@ class ConversationHarness(ConditionalTeaching):
         result = None
         evaluation_schema, evaluation_system = MasteryEvaluation, EVALUATION_SYSTEM
         from agent_service.judgment_grading import CAPTURE_QUOTE_RULE
+        from agent_service.learning_progress import binding_for_model
         evaluation_system += CAPTURE_QUOTE_RULE
         if self.judgments is not None:
             from agent_service.judgment_grading import evaluate, ScoredMasteryEvaluation, FOLLOWUP_RULE
@@ -1531,7 +1541,7 @@ class ConversationHarness(ConditionalTeaching):
             result = self._call(sid, rid, rev, "evaluate", evaluation_system,
                             json.dumps(dict(question=ctx.get("check_question") or task["content"],
                                             reference=reference, learning_step=learning_step,
-                                            check_binding=binding, followup_step=followup_step, retry_step=retry_step,
+                                            check_binding=binding_for_model(binding, reference), followup_step=followup_step, retry_step=retry_step,
                                             capture_concepts=knowledge_invitation.unoffered_concepts(data, task['task_id'], binding),
                                             hint_used=ctx.get("hint_used", False),
                                             followup_required_on_pass=bool(ctx.get("requires_mastery") and not (
@@ -1540,6 +1550,10 @@ class ConversationHarness(ConditionalTeaching):
         if result.question_validity != "valid":
             result.passed = False
             result.feedback = "这道题的条件或讲解依据还不充分，不能据此判定你答错，也不记为验证通过。\n\n" + result.feedback
+        from agent_service.learning_progress import guard_completion
+        guard_completion(result, binding, last["content"])
+        if ctx.get("hint_used", False):
+            result.step_completion_demonstrated = False
         effective_pass = result.passed and bool(binding) and not ctx.get("hint_used", False)
         will_ask_followup = bool(binding) and (not effective_pass or (ctx.get("requires_mastery") and not (
             ctx.get("independent_passed") and task["stage"] == "transfer")))
@@ -1583,7 +1597,8 @@ class ConversationHarness(ConditionalTeaching):
                 hint_used=hint_used, binding=binding, verified_concepts=active_run["verified_concepts"],
                 evaluation=result.model_dump()))
             ctx["hint_used"] = False
-            mastered = effective_pass and ctx.get("understanding") == "verified"
+            mastered = (effective_pass and ctx.get("understanding") == "verified"
+                        and (ctx.get("requires_mastery") or result.step_completion_demonstrated))
             if effective_pass and not ctx.get("knowledge_capture_explained"):
                 ctx["knowledge_capture_explained"] = True
             plan = ctx.get("learning_plan")

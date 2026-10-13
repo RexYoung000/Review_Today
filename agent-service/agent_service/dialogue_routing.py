@@ -3,7 +3,7 @@ from agent_service.schemas import IntentDecision
 
 LEGACY_QUESTION = '你希望继续刚才的内容，还是开始一个新的学习问题？'
 LOCAL_QUESTIONS = {'question', 'followup', 'example', 'hint'}
-POLICY_VERSION = 'dialogue-materials-9'
+POLICY_VERSION = 'dialogue-materials-11'
 FEEDBACK_INTENTS = {'question', 'followup', 'correction', 'social', 'greeting', 'thanks'}
 
 
@@ -56,11 +56,27 @@ def ordinary_question(data, decision, last):
     return (data['mode'] == 'auto' and bool(substantive)
             and substantive <= LOCAL_QUESTIONS
             and not (last.get('operation') or decision.proposed_actions or decision.requested_mode
-                     or decision.direct_teaching or decision.is_jd or decision.continuation_evidence)
+                     or decision.direct_teaching or decision.is_jd or decision.continuation_evidence
+                     or decision.comprehensive_check)
             and decision.programming_boundary == 'none')
 
 
 def normalize(data, decision, last):
+    if decision.comprehensive_check:
+        from agent_service.comprehensive_check import explicit_request
+        if explicit_request(decision, last):
+            task = data['tasks'].get(data.get('active_task_id'))
+            decision = decision.model_copy(update=dict(scope='continue_goal', answer_only=False,
+                direct_teaching=False, light_reply='', target_description='',
+                target_task_id=task['task_id'] if task else '', workflow=task['mode'] if task else None))
+        else:
+            changes = {'comprehensive_check': None}
+            if set(decision.intents) <= {'question', 'followup'}:
+                # Rejecting an ungrounded check request must not fall through
+                # into the selected source-learning mode and replace the old quiz.
+                changes.update(scope='conversation', workflow=None, answer_only=True,
+                    direct_teaching=False, target_description='', light_reply='')
+            decision = decision.model_copy(update=changes)
     if response_feedback_only(decision, last):
         # response_only explicitly says there is no independent learning or
         # state-changing request. Stale target/workflow/direct_teaching fields

@@ -1,0 +1,63 @@
+Window: "本节综合检查 · 隔离验证 · 真实模型隔离验收", App: NativeScopeQA.
+0 standard window 本节综合检查 · 隔离验证 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<NativeScopeQA.ScopeQARoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, NativeScopeQA.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 隔离验证 · 合成讲义 · 真实入口与评分 · 不访问日常数据
+		3 checkbox Description: 深色, Value: 0
+		4 checkbox Description: 减少动态, Value: 0
+		5 button 窄窗
+		6 button Description: 会话标签, ID: tag
+		7 button Description: 归档, ID: archivebox
+		8 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		9 button Description: 学习安排, 为什么需要外部资料, Value: 已展开
+		10 scroll area
+			11 button Description: 1, 为什么需要外部资料, 已验证, Help: 查看对应内容，不会改变理解状态
+			12 button Description: 2, 一次 RAG 回答的完整流程, 待学习, Help: 查看对应内容，不会改变理解状态
+			13 button Description: 3, 检索在做什么：把问题与资料变成可匹配的形式, 待学习, Help: 查看对应内容，不会改变理解状态
+			14 button Description: 4, 检索到资料不等于回答正确, 待学习, Help: 查看对应内容，不会改变理解状态
+		15 text 点击步骤回看内容；要调整安排，直接告诉我。
+		16 scroll area Secondary Actions: Scroll Up, Scroll Down
+			17 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				18 text 这次按本节的完整要求检查，请逐项作答。
+					19 text 这次按本节的完整要求检查，请逐项作答。
+				20 heading 本节综合检查
+					21 text 本节综合检查
+				22 text 请用自己的话逐项完成本节的要求： 能说明模型自身知识的限制（训练时间边界、私有资料缺失、可能编造），并指出外部资料补上了什么、又不保证什么。
+				23 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				24 text 模型的知识有训练时间边界，训练之后的新变化它不会自动知道；公司内部和个人私有资料通常没有进入训练；没有可靠依据时，它还可能编造看起来合理的回答。RAG 先检索外部资料，把相关资料与问题一起放进上下文，补充这些训练中缺失或后来更新的知识，为回答提供可追溯的依据。但检索仍可能找错或漏掉内容，资料可能过期或矛盾，模型也可能误读，所以不保证检索资料相关、最新，更不保证最终回答正确。
+					25 text 模型的知识有训练时间边界，训练之后的新变化它不会自动知道；公司内部和个人私有资料通常没有进入训练；没有可靠依据时，它还可能编造看起来合理的回答。RAG 先检索外部资料，把相关资料与问题一起放进上下文，补充这些训练中缺失或后来更新的知识，为回答提供可追溯的依据。但检索仍可能找错或漏掉内容，资料可能过期或矛盾，模型也可能误读，所以不保证检索资料相关、最新，更不保证最终回答正确。
+				26 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				27 text 答得准确。你说明了模型知识的训练时间边界、私有资料缺失和可能编造三个限制，也点出了外部资料补充缺失或更新知识并作为可追溯依据，同时正确指出检索可能找错漏掉、资料可能过期矛盾、模型可能误读，因此不保证相关、最新或最终正确。
+					28 text 答得准确。你说明了模型知识的训练时间边界、私有资料缺失和可能编造三个限制，也点出了外部资料补充缺失或更新知识并作为可追溯依据，同时正确指出检索可能找错漏掉、资料可能过期矛盾、模型可能误读，因此不保证相关、最新或最终正确。
+				29 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			30 scroll bar (settable, float) 1
+				31 value indicator (settable, float) 1
+				32 increment arrow button
+				33 decrement arrow button
+				34 increment page button
+				35 decrement page button
+		36 scroll area
+			37 text entry area (settable) 学习输入
+		38 button Description: 添加材料, Value: 已收起, ID: plus
+		39 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		40 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		41 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 9,857 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		42 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		43 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		44 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	45 close button
+	46 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	47 minimize button
+48 menu bar
+	49 NativeScopeQA
+	50 File
+	51 Edit
+	52 View
+	53 Window
+	54 Help
+
+The focused UI element is 0 standard window 本节综合检查 · 隔离验证 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<NativeScopeQA.ScopeQARoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, NativeScopeQA.AppearanceGate>>-1-AppWindow-1

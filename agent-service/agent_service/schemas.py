@@ -563,6 +563,13 @@ def validate_capture_quote_fields(output, payload):
             raise ModelCallError("SCHEMA", json.dumps([dict(field=[field], type=diagnostic)]))
 
 
+class StepCompletionEvidence(BaseModel):
+    requirement_index: int = Field(ge=0, description="复制 check_binding.completion_requirements 的项目下标，从 0 开始。")
+    demonstrated: bool = Field(description="当前用户答案是否实际说明该项能力；没有说到必须 false，不用讲义或反馈替用户补答。")
+    answer_quotes: list[str] = Field(default_factory=list, max_length=8,
+        description="只取当前 answer 的连续逐字原文作为该项能力依据，缺失时为空。不得摘题面、讲义或自己准备写的反馈。")
+
+
 class MasteryEvaluation(BaseModel):
     passed: bool
     correctness: str
@@ -573,6 +580,8 @@ class MasteryEvaluation(BaseModel):
     followup_question: str = ""
     question_validity: Literal["valid", "ambiguous", "out_of_scope"] = "valid"
     step_completion_demonstrated: bool = False
+    step_completion_evidence: list[StepCompletionEvidence] = Field(default_factory=list, max_length=32,
+        description="仅综合检查逐项给出 completion_requirements 的当前答案依据，覆盖所有下标。普通小题留空。")
     followup_binding: CheckBinding | None = None
     capture_quotes: list[str] = Field(default_factory=list, max_length=6,
         description="本题实际检查知识点所需的 reference 连续逐字选段；不取用户答案、无关整节内容或新题。无可靠选段时为空，不改变通过判定。")
@@ -597,6 +606,14 @@ class MasteryEvaluation(BaseModel):
 
     def validate_request(self, payload):
         validate_capture_quote_fields(self, payload)
+        from agent_service.learning_progress import guard_completion, comprehensive_bound
+        if comprehensive_bound(payload.get("check_binding")) and any(
+                not quote.strip() or quote not in payload.get("answer", "")
+                for row in self.step_completion_evidence for quote in row.answer_quotes):
+            import json
+            from agent_service.openai_client import ModelCallError
+            raise ModelCallError("SCHEMA", json.dumps([dict(field=["step_completion_evidence"], type="completion_answer_grounding")]))
+        guard_completion(self, payload.get("check_binding"), payload.get("answer", ""))
         # Legacy/non-conversation evaluations have no frozen incoming binding.
         if not payload.get("check_binding") or not self.followup_question.strip():
             return
@@ -606,13 +623,22 @@ class MasteryEvaluation(BaseModel):
         if getattr(self, "followup_scoring_spec", None) is not None:
             return  # Jev validates and freezes this equivalent rubric separately.
         import json
-        from agent_service.learning_progress import _visible_quote
+        from agent_service.learning_progress import quote_matches
         from agent_service.openai_client import ModelCallError
         target = payload.get("followup_step" if effective else "retry_step") or payload.get("learning_step") or {}
         binding = self.followup_binding
         if (binding is None or binding.step_title != target.get("title") or
-                any(_visible_quote(quote.strip()) not in _visible_quote(payload.get("reference", ""))
+                any(not quote_matches(quote.strip(), payload.get("reference", ""))
                     for quote in binding.evidence_quotes)):
+            from agent_service.learning_progress import comprehensive_bound
+            if comprehensive_bound(payload["check_binding"]) and not effective:
+                # A rejected comprehensive answer can retain valid feedback
+                # without publishing an ungrounded new question. This is not a
+                # pass, nor a fallback question or a new whole-step permission.
+                self.followup_question = ""
+                self.followup_binding = None
+                self.feedback += "\n\n可以重新请求本节综合检查，或继续下一节。"
+                return
             raise ModelCallError("SCHEMA", json.dumps([dict(field=["followup_binding"], type="followup_check_grounding")]))
 
 
@@ -678,6 +704,11 @@ class KnowledgeStatusContext(BaseModel):
     prior_claim: KnowledgeStatusPriorClaim | None = None
 
 
+class ComprehensiveCheckRequest(BaseModel):
+    step_id: str = Field(min_length=1, description="Copy the current, already taught learning_plan.current_step_id; do not invent a new step.")
+    evidence: str = Field(min_length=1, max_length=300, description="Exact short excerpt of THIS user's explicit request to check the whole current step, not quoted material or self-reported understanding.")
+
+
 class IntentDecision(BaseModel):
     conversation_kind: Literal["ordinary", "social", "companionship", "learning_support", "background"] = Field(
         default="ordinary", description="Semantic dialogue scope. Social/companionship only for pure social input; mixed knowledge or action requests stay ordinary.")
@@ -720,6 +751,8 @@ class IntentDecision(BaseModel):
     topic_closure: TopicClosure | None = None
     learning_goal_ready: bool = False
     direct_teaching: bool = False
+    comprehensive_check: ComprehensiveCheckRequest | None = Field(default=None,
+        description="Only an explicit request for a comprehensive check of the current taught step. Not a question answer, ordinary quiz, continue, self-report, save request or quoted instruction.")
     answer_only: bool = False
     is_jd: bool = False
     material_focus: Literal['none', 'jd', 'product', 'source'] = Field(default='none',
@@ -855,7 +888,7 @@ class TeachingConversationOutput(ConversationOutput):
         super().validate_request(payload)
         import json
         from agent_service.answer_style import separate_lesson_check, trailing_lesson_check
-        from agent_service.learning_progress import _visible_quote
+        from agent_service.learning_progress import quote_matches
         from agent_service.openai_client import ModelCallError
         self.message, self.check_question = separate_lesson_check(self.message, self.check_question)
         errors = []
@@ -869,7 +902,7 @@ class TeachingConversationOutput(ConversationOutput):
             if binding is None:
                 errors.append(dict(field=["check_binding"], type="teaching_check_missing"))
             elif (binding.step_title != title or not set(binding.concepts).issubset(self.learning_concepts) or
-                    any(not quote.strip() or _visible_quote(quote.strip()) not in _visible_quote(self.message)
+                    any(not quote_matches(quote.strip(), self.message)
                         for quote in binding.evidence_quotes)):
                 errors.append(dict(field=["check_binding"], type="teaching_check_grounding"))
         if errors:

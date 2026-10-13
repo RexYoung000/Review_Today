@@ -1,0 +1,3574 @@
+{
+  "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+  "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+  "source": "docs/evidence/2026-10-12-coach-rule-loading/real-samples.json",
+  "source_sha256": "57af49d5de7a631b4171016de8b1fac39a25a2d14e421e199db205f52cbf0d09",
+  "source_model_scope": "step",
+  "initial_state": {
+    "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+    "mode": "source_learning",
+    "paused": false,
+    "foreground": null,
+    "active_task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+    "messages": [
+      {
+        "message_id": "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d",
+        "role": "user",
+        "content": "直接教我 RAG",
+        "content_type": "text",
+        "input_channel": "text",
+        "created_at": "2026-10-13T06:15:14.155699+00:00",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": null,
+        "context": {
+          "continuation_candidates": null,
+          "summary": "",
+          "recent_messages": [],
+          "knowledge_summaries": [],
+          "handoff": null,
+          "memory_lookup_available": false,
+          "memory_candidates": [],
+          "invalid_memory_run_ids": []
+        },
+        "operation": null
+      },
+      {
+        "message_id": "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6",
+        "role": "coach",
+        "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。\n\n---\n\n### 想一想\n\n只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+        "created_at": "2026-10-13T06:15:14.242337+00:00",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381"
+      }
+    ],
+    "runs": {
+      "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13": {
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "input_ids": [
+          "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d"
+        ],
+        "input_channel": "text",
+        "voice_input_ids": [],
+        "revision": 1,
+        "status": "completed",
+        "stage": "completed",
+        "user_summary": "本轮已回应",
+        "attempt": 1,
+        "intent": {
+          "conversation_kind": "ordinary",
+          "clarification_kind": "none",
+          "conversation_repair": false,
+          "reply_feedback": "none",
+          "reply_purpose": "none",
+          "knowledge_card_status": false,
+          "status_context": null,
+          "repair_target_message_id": "",
+          "continuation_evidence": "",
+          "continuation_topic": "",
+          "programming_boundary": "none",
+          "programming_learning_request": "",
+          "resource_boundary": "none",
+          "resource_learning_request": "",
+          "learning_reply_sentence_limit": null,
+          "intents": [
+            "goal"
+          ],
+          "target_task_id": "",
+          "target_description": "",
+          "relation": "continuation",
+          "workflow": "source_learning",
+          "scope": "learning",
+          "proposed_actions": [],
+          "clarification": "",
+          "rationale": "受控测试意图",
+          "understanding": "unknown",
+          "answer_evidence": "",
+          "topic_closure": null,
+          "learning_goal_ready": false,
+          "direct_teaching": true,
+          "comprehensive_check": null,
+          "answer_only": false,
+          "is_jd": false,
+          "material_focus": "none",
+          "jd_request": "none",
+          "needs_verification": false,
+          "cross_check_sources": false,
+          "requested_mode": null,
+          "refresh_sources": false,
+          "public_search_query": "",
+          "light_reply": "",
+          "session_tags": [],
+          "handoff_source_ids": [],
+          "handoff_step_ids": [],
+          "memory_selections": []
+        },
+        "steps": {
+          "32223196e633f7942a89ebd1b79c9773c835008d6528bb63ddc5a83b0858571f": {
+            "conversation_kind": "ordinary",
+            "clarification_kind": "none",
+            "conversation_repair": false,
+            "reply_feedback": "none",
+            "reply_purpose": "none",
+            "knowledge_card_status": false,
+            "status_context": null,
+            "repair_target_message_id": "",
+            "continuation_evidence": "",
+            "continuation_topic": "",
+            "programming_boundary": "none",
+            "programming_learning_request": "",
+            "resource_boundary": "none",
+            "resource_learning_request": "",
+            "learning_reply_sentence_limit": null,
+            "intents": [
+              "goal"
+            ],
+            "target_task_id": "",
+            "target_description": "",
+            "relation": "continuation",
+            "workflow": "source_learning",
+            "scope": "learning",
+            "proposed_actions": [],
+            "clarification": "",
+            "rationale": "受控测试意图",
+            "understanding": "unknown",
+            "answer_evidence": "",
+            "topic_closure": null,
+            "learning_goal_ready": false,
+            "direct_teaching": true,
+            "comprehensive_check": null,
+            "answer_only": false,
+            "is_jd": false,
+            "material_focus": "none",
+            "jd_request": "none",
+            "needs_verification": false,
+            "cross_check_sources": false,
+            "requested_mode": null,
+            "refresh_sources": false,
+            "public_search_query": "",
+            "light_reply": "",
+            "session_tags": [],
+            "handoff_source_ids": [],
+            "handoff_step_ids": [],
+            "memory_selections": []
+          },
+          "cdc4e2cb4c77c4d156400fc641323b35cf1adc7867e78f294d9be951f251d2db": {
+            "official_sources_required": false,
+            "source_domains": [],
+            "concepts": [],
+            "public_query": "",
+            "new_knowledge": true
+          },
+          "24cfe8ec6303612364cb2ec64267bbc937fffe641a48f097098ccc96d01b6480": {
+            "message": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。",
+            "check_question": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+            "evidence_state": "scoped",
+            "learning_plan": {
+              "goal": "理解 RAG 的基本原理：为什么需要外部资料、一次回答的流程、检索在做什么，以及如何不把“检索到”误当成“正确”。",
+              "steps": [
+                "为什么需要外部资料",
+                "一次 RAG 回答的完整流程",
+                "检索在做什么：把问题与资料变成可匹配的形式",
+                "检索到资料不等于回答正确"
+              ],
+              "success_check": "能用自己的话说明 RAG 的用途与流程，并指出检索环节的常见失效方式，不把检索到的内容直接当作正确结论。",
+              "step_conditions": [
+                "能说明模型自身知识的限制（训练时间边界、私有资料缺失、可能编造），并指出外部资料补上了什么、又不保证什么。",
+                "能按顺序说出问题→检索→拼接→生成这条流程，并说明每一步的输入和输出大致是什么。",
+                "能说明查询和文档需要转成可匹配的形式才能比较，并指出这种匹配可能出现漏召回或误召回。",
+                "能举例说明检索到的资料可能不相关、过期或矛盾，因此回答仍需核验，检索成功不等于回答正确。"
+              ],
+              "step_ids": [
+                "",
+                "",
+                "",
+                ""
+              ]
+            },
+            "learning_concepts": [
+              "RAG 的定义",
+              "模型参数化知识的限制",
+              "外部资料的作用",
+              "RAG 的能力边界"
+            ],
+            "check_binding": {
+              "step_title": "为什么需要外部资料",
+              "concepts": [
+                "模型参数化知识的限制",
+                "外部资料的作用",
+                "RAG 的能力边界"
+              ],
+              "evidence_quotes": [
+                "模型生成回答时，主要依赖训练阶段形成的参数化知识。",
+                "外部资料的价值，就是在生成前提供一份可追溯的依据",
+                "检索到资料，并不保证资料相关、最新或回答正确。"
+              ],
+              "scope": "step"
+            },
+            "capture_update": null
+          }
+        },
+        "action_ids": [],
+        "error_code": null,
+        "created_at": "2026-10-13T06:15:14.155576+00:00",
+        "updated_at": "2026-10-13T06:15:14.247225+00:00",
+        "started_at": null,
+        "elapsed_ms": 89,
+        "attempt_durations": [
+          89
+        ],
+        "first_text_ms": null,
+        "activity_candidate": "lesson_step",
+        "activity_kind": "lesson_step",
+        "completed_at": "2026-10-13T06:15:14.247204+00:00",
+        "paused_entry": false,
+        "lifecycle_revision": 0,
+        "thinking_strength": "smart",
+        "model_calls": [
+          {
+            "id": "fc54b353-1a2a-4e20-8dd7-d55f9d930793",
+            "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+            "revision": 1,
+            "background": false,
+            "node": "intent",
+            "model": "deepseek-flash",
+            "estimated_input_tokens": 28840,
+            "transport_requests": 0,
+            "usage_state": "unavailable",
+            "usage": [],
+            "status": "returned"
+          },
+          {
+            "id": "44201801-57bd-4903-b3ae-025a9321ad4f",
+            "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+            "revision": 1,
+            "background": false,
+            "node": "teaching_preparation",
+            "model": "deepseek-flash",
+            "estimated_input_tokens": 1664,
+            "transport_requests": 0,
+            "usage_state": "unavailable",
+            "usage": [],
+            "status": "returned"
+          },
+          {
+            "id": "14642552-0318-4252-afaf-4105a967ff89",
+            "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+            "revision": 1,
+            "background": false,
+            "node": "lesson",
+            "model": "deepseek-v4-flash",
+            "estimated_input_tokens": 11561,
+            "transport_requests": 0,
+            "usage_state": "unavailable",
+            "usage": [],
+            "status": "returned"
+          }
+        ],
+        "execution_budget": {
+          "id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+          "started": 1791872114.157612,
+          "attempts": 3,
+          "estimated_input_tokens": 42065
+        },
+        "memory_references": [],
+        "context_capacity": {
+          "estimated": true,
+          "input_tokens": 11561,
+          "input_budget": 256000,
+          "compact_threshold": 220000,
+          "compact_target": 144000,
+          "ratio": 0.04516015625,
+          "output_reserve": 4096,
+          "model_window": 1000000,
+          "budget_source": "local_limit",
+          "omitted_narrative": []
+        },
+        "dialogue_policy": "dialogue-materials-10",
+        "request_scope": {
+          "input_ids": [
+            "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d"
+          ],
+          "resource_boundary": "none",
+          "programming_boundary": "none"
+        },
+        "decision_input_ids": [
+          "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d"
+        ],
+        "decision_mode": "source_learning",
+        "completed_operations": {
+          "c6783e255107a3c979b518b98b813a1fc7a953ae270f168dc56a274e32fc43e0": false
+        },
+        "material_reads": [],
+        "material_sources": [],
+        "allowed_source_urls": [],
+        "teaching_signature": "02b7dd7956c2993bbec42118ae58feec6a392b63db89f7f16475eedf6b9ab8a5",
+        "source_selection_packet": {
+          "input_signature": "925cf430742a1ac5534e0c402876c2548aadd9cd45a9d982a7defb8dc60cbe9b",
+          "query": "直接教我 RAG\n",
+          "entries": {},
+          "revision": 1
+        },
+        "source_selection_records": {
+          "evidence_reuse": [],
+          "lesson": []
+        },
+        "search_state": "not_called",
+        "verification_notice": "",
+        "teaching_evidence": {
+          "state": "unverified",
+          "summary": "",
+          "sources": []
+        },
+        "teaching_sources": [],
+        "learning_concepts": [
+          "RAG 的定义",
+          "模型参数化知识的限制",
+          "外部资料的作用",
+          "RAG 的能力边界"
+        ],
+        "answer_sources": [
+          {
+            "source_id": "bbbcb80e-b4dc-5290-950f-cf5b9ebe3a32",
+            "version": 1,
+            "type": "agent_generated",
+            "url": "",
+            "title": "Agent 生成讲义",
+            "fetched_at": "2026-10-13T06:15:14.216281+00:00",
+            "locator": "task:9873fe0d-69ef-4b1b-9658-e59566a2e381",
+            "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。"
+          }
+        ],
+        "answer_source_type": "agent_generated",
+        "teaching_step_id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+        "teaching_plan_version": 1,
+        "execution_complete": true
+      }
+    },
+    "events": [
+      {
+        "event_id": "21e22eaf-2b96-4156-a7af-97cce3acaefd",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": null,
+        "seq": 1,
+        "occurred_at": "2026-10-13T06:15:14.155730+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "received",
+        "state": "accepted",
+        "node": "received",
+        "user_summary": "已保存，准备回应",
+        "detail_summary": "",
+        "model": "",
+        "attempt": 0,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {},
+        "message": null
+      },
+      {
+        "event_id": "e1c9f079-1f46-4a47-9cbc-e1faba28ac22",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": null,
+        "seq": 2,
+        "occurred_at": "2026-10-13T06:15:14.157622+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "understanding",
+        "state": "running",
+        "node": "understanding",
+        "user_summary": "正在理解本轮意图",
+        "detail_summary": "",
+        "model": "deepseek-flash",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {},
+        "message": null
+      },
+      {
+        "event_id": "c7e24f4e-bcc1-42f8-adf2-122017559d17",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": null,
+        "seq": 3,
+        "occurred_at": "2026-10-13T06:15:14.166742+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "intent",
+        "state": "running",
+        "node": "intent",
+        "user_summary": "正在理解本轮意图",
+        "detail_summary": "",
+        "model": "deepseek-flash",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "context_capacity": {
+            "estimated": true,
+            "input_tokens": 28840,
+            "input_budget": 256000,
+            "compact_threshold": 220000,
+            "compact_target": 144000,
+            "ratio": 0.11265625,
+            "output_reserve": 4096,
+            "model_window": 1000000,
+            "budget_source": "local_limit",
+            "omitted_narrative": []
+          }
+        },
+        "message": null
+      },
+      {
+        "event_id": "c6631519-7651-4d27-936c-84959f464a83",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": null,
+        "seq": 4,
+        "occurred_at": "2026-10-13T06:15:14.172601+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "model_attempt",
+        "state": "running",
+        "node": "model_attempt",
+        "user_summary": "正在处理当前步骤",
+        "detail_summary": "",
+        "model": "deepseek-flash",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "step": "intent",
+          "step_attempt": 1
+        },
+        "message": null
+      },
+      {
+        "event_id": "591010a9-1143-46b3-b93c-f0fbfe90b474",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": null,
+        "seq": 5,
+        "occurred_at": "2026-10-13T06:15:14.176459+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "intent",
+        "state": "running",
+        "node": "intent",
+        "user_summary": "本步骤已完成",
+        "detail_summary": "",
+        "model": "deepseek-flash",
+        "attempt": 1,
+        "duration_ms": 9,
+        "error_code": null,
+        "payload": {},
+        "message": null
+      },
+      {
+        "event_id": "52190a55-b025-4dc5-a9a4-b8c11cb2a58e",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": null,
+        "seq": 6,
+        "occurred_at": "2026-10-13T06:15:14.182464+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "intent_decided",
+        "state": "running",
+        "node": "intent_decided",
+        "user_summary": "已理解本轮要求",
+        "detail_summary": "受控测试意图",
+        "model": "deepseek-flash",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "intent": {
+            "conversation_kind": "ordinary",
+            "clarification_kind": "none",
+            "conversation_repair": false,
+            "reply_feedback": "none",
+            "reply_purpose": "none",
+            "knowledge_card_status": false,
+            "status_context": null,
+            "repair_target_message_id": "",
+            "continuation_evidence": "",
+            "continuation_topic": "",
+            "programming_boundary": "none",
+            "programming_learning_request": "",
+            "resource_boundary": "none",
+            "resource_learning_request": "",
+            "learning_reply_sentence_limit": null,
+            "intents": [
+              "goal"
+            ],
+            "target_task_id": "",
+            "target_description": "",
+            "relation": "continuation",
+            "workflow": "source_learning",
+            "scope": "learning",
+            "proposed_actions": [],
+            "clarification": "",
+            "rationale": "受控测试意图",
+            "understanding": "unknown",
+            "answer_evidence": "",
+            "topic_closure": null,
+            "learning_goal_ready": false,
+            "direct_teaching": true,
+            "comprehensive_check": null,
+            "answer_only": false,
+            "is_jd": false,
+            "material_focus": "none",
+            "jd_request": "none",
+            "needs_verification": false,
+            "cross_check_sources": false,
+            "requested_mode": null,
+            "refresh_sources": false,
+            "public_search_query": "",
+            "light_reply": "",
+            "session_tags": [],
+            "handoff_source_ids": [],
+            "handoff_step_ids": [],
+            "memory_selections": []
+          },
+          "memory_references": []
+        },
+        "message": null
+      },
+      {
+        "event_id": "8419cd67-d8d3-4d76-b0a2-28ab7b6814dd",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 7,
+        "occurred_at": "2026-10-13T06:15:14.187118+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "task_updated",
+        "state": "running",
+        "node": "task_updated",
+        "user_summary": "已接收，准备处理",
+        "detail_summary": "",
+        "model": "",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "task": {
+            "commit_run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+            "commit_revision": null,
+            "goal_ownership_json": null,
+            "lifecycle_revision": 0,
+            "learning_plan_json": null,
+            "learning_outcome_json": null,
+            "sources_json": null,
+            "memory_references_json": "[]",
+            "draft_target_id": null,
+            "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+            "understanding": "unknown",
+            "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+            "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+            "client_message_id": "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d",
+            "mode": "source_learning",
+            "status": "accepted",
+            "stage": "accepted",
+            "user_summary": "已接收，准备处理",
+            "retry_count": 0,
+            "error_code": null,
+            "required_action": null,
+            "result_summary": "",
+            "last_event_seq": 1,
+            "last_acked_seq": 0,
+            "memory_package": null,
+            "memory_source_text": ""
+          },
+          "memory_references": []
+        },
+        "message": null
+      },
+      {
+        "event_id": "9464698c-5376-47ed-a4a0-abc1f684b3d2",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 8,
+        "occurred_at": "2026-10-13T06:15:14.198799+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "teaching_preparation",
+        "state": "running",
+        "node": "teaching_preparation",
+        "user_summary": "正在梳理当前问题",
+        "detail_summary": "",
+        "model": "deepseek-flash",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "context_capacity": {
+            "estimated": true,
+            "input_tokens": 1664,
+            "input_budget": 256000,
+            "compact_threshold": 220000,
+            "compact_target": 144000,
+            "ratio": 0.0065,
+            "output_reserve": 4096,
+            "model_window": 1000000,
+            "budget_source": "local_limit",
+            "omitted_narrative": []
+          }
+        },
+        "message": null
+      },
+      {
+        "event_id": "f49a4b03-14bd-4d6c-b55b-694662c11860",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 9,
+        "occurred_at": "2026-10-13T06:15:14.203895+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "model_attempt",
+        "state": "running",
+        "node": "model_attempt",
+        "user_summary": "正在处理当前步骤",
+        "detail_summary": "",
+        "model": "deepseek-flash",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "step": "teaching_preparation",
+          "step_attempt": 1
+        },
+        "message": null
+      },
+      {
+        "event_id": "660ec43f-1674-456d-9a59-d9c28ecbee2a",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 10,
+        "occurred_at": "2026-10-13T06:15:14.208502+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "teaching_preparation",
+        "state": "running",
+        "node": "teaching_preparation",
+        "user_summary": "本步骤已完成",
+        "detail_summary": "",
+        "model": "deepseek-flash",
+        "attempt": 1,
+        "duration_ms": 8,
+        "error_code": null,
+        "payload": {},
+        "message": null
+      },
+      {
+        "event_id": "871c117f-4c37-483a-baac-07b31d7b4ac4",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 11,
+        "occurred_at": "2026-10-13T06:15:14.213214+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "search_not_called",
+        "state": "running",
+        "node": "search_not_called",
+        "user_summary": "本轮未调用网页检索",
+        "detail_summary": "",
+        "model": "",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {},
+        "message": null
+      },
+      {
+        "event_id": "f92a5581-825e-4321-a616-15193e13bd8f",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 12,
+        "occurred_at": "2026-10-13T06:15:14.224438+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "lesson",
+        "state": "running",
+        "node": "lesson",
+        "user_summary": "正在准备讲解",
+        "detail_summary": "",
+        "model": "deepseek-v4-flash",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "context_capacity": {
+            "estimated": true,
+            "input_tokens": 11561,
+            "input_budget": 256000,
+            "compact_threshold": 220000,
+            "compact_target": 144000,
+            "ratio": 0.04516015625,
+            "output_reserve": 4096,
+            "model_window": 1000000,
+            "budget_source": "local_limit",
+            "omitted_narrative": []
+          }
+        },
+        "message": null
+      },
+      {
+        "event_id": "e4f6ac8e-ca69-47fc-8fa3-cfc8a04d05b0",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 13,
+        "occurred_at": "2026-10-13T06:15:14.230804+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "model_attempt",
+        "state": "running",
+        "node": "model_attempt",
+        "user_summary": "正在处理当前步骤",
+        "detail_summary": "",
+        "model": "deepseek-v4-flash",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "step": "lesson",
+          "step_attempt": 1
+        },
+        "message": null
+      },
+      {
+        "event_id": "f16d1d97-65a6-4d4d-81df-bbcb61f972eb",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 14,
+        "occurred_at": "2026-10-13T06:15:14.235989+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "lesson",
+        "state": "running",
+        "node": "lesson",
+        "user_summary": "本步骤已完成",
+        "detail_summary": "",
+        "model": "deepseek-v4-flash",
+        "attempt": 1,
+        "duration_ms": 10,
+        "error_code": null,
+        "payload": {},
+        "message": null
+      },
+      {
+        "event_id": "0767729d-385f-4caa-b073-3d2b9f4d01ca",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 15,
+        "occurred_at": "2026-10-13T06:15:14.240095+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "sources",
+        "state": "running",
+        "node": "sources",
+        "user_summary": "来源类型已记录",
+        "detail_summary": "",
+        "model": "",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "sources": [
+            {
+              "source_id": "bbbcb80e-b4dc-5290-950f-cf5b9ebe3a32",
+              "version": 1,
+              "type": "agent_generated",
+              "url": "",
+              "title": "Agent 生成讲义",
+              "fetched_at": "2026-10-13T06:15:14.216281+00:00",
+              "locator": "task:9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。"
+            }
+          ],
+          "source_type": "agent_generated"
+        },
+        "message": null
+      },
+      {
+        "event_id": "4d86f700-069c-456e-ab83-28d506dce517",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 16,
+        "occurred_at": "2026-10-13T06:15:14.242337+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "teaching",
+        "state": "running",
+        "node": "teaching",
+        "user_summary": "已回应",
+        "detail_summary": "",
+        "model": "",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {},
+        "message": {
+          "message_id": "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6",
+          "role": "coach",
+          "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。\n\n---\n\n### 想一想\n\n只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+          "created_at": "2026-10-13T06:15:14.242337+00:00"
+        }
+      },
+      {
+        "event_id": "194d2c9b-1dfd-4842-802c-c40c39ed1ef1",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 17,
+        "occurred_at": "2026-10-13T06:15:14.242407+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "task_updated",
+        "state": "running",
+        "node": "task_updated",
+        "user_summary": "等你继续",
+        "detail_summary": "",
+        "model": "",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "task": {
+            "commit_run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+            "commit_revision": null,
+            "goal_ownership_json": null,
+            "lifecycle_revision": 0,
+            "learning_plan_json": "{\"id\": \"9873fe0d-69ef-4b1b-9658-e59566a2e381\", \"version\": 1, \"goal\": \"直接教我 RAG\", \"steps\": [{\"id\": \"8d3a4561-50c6-41f6-9e7a-3321cc47de3c\", \"state\": \"explained\", \"understanding\": \"unknown\", \"message_ids\": [\"fc2c6cf1-5420-4df8-84f4-30afe83fe9f6\"], \"completion_condition\": \"能说明模型自身知识的限制（训练时间边界、私有资料缺失、可能编造），并指出外部资料补上了什么、又不保证什么。\", \"title\": \"为什么需要外部资料\"}, {\"id\": \"7b1142bb-98c6-4fb0-adf0-ab11ba022de0\", \"state\": \"pending\", \"understanding\": \"unknown\", \"message_ids\": [], \"completion_condition\": \"能按顺序说出问题→检索→拼接→生成这条流程，并说明每一步的输入和输出大致是什么。\", \"title\": \"一次 RAG 回答的完整流程\"}, {\"id\": \"3ce22646-e0d0-410f-a1db-ab69e42f3847\", \"state\": \"pending\", \"understanding\": \"unknown\", \"message_ids\": [], \"completion_condition\": \"能说明查询和文档需要转成可匹配的形式才能比较，并指出这种匹配可能出现漏召回或误召回。\", \"title\": \"检索在做什么：把问题与资料变成可匹配的形式\"}, {\"id\": \"5ac03bed-3cd8-4179-a8f2-81810fc6b86e\", \"state\": \"pending\", \"understanding\": \"unknown\", \"message_ids\": [], \"completion_condition\": \"能举例说明检索到的资料可能不相关、过期或矛盾，因此回答仍需核验，检索成功不等于回答正确。\", \"title\": \"检索到资料不等于回答正确\"}], \"current_step_id\": \"8d3a4561-50c6-41f6-9e7a-3321cc47de3c\", \"success_check\": \"能用自己的话说明 RAG 的用途与流程，并指出检索环节的常见失效方式，不把检索到的内容直接当作正确结论。\"}",
+            "learning_outcome_json": null,
+            "sources_json": "[{\"source_id\": \"bbbcb80e-b4dc-5290-950f-cf5b9ebe3a32\", \"version\": 1, \"type\": \"agent_generated\", \"url\": \"\", \"title\": \"Agent 生成讲义\", \"fetched_at\": \"2026-10-13T06:15:14.216281+00:00\", \"locator\": \"task:9873fe0d-69ef-4b1b-9658-e59566a2e381\", \"content\": \"**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\\n\\n## 学习地图\\n\\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\\n\\n## 这一步：为什么需要外部资料\\n\\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\\n\\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\\n\\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\\n\\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\\n\\n```mermaid\\nflowchart LR\\nA[\\\"问题\\\"] --> B[\\\"检索外部资料\\\"]\\nB --> C[\\\"资料与问题一起交给模型\\\"]\\nC --> D[\\\"生成回答\\\"]\\n```\\n\\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。\"}]",
+            "memory_references_json": "[]",
+            "draft_target_id": null,
+            "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+            "understanding": "unknown",
+            "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+            "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+            "client_message_id": "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d",
+            "mode": "source_learning",
+            "status": "awaiting_user",
+            "stage": "teaching",
+            "user_summary": "等你继续",
+            "retry_count": 0,
+            "error_code": null,
+            "required_action": {
+              "type": "submit_answer",
+              "prompt": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+              "options": []
+            },
+            "result_summary": "",
+            "last_event_seq": 2,
+            "last_acked_seq": 0,
+            "memory_package": null,
+            "memory_source_text": ""
+          },
+          "memory_references": []
+        },
+        "message": null
+      },
+      {
+        "event_id": "95a34ebd-15d8-4fae-ada3-8327f36da80c",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 18,
+        "occurred_at": "2026-10-13T06:15:14.247220+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "learning_evidence",
+        "state": "completed",
+        "node": "learning_evidence",
+        "user_summary": "学习记录已更新",
+        "detail_summary": "",
+        "model": "",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {
+          "learning_evidence": {
+            "id": "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6",
+            "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+            "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+            "message_id": "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6",
+            "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+            "step_id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+            "concept": "RAG 的定义、模型参数化知识的限制、外部资料的作用、RAG 的能力边界",
+            "concepts": [
+              "RAG 的定义",
+              "模型参数化知识的限制",
+              "外部资料的作用",
+              "RAG 的能力边界"
+            ],
+            "kind": "explained",
+            "hint_used": false,
+            "excerpt": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。\n\n---\n\n### 想一想\n\n只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+            "source_ids": [
+              "bbbcb80e-b4dc-5290-950f-cf5b9ebe3a32"
+            ],
+            "evidence_message_ids": [
+              "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6"
+            ],
+            "dependencies": [],
+            "occurred_at": "2026-10-13T06:15:14.247213+00:00",
+            "revision": 1
+          }
+        },
+        "message": null
+      },
+      {
+        "event_id": "83f3f94a-5eed-4b4a-90f6-4a4c0b4d83de",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "seq": 19,
+        "occurred_at": "2026-10-13T06:15:14.247225+00:00",
+        "revision": 1,
+        "lifecycle_revision": 0,
+        "stage": "completed",
+        "state": "completed",
+        "node": "completed",
+        "user_summary": "本轮已回应",
+        "detail_summary": "",
+        "model": "",
+        "attempt": 1,
+        "duration_ms": null,
+        "error_code": null,
+        "payload": {},
+        "message": null
+      }
+    ],
+    "last_acked_seq": 0,
+    "pending": null,
+    "draft": null,
+    "summary": "",
+    "summary_version": 0,
+    "event_base_seq": 0,
+    "status": "active",
+    "lifecycle_revision": 0,
+    "lifecycle_actions": {},
+    "message_receipts": {
+      "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d": {
+        "fingerprint": "d3a79d4031a91ca31d3a13cb00c1c201a8a4b74562918fe278e36685cf84256d",
+        "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13"
+      }
+    },
+    "thinking_strength": "smart",
+    "capture_offers": {},
+    "recovery_version": 33,
+    "recovery_state": {
+      "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+      "mode": "source_learning",
+      "paused": false,
+      "foreground": null,
+      "active_task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+      "messages": [
+        {
+          "message_id": "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d",
+          "role": "user",
+          "content": "直接教我 RAG",
+          "content_type": "text",
+          "input_channel": "text",
+          "created_at": "2026-10-13T06:15:14.155699+00:00",
+          "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+          "task_id": null,
+          "context": {
+            "continuation_candidates": null,
+            "summary": "",
+            "recent_messages": [],
+            "knowledge_summaries": [],
+            "handoff": null,
+            "memory_lookup_available": false,
+            "memory_candidates": [],
+            "invalid_memory_run_ids": []
+          },
+          "operation": null
+        },
+        {
+          "message_id": "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6",
+          "role": "coach",
+          "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。\n\n---\n\n### 想一想\n\n只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+          "created_at": "2026-10-13T06:15:14.242337+00:00",
+          "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+          "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381"
+        }
+      ],
+      "runs": {
+        "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13": {
+          "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+          "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+          "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+          "input_ids": [
+            "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d"
+          ],
+          "input_channel": "text",
+          "voice_input_ids": [],
+          "revision": 1,
+          "status": "completed",
+          "stage": "completed",
+          "user_summary": "本轮已回应",
+          "attempt": 1,
+          "intent": {
+            "conversation_kind": "ordinary",
+            "clarification_kind": "none",
+            "conversation_repair": false,
+            "reply_feedback": "none",
+            "reply_purpose": "none",
+            "knowledge_card_status": false,
+            "status_context": null,
+            "repair_target_message_id": "",
+            "continuation_evidence": "",
+            "continuation_topic": "",
+            "programming_boundary": "none",
+            "programming_learning_request": "",
+            "resource_boundary": "none",
+            "resource_learning_request": "",
+            "learning_reply_sentence_limit": null,
+            "intents": [
+              "goal"
+            ],
+            "target_task_id": "",
+            "target_description": "",
+            "relation": "continuation",
+            "workflow": "source_learning",
+            "scope": "learning",
+            "proposed_actions": [],
+            "clarification": "",
+            "rationale": "受控测试意图",
+            "understanding": "unknown",
+            "answer_evidence": "",
+            "topic_closure": null,
+            "learning_goal_ready": false,
+            "direct_teaching": true,
+            "comprehensive_check": null,
+            "answer_only": false,
+            "is_jd": false,
+            "material_focus": "none",
+            "jd_request": "none",
+            "needs_verification": false,
+            "cross_check_sources": false,
+            "requested_mode": null,
+            "refresh_sources": false,
+            "public_search_query": "",
+            "light_reply": "",
+            "session_tags": [],
+            "handoff_source_ids": [],
+            "handoff_step_ids": [],
+            "memory_selections": []
+          },
+          "steps": {
+            "32223196e633f7942a89ebd1b79c9773c835008d6528bb63ddc5a83b0858571f": {
+              "conversation_kind": "ordinary",
+              "clarification_kind": "none",
+              "conversation_repair": false,
+              "reply_feedback": "none",
+              "reply_purpose": "none",
+              "knowledge_card_status": false,
+              "status_context": null,
+              "repair_target_message_id": "",
+              "continuation_evidence": "",
+              "continuation_topic": "",
+              "programming_boundary": "none",
+              "programming_learning_request": "",
+              "resource_boundary": "none",
+              "resource_learning_request": "",
+              "learning_reply_sentence_limit": null,
+              "intents": [
+                "goal"
+              ],
+              "target_task_id": "",
+              "target_description": "",
+              "relation": "continuation",
+              "workflow": "source_learning",
+              "scope": "learning",
+              "proposed_actions": [],
+              "clarification": "",
+              "rationale": "受控测试意图",
+              "understanding": "unknown",
+              "answer_evidence": "",
+              "topic_closure": null,
+              "learning_goal_ready": false,
+              "direct_teaching": true,
+              "comprehensive_check": null,
+              "answer_only": false,
+              "is_jd": false,
+              "material_focus": "none",
+              "jd_request": "none",
+              "needs_verification": false,
+              "cross_check_sources": false,
+              "requested_mode": null,
+              "refresh_sources": false,
+              "public_search_query": "",
+              "light_reply": "",
+              "session_tags": [],
+              "handoff_source_ids": [],
+              "handoff_step_ids": [],
+              "memory_selections": []
+            },
+            "cdc4e2cb4c77c4d156400fc641323b35cf1adc7867e78f294d9be951f251d2db": {
+              "official_sources_required": false,
+              "source_domains": [],
+              "concepts": [],
+              "public_query": "",
+              "new_knowledge": true
+            },
+            "24cfe8ec6303612364cb2ec64267bbc937fffe641a48f097098ccc96d01b6480": {
+              "message": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。",
+              "check_question": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+              "evidence_state": "scoped",
+              "learning_plan": {
+                "goal": "理解 RAG 的基本原理：为什么需要外部资料、一次回答的流程、检索在做什么，以及如何不把“检索到”误当成“正确”。",
+                "steps": [
+                  "为什么需要外部资料",
+                  "一次 RAG 回答的完整流程",
+                  "检索在做什么：把问题与资料变成可匹配的形式",
+                  "检索到资料不等于回答正确"
+                ],
+                "success_check": "能用自己的话说明 RAG 的用途与流程，并指出检索环节的常见失效方式，不把检索到的内容直接当作正确结论。",
+                "step_conditions": [
+                  "能说明模型自身知识的限制（训练时间边界、私有资料缺失、可能编造），并指出外部资料补上了什么、又不保证什么。",
+                  "能按顺序说出问题→检索→拼接→生成这条流程，并说明每一步的输入和输出大致是什么。",
+                  "能说明查询和文档需要转成可匹配的形式才能比较，并指出这种匹配可能出现漏召回或误召回。",
+                  "能举例说明检索到的资料可能不相关、过期或矛盾，因此回答仍需核验，检索成功不等于回答正确。"
+                ],
+                "step_ids": [
+                  "",
+                  "",
+                  "",
+                  ""
+                ]
+              },
+              "learning_concepts": [
+                "RAG 的定义",
+                "模型参数化知识的限制",
+                "外部资料的作用",
+                "RAG 的能力边界"
+              ],
+              "check_binding": {
+                "step_title": "为什么需要外部资料",
+                "concepts": [
+                  "模型参数化知识的限制",
+                  "外部资料的作用",
+                  "RAG 的能力边界"
+                ],
+                "evidence_quotes": [
+                  "模型生成回答时，主要依赖训练阶段形成的参数化知识。",
+                  "外部资料的价值，就是在生成前提供一份可追溯的依据",
+                  "检索到资料，并不保证资料相关、最新或回答正确。"
+                ],
+                "scope": "step"
+              },
+              "capture_update": null
+            }
+          },
+          "action_ids": [],
+          "error_code": null,
+          "created_at": "2026-10-13T06:15:14.155576+00:00",
+          "updated_at": "2026-10-13T06:15:14.247225+00:00",
+          "started_at": null,
+          "elapsed_ms": 89,
+          "attempt_durations": [
+            89
+          ],
+          "first_text_ms": null,
+          "activity_candidate": "lesson_step",
+          "activity_kind": "lesson_step",
+          "completed_at": "2026-10-13T06:15:14.247204+00:00",
+          "paused_entry": false,
+          "lifecycle_revision": 0,
+          "thinking_strength": "smart",
+          "model_calls": [
+            {
+              "id": "fc54b353-1a2a-4e20-8dd7-d55f9d930793",
+              "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+              "revision": 1,
+              "background": false,
+              "node": "intent",
+              "model": "deepseek-flash",
+              "estimated_input_tokens": 28840,
+              "transport_requests": 0,
+              "usage_state": "unavailable",
+              "usage": [],
+              "status": "returned"
+            },
+            {
+              "id": "44201801-57bd-4903-b3ae-025a9321ad4f",
+              "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+              "revision": 1,
+              "background": false,
+              "node": "teaching_preparation",
+              "model": "deepseek-flash",
+              "estimated_input_tokens": 1664,
+              "transport_requests": 0,
+              "usage_state": "unavailable",
+              "usage": [],
+              "status": "returned"
+            },
+            {
+              "id": "14642552-0318-4252-afaf-4105a967ff89",
+              "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+              "revision": 1,
+              "background": false,
+              "node": "lesson",
+              "model": "deepseek-v4-flash",
+              "estimated_input_tokens": 11561,
+              "transport_requests": 0,
+              "usage_state": "unavailable",
+              "usage": [],
+              "status": "returned"
+            }
+          ],
+          "execution_budget": {
+            "id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+            "started": 1791872114.157612,
+            "attempts": 3,
+            "estimated_input_tokens": 42065
+          },
+          "memory_references": [],
+          "context_capacity": {
+            "estimated": true,
+            "input_tokens": 11561,
+            "input_budget": 256000,
+            "compact_threshold": 220000,
+            "compact_target": 144000,
+            "ratio": 0.04516015625,
+            "output_reserve": 4096,
+            "model_window": 1000000,
+            "budget_source": "local_limit",
+            "omitted_narrative": []
+          },
+          "dialogue_policy": "dialogue-materials-10",
+          "request_scope": {
+            "input_ids": [
+              "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d"
+            ],
+            "resource_boundary": "none",
+            "programming_boundary": "none"
+          },
+          "decision_input_ids": [
+            "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d"
+          ],
+          "decision_mode": "source_learning",
+          "completed_operations": {
+            "c6783e255107a3c979b518b98b813a1fc7a953ae270f168dc56a274e32fc43e0": false
+          },
+          "material_reads": [],
+          "material_sources": [],
+          "allowed_source_urls": [],
+          "teaching_signature": "02b7dd7956c2993bbec42118ae58feec6a392b63db89f7f16475eedf6b9ab8a5",
+          "source_selection_packet": {
+            "input_signature": "925cf430742a1ac5534e0c402876c2548aadd9cd45a9d982a7defb8dc60cbe9b",
+            "query": "直接教我 RAG\n",
+            "entries": {},
+            "revision": 1
+          },
+          "source_selection_records": {
+            "evidence_reuse": [],
+            "lesson": []
+          },
+          "search_state": "not_called",
+          "verification_notice": "",
+          "teaching_evidence": {
+            "state": "unverified",
+            "summary": "",
+            "sources": []
+          },
+          "teaching_sources": [],
+          "learning_concepts": [
+            "RAG 的定义",
+            "模型参数化知识的限制",
+            "外部资料的作用",
+            "RAG 的能力边界"
+          ],
+          "answer_sources": [
+            {
+              "source_id": "bbbcb80e-b4dc-5290-950f-cf5b9ebe3a32",
+              "version": 1,
+              "type": "agent_generated",
+              "url": "",
+              "title": "Agent 生成讲义",
+              "fetched_at": "2026-10-13T06:15:14.216281+00:00",
+              "locator": "task:9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。"
+            }
+          ],
+          "answer_source_type": "agent_generated",
+          "teaching_step_id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+          "teaching_plan_version": 1,
+          "execution_complete": true
+        }
+      },
+      "pending": null,
+      "draft": null,
+      "summary": "",
+      "summary_version": 0,
+      "status": "active",
+      "lifecycle_revision": 0,
+      "lifecycle_actions": {},
+      "message_receipts": {
+        "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d": {
+          "fingerprint": "d3a79d4031a91ca31d3a13cb00c1c201a8a4b74562918fe278e36685cf84256d",
+          "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13"
+        }
+      },
+      "thinking_strength": "smart",
+      "capture_offers": {},
+      "focus_goal": "直接教我 RAG",
+      "tasks": {
+        "9873fe0d-69ef-4b1b-9658-e59566a2e381": {
+          "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+          "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+          "client_message_id": "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d",
+          "content": "直接教我 RAG",
+          "content_type": "text",
+          "primary_language": "zh",
+          "mode_preset": "source_learning",
+          "context": {
+            "conversation_managed": true,
+            "understanding": "unknown",
+            "requires_mastery": false,
+            "origin_run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+            "memory_references": [],
+            "latest_run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+            "lifecycle_revision": 0,
+            "evidence": {
+              "state": "unverified",
+              "summary": "",
+              "sources": []
+            },
+            "sources": [
+              {
+                "source_id": "bbbcb80e-b4dc-5290-950f-cf5b9ebe3a32",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-13T06:15:14.216281+00:00",
+                "locator": "task:9873fe0d-69ef-4b1b-9658-e59566a2e381",
+                "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。"
+              }
+            ],
+            "taught_concepts": [],
+            "verified_queries": [],
+            "learning_plan": {
+              "id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "version": 1,
+              "goal": "直接教我 RAG",
+              "steps": [
+                {
+                  "id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+                  "state": "explained",
+                  "understanding": "unknown",
+                  "message_ids": [
+                    "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6"
+                  ],
+                  "completion_condition": "能说明模型自身知识的限制（训练时间边界、私有资料缺失、可能编造），并指出外部资料补上了什么、又不保证什么。",
+                  "title": "为什么需要外部资料"
+                },
+                {
+                  "id": "7b1142bb-98c6-4fb0-adf0-ab11ba022de0",
+                  "state": "pending",
+                  "understanding": "unknown",
+                  "message_ids": [],
+                  "completion_condition": "能按顺序说出问题→检索→拼接→生成这条流程，并说明每一步的输入和输出大致是什么。",
+                  "title": "一次 RAG 回答的完整流程"
+                },
+                {
+                  "id": "3ce22646-e0d0-410f-a1db-ab69e42f3847",
+                  "state": "pending",
+                  "understanding": "unknown",
+                  "message_ids": [],
+                  "completion_condition": "能说明查询和文档需要转成可匹配的形式才能比较，并指出这种匹配可能出现漏召回或误召回。",
+                  "title": "检索在做什么：把问题与资料变成可匹配的形式"
+                },
+                {
+                  "id": "5ac03bed-3cd8-4179-a8f2-81810fc6b86e",
+                  "state": "pending",
+                  "understanding": "unknown",
+                  "message_ids": [],
+                  "completion_condition": "能举例说明检索到的资料可能不相关、过期或矛盾，因此回答仍需核验，检索成功不等于回答正确。",
+                  "title": "检索到资料不等于回答正确"
+                }
+              ],
+              "current_step_id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+              "success_check": "能用自己的话说明 RAG 的用途与流程，并指出检索环节的常见失效方式，不把检索到的内容直接当作正确结论。"
+            },
+            "understanding_by_lesson": {
+              "0": "unknown"
+            },
+            "check_question": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+            "last_lesson": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。",
+            "source_type": "agent_generated",
+            "lesson_index": 1,
+            "check_binding": {
+              "question": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+              "step_id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+              "step_title": "为什么需要外部资料",
+              "concepts": [
+                "模型参数化知识的限制",
+                "外部资料的作用",
+                "RAG 的能力边界"
+              ],
+              "evidence_quotes": [
+                "模型生成回答时，主要依赖训练阶段形成的参数化知识。",
+                "外部资料的价值，就是在生成前提供一份可追溯的依据",
+                "检索到资料，并不保证资料相关、最新或回答正确。"
+              ],
+              "scope": "concept",
+              "reference_stamp": "b988ac283f25fcfabb2d229d6cd4d69c7c944db34936bd28bacfc5471276a17a",
+              "plan_version": 1,
+              "completion_condition": "",
+              "check_kind": "concept",
+              "scope_policy": "explicit-comprehensive-1"
+            }
+          },
+          "mode": "source_learning",
+          "status": "awaiting_user",
+          "stage": "teaching",
+          "user_summary": "等你继续",
+          "retry_count": 0,
+          "error_code": null,
+          "required_action": {
+            "type": "submit_answer",
+            "prompt": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+            "options": []
+          },
+          "result_summary": "",
+          "memory_package": null,
+          "memory_source_text": "",
+          "events": [
+            {
+              "event_id": "911cbb12-2d46-4190-881c-49d6b1d5afb7",
+              "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+              "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "seq": 1,
+              "occurred_at": "2026-10-13T06:15:14.187085+00:00",
+              "stage": "accepted",
+              "state": "accepted",
+              "node": "accepted",
+              "user_summary": "已接收，准备处理",
+              "detail_summary": "",
+              "attempt": 1,
+              "duration_ms": null,
+              "error_code": null,
+              "recovery_action": null,
+              "required_action": null,
+              "message": null,
+              "payload": {}
+            },
+            {
+              "event_id": "14cb07e9-d7f0-41b8-bea8-bf7ecc8e7906",
+              "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+              "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "seq": 2,
+              "occurred_at": "2026-10-13T06:15:14.242353+00:00",
+              "stage": "teaching",
+              "state": "awaiting_user",
+              "node": "teaching",
+              "user_summary": "等你继续",
+              "detail_summary": "",
+              "attempt": 1,
+              "duration_ms": null,
+              "error_code": null,
+              "recovery_action": null,
+              "required_action": {
+                "type": "submit_answer",
+                "prompt": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+                "options": []
+              },
+              "message": {
+                "message_id": "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6",
+                "role": "coach",
+                "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。\n\n---\n\n### 想一想\n\n只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+                "created_at": "2026-10-13T06:15:14.242337+00:00"
+              },
+              "payload": {}
+            }
+          ],
+          "processed_action_ids": [],
+          "completed_action_ids": [],
+          "action_history": [],
+          "last_acked_seq": 0,
+          "created_at": "2026-10-13T06:15:14.187065+00:00",
+          "updated_at": "2026-10-13T06:15:14.242603+00:00"
+        }
+      },
+      "events": [],
+      "event_base_seq": 19,
+      "last_acked_seq": 0
+    },
+    "recovery_journal": [
+      {
+        "base_version": 1,
+        "version": 2,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "status"
+            ],
+            "value": "running"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "stage"
+            ],
+            "value": "understanding"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "user_summary"
+            ],
+            "value": "正在理解本轮意图"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "attempt"
+            ],
+            "value": 1
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.157622+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "started_at"
+            ],
+            "value": "2026-10-13T06:15:14.157613+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "thinking_strength"
+            ],
+            "value": "smart"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "model_calls"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "execution_budget"
+            ],
+            "value": {
+              "id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+              "started": 1791872114.157612,
+              "attempts": 0,
+              "estimated_input_tokens": 0
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 2
+          }
+        ]
+      },
+      {
+        "base_version": 2,
+        "version": 3,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "memory_references"
+            ],
+            "value": []
+          }
+        ]
+      },
+      {
+        "base_version": 3,
+        "version": 4,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "stage"
+            ],
+            "value": "intent"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.166742+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "context_capacity"
+            ],
+            "value": {
+              "estimated": true,
+              "input_tokens": 28840,
+              "input_budget": 256000,
+              "compact_threshold": 220000,
+              "compact_target": 144000,
+              "ratio": 0.11265625,
+              "output_reserve": 4096,
+              "model_window": 1000000,
+              "budget_source": "local_limit",
+              "omitted_narrative": []
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 3
+          }
+        ]
+      },
+      {
+        "base_version": 4,
+        "version": 5,
+        "changes": [
+          {
+            "op": "append",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "fc54b353-1a2a-4e20-8dd7-d55f9d930793",
+                "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+                "revision": 1,
+                "background": false,
+                "node": "intent",
+                "model": "deepseek-flash",
+                "estimated_input_tokens": 28840,
+                "transport_requests": 0,
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "started"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "execution_budget",
+              "attempts"
+            ],
+            "value": 1
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "execution_budget",
+              "estimated_input_tokens"
+            ],
+            "value": 28840
+          }
+        ]
+      },
+      {
+        "base_version": 5,
+        "version": 6,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 4
+          }
+        ]
+      },
+      {
+        "base_version": 6,
+        "version": 7,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "fc54b353-1a2a-4e20-8dd7-d55f9d930793",
+                "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+                "revision": 1,
+                "background": false,
+                "node": "intent",
+                "model": "deepseek-flash",
+                "estimated_input_tokens": 28840,
+                "transport_requests": 0,
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "base_version": 7,
+        "version": 8,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "steps",
+              "32223196e633f7942a89ebd1b79c9773c835008d6528bb63ddc5a83b0858571f"
+            ],
+            "value": {
+              "conversation_kind": "ordinary",
+              "clarification_kind": "none",
+              "conversation_repair": false,
+              "reply_feedback": "none",
+              "reply_purpose": "none",
+              "knowledge_card_status": false,
+              "status_context": null,
+              "repair_target_message_id": "",
+              "continuation_evidence": "",
+              "continuation_topic": "",
+              "programming_boundary": "none",
+              "programming_learning_request": "",
+              "resource_boundary": "none",
+              "resource_learning_request": "",
+              "learning_reply_sentence_limit": null,
+              "intents": [
+                "goal"
+              ],
+              "target_task_id": "",
+              "target_description": "",
+              "relation": "continuation",
+              "workflow": "source_learning",
+              "scope": "learning",
+              "proposed_actions": [],
+              "clarification": "",
+              "rationale": "受控测试意图",
+              "understanding": "unknown",
+              "answer_evidence": "",
+              "topic_closure": null,
+              "learning_goal_ready": false,
+              "direct_teaching": true,
+              "comprehensive_check": null,
+              "answer_only": false,
+              "is_jd": false,
+              "material_focus": "none",
+              "jd_request": "none",
+              "needs_verification": false,
+              "cross_check_sources": false,
+              "requested_mode": null,
+              "refresh_sources": false,
+              "public_search_query": "",
+              "light_reply": "",
+              "session_tags": [],
+              "handoff_source_ids": [],
+              "handoff_step_ids": [],
+              "memory_selections": []
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 5
+          }
+        ]
+      },
+      {
+        "base_version": 8,
+        "version": 9,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "dialogue_policy"
+            ],
+            "value": "dialogue-materials-10"
+          }
+        ]
+      },
+      {
+        "base_version": 9,
+        "version": 10,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "request_scope"
+            ],
+            "value": {
+              "input_ids": [
+                "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d"
+              ],
+              "resource_boundary": "none",
+              "programming_boundary": "none"
+            }
+          }
+        ]
+      },
+      {
+        "base_version": 10,
+        "version": 11,
+        "changes": [
+          {
+            "op": "append",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "stage"
+            ],
+            "value": "_decided"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "user_summary"
+            ],
+            "value": "已理解本轮要求"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "intent"
+            ],
+            "value": {
+              "conversation_kind": "ordinary",
+              "clarification_kind": "none",
+              "conversation_repair": false,
+              "reply_feedback": "none",
+              "reply_purpose": "none",
+              "knowledge_card_status": false,
+              "status_context": null,
+              "repair_target_message_id": "",
+              "continuation_evidence": "",
+              "continuation_topic": "",
+              "programming_boundary": "none",
+              "programming_learning_request": "",
+              "resource_boundary": "none",
+              "resource_learning_request": "",
+              "learning_reply_sentence_limit": null,
+              "intents": [
+                "goal"
+              ],
+              "target_task_id": "",
+              "target_description": "",
+              "relation": "continuation",
+              "workflow": "source_learning",
+              "scope": "learning",
+              "proposed_actions": [],
+              "clarification": "",
+              "rationale": "受控测试意图",
+              "understanding": "unknown",
+              "answer_evidence": "",
+              "topic_closure": null,
+              "learning_goal_ready": false,
+              "direct_teaching": true,
+              "comprehensive_check": null,
+              "answer_only": false,
+              "is_jd": false,
+              "material_focus": "none",
+              "jd_request": "none",
+              "needs_verification": false,
+              "cross_check_sources": false,
+              "requested_mode": null,
+              "refresh_sources": false,
+              "public_search_query": "",
+              "light_reply": "",
+              "session_tags": [],
+              "handoff_source_ids": [],
+              "handoff_step_ids": [],
+              "memory_selections": []
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.182464+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "decision_input_ids"
+            ],
+            "value": [
+              "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d"
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "decision_mode"
+            ],
+            "value": "source_learning"
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 6
+          }
+        ]
+      },
+      {
+        "base_version": 11,
+        "version": 12,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "completed_operations"
+            ],
+            "value": {
+              "c6783e255107a3c979b518b98b813a1fc7a953ae270f168dc56a274e32fc43e0": false
+            }
+          }
+        ]
+      },
+      {
+        "base_version": 12,
+        "version": 13,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "active_task_id"
+            ],
+            "value": "9873fe0d-69ef-4b1b-9658-e59566a2e381"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "task_id"
+            ],
+            "value": "9873fe0d-69ef-4b1b-9658-e59566a2e381"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "stage"
+            ],
+            "value": "task_updated"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "user_summary"
+            ],
+            "value": "已接收，准备处理"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.187118+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381"
+            ],
+            "value": {
+              "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+              "client_message_id": "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d",
+              "content": "直接教我 RAG",
+              "content_type": "text",
+              "primary_language": "zh",
+              "mode_preset": "source_learning",
+              "context": {
+                "conversation_managed": true,
+                "understanding": "unknown",
+                "requires_mastery": false,
+                "origin_run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+                "memory_references": [],
+                "latest_run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+                "lifecycle_revision": 0
+              },
+              "mode": "source_learning",
+              "status": "accepted",
+              "stage": "accepted",
+              "user_summary": "已接收，准备处理",
+              "retry_count": 0,
+              "error_code": null,
+              "required_action": null,
+              "result_summary": "",
+              "memory_package": null,
+              "memory_source_text": "",
+              "events": [
+                {
+                  "event_id": "911cbb12-2d46-4190-881c-49d6b1d5afb7",
+                  "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+                  "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+                  "seq": 1,
+                  "occurred_at": "2026-10-13T06:15:14.187085+00:00",
+                  "stage": "accepted",
+                  "state": "accepted",
+                  "node": "accepted",
+                  "user_summary": "已接收，准备处理",
+                  "detail_summary": "",
+                  "attempt": 1,
+                  "duration_ms": null,
+                  "error_code": null,
+                  "recovery_action": null,
+                  "required_action": null,
+                  "message": null,
+                  "payload": {}
+                }
+              ],
+              "processed_action_ids": [],
+              "completed_action_ids": [],
+              "action_history": [],
+              "last_acked_seq": 0,
+              "created_at": "2026-10-13T06:15:14.187065+00:00",
+              "updated_at": "2026-10-13T06:15:14.187327+00:00"
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "focus_goal"
+            ],
+            "value": "直接教我 RAG"
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 7
+          }
+        ]
+      },
+      {
+        "base_version": 13,
+        "version": 14,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "material_reads"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "material_sources"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "allowed_source_urls"
+            ],
+            "value": []
+          }
+        ]
+      },
+      {
+        "base_version": 14,
+        "version": 15,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "teaching_signature"
+            ],
+            "value": "02b7dd7956c2993bbec42118ae58feec6a392b63db89f7f16475eedf6b9ab8a5"
+          }
+        ]
+      },
+      {
+        "base_version": 15,
+        "version": 16,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "stage"
+            ],
+            "value": "teaching_preparation"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "user_summary"
+            ],
+            "value": "正在梳理当前问题"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.198799+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "context_capacity",
+              "input_tokens"
+            ],
+            "value": 1664
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "context_capacity",
+              "ratio"
+            ],
+            "value": 0.0065
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 8
+          }
+        ]
+      },
+      {
+        "base_version": 16,
+        "version": 17,
+        "changes": [
+          {
+            "op": "append",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "44201801-57bd-4903-b3ae-025a9321ad4f",
+                "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+                "revision": 1,
+                "background": false,
+                "node": "teaching_preparation",
+                "model": "deepseek-flash",
+                "estimated_input_tokens": 1664,
+                "transport_requests": 0,
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "started"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "execution_budget",
+              "attempts"
+            ],
+            "value": 2
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "execution_budget",
+              "estimated_input_tokens"
+            ],
+            "value": 30504
+          }
+        ]
+      },
+      {
+        "base_version": 17,
+        "version": 18,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 9
+          }
+        ]
+      },
+      {
+        "base_version": 18,
+        "version": 19,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "fc54b353-1a2a-4e20-8dd7-d55f9d930793",
+                "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+                "revision": 1,
+                "background": false,
+                "node": "intent",
+                "model": "deepseek-flash",
+                "estimated_input_tokens": 28840,
+                "transport_requests": 0,
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              },
+              {
+                "id": "44201801-57bd-4903-b3ae-025a9321ad4f",
+                "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+                "revision": 1,
+                "background": false,
+                "node": "teaching_preparation",
+                "model": "deepseek-flash",
+                "estimated_input_tokens": 1664,
+                "transport_requests": 0,
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "base_version": 19,
+        "version": 20,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "steps",
+              "cdc4e2cb4c77c4d156400fc641323b35cf1adc7867e78f294d9be951f251d2db"
+            ],
+            "value": {
+              "official_sources_required": false,
+              "source_domains": [],
+              "concepts": [],
+              "public_query": "",
+              "new_knowledge": true
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 10
+          }
+        ]
+      },
+      {
+        "base_version": 20,
+        "version": 21,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "source_selection_packet"
+            ],
+            "value": {
+              "input_signature": "925cf430742a1ac5534e0c402876c2548aadd9cd45a9d982a7defb8dc60cbe9b",
+              "query": "直接教我 RAG\n",
+              "entries": {},
+              "revision": 1
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "source_selection_records"
+            ],
+            "value": {
+              "evidence_reuse": []
+            }
+          }
+        ]
+      },
+      {
+        "base_version": 21,
+        "version": 22,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "stage"
+            ],
+            "value": "search_not_called"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "user_summary"
+            ],
+            "value": "本轮未调用网页检索"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.213214+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "search_state"
+            ],
+            "value": "not_called"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "verification_notice"
+            ],
+            "value": ""
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "teaching_evidence"
+            ],
+            "value": {
+              "state": "unverified",
+              "summary": "",
+              "sources": []
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "teaching_sources"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 11
+          }
+        ]
+      },
+      {
+        "base_version": 22,
+        "version": 23,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "evidence"
+            ],
+            "value": {
+              "state": "unverified",
+              "summary": "",
+              "sources": []
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "sources"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "taught_concepts"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "verified_queries"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.215110+00:00"
+          }
+        ]
+      },
+      {
+        "base_version": 23,
+        "version": 24,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "source_selection_records",
+              "lesson"
+            ],
+            "value": []
+          }
+        ]
+      },
+      {
+        "base_version": 24,
+        "version": 25,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "stage"
+            ],
+            "value": "lesson"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "user_summary"
+            ],
+            "value": "正在准备讲解"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.224438+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "context_capacity",
+              "input_tokens"
+            ],
+            "value": 11561
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "context_capacity",
+              "ratio"
+            ],
+            "value": 0.04516015625
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 12
+          }
+        ]
+      },
+      {
+        "base_version": 25,
+        "version": 26,
+        "changes": [
+          {
+            "op": "append",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "14642552-0318-4252-afaf-4105a967ff89",
+                "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+                "revision": 1,
+                "background": false,
+                "node": "lesson",
+                "model": "deepseek-v4-flash",
+                "estimated_input_tokens": 11561,
+                "transport_requests": 0,
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "started"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "execution_budget",
+              "attempts"
+            ],
+            "value": 3
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "execution_budget",
+              "estimated_input_tokens"
+            ],
+            "value": 42065
+          }
+        ]
+      },
+      {
+        "base_version": 26,
+        "version": 27,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 13
+          }
+        ]
+      },
+      {
+        "base_version": 27,
+        "version": 28,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "fc54b353-1a2a-4e20-8dd7-d55f9d930793",
+                "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+                "revision": 1,
+                "background": false,
+                "node": "intent",
+                "model": "deepseek-flash",
+                "estimated_input_tokens": 28840,
+                "transport_requests": 0,
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              },
+              {
+                "id": "44201801-57bd-4903-b3ae-025a9321ad4f",
+                "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+                "revision": 1,
+                "background": false,
+                "node": "teaching_preparation",
+                "model": "deepseek-flash",
+                "estimated_input_tokens": 1664,
+                "transport_requests": 0,
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              },
+              {
+                "id": "14642552-0318-4252-afaf-4105a967ff89",
+                "budget_id": "d9b5cf64-5cc7-448b-90c6-edd03fe5e23b",
+                "revision": 1,
+                "background": false,
+                "node": "lesson",
+                "model": "deepseek-v4-flash",
+                "estimated_input_tokens": 11561,
+                "transport_requests": 0,
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "base_version": 28,
+        "version": 29,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "steps",
+              "24cfe8ec6303612364cb2ec64267bbc937fffe641a48f097098ccc96d01b6480"
+            ],
+            "value": {
+              "message": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。",
+              "check_question": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+              "evidence_state": "scoped",
+              "learning_plan": {
+                "goal": "理解 RAG 的基本原理：为什么需要外部资料、一次回答的流程、检索在做什么，以及如何不把“检索到”误当成“正确”。",
+                "steps": [
+                  "为什么需要外部资料",
+                  "一次 RAG 回答的完整流程",
+                  "检索在做什么：把问题与资料变成可匹配的形式",
+                  "检索到资料不等于回答正确"
+                ],
+                "success_check": "能用自己的话说明 RAG 的用途与流程，并指出检索环节的常见失效方式，不把检索到的内容直接当作正确结论。",
+                "step_conditions": [
+                  "能说明模型自身知识的限制（训练时间边界、私有资料缺失、可能编造），并指出外部资料补上了什么、又不保证什么。",
+                  "能按顺序说出问题→检索→拼接→生成这条流程，并说明每一步的输入和输出大致是什么。",
+                  "能说明查询和文档需要转成可匹配的形式才能比较，并指出这种匹配可能出现漏召回或误召回。",
+                  "能举例说明检索到的资料可能不相关、过期或矛盾，因此回答仍需核验，检索成功不等于回答正确。"
+                ],
+                "step_ids": [
+                  "",
+                  "",
+                  "",
+                  ""
+                ]
+              },
+              "learning_concepts": [
+                "RAG 的定义",
+                "模型参数化知识的限制",
+                "外部资料的作用",
+                "RAG 的能力边界"
+              ],
+              "check_binding": {
+                "step_title": "为什么需要外部资料",
+                "concepts": [
+                  "模型参数化知识的限制",
+                  "外部资料的作用",
+                  "RAG 的能力边界"
+                ],
+                "evidence_quotes": [
+                  "模型生成回答时，主要依赖训练阶段形成的参数化知识。",
+                  "外部资料的价值，就是在生成前提供一份可追溯的依据",
+                  "检索到资料，并不保证资料相关、最新或回答正确。"
+                ],
+                "scope": "step"
+              },
+              "capture_update": null
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 14
+          }
+        ]
+      },
+      {
+        "base_version": 29,
+        "version": 30,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "learning_concepts"
+            ],
+            "value": [
+              "RAG 的定义",
+              "模型参数化知识的限制",
+              "外部资料的作用",
+              "RAG 的能力边界"
+            ]
+          }
+        ]
+      },
+      {
+        "base_version": 30,
+        "version": 31,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "stage"
+            ],
+            "value": "sources"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "user_summary"
+            ],
+            "value": "来源类型已记录"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.240095+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "activity_candidate"
+            ],
+            "value": "lesson_step"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "answer_sources"
+            ],
+            "value": [
+              {
+                "source_id": "bbbcb80e-b4dc-5290-950f-cf5b9ebe3a32",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-13T06:15:14.216281+00:00",
+                "locator": "task:9873fe0d-69ef-4b1b-9658-e59566a2e381",
+                "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "answer_source_type"
+            ],
+            "value": "agent_generated"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "teaching_step_id"
+            ],
+            "value": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "teaching_plan_version"
+            ],
+            "value": 1
+          },
+          {
+            "op": "append",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "sources"
+            ],
+            "value": [
+              {
+                "source_id": "bbbcb80e-b4dc-5290-950f-cf5b9ebe3a32",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-13T06:15:14.216281+00:00",
+                "locator": "task:9873fe0d-69ef-4b1b-9658-e59566a2e381",
+                "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "learning_plan"
+            ],
+            "value": {
+              "id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "version": 1,
+              "goal": "直接教我 RAG",
+              "steps": [
+                {
+                  "id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+                  "state": "pending",
+                  "understanding": "unknown",
+                  "message_ids": [],
+                  "completion_condition": "能说明模型自身知识的限制（训练时间边界、私有资料缺失、可能编造），并指出外部资料补上了什么、又不保证什么。",
+                  "title": "为什么需要外部资料"
+                },
+                {
+                  "id": "7b1142bb-98c6-4fb0-adf0-ab11ba022de0",
+                  "state": "pending",
+                  "understanding": "unknown",
+                  "message_ids": [],
+                  "completion_condition": "能按顺序说出问题→检索→拼接→生成这条流程，并说明每一步的输入和输出大致是什么。",
+                  "title": "一次 RAG 回答的完整流程"
+                },
+                {
+                  "id": "3ce22646-e0d0-410f-a1db-ab69e42f3847",
+                  "state": "pending",
+                  "understanding": "unknown",
+                  "message_ids": [],
+                  "completion_condition": "能说明查询和文档需要转成可匹配的形式才能比较，并指出这种匹配可能出现漏召回或误召回。",
+                  "title": "检索在做什么：把问题与资料变成可匹配的形式"
+                },
+                {
+                  "id": "5ac03bed-3cd8-4179-a8f2-81810fc6b86e",
+                  "state": "pending",
+                  "understanding": "unknown",
+                  "message_ids": [],
+                  "completion_condition": "能举例说明检索到的资料可能不相关、过期或矛盾，因此回答仍需核验，检索成功不等于回答正确。",
+                  "title": "检索到资料不等于回答正确"
+                }
+              ],
+              "current_step_id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+              "success_check": "能用自己的话说明 RAG 的用途与流程，并指出检索环节的常见失效方式，不把检索到的内容直接当作正确结论。"
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "understanding_by_lesson"
+            ],
+            "value": {
+              "0": "unknown"
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "check_question"
+            ],
+            "value": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？"
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "last_lesson"
+            ],
+            "value": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。"
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "source_type"
+            ],
+            "value": "agent_generated"
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "lesson_index"
+            ],
+            "value": 1
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "check_binding"
+            ],
+            "value": {
+              "question": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+              "step_id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+              "step_title": "为什么需要外部资料",
+              "concepts": [
+                "模型参数化知识的限制",
+                "外部资料的作用",
+                "RAG 的能力边界"
+              ],
+              "evidence_quotes": [
+                "模型生成回答时，主要依赖训练阶段形成的参数化知识。",
+                "外部资料的价值，就是在生成前提供一份可追溯的依据",
+                "检索到资料，并不保证资料相关、最新或回答正确。"
+              ],
+              "scope": "concept",
+              "reference_stamp": "b988ac283f25fcfabb2d229d6cd4d69c7c944db34936bd28bacfc5471276a17a",
+              "plan_version": 1,
+              "completion_condition": "",
+              "check_kind": "concept",
+              "scope_policy": "explicit-comprehensive-1"
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.240288+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 15
+          }
+        ]
+      },
+      {
+        "base_version": 31,
+        "version": 32,
+        "changes": [
+          {
+            "op": "append",
+            "path": [
+              "messages"
+            ],
+            "value": [
+              {
+                "message_id": "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6",
+                "role": "coach",
+                "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。\n\n---\n\n### 想一想\n\n只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+                "created_at": "2026-10-13T06:15:14.242337+00:00",
+                "run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+                "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "stage"
+            ],
+            "value": "task_updated"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "user_summary"
+            ],
+            "value": "等你继续"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.242407+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "execution_complete"
+            ],
+            "value": true
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "context",
+              "learning_plan",
+              "steps"
+            ],
+            "value": [
+              {
+                "id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+                "state": "explained",
+                "understanding": "unknown",
+                "message_ids": [
+                  "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6"
+                ],
+                "completion_condition": "能说明模型自身知识的限制（训练时间边界、私有资料缺失、可能编造），并指出外部资料补上了什么、又不保证什么。",
+                "title": "为什么需要外部资料"
+              },
+              {
+                "id": "7b1142bb-98c6-4fb0-adf0-ab11ba022de0",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能按顺序说出问题→检索→拼接→生成这条流程，并说明每一步的输入和输出大致是什么。",
+                "title": "一次 RAG 回答的完整流程"
+              },
+              {
+                "id": "3ce22646-e0d0-410f-a1db-ab69e42f3847",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能说明查询和文档需要转成可匹配的形式才能比较，并指出这种匹配可能出现漏召回或误召回。",
+                "title": "检索在做什么：把问题与资料变成可匹配的形式"
+              },
+              {
+                "id": "5ac03bed-3cd8-4179-a8f2-81810fc6b86e",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能举例说明检索到的资料可能不相关、过期或矛盾，因此回答仍需核验，检索成功不等于回答正确。",
+                "title": "检索到资料不等于回答正确"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "status"
+            ],
+            "value": "awaiting_user"
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "stage"
+            ],
+            "value": "teaching"
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "user_summary"
+            ],
+            "value": "等你继续"
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "required_action"
+            ],
+            "value": {
+              "type": "submit_answer",
+              "prompt": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+              "options": []
+            }
+          },
+          {
+            "op": "append",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "events"
+            ],
+            "value": [
+              {
+                "event_id": "14cb07e9-d7f0-41b8-bea8-bf7ecc8e7906",
+                "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+                "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+                "seq": 2,
+                "occurred_at": "2026-10-13T06:15:14.242353+00:00",
+                "stage": "teaching",
+                "state": "awaiting_user",
+                "node": "teaching",
+                "user_summary": "等你继续",
+                "detail_summary": "",
+                "attempt": 1,
+                "duration_ms": null,
+                "error_code": null,
+                "recovery_action": null,
+                "required_action": {
+                  "type": "submit_answer",
+                  "prompt": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+                  "options": []
+                },
+                "message": {
+                  "message_id": "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6",
+                  "role": "coach",
+                  "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。\n\n---\n\n### 想一想\n\n只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+                  "created_at": "2026-10-13T06:15:14.242337+00:00"
+                },
+                "payload": {}
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.242603+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 17
+          }
+        ]
+      },
+      {
+        "base_version": 32,
+        "version": 33,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "foreground"
+            ],
+            "value": null
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "status"
+            ],
+            "value": "completed"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "stage"
+            ],
+            "value": "completed"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "user_summary"
+            ],
+            "value": "本轮已回应"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "updated_at"
+            ],
+            "value": "2026-10-13T06:15:14.247225+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "started_at"
+            ],
+            "value": null
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "elapsed_ms"
+            ],
+            "value": 89
+          },
+          {
+            "op": "append",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "attempt_durations"
+            ],
+            "value": [
+              89
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "activity_kind"
+            ],
+            "value": "lesson_step"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+              "completed_at"
+            ],
+            "value": "2026-10-13T06:15:14.247204+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 19
+          }
+        ]
+      }
+    ],
+    "focus_goal": "直接教我 RAG",
+    "tasks": {
+      "9873fe0d-69ef-4b1b-9658-e59566a2e381": {
+        "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+        "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+        "client_message_id": "ec3d45f3-9521-4c4a-8077-5cc6ea117c8d",
+        "content": "直接教我 RAG",
+        "content_type": "text",
+        "primary_language": "zh",
+        "mode_preset": "source_learning",
+        "context": {
+          "conversation_managed": true,
+          "understanding": "unknown",
+          "requires_mastery": false,
+          "origin_run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+          "memory_references": [],
+          "latest_run_id": "0e2206a6-d4b2-4d1a-a913-4651a0cd5e13",
+          "lifecycle_revision": 0,
+          "evidence": {
+            "state": "unverified",
+            "summary": "",
+            "sources": []
+          },
+          "sources": [
+            {
+              "source_id": "bbbcb80e-b4dc-5290-950f-cf5b9ebe3a32",
+              "version": 1,
+              "type": "agent_generated",
+              "url": "",
+              "title": "Agent 生成讲义",
+              "fetched_at": "2026-10-13T06:15:14.216281+00:00",
+              "locator": "task:9873fe0d-69ef-4b1b-9658-e59566a2e381",
+              "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。"
+            }
+          ],
+          "taught_concepts": [],
+          "verified_queries": [],
+          "learning_plan": {
+            "id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+            "version": 1,
+            "goal": "直接教我 RAG",
+            "steps": [
+              {
+                "id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+                "state": "explained",
+                "understanding": "unknown",
+                "message_ids": [
+                  "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6"
+                ],
+                "completion_condition": "能说明模型自身知识的限制（训练时间边界、私有资料缺失、可能编造），并指出外部资料补上了什么、又不保证什么。",
+                "title": "为什么需要外部资料"
+              },
+              {
+                "id": "7b1142bb-98c6-4fb0-adf0-ab11ba022de0",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能按顺序说出问题→检索→拼接→生成这条流程，并说明每一步的输入和输出大致是什么。",
+                "title": "一次 RAG 回答的完整流程"
+              },
+              {
+                "id": "3ce22646-e0d0-410f-a1db-ab69e42f3847",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能说明查询和文档需要转成可匹配的形式才能比较，并指出这种匹配可能出现漏召回或误召回。",
+                "title": "检索在做什么：把问题与资料变成可匹配的形式"
+              },
+              {
+                "id": "5ac03bed-3cd8-4179-a8f2-81810fc6b86e",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能举例说明检索到的资料可能不相关、过期或矛盾，因此回答仍需核验，检索成功不等于回答正确。",
+                "title": "检索到资料不等于回答正确"
+              }
+            ],
+            "current_step_id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+            "success_check": "能用自己的话说明 RAG 的用途与流程，并指出检索环节的常见失效方式，不把检索到的内容直接当作正确结论。"
+          },
+          "understanding_by_lesson": {
+            "0": "unknown"
+          },
+          "check_question": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+          "last_lesson": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。",
+          "source_type": "agent_generated",
+          "lesson_index": 1,
+          "check_binding": {
+            "question": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+            "step_id": "8d3a4561-50c6-41f6-9e7a-3321cc47de3c",
+            "step_title": "为什么需要外部资料",
+            "concepts": [
+              "模型参数化知识的限制",
+              "外部资料的作用",
+              "RAG 的能力边界"
+            ],
+            "evidence_quotes": [
+              "模型生成回答时，主要依赖训练阶段形成的参数化知识。",
+              "外部资料的价值，就是在生成前提供一份可追溯的依据",
+              "检索到资料，并不保证资料相关、最新或回答正确。"
+            ],
+            "scope": "concept",
+            "reference_stamp": "b988ac283f25fcfabb2d229d6cd4d69c7c944db34936bd28bacfc5471276a17a",
+            "plan_version": 1,
+            "completion_condition": "",
+            "check_kind": "concept",
+            "scope_policy": "explicit-comprehensive-1"
+          }
+        },
+        "mode": "source_learning",
+        "status": "awaiting_user",
+        "stage": "teaching",
+        "user_summary": "等你继续",
+        "retry_count": 0,
+        "error_code": null,
+        "required_action": {
+          "type": "submit_answer",
+          "prompt": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+          "options": []
+        },
+        "result_summary": "",
+        "memory_package": null,
+        "memory_source_text": "",
+        "events": [
+          {
+            "event_id": "911cbb12-2d46-4190-881c-49d6b1d5afb7",
+            "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+            "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+            "seq": 1,
+            "occurred_at": "2026-10-13T06:15:14.187085+00:00",
+            "stage": "accepted",
+            "state": "accepted",
+            "node": "accepted",
+            "user_summary": "已接收，准备处理",
+            "detail_summary": "",
+            "attempt": 1,
+            "duration_ms": null,
+            "error_code": null,
+            "recovery_action": null,
+            "required_action": null,
+            "message": null,
+            "payload": {}
+          },
+          {
+            "event_id": "14cb07e9-d7f0-41b8-bea8-bf7ecc8e7906",
+            "session_id": "bae47b8a-3e80-4d45-a453-02de1c14baf5",
+            "task_id": "9873fe0d-69ef-4b1b-9658-e59566a2e381",
+            "seq": 2,
+            "occurred_at": "2026-10-13T06:15:14.242353+00:00",
+            "stage": "teaching",
+            "state": "awaiting_user",
+            "node": "teaching",
+            "user_summary": "等你继续",
+            "detail_summary": "",
+            "attempt": 1,
+            "duration_ms": null,
+            "error_code": null,
+            "recovery_action": null,
+            "required_action": {
+              "type": "submit_answer",
+              "prompt": "只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+              "options": []
+            },
+            "message": {
+              "message_id": "fc2c6cf1-5420-4df8-84f4-30afe83fe9f6",
+              "role": "coach",
+              "content": "**RAG（Retrieval-Augmented Generation，检索增强生成）** 是一种在回答前先从外部知识库检索相关资料、再把资料和问题一起交给模型生成回答的做法。可以先把它理解成“先查资料，再开口回答”，而不是只凭模型脑子里已有的东西作答。\n\n## 学习地图\n\n- **第一步：为什么需要外部资料**——搞清模型自身知识的限制，以及外部资料补上了什么。\n- 第二步：一次 RAG 回答的完整流程——从问题到检索再到生成，各环节在做什么。\n- 第三步：检索到底在“找”什么——把问题变成可匹配的形式，去资料里找候选。\n- 第四步：检索到资料≠回答正确——为什么相关、最新、正确是三件不同的事。\n\n## 这一步：为什么需要外部资料\n\n模型生成回答时，主要依赖训练阶段形成的参数化知识。这里有三个常见限制：\n\n1. **训练有时间边界。** 训练完成后新出现或新修改的资料，模型不会自动知道。\n2. **训练不会包含你私有的资料。** 公司内部说明、你自己的笔记、某个具体项目文档，通常不在训练数据里。\n3. **模型可能编造看似合理的内容。** 当它没有可靠依据时，仍可能给出语气笃定的答案。\n\n外部资料的价值，就是在生成前提供一份**可追溯的依据**：把昨天更新的内部说明、某份具体文档这样的内容放进上下文，让回答有机会建立在它们之上。\n\n需要注意边界：**检索到资料，并不保证资料相关、最新或回答正确。** 检索可能没找对内容，资料本身也可能过期或相互矛盾，模型还可能误读资料。所以 RAG 改变的是“回答时手边有什么可用”，不是把错误自动变成正确。\n\n```mermaid\nflowchart LR\nA[\"问题\"] --> B[\"检索外部资料\"]\nB --> C[\"资料与问题一起交给模型\"]\nC --> D[\"生成回答\"]\n```\n\n这一步先只记一件事：RAG 引入外部资料，主要是为了绕开“训练里没有 / 训练后才有”的知识缺口，但它不担保最终回答的可靠性。\n\n---\n\n### 想一想\n\n只用本步讲的内容判断：RAG 引入外部资料，主要是为了解决哪一类问题？它的效果存在什么限制？",
+              "created_at": "2026-10-13T06:15:14.242337+00:00"
+            },
+            "payload": {}
+          }
+        ],
+        "processed_action_ids": [],
+        "completed_action_ids": [],
+        "action_history": [],
+        "last_acked_seq": 0,
+        "created_at": "2026-10-13T06:15:14.187065+00:00",
+        "updated_at": "2026-10-13T06:15:14.242603+00:00"
+      }
+    }
+  }
+}

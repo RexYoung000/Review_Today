@@ -11,7 +11,7 @@ from agent_service.learning_progress import current_step, check_reference
 from agent_service.capture_preview import CapturePreview, optional_preview
 from agent_service.schemas import (ScoringSpec, ConversationOutput, QuestionAnalysis,
                                   ProblemCoachBundle, MasteryEvaluation, CheckBinding,
-                                  validate_capture_quote_fields)
+                                  validate_capture_quote_fields, StepCompletionEvidence)
 
 
 class ScoredConversationOutput(ConversationOutput):
@@ -44,6 +44,8 @@ class JudgmentFeedback(BaseModel):
     followup_scoring_spec: ScoringSpec | None = None
     question_validity: Literal["valid", "ambiguous", "out_of_scope"] = "valid"
     step_completion_demonstrated: bool = False
+    step_completion_evidence: list[StepCompletionEvidence] = Field(default_factory=list, max_length=32,
+        description="综合检查逐项引用当前答案证明 completion_requirements；普通题留空。")
     followup_binding: CheckBinding | None = None
     capture_quotes: list[str] = Field(default_factory=list, max_length=6,
         description="本题实际检查知识点所需的 reference 连续逐字选段；只作邀请来源，无可靠选段时为空。")
@@ -73,6 +75,7 @@ class JudgmentFeedback(BaseModel):
 CAPTURE_QUOTE_RULE = """
 若提供 capture_concepts，只为其中尚未邀请的知识点选择保存片段；不要重复已经邀请的概念。空数组表示无需再选保存片段。
 capture_quotes 只从本次 reference 连续逐字摘录本题实际检查概念所需的知识解释，保留原格式、限定、数字和标点。
+check_binding.evidence_quotes 仅用于定位；capture_quotes 必须重新核对 reference 原文，不能省略 **、反引号等 Markdown 标记或补写标点。
 不要因为同属一节就摘整节材料，不取用户答案、评分描述或新题；没有可靠的对应选段就返回空数组。
 capture_feedback_quotes 只从你本次输出的 feedback 连续逐字摘录这些概念的知识解释或纠正；
 排除通过/评分描述、鼓励、建议、下一题及其他新知识，没有对应知识内容就返回空数组。
@@ -194,7 +197,7 @@ def evaluate(h, sid, rid, rev, task, answer, system):
               (not spec.order_rules.strip() or labels.get("order") == "satisfied"))
     effective = passed and not task["context"].get("hint_used", False)
     from agent_service.knowledge_invitation import unoffered_concepts
-    from agent_service.learning_progress import bound_check
+    from agent_service.learning_progress import bound_check, binding_for_model
     data, _ = h._snapshot(sid, rid, rev)
     capture_concepts = unoffered_concepts(data, task['task_id'], bound_check(task))
     feedback = h._call(sid, rid, rev, "evaluate",
@@ -203,7 +206,8 @@ def evaluate(h, sid, rid, rev, task, answer, system):
         "即使逐项看似覆盖也将 question_validity 标为 ambiguous/out_of_scope，不判用户错误。" + system + FOLLOWUP_RULE + CAPTURE_QUOTE_RULE,
         json.dumps(dict(question=text, answer=answer, scoring_spec=spec.model_dump(),
                         judgments=labels, effective_passed=effective, hint_used=task["context"].get("hint_used", False),
-                        checked_concepts=spec.must_cover, capture_concepts=capture_concepts, reference=check_reference(task)),
+                        checked_concepts=spec.must_cover, capture_concepts=capture_concepts,
+                        check_binding=binding_for_model(bound_check(task), check_reference(task)), reference=check_reference(task)),
                    ensure_ascii=False), JudgmentFeedback)
     with h.store.transaction(sid, rid, rev) as data:
         data["runs"][rid]["point_evaluation"] = dict(labels=labels, passed=passed, effective_passed=effective,
