@@ -1,0 +1,102 @@
+{
+  "scope": "ZCode topic 6 first point: inspection only; no new product rule or production modification",
+  "baseline_commit": "e529b7e8b7772442150a31d79d52301e1e7c3460",
+  "zcode_commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+  "source_sha256": {
+    "agent-service/agent_service/execution_policy.py": "819f41b5b02a939ad84fb2f98bc7e8818f4a32e697519433e7f43d7d47f99f11",
+    "agent-service/agent_service/run_accounting.py": "e0be4340936bef37e16c17b7e426f987439f6e9f45d5e71d2c2afdb5de98a025",
+    "agent-service/agent_service/openai_client.py": "273cd4af2353e124df0c3bb3ab8b4e1a8b8914f64595ab5d08d113bd40caaa16",
+    "agent-service/agent_service/conversation_model_call.py": "a0561064bfd431271bd180236f0f13850131034ebf41e3e386871be244ac2bc9",
+    "agent-service/agent_service/conversation.py": "b3d944c899ce350b576e5536a4919157f53a56d5bcc6ef802867b4fb1adfbb01",
+    "agent-service/agent_service/conversation_controls.py": "51e5e5030eea040e8f751e8db6a1f42c00b8082d3d80db171218d8e278384d24",
+    "agent-service/agent_service/conversation_context.py": "436d42def532f7a6cbeb851df6583c9eddec077d9881c629f814bad247d54cc0",
+    "agent-service/agent_service/capture/__init__.py": "38d971516f719150881a2fe2a4f039bf6d0dd2ddb4655be211846c479d2e2ebe",
+    "agent-service/agent_service/model_capabilities.py": "3d7463d481d22205bc7a8c8537d86b912a458c317136dc1273f19bd6bbac4a08",
+    "agent-service/agent_service/interruptible_call.py": "79336442d89754a580bb4a573bfe5955f27e583c786185ab89a433f76f701425"
+  },
+  "provider_settings_sha256": {
+    "agent-service/.env": "79b70ced19be1181171afcf11837ac51293717fdf3fb252a70b49c718f75c17c",
+    "agent-service/providers/deepseek/.env": "443e52c57ad9d369c6c0ddbbf1283f2a4bdb9d8635edb9e735a109be9f574554"
+  },
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "checks": {
+    "initial": {
+      "exit_code": 1,
+      "passed": 19,
+      "failed": 4,
+      "deselected": 42,
+      "cause": "legacy compatible-endpoint mocks inherited daily DeepSeek provider selection"
+    },
+    "compatible_scope": {
+      "exit_code": 0,
+      "passed": 23,
+      "deselected": 42,
+      "provider_process_only": "openai_compatible"
+    },
+    "deepseek_scope": {
+      "exit_code": 0,
+      "passed": 13,
+      "subtests": 2,
+      "provider_process_only": "deepseek"
+    },
+    "composed_probe": {
+      "exit_code": 0,
+      "cases": 4,
+      "real_model_calls": 0,
+      "sdk_io": "mocked",
+      "database": "isolated temporary SQLite",
+      "exhaustion_case": "preloaded attempts=12, not twelve live requests"
+    },
+    "local_links": 164
+  },
+  "current_limits": {
+    "per_model_step_transport_requests": 2,
+    "whole_run_attempt_admissions": 12,
+    "whole_run_seconds": 180,
+    "whole_run_estimated_input_tokens": 512000,
+    "schema_repair": "at most once, shares step and Run limits",
+    "steer": "preserves current budget segment",
+    "explicit_retry_resume": "new segment, ledger retained"
+  },
+  "conclusion": "No additional production gap reproduced in scoped layered retry and whole-Run admission checks; keep existing limits.",
+  "limitations": [
+    "no real supplier calls or cost cap proof",
+    "no new native build or UI acceptance",
+    "maintenance summaries and capability probes use separate scope, not part of foreground 12-request cap",
+    "upstream requests may continue after local cancellation; local duration is not billing cancellation",
+    "legacy compatible test fixtures still lack provider isolation under the plain daily configuration"
+  ],
+  "setup_errors": [
+    "initial four legacy fixture failures preserved",
+    "composed probe initially omitted current check_question; corrected synthetic fixture only"
+  ],
+  "log_artifacts": {
+    "tests-initial.log": {
+      "raw_backup": "/tmp/review-today-retry-budget-tests-20261013.log",
+      "raw_sha256": "13fdde1dec6770d0ab429ae91857ddaf5b2db7ec594bbdd5a7a605e1493c69a6",
+      "tracked_sha256": "0127b5bc361a0903590102f75dd366127f3931bcb629a79679ca3d7ec72c4d0f",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    },
+    "tests-compatible.log": {
+      "raw_backup": "/tmp/review-today-retry-budget-compatible-20261013.log",
+      "raw_sha256": "b1a3f1fee3efdc2e735b3d3c861efb31f3a70a60b1b76d8b9819d1053aba0979",
+      "tracked_sha256": "cc980ffb734bb42f18bc2e8d6740406db9f206e4953c3fd52a0c6ac6778bb422",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    },
+    "tests-deepseek.log": {
+      "raw_backup": "/tmp/review-today-retry-budget-deepseek-20261013.log",
+      "raw_sha256": "42c5038c275237ea30d8f34abe5421e1887a3ca2352a5a1969c83d30b256f3c9",
+      "tracked_sha256": "42c5038c275237ea30d8f34abe5421e1887a3ca2352a5a1969c83d30b256f3c9",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    }
+  },
+  "next_cursor": "ZCode topic 6 second point: actual usage, missing and late accounting, inspect before alignment",
+  "probe_sha256": "54bcee7f04ee994d2dd937cedd6a087b87001509bee7623de8eff3f6bf3ccfaf",
+  "doc_sha256": {
+    "docs/work-status.md": "f22efe1397fbbb0864aab965f2dc271c68ea9d4c519c11af4156eda90f150da9",
+    "docs/design-references/zcode-agent.md": "b84e0f7546a424ea785504e330a1f7141eb1625cbf7e1f8f289adb1c88676dd7",
+    "docs/agent-iteration.md": "fd807771451abb723a423d5529e4602b93e6aadab586a3f98af3ff5ec2a77279",
+    "docs/evidence/2026-10-13-retry-budget-inspection/README.md": "16a58b456b4c59ab59ec0b5718940bce221d0889efa6fcf00daad696552416b5"
+  },
+  "validation": "source and provider settings unchanged; probe syntax and local links checked; no production build necessary for documentation-only change"
+}

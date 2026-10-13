@@ -1,0 +1,4 @@
+Initial isolated probe exited 1: AssertionError: expected a bounded failure.
+The intended answer-evidence guard requires an existing check_question; the initial fixture omitted it.
+Added that synthetic current-question context, then reran all four cases successfully.
+No production source was changed for this fixture correction.

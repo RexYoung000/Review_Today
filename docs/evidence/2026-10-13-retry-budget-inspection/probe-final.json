@@ -1,0 +1,39 @@
+{
+  "cases": [
+    {
+      "case": "endpoint_fallback_then_schema_failure",
+      "passed": true,
+      "requests": 2,
+      "logical_steps": 1,
+      "error": "RT.MODEL.SCHEMA",
+      "third_request": false
+    },
+    {
+      "case": "deepseek_schema_repair",
+      "passed": true,
+      "requests": 2,
+      "error": null,
+      "budget_limit": 12
+    },
+    {
+      "case": "whole_run_blocks_repair",
+      "passed": true,
+      "requests": 1,
+      "error": "RT.RUN.BUDGET_CALLS",
+      "budget_limit": 1
+    },
+    {
+      "case": "steer_preserves_budget_explicit_retry_starts_new_segment",
+      "passed": true,
+      "same_run": true,
+      "preserved_attempts": 12,
+      "preserved_deadline": true,
+      "preloaded_exhausted_budget": true,
+      "automatic_requests_after_limit": 0,
+      "old_ledger_retained": true
+    }
+  ],
+  "real_model_calls": 0,
+  "daily_data_writes": 0,
+  "note": "Mocked SDK responses and isolated temporary SQLite; no production edits."
+}
