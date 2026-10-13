@@ -1,0 +1,573 @@
+{
+  "kind": "baseline_inspection",
+  "date": "2026-10-13",
+  "production_changed": false,
+  "real_provider_requests": 0,
+  "case_count": 12,
+  "results": [
+    {
+      "case": "summary_success",
+      "summary_saved": true,
+      "sdk_requests": 1,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": null,
+      "maintenance_attempts": 1,
+      "calls": [
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "offline-summary",
+              "input_tokens": 100,
+              "output_tokens": 20,
+              "total_tokens": null,
+              "cached_input_tokens": null,
+              "reasoning_output_tokens": null,
+              "request_id": "cb0ef6e8-c2fa-41d8-99f6-9702d2244854"
+            }
+          ],
+          "status": "returned"
+        }
+      ]
+    },
+    {
+      "case": "summary_usage_missing",
+      "summary_saved": true,
+      "sdk_requests": 1,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": null,
+      "maintenance_attempts": 1,
+      "calls": [
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "returned"
+        }
+      ]
+    },
+    {
+      "case": "summary_request_failure",
+      "summary_saved": false,
+      "sdk_requests": 1,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": "RT.MODEL.TIMEOUT",
+      "maintenance_attempts": 1,
+      "calls": [
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "failed_or_cancelled"
+        }
+      ]
+    },
+    {
+      "case": "summary_calls_limit",
+      "summary_saved": false,
+      "sdk_requests": 0,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": "RT.RUN.BUDGET_CALLS",
+      "maintenance_attempts": 12,
+      "calls": []
+    },
+    {
+      "case": "summary_input_limit",
+      "summary_saved": false,
+      "sdk_requests": 0,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": "RT.RUN.BUDGET_INPUT",
+      "maintenance_attempts": 0,
+      "calls": []
+    },
+    {
+      "case": "summary_time_limit",
+      "summary_saved": false,
+      "sdk_requests": 0,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": "RT.RUN.BUDGET_TIME",
+      "maintenance_attempts": 0,
+      "calls": []
+    },
+    {
+      "case": "summary_archive_race",
+      "summary_saved": false,
+      "sdk_requests": 1,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": null,
+      "maintenance_attempts": 1,
+      "calls": [
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "offline-summary",
+              "input_tokens": 100,
+              "output_tokens": 20,
+              "total_tokens": null,
+              "cached_input_tokens": null,
+              "reasoning_output_tokens": null,
+              "request_id": "f0c849c4-1b28-4fc4-a96a-5ac53595c8a1"
+            }
+          ],
+          "status": "failed_or_cancelled"
+        }
+      ]
+    },
+    {
+      "case": "summary_shared_attempt_limit",
+      "summary_saved": false,
+      "sdk_requests": 2,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": "RT.MODEL.ATTEMPTS_EXHAUSTED",
+      "maintenance_attempts": 3,
+      "calls": [
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "offline-summary",
+              "input_tokens": 100,
+              "output_tokens": 20,
+              "total_tokens": null,
+              "cached_input_tokens": null,
+              "reasoning_output_tokens": null,
+              "request_id": "a243bf22-6aee-4923-8f30-5438e92763cc"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "offline-summary",
+              "input_tokens": 100,
+              "output_tokens": 20,
+              "total_tokens": null,
+              "cached_input_tokens": null,
+              "reasoning_output_tokens": null,
+              "request_id": "68dd51f8-e6a6-408a-96c1-13f82f55ee24"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "background": true,
+          "requests": 0,
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "failed_or_cancelled"
+        }
+      ]
+    },
+    {
+      "case": "capability_transient_loop",
+      "provider_branch": "openai_compatible",
+      "rounds": [
+        {
+          "round": 1,
+          "retry_counter": 1,
+          "retry_scheduled": true,
+          "delay_seconds": 10.0,
+          "sdk_requests": 3
+        },
+        {
+          "round": 2,
+          "retry_counter": 2,
+          "retry_scheduled": true,
+          "delay_seconds": 30.0,
+          "sdk_requests": 6
+        },
+        {
+          "round": 3,
+          "retry_counter": 3,
+          "retry_scheduled": true,
+          "delay_seconds": 120.0,
+          "sdk_requests": 9
+        },
+        {
+          "round": 4,
+          "retry_counter": 4,
+          "retry_scheduled": true,
+          "delay_seconds": 120.0,
+          "sdk_requests": 12
+        },
+        {
+          "round": 5,
+          "retry_counter": 5,
+          "retry_scheduled": true,
+          "delay_seconds": 120.0,
+          "sdk_requests": 15
+        },
+        {
+          "round": 6,
+          "retry_counter": 6,
+          "retry_scheduled": true,
+          "delay_seconds": 120.0,
+          "sdk_requests": 18
+        },
+        {
+          "round": 7,
+          "retry_counter": 7,
+          "retry_scheduled": true,
+          "delay_seconds": 120.0,
+          "sdk_requests": 21
+        },
+        {
+          "round": 8,
+          "retry_counter": 8,
+          "retry_scheduled": true,
+          "delay_seconds": 120.0,
+          "sdk_requests": 24
+        }
+      ],
+      "sdk_requests": 24,
+      "receipt_observations": [],
+      "states": {
+        "router": {
+          "model": "offline-router",
+          "status": "unavailable",
+          "error": "RT.MODEL.CONNECTION",
+          "streaming": "not_applicable",
+          "category": "connection",
+          "http_status": null,
+          "request_id": null,
+          "retryable": true,
+          "diagnostic": "RT.MODEL.CONNECTION",
+          "recovery": "retry_connection",
+          "checked_at": 100640.0,
+          "elapsed_ms": 0,
+          "next_probe_at": 100760.0
+        },
+        "coach": {
+          "model": "offline-coach",
+          "status": "unavailable",
+          "error": "RT.MODEL.CONNECTION",
+          "streaming": "unavailable",
+          "category": "connection",
+          "http_status": null,
+          "request_id": null,
+          "retryable": true,
+          "diagnostic": "RT.MODEL.CONNECTION",
+          "recovery": "retry_connection",
+          "checked_at": 100640.0,
+          "elapsed_ms": 0,
+          "stream_retryable": false,
+          "next_probe_at": 100760.0
+        },
+        "risk": {
+          "model": "offline-risk",
+          "status": "unavailable",
+          "error": "RT.MODEL.CONNECTION",
+          "streaming": "not_applicable",
+          "category": "connection",
+          "http_status": null,
+          "request_id": null,
+          "retryable": true,
+          "diagnostic": "RT.MODEL.CONNECTION",
+          "recovery": "retry_connection",
+          "checked_at": 100640.0,
+          "elapsed_ms": 0,
+          "next_probe_at": 100760.0
+        }
+      },
+      "real_provider_requests": 0
+    },
+    {
+      "case": "capability_compatible_success",
+      "provider_branch": "openai_compatible",
+      "rounds": [
+        {
+          "round": 1,
+          "retry_counter": 0,
+          "retry_scheduled": false,
+          "delay_seconds": null,
+          "sdk_requests": 4
+        }
+      ],
+      "sdk_requests": 4,
+      "receipt_observations": [
+        {
+          "has_usage_callback": false,
+          "response_id": "offline-structured",
+          "supplier_usage_present": true
+        },
+        {
+          "has_usage_callback": false,
+          "response_id": "offline-structured",
+          "supplier_usage_present": true
+        },
+        {
+          "has_usage_callback": false,
+          "response_id": "offline-structured",
+          "supplier_usage_present": true
+        },
+        {
+          "has_usage_callback": false,
+          "response_id": "offline-stream",
+          "supplier_usage_present": true
+        }
+      ],
+      "states": {
+        "router": {
+          "model": "offline-router",
+          "status": "ready",
+          "error": "",
+          "streaming": "not_applicable",
+          "category": null,
+          "retryable": false,
+          "recovery": null,
+          "checked_at": 100000.0,
+          "elapsed_ms": 0,
+          "next_probe_at": null
+        },
+        "coach": {
+          "model": "offline-coach",
+          "status": "ready",
+          "error": "",
+          "streaming": "ready",
+          "category": null,
+          "retryable": false,
+          "recovery": null,
+          "checked_at": 100000.0,
+          "elapsed_ms": 0,
+          "stream_error": "",
+          "stream_retryable": false,
+          "next_probe_at": null
+        },
+        "risk": {
+          "model": "offline-risk",
+          "status": "ready",
+          "error": "",
+          "streaming": "not_applicable",
+          "category": null,
+          "retryable": false,
+          "recovery": null,
+          "checked_at": 100000.0,
+          "elapsed_ms": 0,
+          "next_probe_at": null
+        }
+      },
+      "real_provider_requests": 0
+    },
+    {
+      "case": "capability_deepseek_grouped",
+      "provider_branch": "deepseek",
+      "rounds": [
+        {
+          "round": 1,
+          "retry_counter": 0,
+          "retry_scheduled": false,
+          "delay_seconds": null,
+          "sdk_requests": 4
+        }
+      ],
+      "sdk_requests": 4,
+      "receipt_observations": [
+        {
+          "has_usage_callback": false,
+          "response_id": "offline-stream",
+          "supplier_usage_present": true
+        },
+        {
+          "has_usage_callback": false,
+          "response_id": "offline-stream",
+          "supplier_usage_present": true
+        },
+        {
+          "has_usage_callback": false,
+          "response_id": "offline-stream",
+          "supplier_usage_present": true
+        },
+        {
+          "has_usage_callback": false,
+          "response_id": "offline-stream",
+          "supplier_usage_present": true
+        }
+      ],
+      "states": {
+        "router": {
+          "model": "offline-shared",
+          "status": "ready",
+          "error": "",
+          "streaming": "not_applicable",
+          "category": null,
+          "retryable": false,
+          "recovery": null,
+          "strengths": {
+            "smart": {
+              "status": "ready",
+              "error": "",
+              "category": null,
+              "retryable": false,
+              "recovery": null
+            },
+            "deep": {
+              "status": "ready",
+              "error": "",
+              "category": null,
+              "retryable": false,
+              "recovery": null
+            }
+          },
+          "checked_at": 100000.0,
+          "elapsed_ms": 0,
+          "next_probe_at": null
+        },
+        "coach": {
+          "model": "offline-shared",
+          "status": "ready",
+          "error": "",
+          "streaming": "ready",
+          "category": null,
+          "retryable": false,
+          "recovery": null,
+          "strengths": {
+            "smart": {
+              "status": "ready",
+              "error": "",
+              "category": null,
+              "retryable": false,
+              "recovery": null
+            },
+            "deep": {
+              "status": "ready",
+              "error": "",
+              "category": null,
+              "retryable": false,
+              "recovery": null,
+              "streaming": "ready",
+              "stream_error": "",
+              "stream_retryable": false
+            }
+          },
+          "checked_at": 100000.0,
+          "elapsed_ms": 0,
+          "stream_error": "",
+          "stream_retryable": false,
+          "next_probe_at": null
+        },
+        "risk": {
+          "model": "offline-shared",
+          "status": "ready",
+          "error": "",
+          "streaming": "not_applicable",
+          "category": null,
+          "retryable": false,
+          "recovery": null,
+          "strengths": {
+            "smart": {
+              "status": "ready",
+              "error": "",
+              "category": null,
+              "retryable": false,
+              "recovery": null
+            },
+            "deep": {
+              "status": "ready",
+              "error": "",
+              "category": null,
+              "retryable": false,
+              "recovery": null
+            }
+          },
+          "checked_at": 100000.0,
+          "elapsed_ms": 0,
+          "next_probe_at": null
+        }
+      },
+      "real_provider_requests": 0
+    },
+    {
+      "case": "capability_access_denied",
+      "provider_branch": "openai_compatible",
+      "rounds": [
+        {
+          "round": 1,
+          "retry_counter": 0,
+          "retry_scheduled": false,
+          "delay_seconds": null,
+          "sdk_requests": 3
+        }
+      ],
+      "sdk_requests": 3,
+      "receipt_observations": [],
+      "states": {
+        "router": {
+          "model": "offline-router",
+          "status": "unavailable",
+          "error": "HTTP 403",
+          "streaming": "not_applicable",
+          "category": "access_denied",
+          "http_status": 403,
+          "request_id": null,
+          "retryable": false,
+          "diagnostic": "HTTP 403",
+          "recovery": "check_configuration",
+          "checked_at": 100000.0,
+          "elapsed_ms": 0,
+          "next_probe_at": null
+        },
+        "coach": {
+          "model": "offline-coach",
+          "status": "unavailable",
+          "error": "HTTP 403",
+          "streaming": "unavailable",
+          "category": "access_denied",
+          "http_status": 403,
+          "request_id": null,
+          "retryable": false,
+          "diagnostic": "HTTP 403",
+          "recovery": "check_configuration",
+          "checked_at": 100000.0,
+          "elapsed_ms": 0,
+          "stream_retryable": false,
+          "next_probe_at": null
+        },
+        "risk": {
+          "model": "offline-risk",
+          "status": "unavailable",
+          "error": "HTTP 403",
+          "streaming": "not_applicable",
+          "category": "access_denied",
+          "http_status": 403,
+          "request_id": null,
+          "retryable": false,
+          "diagnostic": "HTTP 403",
+          "recovery": "check_configuration",
+          "checked_at": 100000.0,
+          "elapsed_ms": 0,
+          "next_probe_at": null
+        }
+      },
+      "real_provider_requests": 0
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+Inspection harness extension failed before its report was written:
+
+  File "docs/evidence/2026-10-13-maintenance-inspection/probe.py", line 89, in inspect_summary
+    assert not sdk.responses.parse.called and not calls
+AssertionError
+
+Cause: the inspection script matched shared_attempt_limit with case.endswith("_limit").
+That case should exercise two permitted SDK requests, whereas the three pre-exhausted
+maintenance-budget cases should send zero. The branch was corrected to enumerate
+calls_limit, input_limit and time_limit. Production code was not changed.
+This is a captured diagnostic excerpt plus its explanation, not the full raw stderr.
