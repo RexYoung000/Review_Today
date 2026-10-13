@@ -181,6 +181,10 @@ class HarnessHTTPContractTests(unittest.TestCase):
             "risk": {"model": "risk", "status": "unavailable", "error": "timeout", "streaming": "checking"},
         }
         with patch.object(capability_module, "_state", states), \
+             patch.object(capability_module, "_batch_id", None), \
+             patch.object(capability_module, "_retry_attempt", 0), \
+             patch.object(capability_module, "_next_probe", 0), \
+             patch.object(capability_module, "_probing", False), \
              patch("agent_service.conversation.conversation_harness.start"), \
              patch.object(capability_module, "probe"), \
              patch.object(capability_module, "model_stream_capability", return_value={"ready": True, "streaming": "streaming"}):

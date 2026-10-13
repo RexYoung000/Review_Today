@@ -1,0 +1,802 @@
+{
+  "kind": "repair_verification",
+  "decision": 230,
+  "date": "2026-10-13",
+  "real_provider_requests": 0,
+  "summary_case_count": 8,
+  "capability_case_count": 3,
+  "results": [
+    {
+      "case": "summary_success",
+      "summary_saved": true,
+      "sdk_requests": 1,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": null,
+      "maintenance_attempts": 1,
+      "calls": [
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "offline-summary",
+              "input_tokens": 100,
+              "output_tokens": 20,
+              "total_tokens": null,
+              "cached_input_tokens": null,
+              "reasoning_output_tokens": null,
+              "request_id": "6a253a60-646a-4f5b-954a-de30a46f2364"
+            }
+          ],
+          "status": "returned"
+        }
+      ]
+    },
+    {
+      "case": "summary_usage_missing",
+      "summary_saved": true,
+      "sdk_requests": 1,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": null,
+      "maintenance_attempts": 1,
+      "calls": [
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "returned"
+        }
+      ]
+    },
+    {
+      "case": "summary_request_failure",
+      "summary_saved": false,
+      "sdk_requests": 1,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": "RT.MODEL.TIMEOUT",
+      "maintenance_attempts": 1,
+      "calls": [
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "failed_or_cancelled"
+        }
+      ]
+    },
+    {
+      "case": "summary_calls_limit",
+      "summary_saved": false,
+      "sdk_requests": 0,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": "RT.RUN.BUDGET_CALLS",
+      "maintenance_attempts": 12,
+      "calls": []
+    },
+    {
+      "case": "summary_input_limit",
+      "summary_saved": false,
+      "sdk_requests": 0,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": "RT.RUN.BUDGET_INPUT",
+      "maintenance_attempts": 0,
+      "calls": []
+    },
+    {
+      "case": "summary_time_limit",
+      "summary_saved": false,
+      "sdk_requests": 0,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": "RT.RUN.BUDGET_TIME",
+      "maintenance_attempts": 0,
+      "calls": []
+    },
+    {
+      "case": "summary_archive_race",
+      "summary_saved": false,
+      "sdk_requests": 1,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": null,
+      "maintenance_attempts": 1,
+      "calls": [
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "offline-summary",
+              "input_tokens": 100,
+              "output_tokens": 20,
+              "total_tokens": null,
+              "cached_input_tokens": null,
+              "reasoning_output_tokens": null,
+              "request_id": "8aa148df-2b66-4aa3-b87f-08a91d2aef91"
+            }
+          ],
+          "status": "failed_or_cancelled"
+        }
+      ]
+    },
+    {
+      "case": "summary_shared_attempt_limit",
+      "summary_saved": false,
+      "sdk_requests": 2,
+      "completed_reply_preserved": true,
+      "foreground_budget_unchanged": true,
+      "raw_messages_unchanged": true,
+      "summary_error": "RT.MODEL.ATTEMPTS_EXHAUSTED",
+      "maintenance_attempts": 3,
+      "calls": [
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "offline-summary",
+              "input_tokens": 100,
+              "output_tokens": 20,
+              "total_tokens": null,
+              "cached_input_tokens": null,
+              "reasoning_output_tokens": null,
+              "request_id": "2b141afe-979a-4f53-8033-a09f9f6e06cd"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "background": true,
+          "requests": 1,
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "offline-summary",
+              "input_tokens": 100,
+              "output_tokens": 20,
+              "total_tokens": null,
+              "cached_input_tokens": null,
+              "reasoning_output_tokens": null,
+              "request_id": "20f2cc0c-3ef8-440a-8d2c-f93b02c4d085"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "background": true,
+          "requests": 0,
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "failed_or_cancelled"
+        }
+      ]
+    },
+    {
+      "case": "capability_transient_and_manual",
+      "rounds": [
+        {
+          "round": 1,
+          "retry_scheduled": true,
+          "delay_seconds": 10.0,
+          "sdk_requests": 3
+        },
+        {
+          "round": 2,
+          "retry_scheduled": true,
+          "delay_seconds": 30.0,
+          "sdk_requests": 6
+        },
+        {
+          "round": 3,
+          "retry_scheduled": true,
+          "delay_seconds": 120.0,
+          "sdk_requests": 9
+        },
+        {
+          "round": 4,
+          "retry_scheduled": false,
+          "delay_seconds": null,
+          "sdk_requests": 12
+        }
+      ],
+      "exhausted_batch": {
+        "batch_id": "9d578dec-2f47-4bf1-8da9-40ad201fa8d9",
+        "provider": "openai_compatible",
+        "created_at": 100000.0,
+        "updated_at": 100160.0,
+        "rounds": 4,
+        "status": "exhausted",
+        "calls": [
+          {
+            "id": "79604ec6-f43e-41fa-93dc-8d4df48d7bb4",
+            "round": 1,
+            "model": "offline-coach",
+            "roles": [
+              "coach"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "d0377880-4687-465b-adfe-db7f568170f2"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "91af6f5c-8446-4305-ab37-cdaa7cddf74b",
+            "round": 1,
+            "model": "offline-router",
+            "roles": [
+              "router"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "00c10be9-7684-49d5-89f5-58920e8ebb3e"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "fef5a7e9-ec65-4115-8c25-4a13bf896e51",
+            "round": 1,
+            "model": "offline-risk",
+            "roles": [
+              "risk"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "cbaba913-1afe-4584-9f21-39d14bc1d335"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "27f5d926-3c1f-4ce9-8bbe-3ec0721bd169",
+            "round": 2,
+            "model": "offline-router",
+            "roles": [
+              "router"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "60d80ad4-f639-4366-a36b-320317e401e6"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "fda28b79-412a-494f-9213-ad4e1ffffa98",
+            "round": 2,
+            "model": "offline-coach",
+            "roles": [
+              "coach"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "28bcc2f2-8193-4d69-a06b-53a12a4d9b8c"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "7189534d-4dd9-425e-9245-cf6662fd49ca",
+            "round": 2,
+            "model": "offline-risk",
+            "roles": [
+              "risk"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "30a71c89-a999-4a84-b731-2e4a933d49c5"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "f1182c82-41cb-422d-ac54-491b9af99c36",
+            "round": 3,
+            "model": "offline-risk",
+            "roles": [
+              "risk"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "ec2c5c2d-d456-49ad-b17f-9af02320ccb1"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "c9ab2cc5-3225-47ee-ad92-ad82aa244020",
+            "round": 3,
+            "model": "offline-coach",
+            "roles": [
+              "coach"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "46cd5712-0235-49a3-8fa7-3cfc1c7e1754"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "e9d78bec-6f3d-4498-b5ae-78aa67e7a9b6",
+            "round": 3,
+            "model": "offline-router",
+            "roles": [
+              "router"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "15d00efa-cc9e-4bff-b076-b7b2b0ae5e30"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "cf203139-d18e-40cd-a437-e6f3d93e0e2c",
+            "round": 4,
+            "model": "offline-coach",
+            "roles": [
+              "coach"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "37297516-f181-4f96-a803-a25f2264182a"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "173799ab-2b8f-4e52-8ff0-c57858a3630e",
+            "round": 4,
+            "model": "offline-risk",
+            "roles": [
+              "risk"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "d745d9e3-260a-4ed7-ab00-3dda4c13aaf1"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          },
+          {
+            "id": "f8f08b63-e3ce-4d7b-9974-72c40aa2f5be",
+            "round": 4,
+            "model": "offline-router",
+            "roles": [
+              "router"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "72b2426a-d404-4f7d-8c43-ad7791042459"
+            ],
+            "usage": [],
+            "usage_state": "unavailable",
+            "status": "failed_or_cancelled"
+          }
+        ]
+      },
+      "manual_new_batch": {
+        "batch_id": "d48d9767-7fae-4fec-98a2-1e940b0f6e43",
+        "provider": "openai_compatible",
+        "created_at": 100160.0,
+        "updated_at": 100160.0,
+        "rounds": 1,
+        "status": "finished",
+        "calls": [
+          {
+            "id": "8c662b2b-e6a0-407f-b21c-27b843c27a3a",
+            "round": 1,
+            "model": "offline-router",
+            "roles": [
+              "router"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "f2b9deea-adaf-4d15-9986-0c0b51e94fe5"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "f2b9deea-adaf-4d15-9986-0c0b51e94fe5"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          },
+          {
+            "id": "e68dd6d0-3915-4218-8efb-b720e134ed88",
+            "round": 1,
+            "model": "offline-coach",
+            "roles": [
+              "coach"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "6cf0a78d-fd4b-47a8-a7ee-03c839ae2880"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "6cf0a78d-fd4b-47a8-a7ee-03c839ae2880"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          },
+          {
+            "id": "0ac2b903-58b1-4280-a18c-3f9ec68f33f5",
+            "round": 1,
+            "model": "offline-risk",
+            "roles": [
+              "risk"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "c86476d4-8402-4c98-ae04-6c1715675cb0"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "c86476d4-8402-4c98-ae04-6c1715675cb0"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          },
+          {
+            "id": "1f18b4c7-36e4-4543-84e6-f31856e0ccf5",
+            "round": 1,
+            "model": "offline-coach",
+            "roles": [
+              "coach"
+            ],
+            "kind": "streaming",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "c2fa7bac-920c-4e7e-8186-20d723f16f4f"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "c2fa7bac-920c-4e7e-8186-20d723f16f4f"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          }
+        ]
+      },
+      "old_batch_unchanged": true
+    },
+    {
+      "case": "capability_compatible_success",
+      "sdk_requests": 4,
+      "batch": {
+        "batch_id": "cdbba0bf-f128-4bee-ab8a-3a51340c9b3e",
+        "provider": "openai_compatible",
+        "created_at": 1791903688.533653,
+        "updated_at": 1791903688.541929,
+        "rounds": 1,
+        "status": "finished",
+        "calls": [
+          {
+            "id": "0530730c-859b-45bc-96fc-c1a74e6f3009",
+            "round": 1,
+            "model": "offline-router",
+            "roles": [
+              "router"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "fa921f88-ed07-4150-b73d-9aaa138969d2"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "fa921f88-ed07-4150-b73d-9aaa138969d2"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          },
+          {
+            "id": "8a0f1ac2-42c2-41e6-8486-d9cebdda565b",
+            "round": 1,
+            "model": "offline-risk",
+            "roles": [
+              "risk"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "c386b642-dc55-423a-87cb-e623fca61eae"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "c386b642-dc55-423a-87cb-e623fca61eae"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          },
+          {
+            "id": "f3021ab8-e99f-4991-8f8f-47b21acb4b9d",
+            "round": 1,
+            "model": "offline-coach",
+            "roles": [
+              "coach"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "47e23a2d-28f1-44b1-9dbf-82dcc0c11939"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "47e23a2d-28f1-44b1-9dbf-82dcc0c11939"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          },
+          {
+            "id": "b97056e6-e206-4130-ba44-02c0f9f10a71",
+            "round": 1,
+            "model": "offline-coach",
+            "roles": [
+              "coach"
+            ],
+            "kind": "streaming",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "3a2c03b5-4e02-473e-be6e-6539b8a13968"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "3a2c03b5-4e02-473e-be6e-6539b8a13968"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          }
+        ]
+      }
+    },
+    {
+      "case": "capability_deepseek_grouped",
+      "sdk_requests": 4,
+      "batch": {
+        "batch_id": "c1f165f9-0282-46d5-8b20-03f10ae50eb3",
+        "provider": "deepseek",
+        "created_at": 1791903688.542861,
+        "updated_at": 1791903688.552448,
+        "rounds": 1,
+        "status": "finished",
+        "calls": [
+          {
+            "id": "973bc5d0-7e8e-4d2b-a3eb-87fca95f0d50",
+            "round": 1,
+            "model": "offline-shared",
+            "roles": [
+              "router",
+              "coach",
+              "risk"
+            ],
+            "kind": "structured",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "0fce8b1c-7341-4246-a14b-9a5888e12fec"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "0fce8b1c-7341-4246-a14b-9a5888e12fec"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          },
+          {
+            "id": "baaa9295-490b-46e9-887b-30899d4f0f78",
+            "round": 1,
+            "model": "offline-shared",
+            "roles": [
+              "router",
+              "coach",
+              "risk"
+            ],
+            "kind": "structured",
+            "strength": "deep",
+            "transport_requests": 1,
+            "request_ids": [
+              "07f8802a-7db2-4b37-9232-5438a33ee5c5"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "07f8802a-7db2-4b37-9232-5438a33ee5c5"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          },
+          {
+            "id": "f71f8943-41ec-474b-8241-28d1d73342b7",
+            "round": 1,
+            "model": "offline-shared",
+            "roles": [
+              "coach"
+            ],
+            "kind": "streaming",
+            "strength": "smart",
+            "transport_requests": 1,
+            "request_ids": [
+              "2e8c0d96-cbdd-4a33-995c-aea3b083deeb"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "2e8c0d96-cbdd-4a33-995c-aea3b083deeb"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          },
+          {
+            "id": "1f68fed6-7eb1-4a7e-84c5-da21f4afc261",
+            "round": 1,
+            "model": "offline-shared",
+            "roles": [
+              "coach"
+            ],
+            "kind": "streaming",
+            "strength": "deep",
+            "transport_requests": 1,
+            "request_ids": [
+              "0e3dfb37-5a00-4681-aedd-c76e090ec205"
+            ],
+            "usage": [
+              {
+                "response_id": "supplier-reused",
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "total_tokens": null,
+                "cached_input_tokens": null,
+                "reasoning_output_tokens": null,
+                "request_id": "0e3dfb37-5a00-4681-aedd-c76e090ec205"
+              }
+            ],
+            "usage_state": "reported",
+            "status": "returned"
+          }
+        ]
+      }
+    }
+  ]
+}

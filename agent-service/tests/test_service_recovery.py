@@ -1,11 +1,25 @@
 import unittest
+import tempfile
+from contextlib import ExitStack
+from pathlib import Path
 from unittest.mock import patch
 from agent_service import model_capabilities as capabilities
 from agent_service.service_diagnostics import diagnose
 from agent_service.openai_client import ModelCallError
+from agent_service.capability_accounting import CapabilityLedger
 
 
 class ServiceRecoveryTests(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        stack = ExitStack()
+        self.addCleanup(stack.close)
+        for name, value in {"_ledger": CapabilityLedger(Path(temp.name) / "capabilities.sqlite3"),
+                            "_batch_id": None, "_retry_attempt": 0, "_next_probe": 0,
+                            "_probing": False, "_scheduler_started": True}.items():
+            stack.enter_context(patch.object(capabilities, name, value))
+
     def states(self, transient=True):
         return {
             "router": dict(model="luna", status="unavailable", category="access_denied", retryable=False),
@@ -32,7 +46,7 @@ class ServiceRecoveryTests(unittest.TestCase):
 
     def test_backoff_is_10_30_120_and_stops_for_nontransient_errors(self):
         with patch.object(capabilities, "_state", self.states()), patch.object(capabilities, "probe"), patch.object(capabilities, "_retry_attempt", 0), patch.object(capabilities, "_next_probe", 0), patch.object(capabilities.time, "time", return_value=100):
-            for expected in [110, 130, 220, 220]:
+            for expected in [110, 130, 220, 0]:
                 capabilities.probe_with_streaming()
                 self.assertEqual(capabilities._next_probe, expected)
             capabilities._state["coach"]["retryable"] = False

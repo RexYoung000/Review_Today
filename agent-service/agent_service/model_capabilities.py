@@ -8,19 +8,41 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from agent_service.config import COACH_MODEL, RISK_MODEL, ROUTER_MODEL, PROVIDER, openai_key
 from agent_service.openai_client import ModelCallError, model_is_callable, model_stream_capability
 from agent_service.service_diagnostics import diagnose
+from agent_service.capability_accounting import CapabilityLedger, PROBE_ROUNDS
 
 _lock = threading.RLock()
 _probing = False
 _retry_attempt = 0
 _next_probe = 0.0
 _scheduler_started = False
+_batch_id = None
+_ledger = CapabilityLedger()
 _state = {role: dict(model=model, status="checking", error="", streaming="checking")
           for role, model in {"router": ROUTER_MODEL, "coach": COACH_MODEL, "risk": RISK_MODEL}.items()}
 
 
-def _check(model, effort=None):
+def _invoke_probe(function, model, effort=None, *, batch_id=None, round_index=None, roles=(), kind="structured"):
+    kwargs = {"reasoning_effort": effort} if effort else {}
+    call_id = None
+    if batch_id is not None:
+        call_id = _ledger.reserve(batch_id, round_index, model=model, roles=roles, kind=kind,
+                                  strength="deep" if effort == "high" else "smart")
+        kwargs.update(on_request=lambda: _ledger.request(batch_id, call_id),
+                      on_usage=lambda usage: _ledger.record(batch_id, call_id, usage=usage))
     try:
-        ready = model_is_callable(model, reasoning_effort=effort) if effort else model_is_callable(model)
+        result = function(model, **kwargs)
+    except BaseException:
+        if call_id is not None:
+            _ledger.record(batch_id, call_id, status="failed_or_cancelled")
+        raise
+    if call_id is not None:
+        _ledger.record(batch_id, call_id, status="returned")
+    return result
+
+
+def _check(model, effort=None, **accounting):
+    try:
+        ready = _invoke_probe(model_is_callable, model, effort, **accounting)
         if not ready:
             raise ModelCallError("EMPTY")
         return dict(status="ready", error="", category=None, retryable=False, recovery=None)
@@ -29,13 +51,13 @@ def _check(model, effort=None):
         return dict(status="unavailable", error=diagnostic["diagnostic"], **diagnostic)
 
 
-def _check_strengths(model):
-    result = _check(model)
+def _check_strengths(model, **accounting):
+    result = _check(model, **accounting)
     if PROVIDER == "deepseek":
         # Failure of high reasoning must not block a verified smart call. Conversely
         # smart success cannot certify deep support or silently authorize a downgrade.
         smart = dict(result)
-        deep = _check(model, "high") if result["status"] == "ready" else dict(result)
+        deep = _check(model, "high", **accounting) if result["status"] == "ready" else dict(result)
         result["strengths"] = {"smart": smart, "deep": deep}
     return result
 
@@ -45,7 +67,7 @@ def _needs_retry(value):
             any(v.get("retryable") or v.get("stream_retryable") for v in value.get("strengths", {}).values()))
 
 
-def probe(roles=None):
+def probe(roles=None, *, batch_id=None, round_index=None):
     # Listing models is optional: real calls with unchanged credentials establish capability.
     if not openai_key():
         with _lock:
@@ -59,7 +81,8 @@ def probe(roles=None):
         for role, value in snapshot().items():
             if roles is None or role in roles:
                 grouped.setdefault(value["model"], []).append(role)
-        pending = {executor.submit(_check_strengths, model): names for model, names in grouped.items()}
+        pending = {executor.submit(_check_strengths, model, batch_id=batch_id, round_index=round_index, roles=names): names
+                   for model, names in grouped.items()}
         for future in as_completed(pending):
             result = future.result()
             with _lock:
@@ -67,17 +90,38 @@ def probe(roles=None):
                     _state[role].update(**deepcopy(result), checked_at=time.time(), elapsed_ms=int((time.monotonic() - started) * 1000))
 
 
-def probe_with_streaming(roles=None):
+def _admit_round(reset=False):
+    """Caller holds _lock. Record admission before starting any transport."""
+    global _batch_id, _retry_attempt
+    if reset or _batch_id is None or _retry_attempt == 0:
+        _batch_id = _ledger.begin(PROVIDER)
+        _retry_attempt = 0
+    if _retry_attempt >= PROBE_ROUNDS:
+        return None
+    index = _retry_attempt + 1
+    _ledger.start_round(_batch_id, index)
+    return _batch_id, index
+
+
+def probe_with_streaming(roles=None, *, batch_id=None, round_index=None):
     global _probing, _next_probe, _retry_attempt
+    if batch_id is None:
+        with _lock:
+            admitted = _admit_round()
+            if admitted is None:
+                return
+            batch_id, round_index = admitted
+            _probing = True
     try:
-        probe(roles)
+        probe(roles, batch_id=batch_id, round_index=round_index)
         current = snapshot()
         with _lock:
             for role in ("router", "risk"):
                 _state[role]["streaming"] = "not_applicable"
         if current["coach"]["status"] == "ready" and (roles is None or "coach" in roles):
             try:
-                result = model_stream_capability(current["coach"]["model"])
+                result = _invoke_probe(model_stream_capability, current["coach"]["model"], batch_id=batch_id,
+                                       round_index=round_index, roles=["coach"], kind="streaming")
                 with _lock:
                     _state["coach"].update(streaming=result["streaming"] if result["ready"] else "unavailable",
                                            stream_error="", stream_retryable=False)
@@ -92,7 +136,8 @@ def probe_with_streaming(roles=None):
             deep = current["coach"].get("strengths", {}).get("deep", {})
             if deep.get("status") == "ready":
                 try:
-                    result = model_stream_capability(current["coach"]["model"], reasoning_effort="high")
+                    result = _invoke_probe(model_stream_capability, current["coach"]["model"], "high", batch_id=batch_id,
+                                           round_index=round_index, roles=["coach"], kind="streaming")
                     update = dict(streaming=result["streaming"] if result["ready"] else "unavailable",
                                   stream_error="", stream_retryable=False)
                 except Exception as exc:
@@ -104,9 +149,12 @@ def probe_with_streaming(roles=None):
         with _lock:
             retryable = any(_needs_retry(v) for v in _state.values())
             delay = (10, 30, 120)[min(_retry_attempt, 2)]
-            _next_probe = time.time() + delay if retryable else 0
-            _retry_attempt = _retry_attempt + 1 if _next_probe else 0
-            _probing = False
+            _next_probe = time.time() + delay if retryable and round_index < PROBE_ROUNDS else 0
+            _retry_attempt = round_index if retryable else 0
+            try:
+                _ledger.finish(batch_id, "retry_wait" if _next_probe else "exhausted" if retryable else "finished")
+            finally:
+                _probing = False
         if snapshot()["router"]["status"] == "ready":
             # Only unscheduled accepted/queued inputs are eligible. Failed replies
             # and paused Sessions remain explicitly user-controlled.
@@ -131,18 +179,23 @@ def start_probe(reset=True):
     with _lock:
         if _probing:
             return
+        roles = list(_state) if reset else [role for role, value in _state.items() if _needs_retry(value)]
+        if not reset and (not roles or _retry_attempt >= PROBE_ROUNDS):
+            return
+        admitted = _admit_round(reset=reset)
+        if admitted is None:
+            return
+        batch_id, round_index = admitted
         _probing = True
         _next_probe = 0
-        if reset:
-            _retry_attempt = 0
-        roles = list(_state) if reset else [role for role, value in _state.items() if _needs_retry(value)]
         for role in roles:
             value = _state[role]
             value.update(status="checking", error="", streaming="checking")
         if not _scheduler_started:
             _scheduler_started = True
             threading.Thread(target=_schedule, name="review-today-capability-recovery", daemon=True).start()
-    threading.Thread(target=probe_with_streaming, args=(roles,), name="review-today-model-capabilities", daemon=True).start()
+    threading.Thread(target=probe_with_streaming, args=(roles,), kwargs=dict(batch_id=batch_id, round_index=round_index),
+                     name="review-today-model-capabilities", daemon=True).start()
 
 
 def require_model(model, *, thinking_strength="smart"):

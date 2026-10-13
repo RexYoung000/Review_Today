@@ -132,6 +132,20 @@ class DeepSeekTransportTests(unittest.TestCase):
 
 
 class DeepSeekCapabilityTests(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from contextlib import ExitStack
+        from pathlib import Path
+        from agent_service import model_capabilities as cap
+        from agent_service.capability_accounting import CapabilityLedger
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        stack = ExitStack()
+        self.addCleanup(stack.close)
+        for name, value in {"_ledger": CapabilityLedger(Path(temp.name) / "capabilities.sqlite3"),
+                            "_batch_id": None, "_retry_attempt": 0, "_next_probe": 0, "_probing": False}.items():
+            stack.enter_context(patch.object(cap, name, value))
+
     def test_shared_model_is_probed_once_per_strength_and_deep_failure_is_separate(self):
         from agent_service import model_capabilities as cap
         states = {role: dict(model="deepseek-v4-flash", status="checking") for role in ("router", "coach")}
@@ -159,7 +173,7 @@ class DeepSeekCapabilityTests(unittest.TestCase):
         states = {role: dict(model=role, status="ready", retryable=False,
                             strengths={"deep": dict(status="ready", retryable=False)}) for role in ("router", "coach", "risk")}
 
-        def stream(model, *, reasoning_effort=None):
+        def stream(model, *, reasoning_effort=None, **callbacks):
             if reasoning_effort == "high":
                 raise llm.ModelCallError("CONNECTION")
             return dict(ready=True, streaming="ready")

@@ -244,7 +244,9 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
                         on_cancel_handle=on_cancel_handle, reasoning_effort=reasoning_effort, max_output_tokens=max_output_tokens, on_usage=on_usage, on_request=on_request)
 
 
-def model_stream_capability(model: str, *, reasoning_effort: str | None = None) -> dict:
+def model_stream_capability(model: str, *, reasoning_effort: str | None = None,
+                            on_request: Callable[[], str | None] | None = None,
+                            on_usage: Callable[[dict], None] | None = None) -> dict:
     class Probe(BaseModel):
         message: str
         ready: bool
@@ -253,6 +255,7 @@ def model_stream_capability(model: str, *, reasoning_effort: str | None = None) 
     result = parse_model("Return ready=true and message counting from one to twenty. Use the required schema.",
                          "Check structured streaming.", Probe, model=model, timeout=MODEL_PROBE_TIMEOUT_SECONDS,
                          reasoning_effort=reasoning_effort,
+                         on_request=on_request, on_usage=on_usage,
                          on_partial=lambda value: chunks.append(value.get("message", "")),
                          on_transport=transports.append)
     distinct = {text for text in chunks if text and text != result.message}
@@ -317,12 +320,15 @@ def available_model_ids() -> set[str]:
     return {item.id for item in _client(timeout=MODEL_PROBE_TIMEOUT_SECONDS).models.list().data if getattr(item, "id", "")}
 
 
-def model_is_callable(model: str, *, reasoning_effort: str | None = None) -> bool:
+def model_is_callable(model: str, *, reasoning_effort: str | None = None,
+                      on_request: Callable[[], str | None] | None = None,
+                      on_usage: Callable[[dict], None] | None = None) -> bool:
     """A transport ID alone does not prove structured output is usable."""
     class Probe(BaseModel):
         ready: bool
     result = parse_model("Return ready=true in the required schema.", "Check structured output.",
-                         Probe, model=model, timeout=MODEL_PROBE_TIMEOUT_SECONDS, reasoning_effort=reasoning_effort)
+                         Probe, model=model, timeout=MODEL_PROBE_TIMEOUT_SECONDS, reasoning_effort=reasoning_effort,
+                         on_request=on_request, on_usage=on_usage)
     return result.ready is True
 
 

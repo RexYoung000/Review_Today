@@ -1,0 +1,152 @@
+{
+  "phase": "implemented_and_component_verified",
+  "date": "2026-10-13",
+  "decision": 230,
+  "starting_commit": "4501ede8a94b035cbd77ad4576a698ba7dae2a52",
+  "scope": {
+    "production_files": [
+      "agent-service/agent_service/capability_accounting.py",
+      "agent-service/agent_service/model_capabilities.py",
+      "agent-service/agent_service/openai_client.py"
+    ],
+    "rounds_include_first": 4,
+    "backoff_seconds": [
+      10,
+      30,
+      120
+    ],
+    "step_timeout_default_seconds": 45,
+    "step_attempt_limit": 2,
+    "ledger_table": "agent_capability_batches"
+  },
+  "source_hashes": {
+    "agent-service/agent_service/capability_accounting.py": "3cc2696d492602e5430f1671680f58f70d1ccedf2390546076a6351d79bc6fbf",
+    "agent-service/agent_service/model_capabilities.py": "e32b232b5b9df26f0a081ac1de157e397943033ec3522f62f840a6bcbdf1de3f",
+    "agent-service/agent_service/openai_client.py": "486a5175c6d60e0094add50b97be55fe8b8b9dac4a0b9d9b963f4729b1fcfe79"
+  },
+  "unchanged_production_hashes": {
+    "agent-service/agent_service/conversation_context.py": "436d42def532f7a6cbeb851df6583c9eddec077d9881c629f814bad247d54cc0",
+    "agent-service/agent_service/conversation.py": "b3d944c899ce350b576e5536a4919157f53a56d5bcc6ef802867b4fb1adfbb01",
+    "agent-service/agent_service/run_accounting.py": "c440c7d453f445c554301108e98fcc6470cf520d4723e6bdf8311342bb14dac5",
+    "agent-service/agent_service/execution_policy.py": "819f41b5b02a939ad84fb2f98bc7e8818f4a32e697519433e7f43d7d47f99f11",
+    "agent-service/agent_service/interruptible_call.py": "79336442d89754a580bb4a573bfe5955f27e583c786185ab89a433f76f701425",
+    "agent-service/agent_service/main.py": "572d3d21c65908ebdb4504ecc808bffee128eeca803975243be0c478f32fe83c",
+    "agent-service/agent_service/config.py": "d11569e19c9b8f207a7c7c6062c9af3e890189f2395b80834421be8759bbfd1b"
+  },
+  "settings_hashes": {
+    "agent-service/.env": "79b70ced19be1181171afcf11837ac51293717fdf3fb252a70b49c718f75c17c",
+    "agent-service/providers/deepseek/.env": "443e52c57ad9d369c6c0ddbbf1283f2a4bdb9d8635edb9e735a109be9f574554"
+  },
+  "unrelated_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "old_evidence_preserved": true,
+  "test_hashes": {
+    "agent-service/tests/test_capability_accounting.py": "936369b3476a932174712ef16c27ea09d9a806c56e8b0b4eeb267a72a8f55395",
+    "agent-service/tests/test_service_recovery.py": "0ae9bc4197bb40a4d67a510a513b4473080c10611b2dd9a25b9f4c85d24db8c8",
+    "agent-service/tests/test_deepseek_provider.py": "543d1d4a82a4d02b492453eb98f262519829d0f359e87fcdf6650955359bfd42",
+    "agent-service/tests/test_harness_v2.py": "01a55a9634e58c306b53f22b50f120a5f566cbd7edae7177020555a756a35f2f"
+  },
+  "validation": {
+    "new_behavior_cases": 23,
+    "initial_focused": {
+      "passed": 126,
+      "subtests": 4,
+      "stage": "before two added DeepSeek boundaries"
+    },
+    "full": {
+      "passed": 1193,
+      "skipped": 4,
+      "subtests": 521,
+      "warnings": 5,
+      "provider_process": "openai_compatible",
+      "seconds": 169.15
+    },
+    "deepseek": {
+      "passed": 57,
+      "subtests": 2,
+      "warnings": 5,
+      "provider_process": "deepseek"
+    },
+    "native": {
+      "contracts": [
+        "AppRuntimeContractTests",
+        "AgentServiceMonitorContractTests",
+        "ConversationReplayTests",
+        "ConversationControlTests"
+      ],
+      "controlled_sse": "passed",
+      "real_supplier": false,
+      "app_replaced": false
+    },
+    "composed": {
+      "summary_cases": 8,
+      "capability_cases": 3,
+      "report": "repair.json",
+      "real_supplier_requests": 0
+    }
+  },
+  "logs": {
+    "focused": {
+      "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-maintenance-focused-hzyon_yd/tests.log",
+      "raw_sha256": "896c54c950691f89a53704b2251336ffe0884ec8d5c87347ec2d4b24f46c4f62",
+      "stored_path": "repair-focused.log",
+      "stored_sha256": "eb83005c3ad0b2292bd1738a6b0e777762beffcc4eb4c3b769a8ddb7d45116be",
+      "normalization": "trailing whitespace only"
+    },
+    "full": {
+      "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-maintenance-full-dg72d5zs/tests.log",
+      "raw_sha256": "90d82fb962c88d5ad545ffcfd478890024e772a8d2464122926665c0ced2a3b9",
+      "stored_path": "repair-full.log",
+      "stored_sha256": "fbf8f525f3a732aab51304cd7b4cef2aa8154379fe7160a975415d0f42a44485",
+      "normalization": "trailing whitespace only"
+    },
+    "deepseek": {
+      "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-maintenance-deepseek-tc889pzl/tests.log",
+      "raw_sha256": "02bf9f20f40e038c5cd6750cfa17e99b8139c069c53ac7b655175cdda123b097",
+      "stored_path": "repair-deepseek.log",
+      "stored_sha256": "91c3471bd3bc5d41f231a320df57fe82ffbec6f81c8629cf34e34e99b74602ff",
+      "normalization": "trailing whitespace only"
+    },
+    "native": {
+      "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-maintenance-native-mcyoguh8/tests.log",
+      "raw_sha256": "de1d0e0b3f412324ac7ba6394f65eb12300e6d85a96320a938bbc3317d92d9f7",
+      "stored_path": "repair-native.log",
+      "stored_sha256": "4d602f43f7a8487380ca4978ab17aa5fbdb3f2b9a935122a04aa4073da717e65",
+      "normalization": "trailing whitespace only"
+    }
+  },
+  "daily_runtime": {
+    "8742_listening_at_check": false,
+    "app_or_service_restarted": false,
+    "app_reinstalled": false,
+    "daily_user_database_written": false,
+    "activation": "next normal service startup loads repository Python source"
+  },
+  "limitations": [
+    "real supplier charges not reconciled",
+    "real delayed SDK exit not accepted",
+    "no whole-batch monetary cap",
+    "full native real model chain and Rex experience pending",
+    "four existing default compatible-client fixtures still need provider isolation",
+    "old optional browser tests skipped"
+  ],
+  "cursor": "topic6 component work complete; next inspect project-memory facts, references and invalidation; no automatic memory feature authorized",
+  "evidence_hashes": {
+    "repair.md": "17564c41843bf7789e3e2bd5986f99a9908402a4fce12ccba2a706d3f5f2ba16",
+    "repair-probe.py": "847860021a269083c64ac832a88af3a5b65f89f2703f8bad3ed0f5f562507f17",
+    "repair.json": "07147ff6619889bed149d6c681c655b4740f8da1f7fe6448eda4cc0a987d1457",
+    "repair-probe.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "repair-focused.log": "eb83005c3ad0b2292bd1738a6b0e777762beffcc4eb4c3b769a8ddb7d45116be",
+    "repair-full.log": "fbf8f525f3a732aab51304cd7b4cef2aa8154379fe7160a975415d0f42a44485",
+    "repair-deepseek.log": "91c3471bd3bc5d41f231a320df57fe82ffbec6f81c8629cf34e34e99b74602ff",
+    "repair-native.log": "4d602f43f7a8487380ca4978ab17aa5fbdb3f2b9a935122a04aa4073da717e65"
+  },
+  "document_hashes": {
+    "docs/agent-harness-v2.md": "e56eb80f00593e08137651ff9b79b5900b13e33c6fc0cad2d3252bdbfb6430c6",
+    "docs/architecture.md": "caece38c8889108a942b6ecd437771b5461631877ef1a907dbacd3fc500755be",
+    "docs/decision-log.md": "b132d558994affdf8c51679f3b62d47eb31435fbe379a6ad278f7e38520fd9ec",
+    "docs/work-status.md": "9c9592343238ebb5ab7807d5bc2ea22d0c7f4308beeeea7002ff0c2307e9ed4d",
+    "docs/README.md": "2a7a686974eeab1b374a4f816061ff218c7916d3b07e6695e38e38662dd8eae5",
+    "docs/agent-iteration.md": "79dbc9ddb374e49914a6056d7def4152b9e4ef454776636d7f0f49d7c428dae4",
+    "docs/design-references/zcode-agent.md": "7ae5040f15d5fdc7b19a6e3a12f0e79cd22da2a523ae3a965bc8fbfbcaf64bc3"
+  }
+}

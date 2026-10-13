@@ -539,7 +539,8 @@ accepted
 - 增量事件：`GET /v2/tasks/{task_id}/events?after_seq=`。
 - 用户动作：`POST /v2/tasks/{task_id}/actions`。
 - 持久化确认：`POST /v2/tasks/{task_id}/ack`。
-- 模型能力重查：`POST /v2/capabilities/probe`；只重新探测角色能力，不重复提交现有 Task。
+- 模型能力重查：`POST /v2/capabilities/probe`；只重新探测角色能力，不重复提交现有 Task。2026-10-13 按决策 230 修订：服务启动／明确重检／既有配置变化各开启独立批次，首次加三次重试为上限；单步等待、角色能力与流式区分继续沿用。
+- 服务级能力探测账本由 `capability_accounting.py` 持久化到既有 Harness SQLite 中独立的 `agent_capability_batches` 表，与学习 Session／Run 分开。按批次、轮次和模型步骤保存稳定实际请求身份、状态及供应商已知用量，复用现有用量身份与已知／未知判定；重复、补全和迟到回报仍归原请求。只新增独立表，不更改或回写旧学习记录；不新增 HTTP 或原生费用入口，具体契约见 [能力探测预算](agent-harness-v2.md#capability-budget-contract)。
 - 正式复习的控制事件使用同一主机上的 WebSocket。
 - 实时音频使用 WebRTC 直连 OpenAI Realtime。
 - Python 使用 sideband 连接控制同一 Realtime 会话。
