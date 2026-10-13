@@ -1,0 +1,85 @@
+{
+  "scope": "REPAIR-01 per user confirmed decision 227",
+  "base_commit": "973a83517fed029dfe7e860db22b9ea09e3fec22",
+  "production_change": "specific semantic issues are always repair input data; existing rechecks and one-repair gate unchanged",
+  "source_sha256": {
+    "agent-service/agent_service/capture/__init__.py": "38d971516f719150881a2fe2a4f039bf6d0dd2ddb4655be211846c479d2e2ebe",
+    "agent-service/agent_service/capture/prompts.py": "269505cf1353ae99041d35c87d55ecb5cbe035c3357d4a5a8859013807f1de95",
+    "agent-service/agent_service/conversation.py": "b3d944c899ce350b576e5536a4919157f53a56d5bcc6ef802867b4fb1adfbb01",
+    "agent-service/agent_service/structured_output.py": "61d3b2a9ac95f01b237c8c90bd0d0fda578ebc1b0b72947209eac29df5a5c5b6"
+  },
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "checks": {
+    "targeted": {
+      "exit_code": 0,
+      "passed": 73,
+      "subtests": 19
+    },
+    "controlled_full": {
+      "exit_code": 0,
+      "passed": 1154,
+      "skipped": 4,
+      "subtests": 521,
+      "existing_warnings": 5
+    },
+    "synthetic_before_after": {
+      "cases_per_batch": 3,
+      "network_calls": 0,
+      "card_writes": 0
+    },
+    "live_directed_components": {
+      "cases": 2,
+      "target_checks_passed": 2,
+      "semantic_calls": 6,
+      "requests": 6,
+      "card_writes": 0
+    },
+    "local_document_links": 246
+  },
+  "limitations": [
+    "initial extract and risk are controlled in live components",
+    "not full model-to-native-save acceptance",
+    "one initial semantic verdict invents mandatory optional variant; extra variant was generated and equivalence is unverified",
+    "prompt data separation is not proof of universal injection resistance",
+    "generic semantic accuracy is not accepted"
+  ],
+  "inspection_setup_errors": [
+    "first baseline test wrapper ended exit 1 because zsh status is read-only, pytest output was 65 passed; final corrected wrapper exit 0",
+    "first metadata read used system Python without dotenv; repeated with existing venv",
+    "first documentation audit checked its own review.json before writing it; fixed order",
+    "raw backup discovery first used /tmp instead of the actual macOS temporary directory; original logs were found unchanged"
+  ],
+  "manual_review": [
+    "issue list is serialized in user data, never appended to trusted rules",
+    "no new schema, model node, retry count, provider configuration, UI or store write",
+    "existing structure/semantic/source/risk graph and native commit authorization unchanged",
+    "production hashes match final live run"
+  ],
+  "log_artifacts": {
+    "targeted-tests.log": {
+      "raw_backup": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-repair-feedback-raw-2vd4at85/targeted-tests.log",
+      "raw_sha256": "f209fc0b78fe6c3411b2ab478e7db142783ff2bee050809de0dd409bc4763615",
+      "tracked_sha256": "cb892feecf71d0c93c6a466d27853cbce7133085f9b29100ede0ceeb2bc177ec",
+      "normalization": "trailing_whitespace_only"
+    },
+    "real-probe.log": {
+      "raw_backup": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-repair-feedback-raw-2vd4at85/real-probe.log",
+      "raw_sha256": "3445305748c7362897d077e6b04efbc2726de0d53e84a5819011a86e6c0fb5a4",
+      "tracked_sha256": "3445305748c7362897d077e6b04efbc2726de0d53e84a5819011a86e6c0fb5a4",
+      "normalization": "trailing_whitespace_only"
+    },
+    "full-tests.log": {
+      "raw_backup": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-repair-feedback-raw-2vd4at85/full-tests.log",
+      "raw_sha256": "6a82ad4ad605fd37af08a1842aa67b42c932d7339c5ab01467fad042cc40a40d",
+      "tracked_sha256": "823fccc571d020c02a8a24580754313ddddcb6d50e52fa12a7422de6c6af7a39",
+      "normalization": "trailing_whitespace_only"
+    },
+    "existing-tests.log": {
+      "raw_backup": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-repair-feedback-raw-2vd4at85/existing-tests.log",
+      "raw_sha256": "2c7c73f456631bba7a2fde0c934f707bf0280c25bfe603fc626a59dc229aa075",
+      "tracked_sha256": "dbaabd271af1926081f7cfb0e028e610b573895d376e82759862b5d9684e1aee",
+      "normalization": "trailing_whitespace_only"
+    }
+  },
+  "next_cursor": "ZCode topic 5 first point: inspect existing event/recovery/user-steering path before alignment"
+}

@@ -1,0 +1,2 @@
+{"case": "generic_theme", "passed": true, "checks": {"committable": true, "one_repair": true, "rechecked": true, "feedback_present": true, "source_quotes_literal": true, "specific_theme": true}, "real_calls": 3}
+{"case": "nonliteral_evidence", "passed": true, "checks": {"committable": true, "one_repair": true, "rechecked": true, "feedback_present": true, "source_quotes_literal": true, "specific_theme": true}, "real_calls": 3}
