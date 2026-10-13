@@ -1,0 +1,27 @@
+PASS: MEM-01 seven behavior groups: same title, repeated link, same goal, current version, deletion, learning record grouping, candidate limit
+PASS: typed local recall, no drafts/consent, archive vs exclusion, policy/content versions, late-run fence, no formal review writes
+PASS: deletion preview, rollback, scope revalidation, shared/unknown protection, batch purge, preview removal, durable offline tombstones and no index resurrection
+/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-memory-invalidation-native-__n78v_n/LibraryManagementContractTests.swift:8:168: warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+  6 | struct LibraryManagementContractTests {
+  7 |     enum Disk: Error { case failed }
+  8 |     static func require(_ value: Bool, _ message: String = "Contract failed", file: StaticString = #filePath, line: UInt = #line) { precondition(value, message, file: file, line: line) }
+    |                                                                                                    |                                                                   |- warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+    |                                                                                                    |                                                                   `- note: add parentheses to silence this warning
+    |                                                                                                    `- note: did you mean for parameter 'file' to default to '#file'?
+  9 |     @MainActor static func main() throws {
+ 10 |         let container = try ModelContainer(for: M1DebugFixture.schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+
+Swift.precondition.file:1:1: note: 'file' declared here
+1 | file: StaticString
+  | `- note: 'file' declared here
+PASS: scoped knowledge selection, atomic lifecycle rollback, recycle/undo, permanent-delete revalidation, shared source retention, question/review cleanup, continuous locator and stale motion
+PASS: ordered/repeated/gapped replay, stable final ID, stop/archive and revision fencing, Session tags/activity, atomic cursor recovery, Session isolation, no knowledge/review writes
+Controlled stop save: 0.000970583 seconds; full replay suite: 0.02242625 seconds
+PASS: immediate retry feedback, 20-click coalescing, stable ID after timeout, accepted state, fast completed reply delivery, subscription race, rejected legacy retries drain before cancel, wrong/stale receipts, no knowledge writes
+/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-14-memory-invalidation/MemoryInvalidationInspection.swift:50:46: error: constant 'self.run' captured by a closure before being initialized
+ 48 |             } else {
+ 49 |                 let candidates = try LearningMemory.candidates(for: "数据库索引", excluding: destination.id, context: context)
+ 50 |                 reference = candidates.first { $0["id"] as? String == evidenceID }!
+    |                                              `- error: constant 'self.run' captured by a closure before being initialized
+ 51 |             }
+ 52 |             run = AgentRun(id: UUID(), sessionID: destination.id)

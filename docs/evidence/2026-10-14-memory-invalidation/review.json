@@ -1,0 +1,111 @@
+{
+  "scope": "MEM-02 read-only memory invalidation timing inspection",
+  "date": "2026-10-14",
+  "baseline_commit": "a8588fb01f9d60b3c49dc1b394323ad0ad214663",
+  "phase": "inspection complete; minimal recovering-state repair proposed, not authorized or implemented",
+  "source_sha256": {
+    "Review_Today/LearningMemory.swift": "7af7c1743dc1bf19701c310785284223792c53fa43173b9604d61ddc34e20964",
+    "Review_Today/ConversationProcessor.swift": "699d381a6b400bfef1345cb8bf0127fcca702bcd669e955b16b0aa1f5c109e90",
+    "Review_Today/KnowledgeManagement.swift": "5db2cdb4b064df189424dff4987007436afbe1c2ba9cea5a30fba9cba47c6da1",
+    "Review_Today/SessionDeletion.swift": "903991b604927f8a07e8578a8728a7d27fd4d72f8090acd10829d0f256c2f148",
+    "Review_Today/LearningWorkspace.swift": "0ae1b518442170d5027249b9419ce85eb99b04e8ebbc4cce64e0c1b36a985afa",
+    "agent-service/agent_service/conversation.py": "b3d944c899ce350b576e5536a4919157f53a56d5bcc6ef802867b4fb1adfbb01",
+    "agent-service/agent_service/conversation_store.py": "17a0a4a7ae198a21329ea2a0d340c4924a719cae05faed68eee2c05440dc46c6",
+    "agent-service/agent_service/conversation_model_call.py": "a0561064bfd431271bd180236f0f13850131034ebf41e3e386871be244ac2bc9",
+    "agent-service/agent_service/main.py": "572d3d21c65908ebdb4504ecc808bffee128eeca803975243be0c478f32fe83c"
+  },
+  "production_files_changed": [],
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "provider_configs_unchanged": true,
+  "checks": {
+    "native_existing_contracts": [
+      "LearningMemoryContractTests",
+      "SessionDeletionContractTests",
+      "LibraryManagementContractTests",
+      "ConversationReplayTests",
+      "ConversationControlTests"
+    ],
+    "support_reused": "/tmp/review-today-shared-contracts.fjtxna5v",
+    "support_provenance": "MEM-01 current native source unchanged and prior relevant file hashes checked; new probe executables compiled, App module not rebuilt",
+    "native_cases": 6,
+    "same_root_immediate_state_gaps": 4,
+    "service_tests": {
+      "passed": 10,
+      "deselected": 47,
+      "warnings": 5
+    },
+    "controlled_recovery": {
+      "simulated_answer_attempts": 2,
+      "late_answer_blocked": true,
+      "public_pages_generated_by_production_route": true,
+      "native_apply_and_control_receipt_executed": true,
+      "after_exclusion": "recovering",
+      "after_valid_stop_receipt": "recovering",
+      "after_run_event_page": "interrupted",
+      "http_transport": false,
+      "supplier_requests": 0
+    }
+  },
+  "setup_errors": [
+    {
+      "kind": "probe_compile_error",
+      "description": "fixture closure captured partially initialized self; fixed local fixture without changing app source",
+      "log": "native-contracts-initial.log"
+    },
+    {
+      "kind": "incorrect_initial_observation_boundary",
+      "description": "first assertion assumed recovering persists after newer Run header; production correctly interrupted it, so scope narrowed to immediate/receipt interval",
+      "log": "probe-assumption-failure.log"
+    },
+    {
+      "kind": "metadata_expected_hash_typo",
+      "description": "first metadata pass used an incomplete expected DeepSeek config hash; refreshed digest matched prior full digest; no config mutation"
+    }
+  ],
+  "logs": {
+    "native-contracts-initial.log": {
+      "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-memory-invalidation-native-__n78v_n/native.log",
+      "raw_sha256": "dc05cd809eed7f8f01689be224c90d9928628f58fe340eef5e62845c0dd2949e",
+      "tracked_sha256": "dc05cd809eed7f8f01689be224c90d9928628f58fe340eef5e62845c0dd2949e",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    },
+    "probe-assumption-failure.log": {
+      "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-memory-invalidation-fixed-fixture-o2p3iiup/probe.log",
+      "raw_sha256": "65db9a6466e582e2e58f04cfe6f22d1cd9e51704538a3609571a130fc9da47e3",
+      "tracked_sha256": "65db9a6466e582e2e58f04cfe6f22d1cd9e51704538a3609571a130fc9da47e3",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    },
+    "native-probe.log": {
+      "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-memory-invalidation-baseline-rq7eu365/probe.log",
+      "raw_sha256": "2b70896fb0b7f205fdc54d0818f76915bfc44f65ed75b2f7ae6f88911b2158a5",
+      "tracked_sha256": "2b70896fb0b7f205fdc54d0818f76915bfc44f65ed75b2f7ae6f88911b2158a5",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    },
+    "service-tests.log": {
+      "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-memory-invalidation-service-71v91unc/service-tests.log",
+      "raw_sha256": "45caa5b062057c63a2695e6633f7a445baa1ec8509a557626ce91be5fd7beeb4",
+      "tracked_sha256": "8c559e4f36c0367a6da13b9b48709cc7d8ca6493ce8033bb42b42c0fbd6f31b2",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    }
+  },
+  "baseline_files_sha256": {
+    "MemoryInvalidationInspection.swift": "4821f0206c703e8f4b15f8b23df51150bddb74733433913c6e10ff8e23edda02",
+    "ServiceEventReplay.swift": "2c1aa5b0299e4928c817d6aaa223216044fe157a11e3188119ed43d8c9b8543c",
+    "service-probe.py": "b34e601f7a34c471a66514e71b16943443a19bcf0fb6bf89f7fed666dc6aec57",
+    "run-native.py": "0e3b26ce0c921b096f43ade864e023a7bbe2799d5dc13a5b777cd0e27ed14186",
+    "native-baseline.json": "2b70896fb0b7f205fdc54d0818f76915bfc44f65ed75b2f7ae6f88911b2158a5",
+    "service-baseline.json": "729d2c8951198122b34b55f985d3b9f6ec3288e42ecc0446a6319c3d3f20790e",
+    "paired-baseline.json": "021d8d99a21225003ce3268a7bd9d37947396125495df98be6f0ed6356ba79f6"
+  },
+  "not_performed": [
+    "production code changes",
+    "App build or install",
+    "daily data writes",
+    "real supplier calls or upstream cancellation",
+    "full HTTP transport",
+    "actual native window",
+    "natural-language correction routing quality"
+  ],
+  "candidate_repair": "only memory-invalidation fence: interrupt recovering as well as streaming, retaining body/history and all other rules",
+  "next_cursor": "align MEM-02 minimal immediate-state repair; no implicit authorization for general stop/archive or automatic memory"
+}

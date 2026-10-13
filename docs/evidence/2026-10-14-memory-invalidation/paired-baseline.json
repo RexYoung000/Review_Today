@@ -1,0 +1,16 @@
+{
+  "after_run_event_page" : "interrupted",
+  "after_valid_stop_receipt" : "recovering",
+  "daily_database_written" : false,
+  "expected_immediate_state" : "interrupted",
+  "formal_cards" : 0,
+  "formal_reviews" : 0,
+  "http_transport" : false,
+  "immediate_after_exclusion" : "recovering",
+  "immediate_gap_reproduced" : true,
+  "initial_state" : "recovering",
+  "kind" : "native_service_event_replay",
+  "late_answer_blocked" : true,
+  "real_supplier_requests" : 0,
+  "stale_reference_valid" : false
+}
