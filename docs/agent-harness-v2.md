@@ -552,7 +552,7 @@ Rex 在核对旧线路仍为 `api.aijws.com` 后明确要求接入已提供的 D
 - Task ACK 与归档使用同一事务锁检查版本并记录完成，新 Mac 的旧/新 Task 保存均先 claim。旧客户端没有 claim 时仅可确认仍 active 且版本有效的任务；已 claim 的本机原子提交允许迟到确认，但不恢复 Session 或生成。
 - 新增 `POST /v2/sessions/{id}/actions`（action_id/action/lifecycle_revision）；`GET /v2/sessions/{id}/snapshot` 与 `POST /v2/sessions/{id}/snapshot/restore`（schema_version=1，仅恢复缺失 checkpoint）。冲突返回 409，不静默覆盖。
 - messages 兼容增加 `expected_event_seq` 与 `lifecycle_revision`；客户端已有历史、服务检查点却缺失时返回 CHECKPOINT_REQUIRED，不能静默新建空会话。相同恢复快照使用指纹幂等；恢复撤销旧 pending/草稿授权，只导入状态，不触发模型。
-- 当前恢复实现只接受覆盖本机已消费游标且事件范围连续的快照。后台快照滞后时保留本机历史并报告 SNAPSHOT_STALE，不猜测重建模型检查点；任意崩溃时刻的增量快照合成仍需补齐验收，不能宣称全量恢复完成。
+- 恢复只接受覆盖本机已消费游标且事件范围连续的检查点。现有事件页携带有版本的恢复增量，与内容和游标同次保存，后台完整快照并非唯一恢复依据；缺失增量基版本或游标不一致时拒绝合并。真正未覆盖本机游标的旧快照仍报告 SNAPSHOT_STALE，保留历史，不猜测重建模型状态。2026-10-13 第 5 条首点的服务与原生合同分项检查见[本批证据](evidence/2026-10-13-event-recovery-inspection/README.md)；任意崩溃时刻与真实关闭重开链未因此全部验收。
 - 快照包含身份/生命周期/模式/摘要、消息、Run 元数据、Task/计划、来源和待办；恢复旧运行成 interrupted，不调用模型/入库，不把导入当作新授权。
 - Mac 长期保存完整记录，Python 仅执行检查点。清理须终态、已 ACK、无活跃引用，不能仅按 TTL。任务/事件兼容增加计划/来源/生命周期，健康结果增加分类/时间/恢复方式；旧接口不删。
 - SwiftData 增量字段可空或安全默认；只有有证据的旧记录回填，缺失来源、步骤、掌握不猜测。

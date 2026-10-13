@@ -1,0 +1,78 @@
+{
+  "scope": "ZCode topic 5 first point, read-only inspection and existing isolated tests",
+  "baseline_commit": "245ada98791e4107f38ac0d28a0f6138b5bc7825",
+  "production_changed": false,
+  "source_sha256": {
+    "agent-service/agent_service/conversation_store.py": "17a0a4a7ae198a21329ea2a0d340c4924a719cae05faed68eee2c05440dc46c6",
+    "agent-service/agent_service/checkpoint_delta.py": "7e9a62015f2fad527dfad0573274c25fa84fd7b2fae658254ced9edd86949b90",
+    "agent-service/agent_service/conversation.py": "b3d944c899ce350b576e5536a4919157f53a56d5bcc6ef802867b4fb1adfbb01",
+    "agent-service/agent_service/main.py": "572d3d21c65908ebdb4504ecc808bffee128eeca803975243be0c478f32fe83c",
+    "Review_Today/ConversationSync.swift": "f55bdf929f07f9447ff0d71bced5b6d1c0c3ec15541b77f17565167be60ea1d7",
+    "Review_Today/ConversationProcessor.swift": "78f77962d56358c7c8c81c95a4d3f1da98ed0e4345e4ba84235691e3b4910918",
+    "Review_Today/ConversationCheckpoint.swift": "31c0fefd772c03c0d2fd5f5dd291327a9b2d9eceb9a1b7b40a10680966fcbccd",
+    "tests/mac/ConversationReplayTests.swift": "fb4ea3e732fa6805ba4ce4dbfffdab15c62ed1fe501d2fcf58c15821c36809ca",
+    "tests/mac/ConversationControlTests.swift": "5502e98e8bfd549aa5dc99b6629361c8b4b49b561c40c52e32f9aa8501e53fa5"
+  },
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "checks": {
+    "service": {
+      "exit_code": 0,
+      "passed": 43,
+      "subtests": 4,
+      "existing_warnings": 5,
+      "files": [
+        "test_conversation_http",
+        "test_checkpoint_delta",
+        "test_response_stream",
+        "test_commit_recovery"
+      ]
+    },
+    "native": {
+      "exit_code": 0,
+      "contracts": [
+        "ConversationReplayTests",
+        "ConversationControlTests"
+      ],
+      "swiftdata": "in_memory",
+      "http_sse": "controlled_loopback",
+      "real_model_calls": 0,
+      "new_tests": 0
+    },
+    "production_files_match_baseline": true,
+    "local_document_links": 214
+  },
+  "findings": [
+    "uniform event cursor and durable business state mechanisms already exist",
+    "content, cursor and recovery checkpoint save before ACK",
+    "versioned deltas catch up before background full snapshot; missing base/cursor rejected",
+    "replay and recovery do not themselves grant model execution or knowledge writes",
+    "no new production gap reproduced in covered controlled scenarios"
+  ],
+  "limitations": [
+    "not live App quit/reopen acceptance",
+    "not actual disk-save fault injection",
+    "not full real model-to-UI recovery chain",
+    "existing TOOL-01 real save recovery evidence is not recounted as this turn evidence",
+    "no claim every possible crash window is covered"
+  ],
+  "documentation_change": "clarify existing delta replication and record cursor; no new product rules",
+  "log_artifacts": {
+    "service-tests.log": {
+      "raw_backup": "/tmp/review-today-events-raw-jrroo6nd/service-tests.log",
+      "raw_sha256": "59c69edd0ae615aba01dfc067af4c8305527713f460980c51b751642addb41c7",
+      "tracked_sha256": "136fc6a57eae9f4ef00a921e530c0670ecd3a2b5868603f57bac7dbc142842b1",
+      "normalization": "trailing_whitespace_only"
+    },
+    "native-contracts.log": {
+      "raw_backup": "/tmp/review-today-events-raw-jrroo6nd/native-contracts.log",
+      "raw_sha256": "4411e4802be5e3eba2d6d53e4bfb712c69fed3aa380d042d6f6c430d8bcd4150",
+      "tracked_sha256": "e9545dfb42fc65525c3e47b3320bd7ecf10baf0eb72300f739e7eade59f316c0",
+      "normalization": "trailing_whitespace_only"
+    }
+  },
+  "setup_notes": [
+    "system Python urllib lacked a trusted certificate chain for local raw-source download; standard curl succeeded with verification retained",
+    "first test invocation used an evidence directory relative to the wrong working directory, failed before pytest; corrected path and final checks exit 0"
+  ],
+  "next_cursor": "ZCode topic 5 second point: received vs consumed additional input, steering/queue/stop boundaries"
+}
