@@ -149,6 +149,46 @@ struct LearningMemoryContractTests {
             precondition(bounded.count == 12 && bounded.compactMap { $0["knowledge_id"] as? String } == Array(identities.suffix(12).reversed()),
                          "same-title cards still obey the twelve-candidate limit and timestamp order")
         }
+        for previousStatus in ["running", "stopping", "interrupted"] {
+            let invalidationContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+            let invalidationContext = invalidationContainer.mainContext
+            let origin = AgentSession(title: "索引旧课"), destination = AgentSession(title: "RAG 追问")
+            let otherSession = AgentSession(title: "无关联会话")
+            invalidationContext.insert(origin); invalidationContext.insert(destination); invalidationContext.insert(otherSession)
+            let evidenceID = UUID().uuidString.lowercased()
+            LearningMemory.store(["id": evidenceID, "session_id": origin.id.uuidString,
+                                  "concept": "数据库索引", "kind": "explained", "excerpt": "索引帮助查找。",
+                                  "dependencies": []], session: origin)
+            let reference = LearningMemory.array(origin.learningEvidenceJSON).first!
+            let dependent = AgentRun(id: UUID(), sessionID: destination.id)
+            dependent.status = previousStatus; dependent.memoryReferencesJSON = ConversationProcessor.json([reference])
+            let independent = AgentRun(id: UUID(), sessionID: otherSession.id); independent.status = "running"
+            invalidationContext.insert(dependent); invalidationContext.insert(independent)
+            let recovering = AgentMessage(sessionID: destination.id, role: "assistant", content: "已展示的初稿")
+            recovering.runID = dependent.id; recovering.responseState = "recovering"
+            let completed = AgentMessage(sessionID: destination.id, role: "assistant", content: "完整历史保留")
+            completed.runID = dependent.id; completed.responseState = "complete"
+            let unrelated = AgentMessage(sessionID: otherSession.id, role: "assistant", content: "无关联恢复回复")
+            unrelated.runID = independent.id; unrelated.responseState = "recovering"
+            for message in [recovering, completed, unrelated] { invalidationContext.insert(message) }
+            try invalidationContext.save()
+            precondition(LearningMemory.setAllowed(false, session: origin, context: invalidationContext))
+            precondition(recovering.responseState == "interrupted" && recovering.content == "已展示的初稿",
+                         "invalidated recovery is immediately interrupted without waiting for a service receipt")
+            precondition(completed.responseState == "complete" && completed.content == "完整历史保留")
+            precondition(independent.status == "running" && unrelated.responseState == "recovering",
+                         "completed history and unrelated recovering replies are preserved")
+            precondition(dependent.status == (previousStatus == "interrupted" ? "interrupted" : "stopping"),
+                         "invalid reply settlement preserves the Run's existing stop/revision state")
+            destination.pendingOperationJSON = "{\"kind\":\"save\",\"target_id\":\"fresh\"}"
+            try LearningMemory.fenceInvalidReferences(context: invalidationContext)
+            let stopControls = try invalidationContext.fetch(FetchDescriptor<AgentRunControl>())
+            precondition(stopControls.count == (previousStatus == "running" ? 1 : 0),
+                         "already stopping/interrupted Runs do not acquire another stop request")
+            precondition(destination.pendingOperationJSON?.contains("fresh") == true,
+                         "repeated old invalidation does not clear a later decision or queue duplicate stops")
+        }
+        print("PASS: MEM-02 running/stopping/interrupted recovering replies settled immediately, body/history/unrelated replies preserved, repeat fence bounded")
         print("PASS: MEM-01 seven behavior groups: same title, repeated link, same goal, current version, deletion, learning record grouping, candidate limit")
         print("PASS: typed local recall, no drafts/consent, archive vs exclusion, policy/content versions, late-run fence, no formal review writes")
     }

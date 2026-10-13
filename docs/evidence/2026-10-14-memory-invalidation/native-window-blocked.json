@@ -1,0 +1,12 @@
+{
+  "tool": "cua_repl getApp",
+  "reason": "The Mac is locked and automatic unlock could not unlock it. Ask the user to unlock the Mac manually before continuing.",
+  "user_unlock_requested": true,
+  "actual_ui_operated": false,
+  "screenshots_observed": false,
+  "qa_initial_model_loaded": true,
+  "sending_disabled": true,
+  "daily_app_started": false,
+  "attempts": 2,
+  "qa_closed": true
+}

@@ -1,0 +1,3 @@
+PASS: MEM-02 recovering reply interrupted immediately, body/history/unrelated replies preserved, repeat fence bounded
+PASS: MEM-01 seven behavior groups: same title, repeated link, same goal, current version, deletion, learning record grouping, candidate limit
+PASS: typed local recall, no drafts/consent, archive vs exclusion, policy/content versions, late-run fence, no formal review writes

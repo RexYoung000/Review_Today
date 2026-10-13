@@ -1,0 +1,14 @@
+{
+  "first-pass-native-tests.log": {
+    "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-mem02-contracts-oha5n61n/native-tests-final.log",
+    "raw_sha256": "78c67c6cad075c65265133e7be19d6c4d02d42cde60762f621e0fb875b6c6ffa",
+    "tracked_sha256": "95b7c7587d53fd0a1db295206ca0f023b8e0c13342105998cb39d5bbf7ecb755",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  },
+  "first-pass-build.log": {
+    "raw_path": "/tmp/review-today-mem02-build-dwm0ocal/build.log",
+    "raw_sha256": "7ebdfb00bb7c76b2e443c5e225b1b3a114221a4afc195b9483942947da642814",
+    "tracked_sha256": "ccb1fee67240b5e09fb494634a9816aa288871f9122d09d0660c58222e7e7ef2",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  }
+}

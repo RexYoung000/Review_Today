@@ -1,0 +1,64 @@
+{
+  "cases" : [
+    {
+      "after_service_confirmation" : "interrupted",
+      "before_service_confirmation" : "interrupted",
+      "case" : "exclude_streaming",
+      "expected_immediate_reply_state" : "interrupted",
+      "gap_reproduced" : false,
+      "history_and_independent_card_preserved" : true,
+      "immediate_reply_state" : "interrupted",
+      "late_content_blocked" : true,
+      "old_reference_valid" : false,
+      "unrelated_session_preserved" : true
+    },
+    {
+      "after_service_confirmation" : "interrupted",
+      "before_service_confirmation" : "interrupted",
+      "case" : "exclude_recovering",
+      "expected_immediate_reply_state" : "interrupted",
+      "gap_reproduced" : false,
+      "history_and_independent_card_preserved" : true,
+      "immediate_reply_state" : "interrupted",
+      "late_content_blocked" : true,
+      "old_reference_valid" : false,
+      "unrelated_session_preserved" : true
+    },
+    {
+      "active_reply_not_resumed" : true,
+      "case" : "reallow_after_exclusion",
+      "fresh_candidate_policy" : 2,
+      "stale_reference_valid" : false
+    },
+    {
+      "case" : "correction_recovering",
+      "content_revision" : 1,
+      "duplicate_event_idempotent" : true,
+      "expected_reply_state" : "interrupted",
+      "formal_review_preserved" : true,
+      "gap_reproduced" : false,
+      "old_candidates" : 0,
+      "reply_state" : "interrupted"
+    },
+    {
+      "card_lifecycle" : "soft_deleted",
+      "case" : "trash_card_recovering",
+      "expected_reply_state" : "interrupted",
+      "gap_reproduced" : false,
+      "reply_state" : "interrupted",
+      "run_state" : "stopping"
+    },
+    {
+      "case" : "delete_source_session_recovering",
+      "expected_reply_state" : "interrupted",
+      "gap_reproduced" : false,
+      "independent_card_retained" : true,
+      "old_candidates" : 0,
+      "reply_state" : "interrupted",
+      "source_deleted" : true
+    }
+  ],
+  "daily_database_written" : false,
+  "kind" : "native_invalidation_repair",
+  "supplier_requests" : 0
+}

@@ -1,0 +1,112 @@
+{
+  "scope": "MEM-02 approved decision 232",
+  "date": "2026-10-14",
+  "baseline_commit": "4eacf1c84e96325733ae7aa758418ffc249fe327",
+  "phase": "implementation and program checks complete; signed Debug delivered; native visual/interaction check blocked by locked Mac",
+  "production_change": "settle unfinished replies for invalid dependencies independently of active Run stop handling; stop/revision rules preserved",
+  "production_files_changed": [
+    "Review_Today/LearningMemory.swift"
+  ],
+  "source_sha256": {
+    "Review_Today/LearningMemory.swift": "8952786639ff56be1c12076fe180fd144f35143f9f156f090960699430bad093",
+    "tests/mac/LearningMemoryContractTests.swift": "0d0c531f776ade270fc91b2138150f16a7f07b27e9deae07133d63b3bff46232",
+    "tests/mac/run-contracts.py": "7b55a0026b59c19ae906a9e88fd747fd3a3b3409f37be3048b60a52926213b01",
+    "Review_Today/ConversationProcessor.swift": "699d381a6b400bfef1345cb8bf0127fcca702bcd669e955b16b0aa1f5c109e90",
+    "Review_Today/LearningWorkspace.swift": "0ae1b518442170d5027249b9419ce85eb99b04e8ebbc4cce64e0c1b36a985afa",
+    "agent-service/agent_service/conversation.py": "b3d944c899ce350b576e5536a4919157f53a56d5bcc6ef802867b4fb1adfbb01"
+  },
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "provider_configs_unchanged": true,
+  "baseline_seven_files_preserved": true,
+  "checks": {
+    "new_regression_scenarios": 3,
+    "native_contracts": [
+      "LearningMemoryContractTests",
+      "SessionDeletionContractTests",
+      "LibraryManagementContractTests",
+      "ConversationReplayTests",
+      "ConversationControlTests"
+    ],
+    "fresh_support": "/tmp/review-today-shared-contracts._qh45kxu",
+    "regression_fixture_owner_refined": "unrelated Run/reply is in another Session; only updated regression executable recompiled and passed",
+    "controlled_sse": true,
+    "original_six_scenarios_passed": true,
+    "former_four_state_gaps_fixed": true,
+    "same_production_event_pages_and_receipt_replayed": true,
+    "stale_content_still_blocked": true,
+    "body_history_and_unrelated_replies_preserved": true,
+    "service_memory_guards": {
+      "passed": 10,
+      "deselected": 47,
+      "warnings": 5
+    },
+    "debug_build": {
+      "success": true,
+      "strict_signature_valid": true,
+      "installed_executable_sha256": "2e4936bd83e100508618066483156e3aca9da2b0a5570b8634d8c26da71ecc43"
+    },
+    "local_install": {
+      "backup": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238",
+      "databases": 3,
+      "all_table_contents_and_schemas_unchanged": true,
+      "daily_app_started": false,
+      "daily_service_started": false,
+      "release": false,
+      "data_backup_reused_after_full_table_verification": true,
+      "first_pass_app_backed_up": true
+    },
+    "native_window": {
+      "built": true,
+      "initial_model_loaded": false,
+      "preview_sending_disabled": true,
+      "memory_only": true,
+      "actual_ui_operated": false,
+      "visual_observation": false,
+      "blocker": "Mac locked; CUA automatic unlock unavailable; manual unlock requested",
+      "blocked_attempts": 2,
+      "qa_closed": true,
+      "final_qa_built_against_latest_support": true,
+      "latest_qa_started": false,
+      "first_pass_initial_model_loaded": true
+    },
+    "regression_run_states": [
+      "running",
+      "stopping",
+      "interrupted"
+    ],
+    "production_receipt_orders": [
+      "invalidate then stop receipt",
+      "stop receipt then invalidate"
+    ],
+    "stop_receipt_first_native_replay": {
+      "after_run_event_page": "interrupted",
+      "after_valid_stop_receipt": "interrupted",
+      "daily_database_written": false,
+      "expected_immediate_state": "interrupted",
+      "formal_cards": 0,
+      "formal_reviews": 0,
+      "http_transport": false,
+      "immediate_after_exclusion": "interrupted",
+      "immediate_gap_reproduced": false,
+      "initial_state": "recovering",
+      "kind": "native_service_event_repair",
+      "late_answer_blocked": true,
+      "real_supplier_requests": 0,
+      "stale_reference_valid": false
+    }
+  },
+  "unchanged": "body/history; version/stop/save guards; recovery attempts; card dedup; general stop/archive; models/providers; styles/fonts",
+  "setup_observations": [
+    "first orphan QA child did not stay running; managed foreground session loaded the fixture and was later closed",
+    "temporary QA bundle emitted sandbox extension warning; no visibility claim made",
+    "first-pass active-Run-only state fix failed a real native stop-receipt-first replay; moved only invalid reply settlement outside Run activity branch, preserving stop/version handling; final three-state regression and both orders passed",
+    "final Debug updated after checking all tables still match first-pass full data backup; original and first-pass App versions retained"
+  ],
+  "not_verified": [
+    "real native window/controls/light-dark/narrow layout/accessibility",
+    "real provider and full HTTP recovery chain",
+    "natural language correction routing quality",
+    "Rex final usage experience"
+  ],
+  "next_cursor": "manual unlock then native preview acceptance, or read-only target verification inspection; do not repeat implementation authorization"
+}

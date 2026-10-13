@@ -1,12 +1,12 @@
 # 旧记忆失效时机：MEM-02 只读检查
 
-2026-10-14，起点为 MEM-01 已交付的 `a8588fb`。Rex 对下一检查项回复「继续」；本批只检查和备案，最小状态修复尚未取得范围回复。当前停点由 [MEM-02](../../work-status.md#mem-02)维护，既有意图来源为 [Harness 三层记忆](../../agent-harness-v2.md#184-三层学习记忆)。
+本页保存 2026-10-14 原只读检查，起点为 MEM-01 已交付的 `a8588fb`。当时 Rex 对下一检查项回复「继续」，只检查和备案，未取得实施回复。随后 Rex 已明确确认 232，本轮实现、验证、本机更新和锁屏边界另见[实施记录](repair.md)，不再等待同一范围确认。当前停点由 [MEM-02](../../work-status.md#mem-02)维护，既有意图来源为 [Harness 三层记忆](../../agent-harness-v2.md#184-三层学习记忆)。
 
 ## 已核对的事实与缺口
 
 `LearningMemory.valid` 的来源、版本与递归依赖守卫，`setAllowed` 的本机即时停止，知识库回收与会话删除的同事务失效，以及服务策略和最终发布检查均存在。六个隔离原生场景确认旧内容、摘要与候选被挡住，历史、独立卡片、正式复习和无关联会话保留；重新允许使用不复活旧引用。
 
-缺口在本机状态投影：[LearningMemory.swift](../../../Review_Today/LearningMemory.swift) 只把 `streaming` 回复标为中断，没有处理 `recovering`。生产 [conversation_model_call.py](../../../agent-service/agent_service/conversation_model_call.py) 会在已展示初稿后的一次格式修复产生后者；当前 [LearningWorkspace.swift](../../../Review_Today/LearningWorkspace.swift) 将其显示为「正在整理完整回复」。来源失效后，在离线／未收到新版本 Run 事件时仍有该提示；即使收到有效停止回执，后续事件页到达之前也保持。新版本事件能够修正为中断，旧最终正文未发布；不是永久停不下来或旧内容泄漏。
+修复前缺口在本机状态投影：[LearningMemory.swift](../../../Review_Today/LearningMemory.swift) 当时只把 `streaming` 回复标为中断，没有处理 `recovering`。生产 [conversation_model_call.py](../../../agent-service/agent_service/conversation_model_call.py) 会在已展示初稿后的一次格式修复产生后者；当前 [LearningWorkspace.swift](../../../Review_Today/LearningWorkspace.swift) 将其显示为「正在整理完整回复」。当时来源失效后，在离线／未收到新版本 Run 事件时仍有该提示；即使收到有效停止回执，后续事件页到达之前也保持。新版本事件能够修正为中断，旧最终正文未发布；不是永久停不下来或旧内容泄漏。
 
 ## 执行证据
 
@@ -22,6 +22,6 @@
 
 ## 重放与候选范围
 
-先在 `agent-service` 下，用虚拟环境、`PYTHONPATH=.` 和兼容测试进程分支运行 `service-probe.py`，输出到本目录 `service-baseline.json`；它在内部使用临时数据库。原生源变化后先运行 `python3 tests/mac/run-contracts.py LearningMemoryContractTests SessionDeletionContractTests LibraryManagementContractTests ConversationReplayTests ConversationControlTests` 创建新支持模块，再执行本目录 [run-native.py](run-native.py)并传 `--support-dir`。两个原生探针都断言旧缺口；后续修复必须另存验证结果，不改写已归档基线。
+重现旧基线须使用修复前版本：在 `agent-service` 下，用虚拟环境、`PYTHONPATH=.` 和兼容测试进程分支运行 `service-probe.py`，新输出另存，不覆盖已归档 `service-baseline.json`；它在内部使用临时数据库。对应旧源码运行 `python3 tests/mac/run-contracts.py LearningMemoryContractTests SessionDeletionContractTests LibraryManagementContractTests ConversationReplayTests ConversationControlTests` 创建支持模块，再执行本目录 [run-native.py](run-native.py)并传 `--support-dir`；两个原生探针断言旧缺口，仅用于旧版本。当前已修复版本使用 [run-repair.py](run-repair.py)和新支持模块，结果另存，不改写已归档基线。
 
-拟议只修被失效守卫停止的恢复回复立即标为中断，保留已展示正文、历史和原版本／停止／恢复次数／保存规则；没有确认一般停止／归档或其他扩大治理。未运行真实供应商、完整 HTTP、原生窗口和自然语言纠正识别质量，未改生产代码、日常数据库、配置或 App。
+当时拟议只修被失效守卫停止的恢复回复立即标为中断，保留已展示正文、历史和原版本／停止／恢复次数／保存规则；该范围后来已确认并实施，其他扩大治理未确认。原只读阶段未运行真实供应商、完整 HTTP、原生窗口和自然语言纠正识别质量，未改生产代码、日常数据库、配置或 App；后续交付与未覆盖项独立记录。

@@ -1,0 +1,22 @@
+{
+  "bundle": "/tmp/review-today-mem02-window-qnwpqe38/MemoryQA.app",
+  "binary": "/tmp/review-today-mem02-window-qnwpqe38/MemoryQA.app/Contents/MacOS/MemoryQA",
+  "state": "/tmp/review-today-mem02-window-qnwpqe38/native-window-state.json",
+  "log": "/tmp/review-today-mem02-window-qnwpqe38/native-window.log",
+  "support": "/tmp/review-today-shared-contracts.vikmetk_",
+  "mode": "preview; sending disabled; SwiftData memory-only",
+  "initial_launcher_pid": 3439,
+  "managed_pid": 3781,
+  "exec_session": 1795,
+  "live_log": "/tmp/review-today-mem02-window-qnwpqe38/native-window-live.log",
+  "ui_access": "blocked: Mac locked; user manually unlock requested; no interaction/visual claim",
+  "qa_closed": true,
+  "ui_checked": false,
+  "blocked_attempts": 2,
+  "relaunch_environment": {
+    "REVIEW_TODAY_M1_UI_FIXTURE": "1",
+    "REVIEW_TODAY_JEV_TEST": "0",
+    "REVIEW_TODAY_QA_INPUT": "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-14-memory-invalidation/service-baseline.json",
+    "REVIEW_TODAY_QA_OUTPUT": "/tmp/review-today-mem02-window-qnwpqe38/native-window-state.json"
+  }
+}

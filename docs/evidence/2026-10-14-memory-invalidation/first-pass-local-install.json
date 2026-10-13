@@ -1,0 +1,425 @@
+{
+  "scope": "MEM-02 decision 232",
+  "date": "2026-10-14T03:42:49.332527",
+  "backup": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238",
+  "app": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "candidate": "/tmp/review-today-mem02-build-dwm0ocal/Build/Products/Debug/Review_Today.app",
+  "original_signature": {
+    "Identifier": "Rex.Review-Today",
+    "CDHash": "3eaec772acd6150ae746c84e44c797678d190537",
+    "TeamIdentifier": "7NDKLL3UJK"
+  },
+  "candidate_signature": {
+    "Identifier": "Rex.Review-Today",
+    "CDHash": "d4cb22c30d050796fd494a1d8c093c4e5668c380",
+    "TeamIdentifier": "7NDKLL3UJK"
+  },
+  "old_executable_sha256": "18a7711c3962deac0add6cec5ade080b5a1a537c8c2c8b86e4c6c3eb234bc65c",
+  "installed_executable_sha256": "4f7c816dab1b148f0ddddd8f144d6b63fb879cc5abd7da694d8384b2e44cd585",
+  "before": [
+    {
+      "database": "Data/ReviewToday.store",
+      "integrity": "ok",
+      "tables": {
+        "ACHANGE": {
+          "count": 1073289,
+          "sha256": "1c273fdde48374e7def8dfd20f5261a0f1762ba7918b3cfc71c0cc13ea014d49",
+          "schema_sha256": "cc2fffd2362e3657eb5176820acc0ace8b4c71c6c61ba429c22c37364653c7c0"
+        },
+        "ATRANSACTION": {
+          "count": 1060310,
+          "sha256": "8b3c2aa2b2b38abc5115c6fba8c13a1725bdf755e7972e9287dc3820e222b3ba",
+          "schema_sha256": "7cf6a409734fc3c891d2b441c7756f47cd2d6c5e48870f914196dfc1ba35e088"
+        },
+        "ATRANSACTIONSTRING": {
+          "count": 22,
+          "sha256": "a4fdb013584e6c535a9dd71db0f46080fa18bbd1936f09871fed2f83d2a280b8",
+          "schema_sha256": "956a840e7294d806e9d84095d86b013c8c78388580b3ffd513c62dcf63008edd"
+        },
+        "ZAGENTMESSAGE": {
+          "count": 37,
+          "sha256": "6447ef7a1d2b126cb81410da7b7eb7985bc03f6d83b100ed4173400cebb171d8",
+          "schema_sha256": "4e45994271afb5d861e3175853c2ea8d8f678965cc5ca53703712cdab760cced"
+        },
+        "ZAGENTRUN": {
+          "count": 19,
+          "sha256": "3d1c5613e6203a9c032a88764a8a2560a61a4bee254e16e15ef98d7de7c2711a",
+          "schema_sha256": "38d01f39486315e6b55852e3993269b82457283a6308cb8549c38e84fe540a34"
+        },
+        "ZAGENTRUNCONTROL": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "d8a9efd8c8cc82da8d688a4377320626fd9fafb7f1485009ae41d09a3238ea2e"
+        },
+        "ZAGENTSESSION": {
+          "count": 7,
+          "sha256": "5f4bc78ca9dd277acf2e53086856eb2f4a0e59ad6fcf1d71df65f6904f8f5686",
+          "schema_sha256": "872b47f4bb20c46dc1ddbb77951390a4e934183ebffa3106f2534b52f03b3502"
+        },
+        "ZAPPSETTINGS": {
+          "count": 1,
+          "sha256": "6bea2405c23205e57bdb98ad82de44e73b78e39d8644395fba51e7495e6898a7",
+          "schema_sha256": "49d1e49bab8ccdfdc411d7bee4ee7f53acb01affd15390ea25395eb1ff4a8da7"
+        },
+        "ZCAPTURETASK": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "9185619d06388b41ba1f7a189f91a517c29611581062a69207c4a27db8a08edb"
+        },
+        "ZFSRSSTATE": {
+          "count": 11,
+          "sha256": "1819ff1a474f44357625136ce074d596d1cfb7f1a8ac40be8573374fd59bb5b7",
+          "schema_sha256": "96d8699a0765c6a0150cc62279e93ba02f96b36c0bd4d9dfe95dbc3ecd1252b0"
+        },
+        "ZKNOWLEDGE": {
+          "count": 11,
+          "sha256": "07d679d180bea8acf85c90d33a77ac179c3a242162ff18532746e09e62d021f2",
+          "schema_sha256": "27a855e44698922a185a216af3716427c4541574bb3aaeff249d69c155f6a2c3"
+        },
+        "ZKNOWLEDGEREFERENCE": {
+          "count": 3,
+          "sha256": "0c76b3845f63ef828a77805dd77b6b3b923978d4a24499b28d7a3cb871291f0c",
+          "schema_sha256": "925a5f78460600facaa3a72e69f4f4441992995870cbee12f9aa33c3b576dc4a"
+        },
+        "ZLEARNINGTASK": {
+          "count": 5,
+          "sha256": "0419772b9796246e5e05bab715ac78b64816bfc7f77737fa30a90e866911aa46",
+          "schema_sha256": "9b03a500f952683f5aacb5add632ed1deff2b7240802fe44682e32d2d97e412d"
+        },
+        "ZQUESTION": {
+          "count": 14,
+          "sha256": "06fa67e7835f03ff54aa436d9931aeaeb0bb72995f318bb97dbf3bcb5ad92620",
+          "schema_sha256": "68631d0a7de14670b08b06049b3926c4785c12e58846e341de62272d9eebf365"
+        },
+        "ZREVIEWATTEMPT": {
+          "count": 3,
+          "sha256": "1b6a026aa131e95769d9c496e33205a9603caf43127e77faa713b356111b53b0",
+          "schema_sha256": "32fb5bc74324fd10f98ad15d5666c0ce993f1ea4440c72676ea9de2006b39cfe"
+        },
+        "ZREVIEWSESSION": {
+          "count": 4,
+          "sha256": "4a7c494cce0ddb855becc8f8d3a2b54e62176083b1e345620cdd342d3f15723a",
+          "schema_sha256": "7cf5a64756ef31904f3bba276a49b897e1a4aa7b14767938ac654049047535b3"
+        },
+        "ZSESSIONEVENTRECORD": {
+          "count": 341,
+          "sha256": "e40431ba9049c35d524a22e840260bd8a42b4784c18c85282b520fb00e550299",
+          "schema_sha256": "e0bf979569eeb2f4bdcbfb11cf9f359d5d9905b93871ecc99b9104ed3937beee"
+        },
+        "ZSESSIONFOLDER": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "0cfcda2f425f0ed0557e8b39ca9e6c2e41c0db023891f4ffc74c628789d9be5a"
+        },
+        "ZSESSIONSUMMARYRECORD": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "91061e84cdc08e69a2c6f939429660cb099843545585902eed9fb9fa4fb7e05a"
+        },
+        "ZSOURCE": {
+          "count": 2,
+          "sha256": "4f0580fb824896eeb916cbcee66bff0791a995c5e713a60218a17f08805e1ebb",
+          "schema_sha256": "d482efa70797baf16e627889564fa4597ca9eb98ea705ff46173dc5a8be1a9b1"
+        },
+        "ZSOURCEREFERENCE": {
+          "count": 8,
+          "sha256": "3a270c209f4baddebaf99383bc06c86bbc40fc7e596a890d6892d5b714b7e112",
+          "schema_sha256": "c64e98d9c8826404a85eab84d75ccf5802c9aca44f2ba325425c8931312c3c21"
+        },
+        "ZTASKEVENTRECORD": {
+          "count": 1,
+          "sha256": "3649dffad3f4f9aeba14c565661aefd35c29d3ece465e3aec1a50e06d9544b50",
+          "schema_sha256": "2eaa319eb6d0866fdf6811227cb2e3c828340f01e301ac3c176b04cf2c46c753"
+        },
+        "Z_METADATA": {
+          "count": 1,
+          "sha256": "ed345b5a3bbb5799d895c12a28685df9b9f192f23d14cd9ed45e79b487d69a93",
+          "schema_sha256": "bb8cb3e542302ecbc62b19c1d8d751bf3b841c4b64d086b9085dcf77e71bd599"
+        },
+        "Z_MODELCACHE": {
+          "count": 1,
+          "sha256": "af86c76f1b8c66f6e89e22f1e7bde65f7d1dba4b5aed4f3de0a4f701d0c31182",
+          "schema_sha256": "b24ed6e39e0c8789d2c4d12f2f84b3677888c8ad8f31c03dd11e469873a738e0"
+        },
+        "Z_PRIMARYKEY": {
+          "count": 22,
+          "sha256": "31a7636d3be8fea69a5830e61992f5f1ba6eb104dbdd653285d4d69867585e9f",
+          "schema_sha256": "6a3df3ef17bb2aed00b393236f97940c5ba0a44c114de8b16c88c834acb3f559"
+        }
+      }
+    },
+    {
+      "database": "agent-harness.sqlite3",
+      "integrity": "ok",
+      "tables": {
+        "agent_memory_policy_v2": {
+          "count": 35,
+          "sha256": "fb3002d45b901c9e875aca7011feebe27fcec5e3a2cd5b94a3c362945641e6d8",
+          "schema_sha256": "2b46d3973ce0392d74385071bed95e67838c770a7fe88d9ee2240d2b2a1ed91e"
+        },
+        "agent_session_deletions": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "de466b5cc5acc265d9b517f59d780fe905bfcbc28c769ff57dca23fe4b5114e7"
+        },
+        "agent_sessions_v2": {
+          "count": 35,
+          "sha256": "cd389ac959b72ec2138f2754d6bac58605493baa8aee5a72b215ca75b14add90",
+          "schema_sha256": "5123436a0dba40c768da716cf68ac998503bdda91d0e6eba18269b8a50d703e8"
+        },
+        "agent_voice_usage": {
+          "count": 1,
+          "sha256": "cb575513ad6b7830e55bfcffd5f2c597e33f6049a7b9a75daae37d29bd0011c2",
+          "schema_sha256": "c9adc940b19de622ee9ea23909d74b4b8d5dceff4900b6c1b27b35ba96be5102"
+        },
+        "harness_tasks": {
+          "count": 15,
+          "sha256": "77fb77bdab9937d73bedd7d277393ebf62973627372723a132425ca5911c2136",
+          "schema_sha256": "cf193b4505f4029dd782eb42fed8c8ffb1a568fc720e5abbbeb86f69a9ee7490"
+        }
+      }
+    },
+    {
+      "database": "agent-harness.review.sqlite3",
+      "integrity": "ok",
+      "tables": {
+        "review_commits": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "994c6f974dd7dc1cfa508c647e63a34573883cc0cf655ebc4f74955aba1c4498"
+        },
+        "review_deleted_sessions": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "85d773ac96737a0f9e4ee55861a34fc5bfa915df2569e66a05bd0e91900af852"
+        },
+        "review_inputs": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "3e89ac64cedd32465f9ad5feae35443690f0901c85650b39cf607da328e00f27"
+        },
+        "review_sessions": {
+          "count": 1,
+          "sha256": "fbdaeafc717cfc40c3f56f6457aa4d993c3594674e86ab0ef7f88f06c79c0385",
+          "schema_sha256": "447bf67b84b34478ad672808f4ab7071b38789cd0bc40e59f15988838e2d586f"
+        },
+        "review_turns": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "f572fd5d0242a2743e68da8c4b73b5f7f8820b926e6edaeffbd6130e6d8c6586"
+        },
+        "review_voice_usage": {
+          "count": 2,
+          "sha256": "ad86d31a0ca1d9b6a0d63081ae747e6baf88f44f6ac7a052b593dad0a993139d",
+          "schema_sha256": "006ad05ba795a1999d6b299a8bccec4d9e94c6561c6d75f74fff067b47e82a54"
+        }
+      }
+    }
+  ],
+  "after": [
+    {
+      "database": "Data/ReviewToday.store",
+      "integrity": "ok",
+      "tables": {
+        "ACHANGE": {
+          "count": 1073289,
+          "sha256": "1c273fdde48374e7def8dfd20f5261a0f1762ba7918b3cfc71c0cc13ea014d49",
+          "schema_sha256": "cc2fffd2362e3657eb5176820acc0ace8b4c71c6c61ba429c22c37364653c7c0"
+        },
+        "ATRANSACTION": {
+          "count": 1060310,
+          "sha256": "8b3c2aa2b2b38abc5115c6fba8c13a1725bdf755e7972e9287dc3820e222b3ba",
+          "schema_sha256": "7cf6a409734fc3c891d2b441c7756f47cd2d6c5e48870f914196dfc1ba35e088"
+        },
+        "ATRANSACTIONSTRING": {
+          "count": 22,
+          "sha256": "a4fdb013584e6c535a9dd71db0f46080fa18bbd1936f09871fed2f83d2a280b8",
+          "schema_sha256": "956a840e7294d806e9d84095d86b013c8c78388580b3ffd513c62dcf63008edd"
+        },
+        "ZAGENTMESSAGE": {
+          "count": 37,
+          "sha256": "6447ef7a1d2b126cb81410da7b7eb7985bc03f6d83b100ed4173400cebb171d8",
+          "schema_sha256": "4e45994271afb5d861e3175853c2ea8d8f678965cc5ca53703712cdab760cced"
+        },
+        "ZAGENTRUN": {
+          "count": 19,
+          "sha256": "3d1c5613e6203a9c032a88764a8a2560a61a4bee254e16e15ef98d7de7c2711a",
+          "schema_sha256": "38d01f39486315e6b55852e3993269b82457283a6308cb8549c38e84fe540a34"
+        },
+        "ZAGENTRUNCONTROL": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "d8a9efd8c8cc82da8d688a4377320626fd9fafb7f1485009ae41d09a3238ea2e"
+        },
+        "ZAGENTSESSION": {
+          "count": 7,
+          "sha256": "5f4bc78ca9dd277acf2e53086856eb2f4a0e59ad6fcf1d71df65f6904f8f5686",
+          "schema_sha256": "872b47f4bb20c46dc1ddbb77951390a4e934183ebffa3106f2534b52f03b3502"
+        },
+        "ZAPPSETTINGS": {
+          "count": 1,
+          "sha256": "6bea2405c23205e57bdb98ad82de44e73b78e39d8644395fba51e7495e6898a7",
+          "schema_sha256": "49d1e49bab8ccdfdc411d7bee4ee7f53acb01affd15390ea25395eb1ff4a8da7"
+        },
+        "ZCAPTURETASK": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "9185619d06388b41ba1f7a189f91a517c29611581062a69207c4a27db8a08edb"
+        },
+        "ZFSRSSTATE": {
+          "count": 11,
+          "sha256": "1819ff1a474f44357625136ce074d596d1cfb7f1a8ac40be8573374fd59bb5b7",
+          "schema_sha256": "96d8699a0765c6a0150cc62279e93ba02f96b36c0bd4d9dfe95dbc3ecd1252b0"
+        },
+        "ZKNOWLEDGE": {
+          "count": 11,
+          "sha256": "07d679d180bea8acf85c90d33a77ac179c3a242162ff18532746e09e62d021f2",
+          "schema_sha256": "27a855e44698922a185a216af3716427c4541574bb3aaeff249d69c155f6a2c3"
+        },
+        "ZKNOWLEDGEREFERENCE": {
+          "count": 3,
+          "sha256": "0c76b3845f63ef828a77805dd77b6b3b923978d4a24499b28d7a3cb871291f0c",
+          "schema_sha256": "925a5f78460600facaa3a72e69f4f4441992995870cbee12f9aa33c3b576dc4a"
+        },
+        "ZLEARNINGTASK": {
+          "count": 5,
+          "sha256": "0419772b9796246e5e05bab715ac78b64816bfc7f77737fa30a90e866911aa46",
+          "schema_sha256": "9b03a500f952683f5aacb5add632ed1deff2b7240802fe44682e32d2d97e412d"
+        },
+        "ZQUESTION": {
+          "count": 14,
+          "sha256": "06fa67e7835f03ff54aa436d9931aeaeb0bb72995f318bb97dbf3bcb5ad92620",
+          "schema_sha256": "68631d0a7de14670b08b06049b3926c4785c12e58846e341de62272d9eebf365"
+        },
+        "ZREVIEWATTEMPT": {
+          "count": 3,
+          "sha256": "1b6a026aa131e95769d9c496e33205a9603caf43127e77faa713b356111b53b0",
+          "schema_sha256": "32fb5bc74324fd10f98ad15d5666c0ce993f1ea4440c72676ea9de2006b39cfe"
+        },
+        "ZREVIEWSESSION": {
+          "count": 4,
+          "sha256": "4a7c494cce0ddb855becc8f8d3a2b54e62176083b1e345620cdd342d3f15723a",
+          "schema_sha256": "7cf5a64756ef31904f3bba276a49b897e1a4aa7b14767938ac654049047535b3"
+        },
+        "ZSESSIONEVENTRECORD": {
+          "count": 341,
+          "sha256": "e40431ba9049c35d524a22e840260bd8a42b4784c18c85282b520fb00e550299",
+          "schema_sha256": "e0bf979569eeb2f4bdcbfb11cf9f359d5d9905b93871ecc99b9104ed3937beee"
+        },
+        "ZSESSIONFOLDER": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "0cfcda2f425f0ed0557e8b39ca9e6c2e41c0db023891f4ffc74c628789d9be5a"
+        },
+        "ZSESSIONSUMMARYRECORD": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "91061e84cdc08e69a2c6f939429660cb099843545585902eed9fb9fa4fb7e05a"
+        },
+        "ZSOURCE": {
+          "count": 2,
+          "sha256": "4f0580fb824896eeb916cbcee66bff0791a995c5e713a60218a17f08805e1ebb",
+          "schema_sha256": "d482efa70797baf16e627889564fa4597ca9eb98ea705ff46173dc5a8be1a9b1"
+        },
+        "ZSOURCEREFERENCE": {
+          "count": 8,
+          "sha256": "3a270c209f4baddebaf99383bc06c86bbc40fc7e596a890d6892d5b714b7e112",
+          "schema_sha256": "c64e98d9c8826404a85eab84d75ccf5802c9aca44f2ba325425c8931312c3c21"
+        },
+        "ZTASKEVENTRECORD": {
+          "count": 1,
+          "sha256": "3649dffad3f4f9aeba14c565661aefd35c29d3ece465e3aec1a50e06d9544b50",
+          "schema_sha256": "2eaa319eb6d0866fdf6811227cb2e3c828340f01e301ac3c176b04cf2c46c753"
+        },
+        "Z_METADATA": {
+          "count": 1,
+          "sha256": "ed345b5a3bbb5799d895c12a28685df9b9f192f23d14cd9ed45e79b487d69a93",
+          "schema_sha256": "bb8cb3e542302ecbc62b19c1d8d751bf3b841c4b64d086b9085dcf77e71bd599"
+        },
+        "Z_MODELCACHE": {
+          "count": 1,
+          "sha256": "af86c76f1b8c66f6e89e22f1e7bde65f7d1dba4b5aed4f3de0a4f701d0c31182",
+          "schema_sha256": "b24ed6e39e0c8789d2c4d12f2f84b3677888c8ad8f31c03dd11e469873a738e0"
+        },
+        "Z_PRIMARYKEY": {
+          "count": 22,
+          "sha256": "31a7636d3be8fea69a5830e61992f5f1ba6eb104dbdd653285d4d69867585e9f",
+          "schema_sha256": "6a3df3ef17bb2aed00b393236f97940c5ba0a44c114de8b16c88c834acb3f559"
+        }
+      }
+    },
+    {
+      "database": "agent-harness.sqlite3",
+      "integrity": "ok",
+      "tables": {
+        "agent_memory_policy_v2": {
+          "count": 35,
+          "sha256": "fb3002d45b901c9e875aca7011feebe27fcec5e3a2cd5b94a3c362945641e6d8",
+          "schema_sha256": "2b46d3973ce0392d74385071bed95e67838c770a7fe88d9ee2240d2b2a1ed91e"
+        },
+        "agent_session_deletions": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "de466b5cc5acc265d9b517f59d780fe905bfcbc28c769ff57dca23fe4b5114e7"
+        },
+        "agent_sessions_v2": {
+          "count": 35,
+          "sha256": "cd389ac959b72ec2138f2754d6bac58605493baa8aee5a72b215ca75b14add90",
+          "schema_sha256": "5123436a0dba40c768da716cf68ac998503bdda91d0e6eba18269b8a50d703e8"
+        },
+        "agent_voice_usage": {
+          "count": 1,
+          "sha256": "cb575513ad6b7830e55bfcffd5f2c597e33f6049a7b9a75daae37d29bd0011c2",
+          "schema_sha256": "c9adc940b19de622ee9ea23909d74b4b8d5dceff4900b6c1b27b35ba96be5102"
+        },
+        "harness_tasks": {
+          "count": 15,
+          "sha256": "77fb77bdab9937d73bedd7d277393ebf62973627372723a132425ca5911c2136",
+          "schema_sha256": "cf193b4505f4029dd782eb42fed8c8ffb1a568fc720e5abbbeb86f69a9ee7490"
+        }
+      }
+    },
+    {
+      "database": "agent-harness.review.sqlite3",
+      "integrity": "ok",
+      "tables": {
+        "review_commits": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "994c6f974dd7dc1cfa508c647e63a34573883cc0cf655ebc4f74955aba1c4498"
+        },
+        "review_deleted_sessions": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "85d773ac96737a0f9e4ee55861a34fc5bfa915df2569e66a05bd0e91900af852"
+        },
+        "review_inputs": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "3e89ac64cedd32465f9ad5feae35443690f0901c85650b39cf607da328e00f27"
+        },
+        "review_sessions": {
+          "count": 1,
+          "sha256": "fbdaeafc717cfc40c3f56f6457aa4d993c3594674e86ab0ef7f88f06c79c0385",
+          "schema_sha256": "447bf67b84b34478ad672808f4ab7071b38789cd0bc40e59f15988838e2d586f"
+        },
+        "review_turns": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "schema_sha256": "f572fd5d0242a2743e68da8c4b73b5f7f8820b926e6edaeffbd6130e6d8c6586"
+        },
+        "review_voice_usage": {
+          "count": 2,
+          "sha256": "ad86d31a0ca1d9b6a0d63081ae747e6baf88f44f6ac7a052b593dad0a993139d",
+          "schema_sha256": "006ad05ba795a1999d6b299a8bccec4d9e94c6561c6d75f74fff067b47e82a54"
+        }
+      }
+    }
+  ],
+  "all_table_digests_unchanged": true,
+  "database_count": 3,
+  "daily_app_started": false,
+  "daily_service_started": false,
+  "supplier_requests": 0,
+  "release": false
+}

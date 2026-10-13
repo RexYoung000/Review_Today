@@ -1,0 +1,32 @@
+{
+  "native-tests-final.log": {
+    "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-mem02-order-contracts-sxx4f6lm/native-tests-final.log",
+    "raw_sha256": "9e1e6224c622bfc9dca271b4aed19651b8c51d6cdcc7dc017576ad65ca3b0eb4",
+    "tracked_sha256": "f4de3c3fb9b72542f5679561c151bf302b26889a4559507930fde646620a666d",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  },
+  "build.log": {
+    "raw_path": "/tmp/review-today-mem02-order-build-n8x3x0qn/build.log",
+    "raw_sha256": "fad519dcfb5608299ce60eaf6685637189fe7fe76c98f5ce58db02740f4f4184",
+    "tracked_sha256": "3566ce5db3792b27435df7dc084d8f2a0b50ff5e0afe872f80dc80ca0dfa404b",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  },
+  "native-window-build.log": {
+    "raw_path": "/tmp/review-today-mem02-final-window-wx0_8xgt/native-window-build.log",
+    "raw_sha256": "0144aae21f4ba9ad89b2217054869e6ace01b045a65eaa21665c1ca3b31e08a3",
+    "tracked_sha256": "0144aae21f4ba9ad89b2217054869e6ace01b045a65eaa21665c1ca3b31e08a3",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  },
+  "service-tests-final.log": {
+    "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-mem02-service-final-85_nxm_m/service-tests-final.log",
+    "raw_sha256": "5d2fe3b1e687d68f724b27912a6a6e734b2b7e1e3cceb773878318927b75e05b",
+    "tracked_sha256": "78c9d697e0f03bf6f182b8f3a3b515bef9538e2ccdd935aad0819cefc4c8cb68",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  },
+  "stop-receipt-order-initial.log": {
+    "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-mem02-receipt-order-2fx7iehw/order-probe.log",
+    "raw_sha256": "4fc4bcee92fef144a640fd91425da1c9793cd53472047f20213c9a4c7b335999",
+    "tracked_sha256": "4fc4bcee92fef144a640fd91425da1c9793cd53472047f20213c9a4c7b335999",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  }
+}

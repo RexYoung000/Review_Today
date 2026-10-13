@@ -1,0 +1,13 @@
+{
+  "files": [
+    "docs/agent-harness-v2.md",
+    "docs/agent-iteration.md",
+    "docs/decision-log.md",
+    "docs/design-references/zcode-agent.md",
+    "docs/evidence/2026-10-14-memory-invalidation/README.md",
+    "docs/work-status.md",
+    "docs/evidence/2026-10-14-memory-invalidation/repair.md"
+  ],
+  "local_links": 342,
+  "errors": []
+}

@@ -142,19 +142,21 @@ enum LearningMemory {
                 session.pendingOperationJSON = nil
                 run.memoryInvalidationRevision = run.revision
             }
+            let rid = run.id
             if ["running", "accepted", "adjusting", "queued", "resuming"].contains(run.status) {
                 run.status = "stopping"
                 if let started = run.startedAt { run.elapsedMS = max(0, Int(Date.now.timeIntervalSince(started) * 1000)) }
                 run.startedAt = nil
                 run.userSummary = "学习关联已更新，旧回复已停止；可重新提问"
-                let rid = run.id
                 let pending = try context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { $0.runID == rid && !$0.sent }))
                 if !pending.contains(where: { $0.action == "stop" || $0.action == "cancel_task" }) {
                     context.insert(AgentRunControl(runID: run.id, sessionID: run.sessionID, action: "stop"))
                 }
-                for message in try context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.runID == rid })) where message.responseState == "streaming" {
-                    message.responseState = "interrupted"
-                }
+            }
+            // A stop receipt may precede source invalidation and its event feed.
+            // Settle the invalid reply independently of the Run's current state.
+            for message in try context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.runID == rid })) where ["streaming", "recovering"].contains(message.responseState) {
+                message.responseState = "interrupted"
             }
         }
     }
