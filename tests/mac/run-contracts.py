@@ -16,7 +16,7 @@ DEFAULT_TESTS = [
     "BrandMaterialContractTests", "AnswerDocumentContractTests", "AppRuntimeContractTests",
     "InteractionFocusTests", "AgentServiceMonitorContractTests", "LearningInputContractTests",
     "ImageInputContractTests",
-    "ConversationReplayTests", "ConversationControlTests", "LearningMemoryContractTests", "SessionDeletionContractTests", "LocalDataResetContractTests",
+    "ConversationReplayTests", "ConversationControlTests", "ConversationSteeringTests", "LearningMemoryContractTests", "SessionDeletionContractTests", "LocalDataResetContractTests",
     "SessionListSelectionTests", "SessionOrganizationContractTests", "IndependentSessionContractTests",
     "LibraryManagementContractTests", "KnowledgeDeckNavigationTests", "KnowledgeIngestionTests", "SaveRecoveryContractTests", "SaveRecoveryHTTPTests",
     "DictationContractTests", "DictationSurfaceContractTests", "TopicCaptureContractTests", "LearningGoalContinuityTests", "ReviewFlowContractTests", "ReviewControllerContractTests", "ReviewUIIntegrationContracts", "ReviewMigrationContractTests",

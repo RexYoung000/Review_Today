@@ -1,0 +1,71 @@
+{
+  "kind": "controlled_service_input_consumption",
+  "samples": [
+    {
+      "case": "steer",
+      "answer_inputs": [
+        [
+          "解释原主题"
+        ],
+        [
+          "解释原主题",
+          "用初学者的说法",
+          "限制在两句话内"
+        ]
+      ],
+      "replies": [
+        "已消费：解释原主题；用初学者的说法；限制在两句话内"
+      ],
+      "paused": false,
+      "run_statuses": [
+        "completed"
+      ],
+      "user_message_count": 3,
+      "knowledge_generation_calls": 0,
+      "real_model_calls": 0,
+      "passed": true
+    },
+    {
+      "case": "queue",
+      "answer_inputs": [
+        [
+          "解释原主题"
+        ],
+        [
+          "随后解释另一个主题"
+        ]
+      ],
+      "replies": [
+        "原请求的完成回答",
+        "已消费：随后解释另一个主题"
+      ],
+      "paused": false,
+      "run_statuses": [
+        "completed",
+        "completed"
+      ],
+      "user_message_count": 2,
+      "knowledge_generation_calls": 0,
+      "real_model_calls": 0,
+      "passed": true
+    },
+    {
+      "case": "stop",
+      "answer_inputs": [
+        [
+          "解释原主题"
+        ]
+      ],
+      "replies": [],
+      "paused": true,
+      "run_statuses": [
+        "interrupted",
+        "queued"
+      ],
+      "user_message_count": 2,
+      "knowledge_generation_calls": 0,
+      "real_model_calls": 0,
+      "passed": true
+    }
+  ]
+}

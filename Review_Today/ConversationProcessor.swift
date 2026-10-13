@@ -426,7 +426,11 @@ enum ConversationProcessor {
         var messages = try context.fetch(FetchDescriptor<AgentMessage>(predicate: #Predicate { $0.sessionID == sid }))
         var tasks = try context.fetch(FetchDescriptor<LearningTask>(predicate: #Predicate { $0.sessionID == sid }))
         var runs = try context.fetch(FetchDescriptor<AgentRun>(predicate: #Predicate { $0.sessionID == sid }))
-        let steering = Set(runs.filter { $0.status == "adjusting" }.map(\.id))
+        let adjusting = Set(runs.filter { $0.status == "adjusting" }.map(\.id))
+        // The optimistic send fence lasts only until local supplements are
+        // admitted. A receipt may belong to a new Run if the old one finished.
+        let hasLocalSteer = messages.contains { $0.role == "user" && $0.deliveryMode == "steer" && $0.deliveryStatus == "local" }
+        let steering = hasLocalSteer ? adjusting : Set<UUID>()
         let pendingControls = try context.fetch(FetchDescriptor<AgentRunControl>(predicate: #Predicate { $0.sessionID == sid && !$0.sent }))
         let stopping = Set(pendingControls.filter { ["stop", "cancel_task"].contains($0.action) }.map(\.runID))
         var memorySessions: [AgentSession]?
@@ -676,8 +680,46 @@ enum ConversationProcessor {
             session.checkpointJSON = try premergedCheckpoint ?? ConversationCheckpoint.merge(recovery, into: session.checkpointJSON,
                                                                                               sessionID: sid, cursor: session.lastSessionEventSeq)
         }
+        try reconcileFinishedSteering(adjusting.subtracting(steering), session: session, runs: runs,
+                                      messages: messages, stopping: stopping, context: context)
         try LearningGoalContinuity.apply(page["goal_ownership"] as? [[String: Any]] ?? [], context: context)
         try context.save()
+    }
+
+    private static func reconcileFinishedSteering(_ released: Set<UUID>, session: AgentSession, runs: [AgentRun],
+                                                  messages: [AgentMessage], stopping: Set<UUID>, context: ModelContext) throws {
+        guard !released.isEmpty, session.status == "active",
+              let checkpoint = object(session.checkpointJSON)?["checkpoint"] as? [String: Any],
+              uuid(checkpoint["session_id"]) == session.id,
+              (checkpoint["lifecycle_revision"] as? Int ?? 0) == session.lifecycleRevision,
+              let records = checkpoint["runs"] as? [String: [String: Any]] else { return }
+        let completed = (checkpoint["messages"] as? [[String: Any]] ?? []).filter { $0["role"] as? String == "coach" }
+        for run in runs where released.contains(run.id) && !stopping.contains(run.id) {
+            guard let saved = records[run.id.uuidString.lowercased()] ?? records[run.id.uuidString],
+                  uuid(saved["session_id"]) == session.id,
+                  (saved["lifecycle_revision"] as? Int ?? 0) == session.lifecycleRevision,
+                  saved["status"] as? String == "completed",
+                  saved["revision"] as? Int == run.revision else { continue }
+            let references = LearningMemory.array(run.memoryReferencesJSON)
+            guard try references.isEmpty || LearningMemory.valid(references,
+                sessions: context.fetch(FetchDescriptor<AgentSession>()), knowledge: context.fetch(FetchDescriptor<Knowledge>())) else { continue }
+            run.status = "completed"
+            run.stage = saved["stage"] as? String ?? "completed"
+            run.userSummary = saved["user_summary"] as? String ?? "本轮已回应"
+            run.startedAt = nil
+            run.elapsedMS = saved["elapsed_ms"] as? Int ?? run.elapsedMS
+            run.completedAt = optionalDate(saved["completed_at"])
+            run.activityKind = saved["activity_kind"] as? String
+            // A completion may already have advanced the cursor while the
+            // optimistic fence was active. Repair only its stable existing row.
+            for message in messages where message.runID == run.id && message.responseState == "interrupted"
+                && message.responseRevision == run.revision {
+                guard let savedMessage = completed.first(where: { uuid($0["message_id"]) == message.id && uuid($0["run_id"]) == run.id }),
+                      let text = savedMessage["content"] as? String, !text.isEmpty else { continue }
+                message.content = text
+                message.responseState = "complete"
+            }
+        }
     }
 
     nonisolated static func object(_ value: String?) -> [String: Any]? {

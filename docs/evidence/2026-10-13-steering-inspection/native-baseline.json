@@ -1,0 +1,14 @@
+{
+  "cursor" : 2,
+  "kind" : "controlled_native_acceptance_projection",
+  "knowledge_count" : 0,
+  "local_active_run_count_after_both_completed" : 1,
+  "new_answer_text" : "追加信息已正常回应",
+  "new_run_status" : "completed",
+  "old_answer_state" : "interrupted",
+  "old_answer_text" : "已显示的旧回答首段",
+  "old_run_after_acceptance" : "adjusting",
+  "old_run_after_server_completion" : "adjusting",
+  "review_count" : 0,
+  "supplement_bound_to_new_run" : true
+}

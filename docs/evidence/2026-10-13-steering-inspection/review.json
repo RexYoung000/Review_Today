@@ -1,0 +1,113 @@
+{
+  "scope": "STEER-01 confirmed decision 228",
+  "baseline_commit": "de01a5c9d688a7b0aff769921138afa2fb8c3798",
+  "source_sha256": {
+    "Review_Today/ConversationProcessor.swift": "699d381a6b400bfef1345cb8bf0127fcca702bcd669e955b16b0aa1f5c109e90",
+    "Review_Today/LearningWorkspace.swift": "0ae1b518442170d5027249b9419ce85eb99b04e8ebbc4cce64e0c1b36a985afa",
+    "Review_Today/ConversationSync.swift": "f55bdf929f07f9447ff0d71bced5b6d1c0c3ec15541b77f17565167be60ea1d7",
+    "Review_Today/Models.swift": "8b5307deb52b810cde1d5394cdd140093456a66dbe798cbc7003003aa37423e1",
+    "agent-service/agent_service/conversation.py": "b3d944c899ce350b576e5536a4919157f53a56d5bcc6ef802867b4fb1adfbb01",
+    "agent-service/agent_service/conversation_context.py": "436d42def532f7a6cbeb851df6583c9eddec077d9881c629f814bad247d54cc0",
+    "agent-service/agent_service/conversation_controls.py": "51e5e5030eea040e8f751e8db6a1f42c00b8082d3d80db171218d8e278384d24",
+    "tests/mac/ConversationSteeringTests.swift": "9e10117e94d6b7ef50fd886c7def2c4330c6db1f9bfaa9df90b2bddfe3f05410",
+    "tests/mac/run-contracts.py": "7b55a0026b59c19ae906a9e88fd747fd3a3b3409f37be3048b60a52926213b01"
+  },
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "production_change": "one native projection file; optimistic fence tied to pending local supplements; completed stable rows reconciled from current authoritative checkpoints",
+  "unchanged": "service routing, provider, schema fields, controls, model budgets, grading and save authority",
+  "checks": {
+    "baseline_native": {
+      "reproduced": true,
+      "active_runs": 1,
+      "old_response": "interrupted"
+    },
+    "native_final": {
+      "exit_code": 0,
+      "new_scenarios": 10,
+      "existing_contracts": [
+        "ConversationReplayTests",
+        "ConversationControlTests"
+      ],
+      "controlled_sse": true
+    },
+    "service_subset": {
+      "exit_code": 0,
+      "passed": 12,
+      "deselected": 67
+    },
+    "service_inputs": {
+      "cases": 3,
+      "real_model_calls": 0,
+      "passed": 3
+    },
+    "debug_build": {
+      "exit_code": 0,
+      "configuration": "Debug",
+      "signed": true,
+      "installed_executable_sha256": "5db3fe7df7c3a1f59097b6d7d97cac90019d91ccace0039422519fed3114c659"
+    },
+    "native_window": {
+      "actual_ui_operated": true,
+      "production_view": true,
+      "synthetic_state": true,
+      "mode": "preview",
+      "activity_after_completion": 0,
+      "qa_closed": true
+    },
+    "local_install": {
+      "backup": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841",
+      "databases": 3,
+      "all_tables_unchanged": true,
+      "normal_app_started": false,
+      "release": false
+    },
+    "local_links": 330
+  },
+  "limitations": [
+    "not full real provider-to-native supplement chain",
+    "not draft or input-focus acceptance",
+    "not full VoiceOver or arbitrary crash testing",
+    "native synthetic checks are not Rex final acceptance"
+  ],
+  "setup_errors": [
+    "GitHub tree API returned 403 and directory browsing unavailable; verified known official events.ts without bypass",
+    "service probe initially cleaned SQLite before detached transport bookkeeping ended; fixed fixture ownership/wait",
+    "first native tests compilation used throwing reads in precondition; corrected fixture, failure log preserved",
+    "initial production patch context name mismatch applied no changes; corrected context",
+    "QA wrapper initially called Dictionary.values as a method; corrected wrapper",
+    "CUA changed-state gate was refreshed; draft typing did not succeed and is not counted"
+  ],
+  "log_artifacts": {
+    "service-tests.log": {
+      "raw_backup": "/tmp/review-today-steering-raw-cb0depww/service-tests.log",
+      "raw_sha256": "6d9850451f74887a72f573fae5e01e3c592ed32730fb6d99fbd005570798fc2f",
+      "tracked_sha256": "7549679a9c38093a92d55e2338374710456dbf16f690ecc8db13426f25a77154",
+      "normalization": "trailing_whitespace_only"
+    },
+    "native-tests-final.log": {
+      "raw_backup": "/tmp/review-today-steering-raw-cb0depww/native-tests-final.log",
+      "raw_sha256": "171968b729938dd313df666c2d1b65426f273ffed2ca4c34ff979fe92afa2c0e",
+      "tracked_sha256": "0c3e23483a6b342c1d026adc48999bf61170736daeb18063119240b1b793c5ed",
+      "normalization": "trailing_whitespace_only"
+    },
+    "native-window.log": {
+      "raw_backup": "/tmp/review-today-steering-raw-cb0depww/native-window.log",
+      "raw_sha256": "a9c6de13878c9b1e058b1b3e3446d16f9e108b16b38b28a1ed70da076c91956f",
+      "tracked_sha256": "a9c6de13878c9b1e058b1b3e3446d16f9e108b16b38b28a1ed70da076c91956f",
+      "normalization": "trailing_whitespace_only"
+    },
+    "native-tests.log": {
+      "raw_backup": "/tmp/review-today-steering-raw-cb0depww/native-tests.log",
+      "raw_sha256": "fdf6a21a1d0f2957e9db619b579a26f48505349c7ded111c6713d32467634678",
+      "tracked_sha256": "47442cd33fe979de775cbc7b823896b2b285cb253a63eaa0bc1c6375f54550fa",
+      "normalization": "trailing_whitespace_only"
+    },
+    "build.log": {
+      "raw_backup": "/tmp/review-today-steering-raw-cb0depww/build.log",
+      "raw_sha256": "08bee3bb562ea9dc7600e134fb49ef59fc4ca176032cae5d9f305c224a17b52e",
+      "tracked_sha256": "02455fa6d6a82d85d6ddb032dd7f67f7657bf947529a3cba43386a0746edc743",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    }
+  },
+  "next_cursor": "ZCode topic 6 first point: layered retries and whole-run upper bound, inspect before alignment"
+}

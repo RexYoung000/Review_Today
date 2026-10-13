@@ -1,0 +1,8 @@
+{
+  "active_count" : 0,
+  "knowledge_count" : 0,
+  "new_status" : "completed",
+  "old_answer_state" : "complete",
+  "old_answer_text" : "检索负责从资料库中找出相关内容，再把这些内容交给模型生成回答。它提供回答依据，但不保证找到的资料一定正确或相关。",
+  "old_status" : "completed"
+}
