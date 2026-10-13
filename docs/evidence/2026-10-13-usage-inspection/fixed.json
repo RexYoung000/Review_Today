@@ -1,0 +1,339 @@
+{
+  "cases": [
+    {
+      "case": "missing_usage_is_not_estimated_or_zero",
+      "expected_boundary": true,
+      "call": {
+        "id": "bb546942-d1b9-479e-91f8-ada94e5167bb",
+        "budget_id": "a7d103ad-5ff0-4f65-9d41-4657573d2e55",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "request_ids": [
+          "5b6769f0-943f-4b0e-9318-a8feb7e9f18d"
+        ],
+        "usage_state": "unavailable",
+        "usage": [],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "same_response_identical_receipt_is_deduplicated",
+      "expected_boundary": true,
+      "call": {
+        "id": "0fd0ca5e-6e46-4f91-a8fd-dc9f8bbb616f",
+        "budget_id": "dc8c18cd-f88d-4193-9a87-b7035a788bef",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "request_ids": [
+          "59f33310-5302-4f75-81ce-8a9d62ab5892"
+        ],
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "same-response",
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null,
+            "request_id": "59f33310-5302-4f75-81ce-8a9d62ab5892"
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "supplier_reported_zero_is_known",
+      "expected_boundary": true,
+      "call": {
+        "id": "2ebfbb8d-e535-4a3e-9ee6-bf9bc1526a94",
+        "budget_id": "593bfd3b-83f6-450f-a07e-2dec8ad4c042",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "request_ids": [
+          "c09acafc-9ee7-4f74-9eb1-32bcb5e5263f"
+        ],
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "zero",
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null,
+            "request_id": "c09acafc-9ee7-4f74-9eb1-32bcb5e5263f"
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "partial_core_fields_marked_reported",
+      "defect_reproduced": false,
+      "repair_verified": true,
+      "call": {
+        "id": "72a6408a-4178-41c0-bb14-b791c69e756c",
+        "budget_id": "ecf2ae27-2e2c-4c09-b8e7-7833a7e73002",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "request_ids": [
+          "72406fc8-d2ef-4309-9c4f-a4336d59d69a"
+        ],
+        "usage_state": "partial",
+        "usage": [
+          {
+            "response_id": "same-response",
+            "input_tokens": 100,
+            "output_tokens": null,
+            "total_tokens": null,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null,
+            "request_id": "72406fc8-d2ef-4309-9c4f-a4336d59d69a"
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "same_response_later_fields_discarded",
+      "defect_reproduced": false,
+      "repair_verified": true,
+      "call": {
+        "id": "9dbe4de6-51f0-472c-958d-7130e9352565",
+        "budget_id": "5698658f-5c48-4862-ad3e-476c6dc15124",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "request_ids": [
+          "df67505c-f37b-43da-a3e8-20dd26181946"
+        ],
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "same-response",
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null,
+            "request_id": "df67505c-f37b-43da-a3e8-20dd26181946"
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "two_requests_one_report_is_partial",
+      "expected_boundary": true,
+      "call": {
+        "id": "75a51708-222c-4005-994b-3648eb72cfdb",
+        "budget_id": "1658594c-2b49-4f5e-a707-0648d8a06448",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 2,
+        "request_ids": [
+          "432d4187-41f5-4bff-a41e-f62451c42d83",
+          "814d70da-3996-4198-9d91-98b67ae2e95c"
+        ],
+        "usage_state": "partial",
+        "usage": [
+          {
+            "response_id": "same-response",
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "late_usage_after_stop_does_not_revive_reply",
+      "expected_boundary": true,
+      "call": {
+        "id": "f3fb7e05-b891-4dee-8c7d-172c934e3e59",
+        "budget_id": "6515f31d-93ad-44ee-a24e-9d72a6403919",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "request_ids": [
+          "7e0e5894-5b66-4144-bc12-24aeab3318d3"
+        ],
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "same-response",
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null,
+            "request_id": "7e0e5894-5b66-4144-bc12-24aeab3318d3"
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "interrupted",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "missing_response_id_duplicate_completed_receipt",
+      "defect_reproduced": false,
+      "repair_verified": true,
+      "call": {
+        "id": "d550838c-e7b6-4190-8a45-90b8c8233687",
+        "budget_id": "9e5c20f2-7bff-4135-a076-112887927f25",
+        "revision": 1,
+        "background": false,
+        "node": "answer",
+        "model": "deepseek-v4-flash",
+        "estimated_input_tokens": 2337,
+        "transport_requests": 1,
+        "request_ids": [
+          "22dd2ff3-1b96-4b0a-8fd8-e097c65bebcf"
+        ],
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": null,
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null,
+            "request_id": "22dd2ff3-1b96-4b0a-8fd8-e097c65bebcf"
+          }
+        ],
+        "status": "returned"
+      },
+      "sdk_requests": 1,
+      "validated_answer": true
+    },
+    {
+      "case": "actual_stream_later_usage_fields_discarded",
+      "defect_reproduced": false,
+      "repair_verified": true,
+      "call": {
+        "id": "512bfd4b-0ad7-45f2-a5de-e329b8817c94",
+        "budget_id": "7ce487c1-6ba4-429b-a103-0363aa1540bf",
+        "revision": 1,
+        "background": false,
+        "node": "answer",
+        "model": "deepseek-v4-flash",
+        "estimated_input_tokens": 2337,
+        "transport_requests": 1,
+        "request_ids": [
+          "5532df31-8a66-4f87-9bef-9e2378b34945"
+        ],
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "stream-response",
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null,
+            "request_id": "5532df31-8a66-4f87-9bef-9e2378b34945"
+          }
+        ],
+        "status": "returned"
+      },
+      "sdk_requests": 1,
+      "validated_answer": true
+    },
+    {
+      "case": "two_distinct_anonymous_requests_with_equal_counts",
+      "expected_boundary": true,
+      "call": {
+        "id": "a6b808fc-6244-438b-aba6-6ce0a4a3d68c",
+        "budget_id": "a80e0d52-0b5f-4859-aa41-a3798c759dc9",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "deepseek-v4-flash",
+        "estimated_input_tokens": 2337,
+        "transport_requests": 2,
+        "request_ids": [
+          "d7665771-7ed6-4ee6-830e-c92d2542aaf8",
+          "6ddce367-8ead-4476-ba37-9c65f84dcf35"
+        ],
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": null,
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null,
+            "request_id": "d7665771-7ed6-4ee6-830e-c92d2542aaf8"
+          },
+          {
+            "response_id": null,
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null,
+            "request_id": "6ddce367-8ead-4476-ba37-9c65f84dcf35"
+          }
+        ],
+        "status": "returned"
+      },
+      "sdk_requests": 2,
+      "validated_answer": true
+    }
+  ],
+  "real_supplier_calls": 0,
+  "daily_data_writes": 0,
+  "mode": "fixed",
+  "note": "Controlled SDK receipts, not supplier incident or billed-total claims."
+}

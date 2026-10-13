@@ -103,7 +103,7 @@ def compatible_double_case():
         return dict(call=call, sdk_requests=2, validated_answer=True)
 
 
-def main():
+def main(expect_fixed=False):
     rows = []
     full = normalized('same-response', input_tokens=100, output_tokens=20, total_tokens=120)
     partial = normalized('same-response', input_tokens=100)
@@ -121,13 +121,16 @@ def main():
     rows.append(dict(case='supplier_reported_zero_is_known', expected_boundary=True, **zeros))
 
     missing_field = ledger_case([partial])
-    assert missing_field['call']['usage_state'] == 'reported'
+    assert missing_field['call']['usage_state'] == ('partial' if expect_fixed else 'reported')
     assert missing_field['call']['usage'][0]['output_tokens'] is None
-    rows.append(dict(case='partial_core_fields_marked_reported', defect_reproduced=True, **missing_field))
+    rows.append(dict(case='partial_core_fields_marked_reported',
+                     defect_reproduced=not expect_fixed, repair_verified=expect_fixed, **missing_field))
 
     enriched = ledger_case([partial, full])
-    assert len(enriched['call']['usage']) == 1 and enriched['call']['usage'][0]['output_tokens'] is None
-    rows.append(dict(case='same_response_later_fields_discarded', defect_reproduced=True, **enriched))
+    assert len(enriched['call']['usage']) == 1
+    assert enriched['call']['usage'][0]['output_tokens'] == (20 if expect_fixed else None)
+    rows.append(dict(case='same_response_later_fields_discarded',
+                     defect_reproduced=not expect_fixed, repair_verified=expect_fixed, **enriched))
 
     fallback = ledger_case([full], requests=2)
     assert fallback['call']['usage_state'] == 'partial'
@@ -138,24 +141,27 @@ def main():
     rows.append(dict(case='late_usage_after_stop_does_not_revive_reply', expected_boundary=True, **stopped))
 
     duplicated = stream_case(None, [dict(input_tokens=100, output_tokens=20, total_tokens=120)] * 2)
-    assert len(duplicated['call']['usage']) == 2
-    assert sum(row['input_tokens'] for row in duplicated['call']['usage']) == 200
-    rows.append(dict(case='missing_response_id_duplicate_completed_receipt', defect_reproduced=True, **duplicated))
+    assert len(duplicated['call']['usage']) == (1 if expect_fixed else 2)
+    assert sum(row['input_tokens'] for row in duplicated['call']['usage']) == (100 if expect_fixed else 200)
+    rows.append(dict(case='missing_response_id_duplicate_completed_receipt',
+                     defect_reproduced=not expect_fixed, repair_verified=expect_fixed, **duplicated))
 
     supplemented = stream_case('stream-response', [dict(input_tokens=100),
                                                   dict(input_tokens=100, output_tokens=20, total_tokens=120)])
     assert len(supplemented['call']['usage']) == 1
-    assert supplemented['call']['usage'][0]['output_tokens'] is None
-    rows.append(dict(case='actual_stream_later_usage_fields_discarded', defect_reproduced=True, **supplemented))
+    assert supplemented['call']['usage'][0]['output_tokens'] == (20 if expect_fixed else None)
+    rows.append(dict(case='actual_stream_later_usage_fields_discarded',
+                     defect_reproduced=not expect_fixed, repair_verified=expect_fixed, **supplemented))
 
     distinct = compatible_double_case()
     rows.append(dict(case='two_distinct_anonymous_requests_with_equal_counts', expected_boundary=True, **distinct))
 
     print(json.dumps(dict(cases=rows, real_supplier_calls=0, daily_data_writes=0,
-                          production_changed=False,
-                          note='Observed baseline defects, not repaired outcomes or supplier incident claims.'),
+                          mode='fixed' if expect_fixed else 'baseline',
+                          note='Controlled SDK receipts, not supplier incident or billed-total claims.'),
                      ensure_ascii=False, indent=2))
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    main(expect_fixed='--expect-fixed' in sys.argv)

@@ -1,0 +1,26 @@
+{
+  "repair-focused.log": {
+    "raw_backup": "/tmp/review-today-usage-repair-focused-20261013.log",
+    "raw_sha256": "93668ca78f17bca6f829e334c1d25fe2d58f36e7ed7a193eacb4ada28a0ce25a",
+    "tracked_sha256": "f6fad21a67a7d718d86baaa13539ef093fc7cad9125e54aa3f6c8653a7f6c1f3",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  },
+  "repair-full.log": {
+    "raw_backup": "/tmp/review-today-usage-repair-full-20261013.log",
+    "raw_sha256": "4d522ba73c02e117805d98d7aaa58dc3587f4a6c4c78fcb6b77529378c876402",
+    "tracked_sha256": "62145a2a7a5ef3be30343b66ee961710ecbf739ebaf3ec285a7ce029ba328939",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  },
+  "native-contracts.log": {
+    "raw_backup": "/tmp/review-today-usage-repair-native-20261013.log",
+    "raw_sha256": "dd84a78bdf3420ad08f7d452c8c7474fbbc67283040c74802198ee2b25c209cf",
+    "tracked_sha256": "c3d748017a836fa67bac6b8d1b67667789e5a492b50b55bfb0269548ee4e2cdb",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  },
+  "repair-deepseek.log": {
+    "raw_backup": "/tmp/review-today-usage-repair-deepseek-20261013.log",
+    "raw_sha256": "5d4c60dfd5b5a2150e67ce2112db8632cb0daa8116eb282d9164fe59ce5de245",
+    "tracked_sha256": "c1b8c1b268c2da5f97072c28ae3eca64fa84d07d490cf199f51dd706139f2cfe",
+    "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+  }
+}

@@ -1,5 +1,6 @@
 import json
 import re
+import uuid
 from collections.abc import Callable
 
 import jiter
@@ -87,7 +88,7 @@ def parse_model(
     on_transport: Callable[[str], None] | None = None,
     on_cancel_handle: Callable[[Callable[[], None]], None] | None = None,
     on_usage: Callable[[dict], None] | None = None,
-    on_request: Callable[[], None] | None = None,
+    on_request: Callable[[], str | None] | None = None,
     images: list[dict] | None = None,
 ) -> BaseModel:
     if images and (PROVIDER != "deepseek" or (model or MODEL) not in {"deepseek-flash", "deepseek-v4-flash"}):
@@ -132,7 +133,12 @@ def _validate_output(schema, raw, response):
                              request_id=getattr(response, "_request_id", None)) from None
 
 
-def _report_usage(response, callback):
+def _request_identity(callback):
+    identity = callback() if callback else None
+    return identity if isinstance(identity, str) and identity.strip() else str(uuid.uuid4())
+
+
+def _report_usage(response, callback, *, request_id=None):
     if callback is None:
         return
     usage = getattr(response, 'usage', None)
@@ -157,6 +163,7 @@ def _report_usage(response, callback):
                                        get(get(usage, 'completion_tokens_details'), 'reasoning_tokens')))
     reported_model = getattr(response, 'model', None)
     if isinstance(reported_model, str): value['reported_model'] = reported_model
+    if request_id is not None: value['request_id'] = request_id
     callback(value)
 
 
@@ -178,7 +185,7 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
         # Use raw SDK events: some compatible providers emit whitespace keepalives
         # before response.created, which the SDK's snapshot aggregator rejects.
         request_timeout = current_budget.get().take()
-        if on_request: on_request()
+        request_id = _request_identity(on_request)
         with client.responses.create(model=selected, input=_input(system, user, images),
            text={"format": _text_format(text_format)}, stream=True,
            timeout=request_timeout, **({"max_output_tokens": max_output_tokens} if max_output_tokens else {}), **_reasoning(reasoning_effort)) as stream:
@@ -187,7 +194,7 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
                 if event.type == "response.refusal.delta":
                     raise ModelCallError("REFUSAL")
                 if event.type in {"response.failed", "response.incomplete", "error"}:
-                    _report_usage(getattr(event, 'response', None), on_usage)
+                    _report_usage(getattr(event, 'response', None), on_usage, request_id=request_id)
                     raise ModelCallError("INCOMPLETE", event.type)
                 if event.type == "response.created":
                     incoming = getattr(event.response, "id", None)
@@ -198,7 +205,7 @@ def _stream_model(system, user, text_format, *, model, timeout, on_partial, on_t
                     response_id = incoming
                 if event.type == "response.completed":
                     response = event.response
-                    _report_usage(response, on_usage)
+                    _report_usage(response, on_usage, request_id=request_id)
                 if event.type != "response.output_text.delta":
                     continue
                 if event.delta.strip():
@@ -259,12 +266,12 @@ def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=
     selected_model = model or MODEL
     params = dict(model=selected_model, input=_input(system, user, images),
                   timeout=current_budget.get().take(), **({"max_output_tokens": max_output_tokens} if max_output_tokens else {}), **_reasoning(reasoning_effort))
-    if on_request: on_request()
+    request_id = _request_identity(on_request)
     if PROVIDER == "deepseek":
         response = client.responses.create(**params, text={"format": _text_format(text_format)})
     else:
         response = client.responses.parse(**params, text_format=text_format)
-    _report_usage(response, on_usage)
+    _report_usage(response, on_usage, request_id=request_id)
     if getattr(response, "status", None) in {"incomplete", "failed", "cancelled"}:
         raise ModelCallError("INCOMPLETE", str(response.status))
     for output in getattr(response, "output", []) or []:
@@ -282,7 +289,7 @@ def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=
     # Some OpenAI-compatible providers complete Responses requests without output.
     # Fall back only for that empty-success case; transport and API errors still raise.
     request_timeout = current_budget.get().take()
-    if on_request: on_request()
+    request_id = _request_identity(on_request)
     completion = client.chat.completions.parse(
         model=selected_model,
         messages=[
@@ -294,7 +301,7 @@ def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=
         **({"reasoning_effort": reasoning_effort} if reasoning_effort else {}),
         **({"max_completion_tokens": max_output_tokens} if max_output_tokens else {}),
     )
-    _report_usage(completion, on_usage)
+    _report_usage(completion, on_usage, request_id=request_id)
     if not completion.choices:
         raise ModelCallError("EMPTY")
     if getattr(completion.choices[0].message, "refusal", None):

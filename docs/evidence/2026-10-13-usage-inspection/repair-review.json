@@ -1,0 +1,113 @@
+{
+  "scope": "USAGE-01 decision 229; stable actual-request identity, idempotent enriched usage and explicit unknown/partial",
+  "baseline_commit": "f6c639118c7dfff5781db2a7f36e19c04945457f",
+  "inspection_commit": "b36f6f4",
+  "authority": "Rex explicitly selected 按这个范围修复（推荐）; contract recorded before code",
+  "source_sha256": {
+    "agent-service/agent_service/run_accounting.py": "c440c7d453f445c554301108e98fcc6470cf520d4723e6bdf8311342bb14dac5",
+    "agent-service/agent_service/openai_client.py": "05269309b4e6fbb15424461910734227da376a78e9ef7afdca296faf9d21fab0",
+    "agent-service/tests/test_usage_receipts.py": "fd3e26e52b8f697013371ca6d5b6adffb1ff56fed0c8b93e97de0673cb68a690",
+    "agent-service/tests/test_run_controls_scope_usage.py": "b8cead8fe186e0c357176c4970e7a1ba0866663715965dc13aa24a9572df2608",
+    "agent-service/agent_service/execution_policy.py": "819f41b5b02a939ad84fb2f98bc7e8818f4a32e697519433e7f43d7d47f99f11",
+    "Review_Today/ConversationProcessor.swift": "699d381a6b400bfef1345cb8bf0127fcca702bcd669e955b16b0aa1f5c109e90",
+    "Review_Today/AgentServiceMonitor.swift": "77a0cb8ad7c2da5e442399a73f949318c9f8b2915b5875459b0f8944fed8d4a2",
+    "docs/evidence/2026-10-13-usage-inspection/probe.py": "5fcbfcc7505514646165b55775d963f2bf8dff8d768860ed49e242f7f12e2e2f"
+  },
+  "provider_settings_sha256": {
+    "agent-service/.env": "79b70ced19be1181171afcf11837ac51293717fdf3fb252a70b49c718f75c17c",
+    "agent-service/providers/deepseek/.env": "443e52c57ad9d369c6c0ddbbf1283f2a4bdb9d8635edb9e735a109be9f574554"
+  },
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "production_scope": "only two service files; actual request identity and ledger upsert/completeness; no model, limit, UI, table migration or price change",
+  "original_artifact_sha256": {
+    "baseline.json": "5fbd82448370c2224f3e8031125270ee096dc437b1b6f74a68a9036b0353adf7",
+    "review.json": "b706746833867d5ab00f3bdfec5a48cdac285573aa47f7c70d5ee1ccacfc6fc4",
+    "service-tests.log": "5c994dc0c0a2423273edd580876cb87dd5c37dbe034348f820f7a77e3a308daf"
+  },
+  "checks": {
+    "focused": {
+      "exit_code": 0,
+      "passed": 197,
+      "subtests": 19,
+      "note": "initial direct TestCase import caused fixture test collection; alias corrected before full run"
+    },
+    "new_scenarios": 16,
+    "full_service": {
+      "exit_code": 0,
+      "passed": 1170,
+      "skipped": 4,
+      "subtests": 521,
+      "provider_process_only": "openai_compatible",
+      "warnings": 5
+    },
+    "deepseek": {
+      "exit_code": 0,
+      "passed": 29,
+      "subtests": 2,
+      "provider_process_only": "deepseek"
+    },
+    "native": {
+      "exit_code": 0,
+      "contracts": [
+        "ConversationReplayTests",
+        "ConversationControlTests"
+      ],
+      "controlled_sse": true,
+      "synthetic_state": true
+    },
+    "same_probe": {
+      "exit_code": 0,
+      "cases": 10,
+      "mode": "fixed",
+      "real_supplier_calls": 0,
+      "sdk_io": "mocked"
+    },
+    "settings_unchanged": true,
+    "baseline_artifacts_unchanged": true,
+    "new_native_build_or_install": false,
+    "service_8742_observed": "no listener; not restarted; native launcher loads current workspace service source",
+    "local_links": 256
+  },
+  "limitations": [
+    "no actual supplier cost reconciliation or billed-total proof",
+    "no new native UI or full provider-to-native usage chain",
+    "anonymous legacy multiple-request usage is retained as uncertain rather than guessed or reconstructed",
+    "four legacy compatible fixtures under plain daily provider configuration still require isolation maintenance",
+    "local cancellation is not guaranteed supplier billing cancellation"
+  ],
+  "log_artifacts": {
+    "repair-focused.log": {
+      "raw_backup": "/tmp/review-today-usage-repair-focused-20261013.log",
+      "raw_sha256": "93668ca78f17bca6f829e334c1d25fe2d58f36e7ed7a193eacb4ada28a0ce25a",
+      "tracked_sha256": "f6fad21a67a7d718d86baaa13539ef093fc7cad9125e54aa3f6c8653a7f6c1f3",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    },
+    "repair-full.log": {
+      "raw_backup": "/tmp/review-today-usage-repair-full-20261013.log",
+      "raw_sha256": "4d522ba73c02e117805d98d7aaa58dc3587f4a6c4c78fcb6b77529378c876402",
+      "tracked_sha256": "62145a2a7a5ef3be30343b66ee961710ecbf739ebaf3ec285a7ce029ba328939",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    },
+    "native-contracts.log": {
+      "raw_backup": "/tmp/review-today-usage-repair-native-20261013.log",
+      "raw_sha256": "dd84a78bdf3420ad08f7d452c8c7474fbbc67283040c74802198ee2b25c209cf",
+      "tracked_sha256": "c3d748017a836fa67bac6b8d1b67667789e5a492b50b55bfb0269548ee4e2cdb",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    },
+    "repair-deepseek.log": {
+      "raw_backup": "/tmp/review-today-usage-repair-deepseek-20261013.log",
+      "raw_sha256": "5d4c60dfd5b5a2150e67ce2112db8632cb0daa8116eb282d9164fe59ce5de245",
+      "tracked_sha256": "c1b8c1b268c2da5f97072c28ae3eca64fa84d07d490cf199f51dd706139f2cfe",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    }
+  },
+  "next_cursor": "ZCode topic 6 third point: budgets and accounting of background summaries and capability probes; inspect before alignment",
+  "doc_sha256": {
+    "docs/work-status.md": "d380fa61603372f40ca713046e1723b1578de7b88589eea650e24b6e3f81ebeb",
+    "docs/decision-log.md": "20da8759ccb6b2d03029c09ec72283c5edb21b66e94a1b27a7defdd6347187ff",
+    "docs/agent-harness-v2.md": "d15d4ca1d730868356bdcae9fcd335314480aad93ba9c84ec8058e8e81be9ddb",
+    "docs/design-references/zcode-agent.md": "e90fa6ab92be6f4b9c0b19fba903945e0dca22c57e207f670032fd82836af1d4",
+    "docs/agent-iteration.md": "a77c814284cc364c71921273aca377e0a638c1cf986b0f1445d0674a6e2d9591",
+    "docs/evidence/2026-10-13-usage-inspection/README.md": "0602b27773b8f505072b1bdc777e8a6752c6e8d6a15dedc216f2842b73f2f127"
+  }
+}
