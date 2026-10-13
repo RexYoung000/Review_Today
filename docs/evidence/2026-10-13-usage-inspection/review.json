@@ -1,0 +1,82 @@
+{
+  "scope": "USAGE-01 inspection: duplicate usage and lost enrichment; proposed repair pending alignment",
+  "baseline_commit": "f6c639118c7dfff5781db2a7f36e19c04945457f",
+  "zcode": {
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "file": "apps/zcode-cli/packages/core/src/runtime/methods/usage-observability.ts",
+    "verification": "same pinned source read in preceding turn; current web refresh returned HTTP 403; no bypass or additional upstream conclusions"
+  },
+  "source_sha256": {
+    "agent-service/agent_service/run_accounting.py": "e0be4340936bef37e16c17b7e426f987439f6e9f45d5e71d2c2afdb5de98a025",
+    "agent-service/agent_service/openai_client.py": "273cd4af2353e124df0c3bb3ab8b4e1a8b8914f64595ab5d08d113bd40caaa16",
+    "agent-service/agent_service/conversation_model_call.py": "a0561064bfd431271bd180236f0f13850131034ebf41e3e386871be244ac2bc9",
+    "agent-service/agent_service/conversation_context.py": "436d42def532f7a6cbeb851df6583c9eddec077d9881c629f814bad247d54cc0",
+    "agent-service/agent_service/conversation_store.py": "17a0a4a7ae198a21329ea2a0d340c4924a719cae05faed68eee2c05440dc46c6",
+    "agent-service/agent_service/checkpoint_delta.py": "7e9a62015f2fad527dfad0573274c25fa84fd7b2fae658254ced9edd86949b90",
+    "agent-service/agent_service/judgments.py": "5c8fc0794870bc97da708fff24ab4d384fa9b0c1db28ef76faceef13d9108077",
+    "agent-service/agent_service/jev_client.py": "05fcef9b380590e86fb8048bf515a5ef74eb41d67efee8014ad231ae7c4e3607",
+    "Review_Today/ConversationCheckpoint.swift": "31c0fefd772c03c0d2fd5f5dd291327a9b2d9eceb9a1b7b40a10680966fcbccd",
+    "Review_Today/ConversationProcessor.swift": "699d381a6b400bfef1345cb8bf0127fcca702bcd669e955b16b0aa1f5c109e90"
+  },
+  "provider_settings_sha256": {
+    "agent-service/.env": "79b70ced19be1181171afcf11837ac51293717fdf3fb252a70b49c718f75c17c",
+    "agent-service/providers/deepseek/.env": "443e52c57ad9d369c6c0ddbbf1283f2a4bdb9d8635edb9e735a109be9f574554"
+  },
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "checks": {
+    "service_subset": {
+      "exit_code": 0,
+      "passed": 5,
+      "warnings": 5
+    },
+    "probe": {
+      "exit_code": 0,
+      "cases": 10,
+      "expected_existing_boundaries": 6,
+      "gap_related_observations": 4,
+      "real_supplier_calls": 0,
+      "sdk_io": "mocked SSE and usage receipts",
+      "database": "temporary SQLite"
+    },
+    "production_unchanged": true,
+    "provider_settings_unchanged": true,
+    "local_links": 159
+  },
+  "confirmed_defects": [
+    "same actual request duplicate receipt without provider response_id appends two usage rows",
+    "same provider response_id later reported fields are discarded by unconditional duplicate filtering"
+  ],
+  "related_observation": "usage_state=reported is based on receipt count even with output_tokens=None; this does not itself prove incorrect visible fees",
+  "guard_results": [
+    "missing whole usage remains unavailable and is not replaced by estimated input",
+    "actual reported zero is retained as known",
+    "same identified identical receipt deduplicates",
+    "partial endpoint reports flagged partial",
+    "stop permits late accounting without reviving reply",
+    "ACK and versioned checkpoint preserve the observed records",
+    "two distinct actual endpoint requests with equal anonymous token counts remain two legitimate records"
+  ],
+  "limitations": [
+    "synthetic provider edge cases, not claims about live supplier incidents or billed totals",
+    "no real model or native UI acceptance",
+    "no price table, spending product or retry change",
+    "repair not authorized or implemented at recording time"
+  ],
+  "proposed_scope": "stable identity per actual request; idempotent receipts with missing-field enrichment; explicit unknown/partial data; keep budgets, suppliers and UI",
+  "log_artifacts": {
+    "service-tests.log": {
+      "raw_backup": "/tmp/review-today-usage-inspection-tests-20261013.log",
+      "raw_sha256": "c2f032a379a2027a26f2ac23049263aac40498e704690bf43fb432a4dec84ceb",
+      "tracked_sha256": "5c994dc0c0a2423273edd580876cb87dd5c37dbe034348f820f7a77e3a308daf",
+      "normalization": "trailing_whitespace_and_empty_eof_lines_only"
+    }
+  },
+  "probe_sha256": "a050bcc6c1a0328088e364ffdd092256a45a926b30b9d10f7b346442c09f32f2",
+  "next_cursor": "topic 6 second point USAGE-01: align minimum repair before implementation",
+  "doc_sha256": {
+    "docs/work-status.md": "3be32fbc7ce8a9b2d1515101d83113b1e8a64add8d3921de378b2e07a9637794",
+    "docs/design-references/zcode-agent.md": "b8a29d210eb6dfe626361bc74ea8abaa50ddc253a156f043899ee1ca2d4c968a",
+    "docs/agent-iteration.md": "34ef18b897f97e2827321c64a145be29affb35bb779ae92c25ebd6aa9d32114b",
+    "docs/evidence/2026-10-13-usage-inspection/README.md": "0807f41fc799d403248f79ddc80ed18ac6046bb54ece0ebe41396c8ad79b7128"
+  }
+}

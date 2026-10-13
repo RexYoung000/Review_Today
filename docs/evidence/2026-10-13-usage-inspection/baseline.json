@@ -1,0 +1,302 @@
+{
+  "cases": [
+    {
+      "case": "missing_usage_is_not_estimated_or_zero",
+      "expected_boundary": true,
+      "call": {
+        "id": "ced21671-78cb-476b-b1b3-1a8472c5112c",
+        "budget_id": "41fe52cf-af93-430c-b398-3efd58b6dfca",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "usage_state": "unavailable",
+        "usage": [],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "same_response_identical_receipt_is_deduplicated",
+      "expected_boundary": true,
+      "call": {
+        "id": "d50738b9-a3cc-478f-8f28-19c4e26a4377",
+        "budget_id": "efa2d9a8-4817-40db-be7a-b88af180d095",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "same-response",
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "supplier_reported_zero_is_known",
+      "expected_boundary": true,
+      "call": {
+        "id": "1e34df0e-6db8-4136-b71d-93f3025c115a",
+        "budget_id": "4b5c142f-f7b7-4af8-9bfd-1eb08f37f45a",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "zero",
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "partial_core_fields_marked_reported",
+      "defect_reproduced": true,
+      "call": {
+        "id": "626de3f6-9841-437c-bd76-f5b1762e9ea4",
+        "budget_id": "19c83d0c-720a-4ebe-bfaa-bf39cbec4135",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "same-response",
+            "input_tokens": 100,
+            "output_tokens": null,
+            "total_tokens": null,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "same_response_later_fields_discarded",
+      "defect_reproduced": true,
+      "call": {
+        "id": "48b92c88-ddad-4a04-874a-a91536f3e9ce",
+        "budget_id": "801f539e-57ea-4df2-b684-9046ce492040",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "same-response",
+            "input_tokens": 100,
+            "output_tokens": null,
+            "total_tokens": null,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "two_requests_one_report_is_partial",
+      "expected_boundary": true,
+      "call": {
+        "id": "19a58e7f-d63c-4e63-9be0-6959fe05b0ca",
+        "budget_id": "aea67be0-9c61-42b0-b3a3-e872f3b6f763",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 2,
+        "usage_state": "partial",
+        "usage": [
+          {
+            "response_id": "same-response",
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "running",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "late_usage_after_stop_does_not_revive_reply",
+      "expected_boundary": true,
+      "call": {
+        "id": "e8ef8912-369d-46a9-8a9c-f42a284b2ea0",
+        "budget_id": "1a304db6-94ea-473d-bff4-e4488ae20706",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "mock",
+        "estimated_input_tokens": 9999,
+        "transport_requests": 1,
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "same-response",
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          }
+        ],
+        "status": "started"
+      },
+      "run_status": "interrupted",
+      "delta_and_ack_preserve_record": true,
+      "visible_messages_changed": false
+    },
+    {
+      "case": "missing_response_id_duplicate_completed_receipt",
+      "defect_reproduced": true,
+      "call": {
+        "id": "1570cd7c-0bb1-41a3-8dd4-f99f28e0fdfd",
+        "budget_id": "45d0d646-b773-489f-9f3d-b779e878b19f",
+        "revision": 1,
+        "background": false,
+        "node": "answer",
+        "model": "deepseek-v4-flash",
+        "estimated_input_tokens": 2337,
+        "transport_requests": 1,
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": null,
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          },
+          {
+            "response_id": null,
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          }
+        ],
+        "status": "returned"
+      },
+      "sdk_requests": 1,
+      "validated_answer": true
+    },
+    {
+      "case": "actual_stream_later_usage_fields_discarded",
+      "defect_reproduced": true,
+      "call": {
+        "id": "406544f8-1fb4-4536-ac4b-b4a71dceb32e",
+        "budget_id": "f1d3dc07-5210-4c5c-b9e1-0cdc26d20bed",
+        "revision": 1,
+        "background": false,
+        "node": "answer",
+        "model": "deepseek-v4-flash",
+        "estimated_input_tokens": 2337,
+        "transport_requests": 1,
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": "stream-response",
+            "input_tokens": 100,
+            "output_tokens": null,
+            "total_tokens": null,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          }
+        ],
+        "status": "returned"
+      },
+      "sdk_requests": 1,
+      "validated_answer": true
+    },
+    {
+      "case": "two_distinct_anonymous_requests_with_equal_counts",
+      "expected_boundary": true,
+      "call": {
+        "id": "c98cfb6d-33e6-4d28-9f85-1c18e5b8f022",
+        "budget_id": "7e20f35d-717d-4f73-9047-944bff340c18",
+        "revision": 1,
+        "background": false,
+        "node": "inspection",
+        "model": "deepseek-v4-flash",
+        "estimated_input_tokens": 2337,
+        "transport_requests": 2,
+        "usage_state": "reported",
+        "usage": [
+          {
+            "response_id": null,
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          },
+          {
+            "response_id": null,
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "total_tokens": 120,
+            "cached_input_tokens": null,
+            "reasoning_output_tokens": null
+          }
+        ],
+        "status": "returned"
+      },
+      "sdk_requests": 2,
+      "validated_answer": true
+    }
+  ],
+  "real_supplier_calls": 0,
+  "daily_data_writes": 0,
+  "production_changed": false,
+  "note": "Observed baseline defects, not repaired outcomes or supplier incident claims."
+}
