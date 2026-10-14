@@ -1,0 +1,184 @@
+{
+  "date": "2026-10-14",
+  "scope": "EVAL-01 existing state coverage and continuous learning read-only inspection",
+  "baseline_commit": "62882506f2f423e23d263719158e27cc66e06a79",
+  "upstream_fixed_commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+  "upstream_sources": [
+    {
+      "path": "packages/formal-proof/src/model.ts",
+      "url": "https://raw.githubusercontent.com/zai-org/ZCode/29628c9acdb81b703bbd4080c207a0e7ce5e276e/packages/formal-proof/src/model.ts",
+      "sha256": "a230ede34e425b8b982ec75bbe3ab47d95405aba4cfd12e8f1073c64294579c3",
+      "lines": 918
+    },
+    {
+      "path": "packages/formal-proof/README.md",
+      "url": "https://raw.githubusercontent.com/zai-org/ZCode/29628c9acdb81b703bbd4080c207a0e7ce5e276e/packages/formal-proof/README.md",
+      "sha256": "3cb2b7904e73caa1bb0ef7ceddabedd06d199afc28775948d3b0f61187b632be",
+      "lines": 15
+    },
+    {
+      "path": "apps/zcode-cli/packages/bootstrap/src/zcode-protocol-v4/projection-state.ts",
+      "url": "https://raw.githubusercontent.com/zai-org/ZCode/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/bootstrap/src/zcode-protocol-v4/projection-state.ts",
+      "sha256": "1d41c53d618afd0eb34dbba0523df5d4cc12b831779bd9dd7bee2954f30189fc",
+      "lines": 220
+    },
+    {
+      "path": "apps/zcode-cli/packages/bootstrap/src/zcode-protocol-v4/product-projection.ts",
+      "url": "https://raw.githubusercontent.com/zai-org/ZCode/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/bootstrap/src/zcode-protocol-v4/product-projection.ts",
+      "sha256": "7ec0c84ff7d129c209066f2226d099764df0f6f0c4fd5cdce3bd6e2c1b467fb4",
+      "lines": 5477
+    }
+  ],
+  "upstream_execution": "source and public tree read only; no dependency installation or ZCode tests/runtime executed",
+  "upstream_limits": [
+    "model.ts exports evaluate and produces string E2E assertions; projection-state.ts has executable availability/routing guards with corresponding rule IDs",
+    "both sources comment about formal-proof-consistency golden tests; the named test file was not found in this pinned public tree and no such test was executed",
+    "initial Python urllib fetch failed due local certificate store; normal TLS-verifying curl succeeded; no certificate bypass"
+  ],
+  "source_sha256": {
+    "agent-service/agent_service/conversation.py": "b3d944c899ce350b576e5536a4919157f53a56d5bcc6ef802867b4fb1adfbb01",
+    "agent-service/agent_service/conversation_model_call.py": "a0561064bfd431271bd180236f0f13850131034ebf41e3e386871be244ac2bc9",
+    "agent-service/agent_service/learning_progress.py": "4346a7ce37438d6a42a4227241bd446a2acb6db04f1c18212ebd394946ccc104",
+    "agent-service/agent_service/comprehensive_check.py": "8824b2ada9bd7c780769fc197909955e4b6d46f1e1c605d22c84b4736372af53",
+    "agent-service/agent_service/schemas.py": "6936104a2258ea2b4e3e2c3748d471ad39aacfec8a1fa6193b579f2335a7684b",
+    "agent-service/agent_service/conversation_prompts.py": "c7b22bff7b8d8225ab62efb61d23823b86cb727564622df6551f89291c8b46d1",
+    "agent-service/agent_service/topic_capture.py": "29e1c51abf1c3d8cfbcced15bccd021811b485774431ecb4a97a79b283472e67",
+    "agent-service/agent_service/harness_store.py": "598dc99c08724c8aa542053ad4312ef43ffce6d48bd999ae3e007f93648f6f17",
+    "Review_Today/ConversationProcessor.swift": "699d381a6b400bfef1345cb8bf0127fcca702bcd669e955b16b0aa1f5c109e90",
+    "agent-service/tests/case_library/schema.py": "6c81ad318ffe99075da68c05d954420f2c89520ce52e15e8ba4200389d164198",
+    "agent-service/tests/case_library/recording.py": "98f4ea722ed9f88f2d059cd79b314b8bfe61828ffee3d8e2e9208e83d0777660",
+    "agent-service/tests/fixtures/agent_cases/catalog.json": "8b431aab96c9bdd29ca36073f8e5f0d3b92cf40e21f61a5acafc8160e6c6e712",
+    "agent-service/tests/test_knowledge_invitation.py": "1f911cc64e6b2a78c301869b4dc79bdc90c7ce49371fc348b9a7e72d951640fc",
+    "agent-service/tests/test_knowledge_invitation_scope.py": "22e3fd9510bc6d7b0ce25fd05576f438498f7567510737b552575a4acf858f3c",
+    "agent-service/tests/test_goal_continuation.py": "afde2fde316d67af2ae70ed9b9f82dd5e095d47ba6aa7f48f34ab40b79cacaf8",
+    "agent-service/tests/test_commit_recovery.py": "d41f9e78a7ac7b73b0594f698dd0b7a7e5febceb0726e69c03dc1f1da058535e",
+    "tests/mac/run-contracts.py": "7b55a0026b59c19ae906a9e88fd747fd3a3b3409f37be3048b60a52926213b01",
+    "tests/mac/TopicCaptureContractTests.swift": "992533b9c36330083aafc5b8c16f71d5f51d2a3bb4ec46abe958c2d4491c6aec",
+    "tests/mac/KnowledgeIngestionTests.swift": "20fd2ce4391389505e9c840d55f325a774abdca103d749228ddf011066b9e71e",
+    "tests/mac/LearningGoalContinuityTests.swift": "d965dbe3c672884adeb0241f552b346119f0c20bd90046bb33490386b9998038",
+    "Review_Today/TopicCapture.swift": "b47c89353fc7235c1b702a821c94a2398675122fe97b8ae7008a09ce3098f2e8",
+    "Review_Today/KnowledgeIngestion.swift": "ba2939f322730f0c159e5716fc63507a55174a922d98bf4e7441eabcd5332a69",
+    "Review_Today/HarnessProcessor.swift": "4768664d464dd114fe62c55672485b3677935f5fe0a8a520ca181da4f7ac9d51",
+    "Review_Today/LearningGoalContinuity.swift": "8c08e9594e80d1e0a4f2dd56ff986f24f2cac667b9a49e9a94c9c3ecb6bc9766"
+  },
+  "production_changed": false,
+  "existing_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "provider_configs_unchanged": true,
+  "synthetic_provider_branch": "openai_compatible selected only within isolated test processes; daily provider files unchanged",
+  "checks": {
+    "controlled_continuous_stages": 12,
+    "same_session": true,
+    "same_invitation": true,
+    "save_generation_callbacks": 1,
+    "service_tests_passed": 55,
+    "service_subtests_passed": 10,
+    "service_existing_warnings": 5,
+    "service_files": [
+      "tests/test_knowledge_invitation.py",
+      "tests/test_knowledge_invitation_scope.py",
+      "tests/test_goal_continuation.py",
+      "tests/test_commit_recovery.py"
+    ],
+    "native_contracts_passed": [
+      "TopicCaptureContractTests",
+      "KnowledgeIngestionTests",
+      "LearningGoalContinuityTests"
+    ],
+    "native_layer": "fresh shared support compilation; synthetic service payloads; KnowledgeIngestionTests uses temporary disk SwiftData with injected failed save and fresh readers",
+    "native_build_dir": "/tmp/review-today-shared-contracts.z4pohx24",
+    "native_binaries_sha256": {
+      "TopicCaptureContractTests": "6e55b99a42023da933b54cfdfea46dbde801fc60943e352f9b8669650ea44e24",
+      "KnowledgeIngestionTests": "40af4ab3274ae1eee63ac741674631e69ffe8e63d488a0ddef0d0f78a3eddcb3",
+      "LearningGoalContinuityTests": "7df21a627fe0fb07b63e7692a2388ace0ede13f68856a65acff7e8aab222b3c3",
+      "libReviewTodayContractSupport.dylib": "6c53af1e33a3567ffd4fba801f93b0e27b583cf301b50842b88c8ba3de43fa21"
+    },
+    "native_warning_diagnostic_lines": 47,
+    "no_new_deterministic_gap_reproduced": true,
+    "real_supplier_requests": 0,
+    "daily_database_written": false,
+    "native_ui_run": false,
+    "daily_app_reinstalled": false,
+    "controlled_trace_mac_ack": "simulated; no native write in this service trace",
+    "same_learning_step": true,
+    "whole_step_understanding_asserted_unknown_at_all_stages": true,
+    "controlled_trace_initial_stages_passed": 12
+  },
+  "case_library": {
+    "catalog_cases": 17,
+    "acceptance_pending": 17,
+    "catalog_modified": false,
+    "pending_does_not_mean_unimplemented": true,
+    "recording_live_layers": [
+      "live_fixed_context",
+      "live_generated_flow"
+    ],
+    "controlled_trace_uses_RunReport": false,
+    "old_evidence_and_failures_preserved": true
+  },
+  "archived_outputs": {
+    "service-tests.log": {
+      "raw_sha256": "b62ede865d64383bde4bef8f60b5426a68dcf8c7e16da712667bb2a36b9406c0",
+      "archived_sha256": "2a39a0a02ccf6b836f916ca1f0dd371ea218c7998f7125116e3341fabbd5ade3",
+      "trailing_whitespace_normalized": true,
+      "raw_copy": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-evaluation-raw-jupcmqxr/service-tests.log"
+    },
+    "native-contracts.log": {
+      "raw_sha256": "d6ebcf8eab5e49a7830762c1fe828a3150ea6d6e2a72a88c197ea3c34128547b",
+      "archived_sha256": "a5b67ec40d41785b129f0901538c56d3dec0d61084ada3c8db71387b9e6aed7c",
+      "trailing_whitespace_normalized": true,
+      "raw_copy": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-evaluation-raw-jupcmqxr/native-contracts.log"
+    },
+    "continuous-trace-initial.json": {
+      "sha256": "cdd4651fd251adade209e8e90e6202133dfc2db2a0a8c733df2c9cf4427850eb",
+      "rename_only": false,
+      "stderr_empty": true
+    },
+    "continuous-trace.json": {
+      "sha256": "a41f26fe5e029fc053c112e4db82a5ed30dbac315a006963ee0f1c081e2d1ca5",
+      "stderr_empty": true
+    }
+  },
+  "findings": [
+    "same-session source/version selection and simulated ACK transition remain consistent across the twelve tested stages",
+    "the continuous trace keeps whole-step understanding unknown throughout; concept pass/save do not certify the whole step",
+    "existing real generated flow and native save have separate evidence; no single same-run fresh real lesson to native save is verified",
+    "existing case library and append-only records can be reused; no new evaluator/framework is needed for this scope"
+  ],
+  "not_verified": [
+    "new real teacher/router/grader/card-generation behavior or semantic quality",
+    "real model through isolated native UI and actual disk save in the same continuous scenario",
+    "complete native UI/VoiceOver/current visual acceptance or Rex daily experience",
+    "ZCode golden-test pass result or complete runtime correctness"
+  ],
+  "next_proposed_scene": {
+    "status": "proposed verification scope; not executed or product requirement",
+    "existing_basis": "QA-01 plus KT-01/KT-02 and SCOPE-01",
+    "topic": "RAG external evidence and its limits",
+    "flow": [
+      "fresh real lesson and bound concept question without saved cards",
+      "answer omitting a required limitation must not pass; concept-complete answer may pass only its concept",
+      "native invitation shows title, key points and one summary; no automatic generation/save or step mastery",
+      "same-point supplement/correction updates invitation source/version; another topic remains separate",
+      "explicit click on latest displayed version invokes existing generation/verification once through existing recovery rules",
+      "actual isolated SwiftData cards, sources and task/session references exist before service ACK",
+      "view details and ask about the saved range; answer matches actual cards/receipt",
+      "saving preserves original learning progress and default review-off choice"
+    ],
+    "bounds": [
+      "use existing provider/model/retry configuration",
+      "temporary service database and independent native store; preserve daily app/data/configuration",
+      "record actual model attempts/usage and failure points; stop on failure rather than broadening scope",
+      "continuous teaching content and score reviewed separately from structural pass; Rex experience remains pending"
+    ],
+    "execution_budget": {
+      "status": "proposed; awaits scope alignment",
+      "actual_model_requests_max": 30,
+      "includes_actual_retries": true,
+      "on_failure": "stop and preserve evidence, no automatic broadening",
+      "daily_configuration_change": false
+    }
+  },
+  "continuous_trace_initial_source_sha256": "5549fdd0de7c702747373811fdc9c83415445213ef0f7bb0bad7ac4ae2c2e536",
+  "continuous_trace_recording_followup": "initial run passed; final trace adds direct original learning-step understanding assertions at all twelve stages instead of relying on task-context defaults; keeps initial output and source hash",
+  "continuous_trace_final_source_sha256": "8d70ec1903cf3bb8b1a8e0ac349baff546db75e2baf98b8d07443f3758ce92f2"
+}

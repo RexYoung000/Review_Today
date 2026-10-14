@@ -1,0 +1,252 @@
+{
+  "layer": "controlled_service_continuous_trace",
+  "steps": [
+    {
+      "label": "learn without a saved card",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "4b5a1bfd-6ed9-4490-bc18-50f07ef069be",
+      "step_id": "d7277caa-f654-4d6d-bbe6-050fe5ff4df2",
+      "understanding": "unknown",
+      "offer": null,
+      "selected_source": null,
+      "knowledge_generation_callbacks": 0,
+      "runs": 1,
+      "messages": 2
+    },
+    {
+      "label": "answer produces an unsaved invitation",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "4b5a1bfd-6ed9-4490-bc18-50f07ef069be",
+      "step_id": "d7277caa-f654-4d6d-bbe6-050fe5ff4df2",
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 1,
+        "status": "offered",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "外部资料作用",
+        "knowledge_ids": [],
+        "save_task_id": null
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：外部资料作用\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\nRAG（检索增强生成）像开卷答题：先找到相关资料，再依据资料回答。它能给回答补充模型未学过的资料，但仍可能检索错或答错。",
+      "knowledge_generation_callbacks": 0,
+      "runs": 2,
+      "messages": 4
+    },
+    {
+      "label": "supplement updates the same invitation",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "4b5a1bfd-6ed9-4490-bc18-50f07ef069be",
+      "step_id": "d7277caa-f654-4d6d-bbe6-050fe5ff4df2",
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 2,
+        "status": "offered",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "外部资料也可能过时，需要核对版本。",
+        "knowledge_ids": [],
+        "save_task_id": null
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：外部资料也可能过时，需要核对版本。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\nRAG（检索增强生成）像开卷答题：先找到相关资料，再依据资料回答。它能给回答补充模型未学过的资料，但仍可能检索错或答错。\n\n外部资料也可能过时，需要核对版本。",
+      "knowledge_generation_callbacks": 0,
+      "runs": 3,
+      "messages": 6
+    },
+    {
+      "label": "defer keeps learning available",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "4b5a1bfd-6ed9-4490-bc18-50f07ef069be",
+      "step_id": "d7277caa-f654-4d6d-bbe6-050fe5ff4df2",
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 2,
+        "status": "deferred",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "外部资料也可能过时，需要核对版本。",
+        "knowledge_ids": [],
+        "save_task_id": null
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：外部资料也可能过时，需要核对版本。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\nRAG（检索增强生成）像开卷答题：先找到相关资料，再依据资料回答。它能给回答补充模型未学过的资料，但仍可能检索错或答错。\n\n外部资料也可能过时，需要核对版本。",
+      "knowledge_generation_callbacks": 0,
+      "runs": 4,
+      "messages": 7
+    },
+    {
+      "label": "correction replaces the saved scope candidate",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "4b5a1bfd-6ed9-4490-bc18-50f07ef069be",
+      "step_id": "d7277caa-f654-4d6d-bbe6-050fe5ff4df2",
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 4,
+        "status": "deferred",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+        "knowledge_ids": [],
+        "save_task_id": null
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\n只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+      "knowledge_generation_callbacks": 0,
+      "runs": 5,
+      "messages": 9
+    },
+    {
+      "label": "an old displayed version cannot generate",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "4b5a1bfd-6ed9-4490-bc18-50f07ef069be",
+      "step_id": "d7277caa-f654-4d6d-bbe6-050fe5ff4df2",
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 4,
+        "status": "deferred",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+        "knowledge_ids": [],
+        "save_task_id": null
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\n只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+      "knowledge_generation_callbacks": 0,
+      "runs": 6,
+      "messages": 10
+    },
+    {
+      "label": "another topic does not enter the old invitation",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "4b5a1bfd-6ed9-4490-bc18-50f07ef069be",
+      "step_id": "d7277caa-f654-4d6d-bbe6-050fe5ff4df2",
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 4,
+        "status": "deferred",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+        "knowledge_ids": [],
+        "save_task_id": null
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\n只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+      "knowledge_generation_callbacks": 0,
+      "runs": 7,
+      "messages": 12
+    },
+    {
+      "label": "save freezes the latest corrected source",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "0b37302f-155b-51b0-b212-eba19cc755f7",
+      "step_id": null,
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 4,
+        "status": "saving",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+        "knowledge_ids": [],
+        "save_task_id": "0b37302f-155b-51b0-b212-eba19cc755f7"
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\n只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+      "knowledge_generation_callbacks": 1,
+      "runs": 8,
+      "messages": 13
+    },
+    {
+      "label": "generation alone is not a saved result",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "0b37302f-155b-51b0-b212-eba19cc755f7",
+      "step_id": null,
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 4,
+        "status": "saving",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+        "knowledge_ids": [],
+        "save_task_id": "0b37302f-155b-51b0-b212-eba19cc755f7"
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\n只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+      "knowledge_generation_callbacks": 1,
+      "runs": 8,
+      "messages": 13
+    },
+    {
+      "label": "matching simulated Mac ACK confirms service saved state",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "4b5a1bfd-6ed9-4490-bc18-50f07ef069be",
+      "step_id": "d7277caa-f654-4d6d-bbe6-050fe5ff4df2",
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 4,
+        "status": "saved",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+        "knowledge_ids": [
+          "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        ],
+        "save_task_id": "0b37302f-155b-51b0-b212-eba19cc755f7"
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\n只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+      "knowledge_generation_callbacks": 1,
+      "runs": 8,
+      "messages": 13
+    },
+    {
+      "label": "duplicate ACK does not resume teaching or generate again",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "4b5a1bfd-6ed9-4490-bc18-50f07ef069be",
+      "step_id": "d7277caa-f654-4d6d-bbe6-050fe5ff4df2",
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 4,
+        "status": "saved",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+        "knowledge_ids": [
+          "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        ],
+        "save_task_id": "0b37302f-155b-51b0-b212-eba19cc755f7"
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\n只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+      "knowledge_generation_callbacks": 1,
+      "runs": 8,
+      "messages": 13
+    },
+    {
+      "label": "worker recovery preserves the saved result",
+      "session_id": "2fd42039-5564-4df6-b130-93fbacff9c00",
+      "active_task_id": "4b5a1bfd-6ed9-4490-bc18-50f07ef069be",
+      "step_id": "d7277caa-f654-4d6d-bbe6-050fe5ff4df2",
+      "understanding": "unknown",
+      "offer": {
+        "id": "74402995-021a-4b86-b99d-65614d29d9ce",
+        "version": 4,
+        "status": "saved",
+        "anchor_message_id": "4528429d-873d-4be4-b616-6667bd87520e",
+        "scope_summary": "只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+        "knowledge_ids": [
+          "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        ],
+        "save_task_id": "0b37302f-155b-51b0-b212-eba19cc755f7"
+      },
+      "selected_source": "仅整理以下知识范围：外部资料作用\n本次可见范围：只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\n只有可访问且检索到的新资料才可能帮助回答，仍需核对来源与适用条件。",
+      "knowledge_generation_callbacks": 1,
+      "runs": 8,
+      "messages": 13
+    }
+  ],
+  "stage_assertions_passed": 12,
+  "same_session": true,
+  "same_invitation": true,
+  "real_supplier_requests": 0,
+  "daily_database_written": false,
+  "native_write": false,
+  "simulated_mac_ack": true,
+  "semantic_quality_verified": false,
+  "production_changed": false
+}
