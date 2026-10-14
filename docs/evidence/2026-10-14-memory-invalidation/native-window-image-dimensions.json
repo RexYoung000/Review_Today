@@ -1,0 +1,17 @@
+{
+  "defaultDark": {
+    "format": "JPEG",
+    "width": 2080,
+    "height": 1640
+  },
+  "narrowDark": {
+    "format": "JPEG",
+    "width": 1522,
+    "height": 1898
+  },
+  "narrowLight": {
+    "format": "JPEG",
+    "width": 1522,
+    "height": 1898
+  }
+}

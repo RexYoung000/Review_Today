@@ -1,0 +1,48 @@
+Window: "记忆失效 · 隔离检查 · 界面预览（不可发送）", App: MemoryQA.
+0 standard window 记忆失效 · 隔离检查 · 界面预览（不可发送）, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<MemoryQA.MemoryQARoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 隔离检查 · 合成服务事件 · 不调用模型
+		3 checkbox Description: 深色, Value: 0
+		4 button (disabled) 排除来源记忆
+		5 button (disabled) 同步停止结果
+		6 button Description: 会话标签, ID: tag
+		7 button Description: 归档, ID: archivebox
+		8 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		9 text 界面预览 · 不可发送；输入仅在内存中，不保存到日常数据库。
+		10 button 预览动效（8 秒）
+		11 scroll area
+			12 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				13 text 用索引解释 RAG 检索
+					14 text 用索引解释 RAG 检索
+				15 container
+					16 button 恢复
+					17 button Description: 运行详情, Help: 展开运行详情, Value: 已收起，已停止回复；目标与进度保留，队列已暂停
+				18 text 合成初稿：可以用索引类比理解检索。
+					19 text 合成初稿：可以用索引类比理解检索。
+				20 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				21 text 回复已中断
+		22 scroll area
+			23 text entry area (settable) 学习输入
+		24 button Description: 添加材料, Value: 已收起, ID: plus
+		25 button Description: 学习方式：Auto, Help: 学习方式, Value: 已收起
+		26 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		27 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 10,590 token。
+模型窗口上限未知；活动上限按本地预算计算。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		28 button Description: 发送, Help: 界面预览不可发送, ID: arrow.up
+		29 text 仅供排版检查 · 不发送、不持久保存
+	30 close button
+	31 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	32 minimize button
+33 menu bar
+	34 MemoryQA
+	35 File
+	36 Edit
+	37 View
+	38 Window
+	39 Help
+
+The focused UI element is 0 standard window 记忆失效 · 隔离检查 · 界面预览（不可发送）, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<MemoryQA.MemoryQARoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1

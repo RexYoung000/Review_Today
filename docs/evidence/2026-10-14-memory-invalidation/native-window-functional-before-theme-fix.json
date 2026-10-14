@@ -1,0 +1,29 @@
+[
+  {
+    "knowledge_count" : 0,
+    "memory_allowed" : true,
+    "phase" : "initial",
+    "preview" : true,
+    "reply_state" : "recovering",
+    "reply_text" : "合成初稿：可以用索引类比理解检索。",
+    "review_count" : 0
+  },
+  {
+    "knowledge_count" : 0,
+    "memory_allowed" : false,
+    "phase" : "immediate",
+    "preview" : true,
+    "reply_state" : "interrupted",
+    "reply_text" : "合成初稿：可以用索引类比理解检索。",
+    "review_count" : 0
+  },
+  {
+    "knowledge_count" : 0,
+    "memory_allowed" : false,
+    "phase" : "synced",
+    "preview" : true,
+    "reply_state" : "interrupted",
+    "reply_text" : "合成初稿：可以用索引类比理解检索。",
+    "review_count" : 0
+  }
+]

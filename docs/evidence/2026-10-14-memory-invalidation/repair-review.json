@@ -2,7 +2,7 @@
   "scope": "MEM-02 approved decision 232",
   "date": "2026-10-14",
   "baseline_commit": "4eacf1c84e96325733ae7aa758418ffc249fe327",
-  "phase": "implementation and program checks complete; signed Debug delivered; native visual/interaction check blocked by locked Mac",
+  "phase": "implementation and program checks complete; signed Debug delivered; scoped isolated native UI checks passed after manual unlock",
   "production_change": "settle unfinished replies for invalid dependencies independently of active Run stop handling; stop/revision rules preserved",
   "production_files_changed": [
     "Review_Today/LearningMemory.swift"
@@ -57,17 +57,28 @@
     },
     "native_window": {
       "built": true,
-      "initial_model_loaded": false,
+      "initial_model_loaded": true,
       "preview_sending_disabled": true,
       "memory_only": true,
-      "actual_ui_operated": false,
-      "visual_observation": false,
-      "blocker": "Mac locked; CUA automatic unlock unavailable; manual unlock requested",
+      "actual_ui_operated": true,
+      "visual_observation": true,
+      "blocker": null,
       "blocked_attempts": 2,
       "qa_closed": true,
       "final_qa_built_against_latest_support": true,
-      "latest_qa_started": false,
-      "first_pass_initial_model_loaded": true
+      "latest_qa_started": true,
+      "first_pass_initial_model_loaded": true,
+      "immediate_before_receipt": true,
+      "body_preserved": true,
+      "receipt_and_event_sync_stable": true,
+      "light_dark_checked": true,
+      "narrow_window_checked": true,
+      "detail_expand_scroll_collapse_checked": true,
+      "accessibility_semantics_checked": true,
+      "full_voiceover_checked": false,
+      "evidence": "native-window-final.json",
+      "historical_lock_record": "native-window-blocked.json",
+      "qa_theme_wiring_refined": true
     },
     "regression_run_states": [
       "running",
@@ -93,6 +104,33 @@
       "late_answer_blocked": true,
       "real_supplier_requests": 0,
       "stale_reference_valid": false
+    },
+    "post_native_ui_daily_data": {
+      "date": "2026-10-14",
+      "scope": "post native UI QA safety verification",
+      "databases": [
+        {
+          "database": "Data/ReviewToday.store",
+          "tables": 25,
+          "all_table_contents_and_schemas_unchanged": true
+        },
+        {
+          "database": "agent-harness.sqlite3",
+          "tables": 5,
+          "all_table_contents_and_schemas_unchanged": true
+        },
+        {
+          "database": "agent-harness.review.sqlite3",
+          "tables": 6,
+          "all_table_contents_and_schemas_unchanged": true
+        }
+      ],
+      "provider_configs_unchanged": true,
+      "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+      "qa_process_closed": true,
+      "daily_app_running": false,
+      "daily_service_port_listening": false,
+      "verification": "read-only table content multiset and schema comparison with original consistent backup"
     }
   },
   "unchanged": "body/history; version/stop/save guards; recovery attempts; card dedup; general stop/archive; models/providers; styles/fonts",
@@ -100,13 +138,15 @@
     "first orphan QA child did not stay running; managed foreground session loaded the fixture and was later closed",
     "temporary QA bundle emitted sandbox extension warning; no visibility claim made",
     "first-pass active-Run-only state fix failed a real native stop-receipt-first replay; moved only invalid reply settlement outside Run activity branch, preserving stop/version handling; final three-state regression and both orders passed",
-    "final Debug updated after checking all tables still match first-pass full data backup; original and first-pass App versions retained"
+    "final Debug updated after checking all tables still match first-pass full data backup; original and first-pass App versions retained",
+    "manual unlock received; native production workspace operated; QA-only theme wiring fixed before claiming dark appearance; system window menu used after border drags did not resize; raw CUA JPEGs and final AX tree saved; QA exited normally"
   ],
   "not_verified": [
-    "real native window/controls/light-dark/narrow layout/accessibility",
     "real provider and full HTTP recovery chain",
     "natural language correction routing quality",
-    "Rex final usage experience"
+    "Rex final usage experience",
+    "complete daily app UI flow and full VoiceOver/keyboard-only completion",
+    "text scaling, minimum-height/expanded-window and separate Reduce Motion run"
   ],
-  "next_cursor": "manual unlock then native preview acceptance, or read-only target verification inspection; do not repeat implementation authorization"
+  "next_cursor": "read-only target verification inspection; MEM-02 isolated native UI review complete, daily usage remains for Rex"
 }

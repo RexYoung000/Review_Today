@@ -88,6 +88,14 @@ struct MemoryQARoot: View {
             LearningWorkspace(monitor: monitor, selectedSessionID: $selected, onOpenKnowledge: { _ in })
         }.frame(minWidth: 760, minHeight: 620)
             .preferredColorScheme(dark ? .dark : .light)
-            .onAppear { selected = fixture.destination.id }
+            .onAppear {
+                selected = fixture.destination.id
+                dark = AppearanceController.shared.isDark
+            }
+            .onChange(of: dark) { _, value in
+                // The QA bundle has its own defaults domain; use the actual
+                // product palette without changing the daily app's preference.
+                AppearanceController.shared.setDark(value, screenPoint: nil, reduceMotion: true)
+            }
     }
 }

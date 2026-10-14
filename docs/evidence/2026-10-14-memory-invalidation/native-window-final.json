@@ -1,0 +1,124 @@
+{
+  "date": "2026-10-14",
+  "scope": "MEM-02 decision 232; scoped native UI review after manual unlock",
+  "authorization": "Rex: 已解锁，继续界面检查",
+  "production_commit": "63b75d8",
+  "environment": {
+    "platform": "real macOS app",
+    "system": "macOS 27.0.1",
+    "build": "26A434",
+    "locale": "Chinese product content",
+    "preview": true,
+    "sending_disabled": true,
+    "swiftdata_memory_only": true,
+    "qa_bundle_id": "Rex.Review-Today.MemoryQA",
+    "support": "/tmp/review-today-shared-contracts._qh45kxu"
+  },
+  "runtime_states": [
+    {
+      "knowledge_count": 0,
+      "memory_allowed": true,
+      "phase": "initial",
+      "preview": true,
+      "reply_state": "recovering",
+      "reply_text": "合成初稿：可以用索引类比理解检索。",
+      "review_count": 0
+    },
+    {
+      "knowledge_count": 0,
+      "memory_allowed": false,
+      "phase": "immediate",
+      "preview": true,
+      "reply_state": "interrupted",
+      "reply_text": "合成初稿：可以用索引类比理解检索。",
+      "review_count": 0
+    },
+    {
+      "knowledge_count": 0,
+      "memory_allowed": false,
+      "phase": "synced",
+      "preview": true,
+      "reply_state": "interrupted",
+      "reply_text": "合成初稿：可以用索引类比理解检索。",
+      "review_count": 0
+    }
+  ],
+  "observations": {
+    "initial": "正在整理完整回复",
+    "immediate_before_stop_sync": "回复已中断",
+    "after_stop_receipt_and_event_page": "回复已中断",
+    "body_unchanged": true,
+    "run_detail_immediate": "学习关联已更新，旧回复已停止；可重新提问",
+    "run_detail_synced": "已停止回复；目标与进度保留，队列已暂停",
+    "light_mode": true,
+    "dark_mode_with_product_palette": true,
+    "narrow_window": true,
+    "narrow_resize_route": "Window > Move & Resize > Left",
+    "images": {
+      "defaultDark": {
+        "format": "JPEG",
+        "width": 2080,
+        "height": 1640
+      },
+      "narrowDark": {
+        "format": "JPEG",
+        "width": 1522,
+        "height": 1898
+      },
+      "narrowLight": {
+        "format": "JPEG",
+        "width": 1522,
+        "height": 1898
+      }
+    },
+    "detail_expand_scroll_collapse": true,
+    "accessibility_semantics": "status text, response body, run-detail labels and expanded state, preview sending restriction inspected in AX tree",
+    "new_actionable_product_findings_in_scope": []
+  },
+  "input_boundary": "same archived public production service pages and actual stop receipt; controlled SDK output; in-process native replay rather than HTTP",
+  "qa_only_refinement": "QA theme toggle now drives existing AppearanceController with reduceMotion true, in its separate defaults domain; production source and daily settings unchanged",
+  "attempts_preserved": [
+    "two earlier locked-Mac attempts remain in native-window-blocked.json",
+    "first light functional UI run preserved before QA theme wiring adjustment",
+    "two border resize drags changed no dimensions; system window menu successfully produced narrow layout"
+  ],
+  "screenshots": [
+    "ui-default-dark-initial.jpg",
+    "ui-default-dark-immediate.jpg",
+    "ui-default-dark-synced.jpg",
+    "ui-narrow-dark.jpg",
+    "ui-narrow-light.jpg",
+    "ui-narrow-details-bottom.jpg"
+  ],
+  "artifact_sha256": {
+    "ui-default-dark-initial.jpg": "336de3a1bc598c46801b557e59ac6c8997073f97c6aba80a4c43b09f0db46940",
+    "ui-default-dark-immediate.jpg": "1b2db12ae964b82a8585045412003918d5440105fceaf2e0202fc61dba2ac2c3",
+    "ui-default-dark-synced.jpg": "1edcd77e604a8a9f19f764c0ea04920f183d35b84205aea31f2f4a6adebfbbbc",
+    "ui-narrow-dark.jpg": "96313d4d76153a04a0c8b8f91aec431f05a90930f620155dced74def36a9784e",
+    "ui-narrow-light.jpg": "9acbd9aca4e8e80411fc6bd052e96246c259a5aadc4e4c9b84a2f7a8a59cd6cf",
+    "ui-narrow-details-bottom.jpg": "3efd986269df4a359b502fcd0256fc5dfdf4ab748e45edf8580a9794356875a6",
+    "NativeMemoryQA.swift": "75cbeb19e6cdecfb461a6e08cc6979adc9e570ab61cf98d0a068881e68eec508",
+    "native-window-final-ax.txt": "ff953dca14c61190aa5cd601ced74c02bc50a7092cbc1e808bbc21d257e1ef36",
+    "native-window-ui-build.log": "0144aae21f4ba9ad89b2217054869e6ace01b045a65eaa21665c1ca3b31e08a3",
+    "native-window-final-ui.log": "8359fbacfeed7ff4f570ccd399e0f98ca7e3fb27dca071c87877fa8835a933b0",
+    "native-window-post-check.json": "3259980dfbd14000f8381f78f159379e1d001e0efcaa07b241a1d536bdee5e6b"
+  },
+  "qa_closed": true,
+  "qa_exit_code": 0,
+  "production_changed_this_turn": false,
+  "daily_app_reinstalled_this_turn": false,
+  "post_check": "native-window-post-check.json",
+  "not_verified": [
+    "real supplier and complete HTTP recovery chain",
+    "natural-language correction routing quality",
+    "complete daily app source-selection-to-answer UI flow",
+    "complete VoiceOver or keyboard-only completion; text scaling, minimum height and expanded window",
+    "Reduce Motion expression beyond the static theme test; no new motion in this repair",
+    "Rex final daily usage and visual acceptance"
+  ],
+  "next_cursor": "target verification: inspect first, then align any new implementation scope",
+  "qa_executable_sha256": "4c7e64ca00db83d860c8e80db60cdfc0c7a60c2e644a181e549479d31923b3bb",
+  "native_support_library_sha256": "786f2a11023e2274e6347815f8147103d9c3e0cdd7efe1bd2a99688bccddce2e",
+  "qa_log_observation": "temporary bundle reports sandbox extension warning; actual CUA window, buttons and screenshots succeeded; log is preserved and not used as the UI success proof",
+  "installed_daily_executable_unchanged": true
+}

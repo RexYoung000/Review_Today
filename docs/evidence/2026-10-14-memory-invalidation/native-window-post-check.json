@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-14",
+  "scope": "post native UI QA safety verification",
+  "databases": [
+    {
+      "database": "Data/ReviewToday.store",
+      "tables": 25,
+      "all_table_contents_and_schemas_unchanged": true
+    },
+    {
+      "database": "agent-harness.sqlite3",
+      "tables": 5,
+      "all_table_contents_and_schemas_unchanged": true
+    },
+    {
+      "database": "agent-harness.review.sqlite3",
+      "tables": 6,
+      "all_table_contents_and_schemas_unchanged": true
+    }
+  ],
+  "provider_configs_unchanged": true,
+  "preexisting_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "qa_process_closed": true,
+  "daily_app_running": false,
+  "daily_service_port_listening": false,
+  "verification": "read-only table content multiset and schema comparison with original consistent backup"
+}
