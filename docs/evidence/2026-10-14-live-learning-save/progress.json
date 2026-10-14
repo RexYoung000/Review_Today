@@ -1,0 +1,28 @@
+{
+  "completed": [
+    "phase_01_real_lesson"
+  ],
+  "next": "phase_02_incomplete_answer",
+  "actual_requests_so_far": 13,
+  "semantic_review": {
+    "question_requires_source_and_generation_risks": true,
+    "explanation_factually_consistent_for_this_topic": true,
+    "brevity_observation": "requested a short small point, generated four-step learning map and a longer explanation; not a pass result for concise natural teaching"
+  },
+  "native_initial_cards": 0,
+  "whole_goal_understanding": "unknown",
+  "production_modified": false,
+  "failed_phase": "phase_02_incomplete_answer",
+  "stopped": true,
+  "unexecuted": [
+    "complete_answer",
+    "correction",
+    "other_topic",
+    "explicit_save",
+    "native_disk_commit_and_ack",
+    "open_details",
+    "saved_status_query",
+    "post_save_progress"
+  ],
+  "knowledge_saved": false
+}

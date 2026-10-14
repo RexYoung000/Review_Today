@@ -1,0 +1,35 @@
+The following is a diff from the previous accessibility tree for Window: "RAG · 真实连续验收 · 真实模型隔离验收" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 49
++		59 button Description: 学习安排, 理解相似度衡量的是相关程度, Value: 已展开
++		60 scroll area
++			61 button Description: 1, 理解相似度衡量的是相关程度, 已讲解, Help: 查看对应内容，不会改变理解状态
++			62 button Description: 2, 识别来源资料本身错误或过时的风险, 待学习, Help: 查看对应内容，不会改变理解状态
++			63 button Description: 3, 识别生成回答不忠实依据资料的风险, 待学习, Help: 查看对应内容，不会改变理解状态
++			64 button Description: 4, 核对来源与适用条件, 待学习, Help: 查看对应内容，不会改变理解状态
++		65 text 点击步骤回看内容；要调整安排，直接告诉我。
+~		47 scroll area Secondary Actions: Scroll Up, Scroll Down
++				66 text RAG（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。
++					67 text RAG（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。
++				68 heading 学习地图
++					69 text 学习地图
++				70 heading 第一步：相似度只衡量「相关」，不衡量「对」
++					71 text 第一步：相似度只衡量「相关」，不衡量「对」
++				72 text 检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。 所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。 换句话说，高相似度是「找到了看起来有关系的材料」，不是「材料可信」。 其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。 因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。
++				73 heading 想一想
++					74 text 想一想
++				75 text 请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。
++					76 text 请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。
++				77 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
++			78 scroll bar (settable, float) 0.9590443686006825
++				79 value indicator (settable, float) 0.9590443686006825
++				80 increment arrow button
++				81 decrement arrow button
++				82 increment page button
++				83 decrement page button
+~		55 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 11,845 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+The focused UI element is 51 text entry area (settable) 学习输入

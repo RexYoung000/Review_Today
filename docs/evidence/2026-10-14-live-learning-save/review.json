@@ -1,0 +1,183 @@
+{
+  "date": "2026-10-14",
+  "authorization": "decision 233; one real RAG flow, max 30 actual model requests including probe/retries; stop on failure; no broader repair",
+  "baseline_commit": "6ba78ece4fdcea85cabeb8339fc2f07666cef414",
+  "outcome": "FAIL at incomplete answer; stopped as authorized",
+  "scope_completed": "bounded verification executed through first product failure, not complete teaching-to-save acceptance",
+  "real_layers": [
+    "fresh real router/coach lesson and question",
+    "real answer router and grader",
+    "production LearningWorkspace and ConversationSync over actual isolated HTTP",
+    "actual independent disk SwiftData reading of zero saved cards"
+  ],
+  "phase_results": [
+    {
+      "phase": "fresh_lesson",
+      "result": "PASS for scoped question/reference and no automatic capture; brevity remains a review observation"
+    },
+    {
+      "phase": "incomplete_answer",
+      "result": "FAIL",
+      "expected": "answer omits generation risks and source/condition checking, so full question cannot pass or certify all bound concepts",
+      "actual": "grader completeness admits missing parts but passed true; all four bound concepts recorded and a full-scope invitation appears"
+    }
+  ],
+  "requests": {
+    "limit": 30,
+    "confirmed_actual_total": 13,
+    "startup_probes": 8,
+    "lesson_router_and_two_coach_requests": 3,
+    "incomplete_answer_router_and_grader": 2,
+    "unique_reported_usage_requests": 13,
+    "reported_tokens_total": 45159,
+    "money_not_calculated": true,
+    "counting_basis": "initial eight confirmed by unique provider-usage reports; subsequent five counted by production _request_identity admission before each SDK call and confirmed by unique usage reports",
+    "initial_host_filter_counter_failure_preserved": true,
+    "gate_cap_and_process_restart_selfcheck_passed": true,
+    "no_requests_after_failed_phase": true
+  },
+  "finding": {
+    "severity": "Blocking for this planned acceptance",
+    "user_answer": "相似度高只说明资料与问题在语义上接近，所以可能相关；但原资料仍可能有错误或过时。",
+    "omitted": [
+      "generation may invent or omit qualifying conditions",
+      "why source and applicable conditions must be checked"
+    ],
+    "grader_passed": true,
+    "grader_completeness": "题目要求分别说明来源资料方面、生成回答方面的风险，以及为何还要核对来源和适用条件。当前回答只覆盖了来源资料方面（错误、过时）和相似度含义，未说明生成回答方面可能不忠实、添加资料中没有的说法或省略条件，也未说明核对来源与适用条件的原因，因此不完整。",
+    "verified_concepts": [
+      "检索相似度",
+      "来源资料可靠性",
+      "生成忠实性",
+      "适用条件核对"
+    ],
+    "invitation_title": "检索相似度、来源资料可靠性、生成忠实性、适用条件核对",
+    "invitation_status": "offered",
+    "knowledge_ids": [],
+    "ordinary_scope": "concept",
+    "whole_step_understanding_still_unknown": true,
+    "source_path": [
+      "conversation.py: effective_pass trusts passed and binding, records all binding concepts",
+      "learning_progress.py: guard_completion checks full-answer evidence for comprehensive scope, ordinary scope only clears whole-step flag",
+      "knowledge_invitation.py: passed/effective concepts plus valid lesson excerpts create the invitation; excerpts prove teaching source, not learner coverage"
+    ],
+    "diagnosis": "model grading decision contradicts its own completeness assessment; ordinary program gate does not require grounded completeness evidence before copying all bound concepts; native faithfully renders the resulting wrong scope",
+    "scope_of_claim": "one real topic and one incomplete answer, not an error rate or complete model evaluation"
+  },
+  "native": {
+    "app": "/tmp/review-today-live-rag-f9zt_11s/LiveRAGQA.app",
+    "original_store": "/tmp/review-today-live-rag-f9zt_11s/app.store",
+    "viewport_points": [
+      1040,
+      820
+    ],
+    "appearance": "light only",
+    "ui_input": "CUA setValue and production Send button",
+    "initial_saved_cards": 0,
+    "final_saved_cards": 0,
+    "sources_saved": 0,
+    "native_receipt_emitted": false,
+    "whole_lesson_unknown_and_review_off": true,
+    "preview_visible": "title, four points, one summary, unsaved status, save/later and review-off reachable after folding checklist and scrolling",
+    "motion_and_assistive_quality_verified": false
+  },
+  "test_runtime_limits": [
+    "native support module reused from same-day EVAL-01 fresh build; production source unchanged since that build",
+    "initial QA alias missed venv metadata/site-packages, fixed before provider calls",
+    "initial host-filtered transport count missed eight successful probes, preserved then counted from matching usage IDs",
+    "same-batch current successful model/strength/stream probe results reused only after observer repair; not a repeated startup probe or substitute teacher/grader",
+    "old App-owned listener was terminated on its exact isolated cwd before native connection retried",
+    "request-entry count is conservative for pretransport failure; this run all thirteen admissions confirmed by provider usage"
+  ],
+  "not_executed": [
+    "complete-answer grading",
+    "same-topic correction/new-topic separation in this real session",
+    "card generation/verification from explicit native save",
+    "real native knowledge card write and matching ACK",
+    "detail-opening/saved status query",
+    "post-save learning continuity",
+    "dark/narrow/Reduce Motion or full VoiceOver",
+    "Rex usage acceptance"
+  ],
+  "proposed_next_repair": {
+    "status": "recommendation only; requires new implementation alignment under decision 233",
+    "rule": "ordinary question explicit required items must be independently answered; missing items preserve pending/needs-supplement status; no full binding concepts or pass-triggered invitation until that check passes",
+    "preserve": [
+      "correct partial-answer feedback and current followup",
+      "explicit manual save entry",
+      "whole-step comprehensive rule",
+      "existing model/provider and calls; no separate grading agent"
+    ],
+    "proposed_real_recheck_budget_max": 17,
+    "total_original_request_limit_remains": 30,
+    "current_batch_not_resumed": true
+  },
+  "unchanged": {
+    "production_sources_count": 178,
+    "production_unchanged": true,
+    "provider_configs_unchanged": true,
+    "preexisting_project_diff_unchanged": true,
+    "daily_app_binary_unchanged": true,
+    "daily_files_before_after": [
+      {
+        "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store",
+        "same_bytes": true
+      },
+      {
+        "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-wal",
+        "same_bytes": true
+      },
+      {
+        "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-shm",
+        "same_bytes": true
+      },
+      {
+        "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3",
+        "same_bytes": true
+      },
+      {
+        "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-wal",
+        "same_bytes": true
+      },
+      {
+        "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-shm",
+        "same_bytes": true
+      },
+      {
+        "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.review.sqlite3",
+        "same_bytes": true
+      }
+    ]
+  },
+  "cleanup": {
+    "native_window_closed": true,
+    "additional_owned_service_terminated": [],
+    "request_count_final": 13,
+    "stopped_marker_preserved": true,
+    "normal_app_not_started": true
+  },
+  "artifacts_sha256": {
+    "NativeLiveQA.swift": "ab6fb01b0cba3a86738f236dc5ccb874e9ed4f68765eb24e945dd0fc2c08ec26",
+    "audit_runtime.py": "d55ce892985b35afdab320e4acf000d4353ffa972b8c0f652402d047c6f0e449",
+    "budget-selfcheck-initial.json": "e083f7a9a2ce3f2dfdc38cca82558360c4b14c696f6dd0d579409acd3747685b",
+    "budget-selfcheck.json": "1b7b382e734cb99d25ddb78b1ddca47c436ff77db0fe5fa304754cfa5c526824",
+    "live-events.jsonl": "0efd1c304b1fbcf6f0b9f598575b6dab51a871ebaf1443f82ff58bc67c2c318a",
+    "native-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-events.jsonl": "283f7dd392194732f19d47d690485a9cc5eeeae8a7b7321073a69feb983ac561",
+    "native-runtime.log": "2ae184d5e2d39ff214ea49635a29f903830192134ad450a097a226251666143e",
+    "phase-01-lesson.json": "5cda9827572103a016ba78a1e7b234427321b43a3f9f96bad8a96ee8ef5afb72",
+    "phase-01-lesson.png": "46730d12f6843946bbba8ddb45ff254a33605d7a6cdc8b72311fbbaed2efcd6f",
+    "phase-01-lesson.txt": "1da13cadfc38116ae611115e8fee3f4bf4b60fbb3e1773aaa009adf5d7073f67",
+    "phase-02-incomplete.json": "e8bc64fcc0c14a18d91038f9f55bef24930334df32972bb4abd9eef5ae794f75",
+    "phase-02-incomplete.png": "ffe30c8f047e727b1ab61333f9b3dcfebcb80390e0f357a1d29ca7776e462bfc",
+    "phase-02-incomplete.txt": "e1e3194354626c6c42f699517d6910df79ffd16a60f4a4e4a90907dbec0efce9",
+    "phase-02-preview.png": "56fd4df3a7a66887979ea9d1011a5a8c75df0ea54fec8753dda7e19d8b542f02",
+    "phase-02-preview.txt": "b1522602a84e73a38803e72b3e5b2f0ffb4ba3e71d49fc53089724077cb6761a",
+    "phase-02-summary.json": "997800056b386c203834645de806a29034bf1950ddfbf8584fea7655e9edbe37",
+    "probe-requests-initial.json": "fbb80fe45efb8c1320532173b94c4b3a13bcedd49859107f7f6d23775baa233d",
+    "progress.json": "340a141e4a1f79793360749f352321cb17b7f54dcae549e322bd3aebb1271922",
+    "request-count.json": "592555c9dc56db5545799f94d0b63b2d16ff4369fb9e63685c7bc6bc4d312b8c",
+    "setup-preflight.log": "01d22fd54b6e033ec6dfabb5b9d090b881094f24fc309ddbf46a5484c8a7b682",
+    "setup.json": "355f3f9612096f0e92ef8d665384f2ba58d797384765d06a9e055421a040e670"
+  }
+}

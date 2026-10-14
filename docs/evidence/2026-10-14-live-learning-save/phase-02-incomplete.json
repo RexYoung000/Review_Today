@@ -1,0 +1,1377 @@
+{
+  "schema_version": 1,
+  "session_id": "651f1e2f-fd7f-46cc-bce9-5aa80f582ddd",
+  "checkpoint": {
+    "session_id": "651f1e2f-fd7f-46cc-bce9-5aa80f582ddd",
+    "mode": "source_learning",
+    "paused": false,
+    "foreground": null,
+    "active_task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+    "messages": [
+      {
+        "message_id": "57ec7daa-bce1-4ffb-b512-c95c4b33028b",
+        "role": "user",
+        "content": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含两类风险：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料，还需要核对来源和适用条件。现在只学习和作答，先不保存知识卡，也不进行本节综合检查。不需要网页搜索。",
+        "content_type": "text",
+        "input_channel": "text",
+        "created_at": "2026-10-14T03:01:50.115410+00:00",
+        "run_id": "ac101432-e031-4a7d-88c8-6e428f453eec",
+        "task_id": null,
+        "context": {
+          "continuation_candidates": [],
+          "summary": "",
+          "recent_messages": [],
+          "knowledge_summaries": [],
+          "handoff": null,
+          "memory_lookup_available": false,
+          "memory_candidates": [],
+          "invalid_memory_run_ids": []
+        },
+        "operation": null
+      },
+      {
+        "message_id": "3e310a7a-2af6-4c86-9319-b8949abb1d53",
+        "role": "coach",
+        "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。\n\n---\n\n### 想一想\n\n请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。",
+        "created_at": "2026-10-14T03:02:01.143622+00:00",
+        "run_id": "ac101432-e031-4a7d-88c8-6e428f453eec",
+        "task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b"
+      },
+      {
+        "message_id": "bdaa58f8-dba6-4151-9c6b-951573728a00",
+        "role": "user",
+        "content": "相似度高只说明资料与问题在语义上接近，所以可能相关；但原资料仍可能有错误或过时。",
+        "content_type": "text",
+        "input_channel": "text",
+        "created_at": "2026-10-14T03:04:27.424568+00:00",
+        "run_id": "7ae3403f-36cd-4407-8973-a327e20f9112",
+        "task_id": null,
+        "context": {
+          "continuation_candidates": [],
+          "summary": "",
+          "recent_messages": [
+            {
+              "role": "user",
+              "content": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含两类风险：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料，还需要核对来源和适用条件。现在只学习和作答，先不保存知识卡，也不进行本节综合检查。不需要网页搜索。"
+            },
+            {
+              "role": "coach",
+              "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。\n\n---\n\n### 想一想\n\n请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。"
+            }
+          ],
+          "knowledge_summaries": [],
+          "handoff": null,
+          "memory_lookup_available": false,
+          "memory_candidates": [],
+          "invalid_memory_run_ids": []
+        },
+        "operation": null
+      },
+      {
+        "message_id": "b2092e08-d799-4174-a70e-7d02fe281b40",
+        "role": "coach",
+        "content": "你答对了最关键的一点：**相似度高只说明资料与问题接近，不等于资料正确**，所以原资料仍可能错误或过时。还缺两块：生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。",
+        "created_at": "2026-10-14T03:04:44.547442+00:00",
+        "run_id": "7ae3403f-36cd-4407-8973-a327e20f9112",
+        "task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b"
+      }
+    ],
+    "runs": {
+      "ac101432-e031-4a7d-88c8-6e428f453eec": {
+        "run_id": "ac101432-e031-4a7d-88c8-6e428f453eec",
+        "session_id": "651f1e2f-fd7f-46cc-bce9-5aa80f582ddd",
+        "task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+        "input_ids": [
+          "57ec7daa-bce1-4ffb-b512-c95c4b33028b"
+        ],
+        "input_channel": "text",
+        "voice_input_ids": [],
+        "revision": 1,
+        "status": "completed",
+        "stage": "completed",
+        "user_summary": "本轮已回应",
+        "attempt": 1,
+        "intent": {
+          "conversation_kind": "ordinary",
+          "clarification_kind": "none",
+          "conversation_repair": false,
+          "reply_feedback": "none",
+          "reply_purpose": "none",
+          "knowledge_card_status": false,
+          "status_context": null,
+          "repair_target_message_id": "",
+          "continuation_evidence": "",
+          "continuation_topic": "",
+          "programming_boundary": "none",
+          "programming_learning_request": "",
+          "resource_boundary": "none",
+          "resource_learning_request": "",
+          "learning_reply_sentence_limit": null,
+          "intents": [
+            "goal"
+          ],
+          "target_task_id": "",
+          "target_description": "讲解 RAG 中高相似度检索不能保证答案正确的原因，并出一道复述题",
+          "relation": "new_topic",
+          "workflow": "source_learning",
+          "scope": "learning",
+          "proposed_actions": [],
+          "clarification": "",
+          "rationale": "用户明确要求直接教一个 RAG 小知识点并出一道复述题，属于分段教学请求，主题与用途明确，无需澄清；用户声明不保存知识卡、不做综合检查、不需要搜索，均按此处理。",
+          "understanding": "unknown",
+          "answer_evidence": "",
+          "topic_closure": null,
+          "learning_goal_ready": true,
+          "direct_teaching": true,
+          "comprehensive_check": null,
+          "answer_only": false,
+          "is_jd": false,
+          "material_focus": "none",
+          "jd_request": "none",
+          "needs_verification": false,
+          "cross_check_sources": false,
+          "requested_mode": null,
+          "refresh_sources": false,
+          "public_search_query": "",
+          "light_reply": "",
+          "session_tags": [
+            "RAG检索与答案可靠性"
+          ],
+          "handoff_source_ids": [],
+          "handoff_step_ids": [],
+          "memory_selections": []
+        },
+        "steps": {
+          "9077712f370533e3825d94b2e84f06deb12dbcce675760694616c9030cbdf631": {
+            "conversation_kind": "ordinary",
+            "clarification_kind": "none",
+            "conversation_repair": false,
+            "reply_feedback": "none",
+            "reply_purpose": "none",
+            "knowledge_card_status": false,
+            "status_context": null,
+            "repair_target_message_id": "",
+            "continuation_evidence": "",
+            "continuation_topic": "",
+            "programming_boundary": "none",
+            "programming_learning_request": "",
+            "resource_boundary": "none",
+            "resource_learning_request": "",
+            "learning_reply_sentence_limit": null,
+            "intents": [
+              "goal"
+            ],
+            "target_task_id": "",
+            "target_description": "讲解 RAG 中高相似度检索不能保证答案正确的原因，并出一道复述题",
+            "relation": "new_topic",
+            "workflow": "source_learning",
+            "scope": "learning",
+            "proposed_actions": [],
+            "clarification": "",
+            "rationale": "用户明确要求直接教一个 RAG 小知识点并出一道复述题，属于分段教学请求，主题与用途明确，无需澄清；用户声明不保存知识卡、不做综合检查、不需要搜索，均按此处理。",
+            "understanding": "unknown",
+            "answer_evidence": "",
+            "topic_closure": null,
+            "learning_goal_ready": true,
+            "direct_teaching": true,
+            "comprehensive_check": null,
+            "answer_only": false,
+            "is_jd": false,
+            "material_focus": "none",
+            "jd_request": "none",
+            "needs_verification": false,
+            "cross_check_sources": false,
+            "requested_mode": null,
+            "refresh_sources": false,
+            "public_search_query": "",
+            "light_reply": "",
+            "session_tags": [
+              "RAG检索与答案可靠性"
+            ],
+            "handoff_source_ids": [],
+            "handoff_step_ids": [],
+            "memory_selections": []
+          },
+          "a91c58b9e7a30dbbadcba39d0d5d1aeb9ec4324baf19a272c68729dd3e20ab2d": {
+            "official_sources_required": false,
+            "source_domains": [],
+            "concepts": [
+              "RAG 检索相似度与语义相关性",
+              "检索结果作为证据的质量：错误与过时资料",
+              "生成阶段不忠实于检索证据（幻觉/无依据扩写）",
+              "引用核对与适用条件判断"
+            ],
+            "public_query": "RAG 高相似度检索为何不能保证答案正确 检索证据质量 生成忠实性",
+            "new_knowledge": true
+          },
+          "73b6a24a65668109f0da501ee3ad36322300efaf73f2d68f0b1d9cd10a2bf901": {
+            "message": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。",
+            "check_question": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。",
+            "evidence_state": "unverified",
+            "learning_plan": {
+              "goal": "理解 RAG 中高相似度检索不能保证答案正确的原因，并能复述来源与生成两类风险",
+              "steps": [
+                "理解相似度衡量的是相关程度",
+                "识别来源资料本身错误或过时的风险",
+                "识别生成回答不忠实依据资料的风险",
+                "核对来源与适用条件"
+              ],
+              "success_check": "能用自己的话说明高相似度不等于正确，并分别指出来源资料和生成回答两方面的风险，说明为何需核对来源与适用条件",
+              "step_conditions": [
+                "能说明相似度分数衡量的是问题与资料的相关程度，而非事实正确性",
+                "能举例说明来源资料可能存在错误或过时，导致高相似度片段仍不可信",
+                "能说明生成回答可能没有忠实依据资料，出现增添或省略限定条件",
+                "能在判断答案时主动核对来源可靠性与适用条件"
+              ],
+              "step_ids": []
+            },
+            "learning_concepts": [
+              "RAG",
+              "检索相似度",
+              "来源资料可靠性",
+              "生成忠实性",
+              "适用条件核对"
+            ],
+            "check_binding": {
+              "step_title": "理解相似度衡量的是相关程度",
+              "concepts": [
+                "检索相似度",
+                "来源资料可靠性",
+                "生成忠实性",
+                "适用条件核对"
+              ],
+              "evidence_quotes": [
+                "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。",
+                "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。"
+              ],
+              "scope": "concept"
+            },
+            "capture_update": null
+          }
+        },
+        "action_ids": [],
+        "error_code": null,
+        "created_at": "2026-10-14T03:01:50.115372+00:00",
+        "updated_at": "2026-10-14T03:02:01.153008+00:00",
+        "started_at": null,
+        "elapsed_ms": 11033,
+        "attempt_durations": [
+          11033
+        ],
+        "first_text_ms": 5898,
+        "activity_candidate": "lesson_step",
+        "activity_kind": "lesson_step",
+        "completed_at": "2026-10-14T03:02:01.152923+00:00",
+        "paused_entry": false,
+        "lifecycle_revision": 0,
+        "thinking_strength": "smart",
+        "model_calls": [
+          {
+            "id": "b50c8c50-048f-410b-8f8c-c8840a00033b",
+            "budget_id": "8459edd4-3b93-419b-9b3a-64046eb11222",
+            "revision": 1,
+            "background": false,
+            "node": "intent",
+            "model": "deepseek-flash",
+            "estimated_input_tokens": 29239,
+            "transport_requests": 1,
+            "request_ids": [
+              "821fa5c1-bbfa-40d7-ad8b-49f860b1002c"
+            ],
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "6d8c6834-3b18-439b-9017-09062eb24bee",
+                "input_tokens": 13266,
+                "output_tokens": 397,
+                "total_tokens": 13663,
+                "cached_input_tokens": 12672,
+                "reasoning_output_tokens": 0,
+                "reported_model": "deepseek-flash",
+                "request_id": "821fa5c1-bbfa-40d7-ad8b-49f860b1002c"
+              }
+            ],
+            "status": "returned"
+          },
+          {
+            "id": "e3b3a8e1-ae0d-462b-a6a3-888a0ec4235a",
+            "budget_id": "8459edd4-3b93-419b-9b3a-64046eb11222",
+            "revision": 1,
+            "background": false,
+            "node": "teaching_preparation",
+            "model": "deepseek-flash",
+            "estimated_input_tokens": 1910,
+            "transport_requests": 1,
+            "request_ids": [
+              "1f5128aa-262d-41dc-ab3b-5790595819f3"
+            ],
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "c12f1025-26db-47ad-846f-7eb64de4aec2",
+                "input_tokens": 970,
+                "output_tokens": 103,
+                "total_tokens": 1073,
+                "cached_input_tokens": 512,
+                "reasoning_output_tokens": 0,
+                "reported_model": "deepseek-flash",
+                "request_id": "1f5128aa-262d-41dc-ab3b-5790595819f3"
+              }
+            ],
+            "status": "returned"
+          },
+          {
+            "id": "6d665287-c6f6-49bf-af97-91753b939970",
+            "budget_id": "8459edd4-3b93-419b-9b3a-64046eb11222",
+            "revision": 1,
+            "background": false,
+            "node": "lesson",
+            "model": "deepseek-v4-flash",
+            "estimated_input_tokens": 11845,
+            "transport_requests": 1,
+            "request_ids": [
+              "e0feb53b-349b-4579-9a3c-c7b88c27c370"
+            ],
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "35f07c34-6a94-407f-8806-d4332c560935",
+                "input_tokens": 5831,
+                "output_tokens": 785,
+                "total_tokens": 6616,
+                "cached_input_tokens": 2944,
+                "reasoning_output_tokens": 0,
+                "reported_model": "deepseek-flash",
+                "request_id": "e0feb53b-349b-4579-9a3c-c7b88c27c370"
+              }
+            ],
+            "status": "returned"
+          }
+        ],
+        "execution_budget": {
+          "id": "8459edd4-3b93-419b-9b3a-64046eb11222",
+          "started": 1791946910.118963,
+          "attempts": 3,
+          "estimated_input_tokens": 42994
+        },
+        "memory_references": [],
+        "context_capacity": {
+          "estimated": true,
+          "input_tokens": 11845,
+          "input_budget": 256000,
+          "compact_threshold": 220000,
+          "compact_target": 144000,
+          "ratio": 0.04626953125,
+          "output_reserve": 4096,
+          "model_window": 1000000,
+          "budget_source": "local_limit",
+          "omitted_narrative": []
+        },
+        "dialogue_policy": "dialogue-materials-11",
+        "request_scope": {
+          "input_ids": [
+            "57ec7daa-bce1-4ffb-b512-c95c4b33028b"
+          ],
+          "resource_boundary": "none",
+          "programming_boundary": "none"
+        },
+        "decision_input_ids": [
+          "57ec7daa-bce1-4ffb-b512-c95c4b33028b"
+        ],
+        "decision_mode": "source_learning",
+        "completed_operations": {
+          "7da5c2a7582acfc9fb6152430154fe0824dffb133955db14d60c4b61148513d6": false
+        },
+        "material_reads": [],
+        "material_sources": [],
+        "allowed_source_urls": [],
+        "teaching_signature": "d2f7b14f1b228ffe1d1a0bf68501ecf457adff3c82b2522174eb6665445172c1",
+        "source_selection_packet": {
+          "input_signature": "6619eabf4a8a4ef52fb333f99ad60f4fa92723db54bd0caead6be13fee3914be",
+          "query": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含两类风险：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料，还需要核对来源和适用条件。现在只学习和作答，先不保存知识卡，也不进行本节综合检查。不需要网页搜索。\nRAG 高相似度检索为何不能保证答案正确 检索证据质量 生成忠实性",
+          "entries": {},
+          "revision": 1
+        },
+        "source_selection_records": {
+          "evidence_reuse": [],
+          "lesson": []
+        },
+        "search_state": "not_called",
+        "verification_notice": "",
+        "teaching_evidence": {
+          "state": "unverified",
+          "summary": "",
+          "sources": []
+        },
+        "teaching_sources": [],
+        "learning_concepts": [
+          "RAG",
+          "检索相似度",
+          "来源资料可靠性",
+          "生成忠实性",
+          "适用条件核对"
+        ],
+        "answer_sources": [
+          {
+            "source_id": "e03715a5-31fd-54a3-aa21-2c031c0844d3",
+            "version": 1,
+            "type": "agent_generated",
+            "url": "",
+            "title": "Agent 生成讲义",
+            "fetched_at": "2026-10-14T03:01:54.867161+00:00",
+            "locator": "task:6d539312-620c-49cd-b3e8-5a74371ab85b",
+            "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+          }
+        ],
+        "answer_source_type": "agent_generated",
+        "teaching_step_id": "4a859bf0-e323-4264-b19d-30c039a1b149",
+        "teaching_plan_version": 1,
+        "execution_complete": true
+      },
+      "7ae3403f-36cd-4407-8973-a327e20f9112": {
+        "run_id": "7ae3403f-36cd-4407-8973-a327e20f9112",
+        "session_id": "651f1e2f-fd7f-46cc-bce9-5aa80f582ddd",
+        "task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+        "input_ids": [
+          "bdaa58f8-dba6-4151-9c6b-951573728a00"
+        ],
+        "input_channel": "text",
+        "voice_input_ids": [],
+        "revision": 1,
+        "status": "completed",
+        "stage": "completed",
+        "user_summary": "本轮已回应",
+        "attempt": 1,
+        "intent": {
+          "conversation_kind": "ordinary",
+          "clarification_kind": "none",
+          "conversation_repair": false,
+          "reply_feedback": "none",
+          "reply_purpose": "none",
+          "knowledge_card_status": false,
+          "status_context": null,
+          "repair_target_message_id": "",
+          "continuation_evidence": "",
+          "continuation_topic": "",
+          "programming_boundary": "none",
+          "programming_learning_request": "",
+          "resource_boundary": "none",
+          "resource_learning_request": "",
+          "learning_reply_sentence_limit": null,
+          "intents": [
+            "answer"
+          ],
+          "target_task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+          "target_description": "复述 RAG 高相似度仍不能保证答案正确的原因与两类风险",
+          "relation": "continuation",
+          "workflow": null,
+          "scope": "conversation",
+          "proposed_actions": [],
+          "clarification": "",
+          "rationale": "用户在回答当前复述题，内容涉及相似度只衡量相关性、资料可能错误过时，虽未完整覆盖生成风险，仍属本轮作答，提交评价节点判断。",
+          "understanding": "unknown",
+          "answer_evidence": "相似度高只说明资料与问题在语义上接近，所以可能相关；但原资料仍可能有错误或过时。",
+          "topic_closure": null,
+          "learning_goal_ready": true,
+          "direct_teaching": false,
+          "comprehensive_check": null,
+          "answer_only": false,
+          "is_jd": false,
+          "material_focus": "none",
+          "jd_request": "none",
+          "needs_verification": false,
+          "cross_check_sources": false,
+          "requested_mode": null,
+          "refresh_sources": false,
+          "public_search_query": "",
+          "light_reply": "",
+          "session_tags": [],
+          "handoff_source_ids": [],
+          "handoff_step_ids": [],
+          "memory_selections": []
+        },
+        "steps": {
+          "17b061a42b59246a1f930e62ae22b26b59b8870889fdf5e65d0e3011431d9f15": {
+            "conversation_kind": "ordinary",
+            "clarification_kind": "none",
+            "conversation_repair": false,
+            "reply_feedback": "none",
+            "reply_purpose": "none",
+            "knowledge_card_status": false,
+            "status_context": null,
+            "repair_target_message_id": "",
+            "continuation_evidence": "",
+            "continuation_topic": "",
+            "programming_boundary": "none",
+            "programming_learning_request": "",
+            "resource_boundary": "none",
+            "resource_learning_request": "",
+            "learning_reply_sentence_limit": null,
+            "intents": [
+              "answer"
+            ],
+            "target_task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+            "target_description": "复述 RAG 高相似度仍不能保证答案正确的原因与两类风险",
+            "relation": "continuation",
+            "workflow": null,
+            "scope": "conversation",
+            "proposed_actions": [],
+            "clarification": "",
+            "rationale": "用户在回答当前复述题，内容涉及相似度只衡量相关性、资料可能错误过时，虽未完整覆盖生成风险，仍属本轮作答，提交评价节点判断。",
+            "understanding": "unknown",
+            "answer_evidence": "相似度高只说明资料与问题在语义上接近，所以可能相关；但原资料仍可能有错误或过时。",
+            "topic_closure": null,
+            "learning_goal_ready": true,
+            "direct_teaching": false,
+            "comprehensive_check": null,
+            "answer_only": false,
+            "is_jd": false,
+            "material_focus": "none",
+            "jd_request": "none",
+            "needs_verification": false,
+            "cross_check_sources": false,
+            "requested_mode": null,
+            "refresh_sources": false,
+            "public_search_query": "",
+            "light_reply": "",
+            "session_tags": [],
+            "handoff_source_ids": [],
+            "handoff_step_ids": [],
+            "memory_selections": []
+          },
+          "bdf62c7fd8bda8de84c69c886428f9f186c9adb38493d521c3af02437c9b336a": {
+            "passed": true,
+            "correctness": "回答正确抓住了核心：相似度高只代表“相关/接近”，不保证资料本身正确，并指出原资料可能有错误或过时。这与讲解中“这个分数回答的是相关程度，而不是说的是不是事实”一致。",
+            "completeness": "题目要求分别说明来源资料方面、生成回答方面的风险，以及为何还要核对来源和适用条件。当前回答只覆盖了来源资料方面（错误、过时）和相似度含义，未说明生成回答方面可能不忠实、添加资料中没有的说法或省略条件，也未说明核对来源与适用条件的原因，因此不完整。",
+            "expression": "表达简洁清楚，因果关系明确，但缺少题目要求的两块并列内容。",
+            "transfer": "能把“相似度=相关”迁移到“来源可能错误或过时”这一风险判断，方向正确。",
+            "feedback": "你答对了最关键的一点：**相似度高只说明资料与问题接近，不等于资料正确**，所以原资料仍可能错误或过时。还缺两块：生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。",
+            "followup_question": "假设检索到的资料本身正确且版本适用，模型基于它生成答案时仍可能出什么问题？为什么仍要核对回答里的条件与依据？",
+            "question_validity": "valid",
+            "step_completion_demonstrated": false,
+            "step_completion_evidence": [],
+            "followup_binding": {
+              "step_title": "理解相似度衡量的是相关程度",
+              "concepts": [
+                "生成忠实性",
+                "适用条件核对"
+              ],
+              "evidence_quotes": [
+                "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。"
+              ],
+              "scope": "concept"
+            },
+            "capture_quotes": [
+              "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。",
+              "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。",
+              "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。",
+              "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+            ],
+            "capture_feedback_quotes": [
+              "**相似度高只说明资料与问题接近，不等于资料正确**，所以原资料仍可能错误或过时。",
+              "生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。"
+            ],
+            "capture_scope_summary": "检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。",
+            "capture_preview": {
+              "points": [
+                {
+                  "text": "检索相似度衡量的是资料与问题“有多相关”，不是“说的是不是事实”。",
+                  "evidence_quotes": [
+                    "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。"
+                  ]
+                },
+                {
+                  "text": "高相似度只说明查到的文本与问题像，不保证资料本身正确，也不保证模型会照它回答。",
+                  "evidence_quotes": [
+                    "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。"
+                  ]
+                },
+                {
+                  "text": "即使资料没问题，生成阶段也可能添加资料里没有的说法，或略去条件、范围、前提。",
+                  "evidence_quotes": [
+                    "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。"
+                  ]
+                },
+                {
+                  "text": "判断 RAG 答案能不能用，要看来源是否可靠且仍适用，并核对每句话能否在来源中找到依据。",
+                  "evidence_quotes": [
+                    "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+                  ]
+                }
+              ],
+              "summary": {
+                "text": "检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。",
+                "evidence_quotes": [
+                  "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。",
+                  "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+                ]
+              }
+            }
+          }
+        },
+        "action_ids": [],
+        "error_code": null,
+        "created_at": "2026-10-14T03:04:27.424520+00:00",
+        "updated_at": "2026-10-14T03:04:44.571650+00:00",
+        "started_at": null,
+        "elapsed_ms": 17128,
+        "attempt_durations": [
+          17128
+        ],
+        "first_text_ms": 4998,
+        "activity_candidate": null,
+        "activity_kind": null,
+        "completed_at": null,
+        "paused_entry": false,
+        "lifecycle_revision": 0,
+        "thinking_strength": "smart",
+        "model_calls": [
+          {
+            "id": "c56ad6ef-ae36-4d7e-8eb4-f8fdcca0c1e0",
+            "budget_id": "2a7c22ee-3292-487d-9893-dd5f09e4e775",
+            "revision": 1,
+            "background": false,
+            "node": "intent",
+            "model": "deepseek-flash",
+            "estimated_input_tokens": 34286,
+            "transport_requests": 1,
+            "request_ids": [
+              "ef050806-3731-463a-be02-aa53ff2f9fdb"
+            ],
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "c373dfd8-4f57-45f1-baf2-f7348cf4b548",
+                "input_tokens": 15866,
+                "output_tokens": 371,
+                "total_tokens": 16237,
+                "cached_input_tokens": 12672,
+                "reasoning_output_tokens": 0,
+                "reported_model": "deepseek-flash",
+                "request_id": "ef050806-3731-463a-be02-aa53ff2f9fdb"
+              }
+            ],
+            "status": "returned"
+          },
+          {
+            "id": "efa2cc5d-4d43-4fd3-87b1-91e7ecf65c17",
+            "budget_id": "2a7c22ee-3292-487d-9893-dd5f09e4e775",
+            "revision": 1,
+            "background": false,
+            "node": "evaluate",
+            "model": "deepseek-v4-flash",
+            "estimated_input_tokens": 9265,
+            "transport_requests": 1,
+            "request_ids": [
+              "bc9c8423-d936-4735-b6c2-0a492ee0c474"
+            ],
+            "usage_state": "reported",
+            "usage": [
+              {
+                "response_id": "8e8725b6-5696-4330-9231-b07bf65b12f8",
+                "input_tokens": 4690,
+                "output_tokens": 1288,
+                "total_tokens": 5978,
+                "cached_input_tokens": 3584,
+                "reasoning_output_tokens": 0,
+                "reported_model": "deepseek-flash",
+                "request_id": "bc9c8423-d936-4735-b6c2-0a492ee0c474"
+              }
+            ],
+            "status": "returned"
+          }
+        ],
+        "execution_budget": {
+          "id": "2a7c22ee-3292-487d-9893-dd5f09e4e775",
+          "started": 1791947067.4428139,
+          "attempts": 2,
+          "estimated_input_tokens": 43551
+        },
+        "memory_references": [],
+        "context_capacity": {
+          "estimated": true,
+          "input_tokens": 9265,
+          "input_budget": 256000,
+          "compact_threshold": 220000,
+          "compact_target": 144000,
+          "ratio": 0.03619140625,
+          "output_reserve": 4096,
+          "model_window": 1000000,
+          "budget_source": "local_limit",
+          "omitted_narrative": []
+        },
+        "dialogue_policy": "dialogue-materials-11",
+        "request_scope": {
+          "input_ids": [
+            "bdaa58f8-dba6-4151-9c6b-951573728a00"
+          ],
+          "resource_boundary": "none",
+          "programming_boundary": "none"
+        },
+        "decision_input_ids": [
+          "bdaa58f8-dba6-4151-9c6b-951573728a00"
+        ],
+        "decision_mode": "source_learning",
+        "completed_operations": {
+          "d8e85b347115cb2accc5d8f2df145d578326e3c932f3df1d3595641429b2be92": false
+        },
+        "evaluated_step_id": "4a859bf0-e323-4264-b19d-30c039a1b149",
+        "evaluated_binding": {
+          "question": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。",
+          "step_id": "4a859bf0-e323-4264-b19d-30c039a1b149",
+          "step_title": "理解相似度衡量的是相关程度",
+          "concepts": [
+            "检索相似度",
+            "来源资料可靠性",
+            "生成忠实性",
+            "适用条件核对"
+          ],
+          "evidence_quotes": [
+            "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。",
+            "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。"
+          ],
+          "scope": "concept",
+          "reference_stamp": "a2e379f66af9c9d09d235c980776ee13ffcc2193c94fe6d4fe54f62000cf3f5e",
+          "plan_version": 1,
+          "completion_condition": "",
+          "completion_requirements": [],
+          "check_kind": "concept",
+          "scope_policy": "explicit-comprehensive-1"
+        },
+        "evaluation_message_id": "bdaa58f8-dba6-4151-9c6b-951573728a00",
+        "capture_quotes": [
+          "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。",
+          "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。",
+          "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。",
+          "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+        ],
+        "capture_feedback_quotes": [
+          "**相似度高只说明资料与问题接近，不等于资料正确**，所以原资料仍可能错误或过时。",
+          "生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。"
+        ],
+        "capture_scope_summary": "检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。",
+        "capture_preview": {
+          "points": [
+            {
+              "text": "检索相似度衡量的是资料与问题“有多相关”，不是“说的是不是事实”。",
+              "evidence_quotes": [
+                "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。"
+              ]
+            },
+            {
+              "text": "高相似度只说明查到的文本与问题像，不保证资料本身正确，也不保证模型会照它回答。",
+              "evidence_quotes": [
+                "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。"
+              ]
+            },
+            {
+              "text": "即使资料没问题，生成阶段也可能添加资料里没有的说法，或略去条件、范围、前提。",
+              "evidence_quotes": [
+                "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。"
+              ]
+            },
+            {
+              "text": "判断 RAG 答案能不能用，要看来源是否可靠且仍适用，并核对每句话能否在来源中找到依据。",
+              "evidence_quotes": [
+                "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+              ]
+            }
+          ],
+          "summary": {
+            "text": "检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。",
+            "evidence_quotes": [
+              "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。",
+              "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+            ]
+          }
+        },
+        "verified_concepts": [
+          "检索相似度",
+          "来源资料可靠性",
+          "生成忠实性",
+          "适用条件核对"
+        ],
+        "execution_complete": true
+      }
+    },
+    "pending": null,
+    "draft": null,
+    "summary": "",
+    "summary_version": 0,
+    "status": "active",
+    "lifecycle_revision": 0,
+    "lifecycle_actions": {},
+    "message_receipts": {
+      "57ec7daa-bce1-4ffb-b512-c95c4b33028b": {
+        "fingerprint": "61a05fcd8103ec25179301c7674753d198ee1c8f5cc911d426ba0e81c9fafec8",
+        "run_id": "ac101432-e031-4a7d-88c8-6e428f453eec"
+      },
+      "bdaa58f8-dba6-4151-9c6b-951573728a00": {
+        "fingerprint": "1836572b2b615709d7e6ba10a4cbca3034208594968e5bfa88e70c85150cf8f7",
+        "run_id": "7ae3403f-36cd-4407-8973-a327e20f9112"
+      }
+    },
+    "thinking_strength": "smart",
+    "capture_offers": {
+      "e4ae7605-46e0-4948-b690-10b48896c2af": {
+        "id": "e4ae7605-46e0-4948-b690-10b48896c2af",
+        "version": 1,
+        "trigger": "verified_check",
+        "title": "检索相似度、来源资料可靠性、生成忠实性、适用条件核对",
+        "concepts": [
+          "检索相似度",
+          "来源资料可靠性",
+          "生成忠实性",
+          "适用条件核对"
+        ],
+        "scope_summary": "检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。",
+        "anchor_message_id": "b2092e08-d799-4174-a70e-7d02fe281b40",
+        "fragments": [
+          {
+            "id": "d3e7dd56-fe35-497a-a112-410c01e44329",
+            "text": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。",
+            "message_id": "3e310a7a-2af6-4c86-9319-b8949abb1d53",
+            "run_id": "ac101432-e031-4a7d-88c8-6e428f453eec",
+            "kind": "teaching",
+            "memory_references": [],
+            "sources": [
+              {
+                "source_id": "e03715a5-31fd-54a3-aa21-2c031c0844d3",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-14T03:01:54.867161+00:00",
+                "locator": "task:6d539312-620c-49cd-b3e8-5a74371ab85b",
+                "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+              }
+            ],
+            "source_type": "agent_generated"
+          },
+          {
+            "id": "4cbe5b86-fcdb-406e-a7dd-c718c0b0d049",
+            "text": "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。",
+            "message_id": "3e310a7a-2af6-4c86-9319-b8949abb1d53",
+            "run_id": "ac101432-e031-4a7d-88c8-6e428f453eec",
+            "kind": "teaching",
+            "memory_references": [],
+            "sources": [
+              {
+                "source_id": "e03715a5-31fd-54a3-aa21-2c031c0844d3",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-14T03:01:54.867161+00:00",
+                "locator": "task:6d539312-620c-49cd-b3e8-5a74371ab85b",
+                "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+              }
+            ],
+            "source_type": "agent_generated"
+          },
+          {
+            "id": "00f4f43e-d69c-445e-8146-8e067b04988e",
+            "text": "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。",
+            "message_id": "3e310a7a-2af6-4c86-9319-b8949abb1d53",
+            "run_id": "ac101432-e031-4a7d-88c8-6e428f453eec",
+            "kind": "teaching",
+            "memory_references": [],
+            "sources": [
+              {
+                "source_id": "e03715a5-31fd-54a3-aa21-2c031c0844d3",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-14T03:01:54.867161+00:00",
+                "locator": "task:6d539312-620c-49cd-b3e8-5a74371ab85b",
+                "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+              }
+            ],
+            "source_type": "agent_generated"
+          },
+          {
+            "id": "c16d8888-63de-4828-863c-54a9a73d54df",
+            "text": "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。",
+            "message_id": "3e310a7a-2af6-4c86-9319-b8949abb1d53",
+            "run_id": "ac101432-e031-4a7d-88c8-6e428f453eec",
+            "kind": "teaching",
+            "memory_references": [],
+            "sources": [
+              {
+                "source_id": "e03715a5-31fd-54a3-aa21-2c031c0844d3",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-14T03:01:54.867161+00:00",
+                "locator": "task:6d539312-620c-49cd-b3e8-5a74371ab85b",
+                "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+              }
+            ],
+            "source_type": "agent_generated"
+          },
+          {
+            "id": "4f0ad968-28b6-4a46-abb1-35134a84802a",
+            "text": "**相似度高只说明资料与问题接近，不等于资料正确**，所以原资料仍可能错误或过时。",
+            "message_id": "b2092e08-d799-4174-a70e-7d02fe281b40",
+            "run_id": "7ae3403f-36cd-4407-8973-a327e20f9112",
+            "kind": "evaluation",
+            "memory_references": [],
+            "sources": [],
+            "source_type": "agent_generated"
+          },
+          {
+            "id": "ef0859d7-9a48-428c-8b1f-16c15aad353b",
+            "text": "生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。",
+            "message_id": "b2092e08-d799-4174-a70e-7d02fe281b40",
+            "run_id": "7ae3403f-36cd-4407-8973-a327e20f9112",
+            "kind": "evaluation",
+            "memory_references": [],
+            "sources": [],
+            "source_type": "agent_generated"
+          }
+        ],
+        "check_scope_key": "cb7d35da7044756801e5cad1b19a8c7ba6b946a6ccdff2eb58ab4c985bab1c11",
+        "origin_task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+        "step_id": "4a859bf0-e323-4264-b19d-30c039a1b149",
+        "lifecycle_revision": 0,
+        "status": "offered",
+        "next_request": "",
+        "continuation_consumed": true,
+        "requires_mastery": false,
+        "error": "",
+        "knowledge_ids": [],
+        "public_search_query": "",
+        "preview_points": [
+          "检索相似度衡量的是资料与问题“有多相关”，不是“说的是不是事实”。",
+          "高相似度只说明查到的文本与问题像，不保证资料本身正确，也不保证模型会照它回答。",
+          "即使资料没问题，生成阶段也可能添加资料里没有的说法，或略去条件、范围、前提。",
+          "判断 RAG 答案能不能用，要看来源是否可靠且仍适用，并核对每句话能否在来源中找到依据。"
+        ],
+        "preview_summary": "检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。",
+        "preview": {
+          "points": [
+            {
+              "text": "检索相似度衡量的是资料与问题“有多相关”，不是“说的是不是事实”。",
+              "evidence_quotes": [
+                "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。"
+              ]
+            },
+            {
+              "text": "高相似度只说明查到的文本与问题像，不保证资料本身正确，也不保证模型会照它回答。",
+              "evidence_quotes": [
+                "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。"
+              ]
+            },
+            {
+              "text": "即使资料没问题，生成阶段也可能添加资料里没有的说法，或略去条件、范围、前提。",
+              "evidence_quotes": [
+                "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。"
+              ]
+            },
+            {
+              "text": "判断 RAG 答案能不能用，要看来源是否可靠且仍适用，并核对每句话能否在来源中找到依据。",
+              "evidence_quotes": [
+                "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+              ]
+            }
+          ],
+          "summary": {
+            "text": "检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。",
+            "evidence_quotes": [
+              "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。",
+              "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+            ]
+          }
+        },
+        "preview_version": 1,
+        "message_ids": [
+          "3e310a7a-2af6-4c86-9319-b8949abb1d53",
+          "b2092e08-d799-4174-a70e-7d02fe281b40"
+        ],
+        "sources": [
+          {
+            "source_id": "e03715a5-31fd-54a3-aa21-2c031c0844d3",
+            "version": 1,
+            "type": "agent_generated",
+            "url": "",
+            "title": "Agent 生成讲义",
+            "fetched_at": "2026-10-14T03:01:54.867161+00:00",
+            "locator": "task:6d539312-620c-49cd-b3e8-5a74371ab85b",
+            "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+          }
+        ],
+        "source_key": "e2d4533214b94a13b4426554424cb22d70bc6f8e67957ba6992880f2294e9677",
+        "draft": {
+          "id": "e4ae7605-46e0-4948-b690-10b48896c2af",
+          "version": 1,
+          "content": "仅整理以下知识范围：检索相似度、来源资料可靠性、生成忠实性、适用条件核对\n本次可见范围：检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\n**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。\n\n**相似度高只说明资料与问题接近，不等于资料正确**，所以原资料仍可能错误或过时。\n\n生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。",
+          "understanding": "unknown",
+          "source_type": "agent_generated",
+          "source_message_ids": [
+            "3e310a7a-2af6-4c86-9319-b8949abb1d53",
+            "b2092e08-d799-4174-a70e-7d02fe281b40"
+          ],
+          "answer_sources": [
+            {
+              "source_id": "e03715a5-31fd-54a3-aa21-2c031c0844d3",
+              "version": 1,
+              "type": "agent_generated",
+              "url": "",
+              "title": "Agent 生成讲义",
+              "fetched_at": "2026-10-14T03:01:54.867161+00:00",
+              "locator": "task:6d539312-620c-49cd-b3e8-5a74371ab85b",
+              "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+            }
+          ],
+          "memory_references": [],
+          "public_search_query": ""
+        }
+      }
+    },
+    "focus_goal": "讲解 RAG 中高相似度检索不能保证答案正确的原因，并出一道复述题",
+    "tasks": {
+      "6d539312-620c-49cd-b3e8-5a74371ab85b": {
+        "task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+        "session_id": "651f1e2f-fd7f-46cc-bce9-5aa80f582ddd",
+        "client_message_id": "57ec7daa-bce1-4ffb-b512-c95c4b33028b",
+        "content": "讲解 RAG 中高相似度检索不能保证答案正确的原因，并出一道复述题",
+        "content_type": "text",
+        "primary_language": "zh",
+        "mode_preset": "source_learning",
+        "context": {
+          "conversation_managed": true,
+          "understanding": "unknown",
+          "requires_mastery": false,
+          "origin_run_id": "ac101432-e031-4a7d-88c8-6e428f453eec",
+          "memory_references": [],
+          "latest_run_id": "7ae3403f-36cd-4407-8973-a327e20f9112",
+          "lifecycle_revision": 0,
+          "evidence": {
+            "state": "unverified",
+            "summary": "",
+            "sources": []
+          },
+          "sources": [
+            {
+              "source_id": "e03715a5-31fd-54a3-aa21-2c031c0844d3",
+              "version": 1,
+              "type": "agent_generated",
+              "url": "",
+              "title": "Agent 生成讲义",
+              "fetched_at": "2026-10-14T03:01:54.867161+00:00",
+              "locator": "task:6d539312-620c-49cd-b3e8-5a74371ab85b",
+              "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+            }
+          ],
+          "taught_concepts": [],
+          "verified_queries": [],
+          "learning_plan": {
+            "id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+            "version": 1,
+            "goal": "讲解 RAG 中高相似度检索不能保证答案正确的原因，并出一道复述题",
+            "steps": [
+              {
+                "id": "4a859bf0-e323-4264-b19d-30c039a1b149",
+                "state": "explained",
+                "understanding": "unknown",
+                "message_ids": [
+                  "3e310a7a-2af6-4c86-9319-b8949abb1d53",
+                  "b2092e08-d799-4174-a70e-7d02fe281b40"
+                ],
+                "completion_condition": "能说明相似度分数衡量的是问题与资料的相关程度，而非事实正确性",
+                "title": "理解相似度衡量的是相关程度",
+                "verified_concepts": [
+                  {
+                    "concept": "检索相似度",
+                    "message_id": "bdaa58f8-dba6-4151-9c6b-951573728a00",
+                    "question": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。"
+                  },
+                  {
+                    "concept": "来源资料可靠性",
+                    "message_id": "bdaa58f8-dba6-4151-9c6b-951573728a00",
+                    "question": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。"
+                  },
+                  {
+                    "concept": "生成忠实性",
+                    "message_id": "bdaa58f8-dba6-4151-9c6b-951573728a00",
+                    "question": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。"
+                  },
+                  {
+                    "concept": "适用条件核对",
+                    "message_id": "bdaa58f8-dba6-4151-9c6b-951573728a00",
+                    "question": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。"
+                  }
+                ]
+              },
+              {
+                "id": "aef3d57e-7f52-4705-9a64-6822f0eebcac",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能举例说明来源资料可能存在错误或过时，导致高相似度片段仍不可信",
+                "title": "识别来源资料本身错误或过时的风险"
+              },
+              {
+                "id": "8c20b488-68ea-42fe-b22a-579c22f27700",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能说明生成回答可能没有忠实依据资料，出现增添或省略限定条件",
+                "title": "识别生成回答不忠实依据资料的风险"
+              },
+              {
+                "id": "00b36f98-c8b7-4e7d-9a0a-58c947e628d2",
+                "state": "pending",
+                "understanding": "unknown",
+                "message_ids": [],
+                "completion_condition": "能在判断答案时主动核对来源可靠性与适用条件",
+                "title": "核对来源与适用条件"
+              }
+            ],
+            "current_step_id": "4a859bf0-e323-4264-b19d-30c039a1b149",
+            "success_check": "能用自己的话说明高相似度不等于正确，并分别指出来源资料和生成回答两方面的风险，说明为何需核对来源与适用条件"
+          },
+          "understanding_by_lesson": {
+            "0": "unknown"
+          },
+          "check_question": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。",
+          "last_lesson": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。",
+          "source_type": "agent_generated",
+          "lesson_index": 1,
+          "check_binding": {
+            "question": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。",
+            "step_id": "4a859bf0-e323-4264-b19d-30c039a1b149",
+            "step_title": "理解相似度衡量的是相关程度",
+            "concepts": [
+              "检索相似度",
+              "来源资料可靠性",
+              "生成忠实性",
+              "适用条件核对"
+            ],
+            "evidence_quotes": [
+              "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。",
+              "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。"
+            ],
+            "scope": "concept",
+            "reference_stamp": "a2e379f66af9c9d09d235c980776ee13ffcc2193c94fe6d4fe54f62000cf3f5e",
+            "plan_version": 1,
+            "completion_condition": "",
+            "completion_requirements": [],
+            "check_kind": "concept",
+            "scope_policy": "explicit-comprehensive-1"
+          },
+          "practice": [
+            {
+              "message_id": "bdaa58f8-dba6-4151-9c6b-951573728a00",
+              "run_id": "7ae3403f-36cd-4407-8973-a327e20f9112",
+              "revision": 1,
+              "hint_used": false,
+              "binding": {
+                "question": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。",
+                "step_id": "4a859bf0-e323-4264-b19d-30c039a1b149",
+                "step_title": "理解相似度衡量的是相关程度",
+                "concepts": [
+                  "检索相似度",
+                  "来源资料可靠性",
+                  "生成忠实性",
+                  "适用条件核对"
+                ],
+                "evidence_quotes": [
+                  "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。",
+                  "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。"
+                ],
+                "scope": "concept",
+                "reference_stamp": "a2e379f66af9c9d09d235c980776ee13ffcc2193c94fe6d4fe54f62000cf3f5e",
+                "plan_version": 1,
+                "completion_condition": "",
+                "completion_requirements": [],
+                "check_kind": "concept",
+                "scope_policy": "explicit-comprehensive-1"
+              },
+              "verified_concepts": [
+                "检索相似度",
+                "来源资料可靠性",
+                "生成忠实性",
+                "适用条件核对"
+              ],
+              "evaluation": {
+                "passed": true,
+                "correctness": "回答正确抓住了核心：相似度高只代表“相关/接近”，不保证资料本身正确，并指出原资料可能有错误或过时。这与讲解中“这个分数回答的是相关程度，而不是说的是不是事实”一致。",
+                "completeness": "题目要求分别说明来源资料方面、生成回答方面的风险，以及为何还要核对来源和适用条件。当前回答只覆盖了来源资料方面（错误、过时）和相似度含义，未说明生成回答方面可能不忠实、添加资料中没有的说法或省略条件，也未说明核对来源与适用条件的原因，因此不完整。",
+                "expression": "表达简洁清楚，因果关系明确，但缺少题目要求的两块并列内容。",
+                "transfer": "能把“相似度=相关”迁移到“来源可能错误或过时”这一风险判断，方向正确。",
+                "feedback": "你答对了最关键的一点：**相似度高只说明资料与问题接近，不等于资料正确**，所以原资料仍可能错误或过时。还缺两块：生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。",
+                "followup_question": "假设检索到的资料本身正确且版本适用，模型基于它生成答案时仍可能出什么问题？为什么仍要核对回答里的条件与依据？",
+                "question_validity": "valid",
+                "step_completion_demonstrated": false,
+                "step_completion_evidence": [],
+                "followup_binding": {
+                  "step_title": "理解相似度衡量的是相关程度",
+                  "concepts": [
+                    "生成忠实性",
+                    "适用条件核对"
+                  ],
+                  "evidence_quotes": [
+                    "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。"
+                  ],
+                  "scope": "concept"
+                },
+                "capture_quotes": [
+                  "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。",
+                  "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。",
+                  "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。",
+                  "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+                ],
+                "capture_feedback_quotes": [
+                  "**相似度高只说明资料与问题接近，不等于资料正确**，所以原资料仍可能错误或过时。",
+                  "生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。"
+                ],
+                "capture_scope_summary": "检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。",
+                "capture_preview": {
+                  "points": [
+                    {
+                      "text": "检索相似度衡量的是资料与问题“有多相关”，不是“说的是不是事实”。",
+                      "evidence_quotes": [
+                        "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。"
+                      ]
+                    },
+                    {
+                      "text": "高相似度只说明查到的文本与问题像，不保证资料本身正确，也不保证模型会照它回答。",
+                      "evidence_quotes": [
+                        "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。"
+                      ]
+                    },
+                    {
+                      "text": "即使资料没问题，生成阶段也可能添加资料里没有的说法，或略去条件、范围、前提。",
+                      "evidence_quotes": [
+                        "即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。"
+                      ]
+                    },
+                    {
+                      "text": "判断 RAG 答案能不能用，要看来源是否可靠且仍适用，并核对每句话能否在来源中找到依据。",
+                      "evidence_quotes": [
+                        "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+                      ]
+                    }
+                  ],
+                  "summary": {
+                    "text": "检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。",
+                    "evidence_quotes": [
+                      "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。",
+                      "因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。"
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "hint_used": false,
+          "knowledge_capture_explained": true
+        },
+        "mode": "source_learning",
+        "status": "awaiting_user",
+        "stage": "lesson_checked",
+        "user_summary": "等你继续",
+        "retry_count": 0,
+        "error_code": null,
+        "required_action": {
+          "type": "respond",
+          "prompt": "继续下一节或追问",
+          "options": []
+        },
+        "result_summary": "",
+        "memory_package": null,
+        "memory_source_text": "",
+        "events": [
+          {
+            "event_id": "bc862fa7-6ea2-489d-8097-f3cc18780770",
+            "session_id": "651f1e2f-fd7f-46cc-bce9-5aa80f582ddd",
+            "task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+            "seq": 1,
+            "occurred_at": "2026-10-14T03:01:53.083785+00:00",
+            "stage": "accepted",
+            "state": "accepted",
+            "node": "accepted",
+            "user_summary": "已接收，准备处理",
+            "detail_summary": "",
+            "attempt": 1,
+            "duration_ms": null,
+            "error_code": null,
+            "recovery_action": null,
+            "required_action": null,
+            "message": null,
+            "payload": {}
+          },
+          {
+            "event_id": "293e3ad7-3f1d-4790-9785-d9d73b892fd2",
+            "session_id": "651f1e2f-fd7f-46cc-bce9-5aa80f582ddd",
+            "task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+            "seq": 2,
+            "occurred_at": "2026-10-14T03:02:01.143660+00:00",
+            "stage": "teaching",
+            "state": "awaiting_user",
+            "node": "teaching",
+            "user_summary": "等你继续",
+            "detail_summary": "",
+            "attempt": 1,
+            "duration_ms": null,
+            "error_code": null,
+            "recovery_action": null,
+            "required_action": {
+              "type": "submit_answer",
+              "prompt": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。",
+              "options": []
+            },
+            "message": {
+              "message_id": "3e310a7a-2af6-4c86-9319-b8949abb1d53",
+              "role": "coach",
+              "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。\n\n---\n\n### 想一想\n\n请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。",
+              "created_at": "2026-10-14T03:02:01.143622+00:00"
+            },
+            "payload": {}
+          },
+          {
+            "event_id": "e5f45aa6-fbb9-4ceb-a30c-884081154551",
+            "session_id": "651f1e2f-fd7f-46cc-bce9-5aa80f582ddd",
+            "task_id": "6d539312-620c-49cd-b3e8-5a74371ab85b",
+            "seq": 3,
+            "occurred_at": "2026-10-14T03:04:44.547468+00:00",
+            "stage": "lesson_checked",
+            "state": "awaiting_user",
+            "node": "lesson_checked",
+            "user_summary": "等你继续",
+            "detail_summary": "",
+            "attempt": 1,
+            "duration_ms": null,
+            "error_code": null,
+            "recovery_action": null,
+            "required_action": {
+              "type": "respond",
+              "prompt": "继续下一节或追问",
+              "options": []
+            },
+            "message": {
+              "message_id": "b2092e08-d799-4174-a70e-7d02fe281b40",
+              "role": "coach",
+              "content": "你答对了最关键的一点：**相似度高只说明资料与问题接近，不等于资料正确**，所以原资料仍可能错误或过时。还缺两块：生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。",
+              "created_at": "2026-10-14T03:04:44.547442+00:00"
+            },
+            "payload": {}
+          }
+        ],
+        "processed_action_ids": [],
+        "completed_action_ids": [],
+        "action_history": [],
+        "last_acked_seq": 0,
+        "created_at": "2026-10-14T03:01:53.083694+00:00",
+        "updated_at": "2026-10-14T03:04:44.548213+00:00"
+      }
+    },
+    "events": [],
+    "event_base_seq": 74,
+    "last_acked_seq": 0
+  },
+  "recovery_version": 102
+}

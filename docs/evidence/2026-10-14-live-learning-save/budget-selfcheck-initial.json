@@ -1,0 +1,15 @@
+{
+  "layer": "synthetic_transport_boundary",
+  "first_process": {
+    "outcome": "forwarded",
+    "forwarded": 1,
+    "count": 30
+  },
+  "fresh_process_after_restart": {
+    "outcome": "blocked",
+    "forwarded": 0,
+    "count": 30
+  },
+  "actual_remote_requests": 0,
+  "real_model_substituted_only_for_this_cap_selfcheck": true
+}

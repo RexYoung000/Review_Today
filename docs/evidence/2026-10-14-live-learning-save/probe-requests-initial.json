@@ -1,0 +1,243 @@
+{
+  "reported_requests": 8,
+  "request_ids": [
+    "8a9ef6e8-b603-4399-9830-91931b9cb7ef",
+    "c5c6bf7d-2cf2-4ca2-99bd-9552d8c9787e",
+    "3008a2a1-5e39-48d8-a7a7-aa440cf49446",
+    "314fe23b-e113-4ea8-b18e-c4ffff75d930",
+    "8d54f3f1-126a-4ce5-b1d2-1beadaa56501",
+    "cb24181c-e199-471b-83cb-d34802233333",
+    "bc9f3f6a-5cf8-44f2-a864-d2caf6df13bd",
+    "3bc8db66-9b4e-4446-94a7-5a49b77bca34"
+  ],
+  "verified_roles": {
+    "router": {
+      "model": "deepseek-flash",
+      "status": "ready",
+      "error": "",
+      "streaming": "not_applicable",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        }
+      },
+      "checked_at": 1791946453.173791,
+      "elapsed_ms": 2042,
+      "next_probe_at": null
+    },
+    "coach": {
+      "model": "deepseek-v4-flash",
+      "status": "ready",
+      "error": "",
+      "streaming": "ready",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null,
+          "streaming": "ready",
+          "stream_error": "",
+          "stream_retryable": false
+        }
+      },
+      "checked_at": 1791946453.260011,
+      "elapsed_ms": 2128,
+      "stream_error": "",
+      "stream_retryable": false,
+      "next_probe_at": null
+    },
+    "risk": {
+      "model": "deepseek-v4-pro",
+      "status": "ready",
+      "error": "",
+      "streaming": "not_applicable",
+      "category": null,
+      "retryable": false,
+      "recovery": null,
+      "strengths": {
+        "smart": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        },
+        "deep": {
+          "status": "ready",
+          "error": "",
+          "category": null,
+          "retryable": false,
+          "recovery": null
+        }
+      },
+      "checked_at": 1791946454.095402,
+      "elapsed_ms": 2963,
+      "next_probe_at": null
+    }
+  },
+  "initial_transport_observer_missed_requests": true,
+  "real_usage": [
+    {
+      "type": "reported_usage",
+      "at": "2026-10-14T02:54:12.234066+00:00",
+      "request_id": "8a9ef6e8-b603-4399-9830-91931b9cb7ef",
+      "usage": {
+        "input_tokens": 130,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 5,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 135
+      }
+    },
+    {
+      "type": "reported_usage",
+      "at": "2026-10-14T02:54:12.273903+00:00",
+      "request_id": "c5c6bf7d-2cf2-4ca2-99bd-9552d8c9787e",
+      "usage": {
+        "input_tokens": 130,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 5,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 135
+      }
+    },
+    {
+      "type": "reported_usage",
+      "at": "2026-10-14T02:54:12.351378+00:00",
+      "request_id": "3008a2a1-5e39-48d8-a7a7-aa440cf49446",
+      "usage": {
+        "input_tokens": 129,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 5,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 134
+      }
+    },
+    {
+      "type": "reported_usage",
+      "at": "2026-10-14T02:54:13.170741+00:00",
+      "request_id": "314fe23b-e113-4ea8-b18e-c4ffff75d930",
+      "usage": {
+        "input_tokens": 155,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 43,
+        "output_tokens_details": {
+          "reasoning_tokens": 37
+        },
+        "total_tokens": 198
+      }
+    },
+    {
+      "type": "reported_usage",
+      "at": "2026-10-14T02:54:13.258143+00:00",
+      "request_id": "8d54f3f1-126a-4ce5-b1d2-1beadaa56501",
+      "usage": {
+        "input_tokens": 155,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 22,
+        "output_tokens_details": {
+          "reasoning_tokens": 16
+        },
+        "total_tokens": 177
+      }
+    },
+    {
+      "type": "reported_usage",
+      "at": "2026-10-14T02:54:14.093462+00:00",
+      "request_id": "cb24181c-e199-471b-83cb-d34802233333",
+      "usage": {
+        "input_tokens": 208,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 40,
+        "output_tokens_details": {
+          "reasoning_tokens": 34
+        },
+        "total_tokens": 248
+      }
+    },
+    {
+      "type": "reported_usage",
+      "at": "2026-10-14T02:54:15.186868+00:00",
+      "request_id": "bc9f3f6a-5cf8-44f2-a864-d2caf6df13bd",
+      "usage": {
+        "input_tokens": 156,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 49,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 205
+      }
+    },
+    {
+      "type": "reported_usage",
+      "at": "2026-10-14T02:54:16.854467+00:00",
+      "request_id": "3bc8db66-9b4e-4446-94a7-5a49b77bca34",
+      "usage": {
+        "input_tokens": 181,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 179,
+        "output_tokens_details": {
+          "reasoning_tokens": 129
+        },
+        "total_tokens": 360
+      }
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+Window: "RAG · 真实连续验收 · 真实模型隔离验收", App: LiveRAGQA.
+0 standard window RAG · 真实连续验收 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<LiveRAGQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 真实模型 · 独立测试库 · 上限 30 次请求
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 button Description: 会话标签, ID: tag
+		6 button Description: 归档, ID: archivebox
+		7 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		8 button Description: 学习安排, 理解相似度衡量的是相关程度, Value: 已展开
+		9 scroll area
+			10 button Description: 1, 理解相似度衡量的是相关程度, 已讲解, Help: 查看对应内容，不会改变理解状态
+			11 button Description: 2, 识别来源资料本身错误或过时的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			12 button Description: 3, 识别生成回答不忠实依据资料的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			13 button Description: 4, 核对来源与适用条件, 待学习, Help: 查看对应内容，不会改变理解状态
+		14 text 点击步骤回看内容；要调整安排，直接告诉我。
+		15 scroll area Secondary Actions: Scroll Up, Scroll Down
+			16 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				17 text RAG（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。
+					18 text RAG（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。
+				19 heading 学习地图
+					20 text 学习地图
+				21 heading 第一步：相似度只衡量「相关」，不衡量「对」
+					22 text 第一步：相似度只衡量「相关」，不衡量「对」
+				23 text 检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。 所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。 换句话说，高相似度是「找到了看起来有关系的材料」，不是「材料可信」。 其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。 因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。
+				24 heading 想一想
+					25 text 想一想
+				26 text 请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。
+					27 text 请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。
+				28 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				29 text 相似度高只说明资料与问题在语义上接近，所以可能相关；但原资料仍可能有错误或过时。
+					30 text 相似度高只说明资料与问题在语义上接近，所以可能相关；但原资料仍可能有错误或过时。
+				31 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				32 text 你答对了最关键的一点：相似度高只说明资料与问题接近，不等于资料正确，所以原资料仍可能错误或过时。还缺两块：生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。
+					33 text 你答对了最关键的一点：相似度高只说明资料与问题接近，不等于资料正确，所以原资料仍可能错误或过时。还缺两块：生成回答阶段，模型可能加入资料里没有的说法，或把条件、范围、前提省略，让有前提的结论看起来普遍成立；因此还需要核对回答中每句话能否在来源中找到依据，并确认来源是否仍适用于你面对的版本与条件。
+				34 heading Description: 检索相似度、来源资料可靠性、生成忠实性、适用条件核对, ID: knowledge-invitation-E4AE7605-46E0-4948-B690-10B48896C2AF
+				35 unknown Description: 检索相似度衡量的是资料与问题“有多相关”，不是“说的是不是事实”。, ID: knowledge-invitation-E4AE7605-46E0-4948-B690-10B48896C2AF
+				36 unknown Description: 高相似度只说明查到的文本与问题像，不保证资料本身正确，也不保证模型会照它回答。, ID: knowledge-invitation-E4AE7605-46E0-4948-B690-10B48896C2AF
+				37 unknown Description: 即使资料没问题，生成阶段也可能添加资料里没有的说法，或略去条件、范围、前提。, ID: knowledge-invitation-E4AE7605-46E0-4948-B690-10B48896C2AF
+				38 unknown Description: 判断 RAG 答案能不能用，要看来源是否可靠且仍适用，并核对每句话能否在来源中找到依据。, ID: knowledge-invitation-E4AE7605-46E0-4948-B690-10B48896C2AF
+				39 text Value: 一句话记住 检索相似度只表示内容与问题接近，不保证资料正确；即使资料无误，生成阶段也可能添加说法或省略条件，因此需核对来源依据与适用版本。 未保存, ID: knowledge-invitation-E4AE7605-46E0-4948-B690-10B48896C2AF
+				40 button Description: 稍后, ID: knowledge-invitation-E4AE7605-46E0-4948-B690-10B48896C2AF
+				41 button Description: 保存为知识卡, ID: knowledge-invitation-E4AE7605-46E0-4948-B690-10B48896C2AF
+				42 checkbox Description: 已学过，加入复习, Value: 0, ID: knowledge-invitation-E4AE7605-46E0-4948-B690-10B48896C2AF
+				43 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			44 scroll bar (settable, float) 0.7353700516351118
+				45 value indicator (settable, float) 0.7353700516351118
+				46 increment arrow button
+				47 decrement arrow button
+				48 increment page button
+				49 decrement page button
+		50 scroll area
+			51 text entry area (settable) 学习输入
+		52 button Description: 添加材料, Value: 已收起, ID: plus
+		53 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		54 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		55 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 9,265 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		56 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		57 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		58 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	59 close button
+	60 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	61 minimize button
+62 menu bar
+	63 LiveRAGQA
+	64 File
+	65 Edit
+	66 View
+	67 Window
+	68 Help
+
+The focused UI element is 51 text entry area (settable) 学习输入
