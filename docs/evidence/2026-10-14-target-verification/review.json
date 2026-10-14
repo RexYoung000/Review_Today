@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-14",
+  "scope": "TARGET-01 existing completion gate read-only inspection",
+  "baseline_commit": "933aadc4eec6e7877c2abe9977328828112204b5",
+  "upstream_fixed_commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+  "upstream_sources": [
+    {
+      "file": "contract-target.ts",
+      "url": "https://raw.githubusercontent.com/zai-org/ZCode/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/contracts/src/tools/target.ts",
+      "exit": 0,
+      "sha256": "e1cd8c69339cb30642bec1ee0b508e24fe1a9c7778db8c3d23e6e2489ac9db1e",
+      "error": ""
+    },
+    {
+      "file": "runtime-target.ts",
+      "url": "https://raw.githubusercontent.com/zai-org/ZCode/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/methods/target.ts",
+      "exit": 0,
+      "sha256": "aae5fdad4fab6539a59b68cafe4ff18abae77f5423d9c3943f8a459a6c460428",
+      "error": ""
+    },
+    {
+      "file": "runtime-verification.ts",
+      "url": "https://raw.githubusercontent.com/zai-org/ZCode/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/runtime/methods/target-completion-verification.ts",
+      "exit": 0,
+      "sha256": "fd8b2aec4da2af2fa022c172f02c91b79468bb0906f0b49909e3adcfda935000",
+      "error": ""
+    }
+  ],
+  "upstream_execution": "read source only; no ZCode dependencies, model calls or runtime tests",
+  "source_sha256": {
+    "agent-service/agent_service/conversation.py": "b3d944c899ce350b576e5536a4919157f53a56d5bcc6ef802867b4fb1adfbb01",
+    "agent-service/agent_service/conversation_model_call.py": "a0561064bfd431271bd180236f0f13850131034ebf41e3e386871be244ac2bc9",
+    "agent-service/agent_service/learning_progress.py": "4346a7ce37438d6a42a4227241bd446a2acb6db04f1c18212ebd394946ccc104",
+    "agent-service/agent_service/comprehensive_check.py": "8824b2ada9bd7c780769fc197909955e4b6d46f1e1c605d22c84b4736372af53",
+    "agent-service/agent_service/schemas.py": "6936104a2258ea2b4e3e2c3748d471ad39aacfec8a1fa6193b579f2335a7684b",
+    "agent-service/agent_service/conversation_prompts.py": "c7b22bff7b8d8225ab62efb61d23823b86cb727564622df6551f89291c8b46d1",
+    "agent-service/agent_service/topic_capture.py": "29e1c51abf1c3d8cfbcced15bccd021811b485774431ecb4a97a79b283472e67",
+    "agent-service/agent_service/harness_store.py": "598dc99c08724c8aa542053ad4312ef43ffce6d48bd999ae3e007f93648f6f17",
+    "Review_Today/ConversationProcessor.swift": "699d381a6b400bfef1345cb8bf0127fcca702bcd669e955b16b0aa1f5c109e90"
+  },
+  "production_changed": false,
+  "existing_project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "provider_configs_unchanged": true,
+  "synthetic_provider_branch": "openai_compatible selected only within each test process; daily provider files unchanged",
+  "checks": {
+    "service_tests_passed": 56,
+    "subtests_passed": 38,
+    "existing_warnings": 5,
+    "controlled_scenarios_passed": 11,
+    "daily_database_written": false,
+    "real_supplier_requests": 0,
+    "save_tests": "existing service ACK/recovery guards exercised; no real Mac card writes",
+    "new_deterministic_completion_gap_reproduced": false
+  },
+  "findings": {
+    "already_enforced": [
+      "Run completion is distinct from learning Task completion",
+      "ordinary question only certifies its bound concepts",
+      "explicit comprehensive evidence can certify its current step; all steps required for ordinary goal mastery",
+      "problem solving keeps independent-answer and transfer gates",
+      "continue/skip may finish explanation without certifying mastery",
+      "schema, timeout and unexpected evaluation failures preserve incomplete progress",
+      "stop fences late grading results",
+      "generation remains unsaved until matching local receipt/ACK"
+    ],
+    "upstream_caution": "pinned ZCode runtime marks goal complete from verifier passed; malformed JSON, tool calls and non-cancelled verifier failure use fail-open true; this is coding-agent policy, not a learning mastery rule"
+  },
+  "not_verified": [
+    "real semantic grading accuracy and past recorded false positives",
+    "new real supplier or natural language routing run",
+    "complete model to native teaching, grading and save chain",
+    "new native UI or formal model equivalence checks",
+    "Rex daily usage acceptance"
+  ],
+  "next_cursor": "behavior-state and continuous teaching evaluation: inspect scope first, do not enable new judge calls or broaden product rules",
+  "log_summary": "56 passed, 5 warnings, 38 subtests passed in 13.17s",
+  "evidence_sha256": {
+    "inspection.py": "b8e24e2db5ac09d51ba49d7862e771ed717f25ad50b42976ebc7db1f805fcfef",
+    "scenarios.json": "e86337770720263db1b7b5c61d47d5f2334fbf7e5dc7a9ffababfdfb89d6de5a",
+    "service-tests.log": "57188d3678eb13d061df5ace2cc7a31be9bbb3cfa5da514c9a115cc051fd7b3d"
+  },
+  "log_archive": {
+    "raw_path": "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-target-inspection-sqe90z_4/service-tests-original.log",
+    "raw_sha256": "5837dc4ffdca72df9095a1bece1733628a97ee1718b9f0b5aff61a3999130f3a",
+    "archived_sha256": "57188d3678eb13d061df5ace2cc7a31be9bbb3cfa5da514c9a115cc051fd7b3d",
+    "normalization": "strip trailing whitespace only; warning text and test counts preserved"
+  },
+  "inspection_stderr_empty": true,
+  "service_test_selection": [
+    "tests/test_comprehensive_check.py",
+    "tests/test_check_binding.py",
+    "tests/test_learning_plan_conditions.py",
+    "tests/test_conversation_v2.py::ConversationTests::test_hint_answer_is_not_independent_verification",
+    "tests/test_conversation_v2.py::ConversationTests::test_hint_skip_self_report_do_not_count_as_problem_answer",
+    "tests/test_conversation_v2.py::ConversationTests::test_problem_requires_independent_answer_then_transfer",
+    "tests/test_conversation_v2.py::ConversationTests::test_source_learning_skip_keeps_unknown_and_generated_provenance",
+    "tests/test_topic_capture.py::TopicCaptureTests::test_save_waits_for_real_receipt_and_duplicate_ack_does_not_reteach",
+    "tests/test_topic_capture.py::TopicCaptureTests::test_save_reference_without_claiming_understanding",
+    "tests/test_commit_recovery.py::CommitRecoveryTests::test_saved_late_ack_and_duplicates_finish_without_restart",
+    "tests/test_commit_recovery.py::CommitRecoveryTests::test_http_release_validates_binding_and_records_no_success_receipt"
+  ]
+}

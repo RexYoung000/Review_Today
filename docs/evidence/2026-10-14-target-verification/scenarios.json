@@ -1,0 +1,364 @@
+{
+  "kind": "target_completion_inspection",
+  "scenarios": [
+    {
+      "label": "ordinary question cannot certify a whole goal",
+      "run_status": "completed",
+      "task_status": "awaiting_user",
+      "task_stage": "lesson_checked",
+      "understanding": "unknown",
+      "independent_passed": false,
+      "transfer_passed": false,
+      "steps": [
+        {
+          "title": "为什么需要 RAG",
+          "state": "explained",
+          "understanding": "unknown",
+          "verified_concepts": 1
+        },
+        {
+          "title": "检索与生成的职责",
+          "state": "pending",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        }
+      ],
+      "draft": false,
+      "capture_calls": 0,
+      "error_code": null,
+      "last_reply": "本次回答核心正确",
+      "input_retained": true,
+      "final_failure_events": []
+    },
+    {
+      "label": "comprehensive model pass without learner evidence",
+      "run_status": "completed",
+      "task_status": "awaiting_user",
+      "task_stage": "practice",
+      "understanding": "unknown",
+      "independent_passed": false,
+      "transfer_passed": false,
+      "steps": [
+        {
+          "title": "为什么需要 RAG",
+          "state": "explained",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        },
+        {
+          "title": "检索与生成的职责",
+          "state": "pending",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        }
+      ],
+      "draft": false,
+      "capture_calls": 0,
+      "error_code": null,
+      "last_reply": "这次还不能确认本节完整通过。请用自己的话逐项说明题面要求；已通过的小题记录保留。\n\n---\n\n### 独立回答\n\n换一个场景有哪些局限？",
+      "input_retained": true,
+      "final_failure_events": []
+    },
+    {
+      "label": "first complete step does not complete a two-step goal",
+      "run_status": "completed",
+      "task_status": "awaiting_user",
+      "task_stage": "lesson_checked",
+      "understanding": "unknown",
+      "independent_passed": false,
+      "transfer_passed": false,
+      "steps": [
+        {
+          "title": "为什么需要 RAG",
+          "state": "verified",
+          "understanding": "verified",
+          "verified_concepts": 1
+        },
+        {
+          "title": "检索与生成的职责",
+          "state": "pending",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        }
+      ],
+      "draft": false,
+      "capture_calls": 0,
+      "error_code": null,
+      "last_reply": "本次回答核心正确",
+      "input_retained": true,
+      "final_failure_events": []
+    },
+    {
+      "label": "all steps verified creates a completed learning result, not a saved card",
+      "run_status": "completed",
+      "task_status": "completed",
+      "task_stage": "mastered",
+      "understanding": "verified",
+      "independent_passed": false,
+      "transfer_passed": false,
+      "steps": [
+        {
+          "title": "为什么需要 RAG",
+          "state": "verified",
+          "understanding": "verified",
+          "verified_concepts": 1
+        },
+        {
+          "title": "检索与生成的职责",
+          "state": "verified",
+          "understanding": "verified",
+          "verified_concepts": 1
+        }
+      ],
+      "draft": true,
+      "capture_calls": 0,
+      "error_code": null,
+      "last_reply": "本次回答核心正确",
+      "input_retained": true,
+      "final_failure_events": []
+    },
+    {
+      "label": "skipped checks finish explanation, not mastery",
+      "run_status": "completed",
+      "task_status": "completed",
+      "task_stage": "lesson_complete",
+      "understanding": "unknown",
+      "independent_passed": false,
+      "transfer_passed": false,
+      "steps": [
+        {
+          "title": "为什么需要 RAG",
+          "state": "skipped",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        },
+        {
+          "title": "检索与生成的职责",
+          "state": "skipped",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        }
+      ],
+      "draft": false,
+      "capture_calls": 0,
+      "error_code": null,
+      "last_reply": "这份学习安排已讲解完毕。未检查或跳过的部分仍需练习；你可以继续追问或调整学习安排。",
+      "input_retained": true,
+      "final_failure_events": []
+    },
+    {
+      "label": "problem independent pass still waits for transfer",
+      "run_status": "completed",
+      "task_status": "awaiting_user",
+      "task_stage": "transfer",
+      "understanding": "unknown",
+      "independent_passed": true,
+      "transfer_passed": false,
+      "steps": [
+        {
+          "title": "理解检索",
+          "state": "explained",
+          "understanding": "unknown",
+          "verified_concepts": 1
+        },
+        {
+          "title": "理解生成",
+          "state": "pending",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        },
+        {
+          "title": "独立作答",
+          "state": "verified",
+          "understanding": "verified",
+          "verified_concepts": 0
+        },
+        {
+          "title": "迁移追问",
+          "state": "pending",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        }
+      ],
+      "draft": false,
+      "capture_calls": 0,
+      "error_code": null,
+      "last_reply": "本次回答核心正确\n\n---\n\n### 独立回答\n\n换一个场景有哪些局限？",
+      "input_retained": true,
+      "final_failure_events": []
+    },
+    {
+      "label": "problem independent and transfer gates complete without saving",
+      "run_status": "completed",
+      "task_status": "completed",
+      "task_stage": "mastered",
+      "understanding": "verified",
+      "independent_passed": true,
+      "transfer_passed": true,
+      "steps": [
+        {
+          "title": "理解检索",
+          "state": "explained",
+          "understanding": "unknown",
+          "verified_concepts": 1
+        },
+        {
+          "title": "理解生成",
+          "state": "pending",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        },
+        {
+          "title": "独立作答",
+          "state": "verified",
+          "understanding": "verified",
+          "verified_concepts": 0
+        },
+        {
+          "title": "迁移追问",
+          "state": "verified",
+          "understanding": "verified",
+          "verified_concepts": 1
+        }
+      ],
+      "draft": true,
+      "capture_calls": 0,
+      "error_code": null,
+      "last_reply": "本次回答核心正确",
+      "input_retained": true,
+      "final_failure_events": []
+    },
+    {
+      "label": "evaluation failure: SCHEMA",
+      "run_status": "retryable_failed",
+      "task_status": "retryable_failed",
+      "task_stage": "practice",
+      "understanding": "unknown",
+      "independent_passed": false,
+      "transfer_passed": false,
+      "steps": [
+        {
+          "title": "为什么需要 RAG",
+          "state": "explained",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        },
+        {
+          "title": "检索与生成的职责",
+          "state": "pending",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        }
+      ],
+      "draft": false,
+      "capture_calls": 0,
+      "error_code": "RT.MODEL.SCHEMA",
+      "last_reply": "这次按本节的完整要求检查，请逐项作答。\n\n---\n\n### 本节综合检查\n\n请用自己的话逐项完成本节的要求：\n\n能举例说明外部资料的作用",
+      "input_retained": true,
+      "final_failure_events": [
+        "回答格式暂时有问题，可重试；输入和学习进度已保留"
+      ],
+      "synthetic_evaluation_callbacks": 2
+    },
+    {
+      "label": "evaluation failure: TIMEOUT",
+      "run_status": "retryable_failed",
+      "task_status": "retryable_failed",
+      "task_stage": "practice",
+      "understanding": "unknown",
+      "independent_passed": false,
+      "transfer_passed": false,
+      "steps": [
+        {
+          "title": "为什么需要 RAG",
+          "state": "explained",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        },
+        {
+          "title": "检索与生成的职责",
+          "state": "pending",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        }
+      ],
+      "draft": false,
+      "capture_calls": 0,
+      "error_code": "RT.MODEL.TIMEOUT",
+      "last_reply": "这次按本节的完整要求检查，请逐项作答。\n\n---\n\n### 本节综合检查\n\n请用自己的话逐项完成本节的要求：\n\n能举例说明外部资料的作用",
+      "input_retained": true,
+      "final_failure_events": [
+        "回答连接中断或等待超时，可重试；输入和学习进度已保留"
+      ],
+      "synthetic_evaluation_callbacks": 2
+    },
+    {
+      "label": "evaluation failure: unexpected",
+      "run_status": "retryable_failed",
+      "task_status": "retryable_failed",
+      "task_stage": "practice",
+      "understanding": "unknown",
+      "independent_passed": false,
+      "transfer_passed": false,
+      "steps": [
+        {
+          "title": "为什么需要 RAG",
+          "state": "explained",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        },
+        {
+          "title": "检索与生成的职责",
+          "state": "pending",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        }
+      ],
+      "draft": false,
+      "capture_calls": 0,
+      "error_code": "RT.RUN.EXECUTION_FAILED",
+      "last_reply": "这次按本节的完整要求检查，请逐项作答。\n\n---\n\n### 本节综合检查\n\n请用自己的话逐项完成本节的要求：\n\n能举例说明外部资料的作用",
+      "input_retained": true,
+      "final_failure_events": [
+        "这一步暂时无法完成，可重试；输入和进度已保留"
+      ],
+      "synthetic_evaluation_callbacks": 1
+    },
+    {
+      "label": "stopped evaluation rejects late positive result",
+      "run_status": "interrupted",
+      "task_status": "awaiting_user",
+      "task_stage": "stopped",
+      "understanding": "unknown",
+      "independent_passed": false,
+      "transfer_passed": false,
+      "steps": [
+        {
+          "title": "为什么需要 RAG",
+          "state": "explained",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        },
+        {
+          "title": "检索与生成的职责",
+          "state": "pending",
+          "understanding": "unknown",
+          "verified_concepts": 0
+        }
+      ],
+      "draft": false,
+      "capture_calls": 0,
+      "error_code": null,
+      "last_reply": "这次按本节的完整要求检查，请逐项作答。\n\n---\n\n### 本节综合检查\n\n请用自己的话逐项完成本节的要求：\n\n能举例说明外部资料的作用",
+      "input_retained": true,
+      "final_failure_events": []
+    }
+  ],
+  "assertions_passed": 11,
+  "supplier_requests": 0,
+  "daily_database_written": false,
+  "semantic_accuracy_verified": false,
+  "http_chain_verified": false,
+  "ui_verified": false,
+  "production_changed": false
+}
