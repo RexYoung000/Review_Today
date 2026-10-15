@@ -570,6 +570,14 @@ class StepCompletionEvidence(BaseModel):
         description="只取当前 answer 的连续逐字原文作为该项能力依据，缺失时为空。不得摘题面、讲义或自己准备写的反馈。")
 
 
+class QuestionRequirementEvidence(BaseModel):
+    question_quote: str = Field(min_length=1, max_length=2000,
+        description="当前 question 明确要求的一项必要内容的连续逐字原文；并列要求分别列出，不取整节目标或讲义额外要求。")
+    demonstrated: bool = Field(description="当前原始 answer 是否已正确答到该项必要内容；接受同义表达，遗漏或错误为 false，不替用户补答。")
+    answer_quotes: list[str] = Field(default_factory=list, max_length=8,
+        description="仅摘当前 answer 的连续逐字原文；没有答到时为空，不摘题面、讲义、反馈或追问。")
+
+
 class MasteryEvaluation(BaseModel):
     passed: bool
     correctness: str
@@ -579,6 +587,8 @@ class MasteryEvaluation(BaseModel):
     feedback: str
     followup_question: str = ""
     question_validity: Literal["valid", "ambiguous", "out_of_scope"] = "valid"
+    answer_coverage: list[QuestionRequirementEvidence] = Field(default_factory=list, max_length=32,
+        description="普通题逐项列出 question 的全部必要内容及实际作答依据。有任何缺项时 passed=false；综合题沿用 step_completion_evidence。")
     step_completion_demonstrated: bool = False
     step_completion_evidence: list[StepCompletionEvidence] = Field(default_factory=list, max_length=32,
         description="仅综合检查逐项给出 completion_requirements 的当前答案依据，覆盖所有下标。普通小题留空。")
@@ -606,7 +616,16 @@ class MasteryEvaluation(BaseModel):
 
     def validate_request(self, payload):
         validate_capture_quote_fields(self, payload)
-        from agent_service.learning_progress import guard_completion, comprehensive_bound
+        from agent_service.learning_progress import guard_answer_coverage, guard_completion, comprehensive_bound
+        binding = payload.get("check_binding")
+        if binding and binding.get("question") and not comprehensive_bound(binding) and any(
+                not row.question_quote.strip() or row.question_quote not in binding["question"] or
+                any(not quote.strip() or quote not in payload.get("answer", "") for quote in row.answer_quotes)
+                for row in self.answer_coverage):
+            import json
+            from agent_service.call_errors import ModelCallError
+            raise ModelCallError("SCHEMA", json.dumps([dict(field=["answer_coverage"], type="question_answer_grounding")]))
+        guard_answer_coverage(self, binding, payload.get("answer", ""))
         if comprehensive_bound(payload.get("check_binding")) and any(
                 not quote.strip() or quote not in payload.get("answer", "")
                 for row in self.step_completion_evidence for quote in row.answer_quotes):

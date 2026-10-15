@@ -1,0 +1,31 @@
+{
+  "case": "incomplete",
+  "result": "FAIL",
+  "checks": {
+    "run_completed": false,
+    "evaluation_exists": false,
+    "answer_pass_matches": false,
+    "concepts_match": false,
+    "invitation_count_matches": true,
+    "chapter_not_verified": true,
+    "no_knowledge_write": true,
+    "supplement_question_exists": true
+  },
+  "question": "请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。",
+  "answer": "相似度高只说明资料与问题在语义上接近，所以可能相关；但原资料仍可能有错误或过时。",
+  "session_id": "26a74f73-a6ea-59d9-88f4-240d00fd57bb",
+  "run_id": "5991c88c-203d-46dc-8d7d-322aee7130b1",
+  "run_status": "retryable_failed",
+  "error_code": "RT.MODEL.TIMEOUT",
+  "evaluation": null,
+  "verified_concepts": null,
+  "offers": [],
+  "reply": [],
+  "actual_requests": 14,
+  "additional_case_requests": 1,
+  "batch_additional_requests": 1,
+  "provider": "deepseek",
+  "router_model": "deepseek-flash",
+  "coach_model": "deepseek-v4-flash",
+  "scope": "real fixed-context service grading; no fresh lesson, native App/HTTP or save chain"
+}

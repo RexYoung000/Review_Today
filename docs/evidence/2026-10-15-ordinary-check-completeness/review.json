@@ -1,0 +1,127 @@
+{
+  "date": "2026-10-15",
+  "authorization": "Decision 234; latest user: 开始修复",
+  "outcome": "Implemented and controlled checks pass; real recheck stopped on first router timeout before grading",
+  "production_changes": [
+    "agent-service/agent_service/conversation.py",
+    "agent-service/agent_service/conversation_prompts.py",
+    "agent-service/agent_service/learning_progress.py",
+    "agent-service/agent_service/schemas.py"
+  ],
+  "controlled_tests": {
+    "new_cases": 15,
+    "new_subtests": 9,
+    "full_passed": 1208,
+    "full_skipped": 4,
+    "full_subtests": 530,
+    "deepseek_passed": 28,
+    "deepseek_subtests": 11,
+    "native_contracts": [
+      "ConversationReplayTests",
+      "TopicCaptureContractTests",
+      "ConversationControlTests"
+    ],
+    "native_sse": "controlled loopback passed"
+  },
+  "real_recheck": {
+    "result": "STOPPED_UNVERIFIED",
+    "completed_cases": [],
+    "attempted_case": "incomplete",
+    "run_status": "retryable_failed",
+    "error_code": "RT.MODEL.TIMEOUT",
+    "grader_called": false,
+    "fresh_lesson": false,
+    "app_or_http": false,
+    "previous_confirmed_requests": 13,
+    "previous_reported_total_tokens": 45159,
+    "new_request_entries": 1,
+    "new_reported_usage": null,
+    "total_conservative_counter": 14,
+    "total_limit": 30,
+    "remaining_unspent": 16,
+    "stopped_on_failure": true,
+    "no_retry_for_pass": true
+  },
+  "unchanged": {
+    "daily_files_unchanged": true,
+    "provider_configs_unchanged": true,
+    "project_diff_unchanged": true,
+    "original_evidence_unchanged": true,
+    "daily_app_still_absent": true,
+    "stop_marker_present": true
+  },
+  "not_verified": [
+    "real grader semantics after this fix",
+    "complete and single-point real recheck",
+    "complete real teaching to native save/receipt/details/status flow",
+    "this-turn native window and Rex acceptance"
+  ],
+  "daily_app_note": "Old DerivedData App absent at setup and end; no binary comparison or App update claimed",
+  "service_deployment": "Repository service source only; no normal App/service launch or final release",
+  "baseline_commit": "d085ada2dced5711e2f8b698c1f28fa6692180ca",
+  "project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "provider_config_sha256": {
+    "agent-service/.env": "79b70ced19be1181171afcf11837ac51293717fdf3fb252a70b49c718f75c17c",
+    "agent-service/providers/deepseek/.env": "443e52c57ad9d369c6c0ddbbf1283f2a4bdb9d8635edb9e735a109be9f574554"
+  },
+  "daily_files_after": [
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store",
+      "sha256": "73ccee18f1108f736c14243cf762c1402141adeb0fdc64eb55fa477ea8b55b2d"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-wal",
+      "sha256": "537da527577abe1979cfab308fb46ec7f7437082d823aef3aea3727746572067"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-shm",
+      "sha256": "d84b04eab622649e0ec142abe75bac5ed0b761f943c69d8bb1d7eb068f3e9421"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3",
+      "sha256": "4a3d7008175b106baa33ac6f3cb379b39b9030f314aa4ead81435b9028392185"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-wal",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-shm",
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.review.sqlite3",
+      "sha256": "f96a42b344a8f527ad8ef2ef7bcbc553323306dbefe261ce52c3120af5221710"
+    }
+  ],
+  "production_source_sha256": {
+    "agent-service/agent_service/conversation.py": "aef890eca13aeaa080652cf72817b45f030f94dc2e9a0590703394fc56972c60",
+    "agent-service/agent_service/conversation_prompts.py": "dfbdb49a5d39bb036108050ddd97946746196ecb532ed8ba263645b9880845e1",
+    "agent-service/agent_service/learning_progress.py": "f6f0b29463a2420a7fbcd30409466fc6e9dbcedaa66de699134b00f2ef3fdd77",
+    "agent-service/agent_service/schemas.py": "a41adfc31c718f85e22fd379029bce0c404977038b0d730a7bbd52d660574dda"
+  },
+  "artifacts_sha256": {
+    "initial-focused-tests.log": "fd28d14bcc22b0582d56a521a5653b8e3367eb36f1098169907d48678a6af97d",
+    "initial-test-entry-error.log": "9f8fde709f5f322b3952bbd634d8aea52092cc7c2e5fabddc6e294ad36cd79f6",
+    "setup.json": "2efaf406101d50c84946c51576eafed7590264b8a8c9e45061cc8b9893daf201",
+    "live-events.jsonl": "40d8b1a5650d78b390bb74ca44e1a29f341fdf466b1f576d1d895ea80dbdb619",
+    "focused-tests.log": "dbbda91ea924980780533909b2d651cbac4fa4bcc21b8d7778aeba1a7942a841",
+    "request-count.json": "b1d46daca06d0270dbf36e96175551a0c30f9b84da98052c4a87eb429d7e11fd",
+    "native-contracts.log": "f7b9d28194cac6b4319b820098fb1c2c202534ed96bae5415ab768a0e7f64b1c",
+    "STOP": "66b07556b16666c995b3bcdd063bc39ccf6b261e95c32a6e1fbcf1d348bc4aaa",
+    "deepseek-controlled-tests.log": "beac4f1f933fa166ddc848bc6943b93e9a0b27993de5e52bb5d32618f8648d55",
+    "README.md": "8f961859ed18430f16cad1d1b94ac73038d3ddf8678cfb282f7f1baaa84add34",
+    "full-controlled-tests.log": "c552a16841d78ec923e3f9a548b48a57ec7d0dd0e121cd2997696edd923a4867",
+    "incomplete-console.log": "38115e2def20a89a5a0e4b2f4b87ff441fb59021d7dde899678741e777549467",
+    "incomplete-after.json": "820befd14f68fa67759a70b7eb3f5473af8bc618c9d75a7bd06ee042a8e37024",
+    "recheck.py": "272cafe9abf49a1540850f5ccd9f64e5de728ba2bb97cc1813d0385609eeafc1",
+    "incomplete-before.json": "b0c6a02602403a04a25c226509643d21cc83b4a8e4b3cfae30cffd301031601f",
+    "incomplete-result.json": "9d23ce41220de8042b86f2d076ea116d58dbfdda9c07ce2dfda9ac8dc4f427ea"
+  },
+  "documentation_links_checked": 17,
+  "documentation_links_missing": [],
+  "whitespace_check": {
+    "code_docs_and_json": "passed",
+    "raw_logs": "Generated trailing spaces preserved; log files excluded from whitespace lint"
+  }
+}

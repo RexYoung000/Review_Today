@@ -87,6 +87,8 @@ class ConversationTests(unittest.TestCase):
             payload = json.loads(user)
             target = payload.get("retry_step" if payload.get("hint_used") else "followup_step") or {}
             return MasteryEvaluation(passed=True, correctness="正确", completeness="完整", expression="清楚",
+                                     answer_coverage=[dict(question_quote=payload["question"], demonstrated=True,
+                                                          answer_quotes=[payload["answer"]])],
                                      transfer="待验证", feedback="本次回答核心正确", followup_question="换一个场景有哪些局限？",
                                      followup_binding=dict(step_title=target["title"], concepts=["本轮原理"],
                                          evidence_quotes=["这是本轮真实回答。"]) if target else None)

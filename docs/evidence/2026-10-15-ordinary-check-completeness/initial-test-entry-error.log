@@ -1,0 +1,116 @@
+
+==================================== ERRORS ====================================
+____________ ERROR collecting tests/test_ordinary_check_coverage.py ____________
+ImportError while importing test module '/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/tests/test_ordinary_check_coverage.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+agent-service/tests/test_ordinary_check_coverage.py:11: in <module>
+    from tests import test_conversation_v2 as fixture
+E   ImportError: cannot import name 'test_conversation_v2' from 'tests' (unknown location)
+______________ ERROR collecting tests/test_teaching_alignment.py _______________
+ImportError while importing test module '/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/tests/test_teaching_alignment.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+agent-service/tests/test_teaching_alignment.py:12: in <module>
+    from tests import test_conversation_v2 as fixture
+E   ImportError: cannot import name 'test_conversation_v2' from 'tests' (unknown location)
+_________________ ERROR collecting tests/test_check_binding.py _________________
+ImportError while importing test module '/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/tests/test_check_binding.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+agent-service/tests/test_check_binding.py:10: in <module>
+    from tests import test_conversation_v2 as fixture
+E   ImportError: cannot import name 'test_conversation_v2' from 'tests' (unknown location)
+______________ ERROR collecting tests/test_comprehensive_check.py ______________
+ImportError while importing test module '/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/tests/test_comprehensive_check.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+agent-service/tests/test_comprehensive_check.py:13: in <module>
+    from tests import test_teaching_alignment as alignment
+E   ImportError: cannot import name 'test_teaching_alignment' from 'tests' (unknown location)
+_____________ ERROR collecting tests/test_knowledge_invitation.py ______________
+ImportError while importing test module '/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/tests/test_knowledge_invitation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+agent-service/tests/test_knowledge_invitation.py:9: in <module>
+    from tests import test_teaching_alignment as alignment
+E   ImportError: cannot import name 'test_teaching_alignment' from 'tests' (unknown location)
+__________ ERROR collecting tests/test_knowledge_invitation_scope.py ___________
+ImportError while importing test module '/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/tests/test_knowledge_invitation_scope.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+agent-service/tests/test_knowledge_invitation_scope.py:6: in <module>
+    from tests import test_knowledge_invitation as fixture
+E   ImportError: cannot import name 'test_knowledge_invitation' from 'tests' (unknown location)
+_________ ERROR collecting tests/test_knowledge_invitation_preview.py __________
+ImportError while importing test module '/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/tests/test_knowledge_invitation_preview.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+agent-service/tests/test_knowledge_invitation_preview.py:13: in <module>
+    from tests import test_capture_evaluation_quotes as quotes_fixture
+E   ImportError: cannot import name 'test_capture_evaluation_quotes' from 'tests' (unknown location)
+=============================== warnings summary ===============================
+agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent-service/agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent-service/agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR agent-service/tests/test_ordinary_check_coverage.py
+ERROR agent-service/tests/test_teaching_alignment.py
+ERROR agent-service/tests/test_check_binding.py
+ERROR agent-service/tests/test_comprehensive_check.py
+ERROR agent-service/tests/test_knowledge_invitation.py
+ERROR agent-service/tests/test_knowledge_invitation_scope.py
+ERROR agent-service/tests/test_knowledge_invitation_preview.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 7 errors during collection !!!!!!!!!!!!!!!!!!!!
+5 warnings, 7 errors in 0.77s

@@ -1,0 +1,102 @@
+.....F......................................................................... [ 68%]
+....................................                        [100%]
+=================================== FAILURES ===================================
+_ OrdinaryCoverageGuardTests.test_missing_asked_items_override_true_without_erasing_partial_credit _
+
+self = <test_ordinary_check_coverage.OrdinaryCoverageGuardTests testMethod=test_missing_asked_items_override_true_without_erasing_partial_credit>
+
+    def test_missing_asked_items_override_true_without_erasing_partial_credit(self):
+        value = evaluation(answer_coverage=coverage())
+>       value.validate_request(dict(check_binding=BINDING, reference=REFERENCE, answer=PARTIAL))
+
+tests/test_ordinary_check_coverage.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MasteryEvaluation(passed=False, correctness='回答正确抓住了核心：相似度高只代表“相关/接近”，不保证资料本身正确，并指出原资料可能有错误或过时。这与讲解中“这个分数回答的是相关程度，而不是说...，不保证文本本身正确，也不保证模型最终照它说话。', '因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。'])))
+payload = {'check_binding': {'question': '请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。', 'st...件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。', 'answer': '相似度高只说明资料与问题在语义上接近，所以可能相关；但原资料仍可能有错误或过时。'}
+
+    def validate_request(self, payload):
+        validate_capture_quote_fields(self, payload)
+        from agent_service.learning_progress import guard_answer_coverage, guard_completion, comprehensive_bound
+        binding = payload.get("check_binding")
+        if binding and binding.get("question") and not comprehensive_bound(binding) and any(
+                not row.question_quote.strip() or row.question_quote not in binding["question"] or
+                any(not quote.strip() or quote not in payload.get("answer", "") for quote in row.answer_quotes)
+                for row in self.answer_coverage):
+            import json
+            from agent_service.call_errors import ModelCallError
+            raise ModelCallError("SCHEMA", json.dumps([dict(field=["answer_coverage"], type="question_answer_grounding")]))
+        guard_answer_coverage(self, binding, payload.get("answer", ""))
+        if comprehensive_bound(payload.get("check_binding")) and any(
+                not quote.strip() or quote not in payload.get("answer", "")
+                for row in self.step_completion_evidence for quote in row.answer_quotes):
+            import json
+            from agent_service.openai_client import ModelCallError
+            raise ModelCallError("SCHEMA", json.dumps([dict(field=["step_completion_evidence"], type="completion_answer_grounding")]))
+        guard_completion(self, payload.get("check_binding"), payload.get("answer", ""))
+        # Legacy/non-conversation evaluations have no frozen incoming binding.
+        if not payload.get("check_binding") or not self.followup_question.strip():
+            return
+        effective = self.passed and self.question_validity == "valid" and not payload.get("hint_used")
+        if effective and not payload.get("followup_required_on_pass"):
+            return  # The optional question will not be issued after a small pass.
+        if getattr(self, "followup_scoring_spec", None) is not None:
+            return  # Jev validates and freezes this equivalent rubric separately.
+        import json
+        from agent_service.learning_progress import quote_matches
+        from agent_service.openai_client import ModelCallError
+        target = payload.get("followup_step" if effective else "retry_step") or payload.get("learning_step") or {}
+        binding = self.followup_binding
+        if (binding is None or binding.step_title != target.get("title") or
+                any(not quote_matches(quote.strip(), payload.get("reference", ""))
+                    for quote in binding.evidence_quotes)):
+            from agent_service.learning_progress import comprehensive_bound
+            if comprehensive_bound(payload["check_binding"]) and not effective:
+                # A rejected comprehensive answer can retain valid feedback
+                # without publishing an ungrounded new question. This is not a
+                # pass, nor a fallback question or a new whole-step permission.
+                self.followup_question = ""
+                self.followup_binding = None
+                self.feedback += "\n\n可以重新请求本节综合检查，或继续下一节。"
+                return
+>           raise ModelCallError("SCHEMA", json.dumps([dict(field=["followup_binding"], type="followup_check_grounding")]))
+E           agent_service.call_errors.ModelCallError: RT.MODEL.SCHEMA
+
+agent_service/schemas.py:661: ModelCallError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_ordinary_check_coverage.py::OrdinaryCoverageGuardTests::test_missing_asked_items_override_true_without_erasing_partial_credit
+1 failed, 114 passed, 5 warnings, 78 subtests passed in 33.66s

@@ -1,0 +1,1 @@
+{"case": "incomplete", "result": "FAIL", "checks": {"run_completed": false, "evaluation_exists": false, "answer_pass_matches": false, "concepts_match": false, "invitation_count_matches": true, "chapter_not_verified": true, "no_knowledge_write": true, "supplement_question_exists": true}, "actual_requests": 14, "additional_case_requests": 1}

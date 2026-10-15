@@ -151,6 +151,29 @@ def binding_for_model(binding, reference):
     return result
 
 
+def guard_answer_coverage(result, binding, answer):
+    """A small pass needs question-scoped requirements and actual learner evidence.
+
+    This checks the existing grader's structured conclusions, not semantics with
+    keywords. The frozen rubric experiment has its own program-owned point gate.
+    """
+    if not binding or not binding.get("question") or comprehensive_bound(binding):
+        return
+    rows = result.answer_coverage
+    grounded = (bool(rows) and len({r.question_quote for r in rows}) == len(rows)
+        and all(r.question_quote.strip() and r.question_quote in binding["question"]
+                and all(q.strip() and q in answer for q in r.answer_quotes) for r in rows))
+    complete = grounded and all(r.demonstrated and r.answer_quotes for r in rows)
+    if result.passed and not complete:
+        result.passed = False
+        if grounded:
+            # Keep the grader's partial credit and specific gap explanation.
+            result.feedback = "这题还需要补答。\n\n" + result.feedback
+        else:
+            # Missing/invalid grading evidence is not a claim the learner erred.
+            result.feedback = "本次评价缺少可核对的作答依据，暂不记为通过。\n\n" + result.feedback
+
+
 def guard_completion(result, binding, answer):
     """A model's whole-step flag requires every frozen item and learner quotes."""
     if not comprehensive_bound(binding):

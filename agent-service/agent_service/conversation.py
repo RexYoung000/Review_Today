@@ -1527,6 +1527,7 @@ class ConversationHarness(ConditionalTeaching):
             retry_step = next(({"id": s["id"], "title": s["title"]} for s in
                                (ctx.get("learning_plan") or {}).get("steps", []) if s["title"] == retry_title), learning_step)
         result = None
+        rubric_evaluated = False
         evaluation_schema, evaluation_system = MasteryEvaluation, EVALUATION_SYSTEM
         from agent_service.judgment_grading import CAPTURE_QUOTE_RULE
         from agent_service.learning_progress import binding_for_model
@@ -1534,6 +1535,7 @@ class ConversationHarness(ConditionalTeaching):
         if self.judgments is not None:
             from agent_service.judgment_grading import evaluate, ScoredMasteryEvaluation, FOLLOWUP_RULE
             result = evaluate(self, sid, rid, rev, task, last["content"], EVALUATION_SYSTEM)
+            rubric_evaluated = result is not None
             evaluation_schema, evaluation_system = ScoredMasteryEvaluation, EVALUATION_SYSTEM + FOLLOWUP_RULE
         if result is None:
             if binding:
@@ -1550,7 +1552,9 @@ class ConversationHarness(ConditionalTeaching):
         if result.question_validity != "valid":
             result.passed = False
             result.feedback = "这道题的条件或讲解依据还不充分，不能据此判定你答错，也不记为验证通过。\n\n" + result.feedback
-        from agent_service.learning_progress import guard_completion
+        from agent_service.learning_progress import guard_answer_coverage, guard_completion
+        if not rubric_evaluated:
+            guard_answer_coverage(result, binding, last["content"])
         guard_completion(result, binding, last["content"])
         if ctx.get("hint_used", False):
             result.step_completion_demonstrated = False
