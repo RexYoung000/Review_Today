@@ -1,0 +1,21 @@
+The following is a diff from the previous accessibility tree for Window: "RAG · 真实保存续接 · 真实模型隔离验收" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 9-14
+~		8 button Description: 学习安排, 理解相似度衡量的是相关程度, Value: 已收起
++				61 text RAG（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。
++					62 text RAG（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。
++				63 heading 学习地图
++					64 text 学习地图
++				65 heading 第一步：相似度只衡量「相关」，不衡量「对」
++					66 text 第一步：相似度只衡量「相关」，不衡量「对」
++				67 text 检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。 所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。 换句话说，高相似度是「找到了看起来有关系的材料」，不是「材料可信」。 其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。 因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。
++				68 heading 想一想
++					69 text 想一想
++				70 text 请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。
++					71 text 请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。
++				72 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
++				73 text 找出来的文字只是看着切题，不能凭这个分数保证事实。材料可能早就失效，或者本身写错。写回答时也可能自行添话，删掉原来的限制。要逐句找到原文根据，再看版本和使用场景是否合适。
++					74 text 找出来的文字只是看着切题，不能凭这个分数保证事实。材料可能早就失效，或者本身写错。写回答时也可能自行添话，删掉原来的限制。要逐句找到原文根据，再看版本和使用场景是否合适。
++				75 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+~			30 scroll bar (settable, float) 1
+~				31 value indicator (settable, float) 1
+The focused UI element is 0 standard window RAG · 真实保存续接 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<VerifySaveQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1

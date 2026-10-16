@@ -1,0 +1,48 @@
+Window: "RAG · 真实保存续接 · 真实模型隔离验收", App: SaveFlowQA.
+0 standard window RAG · 真实保存续接 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<SaveFlowQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 真实保存续接 · 独立测试库 · 总上限 30 次
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 button Description: 会话标签, ID: tag
+		6 button Description: 归档, ID: archivebox
+		7 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		8 scroll area Secondary Actions: Scroll Up, Scroll Down
+			9 button 和 Mr. B 打个招呼
+			10 text Review Today 从一个问题开始，把理解留住。
+			11 scroll area
+				12 text entry area (settable) 学习输入
+			13 button Description: 添加材料, Value: 已收起, ID: plus
+			14 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+			15 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+			16 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 发送后显示最近一次请求的上下文用量。未发送草稿不计入。
+			17 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+			18 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+			19 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+			20 text 快捷开始
+			21 button Description: 换一组快捷开始, ID: arrow.clockwise
+			22 collection Secondary Actions: AXScrollToTop, AXScrollToBottom
+				23 button Description: 弄懂概念, 从直观解释和例子开始，理解一个新概念。, Help: 填入可编辑草稿，不会自动发送
+				24 button Description: 读懂资料, 拆解文章或公开链接，讲清重点和难点。, Help: 填入可编辑草稿，不会自动发送
+				25 button Description: 梳理知识, 整理零散内容，理清知识点之间的关系。, Help: 填入可编辑草稿，不会自动发送
+				26 button Description: 探索新主题, 明确学习目标，找到入门路径和合适材料。, Help: 填入可编辑草稿，不会自动发送
+				27 button Description: 辨析易混点, 对比相近概念，弄清区别与适用场景。, Help: 填入可编辑草稿，不会自动发送
+				28 button Description: 攻克面试题, 先理解答案，再通过独立作答和追问练习。, Help: 填入可编辑草稿，不会自动发送
+			29 scroll bar (settable, float) 0
+				30 value indicator (settable, float) 0
+				31 increment arrow button
+				32 decrement arrow button
+				33 increment page button
+				34 decrement page button
+	35 close button
+	36 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	37 minimize button
+38 menu bar
+	39 SaveFlowQA
+	40 File
+	41 Edit
+	42 View
+	43 Window
+	44 Help
+
+The focused UI element is 0 standard window RAG · 真实保存续接 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<SaveFlowQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1

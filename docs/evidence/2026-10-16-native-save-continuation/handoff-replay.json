@@ -1,0 +1,48 @@
+{
+  "layer": "offline_frozen_real_output_handoff",
+  "cases": [
+    {
+      "case": "original_missing_query",
+      "public_query": "",
+      "frozen_model_calls": [
+        "ExtractPayload",
+        "SemanticVerdict",
+        "RiskVerdict"
+      ],
+      "search_calls": 0,
+      "search_query": null,
+      "page_read_calls": 0,
+      "save_status": "needs_attention",
+      "offer_status": "failed",
+      "actual_saved_ids": [],
+      "remote_model_requests": 0,
+      "real_searches": 0,
+      "outcome": "PASS"
+    },
+    {
+      "case": "controlled_public_query_empty_results",
+      "public_query": "RAG 检索相似度与答案可靠性",
+      "frozen_model_calls": [
+        "ExtractPayload",
+        "SemanticVerdict",
+        "RiskVerdict"
+      ],
+      "search_calls": 1,
+      "search_query": "RAG 检索相似度与答案可靠性",
+      "page_read_calls": 0,
+      "save_status": "needs_attention",
+      "offer_status": "failed",
+      "actual_saved_ids": [],
+      "remote_model_requests": 0,
+      "real_searches": 0,
+      "outcome": "PASS"
+    }
+  ],
+  "production_changed": false,
+  "preserves_risk_guard": true,
+  "native_ack_simulated": false,
+  "actual_request_counter": {
+    "actual_requests": 23,
+    "limit": 30
+  }
+}

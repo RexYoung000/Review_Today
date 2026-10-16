@@ -1,0 +1,33 @@
+{
+  "stage": "pre_fix_native_save",
+  "outcome": "needs_attention",
+  "actual_requests": 3,
+  "cumulative_requests": 23,
+  "remaining_requests": 7,
+  "known_reported_tokens": 9994,
+  "search_calls": 0,
+  "page_reads": 0,
+  "actual_native_knowledge": 0,
+  "actual_native_sources": 0,
+  "receipt_observed": false,
+  "app_closed": true,
+  "owned_service_closed": true,
+  "stop_policy": "First failed real phase; no retry before new user authorization",
+  "artifact_sha256": {
+    "request-count.json": "b7c71c515a866b437844fbd5d819f8c80ffeba36479ec7edf2c0755ac8ad507b",
+    "STOP": "3b161ea266a1d9a8e7d1d7356fcff7225cc30a2be0340e7bb2866847795d5a1d",
+    "live-events.jsonl": "b50da80c6b202f0034dcf3437b1b2e688f8d91171af2e7e76da091595b17456b",
+    "native-events.jsonl": "2d74c0211eed4a431adf2d67db244eeda93adbdd7bec56abad04ca3c7d1724e4",
+    "phase-01-invitation.png": "428f2bd7c89e3e488abf3532e3548e26a592deb02bbfc3e2f568155956bf6a6a",
+    "phase-01-invitation.txt": "e078790f85399cd041f57419a740483aec06538462c988d2a3522b9c38cb8118",
+    "phase-02-save-started.png": "e61f5ced073235b80b4fbb574be9142cbcad3b72ed32fab79261132029501a63",
+    "phase-02-save-started.txt": "216ed90e1d87f175ead63c943b3306c71d67e22f156bfe460f51a337455a90b2",
+    "phase-03-save-failed.png": "d922b2b60d01c7311612d4b997e5d59debf2b9c3e29ecc54bf95031ac4e4d991",
+    "phase-03-save-failed.txt": "8be7c21ee2bd6ae499121faf66dde673f4bbadd6558fb1122ffd7d3d8635a014",
+    "phase-03-save-failed.json": "d08dc07d427be739351d15c959c638fb7d8c22278dd43979fbe0cd58590285b4",
+    "setup-empty-window.png": "a85f72f9c7a67bf6bb7d13361f094d65fe5774e07123f966c1c01275286d5c8d",
+    "setup-empty-window.txt": "c8a75be625e6d0014f0d454c8a84a25ecad07b46e753479127ec5558c0e8791b",
+    "native-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-build-seeded.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

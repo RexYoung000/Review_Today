@@ -1,0 +1,73 @@
+Window: "RAG · 真实保存续接 · 真实模型隔离验收", App: SaveFlowQA.
+0 standard window RAG · 真实保存续接 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<SaveFlowQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 真实保存续接 · 独立测试库 · 总上限 30 次
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 button Description: 会话标签, ID: tag
+		6 button Description: 归档, ID: archivebox
+		7 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		8 button Description: 学习安排, 理解相似度衡量的是相关程度, Value: 已收起
+		9 scroll area Secondary Actions: Scroll Up, Scroll Down
+			10 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				11 text RAG（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。
+					12 text RAG（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。
+				13 heading 学习地图
+					14 text 学习地图
+				15 heading 第一步：相似度只衡量「相关」，不衡量「对」
+					16 text 第一步：相似度只衡量「相关」，不衡量「对」
+				17 text 检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。 所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。 换句话说，高相似度是「找到了看起来有关系的材料」，不是「材料可信」。 其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。 因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。
+				18 heading 想一想
+					19 text 想一想
+				20 text 请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。
+					21 text 请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。
+				22 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				23 text 找出来的文字只是看着切题，不能凭这个分数保证事实。材料可能早就失效，或者本身写错。写回答时也可能自行添话，删掉原来的限制。要逐句找到原文根据，再看版本和使用场景是否合适。
+					24 text 找出来的文字只是看着切题，不能凭这个分数保证事实。材料可能早就失效，或者本身写错。写回答时也可能自行添话，删掉原来的限制。要逐句找到原文根据，再看版本和使用场景是否合适。
+				25 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				26 text 答对了：相似度只表示看着切题，不保证事实。来源资料可能失效或本身写错，生成时也可能加话、删掉原有条件，所以需要逐句找原文依据，并确认版本和使用场景是否合适。
+					27 text 答对了：相似度只表示看着切题，不保证事实。来源资料可能失效或本身写错，生成时也可能加话、删掉原有条件，所以需要逐句找原文依据，并确认版本和使用场景是否合适。
+				28 heading Description: 检索相似度、来源资料可靠性、生成忠实性、适用条件核对, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				29 unknown Description: 检索相似度只说明文本与问题相关，不保证文本本身正确，也不保证模型最终照它回答。, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				30 unknown Description: 即使参考资料没问题，生成阶段也可能加入资料里没有的说法，或把条件、范围、前提略去。, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				31 unknown Description: 判断 RAG 答案能否使用，需要看来源是否可靠且仍适用于当前版本与条件，并检查每句话能否在来源中找到依据、有没有省略限定。, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				32 text Value: 一句话记住 相似度高只代表相关，不代表事实正确；来源可能错误或过时，生成可能不忠实或省略限定，因此需核对来源与适用条件。 保存未完成, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				33 button Description: 稍后, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				34 button Description: 重试保存, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				35 checkbox Description: 已学过，加入复习, Value: 0, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				36 text Value: 尚未保存，请检查理解条件或内容核验结果。, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				37 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				38 text 保存为知识卡 核验发现冲突或证据不足，已暂停写入；请补充资料或修订内容。
+				39 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			40 scroll bar (settable, float) 0.9872462259239979
+				41 value indicator (settable, float) 0.9872462259239979
+				42 increment arrow button
+				43 decrement arrow button
+				44 increment page button
+				45 decrement page button
+		46 scroll area
+			47 text entry area (settable) 学习输入
+		48 button Description: 添加材料, Value: 已收起, ID: plus
+		49 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		50 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		51 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 988 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		52 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		53 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		54 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	55 close button
+	56 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	57 minimize button
+58 menu bar
+	59 SaveFlowQA
+	60 File
+	61 Edit
+	62 View
+	63 Window
+	64 Help
+
+The focused UI element is 0 standard window RAG · 真实保存续接 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<SaveFlowQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1

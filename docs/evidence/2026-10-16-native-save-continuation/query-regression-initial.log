@@ -1,0 +1,58 @@
+.......F.                                                        [100%]
+=================================== FAILURES ===================================
+_ CaptureQueryHandoffTests.test_stop_during_preparation_rejects_late_query_without_search_or_commit _
+
+self = <test_capture_query_handoff.CaptureQueryHandoffTests testMethod=test_stop_during_preparation_rejects_late_query_without_search_or_commit>
+
+    def test_stop_during_preparation_rejects_late_query_without_search_or_commit(self):
+        def stop():
+            rid = self.state()["foreground_run_id"]
+            self.harness.action(rid, RunActionRequest(action_id=str(uuid.uuid4()), action="stop"))
+        self.during_prepare = stop
+        self.save()
+        self.search.assert_not_called()
+        self.reader.assert_not_called()
+        self.assert_no_commit()
+>       self.assertEqual(self.state()["runs"][self.accepted.run_id]["status"], "interrupted")
+E       AssertionError: 'retryable_failed' != 'interrupted'
+E       - retryable_failed
+E       + interrupted
+
+tests/test_capture_query_handoff.py:180: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_capture_query_handoff.py::CaptureQueryHandoffTests::test_stop_during_preparation_rejects_late_query_without_search_or_commit
+1 failed, 8 passed, 5 warnings, 8 subtests passed in 5.31s

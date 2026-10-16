@@ -1,0 +1,24 @@
+{
+  "directory": "/tmp/review-today-verify-save-662j7hmq",
+  "native_app": "/tmp/review-today-verify-save-662j7hmq/VerifySaveQA.app",
+  "port": 50518,
+  "session_id": "e608a1be-b263-5f2a-af0f-1c630d716443",
+  "offer_id": "985ed407-9999-457e-ab09-4d8b27007bcd",
+  "offer_version": 1,
+  "starting_requests": 23,
+  "actual_request_limit": 30,
+  "max_additional_requests": 7,
+  "previous_runtime": "/tmp/review-today-save-flow-hns515ow",
+  "resume": "Consistent copies of the actual failed native and backend databases; no offer reset or fabricated ACK",
+  "initial_knowledge_count": 0,
+  "startup_probe_scope": "Reuse only this batch actual smart router/coach structured-call successes; no startup probes; risk/deep/streaming remain unchecked, real risk call required; no model output substitution",
+  "native_entry_sha256": "bf77f53968f676b31310ca2cd918fa75069a849fe2a372bcb3b15dfd5af41801",
+  "native_binary_sha256": "7503b07c5abed5377eac35e9f94854733091874b86922779d6f9f9b368e110b1",
+  "bootstrap_sha256": "b6fb6f7a3bef51938eb4b329a3cd1cd959373ffe4fa583e8b8b821f27bf5c5b2",
+  "production_fix_sha256": {
+    "agent-service/agent_service/conversation.py": "a8bdcd066d7af5000e6fd503ea09e2b5b07cf21d716ab54b737015302bda958d",
+    "agent-service/agent_service/capture/__init__.py": "0bd0c5c0cfef9f84e03f916fc8f4c94c9a2a633c5d89abfacc30b130e3e30b6b"
+  },
+  "setup_correction": "Native database copy omitted its existing migration marker and backups; preserve those original artifacts too. First two UI launch attempts crashed in backupIfNeeded before model service startup; counter stayed23. Production migration unchanged.",
+  "local_commit_loop_correction": "Initial QA root omitted production ContentView HarnessProcessor/CaptureProcessor tick; no claim or local writes happened. Added existing production loop, normally quit/reopened; preserve verified task and do not regenerate or reset budget."
+}

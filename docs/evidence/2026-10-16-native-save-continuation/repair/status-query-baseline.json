@@ -1,0 +1,23 @@
+{
+  "layer": "read_only_actual_checkpoint_comparison",
+  "production_changed": false,
+  "remote_requests": 0,
+  "actual_saved_count": 4,
+  "actual_stage": "unorganized",
+  "actual_discussion_sources": [],
+  "literal_focus_quote": true,
+  "offer_covers_focus": true,
+  "focus_message_id": "50700c60-26f5-44c3-bc57-03eadb2a24e1",
+  "cleared_by_message_id": "97f82cc2-b765-40ab-a468-38696d8b7593",
+  "cleared_by_run_id": "31042fce-1b2c-485d-bab9-0b701f0394d6",
+  "cleared_by_text": "核验发现冲突或证据不足，已暂停写入；请补充资料或修订内容。",
+  "compared_stage": "saved",
+  "compared_saved_ids": [
+    "b3f2a1c4-7d8e-4f1a-9c2b-5e6d7a8b9c01",
+    "c4a3b2d5-8e9f-4a1b-8c3d-6f7e8a9b0c12",
+    "d5b4c3e6-9f0a-4b2c-9d4e-7a8b9c0d1e23",
+    "e6c5d4f7-0a1b-4c3d-8e5f-8b9c0d1e2f34"
+  ],
+  "comparison": "Exclude old failed-save notification from discussion scan in a copy only; retain all receipt and version evidence",
+  "conclusion": "Old failed-save result resets the discussion anchor; valid same-scope selection is then rejected and real saved cards are called prior cards."
+}

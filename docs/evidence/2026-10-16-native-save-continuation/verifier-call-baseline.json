@@ -1,0 +1,23 @@
+{
+  "layer": "controlled_verifier_call_baseline",
+  "model_calls": [],
+  "outcome": "retryable_failed",
+  "error_code": "RT.CAPTURE.MODEL_FAILED",
+  "events": [
+    {
+      "seq": 1,
+      "event_type": "node_start",
+      "node": "verify",
+      "payload": {}
+    },
+    {
+      "seq": 2,
+      "event_type": "node_failed",
+      "node": "verify",
+      "payload": {
+        "error": "_parse_capture_model() takes 3 positional arguments but 4 positional arguments (and 2 keyword-only arguments) were given"
+      }
+    }
+  ],
+  "remote_requests": 0
+}

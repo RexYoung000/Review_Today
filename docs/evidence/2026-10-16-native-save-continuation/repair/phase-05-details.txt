@@ -1,0 +1,30 @@
+The following is a diff from the previous accessibility tree for Window: "知识库" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 5-57
+~0 standard window 知识库, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<VerifySaveQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
++		68 button 回到学习
++		69 container 知识卡片
++			70 text Help: 左划下一张，右划上一张，也可使用左右方向键或侧边定位条, Value: 检索增强生成的可信性边界 检索相似度
++			71 button Description: 关闭知识详情, ID: xmark
++			72 scroll area Secondary Actions: Scroll Up, Scroll Down
++				73 heading 主问题
++				74 text RAG 中检索相似度高意味着什么？它能否说明资料内容正确、模型一定照资料说话？
++				75 heading 详解
++				76 text 1 检索阶段把问题与资料做匹配，把字面或语义上最接近的片段排到前面。 2 相似度分数回答的是「这段内容和问题有多相关」。 3 它不回答「这段内容说的是不是事实」，高相似度不保证文本本身正确。 4 高相似度只说明查到的文本与问题「像」，不保证模型最终照它说话。
++				77 heading 判断关键点
++				78 text 先说明相似度衡量相关性，再说明它不衡量事实、不保证模型照资料说话。 相似度衡量的是内容与问题的相关性 相似度不衡量内容是否为事实 高相似度不保证文本本身正确 高相似度也不保证模型最终照资料说话
++				79 disclosure triangle Description: 常见误区, 2, Help: 展开或收起常见误区, Value: off, Details: 已收起
++				80 disclosure triangle Description: 来源证据, Help: 展开或收起来源证据, Value: off, Details: 已收起
++				81 scroll bar (settable, float) 0
++					82 value indicator (settable, float) 0
++					83 increment arrow button
++					84 decrement arrow button
++					85 increment page button
++					86 decrement page button
++			87 checkbox Description: 已学过，参与间隔复习, Value: 0
++			88 text 仅保存资料 · 未参与复习
++			89 menu button 更多
++			90 button 试一题
++			91 text 共 4 张知识卡
++			92 unknown Description: 知识卡定位, Details: 第 4 张，共 4 张，检索相似度, Secondary Actions: Increment, Decrement
++	93 text 知识库
+The focused UI element is 0 standard window 知识库, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<VerifySaveQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
