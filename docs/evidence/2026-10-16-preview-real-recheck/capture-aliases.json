@@ -1,0 +1,8 @@
+{
+  "after-send.json": {
+    "canonical_file": "backend-after.json",
+    "sha256": "6e021f0a9a18b19b947d6c9a3b679cd62b04f7133dfcb0ac7fdbbf40bf50eb12",
+    "byte_identical": true,
+    "phase_summary_preserved": "after-send-summary.json"
+  }
+}

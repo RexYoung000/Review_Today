@@ -1,0 +1,8 @@
+{
+  "reason": "structured preview discarded after real update",
+  "actual_requests": 23,
+  "limit": 30,
+  "remaining": 7,
+  "manual_retry": false,
+  "save_clicked": false
+}

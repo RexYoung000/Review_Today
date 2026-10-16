@@ -1,0 +1,8 @@
+The following is a diff from the previous accessibility tree for Window: "RAG · 全新连续验收 · 真实模型隔离验收" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
++				84 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
++				85 text 这个补充我接住了，先把口径讲准：相似度衡量的是“这段内容与问题有多贴近”，不是“这条来源有多可信”——两者是检索排序与来源判断两件事。所以即使分数很高，也仍要回到原始出处看它是谁写的、是不是一手来源。 再看适用条件，应当同时对照三类信息：
++				86 text 比如一条去年写的“某接口默认超时 30 秒”发布说明，发布时间旧、针对的版本也已变更，就算与你的问题语义高度接近，也可能不再适用。这里的判断依赖资料本身是否标明了这些信息；如果来源没有写清时间和版本，那就只能标注为“无法确认适用性”，而不是默认成立。 按这个口径，那张预览中“核对来源与适用条件”这条要点应展开为：先确认来源本身可信，再对照发布时间、产品版本和适用场景判断是否适用于当前问题。范围仍是同一个 RAG 知识点，不保存、不进入下一步。
++				87 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+~			32 scroll bar (settable, float) 0.612987012987013
+~				33 value indicator (settable, float) 0.612987012987013
+The focused UI element is 39 text entry area (settable) 学习输入

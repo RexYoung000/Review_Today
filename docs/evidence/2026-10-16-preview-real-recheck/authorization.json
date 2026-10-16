@@ -1,0 +1,15 @@
+{
+  "decision": 238,
+  "parent_decision": 237,
+  "new_batch": false,
+  "starting_requests": 20,
+  "limit": 30,
+  "additional_request_limit": 10,
+  "user_confirmation": "受控修复交付并说明下一步后，Rex 回复：继续",
+  "scope": "only same-topic preview supplementation without saving or advancing",
+  "provider_config_sha256": {
+    "agent-service/.env": "79b70ced19be1181171afcf11837ac51293717fdf3fb252a70b49c718f75c17c",
+    "agent-service/providers/deepseek/.env": "443e52c57ad9d369c6c0ddbbf1283f2a4bdb9d8635edb9e735a109be9f574554"
+  },
+  "verified_roles_sha256": "cb87bb4b5aaa947bffe05fc76230640884003ba30b286c18bc0eb538844fb91d"
+}

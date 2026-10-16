@@ -1,0 +1,120 @@
+{
+  "outcome": "REPRODUCED_STRUCTURED_PREVIEW_FALLBACK",
+  "actual_new_requests": 3,
+  "original_total_requests": 23,
+  "original_limit": 30,
+  "diagnostic_new_model_requests": 0,
+  "candidate_count": 1,
+  "candidate_version": 2,
+  "published_offer_version": 3,
+  "new_answer_quotes_valid": true,
+  "update_request_validation_passed": true,
+  "generated_preview_points": 4,
+  "unsupported_items": [
+    {
+      "item": "point_2",
+      "text": "资料本身可能写错或过时，检索机制不检查事实真假和时间新旧。",
+      "quotes": [
+        {
+          "quote": "这个机制本身不检查事实真假，也不检查时间新旧。",
+          "in_selected_fragments": false
+        },
+        {
+          "quote": "这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。",
+          "in_selected_fragments": false
+        }
+      ]
+    }
+  ],
+  "final_public_preview_fields": {},
+  "published_scope_summary": "RAG 中高相似度只说明内容与问题贴近，不判断来源是否可信；资料可能错误或过时，生成也可能不忠实资料，核对时要看来源是否可信，并对照发布时间、产品版本和适用场景判断是否适用。",
+  "selected_fragment_count": 8,
+  "grounding": [
+    {
+      "item": "point_1",
+      "text": "高相似度只说明内容与问题在语义上贴近，不代表内容真实、最新或适用；它判断的是检索排序，不是来源可信度。",
+      "quotes": [
+        {
+          "quote": "**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。",
+          "in_selected_fragments": true
+        },
+        {
+          "quote": "**相似度衡量的是“这段内容与问题有多贴近”，不是“这条来源有多可信”**——两者是检索排序与来源判断两件事。",
+          "in_selected_fragments": true
+        }
+      ]
+    },
+    {
+      "item": "point_2",
+      "text": "资料本身可能写错或过时，检索机制不检查事实真假和时间新旧。",
+      "quotes": [
+        {
+          "quote": "这个机制本身不检查事实真假，也不检查时间新旧。",
+          "in_selected_fragments": false
+        },
+        {
+          "quote": "这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。",
+          "in_selected_fragments": false
+        }
+      ]
+    },
+    {
+      "item": "point_3",
+      "text": "生成模型可能误解资料、遗漏限制或添加无依据内容，所以最终答案仍可能不正确。",
+      "quotes": [
+        {
+          "quote": "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**",
+          "in_selected_fragments": true
+        }
+      ]
+    },
+    {
+      "item": "point_4",
+      "text": "核对时先确认来源本身可信，再对照发布时间、产品版本和适用场景判断是否适用于当前问题；若来源未标明这些信息，只能标注为无法确认适用性。",
+      "quotes": [
+        {
+          "quote": "即使分数很高，也仍要回到原始出处看它是谁写的、是不是一手来源。",
+          "in_selected_fragments": true
+        },
+        {
+          "quote": "先确认来源本身可信，再对照发布时间、产品版本和适用场景判断是否适用于当前问题。",
+          "in_selected_fragments": true
+        },
+        {
+          "quote": "比如一条去年写的“某接口默认超时 30 秒”发布说明，发布时间旧、针对的版本也已变更，就算与你的问题语义高度接近，也可能不再适用。",
+          "in_selected_fragments": true
+        }
+      ]
+    },
+    {
+      "item": "summary",
+      "text": "高相似度只说明内容与问题贴近、不代表来源可信；资料可能错误或过时、生成也可能不忠实资料，因此要确认来源可信，并对照发布时间、产品版本和适用场景判断是否适用。",
+      "quotes": [
+        {
+          "quote": "**相似度衡量的是“这段内容与问题有多贴近”，不是“这条来源有多可信”**——两者是检索排序与来源判断两件事。",
+          "in_selected_fragments": true
+        },
+        {
+          "quote": "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**",
+          "in_selected_fragments": true
+        },
+        {
+          "quote": "先确认来源本身可信，再对照发布时间、产品版本和适用场景判断是否适用于当前问题。",
+          "in_selected_fragments": true
+        }
+      ]
+    }
+  ],
+  "in_memory_counterfactual_without_unsupported_point": {
+    "preview_points": [
+      "高相似度只说明内容与问题在语义上贴近，不代表内容真实、最新或适用；它判断的是检索排序，不是来源可信度。",
+      "生成模型可能误解资料、遗漏限制或添加无依据内容，所以最终答案仍可能不正确。",
+      "核对时先确认来源本身可信，再对照发布时间、产品版本和适用场景判断是否适用于当前问题；若来源未标明这些信息，只能标注为无法确认适用性。"
+    ],
+    "preview_summary": "高相似度只说明内容与问题贴近、不代表来源可信；资料可能错误或过时、生成也可能不忠实资料，因此要确认来源可信，并对照发布时间、产品版本和适用场景判断是否适用。"
+  },
+  "persisted_state_modified": false,
+  "production_modified": false,
+  "cause": "Two quotes in generated point 2 are from earlier full lecture text, not the selected old fragments or new quotations. Optional preview grounding drops the entire preview after request validation, so the completed update publishes only scope_summary and never reaches the existing repair for this issue.",
+  "next_scope_proposal": "Only for an explicitly returned structured update preview with invalid selected-source references, report the concrete issue through the existing single repair before publication. Preserve source checks, optional/legacy compatibility, explicit save consent and existing repair cap; not yet implemented."
+}

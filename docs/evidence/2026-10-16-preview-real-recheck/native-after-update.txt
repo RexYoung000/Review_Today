@@ -1,0 +1,65 @@
+Window: "RAG · 全新连续验收 · 真实模型隔离验收", App: ContinuousResumeQA.
+0 standard window RAG · 全新连续验收 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 同点预览真实复验 · 累计请求以账本为准
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 text 依赖加载检查通过；学习服务尚未启动。
+		6 button (disabled) 选择 Review_Today 项目文件夹
+		7 button Description: 会话标签, ID: tag
+		8 button Description: 归档, ID: archivebox
+		9 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		10 button Description: 学习安排, 分清检索相关性与答案正确性不是一回事, Value: 已收起
+		11 scroll area Secondary Actions: Scroll Up, Scroll Down
+			12 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				13 heading Description: 检索相关性与答案正确性的区别、生成对依据的忠实性, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				14 text Value: RAG 中高相似度只说明内容与问题贴近，不判断来源是否可信；资料可能错误或过时，生成也可能不忠实资料，核对时要看来源是否可信，并对照发布时间、产品版本和适用场景判断是否适用。 未保存, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				15 button Description: 稍后, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				16 button Description: 保存为知识卡, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				17 checkbox Description: 已学过，加入复习, Value: 0, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				18 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				19 text 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
+					20 text 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
+				21 container
+					22 button 重试
+					23 button 取消目标
+					24 button Description: 运行详情, Help: 展开运行详情, Value: 已收起，回答格式暂时有问题，可重试；输入和学习进度已保留
+				25 text 这个补充是对的，而且比原来的说法更准确：相似度只反映内容相关，不能用它判断来源是否可信。同理，核对适用条件也不只是看时间，还要看资料的发布时间、产品版本和适用场景——一条旧的发布说明可能因为版本已经变化而不再适用，一份面向其他场景的文档也可能因为前提不同而不适用。 按这个口径，原来那条预览里的“核对来源与适用条件”应该展开为：先确认来源本身可信，再对照发布时间、产品版本和适用场景判断它是否适用于当前问题。 我把它更新进同一个尚未保存的 RAG 预览，范围仍是同一个知识点，不保存、不进入下一步。
+				26 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				27 text 回复未完成，已保留已输出内容 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
+				28 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				29 text 这个补充我接住了，先把口径讲准：相似度衡量的是“这段内容与问题有多贴近”，不是“这条来源有多可信”——两者是检索排序与来源判断两件事。所以即使分数很高，也仍要回到原始出处看它是谁写的、是不是一手来源。 再看适用条件，应当同时对照三类信息：
+				30 text 比如一条去年写的“某接口默认超时 30 秒”发布说明，发布时间旧、针对的版本也已变更，就算与你的问题语义高度接近，也可能不再适用。这里的判断依赖资料本身是否标明了这些信息；如果来源没有写清时间和版本，那就只能标注为“无法确认适用性”，而不是默认成立。 按这个口径，那张预览中“核对来源与适用条件”这条要点应展开为：先确认来源本身可信，再对照发布时间、产品版本和适用场景判断是否适用于当前问题。范围仍是同一个 RAG 知识点，不保存、不进入下一步。
+				31 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			32 scroll bar (settable, float) 1
+				33 value indicator (settable, float) 1
+				34 increment arrow button
+				35 decrement arrow button
+				36 increment page button
+				37 decrement page button
+		38 scroll area
+			39 text entry area (settable) 学习输入
+		40 button Description: 添加材料, Value: 已收起, ID: plus
+		41 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		42 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		43 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 26,079 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		44 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		45 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		46 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	47 close button
+	48 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	49 minimize button
+50 menu bar
+	51 ContinuousResumeQA
+	52 File
+	53 Edit
+	54 View
+	55 Window
+	56 Help
+
+The focused UI element is 39 text entry area (settable) 学习输入

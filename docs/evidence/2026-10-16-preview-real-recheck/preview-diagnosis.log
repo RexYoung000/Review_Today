@@ -1,0 +1,36 @@
+{
+  "outcome": "REPRODUCED_STRUCTURED_PREVIEW_FALLBACK",
+  "actual_new_requests": 3,
+  "original_total_requests": 23,
+  "original_limit": 30,
+  "diagnostic_new_model_requests": 0,
+  "candidate_count": 1,
+  "candidate_version": 2,
+  "published_offer_version": 3,
+  "new_answer_quotes_valid": true,
+  "update_request_validation_passed": true,
+  "generated_preview_points": 4,
+  "unsupported_items": [
+    {
+      "item": "point_2",
+      "text": "资料本身可能写错或过时，检索机制不检查事实真假和时间新旧。",
+      "quotes": [
+        {
+          "quote": "这个机制本身不检查事实真假，也不检查时间新旧。",
+          "in_selected_fragments": false
+        },
+        {
+          "quote": "这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。",
+          "in_selected_fragments": false
+        }
+      ]
+    }
+  ],
+  "final_public_preview_fields": {},
+  "published_scope_summary": "RAG 中高相似度只说明内容与问题贴近，不判断来源是否可信；资料可能错误或过时，生成也可能不忠实资料，核对时要看来源是否可信，并对照发布时间、产品版本和适用场景判断是否适用。",
+  "selected_fragment_count": 8,
+  "persisted_state_modified": false,
+  "production_modified": false,
+  "cause": "Two quotes in generated point 2 are from earlier full lecture text, not the selected old fragments or new quotations. Optional preview grounding drops the entire preview after request validation, so the completed update publishes only scope_summary and never reaches the existing repair for this issue.",
+  "next_scope_proposal": "Only for an explicitly returned structured update preview with invalid selected-source references, report the concrete issue through the existing single repair before publication. Preserve source checks, optional/legacy compatibility, explicit save consent and existing repair cap; not yet implemented."
+}
