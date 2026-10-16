@@ -48,8 +48,15 @@ def validate_update(update, message, candidates):
 
 
 def candidates(h, data, run, decision=None):
-    if decision and (decision.relation == 'new_topic' or decision.proposed_actions):
-        return []
+    if decision:
+        if decision.relation == 'new_topic':
+            return []
+        if decision.proposed_actions and not (
+                decision.relation == 'continuation' and decision.scope == 'continue_goal'
+                and {'correction', 'followup'} & set(decision.intents)
+                and all(action.kind == 'save' and action.disposition == 'reject'
+                        for action in decision.proposed_actions)):
+            return []
     result = []
     for offer in data.get('capture_offers', {}).values():
         if (offer.get('trigger') != 'verified_check' or offer.get('origin_task_id') != run.get('task_id')

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-16-preview-deferral/replay_retained.py", line 145, in <module>
+    main()
+    ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-16-preview-deferral/replay_retained.py", line 123, in main
+    assert offer_events[-1]["payload"]["capture_offer"]["preview"] == updated["preview"]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'preview'

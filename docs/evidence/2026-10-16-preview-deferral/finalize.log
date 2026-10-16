@@ -1,0 +1,55 @@
+{
+  "outcome": "PASS_CONTROLLED_IMPLEMENTATION",
+  "decision": 238,
+  "baseline_commit": "12f43b2681824fdbbcd8609ae64e99da3a0689de",
+  "production_changed": [
+    "agent-service/agent_service/knowledge_invitation.py"
+  ],
+  "tests": {
+    "baseline-tests.log": "3 failed, 1 passed, 5 warnings, 7 subtests passed in 2.17s",
+    "fixed-tests.log": "4 passed, 5 warnings, 7 subtests passed in 1.86s",
+    "full-tests.log": "1233 passed, 4 skipped, 5 warnings, 556 subtests passed in 181.62s (0:03:01)",
+    "deepseek-tests.log": "36 passed, 5 warnings, 20 subtests passed in 16.11s"
+  },
+  "retained_data_replay": "replay-result.json",
+  "protection": {
+    "provider_config_sha256": {
+      "files": 2,
+      "changes": []
+    },
+    "swift_source_sha256": {
+      "files": 106,
+      "changes": []
+    },
+    "python_source_sha256": {
+      "files": 72,
+      "changes": [
+        "agent-service/agent_service/knowledge_invitation.py"
+      ]
+    },
+    "prior_evidence_sha256": {
+      "files": 101,
+      "changes": []
+    }
+  },
+  "daily_files_unchanged": 7,
+  "original_trial_archives_unchanged": {
+    "live": 27,
+    "startup-diagnosis": 36,
+    "resumed": 55
+  },
+  "stopped_trial_files_unchanged": 20,
+  "original_trial_listener_closed": true,
+  "actual_model_requests": 20,
+  "limit": 30,
+  "new_real_model_requests": 0,
+  "unused_allowance": 10,
+  "old_batch_30_and_stop_unchanged": true,
+  "project_user_difference_preserved": true,
+  "save_consent_version_quote_lifecycle_memory_and_one_repair_guards_preserved": true,
+  "daily_app_replaced": false,
+  "native_ui_revalidated": false,
+  "new_real_model_behavior_verified": false,
+  "complete_eight_step_acceptance": false,
+  "final_product_acceptance": false
+}

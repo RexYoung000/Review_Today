@@ -1,0 +1,41 @@
+{
+  "outcome": "PASS_CONTROLLED_RETAINED_DATA",
+  "decision": 238,
+  "real_model_requests": 0,
+  "actual_batch_requests": 20,
+  "limit": 30,
+  "unused_allowance": 10,
+  "directory": "/tmp/review-today-preview-deferral-replay-en5r2odz",
+  "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+  "source_checkpoint": "../2026-10-16-continuous-acceptance/resumed/phase-03-complete-result.json",
+  "input": "我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。",
+  "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+  "calls": [
+    {
+      "schema": "IntentDecision"
+    },
+    {
+      "schema": "TeachingPreparation"
+    },
+    {
+      "schema": "ConversationOutput",
+      "candidate_count": 1,
+      "candidate_version": 2,
+      "update_instruction": true
+    }
+  ],
+  "original_invalid_update_still_rejected": {
+    "code": "RT.MODEL.SCHEMA",
+    "diagnostic": "field=capture_update; select an existing invitation version and real source excerpts only"
+  },
+  "fixture": "Actual route, preparation and answer message; update metadata/preview deliberately grounded in the controlled fixture, not a new real model result.",
+  "original_offer_version": 1,
+  "corrected_candidate_version": 2,
+  "published_version": 3,
+  "knowledge_saved": 0,
+  "original_history_preserved": true,
+  "learning_step_and_understanding_preserved": true,
+  "original_runtime_files_unchanged": true,
+  "native_ui_revalidated": false,
+  "new_real_model_behavior_verified": false
+}

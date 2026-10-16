@@ -1,0 +1,3581 @@
+{
+  "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+  "events": [
+    {
+      "event_id": "46104f91-69b6-453b-91ff-0f65f5529201",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": null,
+      "seq": 87,
+      "occurred_at": "2026-10-16T11:16:39.175344+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "received",
+      "state": "accepted",
+      "node": "received",
+      "user_summary": "已保存，准备回应",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 0,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    },
+    {
+      "event_id": "00789460-ed2d-49e0-ae7a-5f552c5a0dab",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": null,
+      "seq": 88,
+      "occurred_at": "2026-10-16T11:16:39.181314+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "understanding",
+      "state": "running",
+      "node": "understanding",
+      "user_summary": "正在理解本轮意图",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    },
+    {
+      "event_id": "e3346e50-4d16-4df5-8123-76ee179e64ac",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": null,
+      "seq": 89,
+      "occurred_at": "2026-10-16T11:16:39.211038+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "intent",
+      "state": "running",
+      "node": "intent",
+      "user_summary": "正在理解本轮意图",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "context_capacity": {
+          "estimated": true,
+          "input_tokens": 41790,
+          "input_budget": 256000,
+          "compact_threshold": 220000,
+          "compact_target": 144000,
+          "ratio": 0.1632421875,
+          "output_reserve": 4096,
+          "model_window": null,
+          "budget_source": "local_limit",
+          "omitted_narrative": []
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "fc670c17-79cc-4774-8fb5-ab037a471aa1",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": null,
+      "seq": 90,
+      "occurred_at": "2026-10-16T11:16:39.261375+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "model_attempt",
+      "state": "running",
+      "node": "model_attempt",
+      "user_summary": "正在处理当前步骤",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "step": "intent",
+        "step_attempt": 1
+      },
+      "message": null
+    },
+    {
+      "event_id": "3c95bca0-4ee9-4feb-9d64-50e2d3108456",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": null,
+      "seq": 91,
+      "occurred_at": "2026-10-16T11:16:39.274919+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "intent",
+      "state": "running",
+      "node": "intent",
+      "user_summary": "本步骤已完成",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": 60,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    },
+    {
+      "event_id": "a1e334c6-5451-4760-aaf5-07d95135e93c",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 92,
+      "occurred_at": "2026-10-16T11:16:39.294067+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "capture_offer",
+      "state": "running",
+      "node": "capture_offer",
+      "user_summary": "知识收尾状态已更新",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "capture_offer": {
+          "id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+          "version": 2,
+          "title": "检索相关性与答案正确性的区别、生成对依据的忠实性",
+          "anchor_message_id": "56562566-fd0c-4e5a-ba4e-e7485bfcfe6f",
+          "status": "invalidated",
+          "next_request": "",
+          "continuation_consumed": true,
+          "error": "正在核对纠正后的保存范围，完成前暂不能录入。",
+          "knowledge_ids": [],
+          "trigger": "verified_check",
+          "scope_summary": "RAG 中高相似度仅代表语义相关，生成模型可能不忠实依据资料，所以不能保证最终答案正确。"
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "330b6f14-f65a-49cb-ae8f-261027cc07ac",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 93,
+      "occurred_at": "2026-10-16T11:16:39.294080+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "memory_corrected",
+      "state": "running",
+      "node": "memory_corrected",
+      "user_summary": "已收到纠正，正在调整相关内容",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "invalidate_memory": true
+      },
+      "message": null
+    },
+    {
+      "event_id": "05a10437-3dba-4eb8-a472-8d25a7ebe8d2",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 94,
+      "occurred_at": "2026-10-16T11:16:39.294092+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "intent_decided",
+      "state": "running",
+      "node": "intent_decided",
+      "user_summary": "已理解本轮要求",
+      "detail_summary": "用户主动修正并丰富同一 RAG 知识点（相似度只说明内容相关、不代表来源可信；核对适用条件要看发布时间、产品版本和适用场景），要求把这点补进尚未保存的同一张预览卡，同时明确拒绝保存、不进入下一步，属于同一学习目标下的 correction + reject + defer，保持 continue_goal。",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "intent": {
+          "conversation_kind": "ordinary",
+          "clarification_kind": "none",
+          "conversation_repair": false,
+          "reply_feedback": "none",
+          "reply_purpose": "none",
+          "knowledge_card_status": false,
+          "status_context": null,
+          "repair_target_message_id": "",
+          "continuation_evidence": "",
+          "continuation_topic": "",
+          "programming_boundary": "none",
+          "programming_learning_request": "",
+          "resource_boundary": "none",
+          "resource_learning_request": "",
+          "learning_reply_sentence_limit": null,
+          "intents": [
+            "correction",
+            "reject",
+            "defer"
+          ],
+          "target_task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+          "target_description": "补正 RAG 知识点：相似度只反映内容相关，不能判断来源可信；核对适用条件要看发布时间、产品版本和适用场景；更新预览但暂不保存、不推进下一步",
+          "relation": "continuation",
+          "workflow": "source_learning",
+          "scope": "continue_goal",
+          "proposed_actions": [
+            {
+              "kind": "save",
+              "disposition": "reject",
+              "target_id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "version": 1,
+              "evidence": "暂时不要保存，也不要进入下一步",
+              "selection": []
+            }
+          ],
+          "clarification": "",
+          "rationale": "用户主动修正并丰富同一 RAG 知识点（相似度只说明内容相关、不代表来源可信；核对适用条件要看发布时间、产品版本和适用场景），要求把这点补进尚未保存的同一张预览卡，同时明确拒绝保存、不进入下一步，属于同一学习目标下的 correction + reject + defer，保持 continue_goal。",
+          "understanding": "unknown",
+          "answer_evidence": "",
+          "topic_closure": null,
+          "learning_goal_ready": true,
+          "direct_teaching": false,
+          "comprehensive_check": null,
+          "answer_only": false,
+          "is_jd": false,
+          "material_focus": "none",
+          "jd_request": "none",
+          "needs_verification": false,
+          "cross_check_sources": false,
+          "requested_mode": null,
+          "refresh_sources": false,
+          "public_search_query": "",
+          "light_reply": "",
+          "session_tags": [],
+          "handoff_source_ids": [],
+          "handoff_step_ids": [],
+          "memory_selections": []
+        },
+        "memory_references": []
+      },
+      "message": null
+    },
+    {
+      "event_id": "ff69bccc-38ec-43f9-837f-f5ed74d440ce",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 95,
+      "occurred_at": "2026-10-16T11:16:39.344315+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "teaching_preparation",
+      "state": "running",
+      "node": "teaching_preparation",
+      "user_summary": "正在梳理当前问题",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "context_capacity": {
+          "estimated": true,
+          "input_tokens": 2342,
+          "input_budget": 256000,
+          "compact_threshold": 220000,
+          "compact_target": 144000,
+          "ratio": 0.0091484375,
+          "output_reserve": 4096,
+          "model_window": null,
+          "budget_source": "local_limit",
+          "omitted_narrative": []
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "4fe63f9d-d107-46c9-89a7-14130fdf926d",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 96,
+      "occurred_at": "2026-10-16T11:16:39.363262+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "model_attempt",
+      "state": "running",
+      "node": "model_attempt",
+      "user_summary": "正在处理当前步骤",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "step": "teaching_preparation",
+        "step_attempt": 1
+      },
+      "message": null
+    },
+    {
+      "event_id": "7be552a5-ef2d-44ff-88e0-93d61fdf0a4f",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 97,
+      "occurred_at": "2026-10-16T11:16:39.378857+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "teaching_preparation",
+      "state": "running",
+      "node": "teaching_preparation",
+      "user_summary": "本步骤已完成",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": 31,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    },
+    {
+      "event_id": "71b05593-f85e-4582-b23a-d25b1c5ce7f5",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 98,
+      "occurred_at": "2026-10-16T11:16:39.399733+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "search_not_called",
+      "state": "running",
+      "node": "search_not_called",
+      "user_summary": "本轮未调用网页检索",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    },
+    {
+      "event_id": "5004411f-5891-4525-8b77-00278a2dd8ca",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 99,
+      "occurred_at": "2026-10-16T11:16:39.438195+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "answer",
+      "state": "running",
+      "node": "answer",
+      "user_summary": "正在准备回答",
+      "detail_summary": "",
+      "model": "gpt-5.6-terra",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "context_capacity": {
+          "estimated": true,
+          "input_tokens": 25156,
+          "input_budget": 256000,
+          "compact_threshold": 220000,
+          "compact_target": 144000,
+          "ratio": 0.098265625,
+          "output_reserve": 4096,
+          "model_window": null,
+          "budget_source": "local_limit",
+          "omitted_narrative": []
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "0afa44ca-4633-45eb-9652-eea658a4f85a",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 100,
+      "occurred_at": "2026-10-16T11:16:39.457013+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "model_attempt",
+      "state": "running",
+      "node": "model_attempt",
+      "user_summary": "正在处理当前步骤",
+      "detail_summary": "",
+      "model": "gpt-5.6-terra",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "step": "answer",
+        "step_attempt": 1
+      },
+      "message": null
+    },
+    {
+      "event_id": "0db26ac2-abc0-454e-8217-b6d31a783674",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 101,
+      "occurred_at": "2026-10-16T11:16:39.473913+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "answer",
+      "state": "running",
+      "node": "answer",
+      "user_summary": "本步骤已完成",
+      "detail_summary": "",
+      "model": "gpt-5.6-terra",
+      "attempt": 1,
+      "duration_ms": 32,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    },
+    {
+      "event_id": "25232eb2-ed4f-45d9-8d48-dde06dca6425",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 102,
+      "occurred_at": "2026-10-16T11:16:39.486976+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "sources",
+      "state": "running",
+      "node": "sources",
+      "user_summary": "来源类型已记录",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "sources": [
+          {
+            "source_id": "ae766a8c-1747-5890-ae3c-aee0a56cbcdb",
+            "version": 1,
+            "type": "agent_generated",
+            "url": "",
+            "title": "Agent 生成讲义",
+            "fetched_at": "2026-10-16T10:53:51.107545+00:00",
+            "locator": "task:7e28764b-95d5-4014-8d9f-3edb4137eec2",
+            "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。"
+          }
+        ],
+        "source_type": "agent_generated"
+      },
+      "message": null
+    },
+    {
+      "event_id": "f1370c50-5f80-47f7-9d5e-462e76d532bf",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 103,
+      "occurred_at": "2026-10-16T11:16:39.493516+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "response",
+      "state": "running",
+      "node": "response",
+      "user_summary": "已回应",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {},
+      "message": {
+        "message_id": "d8f0e085-47bd-439b-96ef-e6a3ba76683e",
+        "role": "coach",
+        "content": "明白，这里先把说法收窄一点：**相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信**——一篇来源不明的文档、一份未署名的内部笔记，都可能因为“读起来很贴近问题”而排在前面，但相似度分数本身对来源权威性没有任何判断。\n\n关于适用条件，按你补充的口径，核对应落在三处：\n\n- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。\n\n这三点和前面讲的两条风险是并列的：资料可能错或过时、生成可能不忠实，此外**相关也不等于来源可信、条件适用**。相似度高的片段即使本身没错，也可能只是“讲的是另一个版本或另一种场景”。\n\n现在只调整预览里这个知识点的范围，**不保存、也不进入下一步**。",
+        "created_at": "2026-10-16T11:16:39.493516+00:00"
+      }
+    },
+    {
+      "event_id": "34c46f3d-b0b1-4100-9fc1-af29c8a42c7d",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 104,
+      "occurred_at": "2026-10-16T11:16:39.493687+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "capture_offer",
+      "state": "running",
+      "node": "capture_offer",
+      "user_summary": "知识收尾状态已更新",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "capture_offer": {
+          "id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+          "version": 3,
+          "title": "检索相关性与答案正确性的区别、生成对依据的忠实性",
+          "anchor_message_id": "56562566-fd0c-4e5a-ba4e-e7485bfcfe6f",
+          "status": "offered",
+          "next_request": "",
+          "continuation_consumed": true,
+          "error": "",
+          "knowledge_ids": [],
+          "trigger": "verified_check",
+          "scope_summary": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。",
+          "preview_points": [
+            "相似度反映相关程度，不能判断来源是否可信。",
+            "生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。",
+            "核对资料的发布时间、产品版本和适用场景。"
+          ],
+          "preview_summary": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。"
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "c46142ff-709e-456b-a8b9-6b97b53b171d",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "seq": 105,
+      "occurred_at": "2026-10-16T11:16:39.506395+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "completed",
+      "state": "completed",
+      "node": "completed",
+      "user_summary": "本轮已回应",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    }
+  ],
+  "status": "active",
+  "lifecycle_revision": 0,
+  "last_seq": 105,
+  "paused": false,
+  "mode": "source_learning",
+  "goal_ownership": [],
+  "recovery": {
+    "version": 165,
+    "deltas": [
+      {
+        "base_version": 133,
+        "version": 134,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "foreground"
+            ],
+            "value": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999"
+          },
+          {
+            "op": "append",
+            "path": [
+              "messages"
+            ],
+            "value": [
+              {
+                "message_id": "e1295e05-08d5-4c27-90f7-575c029566b8",
+                "role": "user",
+                "content": "我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。",
+                "content_type": "text",
+                "input_channel": "text",
+                "created_at": "2026-10-16T11:16:39.175329+00:00",
+                "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+                "task_id": null,
+                "context": {
+                  "continuation_candidates": null,
+                  "summary": "",
+                  "recent_messages": [],
+                  "knowledge_summaries": [],
+                  "handoff": null,
+                  "memory_lookup_available": false,
+                  "memory_candidates": [],
+                  "invalid_memory_run_ids": []
+                },
+                "operation": null
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999"
+            ],
+            "value": {
+              "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+              "task_id": null,
+              "input_ids": [
+                "e1295e05-08d5-4c27-90f7-575c029566b8"
+              ],
+              "input_channel": "text",
+              "voice_input_ids": [],
+              "revision": 1,
+              "status": "accepted",
+              "stage": "received",
+              "user_summary": "已保存，准备回应",
+              "attempt": 0,
+              "intent": null,
+              "steps": {},
+              "action_ids": [],
+              "error_code": null,
+              "created_at": "2026-10-16T11:16:39.175320+00:00",
+              "updated_at": "2026-10-16T11:16:39.175344+00:00",
+              "started_at": null,
+              "elapsed_ms": 0,
+              "attempt_durations": [],
+              "first_text_ms": null,
+              "activity_candidate": null,
+              "activity_kind": null,
+              "completed_at": null,
+              "paused_entry": false,
+              "lifecycle_revision": 0
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "message_receipts",
+              "e1295e05-08d5-4c27-90f7-575c029566b8"
+            ],
+            "value": {
+              "fingerprint": "b562ce35cdd32330d69afbcc07500b43b4863cfd5deb74d57dccab1ee862eff3",
+              "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999"
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 87
+          }
+        ]
+      },
+      {
+        "base_version": 134,
+        "version": 135,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "status"
+            ],
+            "value": "running"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "stage"
+            ],
+            "value": "understanding"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "user_summary"
+            ],
+            "value": "正在理解本轮意图"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "attempt"
+            ],
+            "value": 1
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.181314+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "started_at"
+            ],
+            "value": "2026-10-16T11:16:39.181301+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "thinking_strength"
+            ],
+            "value": "smart"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "model_calls"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "execution_budget"
+            ],
+            "value": {
+              "id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+              "started": 1792149399.181299,
+              "attempts": 0,
+              "estimated_input_tokens": 0
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 88
+          }
+        ]
+      },
+      {
+        "base_version": 135,
+        "version": 136,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "memory_references"
+            ],
+            "value": []
+          }
+        ]
+      },
+      {
+        "base_version": 136,
+        "version": 137,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "stage"
+            ],
+            "value": "intent"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.211038+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "context_capacity"
+            ],
+            "value": {
+              "estimated": true,
+              "input_tokens": 41790,
+              "input_budget": 256000,
+              "compact_threshold": 220000,
+              "compact_target": 144000,
+              "ratio": 0.1632421875,
+              "output_reserve": 4096,
+              "model_window": null,
+              "budget_source": "local_limit",
+              "omitted_narrative": []
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 89
+          }
+        ]
+      },
+      {
+        "base_version": 137,
+        "version": 138,
+        "changes": [
+          {
+            "op": "append",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "c5cd9af2-8113-4a8a-8453-0210645a996c",
+                "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+                "revision": 1,
+                "background": false,
+                "node": "intent",
+                "model": "gpt-5.6-luna",
+                "estimated_input_tokens": 41790,
+                "transport_requests": 0,
+                "request_ids": [],
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "started"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "execution_budget",
+              "attempts"
+            ],
+            "value": 1
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "execution_budget",
+              "estimated_input_tokens"
+            ],
+            "value": 41790
+          }
+        ]
+      },
+      {
+        "base_version": 138,
+        "version": 139,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 90
+          }
+        ]
+      },
+      {
+        "base_version": 139,
+        "version": 140,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "c5cd9af2-8113-4a8a-8453-0210645a996c",
+                "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+                "revision": 1,
+                "background": false,
+                "node": "intent",
+                "model": "gpt-5.6-luna",
+                "estimated_input_tokens": 41790,
+                "transport_requests": 0,
+                "request_ids": [],
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "base_version": 140,
+        "version": 141,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "steps",
+              "7b1d6bd0abecc8a074a9ed83d7213e4fd7d365f5d8fcb827e9a93981b68c48ad"
+            ],
+            "value": {
+              "conversation_kind": "ordinary",
+              "clarification_kind": "none",
+              "conversation_repair": false,
+              "reply_feedback": "none",
+              "reply_purpose": "none",
+              "knowledge_card_status": false,
+              "status_context": null,
+              "repair_target_message_id": "",
+              "continuation_evidence": "",
+              "continuation_topic": "",
+              "programming_boundary": "none",
+              "programming_learning_request": "",
+              "resource_boundary": "none",
+              "resource_learning_request": "",
+              "learning_reply_sentence_limit": null,
+              "intents": [
+                "correction",
+                "reject",
+                "defer"
+              ],
+              "target_task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+              "target_description": "补正 RAG 知识点：相似度只反映内容相关，不能判断来源可信；核对适用条件要看发布时间、产品版本和适用场景；更新预览但暂不保存、不推进下一步",
+              "relation": "continuation",
+              "workflow": "source_learning",
+              "scope": "continue_goal",
+              "proposed_actions": [
+                {
+                  "kind": "save",
+                  "disposition": "reject",
+                  "target_id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+                  "version": 1,
+                  "evidence": "暂时不要保存，也不要进入下一步",
+                  "selection": []
+                }
+              ],
+              "clarification": "",
+              "rationale": "用户主动修正并丰富同一 RAG 知识点（相似度只说明内容相关、不代表来源可信；核对适用条件要看发布时间、产品版本和适用场景），要求把这点补进尚未保存的同一张预览卡，同时明确拒绝保存、不进入下一步，属于同一学习目标下的 correction + reject + defer，保持 continue_goal。",
+              "understanding": "unknown",
+              "answer_evidence": "",
+              "topic_closure": null,
+              "learning_goal_ready": true,
+              "direct_teaching": false,
+              "comprehensive_check": null,
+              "answer_only": false,
+              "is_jd": false,
+              "material_focus": "none",
+              "jd_request": "none",
+              "needs_verification": false,
+              "cross_check_sources": false,
+              "requested_mode": null,
+              "refresh_sources": false,
+              "public_search_query": "",
+              "light_reply": "",
+              "session_tags": [],
+              "handoff_source_ids": [],
+              "handoff_step_ids": [],
+              "memory_selections": []
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 91
+          }
+        ]
+      },
+      {
+        "base_version": 141,
+        "version": 142,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "dialogue_policy"
+            ],
+            "value": "dialogue-materials-11"
+          }
+        ]
+      },
+      {
+        "base_version": 142,
+        "version": 143,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "request_scope"
+            ],
+            "value": {
+              "input_ids": [
+                "e1295e05-08d5-4c27-90f7-575c029566b8"
+              ],
+              "resource_boundary": "none",
+              "programming_boundary": "none"
+            }
+          }
+        ]
+      },
+      {
+        "base_version": 143,
+        "version": 144,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "task_id"
+            ],
+            "value": "7e28764b-95d5-4014-8d9f-3edb4137eec2"
+          },
+          {
+            "op": "append",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "stage"
+            ],
+            "value": "_decided"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "user_summary"
+            ],
+            "value": "已理解本轮要求"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "intent"
+            ],
+            "value": {
+              "conversation_kind": "ordinary",
+              "clarification_kind": "none",
+              "conversation_repair": false,
+              "reply_feedback": "none",
+              "reply_purpose": "none",
+              "knowledge_card_status": false,
+              "status_context": null,
+              "repair_target_message_id": "",
+              "continuation_evidence": "",
+              "continuation_topic": "",
+              "programming_boundary": "none",
+              "programming_learning_request": "",
+              "resource_boundary": "none",
+              "resource_learning_request": "",
+              "learning_reply_sentence_limit": null,
+              "intents": [
+                "correction",
+                "reject",
+                "defer"
+              ],
+              "target_task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+              "target_description": "补正 RAG 知识点：相似度只反映内容相关，不能判断来源可信；核对适用条件要看发布时间、产品版本和适用场景；更新预览但暂不保存、不推进下一步",
+              "relation": "continuation",
+              "workflow": "source_learning",
+              "scope": "continue_goal",
+              "proposed_actions": [
+                {
+                  "kind": "save",
+                  "disposition": "reject",
+                  "target_id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+                  "version": 1,
+                  "evidence": "暂时不要保存，也不要进入下一步",
+                  "selection": []
+                }
+              ],
+              "clarification": "",
+              "rationale": "用户主动修正并丰富同一 RAG 知识点（相似度只说明内容相关、不代表来源可信；核对适用条件要看发布时间、产品版本和适用场景），要求把这点补进尚未保存的同一张预览卡，同时明确拒绝保存、不进入下一步，属于同一学习目标下的 correction + reject + defer，保持 continue_goal。",
+              "understanding": "unknown",
+              "answer_evidence": "",
+              "topic_closure": null,
+              "learning_goal_ready": true,
+              "direct_teaching": false,
+              "comprehensive_check": null,
+              "answer_only": false,
+              "is_jd": false,
+              "material_focus": "none",
+              "jd_request": "none",
+              "needs_verification": false,
+              "cross_check_sources": false,
+              "requested_mode": null,
+              "refresh_sources": false,
+              "public_search_query": "",
+              "light_reply": "",
+              "session_tags": [],
+              "handoff_source_ids": [],
+              "handoff_step_ids": [],
+              "memory_selections": []
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.294092+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "decision_input_ids"
+            ],
+            "value": [
+              "e1295e05-08d5-4c27-90f7-575c029566b8"
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "decision_mode"
+            ],
+            "value": "source_learning"
+          },
+          {
+            "op": "remove",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "preview"
+            ]
+          },
+          {
+            "op": "remove",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "preview_version"
+            ]
+          },
+          {
+            "op": "remove",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "preview_points"
+            ]
+          },
+          {
+            "op": "remove",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "preview_summary"
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "version"
+            ],
+            "value": 2
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "status"
+            ],
+            "value": "invalidated"
+          },
+          {
+            "op": "append",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "error"
+            ],
+            "value": "正在核对纠正后的保存范围，完成前暂不能录入。"
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "status_before_correction"
+            ],
+            "value": "offered"
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "correction_pending"
+            ],
+            "value": true
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "correction_run_id"
+            ],
+            "value": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999"
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 94
+          }
+        ]
+      },
+      {
+        "base_version": 144,
+        "version": 145,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "completed_operations"
+            ],
+            "value": {
+              "6399556b565765c296366186ed665b8fd6942e2d6e5a79ee2834a8e5c0193fe3": false
+            }
+          }
+        ]
+      },
+      {
+        "base_version": 145,
+        "version": 146,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+              "context",
+              "independent_passed"
+            ],
+            "value": false
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+              "context",
+              "transfer_passed"
+            ],
+            "value": false
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+              "context",
+              "corrections"
+            ],
+            "value": [
+              "我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。"
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.310599+00:00"
+          }
+        ]
+      },
+      {
+        "base_version": 146,
+        "version": 147,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "material_reads"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "material_sources"
+            ],
+            "value": [
+              {
+                "source_id": "ae766a8c-1747-5890-ae3c-aee0a56cbcdb",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-16T10:53:51.107545+00:00",
+                "locator": "task:7e28764b-95d5-4014-8d9f-3edb4137eec2",
+                "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "allowed_source_urls"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+              "context",
+              "material_reads"
+            ],
+            "value": []
+          },
+          {
+            "op": "set",
+            "path": [
+              "tasks",
+              "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.320634+00:00"
+          }
+        ]
+      },
+      {
+        "base_version": 147,
+        "version": 148,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "teaching_signature"
+            ],
+            "value": "b8ddc84471064381f597a2f0c81e4715bcfde4afe62fb2db0a637a7a8954a544"
+          }
+        ]
+      },
+      {
+        "base_version": 148,
+        "version": 149,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "stage"
+            ],
+            "value": "teaching_preparation"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "user_summary"
+            ],
+            "value": "正在梳理当前问题"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.344315+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "context_capacity",
+              "input_tokens"
+            ],
+            "value": 2342
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "context_capacity",
+              "ratio"
+            ],
+            "value": 0.0091484375
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 95
+          }
+        ]
+      },
+      {
+        "base_version": 149,
+        "version": 150,
+        "changes": [
+          {
+            "op": "append",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "05e36ad6-28dd-4755-933c-bfc1c469bf3a",
+                "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+                "revision": 1,
+                "background": false,
+                "node": "teaching_preparation",
+                "model": "gpt-5.6-luna",
+                "estimated_input_tokens": 2342,
+                "transport_requests": 0,
+                "request_ids": [],
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "started"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "execution_budget",
+              "attempts"
+            ],
+            "value": 2
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "execution_budget",
+              "estimated_input_tokens"
+            ],
+            "value": 44132
+          }
+        ]
+      },
+      {
+        "base_version": 150,
+        "version": 151,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 96
+          }
+        ]
+      },
+      {
+        "base_version": 151,
+        "version": 152,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "c5cd9af2-8113-4a8a-8453-0210645a996c",
+                "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+                "revision": 1,
+                "background": false,
+                "node": "intent",
+                "model": "gpt-5.6-luna",
+                "estimated_input_tokens": 41790,
+                "transport_requests": 0,
+                "request_ids": [],
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              },
+              {
+                "id": "05e36ad6-28dd-4755-933c-bfc1c469bf3a",
+                "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+                "revision": 1,
+                "background": false,
+                "node": "teaching_preparation",
+                "model": "gpt-5.6-luna",
+                "estimated_input_tokens": 2342,
+                "transport_requests": 0,
+                "request_ids": [],
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "base_version": 152,
+        "version": 153,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "steps",
+              "c80c4687e1fd506e7d088d55d3ec970005ae15048d4ed17c5f952d17dedf23e4"
+            ],
+            "value": {
+              "official_sources_required": false,
+              "source_domains": [],
+              "concepts": [
+                "检索相关性与答案正确性的区别",
+                "生成对依据的忠实性",
+                "来源可信度与相似度无关",
+                "资料的时效性与版本适用条件"
+              ],
+              "public_query": "RAG 中为什么高相似度检索不能保证答案正确：来源错误或过时、生成不忠实于资料、核对来源发布时间与适用条件",
+              "new_knowledge": false
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 97
+          }
+        ]
+      },
+      {
+        "base_version": 153,
+        "version": 154,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "source_selection_packet"
+            ],
+            "value": {
+              "input_signature": "3ba49d68add5865a7c8d7bec942a4ee0e1bb86806d2c6381677af622186a9554",
+              "query": "我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。\nRAG 中为什么高相似度检索不能保证答案正确：来源错误或过时、生成不忠实于资料、核对来源发布时间与适用条件",
+              "entries": {},
+              "revision": 1
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "source_selection_records"
+            ],
+            "value": {
+              "evidence_reuse": []
+            }
+          }
+        ]
+      },
+      {
+        "base_version": 154,
+        "version": 155,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "stage"
+            ],
+            "value": "search_not_called"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "user_summary"
+            ],
+            "value": "本轮未调用网页检索"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.399733+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "search_state"
+            ],
+            "value": "not_called"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "verification_notice"
+            ],
+            "value": ""
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "teaching_evidence"
+            ],
+            "value": {
+              "state": "unverified",
+              "summary": "",
+              "sources": []
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "teaching_sources"
+            ],
+            "value": [
+              {
+                "source_id": "ae766a8c-1747-5890-ae3c-aee0a56cbcdb",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-16T10:53:51.107545+00:00",
+                "locator": "task:7e28764b-95d5-4014-8d9f-3edb4137eec2",
+                "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 98
+          }
+        ]
+      },
+      {
+        "base_version": 155,
+        "version": 156,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "source_selection_records",
+              "answer"
+            ],
+            "value": []
+          }
+        ]
+      },
+      {
+        "base_version": 156,
+        "version": 157,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "stage"
+            ],
+            "value": "answer"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "user_summary"
+            ],
+            "value": "正在准备回答"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.438195+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "context_capacity",
+              "input_tokens"
+            ],
+            "value": 25156
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "context_capacity",
+              "ratio"
+            ],
+            "value": 0.098265625
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 99
+          }
+        ]
+      },
+      {
+        "base_version": 157,
+        "version": 158,
+        "changes": [
+          {
+            "op": "append",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "67aedf13-8215-47b7-a906-71b6ad0c354d",
+                "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+                "revision": 1,
+                "background": false,
+                "node": "answer",
+                "model": "gpt-5.6-terra",
+                "estimated_input_tokens": 25156,
+                "transport_requests": 0,
+                "request_ids": [],
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "started"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "execution_budget",
+              "attempts"
+            ],
+            "value": 3
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "execution_budget",
+              "estimated_input_tokens"
+            ],
+            "value": 69288
+          }
+        ]
+      },
+      {
+        "base_version": 158,
+        "version": 159,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 100
+          }
+        ]
+      },
+      {
+        "base_version": 159,
+        "version": 160,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "model_calls"
+            ],
+            "value": [
+              {
+                "id": "c5cd9af2-8113-4a8a-8453-0210645a996c",
+                "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+                "revision": 1,
+                "background": false,
+                "node": "intent",
+                "model": "gpt-5.6-luna",
+                "estimated_input_tokens": 41790,
+                "transport_requests": 0,
+                "request_ids": [],
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              },
+              {
+                "id": "05e36ad6-28dd-4755-933c-bfc1c469bf3a",
+                "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+                "revision": 1,
+                "background": false,
+                "node": "teaching_preparation",
+                "model": "gpt-5.6-luna",
+                "estimated_input_tokens": 2342,
+                "transport_requests": 0,
+                "request_ids": [],
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              },
+              {
+                "id": "67aedf13-8215-47b7-a906-71b6ad0c354d",
+                "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+                "revision": 1,
+                "background": false,
+                "node": "answer",
+                "model": "gpt-5.6-terra",
+                "estimated_input_tokens": 25156,
+                "transport_requests": 0,
+                "request_ids": [],
+                "usage_state": "unavailable",
+                "usage": [],
+                "status": "returned"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "base_version": 160,
+        "version": 161,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "steps",
+              "864c2e68dd94e535fd91678ba2cfeaa3519ac47456e5988d33d7074d28316322"
+            ],
+            "value": {
+              "message": "明白，这里先把说法收窄一点：**相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信**——一篇来源不明的文档、一份未署名的内部笔记，都可能因为“读起来很贴近问题”而排在前面，但相似度分数本身对来源权威性没有任何判断。\n\n关于适用条件，按你补充的口径，核对应落在三处：\n\n- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。\n\n这三点和前面讲的两条风险是并列的：资料可能错或过时、生成可能不忠实，此外**相关也不等于来源可信、条件适用**。相似度高的片段即使本身没错，也可能只是“讲的是另一个版本或另一种场景”。\n\n现在只调整预览里这个知识点的范围，**不保存、也不进入下一步**。",
+              "check_question": "",
+              "evidence_state": "unverified",
+              "learning_plan": null,
+              "learning_concepts": [
+                "检索相关性与来源可信度的区别",
+                "来源适用条件的核对（发布时间、产品版本、适用场景）",
+                "检索相关性与答案正确性的区别"
+              ],
+              "check_binding": null,
+              "capture_update": {
+                "offer_id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+                "version": 2,
+                "retained_fragment_ids": [
+                  "5f94c020-91f8-4a85-9b84-629bf912255f",
+                  "cc0457b8-b764-4084-8e3b-7e236db5122c",
+                  "bc97d0e2-8102-463a-8b50-e25663bdd80a"
+                ],
+                "evidence_quotes": [
+                  "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信",
+                  "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。"
+                ],
+                "scope_summary": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。",
+                "preview": {
+                  "points": [
+                    {
+                      "text": "相似度反映相关程度，不能判断来源是否可信。",
+                      "evidence_quotes": [
+                        "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信"
+                      ]
+                    },
+                    {
+                      "text": "生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。",
+                      "evidence_quotes": [
+                        "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+                      ]
+                    },
+                    {
+                      "text": "核对资料的发布时间、产品版本和适用场景。",
+                      "evidence_quotes": [
+                        "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。"
+                      ]
+                    }
+                  ],
+                  "summary": {
+                    "text": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。",
+                    "evidence_quotes": [
+                      "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信",
+                      "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。",
+                      "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 101
+          }
+        ]
+      },
+      {
+        "base_version": 161,
+        "version": 162,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "learning_concepts"
+            ],
+            "value": [
+              "检索相关性与来源可信度的区别",
+              "来源适用条件的核对（发布时间、产品版本、适用场景）",
+              "检索相关性与答案正确性的区别"
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "capture_scope_update"
+            ],
+            "value": {
+              "offer_id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "version": 2,
+              "retained_fragment_ids": [
+                "5f94c020-91f8-4a85-9b84-629bf912255f",
+                "cc0457b8-b764-4084-8e3b-7e236db5122c",
+                "bc97d0e2-8102-463a-8b50-e25663bdd80a"
+              ],
+              "evidence_quotes": [
+                "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信",
+                "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。"
+              ],
+              "scope_summary": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。",
+              "preview": {
+                "points": [
+                  {
+                    "text": "相似度反映相关程度，不能判断来源是否可信。",
+                    "evidence_quotes": [
+                      "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信"
+                    ]
+                  },
+                  {
+                    "text": "生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。",
+                    "evidence_quotes": [
+                      "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+                    ]
+                  },
+                  {
+                    "text": "核对资料的发布时间、产品版本和适用场景。",
+                    "evidence_quotes": [
+                      "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。"
+                    ]
+                  }
+                ],
+                "summary": {
+                  "text": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。",
+                  "evidence_quotes": [
+                    "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信",
+                    "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。",
+                    "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "base_version": 162,
+        "version": 163,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "stage"
+            ],
+            "value": "sources"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "user_summary"
+            ],
+            "value": "来源类型已记录"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.486976+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "answer_sources"
+            ],
+            "value": [
+              {
+                "source_id": "ae766a8c-1747-5890-ae3c-aee0a56cbcdb",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-16T10:53:51.107545+00:00",
+                "locator": "task:7e28764b-95d5-4014-8d9f-3edb4137eec2",
+                "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "answer_source_type"
+            ],
+            "value": "agent_generated"
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 102
+          }
+        ]
+      },
+      {
+        "base_version": 163,
+        "version": 164,
+        "changes": [
+          {
+            "op": "append",
+            "path": [
+              "messages"
+            ],
+            "value": [
+              {
+                "message_id": "d8f0e085-47bd-439b-96ef-e6a3ba76683e",
+                "role": "coach",
+                "content": "明白，这里先把说法收窄一点：**相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信**——一篇来源不明的文档、一份未署名的内部笔记，都可能因为“读起来很贴近问题”而排在前面，但相似度分数本身对来源权威性没有任何判断。\n\n关于适用条件，按你补充的口径，核对应落在三处：\n\n- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。\n\n这三点和前面讲的两条风险是并列的：资料可能错或过时、生成可能不忠实，此外**相关也不等于来源可信、条件适用**。相似度高的片段即使本身没错，也可能只是“讲的是另一个版本或另一种场景”。\n\n现在只调整预览里这个知识点的范围，**不保存、也不进入下一步**。",
+                "created_at": "2026-10-16T11:16:39.493516+00:00",
+                "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+                "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "stage"
+            ],
+            "value": "capture_offer"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "user_summary"
+            ],
+            "value": "知识收尾状态已更新"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.493687+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "execution_complete"
+            ],
+            "value": true
+          },
+          {
+            "op": "remove",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "correction_run_id"
+            ]
+          },
+          {
+            "op": "remove",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "correction_pending"
+            ]
+          },
+          {
+            "op": "remove",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "status_before_correction"
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "version"
+            ],
+            "value": 3
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "scope_summary"
+            ],
+            "value": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。"
+          },
+          {
+            "op": "append",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "fragments"
+            ],
+            "value": [
+              {
+                "id": "501b47e8-dd59-4064-b341-9178295a8271",
+                "text": "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信",
+                "message_id": "d8f0e085-47bd-439b-96ef-e6a3ba76683e",
+                "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+                "kind": "explanation",
+                "memory_references": [],
+                "sources": [
+                  {
+                    "source_id": "ae766a8c-1747-5890-ae3c-aee0a56cbcdb",
+                    "version": 1,
+                    "type": "agent_generated",
+                    "url": "",
+                    "title": "Agent 生成讲义",
+                    "fetched_at": "2026-10-16T10:53:51.107545+00:00",
+                    "locator": "task:7e28764b-95d5-4014-8d9f-3edb4137eec2",
+                    "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。"
+                  }
+                ],
+                "source_type": "agent_generated"
+              },
+              {
+                "id": "961baef3-2afa-4d2b-b873-8f4ee992852f",
+                "text": "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。",
+                "message_id": "d8f0e085-47bd-439b-96ef-e6a3ba76683e",
+                "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+                "kind": "explanation",
+                "memory_references": [],
+                "sources": [
+                  {
+                    "source_id": "ae766a8c-1747-5890-ae3c-aee0a56cbcdb",
+                    "version": 1,
+                    "type": "agent_generated",
+                    "url": "",
+                    "title": "Agent 生成讲义",
+                    "fetched_at": "2026-10-16T10:53:51.107545+00:00",
+                    "locator": "task:7e28764b-95d5-4014-8d9f-3edb4137eec2",
+                    "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。"
+                  }
+                ],
+                "source_type": "agent_generated"
+              }
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "status"
+            ],
+            "value": "offered"
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "error"
+            ],
+            "value": ""
+          },
+          {
+            "op": "append",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "message_ids"
+            ],
+            "value": [
+              "d8f0e085-47bd-439b-96ef-e6a3ba76683e"
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "source_key"
+            ],
+            "value": "81fa5376b5dad6b239b3adb351c981c2f77729a53fa2ff44177001bd507d68bd"
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "draft",
+              "version"
+            ],
+            "value": 3
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "draft",
+              "content"
+            ],
+            "value": "仅整理以下知识范围：检索相关性与答案正确性的区别、生成对依据的忠实性\n本次可见范围：高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\nRAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。\n\n**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**\n\n相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信\n\n- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。"
+          },
+          {
+            "op": "append",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "draft",
+              "source_message_ids"
+            ],
+            "value": [
+              "d8f0e085-47bd-439b-96ef-e6a3ba76683e"
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "preview_points"
+            ],
+            "value": [
+              "相似度反映相关程度，不能判断来源是否可信。",
+              "生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。",
+              "核对资料的发布时间、产品版本和适用场景。"
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "preview_summary"
+            ],
+            "value": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。"
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "preview"
+            ],
+            "value": {
+              "points": [
+                {
+                  "text": "相似度反映相关程度，不能判断来源是否可信。",
+                  "evidence_quotes": [
+                    "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信"
+                  ]
+                },
+                {
+                  "text": "生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。",
+                  "evidence_quotes": [
+                    "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+                  ]
+                },
+                {
+                  "text": "核对资料的发布时间、产品版本和适用场景。",
+                  "evidence_quotes": [
+                    "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。"
+                  ]
+                }
+              ],
+              "summary": {
+                "text": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。",
+                "evidence_quotes": [
+                  "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信",
+                  "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。",
+                  "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+                ]
+              }
+            }
+          },
+          {
+            "op": "set",
+            "path": [
+              "capture_offers",
+              "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+              "preview_version"
+            ],
+            "value": 3
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 104
+          }
+        ]
+      },
+      {
+        "base_version": 164,
+        "version": 165,
+        "changes": [
+          {
+            "op": "set",
+            "path": [
+              "foreground"
+            ],
+            "value": null
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "status"
+            ],
+            "value": "completed"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "stage"
+            ],
+            "value": "completed"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "user_summary"
+            ],
+            "value": "本轮已回应"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "updated_at"
+            ],
+            "value": "2026-10-16T11:16:39.506395+00:00"
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "started_at"
+            ],
+            "value": null
+          },
+          {
+            "op": "set",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "elapsed_ms"
+            ],
+            "value": 325
+          },
+          {
+            "op": "append",
+            "path": [
+              "runs",
+              "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+              "attempt_durations"
+            ],
+            "value": [
+              325
+            ]
+          },
+          {
+            "op": "set",
+            "path": [
+              "event_base_seq"
+            ],
+            "value": 105
+          }
+        ]
+      }
+    ]
+  },
+  "thinking_strength": "smart",
+  "capture_offers_revision": 165,
+  "capture_offers": [
+    {
+      "id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+      "version": 3,
+      "title": "检索相关性与答案正确性的区别、生成对依据的忠实性",
+      "anchor_message_id": "56562566-fd0c-4e5a-ba4e-e7485bfcfe6f",
+      "status": "offered",
+      "next_request": "",
+      "continuation_consumed": true,
+      "error": "",
+      "knowledge_ids": [],
+      "trigger": "verified_check",
+      "scope_summary": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。",
+      "preview_points": [
+        "相似度反映相关程度，不能判断来源是否可信。",
+        "生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。",
+        "核对资料的发布时间、产品版本和适用场景。"
+      ],
+      "preview_summary": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。"
+    }
+  ],
+  "pending": null,
+  "runs": [
+    {
+      "run_id": "a4a91baf-362c-433e-bb28-70b44430501c",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "input_ids": [
+        "52e511ae-4b97-4515-9218-4e26b0107315"
+      ],
+      "input_channel": "text",
+      "voice_input_ids": [],
+      "revision": 1,
+      "status": "completed",
+      "stage": "completed",
+      "user_summary": "本轮已回应",
+      "attempt": 1,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "goal"
+        ],
+        "target_task_id": "",
+        "target_description": "RAG 小知识点：高相似度检索不能保证答案正确的原因（含来源资料错误/过时、生成未忠实依据资料、核对来源与适用条件），并出一道复述题",
+        "relation": "new_topic",
+        "workflow": "source_learning",
+        "scope": "learning",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户明确要求直接教一个 RAG 知识点并出一道复述题，主题与用途明确，按 source_learning 直接开始；同时说明先不保存知识卡、不做综合检查、不需要联网，因此不触发保存、综合检查或检索。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": true,
+        "comprehensive_check": null,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [
+          "RAG",
+          "检索与生成",
+          "答案可靠性"
+        ],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "error_code": null,
+      "created_at": "2026-10-16T10:53:47.160043+00:00",
+      "updated_at": "2026-10-16T10:53:57.143933+00:00",
+      "started_at": null,
+      "elapsed_ms": 9975,
+      "attempt_durations": [
+        9975
+      ],
+      "first_text_ms": 5122,
+      "activity_candidate": "lesson_step",
+      "activity_kind": "lesson_step",
+      "completed_at": "2026-10-16T10:53:57.143891+00:00",
+      "paused_entry": false,
+      "lifecycle_revision": 0,
+      "thinking_strength": "smart",
+      "model_calls": [
+        {
+          "id": "0dd54b2f-72e8-476d-9571-9f15126b72e9",
+          "budget_id": "93147502-b775-4bf2-a7e0-8a23e81bc3f8",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 29245,
+          "transport_requests": 1,
+          "request_ids": [
+            "97eb87c6-f253-4dd2-8c33-251491e2a915"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "eee4a5c0-d2bb-443d-9893-de4d129d352f",
+              "input_tokens": 13267,
+              "output_tokens": 428,
+              "total_tokens": 13695,
+              "cached_input_tokens": 12800,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "97eb87c6-f253-4dd2-8c33-251491e2a915"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "35522ddc-6cc5-45d7-b299-9dfece86993a",
+          "budget_id": "93147502-b775-4bf2-a7e0-8a23e81bc3f8",
+          "revision": 1,
+          "background": false,
+          "node": "teaching_preparation",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 1965,
+          "transport_requests": 1,
+          "request_ids": [
+            "70a3c042-9a29-4bf4-8f86-7ca689df9a7f"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "b1421842-a0af-41f2-8024-204ff73741c8",
+              "input_tokens": 992,
+              "output_tokens": 127,
+              "total_tokens": 1119,
+              "cached_input_tokens": 512,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "70a3c042-9a29-4bf4-8f86-7ca689df9a7f"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "5c183cb7-70d7-46ec-941e-a760b3b191c1",
+          "budget_id": "93147502-b775-4bf2-a7e0-8a23e81bc3f8",
+          "revision": 1,
+          "background": false,
+          "node": "lesson",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 11950,
+          "transport_requests": 1,
+          "request_ids": [
+            "c72257f4-b66d-47cd-8d11-e8701d7c653a"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "871401df-762e-4824-9541-927f4d925f51",
+              "input_tokens": 5877,
+              "output_tokens": 755,
+              "total_tokens": 6632,
+              "cached_input_tokens": 4864,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "c72257f4-b66d-47cd-8d11-e8701d7c653a"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "execution_budget": {
+        "id": "93147502-b775-4bf2-a7e0-8a23e81bc3f8",
+        "started": 1792148027.167995,
+        "attempts": 3,
+        "estimated_input_tokens": 43160
+      },
+      "memory_references": [],
+      "context_capacity": {
+        "estimated": true,
+        "input_tokens": 11950,
+        "input_budget": 256000,
+        "compact_threshold": 220000,
+        "compact_target": 144000,
+        "ratio": 0.0466796875,
+        "output_reserve": 4096,
+        "model_window": 1000000,
+        "budget_source": "local_limit",
+        "omitted_narrative": []
+      },
+      "dialogue_policy": "dialogue-materials-11",
+      "request_scope": {
+        "input_ids": [
+          "52e511ae-4b97-4515-9218-4e26b0107315"
+        ],
+        "resource_boundary": "none",
+        "programming_boundary": "none"
+      },
+      "decision_input_ids": [
+        "52e511ae-4b97-4515-9218-4e26b0107315"
+      ],
+      "decision_mode": "source_learning",
+      "completed_operations": {
+        "0334e3cdd3860c06945bc72415eb94d8d48f93362c4f5f5b2f77c201b13a7f2a": false
+      },
+      "material_reads": [],
+      "material_sources": [],
+      "allowed_source_urls": [],
+      "teaching_signature": "7d5c623b20efe0deeb67fcbb826d7e3caa157ee3935cf2bea2cb87ab8fd00af9",
+      "source_selection_packet": {
+        "input_signature": "04077cd1f1ff937ced6f7176bec510cb3b8f7d621b1e4fd35e2a477c571effac",
+        "query": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请先简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料；以及为什么要核对来源和适用条件。现在只学习和作答，先不要保存知识卡，也不要进行本节综合检查。讲解阶段不需要联网。\nRAG 高相似度检索为什么不能保证答案正确：来源资料错误过时、生成不忠实依据资料、核对来源与适用条件",
+        "entries": {},
+        "revision": 1
+      },
+      "source_selection_records": {
+        "evidence_reuse": [],
+        "lesson": []
+      },
+      "search_state": "not_called",
+      "verification_notice": "",
+      "teaching_evidence": {
+        "state": "unverified",
+        "summary": "",
+        "sources": []
+      },
+      "teaching_sources": [],
+      "learning_concepts": [
+        "RAG 检索增强生成",
+        "语义相似度",
+        "检索相关性与答案正确性的区别",
+        "来源资料错误或过时",
+        "生成不忠实依据资料"
+      ],
+      "answer_sources": [
+        {
+          "source_id": "ae766a8c-1747-5890-ae3c-aee0a56cbcdb",
+          "version": 1,
+          "type": "agent_generated",
+          "url": "",
+          "title": "Agent 生成讲义",
+          "fetched_at": "2026-10-16T10:53:51.107545+00:00",
+          "locator": "task:7e28764b-95d5-4014-8d9f-3edb4137eec2",
+          "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。"
+        }
+      ],
+      "answer_source_type": "agent_generated",
+      "teaching_step_id": "d271ce53-faa7-4ba2-b32f-092a41c952dc",
+      "teaching_plan_version": 1,
+      "execution_complete": true
+    },
+    {
+      "run_id": "bece1870-4710-49c5-a1db-8d40dae9db7b",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "input_ids": [
+        "4346f77b-313a-4a63-8639-cdb4e51448c4"
+      ],
+      "input_channel": "text",
+      "voice_input_ids": [],
+      "revision": 1,
+      "status": "completed",
+      "stage": "completed",
+      "user_summary": "本轮已回应",
+      "attempt": 1,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "answer"
+        ],
+        "target_task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+        "target_description": "RAG 复述题：高相似度检索为何不能保证答案正确",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "continue_goal",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户本轮在回答当前复述题，指出相似度高只代表语义接近，资料可能写错或过时，属于作答而非新请求；只交给评价节点判断，不代为纠正或推进。",
+        "understanding": "unknown",
+        "answer_evidence": "相似度高只能说明检索片段和问题在语义上接近，不能证明内容正确。资料本身可能写错，也可能已经过时，所以检索分数高仍然不能保证答案正确。",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": false,
+        "comprehensive_check": null,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "error_code": null,
+      "created_at": "2026-10-16T10:55:13.811186+00:00",
+      "updated_at": "2026-10-16T10:55:30.665216+00:00",
+      "started_at": null,
+      "elapsed_ms": 16847,
+      "attempt_durations": [
+        16847
+      ],
+      "first_text_ms": 4400,
+      "activity_candidate": null,
+      "activity_kind": null,
+      "completed_at": null,
+      "paused_entry": false,
+      "lifecycle_revision": 0,
+      "thinking_strength": "smart",
+      "model_calls": [
+        {
+          "id": "8c44a790-a7c3-4af5-8523-e13837f8a66f",
+          "budget_id": "f1a028e9-8cbb-488f-84d1-bee860dad325",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 34193,
+          "transport_requests": 1,
+          "request_ids": [
+            "58355d7f-1164-473f-a28f-6189e2a91997"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "447bef45-f771-4ecc-82da-34f03f8e69b4",
+              "input_tokens": 15857,
+              "output_tokens": 445,
+              "total_tokens": 16302,
+              "cached_input_tokens": 12672,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "58355d7f-1164-473f-a28f-6189e2a91997"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "b3c794fc-69c5-4acd-a781-3abc71d7be6d",
+          "budget_id": "f1a028e9-8cbb-488f-84d1-bee860dad325",
+          "revision": 1,
+          "background": false,
+          "node": "evaluate",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 10304,
+          "transport_requests": 1,
+          "request_ids": [
+            "904a3000-7300-42e5-93ee-916b85322972"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "f01200ca-5fa7-40b7-b807-c8d211dbefb5",
+              "input_tokens": 5202,
+              "output_tokens": 1118,
+              "total_tokens": 6320,
+              "cached_input_tokens": 4096,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "904a3000-7300-42e5-93ee-916b85322972"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "db71e007-b433-48b3-b436-fa16219aa357",
+          "budget_id": "f1a028e9-8cbb-488f-84d1-bee860dad325",
+          "revision": 1,
+          "background": false,
+          "node": "evaluate",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 10501,
+          "transport_requests": 1,
+          "request_ids": [
+            "14b9b673-3dc4-46d4-81ab-97187125294e"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "d6495d60-5f0b-4a9e-8776-3f7d321298b6",
+              "input_tokens": 5291,
+              "output_tokens": 1187,
+              "total_tokens": 6478,
+              "cached_input_tokens": 2176,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "14b9b673-3dc4-46d4-81ab-97187125294e"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "execution_budget": {
+        "id": "f1a028e9-8cbb-488f-84d1-bee860dad325",
+        "started": 1792148113.817354,
+        "attempts": 3,
+        "estimated_input_tokens": 54998
+      },
+      "memory_references": [],
+      "context_capacity": {
+        "estimated": true,
+        "input_tokens": 10501,
+        "input_budget": 256000,
+        "compact_threshold": 220000,
+        "compact_target": 144000,
+        "ratio": 0.04101953125,
+        "output_reserve": 4096,
+        "model_window": 1000000,
+        "budget_source": "local_limit",
+        "omitted_narrative": []
+      },
+      "dialogue_policy": "dialogue-materials-11",
+      "request_scope": {
+        "input_ids": [
+          "4346f77b-313a-4a63-8639-cdb4e51448c4"
+        ],
+        "resource_boundary": "none",
+        "programming_boundary": "none"
+      },
+      "decision_input_ids": [
+        "4346f77b-313a-4a63-8639-cdb4e51448c4"
+      ],
+      "decision_mode": "source_learning",
+      "completed_operations": {
+        "015424f9119fb3b2268759577b5de121f7a600ce4029b52e0cf5fcd1edab89dc": false
+      },
+      "evaluated_step_id": "d271ce53-faa7-4ba2-b32f-092a41c952dc",
+      "evaluated_binding": {
+        "question": "请用你自己的话说一遍：为什么检索到的内容与问题相似度很高，仍然不能保证最终答案正确？请至少说到“资料本身可能错误或过时”和“生成可能不忠实依据资料”这两点，并说明为什么需要核对来源与适用条件。",
+        "step_id": "d271ce53-faa7-4ba2-b32f-092a41c952dc",
+        "step_title": "分清检索相关性与答案正确性不是一回事",
+        "concepts": [
+          "语义相似度",
+          "检索相关性与答案正确性的区别",
+          "来源资料错误或过时"
+        ],
+        "evidence_quotes": [
+          "**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。",
+          "这个机制本身不检查事实真假，也不检查时间新旧。",
+          "这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。"
+        ],
+        "scope": "concept",
+        "reference_stamp": "5e7122f24b19dbb0c54e43a6073115fc6b97e8a2fd0938a366eded47595aec0d",
+        "plan_version": 1,
+        "completion_condition": "",
+        "completion_requirements": [],
+        "check_kind": "concept",
+        "scope_policy": "explicit-comprehensive-1"
+      },
+      "evaluation_message_id": "4346f77b-313a-4a63-8639-cdb4e51448c4",
+      "capture_quotes": [
+        "**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。",
+        "这个机制本身不检查事实真假，也不检查时间新旧。",
+        "这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。"
+      ],
+      "capture_feedback_quotes": [
+        "**高相似度只说明语义接近，不等于内容真实或最新**，资料本身可能写错或过时。",
+        "即使检索到了资料，生成阶段也可能不忠实于资料。例如模型可能忽略检索内容、误解它，或把外部知识混进去，因此最终答案仍可能偏离依据。",
+        "正因为资料可能错、可能过时，生成又可能不忠实，所以需要核对来源与适用条件。"
+      ],
+      "capture_scope_summary": "高相似度只代表语义接近，资料可能错误或过时，生成也可能不忠实资料，因此需要核对来源与适用条件。",
+      "capture_preview": {
+        "points": [
+          {
+            "text": "高相似度只说明语义接近，不代表内容真实、最新或适用。",
+            "evidence_quotes": [
+              "**高相似度只说明语义接近，不等于内容真实或最新**，资料本身可能写错或过时。"
+            ]
+          },
+          {
+            "text": "资料本身可能写错或过时，检索机制不检查事实真假和时间新旧。",
+            "evidence_quotes": [
+              "**高相似度只说明语义接近，不等于内容真实或最新**，资料本身可能写错或过时。"
+            ]
+          },
+          {
+            "text": "生成阶段可能忽略、误解检索内容或混入外部知识，使答案偏离依据。",
+            "evidence_quotes": [
+              "即使检索到了资料，生成阶段也可能不忠实于资料。例如模型可能忽略检索内容、误解它，或把外部知识混进去，因此最终答案仍可能偏离依据。"
+            ]
+          },
+          {
+            "text": "因为资料和生成两个环节都可能出错，所以需要核对来源与适用条件。",
+            "evidence_quotes": [
+              "正因为资料可能错、可能过时，生成又可能不忠实，所以需要核对来源与适用条件。"
+            ]
+          }
+        ],
+        "summary": {
+          "text": "高相似度不等于答案正确：资料可能错误或过时，生成也可能不忠实资料，因此需要核对来源与适用条件。",
+          "evidence_quotes": [
+            "**高相似度只说明语义接近，不等于内容真实或最新**，资料本身可能写错或过时。",
+            "即使检索到了资料，生成阶段也可能不忠实于资料。例如模型可能忽略检索内容、误解它，或把外部知识混进去，因此最终答案仍可能偏离依据。",
+            "正因为资料可能错、可能过时，生成又可能不忠实，所以需要核对来源与适用条件。"
+          ]
+        }
+      },
+      "verified_concepts": [],
+      "execution_complete": true
+    },
+    {
+      "run_id": "46cc0c82-6b0c-49ee-89a2-2959d44c247f",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "input_ids": [
+        "6f515859-a865-48fb-8643-48d4bd34fe5a"
+      ],
+      "input_channel": "text",
+      "voice_input_ids": [],
+      "revision": 1,
+      "status": "completed",
+      "stage": "completed",
+      "user_summary": "本轮已回应",
+      "attempt": 1,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "answer"
+        ],
+        "target_task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+        "target_description": "",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "continue_goal",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户本轮针对当前检查题（生成阶段不忠实依据资料为何让高相似度检索仍不能保证答案正确）给出补充作答，属于 answer，交评价节点处理。",
+        "understanding": "unknown",
+        "answer_evidence": "即使拿到相似度很高的资料，生成模型也可能把资料意思理解错、遗漏重要限制，或加进资料没有支持的说法，所以最后的回答仍可能不正确。再加上来源本身也可能错误或过时，相似度只是相关程度。因此还要回看原始出处和发布时间，把答案逐条对照资料，并检查它适用的版本、情境和前提条件。",
+        "topic_closure": null,
+        "learning_goal_ready": false,
+        "direct_teaching": false,
+        "comprehensive_check": null,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "error_code": null,
+      "created_at": "2026-10-16T10:56:05.653664+00:00",
+      "updated_at": "2026-10-16T10:56:15.614093+00:00",
+      "started_at": null,
+      "elapsed_ms": 9952,
+      "attempt_durations": [
+        9952
+      ],
+      "first_text_ms": 4511,
+      "activity_candidate": null,
+      "activity_kind": null,
+      "completed_at": null,
+      "paused_entry": false,
+      "lifecycle_revision": 0,
+      "thinking_strength": "smart",
+      "model_calls": [
+        {
+          "id": "c63cb564-9419-4f2b-af0c-787a691a78ec",
+          "budget_id": "0175a33e-a1fc-4987-b27b-1a4bdb725baf",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 38261,
+          "transport_requests": 1,
+          "request_ids": [
+            "cb3af006-dc8b-40df-871c-5d7619fb0285"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "e917ff27-aa85-41dc-bca5-3e8010caab48",
+              "input_tokens": 17912,
+              "output_tokens": 460,
+              "total_tokens": 18372,
+              "cached_input_tokens": 12800,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "cb3af006-dc8b-40df-871c-5d7619fb0285"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "5aff54dd-72ba-440e-b45a-d3674d4a63b5",
+          "budget_id": "0175a33e-a1fc-4987-b27b-1a4bdb725baf",
+          "revision": 1,
+          "background": false,
+          "node": "evaluate",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 10190,
+          "transport_requests": 1,
+          "request_ids": [
+            "d3f2a38d-1562-4574-ba89-85e5e2b2b67f"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "616ee671-60f5-4649-b097-fa79266fc230",
+              "input_tokens": 5151,
+              "output_tokens": 975,
+              "total_tokens": 6126,
+              "cached_input_tokens": 4096,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "d3f2a38d-1562-4574-ba89-85e5e2b2b67f"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "execution_budget": {
+        "id": "0175a33e-a1fc-4987-b27b-1a4bdb725baf",
+        "started": 1792148165.662004,
+        "attempts": 2,
+        "estimated_input_tokens": 48451
+      },
+      "memory_references": [],
+      "context_capacity": {
+        "estimated": true,
+        "input_tokens": 10190,
+        "input_budget": 256000,
+        "compact_threshold": 220000,
+        "compact_target": 144000,
+        "ratio": 0.0398046875,
+        "output_reserve": 4096,
+        "model_window": 1000000,
+        "budget_source": "local_limit",
+        "omitted_narrative": []
+      },
+      "dialogue_policy": "dialogue-materials-11",
+      "request_scope": {
+        "input_ids": [
+          "6f515859-a865-48fb-8643-48d4bd34fe5a"
+        ],
+        "resource_boundary": "none",
+        "programming_boundary": "none"
+      },
+      "decision_input_ids": [
+        "6f515859-a865-48fb-8643-48d4bd34fe5a"
+      ],
+      "decision_mode": "source_learning",
+      "completed_operations": {
+        "6d93f231dd9c11d13c87d66e00665da7922808762057d28b72a68f37cf4c2987": false
+      },
+      "evaluated_step_id": "d271ce53-faa7-4ba2-b32f-092a41c952dc",
+      "evaluated_binding": {
+        "question": "请补充说明：为什么“生成可能不忠实依据资料”会让高相似度检索仍然不能保证最终答案正确？",
+        "step_id": "d271ce53-faa7-4ba2-b32f-092a41c952dc",
+        "step_title": "分清检索相关性与答案正确性不是一回事",
+        "concepts": [
+          "检索相关性与答案正确性的区别",
+          "生成对依据的忠实性"
+        ],
+        "evidence_quotes": [
+          "**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。",
+          "这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。"
+        ],
+        "scope": "concept",
+        "reference_stamp": "5e7122f24b19dbb0c54e43a6073115fc6b97e8a2fd0938a366eded47595aec0d",
+        "plan_version": 1,
+        "completion_condition": "",
+        "completion_requirements": [],
+        "check_kind": "concept",
+        "scope_policy": "explicit-comprehensive-1"
+      },
+      "evaluation_message_id": "6f515859-a865-48fb-8643-48d4bd34fe5a",
+      "capture_quotes": [
+        "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。",
+        "**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。"
+      ],
+      "capture_feedback_quotes": [
+        "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+      ],
+      "capture_scope_summary": "RAG 中高相似度仅代表语义相关，生成模型可能不忠实依据资料，所以不能保证最终答案正确。",
+      "capture_preview": {
+        "points": [
+          {
+            "text": "RAG 先检索相关资料，再让生成模型依据资料作答。",
+            "evidence_quotes": [
+              "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。"
+            ]
+          },
+          {
+            "text": "高相似度只说明内容与问题语义接近，并不说明内容真实、最新或适用。",
+            "evidence_quotes": [
+              "**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。"
+            ]
+          },
+          {
+            "text": "生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。",
+            "evidence_quotes": [
+              "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+            ]
+          }
+        ],
+        "summary": {
+          "text": "RAG 中高相似度仅代表语义相关，生成模型可能不忠实依据资料，所以不能保证最终答案正确。",
+          "evidence_quotes": [
+            "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。",
+            "**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。",
+            "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+          ]
+        }
+      },
+      "verified_concepts": [
+        "检索相关性与答案正确性的区别",
+        "生成对依据的忠实性"
+      ],
+      "execution_complete": true
+    },
+    {
+      "run_id": "51b6f70f-91e1-4bdb-b96c-a24e7c9f9999",
+      "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+      "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "input_ids": [
+        "e1295e05-08d5-4c27-90f7-575c029566b8"
+      ],
+      "input_channel": "text",
+      "voice_input_ids": [],
+      "revision": 1,
+      "status": "completed",
+      "stage": "completed",
+      "user_summary": "本轮已回应",
+      "attempt": 1,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "correction",
+          "reject",
+          "defer"
+        ],
+        "target_task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+        "target_description": "补正 RAG 知识点：相似度只反映内容相关，不能判断来源可信；核对适用条件要看发布时间、产品版本和适用场景；更新预览但暂不保存、不推进下一步",
+        "relation": "continuation",
+        "workflow": "source_learning",
+        "scope": "continue_goal",
+        "proposed_actions": [
+          {
+            "kind": "save",
+            "disposition": "reject",
+            "target_id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+            "version": 1,
+            "evidence": "暂时不要保存，也不要进入下一步",
+            "selection": []
+          }
+        ],
+        "clarification": "",
+        "rationale": "用户主动修正并丰富同一 RAG 知识点（相似度只说明内容相关、不代表来源可信；核对适用条件要看发布时间、产品版本和适用场景），要求把这点补进尚未保存的同一张预览卡，同时明确拒绝保存、不进入下一步，属于同一学习目标下的 correction + reject + defer，保持 continue_goal。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": false,
+        "comprehensive_check": null,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "error_code": null,
+      "created_at": "2026-10-16T11:16:39.175320+00:00",
+      "updated_at": "2026-10-16T11:16:39.506395+00:00",
+      "started_at": null,
+      "elapsed_ms": 325,
+      "attempt_durations": [
+        325
+      ],
+      "first_text_ms": null,
+      "activity_candidate": null,
+      "activity_kind": null,
+      "completed_at": null,
+      "paused_entry": false,
+      "lifecycle_revision": 0,
+      "thinking_strength": "smart",
+      "model_calls": [
+        {
+          "id": "c5cd9af2-8113-4a8a-8453-0210645a996c",
+          "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "gpt-5.6-luna",
+          "estimated_input_tokens": 41790,
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "returned"
+        },
+        {
+          "id": "05e36ad6-28dd-4755-933c-bfc1c469bf3a",
+          "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+          "revision": 1,
+          "background": false,
+          "node": "teaching_preparation",
+          "model": "gpt-5.6-luna",
+          "estimated_input_tokens": 2342,
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "returned"
+        },
+        {
+          "id": "67aedf13-8215-47b7-a906-71b6ad0c354d",
+          "budget_id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+          "revision": 1,
+          "background": false,
+          "node": "answer",
+          "model": "gpt-5.6-terra",
+          "estimated_input_tokens": 25156,
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "returned"
+        }
+      ],
+      "execution_budget": {
+        "id": "ecc06797-7b69-468e-bd3d-e6c9429c2484",
+        "started": 1792149399.181299,
+        "attempts": 3,
+        "estimated_input_tokens": 69288
+      },
+      "memory_references": [],
+      "context_capacity": {
+        "estimated": true,
+        "input_tokens": 25156,
+        "input_budget": 256000,
+        "compact_threshold": 220000,
+        "compact_target": 144000,
+        "ratio": 0.098265625,
+        "output_reserve": 4096,
+        "model_window": null,
+        "budget_source": "local_limit",
+        "omitted_narrative": []
+      },
+      "dialogue_policy": "dialogue-materials-11",
+      "request_scope": {
+        "input_ids": [
+          "e1295e05-08d5-4c27-90f7-575c029566b8"
+        ],
+        "resource_boundary": "none",
+        "programming_boundary": "none"
+      },
+      "decision_input_ids": [
+        "e1295e05-08d5-4c27-90f7-575c029566b8"
+      ],
+      "decision_mode": "source_learning",
+      "completed_operations": {
+        "6399556b565765c296366186ed665b8fd6942e2d6e5a79ee2834a8e5c0193fe3": false
+      },
+      "material_reads": [],
+      "material_sources": [
+        {
+          "source_id": "ae766a8c-1747-5890-ae3c-aee0a56cbcdb",
+          "version": 1,
+          "type": "agent_generated",
+          "url": "",
+          "title": "Agent 生成讲义",
+          "fetched_at": "2026-10-16T10:53:51.107545+00:00",
+          "locator": "task:7e28764b-95d5-4014-8d9f-3edb4137eec2",
+          "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。"
+        }
+      ],
+      "allowed_source_urls": [],
+      "teaching_signature": "b8ddc84471064381f597a2f0c81e4715bcfde4afe62fb2db0a637a7a8954a544",
+      "source_selection_packet": {
+        "input_signature": "3ba49d68add5865a7c8d7bec942a4ee0e1bb86806d2c6381677af622186a9554",
+        "query": "我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。\nRAG 中为什么高相似度检索不能保证答案正确：来源错误或过时、生成不忠实于资料、核对来源发布时间与适用条件",
+        "entries": {},
+        "revision": 1
+      },
+      "source_selection_records": {
+        "evidence_reuse": [],
+        "answer": []
+      },
+      "search_state": "not_called",
+      "verification_notice": "",
+      "teaching_evidence": {
+        "state": "unverified",
+        "summary": "",
+        "sources": []
+      },
+      "teaching_sources": [
+        {
+          "source_id": "ae766a8c-1747-5890-ae3c-aee0a56cbcdb",
+          "version": 1,
+          "type": "agent_generated",
+          "url": "",
+          "title": "Agent 生成讲义",
+          "fetched_at": "2026-10-16T10:53:51.107545+00:00",
+          "locator": "task:7e28764b-95d5-4014-8d9f-3edb4137eec2",
+          "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。"
+        }
+      ],
+      "learning_concepts": [
+        "检索相关性与来源可信度的区别",
+        "来源适用条件的核对（发布时间、产品版本、适用场景）",
+        "检索相关性与答案正确性的区别"
+      ],
+      "capture_scope_update": {
+        "offer_id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+        "version": 2,
+        "retained_fragment_ids": [
+          "5f94c020-91f8-4a85-9b84-629bf912255f",
+          "cc0457b8-b764-4084-8e3b-7e236db5122c",
+          "bc97d0e2-8102-463a-8b50-e25663bdd80a"
+        ],
+        "evidence_quotes": [
+          "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信",
+          "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。"
+        ],
+        "scope_summary": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。",
+        "preview": {
+          "points": [
+            {
+              "text": "相似度反映相关程度，不能判断来源是否可信。",
+              "evidence_quotes": [
+                "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信"
+              ]
+            },
+            {
+              "text": "生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。",
+              "evidence_quotes": [
+                "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+              ]
+            },
+            {
+              "text": "核对资料的发布时间、产品版本和适用场景。",
+              "evidence_quotes": [
+                "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。"
+              ]
+            }
+          ],
+          "summary": {
+            "text": "高相似度只说明相关；答案仍需对照资料，核对来源和发布时间、产品版本、适用场景。",
+            "evidence_quotes": [
+              "相似度衡量的是内容与问题的相关程度，它不衡量来源是否可信",
+              "- **发布时间**：这条说明是什么时候写的，是否已被后续更新取代；\n- **产品版本**：它针对的是哪个版本，当前所用版本是否还沿用同一行为；\n- **适用场景**：原文限定了什么环境、配置或前提，你的问题是否落在这些前提之内。",
+              "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**"
+            ]
+          }
+        }
+      },
+      "answer_sources": [
+        {
+          "source_id": "ae766a8c-1747-5890-ae3c-aee0a56cbcdb",
+          "version": 1,
+          "type": "agent_generated",
+          "url": "",
+          "title": "Agent 生成讲义",
+          "fetched_at": "2026-10-16T10:53:51.107545+00:00",
+          "locator": "task:7e28764b-95d5-4014-8d9f-3edb4137eec2",
+          "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。"
+        }
+      ],
+      "answer_source_type": "agent_generated",
+      "execution_complete": true
+    }
+  ]
+}
