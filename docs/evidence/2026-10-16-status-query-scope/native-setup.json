@@ -1,0 +1,11 @@
+{
+  "directory": "/tmp/review-today-status-scope-2br8dy6h",
+  "native_app": "/tmp/review-today-status-scope-2br8dy6h/StatusScopeQA.app",
+  "native_port_unused": 62549,
+  "model_requests": 0,
+  "scope": "Production event projection and workspace using frozen router output, copied real native cards; no live service or sync loop",
+  "source_cursor": 130,
+  "session_id": "e608a1be-b263-5f2a-af0f-1c630d716443",
+  "source_entry_sha256": "843f5622b161775fd1b0a8ed644aa5cabe2abdfe7cf57b42e45d866cd9cc557c",
+  "binary_sha256": "94100502e98d43979207edaa45daaafa5d8ae07ba88c8e5a072d7547568a3b8c"
+}

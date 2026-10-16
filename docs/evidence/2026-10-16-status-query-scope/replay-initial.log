@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/../docs/evidence/2026-10-16-status-query-scope/replay.py", line 87, in <module>
+    main()
+    ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/../docs/evidence/2026-10-16-status-query-scope/replay.py", line 66, in main
+    assert original["tasks"] == actual["tasks"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

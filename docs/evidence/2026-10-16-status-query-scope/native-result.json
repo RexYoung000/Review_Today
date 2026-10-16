@@ -1,0 +1,23 @@
+{
+  "layer": "controlled_native_projection_and_fresh_disk_read",
+  "source": "Copied real four-card SwiftData and production public event page; frozen recorded router output",
+  "real_model_requests": 0,
+  "original_request_count": 29,
+  "old_stop_preserved": true,
+  "correct_reply_persisted": true,
+  "reply": "刚才讨论的是检索相似度只衡量相关而非事实。这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索相似度衡量相关而非事实；来源可能错误或过时，生成可能添加内容或省略限定，因此需核对来源与适用条件。 内容包括：检索相似度；来源资料可靠性；生成忠实性；适用条件核对。",
+  "knowledge_count": 4,
+  "source_count": 1,
+  "fsrs_count": 4,
+  "original_cards_exactly_preserved": true,
+  "all_review_off": true,
+  "no_new_native_receipt": true,
+  "old_error_history_preserved": true,
+  "input_outbox_tested": false,
+  "live_service_or_model_tested": false,
+  "native_app_closed": true,
+  "daily_files_unchanged": 7,
+  "provider_configs_unchanged": true,
+  "old_evidence_files_unchanged": 69,
+  "preexisting_project_diff_unchanged": true
+}

@@ -1,0 +1,101 @@
+{
+  "layer": "controlled_production_harness_and_public_event_page",
+  "baseline_commit": "885030521091607cecea770159cd6d2e663d670c",
+  "source_checkpoint_sha256": "8ec51672f9a673dd57c784c12ac60c6f38f771bb7d22da94bfb9704a0e0f0b5c",
+  "directory": "/tmp/review-today-status-scope-2br8dy6h",
+  "session_id": "e608a1be-b263-5f2a-af0f-1c630d716443",
+  "source_cursor": 130,
+  "source_recovery_version": 133,
+  "run_id": "1ecb170c-32d4-4079-b2e6-213fbce8a55b",
+  "controlled_model_invocations": [
+    {
+      "schema": "IntentDecision",
+      "knowledge_status_input": {
+        "stage": "saved",
+        "current_knowledge_ids": [
+          "b3f2a1c4-7d8e-4f1a-9c2b-5e6d7a8b9c01",
+          "c4a3b2d5-8e9f-4a1b-8c3d-6f7e8a9b0c12",
+          "d5b4c3e6-9f0a-4b2c-9d4e-7a8b9c0d1e23",
+          "e6c5d4f7-0a1b-4c3d-8e5f-8b9c0d1e2f34"
+        ],
+        "current_cards": [
+          {
+            "id": "b3f2a1c4-7d8e-4f1a-9c2b-5e6d7a8b9c01",
+            "title": "检索相似度"
+          },
+          {
+            "id": "c4a3b2d5-8e9f-4a1b-8c3d-6f7e8a9b0c12",
+            "title": "来源资料可靠性"
+          },
+          {
+            "id": "d5b4c3e6-9f0a-4b2c-9d4e-7a8b9c0d1e23",
+            "title": "生成忠实性"
+          },
+          {
+            "id": "e6c5d4f7-0a1b-4c3d-8e5f-8b9c0d1e2f34",
+            "title": "适用条件核对"
+          }
+        ],
+        "discussion_sources": [
+          {
+            "message_id": "cf360df2-aba0-5f9a-b2bd-15c5b587301b",
+            "content": "**RAG**（Retrieval-Augmented Generation，检索增强生成）是先检索资料、再让模型依据资料作答的方式。高相似度只说明查到的文本与问题「像」，不保证文本本身正确，也不保证模型最终照它说话。\n\n## 学习地图\n1. 理解相似度衡量的是「相关程度」\n2. 识别来源资料本身的两类风险：错误、过时\n3. 识别生成环节的两类风险：不忠实、忽略适用条件\n4. 学会核对来源与适用条件\n\n## 第一步：相似度只衡量「相关」，不衡量「对」\n\n检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。\n\n所以会出现：一段写错的资料因为措辞与问题高度接近而被高排，模型照样把它当依据。相似度高的片段也可能是几年前的旧说明，已经不适用于当前版本或当前政策。\n\n换句话说，**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。\n\n其次，即使参考资料没问题，生成阶段也可能出岔子：模型可能加入资料里没有的说法，可能把条件、范围、前提略去，让一个有前提的结论看起来像普遍成立。\n\n因此判断一个 RAG 答案能不能用，至少要看两件事：来源本身是否可靠、是否仍适用于你面对的版本与条件；以及回答里每一句是否真能在来源中找到依据，有没有被添油加醋或省略限定。\n\n---\n\n### 想一想\n\n请用自己的话复述：为什么检索相似度高，仍不能保证 RAG 给出的答案正确？请分别说明来源资料方面和生成回答方面各有什么风险，以及为什么还需要核对来源和适用条件。",
+            "concepts": [
+              "RAG",
+              "检索相似度",
+              "来源资料可靠性",
+              "生成忠实性",
+              "适用条件核对"
+            ],
+            "evidence_kind": "teaching"
+          },
+          {
+            "message_id": "50700c60-26f5-44c3-bc57-03eadb2a24e1",
+            "content": "答对了：**相似度只表示看着切题，不保证事实**。来源资料可能失效或本身写错，生成时也可能加话、删掉原有条件，所以需要逐句找原文依据，并确认版本和使用场景是否合适。",
+            "concepts": [],
+            "evidence_kind": "discussion_only_feedback"
+          }
+        ],
+        "prior_status_messages": [],
+        "session_has_generated_package": true,
+        "session_saved_knowledge_ids": [
+          "b3f2a1c4-7d8e-4f1a-9c2b-5e6d7a8b9c01",
+          "c4a3b2d5-8e9f-4a1b-8c3d-6f7e8a9b0c12",
+          "d5b4c3e6-9f0a-4b2c-9d4e-7a8b9c0d1e23",
+          "e6c5d4f7-0a1b-4c3d-8e5f-8b9c0d1e2f34"
+        ],
+        "scope_saved_knowledge_ids": [],
+        "scope_has_uncovered_focus": false,
+        "scope_has_unconfirmed_focus": false,
+        "latest_learning_message_id": "50700c60-26f5-44c3-bc57-03eadb2a24e1",
+        "capture_offer": {
+          "id": "985ed407-9999-457e-ab09-4d8b27007bcd",
+          "version": 1,
+          "title": "检索相似度、来源资料可靠性、生成忠实性、适用条件核对",
+          "status": "saved",
+          "trigger": "verified_check",
+          "scope_summary": "检索相似度衡量相关而非事实；来源可能错误或过时，生成可能添加内容或省略限定，因此需核对来源与适用条件。"
+        },
+        "related_library_card_count": 0,
+        "error": "",
+        "coverage_note": "",
+        "steps": [
+          "讲解和作答会留下聊天与学习记录，但不会自动生成知识卡",
+          "在这条答题反馈下选择新增知识，或选择稍后；点击前不会生成或保存知识卡",
+          "按确认的内容整理、核验并保存到本机知识库",
+          "确认保存成功后才显示已写入知识库"
+        ]
+      },
+      "frozen_output_sha256": "ce9e97865f286a55a6e1282ee639fcae888c3bc2eb06897427bf55cfe4f1e729"
+    }
+  ],
+  "real_model_requests": 0,
+  "actual_original_requests": 29,
+  "original_stop_preserved": true,
+  "reply": "刚才讨论的是检索相似度只衡量相关而非事实。这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索相似度衡量相关而非事实；来源可能错误或过时，生成可能添加内容或省略限定，因此需核对来源与适用条件。 内容包括：检索相似度；来源资料可靠性；生成忠实性；适用条件核对。",
+  "tasks_unchanged": true,
+  "invitations_unchanged": true,
+  "prior_messages_unchanged": true,
+  "event_count": 8,
+  "outcome": "PASS"
+}

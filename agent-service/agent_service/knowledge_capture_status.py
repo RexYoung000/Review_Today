@@ -54,6 +54,14 @@ def _discussion_context(data, valid_run=None):
             entry.get('message_id') in run.get('input_ids', []) and entry.get('evaluation')
             for entry in task.get('context', {}).get('practice', [])))
         if not (_is_learning(run) or feedback):
+            # A bound save result describes execution, not a new discussion.
+            # Use the program-owned task link, even after old events are pruned.
+            context = task.get('context', {})
+            if (run.get('capture_offer_id') and task.get('mode') == 'memory_organization'
+                    and task.get('session_id') == data.get('session_id') and context.get('conversation_managed')
+                    and context.get('capture_offer_id') == run['capture_offer_id']
+                    and intent.get('relation') != 'new_topic'):
+                continue
             sources, statuses, owner = [], [], None
             continue
         if intent.get('relation') == 'new_topic' or sources and owner != run.get('task_id'):

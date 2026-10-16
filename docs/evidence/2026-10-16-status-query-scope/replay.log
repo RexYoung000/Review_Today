@@ -1,0 +1,19 @@
+{
+  "layer": "controlled_production_harness_and_public_event_page",
+  "baseline_commit": "885030521091607cecea770159cd6d2e663d670c",
+  "source_checkpoint_sha256": "8ec51672f9a673dd57c784c12ac60c6f38f771bb7d22da94bfb9704a0e0f0b5c",
+  "directory": "/tmp/review-today-status-scope-2br8dy6h",
+  "session_id": "e608a1be-b263-5f2a-af0f-1c630d716443",
+  "source_cursor": 130,
+  "source_recovery_version": 133,
+  "run_id": "1ecb170c-32d4-4079-b2e6-213fbce8a55b",
+  "real_model_requests": 0,
+  "actual_original_requests": 29,
+  "original_stop_preserved": true,
+  "reply": "刚才讨论的是检索相似度只衡量相关而非事实。这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索相似度衡量相关而非事实；来源可能错误或过时，生成可能添加内容或省略限定，因此需核对来源与适用条件。 内容包括：检索相似度；来源资料可靠性；生成忠实性；适用条件核对。",
+  "tasks_unchanged": true,
+  "invitations_unchanged": true,
+  "prior_messages_unchanged": true,
+  "event_count": 8,
+  "outcome": "PASS"
+}
