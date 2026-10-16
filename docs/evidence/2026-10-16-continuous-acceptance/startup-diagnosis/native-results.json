@@ -1,0 +1,23 @@
+[
+  {
+    "case" : "native_without_site",
+    "exit" : 0,
+    "pid" : 38856,
+    "seconds" : 0.11903202533721924,
+    "timed_out" : false
+  },
+  {
+    "case" : "native_default_empty",
+    "exit" : 15,
+    "pid" : 38857,
+    "seconds" : 15.052212953567505,
+    "timed_out" : true
+  },
+  {
+    "case" : "native_controlled_site",
+    "exit" : 15,
+    "pid" : 38896,
+    "seconds" : 15.044547080993652,
+    "timed_out" : true
+  }
+]

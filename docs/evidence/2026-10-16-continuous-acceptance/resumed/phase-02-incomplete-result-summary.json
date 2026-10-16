@@ -1,0 +1,84 @@
+{
+  "phase": "phase-02-incomplete-result",
+  "requests": 14,
+  "messages": [
+    {
+      "message_id": "99dccc73-2f2b-4c01-97ae-35472c1ced48",
+      "role": "coach",
+      "content": "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。\n\n## 紧凑学习地图\n1. 分清“相关”与“正确”\n2. 来源资料本身可能错误或过时\n3. 生成回答可能没有忠实依据资料\n4. 核对来源与适用条件\n\n## 第一步：相关 ≠ 正确\n\n检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但**它已经过时了**。\n\n同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。\n\n这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。\n\n---\n\n### 想一想\n\n请用你自己的话说一遍：为什么检索到的内容与问题相似度很高，仍然不能保证最终答案正确？请至少说到“资料本身可能错误或过时”和“生成可能不忠实依据资料”这两点，并说明为什么需要核对来源与适用条件。",
+      "run_id": "a4a91baf-362c-433e-bb28-70b44430501c"
+    },
+    {
+      "message_id": "4346f77b-313a-4a63-8639-cdb4e51448c4",
+      "role": "user",
+      "content": "相似度高只能说明检索片段和问题在语义上接近，不能证明内容正确。资料本身可能写错，也可能已经过时，所以检索分数高仍然不能保证答案正确。",
+      "run_id": "bece1870-4710-49c5-a1db-8d40dae9db7b"
+    },
+    {
+      "message_id": "74df9745-d7f7-4d72-a5c8-5fa387a98431",
+      "role": "coach",
+      "content": "你答对了关键一点：**高相似度只说明语义接近，不等于内容真实或最新**，资料本身可能写错或过时。\n\n还缺题目明确要求的一点：即使检索到了资料，生成阶段也可能不忠实于资料。例如模型可能忽略检索内容、误解它，或把外部知识混进去，因此最终答案仍可能偏离依据。正因为资料可能错、可能过时，生成又可能不忠实，所以需要核对来源与适用条件。\n\n---\n\n### 独立回答\n\n请补充说明：为什么“生成可能不忠实依据资料”会让高相似度检索仍然不能保证最终答案正确？",
+      "run_id": "bece1870-4710-49c5-a1db-8d40dae9db7b"
+    }
+  ],
+  "runs": [
+    {
+      "id": "a4a91baf-362c-433e-bb28-70b44430501c",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "id": "bece1870-4710-49c5-a1db-8d40dae9db7b",
+      "status": "completed",
+      "error": null
+    }
+  ],
+  "offers": [],
+  "tasks": [
+    {
+      "id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "mode": "source_learning",
+      "status": "awaiting_user",
+      "context_keys": [
+        "conversation_managed",
+        "understanding",
+        "requires_mastery",
+        "origin_run_id",
+        "memory_references",
+        "latest_run_id",
+        "lifecycle_revision",
+        "evidence",
+        "sources",
+        "taught_concepts",
+        "verified_queries",
+        "learning_plan",
+        "understanding_by_lesson",
+        "check_question",
+        "last_lesson",
+        "source_type",
+        "lesson_index",
+        "practice",
+        "hint_used",
+        "check_binding"
+      ]
+    }
+  ],
+  "sdk_requests": 14,
+  "semantic_outputs": [
+    "Probe",
+    "Probe",
+    "Probe",
+    "Probe",
+    "Probe",
+    "Probe",
+    "Probe",
+    "Probe",
+    "IntentDecision",
+    "TeachingPreparation",
+    "TeachingConversationOutput",
+    "IntentDecision",
+    "MasteryEvaluation",
+    "MasteryEvaluation"
+  ],
+  "stop": false
+}

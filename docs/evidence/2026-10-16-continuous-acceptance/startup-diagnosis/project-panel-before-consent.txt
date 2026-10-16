@@ -1,0 +1,6 @@
+Window: "为隔离验收选择项目文件夹", App: ContinuousResumeQA.
+0 standard window 为隔离验收选择项目文件夹, ID: open-panel, Secondary Actions: Raise
+		226 pop up button Where:, Value: Review_Today, ID: where popup
+		229 text 仅选择 Review_Today 项目，用于加载运行环境与现有模型配置。选择后先检查环境，不会自动开始模型调用。
+		230 button Cancel, ID: CancelButton
+		231 button 选择此项目, ID: OKButton

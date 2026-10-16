@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-16T10:58:37.010186+00:00",
+  "reason": "gate_4_same_topic_final_schema_failure",
+  "requests": 20,
+  "limit": 30,
+  "manual_retry": false,
+  "other_topic_started": false,
+  "native_save_clicked": false
+}

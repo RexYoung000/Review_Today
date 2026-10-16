@@ -1,0 +1,58 @@
+{
+  "result": "REPRODUCED_WITH_RETAINED_DATA",
+  "new_model_calls": 0,
+  "actual_decision": {
+    "intents": [
+      "correction",
+      "reject",
+      "defer"
+    ],
+    "proposed_actions": [
+      {
+        "kind": "save",
+        "disposition": "reject",
+        "target_id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+        "version": 1,
+        "evidence": "暂时不要保存，也不要进入下一步",
+        "selection": []
+      }
+    ]
+  },
+  "actual_model_payload_candidate_counts": [
+    0,
+    0
+  ],
+  "current_candidate_count": 0,
+  "candidate_count_without_reject_action": 1,
+  "original_offer_identity_version": [
+    {
+      "id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+      "version": 2
+    }
+  ],
+  "returned_update_identity_version": {
+    "id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+    "version": 2
+  },
+  "returned_new_quotes_match_current_message": [
+    false,
+    false,
+    false
+  ],
+  "validation": [
+    {
+      "case": "actual_empty_payload",
+      "code": "RT.MODEL.SCHEMA",
+      "diagnostic": "field=capture_update; select an existing invitation version and real source excerpts only"
+    },
+    {
+      "case": "candidate_only_counterfactual",
+      "code": "RT.MODEL.SCHEMA",
+      "diagnostic": "field=capture_update; select an existing invitation version and real source excerpts only"
+    }
+  ],
+  "interpretation": "Noncommitting save rejection suppresses otherwise eligible same-topic invitation. Candidate-only change is not proof the retained model output becomes valid; its new-source quotes are also invalid.",
+  "proposed_scope": "Consider keeping editable invitation context for explicit same-topic updates with rejected/deferred saving, preserving explicit save consent, current version, real quote validation, and one repair limit.",
+  "production_changes": false,
+  "remote_revalidation": false
+}

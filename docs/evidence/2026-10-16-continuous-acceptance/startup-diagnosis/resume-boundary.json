@@ -1,0 +1,13 @@
+{
+  "at": 1792147959.52265,
+  "decision": 237,
+  "phase": "resume_after_explicit_project_access_and_successful_zero_model_check",
+  "requests_before": 0,
+  "limit": 30,
+  "budget_reset": false,
+  "old_failure": "live/result.json",
+  "hold_retired_to": "/tmp/review-today-continuous-bnrjmda_/startup-HOLD-before-resume.txt",
+  "permission_grant": "project-access-authorization.json",
+  "fresh_probe_results_required": true,
+  "not_first_uninterrupted_cold_start": true
+}

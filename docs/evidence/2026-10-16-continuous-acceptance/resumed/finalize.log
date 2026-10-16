@@ -1,0 +1,61 @@
+{
+  "outcome": "FAILED_AT_SAME_TOPIC_UPDATE",
+  "decision": 237,
+  "actual_requests": 20,
+  "limit": 30,
+  "unused_allowance": 10,
+  "startup_probe_requests": 8,
+  "conversation_requests": 12,
+  "startup_interrupted_then_resumed": true,
+  "same_native_and_backend_session": true,
+  "new_message_posts": 4,
+  "native_runs": 4,
+  "native_messages": 8,
+  "reported_usage_requests": 20,
+  "unknown_usage_requests": 0,
+  "reported_tokens": {
+    "input_tokens": 115972,
+    "output_tokens": 8012,
+    "total_tokens": 123984
+  },
+  "incomplete_answer_rejected": true,
+  "complete_followup_created_preview": true,
+  "preview_points": 3,
+  "same_topic_update_failed": true,
+  "final_error": "RT.MODEL.SCHEMA",
+  "current_offer_version": 2,
+  "current_offer_status": "invalidated",
+  "knowledge_saved": 0,
+  "source_saved": 0,
+  "native_save_clicked": false,
+  "other_topic_save_details_status_progress_acceptance": "not run after failed gate",
+  "independent_native_disk": true,
+  "failed_partial_preserved_as_failed": true,
+  "native_and_service_closed": true,
+  "protected": {
+    "provider_config_sha256": {
+      "count": 2,
+      "unchanged": true
+    },
+    "swift_source_sha256": {
+      "count": 106,
+      "unchanged": true
+    },
+    "python_source_sha256": {
+      "count": 72,
+      "unchanged": true
+    },
+    "prior_evidence_sha256": {
+      "count": 101,
+      "unchanged": true
+    }
+  },
+  "daily_files_unchanged": 7,
+  "original_startup_archive_unchanged": true,
+  "old_batch_30_and_stop_unchanged": true,
+  "production_changed": false,
+  "daily_app_replaced": false,
+  "final_product_acceptance": false,
+  "retained_data_replay": "same-topic-replay.json",
+  "proposed_fix": "not yet authorized"
+}

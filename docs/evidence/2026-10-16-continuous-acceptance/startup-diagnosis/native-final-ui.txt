@@ -1,0 +1,13 @@
+Window: "启动诊断 · 不调用模型", App: StartupDiagnosticQA.
+0 standard window 启动诊断 · 不调用模型, Secondary Actions: Raise
+	1 text 启动诊断已结束
+只检查了运行环境，没有运行学习服务。
+模型请求仍为 0／30，原失败与暂停记录保留。
+	2 close button
+	3 zoom button (disabled)
+	4 minimize button
+	5 text 启动诊断 · 不调用模型
+6 menu bar
+	7 StartupDiagnosticQA
+
+The focused UI element is 0 standard window 启动诊断 · 不调用模型, Secondary Actions: Raise

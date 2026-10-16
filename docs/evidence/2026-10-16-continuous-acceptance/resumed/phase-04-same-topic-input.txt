@@ -1,0 +1,5 @@
+The following is a diff from the previous accessibility tree for Window: "RAG · 全新连续验收 · 真实模型隔离验收" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~			49 scroll bar (settable, float) 0.9411764705882353
+~				50 value indicator (settable, float) 0.9411764705882353
+~			56 text entry area (settable) Description: 学习输入, Value: 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
+The focused UI element is 56 text entry area (settable) Description: 学习输入, Value: 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。

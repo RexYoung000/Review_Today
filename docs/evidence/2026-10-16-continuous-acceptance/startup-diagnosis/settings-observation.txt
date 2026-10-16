@@ -1,0 +1,7 @@
+				20 row (selectable) 桌面与程序坞
+						94 row (selectable, expanded) Description: python3.13, Secondary Actions: Collapse
+						96 row (selectable) 桌面
+							97 转换 Value: on, ID: DESKTOP_FOLDER_Toggle
+						100 row (selectable, expanded) Description: Review_Today.app, Secondary Actions: Collapse
+						102 row (selectable) 桌面
+							103 转换 Value: on, ID: DESKTOP_FOLDER_Toggle

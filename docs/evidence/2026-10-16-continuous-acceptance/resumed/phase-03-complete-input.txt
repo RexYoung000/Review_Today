@@ -1,0 +1,5 @@
+The following is a diff from the previous accessibility tree for Window: "RAG · 全新连续验收 · 真实模型隔离验收" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~			41 scroll bar (settable, float) 0.9605411499436303
+~				42 value indicator (settable, float) 0.9605411499436303
+~			48 text entry area (settable) Description: 学习输入, Value: 即使拿到相似度很高的资料，生成模型也可能把资料意思理解错、遗漏重要限制，或加进资料没有支持的说法，所以最后的回答仍可能不正确。再加上来源本身也可能错误或过时，相似度只是相关程度。因此还要回看原始出处和发布时间，把答案逐条对照资料，并检查它适用的版本、情境和前提条件。
+The focused UI element is 48 text entry area (settable) Description: 学习输入, Value: 即使拿到相似度很高的资料，生成模型也可能把资料意思理解错、遗漏重要限制，或加进资料没有支持的说法，所以最后的回答仍可能不正确。再加上来源本身也可能错误或过时，相似度只是相关程度。因此还要回看原始出处和发布时间，把答案逐条对照资料，并检查它适用的版本、情境和前提条件。

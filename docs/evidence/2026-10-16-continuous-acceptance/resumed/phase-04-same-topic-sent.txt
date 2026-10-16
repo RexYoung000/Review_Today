@@ -1,0 +1,17 @@
+The following is a diff from the previous accessibility tree for Window: "RAG · 全新连续验收 · 真实模型隔离验收" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 14-27
++				74 text 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
++					75 text 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
++				76 button Description: 运行详情, Help: 展开运行详情, Value: 已收起，正在理解本轮意图
+~			49 scroll bar (settable, float) 0.920995670995671
+~				50 value indicator (settable, float) 0.920995670995671
+~			56 text entry area (settable) 学习输入
+~		60 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 41,793 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
++		77 checkbox Description: 排队发送, Value: 0
++		78 button 停止回复
+The focused UI element is 56 text entry area (settable) 学习输入

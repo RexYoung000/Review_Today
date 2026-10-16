@@ -1,0 +1,74 @@
+Window: "RAG · 全新连续验收 · 真实模型隔离验收", App: ContinuousResumeQA.
+0 standard window RAG · 全新连续验收 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 连续验收续接 · 暂停等待项目授权 · 本批 0／30
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 text 依赖加载检查通过；学习服务尚未启动。
+		6 button (disabled) 选择 Review_Today 项目文件夹
+		7 button (disabled) 检查运行环境（不调用模型）
+		8 button Description: 会话标签, ID: tag
+		9 button Description: 归档, ID: archivebox
+		10 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		11 button Description: 学习安排, 分清检索相关性与答案正确性不是一回事, Value: 已展开
+		12 scroll area
+			13 button Description: 1, 分清检索相关性与答案正确性不是一回事, 已讲解, Help: 查看对应内容，不会改变理解状态
+			14 button Description: 2, 识别来源资料本身可能错误或过时带来的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			15 button Description: 3, 识别生成阶段可能不忠实依据资料带来的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			16 button Description: 4, 养成核对来源与适用条件的习惯, 待学习, Help: 查看对应内容，不会改变理解状态
+		17 text 点击步骤回看内容；要调整安排，直接告诉我。
+		18 scroll area Secondary Actions: Scroll Up, Scroll Down
+			19 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				20 text RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”。
+					21 text RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”。
+				22 heading 紧凑学习地图
+					23 text 紧凑学习地图
+				24 heading 第一步：相关 ≠ 正确
+					25 text 第一步：相关 ≠ 正确
+				26 text 检索阶段做的事是“找与问题最接近的片段”，它按语义相似度排序。这个机制本身不检查事实真假，也不检查时间新旧。假设资料库里有一条去年写的说明“某接口默认超时 30 秒”，而产品今年已把默认值改为 10 秒；这句话与“超时是多少”语义非常接近，很可能被检索到并排在前面，但它已经过时了。 同样地，资料库里若混入一篇本身写错的文档，或者用户上传的笔记里有误，检索器也无法识别，因为它的目标只是“找相近内容”。所以输入再像、分数再高，也只能说明贴合程度，不能替代真实性判断。 这只是第一步。相似度高的片段被选中之后，还要经过“生成”这一环，后面两步会继续说明那里还可能出问题。
+				27 heading 想一想
+					28 text 想一想
+				29 text 请用你自己的话说一遍：为什么检索到的内容与问题相似度很高，仍然不能保证最终答案正确？请至少说到“资料本身可能错误或过时”和“生成可能不忠实依据资料”这两点，并说明为什么需要核对来源与适用条件。
+					30 text 请用你自己的话说一遍：为什么检索到的内容与问题相似度很高，仍然不能保证最终答案正确？请至少说到“资料本身可能错误或过时”和“生成可能不忠实依据资料”这两点，并说明为什么需要核对来源与适用条件。
+				31 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				32 text 相似度高只能说明检索片段和问题在语义上接近，不能证明内容正确。资料本身可能写错，也可能已经过时，所以检索分数高仍然不能保证答案正确。
+					33 text 相似度高只能说明检索片段和问题在语义上接近，不能证明内容正确。资料本身可能写错，也可能已经过时，所以检索分数高仍然不能保证答案正确。
+				34 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				35 text 你答对了关键一点：高相似度只说明语义接近，不等于内容真实或最新，资料本身可能写错或过时。 还缺题目明确要求的一点：即使检索到了资料，生成阶段也可能不忠实于资料。例如模型可能忽略检索内容、误解它，或把外部知识混进去，因此最终答案仍可能偏离依据。正因为资料可能错、可能过时，生成又可能不忠实，所以需要核对来源与适用条件。
+				36 heading 独立回答
+					37 text 独立回答
+				38 text 请补充说明：为什么“生成可能不忠实依据资料”会让高相似度检索仍然不能保证最终答案正确？
+					39 text 请补充说明：为什么“生成可能不忠实依据资料”会让高相似度检索仍然不能保证最终答案正确？
+				40 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			41 scroll bar (settable, float) 0.9726027397260274
+				42 value indicator (settable, float) 0.9726027397260274
+				43 increment arrow button
+				44 decrement arrow button
+				45 increment page button
+				46 decrement page button
+		47 scroll area
+			48 text entry area (settable) 学习输入
+		49 button Description: 添加材料, Value: 已收起, ID: plus
+		50 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		51 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		52 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 10,501 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		53 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		54 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		55 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	56 close button
+	57 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	58 minimize button
+59 menu bar
+	60 ContinuousResumeQA
+	61 File
+	62 Edit
+	63 View
+	64 Window
+	65 Help
+
+The focused UI element is 48 text entry area (settable) 学习输入

@@ -1,0 +1,19 @@
+{
+  "user_confirmation": "允许访问本项目并检查（推荐）",
+  "request": "Grant ContinuousResumeQA access only to Review_Today project, including current model configuration; zero-model environment check first",
+  "question_call_id": "call_02cb3ccdf1054987bfdd5a83c1cc7b70",
+  "selected_project": "/Users/rexyoung/Desktop/vibe coding/Review_Today",
+  "bundle_id": "Rex.Review-Today.ContinuousResume.NativeQA",
+  "permission_selection_confirmed": true,
+  "zero_model_probe": {
+    "exit": 0,
+    "model_calls": 0,
+    "ready": true,
+    "seconds": 0.10324394702911377,
+    "timed_out": false
+  },
+  "real_requests_at_environment_completion": 0,
+  "original_batch_decision": 237,
+  "original_limit": 30,
+  "original_startup_failure_preserved": true
+}

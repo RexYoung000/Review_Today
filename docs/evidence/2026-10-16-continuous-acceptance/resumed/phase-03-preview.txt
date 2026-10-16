@@ -1,0 +1,74 @@
+Window: "RAG · 全新连续验收 · 真实模型隔离验收", App: ContinuousResumeQA.
+0 standard window RAG · 全新连续验收 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 连续验收续接 · 暂停等待项目授权 · 本批 0／30
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 text 依赖加载检查通过；学习服务尚未启动。
+		6 button (disabled) 选择 Review_Today 项目文件夹
+		7 button (disabled) 检查运行环境（不调用模型）
+		8 button Description: 会话标签, ID: tag
+		9 button Description: 归档, ID: archivebox
+		10 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		11 button Description: 学习安排, 分清检索相关性与答案正确性不是一回事, Value: 已展开
+		12 scroll area
+			13 button Description: 1, 分清检索相关性与答案正确性不是一回事, 已讲解, Help: 查看对应内容，不会改变理解状态
+			14 button Description: 2, 识别来源资料本身可能错误或过时带来的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			15 button Description: 3, 识别生成阶段可能不忠实依据资料带来的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			16 button Description: 4, 养成核对来源与适用条件的习惯, 待学习, Help: 查看对应内容，不会改变理解状态
+		17 text 点击步骤回看内容；要调整安排，直接告诉我。
+		18 scroll area Secondary Actions: Scroll Up, Scroll Down
+			19 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				20 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				21 text 你答对了关键一点：高相似度只说明语义接近，不等于内容真实或最新，资料本身可能写错或过时。 还缺题目明确要求的一点：即使检索到了资料，生成阶段也可能不忠实于资料。例如模型可能忽略检索内容、误解它，或把外部知识混进去，因此最终答案仍可能偏离依据。正因为资料可能错、可能过时，生成又可能不忠实，所以需要核对来源与适用条件。
+				22 heading 独立回答
+					23 text 独立回答
+				24 text 请补充说明：为什么“生成可能不忠实依据资料”会让高相似度检索仍然不能保证最终答案正确？
+					25 text 请补充说明：为什么“生成可能不忠实依据资料”会让高相似度检索仍然不能保证最终答案正确？
+				26 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				27 text 即使拿到相似度很高的资料，生成模型也可能把资料意思理解错、遗漏重要限制，或加进资料没有支持的说法，所以最后的回答仍可能不正确。再加上来源本身也可能错误或过时，相似度只是相关程度。因此还要回看原始出处和发布时间，把答案逐条对照资料，并检查它适用的版本、情境和前提条件。
+					28 text 即使拿到相似度很高的资料，生成模型也可能把资料意思理解错、遗漏重要限制，或加进资料没有支持的说法，所以最后的回答仍可能不正确。再加上来源本身也可能错误或过时，相似度只是相关程度。因此还要回看原始出处和发布时间，把答案逐条对照资料，并检查它适用的版本、情境和前提条件。
+				29 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				30 text 答对了关键点：高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。
+					31 text 答对了关键点：高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。
+				32 heading Description: 检索相关性与答案正确性的区别、生成对依据的忠实性, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				33 unknown Description: RAG 先检索相关资料，再让生成模型依据资料作答。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				34 unknown Description: 高相似度只说明内容与问题语义接近，并不说明内容真实、最新或适用。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				35 unknown Description: 生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				36 text Value: 一句话记住 RAG 中高相似度仅代表语义相关，生成模型可能不忠实依据资料，所以不能保证最终答案正确。 未保存, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				37 button Description: 稍后, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				38 button Description: 保存为知识卡, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				39 checkbox Description: 已学过，加入复习, Value: 0, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				40 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			41 scroll bar (settable, float) 0.8249818445896877
+				42 value indicator (settable, float) 0.8249818445896877
+				43 increment arrow button
+				44 decrement arrow button
+				45 increment page button
+				46 decrement page button
+		47 scroll area
+			48 text entry area (settable) 学习输入
+		49 button Description: 添加材料, Value: 已收起, ID: plus
+		50 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		51 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		52 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 10,190 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		53 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		54 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		55 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	56 close button
+	57 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	58 minimize button
+59 menu bar
+	60 ContinuousResumeQA
+	61 File
+	62 Edit
+	63 View
+	64 Window
+	65 Help
+
+The focused UI element is 48 text entry area (settable) 学习输入

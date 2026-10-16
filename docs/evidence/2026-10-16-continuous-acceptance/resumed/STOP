@@ -1,0 +1,1 @@
+STOP: EVAL-03 same-topic update reached final RT.MODEL.SCHEMA failure at 20/30; stop on failed gate, no further model calls. Preserve previous startup failure and unused allowance.

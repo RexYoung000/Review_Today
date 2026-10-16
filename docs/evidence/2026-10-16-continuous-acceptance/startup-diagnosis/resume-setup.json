@@ -1,0 +1,16 @@
+{
+  "app": "/tmp/review-today-startup-diagnosis-1ux5ch6l/ContinuousResumeQA.app",
+  "bundle_id": "Rex.Review-Today.ContinuousResume.NativeQA",
+  "qa_runtime": "/tmp/review-today-continuous-bnrjmda_",
+  "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+  "request_count": 0,
+  "limit": 30,
+  "service_initially_paused": true,
+  "permission_granted": false,
+  "probe_run": false,
+  "selected_project": "/Users/rexyoung/Desktop/vibe coding/Review_Today",
+  "original_entry_unchanged": true,
+  "original_binary_unchanged": true,
+  "source_sha256": "905bcddd4c58ef9864366f71059bb40a3275dd60a5f854120d936e9e6b082761",
+  "binary_sha256": "ea44f651006051c6a50f54c02835eb9ee4a16c02f60df8869399785799cc5ab7"
+}

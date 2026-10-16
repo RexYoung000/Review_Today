@@ -1,0 +1,22 @@
+{
+  "diagnostic_directory": "/tmp/review-today-startup-diagnosis-1ux5ch6l",
+  "diagnostic_app": "/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app",
+  "qa_runtime": "/tmp/review-today-continuous-bnrjmda_",
+  "model_calls_allowed": false,
+  "timeout_seconds_each": 15,
+  "source_sha256": "6c19226d3d4aad85d354f5f2a04b3ab3b1f0bcf756d06aa73c6166f9e1d0194e",
+  "user_observation": "目前没有弹窗",
+  "terminal_cases": [
+    {
+      "case": "without_site",
+      "returncode": 0,
+      "seconds": 0.016
+    },
+    {
+      "case": "default_no_service",
+      "returncode": 0,
+      "seconds": 0.025
+    }
+  ],
+  "terminal_result_source": "prior tool output in this turn"
+}

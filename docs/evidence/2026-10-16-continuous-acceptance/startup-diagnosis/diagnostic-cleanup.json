@@ -1,0 +1,8 @@
+{
+  "processes": [
+    38850
+  ],
+  "signal": "SIGTERM",
+  "reason": "Minimal AppKit diagnostic had no Quit command binding; its three subprocesses had already exited and its result files were closed",
+  "learning_app_quit_separately": true
+}

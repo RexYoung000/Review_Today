@@ -1,0 +1,28 @@
+{
+  "stage_1": {
+    "result": "sufficient_for_incomplete_answer_gate_with_teaching_limitation",
+    "lesson_new": true,
+    "question_includes": [
+      "source_error_or_outdated",
+      "generation_not_grounded",
+      "source_and_applicability_check"
+    ],
+    "cards_saved": 0,
+    "offers": 0,
+    "limitation": "Lecture expands relevance and source risk; generation and applicability are only named in the map/question and deferred as later steps. Do not call this fully taught or full pedagogical acceptance."
+  },
+  "stage_2": {
+    "input": "相似度高只能说明检索片段和问题在语义上接近，不能证明内容正确。资料本身可能写错，也可能已经过时，所以检索分数高仍然不能保证答案正确。",
+    "deliberately_missing": [
+      "generation_not_grounded",
+      "source_and_applicability_check"
+    ],
+    "expected": [
+      "partial_credit",
+      "request_missing_answer",
+      "no_whole_question_pass",
+      "no_pass_triggered_capture_offer"
+    ],
+    "input_preparation": "First paste did not change AX; no send occurred until setValue and native AX confirmed the exact text. One Return submission."
+  }
+}

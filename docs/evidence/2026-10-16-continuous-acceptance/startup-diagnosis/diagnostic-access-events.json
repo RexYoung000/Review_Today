@@ -1,0 +1,357 @@
+[
+  {
+    "timestamp": "2026-10-16 18:43:57.764025+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: accessing={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, requesting={TCCDProcess: identifier=com.apple.syspolicyd, pid=684, auid=0, euid=0, binary_path=/usr/libexec/syspolicyd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.764186+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: accessing={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, requesting={TCCDProcess: identifier=com.apple.syspolicyd, pid=684, auid=0, euid=0, binary_path=/usr/libexec/syspolicyd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.766661+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4853000) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.766663+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.766691+0800",
+    "pid": 609,
+    "eventMessage": "Handling access request to kTCCServiceDeveloperTool, from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, ReqResult(Auth Right: Unknown (None), promptType: 1,DB Action:None, UpdateVerifierData)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.782323+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: requesting={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.782393+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: requesting={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.784465+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4853000) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.784466+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.784493+0800",
+    "pid": 609,
+    "eventMessage": "Handling access request to kTCCServiceListenEvent, from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, ReqResult(Auth Right: Unknown (None), promptType: 1,DB Action:None, UpdateVerifierData)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.791663+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: accessing={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, requesting={TCCDProcess: identifier=com.apple.WindowServer, pid=608, auid=88, euid=88, binary_path=/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/WindowServer},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.791911+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: accessing={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, requesting={TCCDProcess: identifier=com.apple.WindowServer, pid=608, auid=88, euid=88, binary_path=/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/WindowServer},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.792682+0800",
+    "pid": 609,
+    "eventMessage": "IDENTITY_ATTRIBUTION: /private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA[608]: from cache: = Rex.Review-Today.StartupDiagnostic.NativeQA, type 0 (353233/455053)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.793256+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4853000) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.793262+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.793294+0800",
+    "pid": 609,
+    "eventMessage": "Handling access request to kTCCServiceListenEvent, from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, ReqResult(Auth Right: Unknown (None), promptType: 1,DB Action:None, UpdateVerifierData)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.848409+0800",
+    "pid": 1005,
+    "eventMessage": "sendMessageSyncToSystemTCCD request: {\n\tbundleId=\"Rex.Review-Today.StartupDiagnostic.NativeQA\"\n\tfunction=\"TCCAccessCheckIfDisclosurePromptIsNeeded\"\n\tdo_not_forward_to_other_tccd=true\n}"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.848505+0800",
+    "pid": 609,
+    "eventMessage": "REQUEST_MSG: msgID=(null), msg={\n\tbundleId=\"Rex.Review-Today.StartupDiagnostic.NativeQA\"\n\tfunction=\"TCCAccessCheckIfDisclosurePromptIsNeeded\"\n\tdo_not_forward_to_other_tccd=true\n}"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.893595+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: accessing={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, requesting={TCCDProcess: identifier=com.apple.appleeventsd, pid=831, auid=55, euid=55, binary_path=/System/Library/CoreServices/appleeventsd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.893782+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: accessing={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, requesting={TCCDProcess: identifier=com.apple.appleeventsd, pid=831, auid=55, euid=55, binary_path=/System/Library/CoreServices/appleeventsd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.894930+0800",
+    "pid": 609,
+    "eventMessage": "IDENTITY_ATTRIBUTION: /private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA[831]: from cache: = Rex.Review-Today.StartupDiagnostic.NativeQA, type 0 (353234/455054)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.895794+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4853000) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.895795+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:57.895899+0800",
+    "pid": 609,
+    "eventMessage": "Derived team id of (null) for TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.042054+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: accessing={TCCDProcess: identifier=com.openai.sky.CUAService, pid=28787, auid=501, euid=501, binary_path=/Users/rexyoung/.codex/computer-use/Codex Computer Use.app/Contents/MacOS/SkyComputerUseService}, requesting={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.042128+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: accessing={TCCDProcess: identifier=com.openai.sky.CUAService, pid=28787, auid=501, euid=501, binary_path=/Users/rexyoung/.codex/computer-use/Codex Computer Use.app/Contents/MacOS/SkyComputerUseService}, requesting={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.126275+0800",
+    "pid": 609,
+    "eventMessage": "REQUEST_MSG: msgID=55897.2271, msg={\n\tservice=\"kTCCServiceSystemPolicyAllFiles\"\n\tTCCD_MSG_SPI_VERSION=2 (0x2)\n\tfunction=\"TCCAccessRequest\"\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_RECORD_UPGRADE_POLICY_POLICY_KEY=1 (0x1)\n\tTCCD_MSG_REQUEST_TYPE_KEY=0 (0x0)\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_PROMPT_RIGHTS_MASK_KEY=5 (0x5)\n\tTCC_MSG_REQUEST_AUTHORIZATION_SUBJECT_CREDENTIAL_DICTIONARY_KEY={\n\t\tTCCD_MSG_CREDENTIAL_AUTHENTICATOR_TYPE_KEY=1 (0x1)\n\t\tTCCD_MSG_CREDENTIAL_AUTHENTICATOR_AUDIT_TOKEN_KEY={pid:38857, auid:501, euid:501}\n\t}\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_USAGE_STRING_POLICY_KEY=2 (0x2)\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_PROMPT_POLICY_KEY=2 (0x2)\n\tTCCD_MSG_ID=\"55897.2271\"\n}"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.126496+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, accessing={TCCDProcess: identifier=org.python.python, pid=38857, auid=501, euid=501, binary_path=/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python}, requesting={TCCDProcess: identifier=com.apple.sandboxd, pid=55897, auid=0, euid=0, binary_path=/usr/libexec/sandboxd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.126658+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, accessing={TCCDProcess: identifier=org.python.python, pid=38857, auid=501, euid=501, binary_path=/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python}, requesting={TCCDProcess: identifier=com.apple.sandboxd, pid=55897, auid=0, euid=0, binary_path=/usr/libexec/sandboxd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.130223+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4853000) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.130224+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.130311+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4853000) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.130312+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.130335+0800",
+    "pid": 609,
+    "eventMessage": "Background Session: service kTCCServiceSystemPolicyAllFiles from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}: determinedPlatformBinaryStatus: 1, clientIsApplePlatformBinary: 0, clientHasGraphicsAccess: 1, validRequester: 1"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.130364+0800",
+    "pid": 609,
+    "eventMessage": "Handling access request to kTCCServiceSystemPolicyAllFiles, from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, ReqResult(Auth Right: Denied (Service Policy), promptType: 1,DB Action:None, UpdateVerifierData)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.130776+0800",
+    "pid": 1005,
+    "eventMessage": "REQUEST_MSG: msgID=55897.2272, msg={\n\tservice=\"kTCCServiceSystemPolicyDesktopFolder\"\n\tTCCD_MSG_SPI_VERSION=2 (0x2)\n\tfunction=\"TCCAccessRequest\"\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_RECORD_UPGRADE_POLICY_POLICY_KEY=1 (0x1)\n\tTCCD_MSG_REQUEST_TYPE_KEY=0 (0x0)\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_PROMPT_RIGHTS_MASK_KEY=5 (0x5)\n\tTCC_MSG_REQUEST_AUTHORIZATION_SUBJECT_CREDENTIAL_DICTIONARY_KEY={\n\t\tTCCD_MSG_CREDENTIAL_AUTHENTICATOR_TYPE_KEY=1 (0x1)\n\t\tTCCD_MSG_CREDENTIAL_AUTHENTICATOR_AUDIT_TOKEN_KEY={pid:38857, auid:501, euid:501}\n\t}\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_USAGE_STRING_POLICY_KEY=2 (0x2)\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_PROMPT_POLICY_KEY=0 (0x0)\n\tTCCD_MSG_ID=\"55897.2272\"\n}"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.130980+0800",
+    "pid": 1005,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, accessing={TCCDProcess: identifier=org.python.python, pid=38857, auid=501, euid=501, binary_path=/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python}, requesting={TCCDProcess: identifier=com.apple.sandboxd, pid=55897, auid=0, euid=0, binary_path=/usr/libexec/sandboxd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.133529+0800",
+    "pid": 1005,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x7ba5164000) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.133532+0800",
+    "pid": 1005,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.133573+0800",
+    "pid": 1005,
+    "eventMessage": "Handling access request to kTCCServiceSystemPolicyDesktopFolder, from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, ReqResult(Auth Right: Unknown (None), promptType: 1,DB Action:None, UpdateVerifierData)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.354676+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, requesting={TCCDProcess: identifier=com.apple.appkit.xpc.ThemeWidgetControlViewService, pid=38860, auid=501, euid=501, binary_path=/System/Library/Frameworks/AppKit.framework/Versions/C/XPCServices/ThemeWidgetControlViewService.xpc/Contents/MacOS/ThemeWidgetControlViewService},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.354745+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, requesting={TCCDProcess: identifier=com.apple.appkit.xpc.ThemeWidgetControlViewService, pid=38860, auid=501, euid=501, binary_path=/System/Library/Frameworks/AppKit.framework/Versions/C/XPCServices/ThemeWidgetControlViewService.xpc/Contents/MacOS/ThemeWidgetControlViewService},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.356064+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4852100) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.356065+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.356082+0800",
+    "pid": 609,
+    "eventMessage": "Handling access request to kTCCServiceListenEvent, from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, ReqResult(Auth Right: Unknown (None), promptType: 1,DB Action:None, UpdateVerifierData)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.362692+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, accessing={TCCDProcess: identifier=com.apple.appkit.xpc.ThemeWidgetControlViewService, pid=38860, auid=501, euid=501, binary_path=/System/Library/Frameworks/AppKit.framework/Versions/C/XPCServices/ThemeWidgetControlViewService.xpc/Contents/MacOS/ThemeWidgetControlViewService}, requesting={TCCDProcess: identifier=com.apple.WindowServer, pid=608, auid=88, euid=88, binary_path=/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/WindowServer},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.362793+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, accessing={TCCDProcess: identifier=com.apple.appkit.xpc.ThemeWidgetControlViewService, pid=38860, auid=501, euid=501, binary_path=/System/Library/Frameworks/AppKit.framework/Versions/C/XPCServices/ThemeWidgetControlViewService.xpc/Contents/MacOS/ThemeWidgetControlViewService}, requesting={TCCDProcess: identifier=com.apple.WindowServer, pid=608, auid=88, euid=88, binary_path=/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/WindowServer},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.363129+0800",
+    "pid": 609,
+    "eventMessage": "IDENTITY_ATTRIBUTION: /private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA[608]: from cache: = Rex.Review-Today.StartupDiagnostic.NativeQA, type 0 (353237/455061)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.363463+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4852100) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.363463+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.363473+0800",
+    "pid": 609,
+    "eventMessage": "Handling access request to kTCCServiceListenEvent, from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, ReqResult(Auth Right: Unknown (None), promptType: 1,DB Action:None, UpdateVerifierData)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.602817+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, accessing={TCCDProcess: identifier=com.apple.appkit.xpc.ThemeWidgetControlViewService, pid=38860, auid=501, euid=501, binary_path=/System/Library/Frameworks/AppKit.framework/Versions/C/XPCServices/ThemeWidgetControlViewService.xpc/Contents/MacOS/ThemeWidgetControlViewService}, requesting={TCCDProcess: identifier=com.apple.appleeventsd, pid=831, auid=55, euid=55, binary_path=/System/Library/CoreServices/appleeventsd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.603360+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, accessing={TCCDProcess: identifier=com.apple.appkit.xpc.ThemeWidgetControlViewService, pid=38860, auid=501, euid=501, binary_path=/System/Library/Frameworks/AppKit.framework/Versions/C/XPCServices/ThemeWidgetControlViewService.xpc/Contents/MacOS/ThemeWidgetControlViewService}, requesting={TCCDProcess: identifier=com.apple.appleeventsd, pid=831, auid=55, euid=55, binary_path=/System/Library/CoreServices/appleeventsd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.605212+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4851200) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.605214+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.605248+0800",
+    "pid": 609,
+    "eventMessage": "Derived team id of (null) for TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.761750+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: accessing={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, requesting={TCCDProcess: identifier=com.apple.WindowServer, pid=608, auid=88, euid=88, binary_path=/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/WindowServer},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.761847+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: accessing={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, requesting={TCCDProcess: identifier=com.apple.WindowServer, pid=608, auid=88, euid=88, binary_path=/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/WindowServer},"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.762290+0800",
+    "pid": 609,
+    "eventMessage": "IDENTITY_ATTRIBUTION: /private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA[608]: from cache: = Rex.Review-Today.StartupDiagnostic.NativeQA, type 0 (353251/455079)"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.762631+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4850300) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.762632+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:43:58.762644+0800",
+    "pid": 609,
+    "eventMessage": "Handling access request to kTCCServiceScreenCapture, from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, ReqResult(Auth Right: Unknown (None), promptType: 1,DB Action:None, UpdateVerifierData)"
+  },
+  {
+    "timestamp": "2026-10-16 18:44:13.200079+0800",
+    "pid": 609,
+    "eventMessage": "REQUEST_MSG: msgID=55897.2275, msg={\n\tservice=\"kTCCServiceSystemPolicyAllFiles\"\n\tTCCD_MSG_SPI_VERSION=2 (0x2)\n\tfunction=\"TCCAccessRequest\"\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_RECORD_UPGRADE_POLICY_POLICY_KEY=1 (0x1)\n\tTCCD_MSG_REQUEST_TYPE_KEY=0 (0x0)\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_PROMPT_RIGHTS_MASK_KEY=5 (0x5)\n\tTCC_MSG_REQUEST_AUTHORIZATION_SUBJECT_CREDENTIAL_DICTIONARY_KEY={\n\t\tTCCD_MSG_CREDENTIAL_AUTHENTICATOR_TYPE_KEY=1 (0x1)\n\t\tTCCD_MSG_CREDENTIAL_AUTHENTICATOR_AUDIT_TOKEN_KEY={pid:38896, auid:501, euid:501}\n\t}\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_USAGE_STRING_POLICY_KEY=2 (0x2)\n\tTCCD_MSG_MESSAGE_OPTION_REQUEST_PROMPT_POLICY_KEY=2 (0x2)\n\tTCCD_MSG_ID=\"55897.2275\"\n}"
+  },
+  {
+    "timestamp": "2026-10-16 18:44:13.200286+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, accessing={TCCDProcess: identifier=org.python.python, pid=38896, auid=501, euid=501, binary_path=/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python}, requesting={TCCDProcess: identifier=com.apple.sandboxd, pid=55897, auid=0, euid=0, binary_path=/usr/libexec/sandboxd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:44:13.200407+0800",
+    "pid": 609,
+    "eventMessage": "AttributionChain: responsible={TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, accessing={TCCDProcess: identifier=org.python.python, pid=38896, auid=501, euid=501, binary_path=/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python}, requesting={TCCDProcess: identifier=com.apple.sandboxd, pid=55897, auid=0, euid=0, binary_path=/usr/libexec/sandboxd},"
+  },
+  {
+    "timestamp": "2026-10-16 18:44:13.205214+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4853000) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:44:13.205216+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:44:13.205277+0800",
+    "pid": 609,
+    "eventMessage": "-[TCCDAccessIdentity matchesCodeRequirement:]: SecStaticCodeCheckValidity() static code (0x79d4853000) from Rex.Review-Today.StartupDiagnostic.NativeQA : anchor apple; status: -67050"
+  },
+  {
+    "timestamp": "2026-10-16 18:44:13.205284+0800",
+    "pid": 609,
+    "eventMessage": "For Rex.Review-Today.StartupDiagnostic.NativeQA: matches platform requirements: No"
+  },
+  {
+    "timestamp": "2026-10-16 18:44:13.205307+0800",
+    "pid": 609,
+    "eventMessage": "Background Session: service kTCCServiceSystemPolicyAllFiles from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}: determinedPlatformBinaryStatus: 1, clientIsApplePlatformBinary: 0, clientHasGraphicsAccess: 1, validRequester: 1"
+  },
+  {
+    "timestamp": "2026-10-16 18:44:13.205323+0800",
+    "pid": 609,
+    "eventMessage": "Handling access request to kTCCServiceSystemPolicyAllFiles, from Sub:{Rex.Review-Today.StartupDiagnostic.NativeQA}Resp:{TCCDProcess: identifier=Rex.Review-Today.StartupDiagnostic.NativeQA, pid=38850, auid=501, euid=501, responsible_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA, binary_path=/private/tmp/review-today-startup-diagnosis-1ux5ch6l/StartupDiagnosticQA.app/Contents/MacOS/StartupDiagnosticQA}, ReqResult(Auth Right: Denied (Service Policy), promptType: 1,DB Action:None, UpdateVerifierData)"
+  }
+]
