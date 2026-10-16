@@ -1,0 +1,17 @@
+{
+  "sdk-parallel.log": "03f3a17a1df15f16c9944e4d0486969bbc055bc4e05c630fed4fe9578b66f428",
+  "sdk-restart.log": "9ec0698b9de3e9f4f0e1254adc5d3af7681bea1f562d21a6e34254bea3d0ef76",
+  "sdk_preflight.py": "25ea8541e5daef53dfb16f6662ed41af8ebb27dc4d97565556114a78276522be",
+  "preflight-import-initial.log": "3983e567932901061d05e9ee79b0b68be67b7556dcd47ff1a7e41873e73a560d",
+  "preflight.log": "7f1d5fe1d41a4231e252b92b7d5d91b10fe531a50e81ba1146402ac90b5d571d",
+  "sdk-serial-initial.log": "06940f2a02e9b9bb74e3df4b4c22399ce68d2d0185aa124c1780e5c34ea81964",
+  "sdk-timeout.log": "f28b6a9d9e5acd1ae21c859127b9d438fc6f7868be5ebc4d74436348fd396389",
+  "sdk-serial-transport-initial.log": "33eebcc637c8bce400e2e90806f4f6d8549e575124730ec20a6cfc64ec8b37a9",
+  "sdk-serial.log": "3ac4fab039480fb9f0507055e3b035bc5e40ecee7ebc424b92d93d91948f0d77",
+  "README.md": "0b3f8b8e73160c3f572f4670cb9bfd23df55a109e54fc22d763e7c438648e0e7",
+  "preflight-initial.log": "fcfcb996f8b50a0a132d7a31353e5d354ec72489314bf0ae3f2b9433a460f6ed",
+  "preflight-transport-initial.log": "fcfcb996f8b50a0a132d7a31353e5d354ec72489314bf0ae3f2b9433a460f6ed",
+  "sdk-serial-import-initial.log": "cb4985956eaaaeed6084668b26fe406316c262ead871a5fe3bbd2c67840a7a78",
+  "sdk-preflight-result.json": "c554cecbb5a28d861272ac1aeeff8d17d47fb7a0637c7710d541ec95d9f6a8fc",
+  "preparation-result.json": "3ffbef1fb99bef702f9f476d65b220f8fbc2bc583c4ccbc336f69326e96cd65e"
+}

@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-16-continuous-acceptance/sdk_preflight.py", line 116, in <module>
+    child(sys.argv[1],sys.argv[2])
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-16-continuous-acceptance/sdk_preflight.py", line 33, in child
+    audit.install(str(directory), str(ROOT/"agent-service"))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-14-live-learning-save/audit_runtime.py", line 33, in install
+    assert directory.name.startswith("review-today-")
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError

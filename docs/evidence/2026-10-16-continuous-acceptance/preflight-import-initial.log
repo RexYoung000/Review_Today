@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-16-continuous-acceptance/sdk_preflight.py", line 120, in <module>
+    main()
+    ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-16-continuous-acceptance/sdk_preflight.py", line 109, in main
+    assert completed.returncode == 0, f"{case} failed; inspect sdk-{case}.log"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: serial failed; inspect sdk-serial.log

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-16-continuous-acceptance/sdk_preflight.py", line 118, in <module>
+    child(sys.argv[1],sys.argv[2])
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-16-continuous-acceptance/sdk_preflight.py", line 30, in child
+    from openai._base_client import httpx
+ImportError: cannot import name 'httpx' from 'openai._base_client' (/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/openai/_base_client.py)

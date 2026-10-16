@@ -1,0 +1,1 @@
+{"case": "serial", "outcome": "PASS", "real_model_requests": 0, "mock_transport_requests": 2, "sdk_hook_count": 2, "fixture_usage_reports": 2, "sdk_http_module": "httpx2", "client_classes": ["SyncHttpxClientWrapper"], "outcomes": ["returned", "returned", "RT.MODEL.CANCELLED"]}

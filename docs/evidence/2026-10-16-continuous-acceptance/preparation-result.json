@@ -1,0 +1,17 @@
+{
+  "stage": "proposal_and_offline_preflight_only",
+  "real_model_requests": 0,
+  "real_trial_authorized": false,
+  "proposed_new_limit": 30,
+  "old_real_cumulative_requests": 30,
+  "old_real_stop_preserved": true,
+  "old_runtime": "/tmp/review-today-status-real-_o_ew9v2",
+  "old_counter_sha256": "a96dd9bd6b7b0b48e65c7c1c29a4f58001bb741cf88cf7de37604770bc71edb5",
+  "old_stop_sha256": "2a39fef4aa219ec894e13c2551f0aca4e167d0a0b4df20f2a4144f6799b67c54",
+  "production_changes": 0,
+  "daily_files_and_configs_unchanged": true,
+  "preexisting_project_diff_preserved": true,
+  "sdk_preflight_cases": 4,
+  "local_links_checked": 5,
+  "baseline_commit": "78ee23258031461055e073eb2a1a97b70920de10"
+}
