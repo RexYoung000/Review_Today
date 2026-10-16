@@ -1,0 +1,7 @@
+{
+  "outcome": "PASS",
+  "directory": "/tmp/review-today-zero-model-guard-z89c8nzc",
+  "external_socket_blocked": true,
+  "model_sdk_blocked": true,
+  "real_model_requests": 0
+}
