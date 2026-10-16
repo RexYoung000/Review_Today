@@ -1,0 +1,15 @@
+{
+  "platform": "macOS",
+  "product_version": "27.0.1",
+  "build": "26A434",
+  "window_points": [
+    1040,
+    820
+  ],
+  "appearances": [
+    "light",
+    "dark"
+  ],
+  "evidence_level": "native real-model subcheck; no error-repair event occurred",
+  "new_production_changes": false
+}

@@ -1,0 +1,9 @@
+{
+  "all_sqlite_connections_isolated": true,
+  "database": "/private/tmp/review-today-preview-repair-real-uuwxobp6/diagnostic-only.sqlite3",
+  "connections": 1,
+  "network_calls_allowed": false,
+  "new_model_requests": 0,
+  "first_diagnostic_missing_isolation_recorded": true,
+  "transient_files_not_recreated": true
+}

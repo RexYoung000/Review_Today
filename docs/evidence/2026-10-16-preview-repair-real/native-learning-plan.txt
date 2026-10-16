@@ -1,0 +1,14 @@
+The following is a diff from the previous accessibility tree for Window: "RAG · 全新连续验收 · 真实模型隔离验收" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 13-15, 46-49
+~		3 checkbox Description: 深色, Value: 0
+~		10 button Description: 学习安排, 分清检索相关性与答案正确性不是一回事, Value: 已展开
++		75 scroll area
++			76 button Description: 1, 分清检索相关性与答案正确性不是一回事, 已讲解, Help: 查看对应内容，不会改变理解状态
++			77 button Description: 2, 识别来源资料本身可能错误或过时带来的风险, 待学习, Help: 查看对应内容，不会改变理解状态
++			78 button Description: 3, 识别生成阶段可能不忠实依据资料带来的风险, 待学习, Help: 查看对应内容，不会改变理解状态
++			79 button Description: 4, 养成核对来源与适用条件的习惯, 待学习, Help: 查看对应内容，不会改变理解状态
++		80 text 点击步骤回看内容；要调整安排，直接告诉我。
+~				45 text 回复未完成，已保留已输出内容
+~			50 scroll bar (settable, float) 0.4836795252225519
+~				51 value indicator (settable, float) 0.4836795252225519
+The focused UI element is 57 text entry area (settable) 学习输入

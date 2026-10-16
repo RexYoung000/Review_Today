@@ -1,0 +1,7 @@
+{
+  "after-send.json": {
+    "canonical": "backend-after.json",
+    "sha256": "81f296f1fd6ac811714de35e3f39faab7303e34ac16436a5bf809c60efa84d0f",
+    "reason": "Byte-identical before shutdown and after shutdown; stage summaries and logs retained."
+  }
+}

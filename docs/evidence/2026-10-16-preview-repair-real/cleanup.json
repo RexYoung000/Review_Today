@@ -1,0 +1,12 @@
+{
+  "native_app_closed": true,
+  "service_closed": true,
+  "restored_prior_test_app": true,
+  "prior_binary_sha256": "ea44f651006051c6a50f54c02835eb9ee4a16c02f60df8869399785799cc5ab7",
+  "request_count": {
+    "actual_requests": 26,
+    "limit": 30
+  },
+  "unused_allowance": 4,
+  "daily_app_replaced": false
+}

@@ -1,0 +1,116 @@
+{
+  "outcome": "REAL_CURRENT_PREVIEW_AND_NATIVE_SUBCHECK_PASSED",
+  "decision": 240,
+  "repair_decision": 239,
+  "batch_decision": 237,
+  "baseline_commit": "8a1bb45035dcbde1c61b546cad94b2462c20f433",
+  "starting_requests": 23,
+  "new_requests": 3,
+  "total_requests": 26,
+  "limit": 30,
+  "unused_allowance": 4,
+  "new_request_numbers": [
+    24,
+    25,
+    26
+  ],
+  "reported_usage_requests": 3,
+  "unknown_usage_requests": 0,
+  "reported_tokens": {
+    "input_tokens": 34777,
+    "output_tokens": 1530,
+    "total_tokens": 36307
+  },
+  "new_startup_probes": 0,
+  "retry_requests": 0,
+  "same_batch_actual_probes_reused": true,
+  "new_model_outputs_frozen": false,
+  "current_store_requests": 23,
+  "prior_archived_branch_requests": 3,
+  "unique_global_request_ids": 26,
+  "backend_run_status": "completed",
+  "backend_error_code": null,
+  "candidate_count": 1,
+  "candidate_version": 2,
+  "published_offer_version": 3,
+  "structured_preview_present": true,
+  "preview_points": 4,
+  "preview_summary_present": true,
+  "fallback_scope_summary_only": false,
+  "source_quote_errors": 0,
+  "automatic_repair_triggered": false,
+  "real_error_to_repair_path_verified": false,
+  "native_scope_updated": true,
+  "native_light_and_dark_inspected": true,
+  "native_window_size_points": [
+    1040,
+    820
+  ],
+  "native_message_posts": 1,
+  "native_messages": 10,
+  "native_runs": 5,
+  "new_input_and_reply_durable": true,
+  "knowledge_saved": 0,
+  "source_saved": 0,
+  "review_state_count": 0,
+  "save_clicked": false,
+  "learning_step_and_understanding_preserved": true,
+  "original_history_and_failed_partial_preserved": true,
+  "fresh_process_native_disk_checked": true,
+  "original_20_runtime_preserved": true,
+  "original_23_runtime_preserved": true,
+  "old_batch_30_and_stop_preserved": true,
+  "protected": {
+    "provider_config_sha256": 2,
+    "swift_source_sha256": 106,
+    "python_source_sha256": 72,
+    "protected_archive_sha256": 198
+  },
+  "daily_files_byte_identical": 5,
+  "daily_transient_files_absent": 2,
+  "daily_database_content_unchanged": true,
+  "daily_file_check": [
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store",
+      "status": "byte_identical"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-wal",
+      "status": "byte_identical"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-shm",
+      "status": "byte_identical"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3",
+      "status": "byte_identical"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-wal",
+      "status": "absent_transient_after_offline_default_store_import"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-shm",
+      "status": "absent_transient_after_offline_default_store_import"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.review.sqlite3",
+      "status": "byte_identical"
+    }
+  ],
+  "offline_diagnostic_default_store_import": true,
+  "diagnostic_import_now_isolated": true,
+  "project_user_difference_preserved": true,
+  "native_and_service_closed": true,
+  "previous_test_app_restored": true,
+  "daily_app_replaced": false,
+  "production_changed_this_round": false,
+  "later_gates_not_run": true,
+  "full_eight_step_acceptance": false,
+  "user_visual_acceptance": false,
+  "native_narrow_window_rechecked": false,
+  "voiceover_run": false,
+  "motion_revalidated": false,
+  "general_semantic_accuracy_verified": false
+}

@@ -1,0 +1,138 @@
+{
+  "phase": "after-send",
+  "requests": 26,
+  "messages": [
+    {
+      "message_id": "fd58df90-3cb2-4ffc-ac65-1298e69ec7f8",
+      "role": "user",
+      "content": "我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。",
+      "run_id": "6c5b0980-9fb7-43b4-9cb0-0259f3150277"
+    },
+    {
+      "message_id": "2e600539-d443-422b-8e14-ef111d5155b6",
+      "role": "user",
+      "content": "我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。",
+      "run_id": "b463fcfe-3c07-4322-bf00-768a12da0795"
+    },
+    {
+      "message_id": "a28bb857-dcb2-4e09-9d27-5930a77e0276",
+      "role": "coach",
+      "content": "这个补充是对的，而且原来的说法确实偏窄：**相似度只反映内容相关，不能用它判断来源是否可信**。因此“核对来源与适用条件”应当展开成两步：先确认来源本身可信，再对照资料的**发布时间、产品版本和适用场景**来判断它是否适用于当前问题——一条旧发布说明可能因版本变化失效，一份面向其他场景的文档也可能因前提不同而不适用。仍按同一个知识点、同一张尚未保存的 RAG 预览处理，暂不保存、不进入下一步。",
+      "run_id": "b463fcfe-3c07-4322-bf00-768a12da0795"
+    }
+  ],
+  "runs": [
+    {
+      "id": "a4a91baf-362c-433e-bb28-70b44430501c",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "id": "bece1870-4710-49c5-a1db-8d40dae9db7b",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "id": "46cc0c82-6b0c-49ee-89a2-2959d44c247f",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "id": "6c5b0980-9fb7-43b4-9cb0-0259f3150277",
+      "status": "retryable_failed",
+      "error": "RT.MODEL.SCHEMA"
+    },
+    {
+      "id": "b463fcfe-3c07-4322-bf00-768a12da0795",
+      "status": "completed",
+      "error": null
+    }
+  ],
+  "offers": [
+    {
+      "id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+      "version": 3,
+      "status": "offered",
+      "scope": null,
+      "preview": {
+        "points": [
+          {
+            "text": "RAG 先检索相关资料，再让生成模型依据资料作答。",
+            "evidence_quotes": [
+              "RAG 是“检索增强生成”（Retrieval-Augmented Generation）：先检索相关资料，再让生成模型依据资料作答。"
+            ]
+          },
+          {
+            "text": "高相似度只说明内容与问题语义相近，不代表内容真实、最新或适用。",
+            "evidence_quotes": [
+              "**高相似度只说明“这段话和问题在语义上接近”，不说明“它真实、最新、适用于你的问题”**。"
+            ]
+          },
+          {
+            "text": "相似度只反映内容相关，不能用它判断来源是否可信。",
+            "evidence_quotes": [
+              "**相似度只反映内容相关，不能用它判断来源是否可信**。"
+            ]
+          },
+          {
+            "text": "生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确；核对适用条件需先确认来源可信，再对照发布时间、产品版本与适用场景。",
+            "evidence_quotes": [
+              "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**",
+              "因此“核对来源与适用条件”应当展开成两步：先确认来源本身可信，再对照资料的**发布时间、产品版本和适用场景**来判断它是否适用于当前问题",
+              "一条旧发布说明可能因版本变化失效，一份面向其他场景的文档也可能因前提不同而不适用。"
+            ]
+          }
+        ],
+        "summary": {
+          "text": "高相似度只代表内容相关，不能判断来源是否可信；答案还可能因来源错误或过时、生成不忠实依据而出错，所以需先确认来源可信，再对照发布时间、产品版本与适用场景核对适用条件。",
+          "evidence_quotes": [
+            "**相似度只反映内容相关，不能用它判断来源是否可信**。",
+            "**高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。**",
+            "因此“核对来源与适用条件”应当展开成两步：先确认来源本身可信，再对照资料的**发布时间、产品版本和适用场景**来判断它是否适用于当前问题"
+          ]
+        }
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+      "mode": "source_learning",
+      "status": "retryable_failed",
+      "context_keys": [
+        "conversation_managed",
+        "understanding",
+        "requires_mastery",
+        "origin_run_id",
+        "memory_references",
+        "latest_run_id",
+        "lifecycle_revision",
+        "evidence",
+        "sources",
+        "taught_concepts",
+        "verified_queries",
+        "learning_plan",
+        "understanding_by_lesson",
+        "check_question",
+        "last_lesson",
+        "source_type",
+        "lesson_index",
+        "practice",
+        "hint_used",
+        "check_binding",
+        "knowledge_capture_explained",
+        "independent_passed",
+        "transfer_passed",
+        "corrections",
+        "material_reads"
+      ]
+    }
+  ],
+  "sdk_requests": 3,
+  "semantic_outputs": [
+    "IntentDecision",
+    "TeachingPreparation",
+    "ConversationOutput"
+  ],
+  "stop": false
+}
