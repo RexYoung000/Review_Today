@@ -1,0 +1,1 @@
+{"case": "complete", "result": "PASS", "checks": {"run_completed": true, "evaluation_exists": true, "answer_pass_matches": true, "concepts_match": true, "invitation_count_matches": true, "chapter_not_verified": true, "no_knowledge_write": true}, "actual_requests": 18, "additional_case_requests": 2}

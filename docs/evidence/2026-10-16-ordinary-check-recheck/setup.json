@@ -1,0 +1,92 @@
+{
+  "directory": "/tmp/review-today-ordinary-check-resume-_ucmwdu7",
+  "baseline_commit": "380f4c31a8d3fab4d5b36bea3dcca5fe40d2c64d",
+  "client_date": "2026-10-16",
+  "authorization": "User continued after previous CHECK-01 fix and timeout; resume within original remaining 16 requests, stop on failure",
+  "starting_requests": 14,
+  "actual_request_limit": 30,
+  "max_additional_requests": 16,
+  "previous_evidence_sha256": {
+    "initial-focused-tests.log": "fd28d14bcc22b0582d56a521a5653b8e3367eb36f1098169907d48678a6af97d",
+    "initial-test-entry-error.log": "9f8fde709f5f322b3952bbd634d8aea52092cc7c2e5fabddc6e294ad36cd79f6",
+    "setup.json": "2efaf406101d50c84946c51576eafed7590264b8a8c9e45061cc8b9893daf201",
+    "live-events.jsonl": "40d8b1a5650d78b390bb74ca44e1a29f341fdf466b1f576d1d895ea80dbdb619",
+    "focused-tests.log": "dbbda91ea924980780533909b2d651cbac4fa4bcc21b8d7778aeba1a7942a841",
+    "request-count.json": "b1d46daca06d0270dbf36e96175551a0c30f9b84da98052c4a87eb429d7e11fd",
+    "native-contracts.log": "f7b9d28194cac6b4319b820098fb1c2c202534ed96bae5415ab768a0e7f64b1c",
+    "STOP": "66b07556b16666c995b3bcdd063bc39ccf6b261e95c32a6e1fbcf1d348bc4aaa",
+    "deepseek-controlled-tests.log": "beac4f1f933fa166ddc848bc6943b93e9a0b27993de5e52bb5d32618f8648d55",
+    "README.md": "8f961859ed18430f16cad1d1b94ac73038d3ddf8678cfb282f7f1baaa84add34",
+    "full-controlled-tests.log": "c552a16841d78ec923e3f9a548b48a57ec7d0dd0e121cd2997696edd923a4867",
+    "incomplete-console.log": "38115e2def20a89a5a0e4b2f4b87ff441fb59021d7dde899678741e777549467",
+    "incomplete-after.json": "820befd14f68fa67759a70b7eb3f5473af8bc618c9d75a7bd06ee042a8e37024",
+    "recheck.py": "272cafe9abf49a1540850f5ccd9f64e5de728ba2bb97cc1813d0385609eeafc1",
+    "incomplete-before.json": "b0c6a02602403a04a25c226509643d21cc83b4a8e4b3cfae30cffd301031601f",
+    "review.json": "648459ffd95616ad499b81da2fb729503666809e5abefd75b0f843d210cbe3a5",
+    "incomplete-result.json": "9d23ce41220de8042b86f2d076ea116d58dbfdda9c07ce2dfda9ac8dc4f427ea"
+  },
+  "original_evidence_sha256": {
+    "setup-preflight.log": "01d22fd54b6e033ec6dfabb5b9d090b881094f24fc309ddbf46a5484c8a7b682",
+    "phase-02-incomplete.json": "e8bc64fcc0c14a18d91038f9f55bef24930334df32972bb4abd9eef5ae794f75",
+    "phase-02-incomplete.png": "ffe30c8f047e727b1ab61333f9b3dcfebcb80390e0f357a1d29ca7776e462bfc",
+    "probe-requests-initial.json": "fbb80fe45efb8c1320532173b94c4b3a13bcedd49859107f7f6d23775baa233d",
+    "setup.json": "355f3f9612096f0e92ef8d665384f2ba58d797384765d06a9e055421a040e670",
+    "live-events.jsonl": "0efd1c304b1fbcf6f0b9f598575b6dab51a871ebaf1443f82ff58bc67c2c318a",
+    "phase-01-lesson.txt": "1da13cadfc38116ae611115e8fee3f4bf4b60fbb3e1773aaa009adf5d7073f67",
+    "native-events.jsonl": "283f7dd392194732f19d47d690485a9cc5eeeae8a7b7321073a69feb983ac561",
+    "native-runtime.log": "2ae184d5e2d39ff214ea49635a29f903830192134ad450a097a226251666143e",
+    "request-count.json": "592555c9dc56db5545799f94d0b63b2d16ff4369fb9e63685c7bc6bc4d312b8c",
+    "phase-02-incomplete.txt": "e1e3194354626c6c42f699517d6910df79ffd16a60f4a4e4a90907dbec0efce9",
+    "phase-01-lesson.json": "5cda9827572103a016ba78a1e7b234427321b43a3f9f96bad8a96ee8ef5afb72",
+    "budget-selfcheck-initial.json": "e083f7a9a2ce3f2dfdc38cca82558360c4b14c696f6dd0d579409acd3747685b",
+    "phase-01-lesson.png": "46730d12f6843946bbba8ddb45ff254a33605d7a6cdc8b72311fbbaed2efcd6f",
+    "NativeLiveQA.swift": "ab6fb01b0cba3a86738f236dc5ccb874e9ed4f68765eb24e945dd0fc2c08ec26",
+    "README.md": "b58483ccf57c0e8b7e3479efdf36cb623b731c9eedcccc2931bfe0684b6870e9",
+    "phase-02-summary.json": "997800056b386c203834645de806a29034bf1950ddfbf8584fea7655e9edbe37",
+    "phase-02-preview.txt": "b1522602a84e73a38803e72b3e5b2f0ffb4ba3e71d49fc53089724077cb6761a",
+    "progress.json": "340a141e4a1f79793360749f352321cb17b7f54dcae549e322bd3aebb1271922",
+    "budget-selfcheck.json": "1b7b382e734cb99d25ddb78b1ddca47c436ff77db0fe5fa304754cfa5c526824",
+    "audit_runtime.py": "d55ce892985b35afdab320e4acf000d4353ffa972b8c0f652402d047c6f0e449",
+    "phase-02-preview.png": "56fd4df3a7a66887979ea9d1011a5a8c75df0ea54fec8753dda7e19d8b542f02",
+    "review.json": "670f6f54a37df1121eb83d399f204066095ec3f8697b151d62150b9dbf58144a",
+    "native-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "provider_config_sha256": {
+    "agent-service/.env": "79b70ced19be1181171afcf11837ac51293717fdf3fb252a70b49c718f75c17c",
+    "agent-service/providers/deepseek/.env": "443e52c57ad9d369c6c0ddbbf1283f2a4bdb9d8635edb9e735a109be9f574554"
+  },
+  "daily_files_before": [
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store",
+      "sha256": "73ccee18f1108f736c14243cf762c1402141adeb0fdc64eb55fa477ea8b55b2d"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-wal",
+      "sha256": "537da527577abe1979cfab308fb46ec7f7437082d823aef3aea3727746572067"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-shm",
+      "sha256": "d84b04eab622649e0ec142abe75bac5ed0b761f943c69d8bb1d7eb068f3e9421"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3",
+      "sha256": "4a3d7008175b106baa33ac6f3cb379b39b9030f314aa4ead81435b9028392185"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-wal",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-shm",
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.review.sqlite3",
+      "sha256": "f96a42b344a8f527ad8ef2ef7bcbc553323306dbefe261ce52c3120af5221710"
+    }
+  ],
+  "project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "phase1_seed_sha256": "5cda9827572103a016ba78a1e7b234427321b43a3f9f96bad8a96ee8ef5afb72",
+  "daily_app": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "daily_app_present_at_setup": false
+}

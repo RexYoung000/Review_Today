@@ -1,0 +1,113 @@
+{
+  "case": "single_point",
+  "result": "PASS",
+  "checks": {
+    "run_completed": true,
+    "evaluation_exists": true,
+    "answer_pass_matches": true,
+    "concepts_match": true,
+    "invitation_count_matches": true,
+    "chapter_not_verified": true,
+    "no_knowledge_write": true
+  },
+  "question": "检索相似度高说明什么，能否据此保证资料正确？",
+  "answer": "只能说明找到的文字和问题比较相关，不能据此保证它说的是事实。",
+  "session_id": "3b1a6c79-22dc-536e-96a3-c73e5a160ca9",
+  "run_id": "125adcba-4c51-495f-bdc6-a090dc8e07db",
+  "run_status": "completed",
+  "error_code": null,
+  "evaluation": {
+    "passed": true,
+    "correctness": "正确。检索相似度衡量的是问题与资料之间的相关程度，高相似度只代表“找到的内容看起来和问题有关”，并不等于内容本身正确，因此不能据此保证资料为事实。",
+    "completeness": "题面两项必要内容均已答到：既说明了相似度高代表什么（相关），也明确否定了它能保证资料正确。",
+    "expression": "表述简洁、含义清楚，用“比较相关”和“不能保证说的是事实”准确对应了相关性与正确性的区别。",
+    "transfer": "能将该区分直接应用到“是否可信任检索到的资料”这一判断上，体现了对概念作用边界的理解。",
+    "feedback": "答对了：相似度只衡量“相关”，不衡量“对”，所以不能作为资料正确性的保证。",
+    "followup_question": "如果一段内容与问题高度相似，但它其实是针对旧版本写的，现在版本已经变化，这段内容还能直接拿来当依据吗？为什么？",
+    "question_validity": "valid",
+    "answer_coverage": [
+      {
+        "question_quote": "检索相似度高说明什么",
+        "demonstrated": true,
+        "answer_quotes": [
+          "只能说明找到的文字和问题比较相关"
+        ]
+      },
+      {
+        "question_quote": "能否据此保证资料正确？",
+        "demonstrated": true,
+        "answer_quotes": [
+          "不能据此保证它说的是事实"
+        ]
+      }
+    ],
+    "step_completion_demonstrated": false,
+    "step_completion_evidence": [],
+    "followup_binding": {
+      "step_title": "理解相似度衡量的是相关程度",
+      "concepts": [
+        "检索相似度"
+      ],
+      "evidence_quotes": [
+        "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。"
+      ],
+      "scope": "concept"
+    },
+    "capture_quotes": [
+      "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。",
+      "**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。"
+    ],
+    "capture_feedback_quotes": [
+      "相似度只衡量“相关”，不衡量“对”，所以不能作为资料正确性的保证。"
+    ],
+    "capture_scope_summary": "检索相似度只衡量问题与资料的相关程度，高相似度不等于资料正确或可信。",
+    "capture_preview": {
+      "points": [
+        {
+          "text": "检索相似度反映的是问题与资料的相关程度。",
+          "evidence_quotes": [
+            "检索阶段做的事，是把问题与资料做匹配，把字面或语义上最接近的片段排到前面。这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。"
+          ]
+        },
+        {
+          "text": "高相似度只说明找到了看起来有关的材料，不代表材料可信。",
+          "evidence_quotes": [
+            "**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。"
+          ]
+        }
+      ],
+      "summary": {
+        "text": "检索相似度高表示相关内容被找到，但不能据此保证资料本身正确。",
+        "evidence_quotes": [
+          "相似度只衡量“相关”，不衡量“对”，所以不能作为资料正确性的保证。",
+          "**高相似度是「找到了看起来有关系的材料」，不是「材料可信」**。"
+        ]
+      }
+    }
+  },
+  "verified_concepts": [
+    "检索相似度"
+  ],
+  "offers": [
+    {
+      "id": "d61b59cd-af9f-45ab-8f24-3d114792c8bc",
+      "title": "检索相似度",
+      "concepts": [
+        "检索相似度"
+      ],
+      "status": "offered",
+      "trigger": "verified_check",
+      "knowledge_ids": []
+    }
+  ],
+  "reply": [
+    "答对了：相似度只衡量“相关”，不衡量“对”，所以不能作为资料正确性的保证。"
+  ],
+  "actual_requests": 20,
+  "additional_case_requests": 2,
+  "batch_additional_requests": 7,
+  "provider": "deepseek",
+  "router_model": "deepseek-flash",
+  "coach_model": "deepseek-v4-flash",
+  "scope": "real fixed-context service grading; no fresh lesson, native App/HTTP or save chain"
+}

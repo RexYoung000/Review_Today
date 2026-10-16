@@ -1,0 +1,34 @@
+{
+  "provider": "deepseek",
+  "models": {
+    "router": "deepseek-flash",
+    "coach": "deepseek-v4-flash",
+    "risk": "deepseek-v4-pro"
+  },
+  "timeout": 90.0,
+  "proxy_env_present": {
+    "HTTP_PROXY": false,
+    "HTTPS_PROXY": false,
+    "ALL_PROXY": false,
+    "NO_PROXY": false
+  },
+  "credential_present": true,
+  "sdk_class_module": "openai",
+  "sdk_class_file": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/openai/__init__.py",
+  "configured_host": "api.deepseek.com",
+  "sdk_effective_host": "api.deepseek.com",
+  "http_client_class": "<class 'openai._base_client.SyncHttpxClientWrapper'>",
+  "sdk_create_file": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/openai/resources/responses/responses.py",
+  "dns": {
+    "ok": true,
+    "address_count": 1,
+    "elapsed_ms": 2
+  },
+  "unauthenticated_root_get": {
+    "status": 401,
+    "elapsed_ms": 291,
+    "model_request": false,
+    "credential_sent": false
+  },
+  "model_requests_used": 0
+}

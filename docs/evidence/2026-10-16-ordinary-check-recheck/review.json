@@ -1,0 +1,122 @@
+{
+  "client_date": "2026-10-16",
+  "baseline_commit": "380f4c31a8d3fab4d5b36bea3dcca5fe40d2c64d",
+  "authorization": "User continued after previous CHECK-01 fix and timeout; resume within original remaining 16 requests, stop on failure",
+  "outcome": "PASS for three real fixed-context ordinary grading cases; no new production changes",
+  "case_results": [
+    {
+      "case": "incomplete",
+      "result": "PASS",
+      "checks": {
+        "run_completed": true,
+        "evaluation_exists": true,
+        "answer_pass_matches": true,
+        "concepts_match": true,
+        "invitation_count_matches": true,
+        "chapter_not_verified": true,
+        "no_knowledge_write": true,
+        "supplement_question_exists": true
+      },
+      "additional_case_requests": 2,
+      "actual_requests": 16
+    },
+    {
+      "case": "complete",
+      "result": "PASS",
+      "checks": {
+        "run_completed": true,
+        "evaluation_exists": true,
+        "answer_pass_matches": true,
+        "concepts_match": true,
+        "invitation_count_matches": true,
+        "chapter_not_verified": true,
+        "no_knowledge_write": true
+      },
+      "additional_case_requests": 2,
+      "actual_requests": 18
+    },
+    {
+      "case": "single_point",
+      "result": "PASS",
+      "checks": {
+        "run_completed": true,
+        "evaluation_exists": true,
+        "answer_pass_matches": true,
+        "concepts_match": true,
+        "invitation_count_matches": true,
+        "chapter_not_verified": true,
+        "no_knowledge_write": true
+      },
+      "additional_case_requests": 2,
+      "actual_requests": 20
+    }
+  ],
+  "requests": {
+    "starting_conservative_total": 14,
+    "new_request_entries": 6,
+    "new_unique_usage_reports": 6,
+    "total_conservative_count": 20,
+    "total_limit": 30,
+    "remaining": 10,
+    "previous_unreported_timeout_request_retained": 1,
+    "original_confirmed_requests": 13,
+    "new_reported_usage": {
+      "input_tokens": 62991,
+      "output_tokens": 4856,
+      "total_tokens": 67847
+    },
+    "probes": 0,
+    "retries": 0,
+    "independent_evaluator_calls": 0,
+    "missing_new_usage": 0,
+    "all_known_reported_total_tokens": 113006
+  },
+  "semantic_review": {
+    "incomplete": "Similarity/source risk correct; generation and source/conditions requirements explicitly missing; no verified concepts or invite; valid follow-up",
+    "complete": "All asked content correctly expressed without matching terminology; both risk types combined in one grounded row, all necessary content present; four concepts and one unsaved invite; chapter unknown",
+    "single_point": "Both clauses answered; only retrieval similarity certified/invited; no extra whole-lesson criteria; chapter unknown"
+  },
+  "limitations": [
+    "Three independent fixed-context sessions cloned from prior real lesson; no fresh teaching or continuous multi-turn validation",
+    "No native App, real HTTP service or native save/receipt/details/status flow in this batch",
+    "One topic and three answers, not general semantic accuracy or zero future false positives",
+    "Old timeout not diagnosed; current root and six real model requests return successfully without config change"
+  ],
+  "unchanged": {
+    "daily_files_unchanged": true,
+    "provider_configs_unchanged": true,
+    "previous_evidence_unchanged": true,
+    "original_evidence_unchanged": true,
+    "project_diff_unchanged": true,
+    "production_unmodified": true,
+    "request_usage_id_match": true,
+    "stopped_after_scope": true
+  },
+  "source_code_changed": false,
+  "app_updated": false,
+  "native_window_review": false,
+  "transport_observation": "SDK HTTPX request and response header hooks only; no request body/header/model/config changes; six POST /responses return HTTP 200",
+  "artifacts_sha256": {
+    "single_point-before.json": "eb258c42e1a63ae6de581e7baa73c9315b9d08e992ce249d8da256ea73e31820",
+    "setup.json": "ced913c2ffe6da0bd84f81f60b65d75628ff00e9da02e07fefbb70152650f1cd",
+    "live-events.jsonl": "316349ada1dbc894102add1146563a3ba4e88e880e009b38711a65c36d1dd587",
+    "single_point-result.json": "d8517bee71a54be0ffb30b89c6ee0a373588e4bf1f26032ca97b93faf684b2ba",
+    "resume.py": "ad5db546d8590eb05ea5263f9b3e1d07412e1d9ace8adf2e9aa88139ef1211a4",
+    "transport-events.jsonl": "232a0de1c9fd680ed8bb9742cc6644750e4f2cfdae2312cf56babffa0a825712",
+    "request-count.json": "489ffcb3d1a0140e0a8c974e7ab6e75d315104440c7e4641567c216ca223eec8",
+    "single_point-after.json": "73cbd46dfa5be8e7abffb6afe7903b54d5a9117fb7ef87511b767cb606a85c9c",
+    "single_point-console.log": "9e61cf7799d8af21a2f9d82f1758077c717f4cbcf10dad3fd4359a7bb1acd8fb",
+    "STOP": "89e40bd9aac054575dfdbad7f9bacda53687dc5bb98b5497bd1922346709332d",
+    "complete-after.json": "f54446deaab4f707890349152d4dc75e4fb5c0ff41e84d5fd3f02d12c664127c",
+    "README.md": "03988864246e7fe7cc9f6a4a6aa57bb7d3ac3b51912312f0277c52f43c388bb3",
+    "complete-console.log": "eae146b14fc3a007ef8e1c7be85a1774811fea04a9d853d116c834851156e03d",
+    "incomplete-console.log": "cc608c61add449da0fcb8535f0a1344054752802ead1834f0b97f80bc55e4122",
+    "incomplete-after.json": "61deb810d8cc80940fd7a57ccfe5949b402501fb17e7ba6fc8e2e4316b67b4b4",
+    "incomplete-before.json": "2d19b75da58fc86f7fe2ca2ac9cb55a7161e93af59ccb7d93455b6d950597d96",
+    "complete-before.json": "3694e53bfbad949b764852453e8c259a1ef2aea0a2f31adbccbd6cf4dbe07b55",
+    "preflight.json": "0d8255d960d69c7629f2430b33a6f6051251547e003b8ad41e7edd01d9575d7e",
+    "incomplete-result.json": "a5832da2fe12a68dd2c0e4c9e586631fc9569041cb06f994aa78ff0dceb9cf5a",
+    "complete-result.json": "74d97b23c37387e470319db3a31019a563b42174cfc4ceb6a16b018add9869bc"
+  },
+  "documentation_links_checked": 12
+}
