@@ -1,0 +1,77 @@
+Window: "RAG · 真实保存续接 · 真实模型隔离验收", App: StatusRealQA.
+0 standard window RAG · 真实保存续接 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<StatusRealQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 真实状态查询 · 只用最后 1 次 · 总上限 30 次
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 button Description: 会话标签, ID: tag
+		6 button Description: 归档, ID: archivebox
+		7 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		8 button Description: 学习安排, 理解相似度衡量的是相关程度, Value: 已展开
+		9 scroll area
+			10 button Description: 1, 理解相似度衡量的是相关程度, 已讲解, Help: 查看对应内容，不会改变理解状态
+			11 button Description: 2, 识别来源资料本身错误或过时的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			12 button Description: 3, 识别生成回答不忠实依据资料的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			13 button Description: 4, 核对来源与适用条件, 待学习, Help: 查看对应内容，不会改变理解状态
+		14 text 点击步骤回看内容；要调整安排，直接告诉我。
+		15 scroll area Secondary Actions: Scroll Up, Scroll Down
+			16 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				17 heading Description: 检索相似度、来源资料可靠性、生成忠实性、适用条件核对, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				18 unknown Description: 检索相似度只说明文本与问题相关，不保证文本本身正确，也不保证模型最终照它回答。, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				19 unknown Description: 即使参考资料没问题，生成阶段也可能加入资料里没有的说法，或把条件、范围、前提略去。, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				20 unknown Description: 判断 RAG 答案能否使用，需要看来源是否可靠且仍适用于当前版本与条件，并检查每句话能否在来源中找到依据、有没有省略限定。, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				21 text Value: 一句话记住 相似度高只代表相关，不代表事实正确；来源可能错误或过时，生成可能不忠实或省略限定，因此需核对来源与适用条件。 已保存 4 张知识卡, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				22 button Description: 查看知识卡详情：检索相似度, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				23 button Description: 查看知识卡详情：来源资料可靠性, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				24 button Description: 查看知识卡详情：生成忠实性, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				25 button Description: 查看知识卡详情：适用条件核对, ID: knowledge-invitation-985ED407-9999-457E-AB09-4D8B27007BCD
+				26 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				27 text 保存为知识卡 核验发现冲突或证据不足，已暂停写入；请补充资料或修订内容。
+				28 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				29 text 保存为知识卡
+					30 text 保存为知识卡
+				31 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				32 text 刚才保存的 RAG 知识卡存好了吗？实际保存了几张？
+					33 text 刚才保存的 RAG 知识卡存好了吗？实际保存了几张？
+				34 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				35 text 刚才的讲解和作答已留在聊天记录中，但这段内容还没有整理成知识卡。你可以明确说「把刚才内容整理成知识卡」。系统会按确认的内容整理、核验并保存到本机知识库；确认保存成功后才算完成。 这段聊天此前有 4 张已确认写入的卡，但不能据此说刚才这段也已保存。
+					36 text 刚才的讲解和作答已留在聊天记录中，但这段内容还没有整理成知识卡。你可以明确说「把刚才内容整理成知识卡」。系统会按确认的内容整理、核验并保存到本机知识库；确认保存成功后才算完成。 这段聊天此前有 4 张已确认写入的卡，但不能据此说刚才这段也已保存。
+				37 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				38 text 刚才保存的 RAG 知识卡存好了吗？实际保存了几张？
+					39 text 刚才保存的 RAG 知识卡存好了吗？实际保存了几张？
+				40 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				41 text 刚才讨论的是相似度衡量相关而非事实、来源资料可能错误或过时、生成可能添加内容或省略限定条件。这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索相似度衡量相关而非事实；来源可能错误或过时，生成可能添加内容或省略限定，因此需核对来源与适用条件。 内容包括：检索相似度；来源资料可靠性；生成忠实性；适用条件核对。
+					42 text 刚才讨论的是相似度衡量相关而非事实、来源资料可能错误或过时、生成可能添加内容或省略限定条件。这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索相似度衡量相关而非事实；来源可能错误或过时，生成可能添加内容或省略限定，因此需核对来源与适用条件。 内容包括：检索相似度；来源资料可靠性；生成忠实性；适用条件核对。
+				43 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			44 scroll bar (settable, float) 0.9938887503117985
+				45 value indicator (settable, float) 0.9938887503117985
+				46 increment arrow button
+				47 decrement arrow button
+				48 increment page button
+				49 decrement page button
+		50 scroll area
+			51 text entry area (settable) 学习输入
+		52 button Description: 添加材料, Value: 已收起, ID: plus
+		53 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		54 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		55 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 42,170 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		56 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		57 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		58 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	59 close button
+	60 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	61 minimize button
+62 menu bar
+	63 StatusRealQA
+	64 File
+	65 Edit
+	66 View
+	67 Window
+	68 Help
+
+The focused UI element is 51 text entry area (settable) 学习输入

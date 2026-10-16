@@ -1,0 +1,16 @@
+{
+  "outcome": "PASS",
+  "directory": "/tmp/review-today-last-request-guard-92hzsshs",
+  "real_model_requests": 0,
+  "checked": [
+    "single admission",
+    "second transport",
+    "process restart",
+    "unaccounted transport",
+    "wrong counter",
+    "wrong destination",
+    "missing identity",
+    "other model work",
+    "different input"
+  ]
+}

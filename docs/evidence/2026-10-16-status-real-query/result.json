@@ -1,0 +1,72 @@
+{
+  "outcome": "PASS",
+  "layer": "real_model_native_status_query_and_fresh_process_disk_read",
+  "baseline_commit": "90915b3bf235baec17a712d87e9fc0e2b34936d2",
+  "real_model_requests": 1,
+  "source_cumulative_requests": 29,
+  "cumulative_requests": 30,
+  "total_limit": 30,
+  "retries": 0,
+  "startup_probes": 0,
+  "model_substituted": false,
+  "model": "deepseek-flash",
+  "usage": {
+    "response_id": "9a183135-b650-43d6-b8cc-6a36810600c7",
+    "input_tokens": 20274,
+    "output_tokens": 541,
+    "total_tokens": 20815,
+    "cached_input_tokens": 18432,
+    "reasoning_output_tokens": 0,
+    "reported_model": "deepseek-flash",
+    "request_id": "bdc1640d-08ba-4c74-8471-22ee7e51db50"
+  },
+  "request_id": "bdc1640d-08ba-4c74-8471-22ee7e51db50",
+  "user_message_id": "27fa6ea2-6945-4831-9888-45d99c65418a",
+  "assistant_message_id": "70fe9e5a-c6fe-4d54-9aa7-9943e7a1e371",
+  "run_id": "b9ce8735-7973-4b12-8033-548607c55566",
+  "focus": [
+    {
+      "label": "相似度衡量相关而非事实",
+      "message_id": "cf360df2-aba0-5f9a-b2bd-15c5b587301b",
+      "quote": "这个分数回答的是「这段内容和问题有多相关」，而不是「这段内容说的是不是事实」。"
+    },
+    {
+      "label": "来源资料可能错误或过时",
+      "message_id": "50700c60-26f5-44c3-bc57-03eadb2a24e1",
+      "quote": "来源资料可能失效或本身写错"
+    },
+    {
+      "label": "生成可能添加内容或省略限定条件",
+      "message_id": "50700c60-26f5-44c3-bc57-03eadb2a24e1",
+      "quote": "生成时也可能加话、删掉原有条件"
+    }
+  ],
+  "reply": "刚才讨论的是相似度衡量相关而非事实、来源资料可能错误或过时、生成可能添加内容或省略限定条件。这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索相似度衡量相关而非事实；来源可能错误或过时，生成可能添加内容或省略限定，因此需核对来源与适用条件。 内容包括：检索相似度；来源资料可靠性；生成忠实性；适用条件核对。",
+  "native_delivery": "accepted",
+  "native_response_state": "complete",
+  "tasks_invitations_draft_pending_unchanged": true,
+  "existing_knowledge_count": 4,
+  "existing_knowledge_unchanged": true,
+  "old_history_preserved": true,
+  "new_save_receipt_count": 0,
+  "old_counter_and_stop_preserved": true,
+  "daily_files_configs_and_project_diff_unchanged": true,
+  "app_owned_service_closed": true,
+  "sdk_wire_request_count": 1,
+  "outer_httpx_send_observed": false,
+  "stop_marker_source": "local observer after completed result; production request cap already at 30",
+  "scope": "Fresh real status judgment from the original saved checkpoint; startup capability records reused",
+  "not_covered": [
+    "cold startup probes",
+    "new save",
+    "fresh continuous learning-to-save chain",
+    "general semantic accuracy",
+    "VoiceOver",
+    "visual and motion acceptance"
+  ],
+  "qa_source_sha256": {
+    "bootstrap.py": "b176b827819fbc99b0d12c9921fb299de620f84099dad3a18adaa38bfc4d9d2e",
+    "fence.py": "58b112bbff168a19233586df3c941d8e7ea53d0017bac39f0744ca57cc21a5a1",
+    "NativeStatusRealQA.swift": "237b31ce2e0416a4d2ddbbf6c8657a17cde6c875c4d7969afa3359936834399b"
+  }
+}

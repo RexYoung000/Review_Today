@@ -1,0 +1,2 @@
+There has been no change in the accessibility tree for Window: "RAG · 真实保存续接 · 真实模型隔离验收".
+The focused UI element is 0 standard window RAG · 真实保存续接 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<StatusRealQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1

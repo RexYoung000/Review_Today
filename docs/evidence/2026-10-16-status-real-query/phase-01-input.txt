@@ -1,0 +1,3 @@
+The following is a diff from the previous accessibility tree for Window: "RAG · 真实保存续接 · 真实模型隔离验收" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~			47 text entry area (settable) Description: 学习输入, Value: 刚才保存的 RAG 知识卡存好了吗？实际保存了几张？
+The focused UI element is 47 text entry area (settable) Description: 学习输入, Value: 刚才保存的 RAG 知识卡存好了吗？实际保存了几张？
