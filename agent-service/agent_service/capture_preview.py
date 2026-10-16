@@ -41,6 +41,15 @@ def optional_preview(value):
         return None
 
 
+def ungrounded_quote_paths(preview, fragments):
+    texts = [fragment['text'] for fragment in fragments]
+    items = [(['points', index], item) for index, item in enumerate(preview.points)]
+    items.append((['summary'], preview.summary))
+    return [path + ['evidence_quotes', index] for path, item in items
+            for index, quote in enumerate(item.evidence_quotes)
+            if not any(quote in text for text in texts)]
+
+
 def grounded_fields(value, fragments):
     preview = optional_preview(value)
     if preview is None:
@@ -48,11 +57,9 @@ def grounded_fields(value, fragments):
     if (not isinstance(fragments, (list, tuple))
             or any(not isinstance(fragment, dict) or not isinstance(fragment.get('text'), str) for fragment in fragments)):
         return {}
-    texts = [fragment['text'] for fragment in fragments]
-    items = [*preview.points, preview.summary]
     # Each continuous witness belongs to a selected fragment, not to the full
     # lesson, a discarded correction, a user's answer, or a different offer.
-    if any(not any(quote in text for text in texts) for item in items for quote in item.evidence_quotes):
+    if ungrounded_quote_paths(preview, fragments):
         return {}
     points = [item.text for item in preview.points]
     if len(set(points)) != len(points):

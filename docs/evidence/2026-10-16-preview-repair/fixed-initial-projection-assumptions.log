@@ -1,0 +1,138 @@
+....FF.......F............                      [100%]
+=================================== FAILURES ===================================
+_ UpdatePreviewRepairFlowTests.test_invalid_point_repaired_before_single_version_publication _
+
+self = <test_update_preview_repair.UpdatePreviewRepairFlowTests testMethod=test_invalid_point_repaired_before_single_version_publication>
+
+    def test_invalid_point_repaired_before_single_version_publication(self):
+>       self.check_repaired("point")
+
+tests/test_update_preview_repair.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test_update_preview_repair.UpdatePreviewRepairFlowTests testMethod=test_invalid_point_repaired_before_single_version_publication>
+target = 'point'
+
+    def check_repaired(self, target):
+        old, observations, accepted = self.update(target=target)
+        state = self.f.state()
+        updated = self.f.offer()
+        self.assertEqual(len(observations), 2)
+        self.assertTrue(all(row["version"] == old["version"] for row in observations))
+        self.assertIn("capture_update_preview_grounding", observations[1]["system"])
+        self.assertIn('"points", 1, "evidence_quotes", 0' if target == "point" else '"summary", "evidence_quotes", 0', observations[1]["system"])
+        self.assertNotIn("PRIVATE_PREVIEW_SOURCE", observations[1]["system"])
+        self.assertEqual(state["runs"][accepted.run_id]["status"], "completed")
+        self.assertEqual(updated["id"], old["id"])
+        self.assertEqual(updated["version"], old["version"] + 1)
+        self.assertEqual(len(public(updated)["preview_points"]), 2)
+        self.assertIn("版本", public(updated)["preview_summary"])
+        events = [e for e in state["events"] if e["stage"] == "capture_offer"]
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[-1]["payload"]["capture_offer"], public(updated))
+        coaches = [m for m in state["messages"] if m["run_id"] == accepted.run_id and m["role"] == "coach"]
+        self.assertEqual(len(coaches), 1)
+>       self.assertEqual(coaches[0]["message_id"], state["runs"][accepted.run_id]["active_response"]["response_id"])
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'active_response'
+
+tests/test_update_preview_repair.py:124: KeyError
+_ UpdatePreviewRepairFlowTests.test_invalid_summary_repaired_before_single_version_publication _
+
+self = <test_update_preview_repair.UpdatePreviewRepairFlowTests testMethod=test_invalid_summary_repaired_before_single_version_publication>
+
+    def test_invalid_summary_repaired_before_single_version_publication(self):
+>       self.check_repaired("summary")
+
+tests/test_update_preview_repair.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test_update_preview_repair.UpdatePreviewRepairFlowTests testMethod=test_invalid_summary_repaired_before_single_version_publication>
+target = 'summary'
+
+    def check_repaired(self, target):
+        old, observations, accepted = self.update(target=target)
+        state = self.f.state()
+        updated = self.f.offer()
+        self.assertEqual(len(observations), 2)
+        self.assertTrue(all(row["version"] == old["version"] for row in observations))
+        self.assertIn("capture_update_preview_grounding", observations[1]["system"])
+        self.assertIn('"points", 1, "evidence_quotes", 0' if target == "point" else '"summary", "evidence_quotes", 0', observations[1]["system"])
+        self.assertNotIn("PRIVATE_PREVIEW_SOURCE", observations[1]["system"])
+        self.assertEqual(state["runs"][accepted.run_id]["status"], "completed")
+        self.assertEqual(updated["id"], old["id"])
+        self.assertEqual(updated["version"], old["version"] + 1)
+        self.assertEqual(len(public(updated)["preview_points"]), 2)
+        self.assertIn("版本", public(updated)["preview_summary"])
+        events = [e for e in state["events"] if e["stage"] == "capture_offer"]
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[-1]["payload"]["capture_offer"], public(updated))
+        coaches = [m for m in state["messages"] if m["run_id"] == accepted.run_id and m["role"] == "coach"]
+        self.assertEqual(len(coaches), 1)
+>       self.assertEqual(coaches[0]["message_id"], state["runs"][accepted.run_id]["active_response"]["response_id"])
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'active_response'
+
+tests/test_update_preview_repair.py:124: KeyError
+_ KnowledgeInvitationPreviewTests.test_correction_with_excluded_old_witnesses_stops_after_one_repair _
+
+self = <test_knowledge_invitation_preview.KnowledgeInvitationPreviewTests testMethod=test_correction_with_excluded_old_witnesses_stops_after_one_repair>
+
+    def test_correction_with_excluded_old_witnesses_stops_after_one_repair(self):
+        old = self.start_preview()
+        text = '只有可访问且检索到的资料才可能帮助回答。'
+        # A structurally valid old witness is not allowed after its fragment is removed.
+        accepted = self.followup(text, preview('不能沿用旧概括。'), correction=True)
+        updated = self.f.offer()
+        self.assertEqual(updated['id'], old['id'])
+        self.assertEqual(updated['version'], old['version'] + 1)
+        self.assertEqual(updated['status'], 'invalidated')
+        self.assertNotIn('preview_points', public(updated))
+        self.assertEqual(updated['draft'], old['draft'])
+        state = self.f.state()
+        run = state['runs'][accepted.run_id]
+        self.assertEqual(run['status'], 'retryable_failed')
+        self.assertEqual(run['error_code'], 'RT.MODEL.SCHEMA')
+>       self.assertEqual(len(run['model_calls']), 2)
+E       AssertionError: 4 != 2
+
+tests/test_knowledge_invitation_preview.py:169: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_update_preview_repair.py::UpdatePreviewRepairFlowTests::test_invalid_point_repaired_before_single_version_publication
+FAILED tests/test_update_preview_repair.py::UpdatePreviewRepairFlowTests::test_invalid_summary_repaired_before_single_version_publication
+FAILED tests/test_knowledge_invitation_preview.py::KnowledgeInvitationPreviewTests::test_correction_with_excluded_old_witnesses_stops_after_one_repair
+3 failed, 23 passed, 5 warnings, 25 subtests passed in 12.59s

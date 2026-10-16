@@ -1,0 +1,143 @@
+..F.FFFF                                                         [100%]
+=================================== FAILURES ===================================
+_ UpdatePreviewValidationTests.test_current_unselected_text_and_cross_fragment_quote_are_not_valid_sources (quote='本轮没有选取的额外句子。') _
+
+self = <test_update_preview_repair.UpdatePreviewValidationTests testMethod=test_current_unselected_text_and_cross_fragment_quote_are_not_valid_sources>
+
+    def test_current_unselected_text_and_cross_fragment_quote_are_not_valid_sources(self):
+        for quote in ("本轮没有选取的额外句子。", LESSON[-6:] + NEW[:6]):
+>           with self.subTest(quote=quote), self.assertRaises(ModelCallError):
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: ModelCallError not raised
+
+tests/test_update_preview_repair.py:45: AssertionError
+_ UpdatePreviewValidationTests.test_current_unselected_text_and_cross_fragment_quote_are_not_valid_sources (quote='索错或答错。引用外部资料') _
+
+self = <test_update_preview_repair.UpdatePreviewValidationTests testMethod=test_current_unselected_text_and_cross_fragment_quote_are_not_valid_sources>
+
+    def test_current_unselected_text_and_cross_fragment_quote_are_not_valid_sources(self):
+        for quote in ("本轮没有选取的额外句子。", LESSON[-6:] + NEW[:6]):
+>           with self.subTest(quote=quote), self.assertRaises(ModelCallError):
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: ModelCallError not raised
+
+tests/test_update_preview_repair.py:45: AssertionError
+_ UpdatePreviewValidationTests.test_point_and_summary_only_quote_selected_old_or_new_fragments (target='point') _
+
+self = <test_update_preview_repair.UpdatePreviewValidationTests testMethod=test_point_and_summary_only_quote_selected_old_or_new_fragments>
+
+    def test_point_and_summary_only_quote_selected_old_or_new_fragments(self):
+        for target in ("point", "summary"):
+>           with self.subTest(target=target), self.assertRaises(ModelCallError) as failure:
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: ModelCallError not raised
+
+tests/test_update_preview_repair.py:33: AssertionError
+_ UpdatePreviewValidationTests.test_point_and_summary_only_quote_selected_old_or_new_fragments _
+
+self = <test_update_preview_repair.UpdatePreviewValidationTests testMethod=test_point_and_summary_only_quote_selected_old_or_new_fragments>
+
+    def test_point_and_summary_only_quote_selected_old_or_new_fragments(self):
+        for target in ("point", "summary"):
+            with self.subTest(target=target), self.assertRaises(ModelCallError) as failure:
+                self.output(target=target).validate_request(self.payload())
+>           error = failure.exception
+                    ^^^^^^^^^^^^^^^^^
+E           AttributeError: '_AssertRaisesContext' object has no attribute 'exception'
+
+tests/test_update_preview_repair.py:35: AttributeError
+----------------------------- Captured stdout call -----------------------------
+u
+_ UpdatePreviewRepairFlowTests.test_invalid_point_repaired_before_single_version_publication _
+
+self = <test_update_preview_repair.UpdatePreviewRepairFlowTests testMethod=test_invalid_point_repaired_before_single_version_publication>
+
+    def test_invalid_point_repaired_before_single_version_publication(self):
+>       self.check_repaired("point")
+
+tests/test_update_preview_repair.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_update_preview_repair.py:108: in check_repaired
+    self.assertEqual(len(observations), 2)
+E   AssertionError: 1 != 2
+_ UpdatePreviewRepairFlowTests.test_invalid_summary_repaired_before_single_version_publication _
+
+self = <test_update_preview_repair.UpdatePreviewRepairFlowTests testMethod=test_invalid_summary_repaired_before_single_version_publication>
+
+    def test_invalid_summary_repaired_before_single_version_publication(self):
+>       self.check_repaired("summary")
+
+tests/test_update_preview_repair.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_update_preview_repair.py:108: in check_repaired
+    self.assertEqual(len(observations), 2)
+E   AssertionError: 1 != 2
+_ UpdatePreviewRepairFlowTests.test_persistent_preview_error_stops_after_one_repair_and_preserves_offer _
+
+self = <test_update_preview_repair.UpdatePreviewRepairFlowTests testMethod=test_persistent_preview_error_stops_after_one_repair_and_preserves_offer>
+
+    def test_persistent_preview_error_stops_after_one_repair_and_preserves_offer(self):
+        old, observations, accepted = self.update(permanent=True)
+        state = self.f.state()
+>       self.assertEqual(len(observations), 2)
+E       AssertionError: 1 != 2
+
+tests/test_update_preview_repair.py:135: AssertionError
+_ UpdatePreviewRepairFlowTests.test_prior_format_repair_does_not_gain_another_preview_repair _
+
+self = <test_update_preview_repair.UpdatePreviewRepairFlowTests testMethod=test_prior_format_repair_does_not_gain_another_preview_repair>
+
+    def test_prior_format_repair_does_not_gain_another_preview_repair(self):
+        old, observations, accepted = self.update(syntax_first=True)
+        state = self.f.state()
+        self.assertEqual(len(observations), 2)
+>       self.assertEqual(state["runs"][accepted.run_id]["status"], "retryable_failed")
+E       AssertionError: 'completed' != 'retryable_failed'
+E       - completed
+E       + retryable_failed
+
+tests/test_update_preview_repair.py:147: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SUBFAILED(quote='本轮没有选取的额外句子。') tests/test_update_preview_repair.py::UpdatePreviewValidationTests::test_current_unselected_text_and_cross_fragment_quote_are_not_valid_sources
+SUBFAILED(quote='索错或答错。引用外部资料') tests/test_update_preview_repair.py::UpdatePreviewValidationTests::test_current_unselected_text_and_cross_fragment_quote_are_not_valid_sources
+SUBFAILED(target='point') tests/test_update_preview_repair.py::UpdatePreviewValidationTests::test_point_and_summary_only_quote_selected_old_or_new_fragments
+FAILED tests/test_update_preview_repair.py::UpdatePreviewValidationTests::test_point_and_summary_only_quote_selected_old_or_new_fragments
+FAILED tests/test_update_preview_repair.py::UpdatePreviewRepairFlowTests::test_invalid_point_repaired_before_single_version_publication
+FAILED tests/test_update_preview_repair.py::UpdatePreviewRepairFlowTests::test_invalid_summary_repaired_before_single_version_publication
+FAILED tests/test_update_preview_repair.py::UpdatePreviewRepairFlowTests::test_persistent_preview_error_stops_after_one_repair_and_preserves_offer
+FAILED tests/test_update_preview_repair.py::UpdatePreviewRepairFlowTests::test_prior_format_repair_does_not_gain_another_preview_repair
+8 failed, 3 passed, 5 warnings, 5 subtests passed in 3.62s

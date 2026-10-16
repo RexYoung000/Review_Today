@@ -1,0 +1,66 @@
+{
+  "outcome": "PASS_CONTROLLED_REAL_DATA_REPAIR",
+  "decision": 239,
+  "real_model_requests": 0,
+  "original_total_requests": 23,
+  "original_limit": 30,
+  "unused_allowance": 7,
+  "directory": "/tmp/review-today-preview-repair-replay-95b3amdn",
+  "source_checkpoint": "../2026-10-16-preview-real-recheck/before-input.json",
+  "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+  "run_id": "8676a35f-708a-4136-85a5-682e03327614",
+  "calls": [
+    {
+      "schema": "IntentDecision"
+    },
+    {
+      "schema": "TeachingPreparation"
+    },
+    {
+      "schema": "ConversationOutput",
+      "fixture": "unmodified actual invalid preview"
+    },
+    {
+      "schema": "ConversationOutput",
+      "fixture": "controlled grounded complete preview",
+      "concrete_original_errors_received": true
+    }
+  ],
+  "original_errors": [
+    {
+      "field": [
+        "capture_update",
+        "preview",
+        "points",
+        1,
+        "evidence_quotes",
+        0
+      ],
+      "type": "capture_update_preview_grounding"
+    },
+    {
+      "field": [
+        "capture_update",
+        "preview",
+        "points",
+        1,
+        "evidence_quotes",
+        1
+      ],
+      "type": "capture_update_preview_grounding"
+    }
+  ],
+  "original_output_rejected_before_publication": true,
+  "existing_single_repair_used": true,
+  "candidate_version": 2,
+  "published_version": 3,
+  "published_once": true,
+  "one_stable_response_identity": true,
+  "original_history_preserved": true,
+  "learning_progress_preserved": true,
+  "knowledge_saved": 0,
+  "original_trial_counter_and_stop_preserved": true,
+  "fixture": "Real first output, route/preparation/message; second preview is a controlled complete reorganization from selected sources, not a new real model result.",
+  "native_ui_revalidated": false,
+  "new_real_model_repair_verified": false
+}

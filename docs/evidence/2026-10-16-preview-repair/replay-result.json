@@ -1,0 +1,85 @@
+{
+  "outcome": "PASS_CONTROLLED_REAL_DATA_REPAIR",
+  "decision": 239,
+  "real_model_requests": 0,
+  "original_total_requests": 23,
+  "original_limit": 30,
+  "unused_allowance": 7,
+  "directory": "/tmp/review-today-preview-repair-replay-95b3amdn",
+  "source_checkpoint": "../2026-10-16-preview-real-recheck/before-input.json",
+  "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+  "run_id": "8676a35f-708a-4136-85a5-682e03327614",
+  "calls": [
+    {
+      "schema": "IntentDecision"
+    },
+    {
+      "schema": "TeachingPreparation"
+    },
+    {
+      "schema": "ConversationOutput",
+      "fixture": "unmodified actual invalid preview"
+    },
+    {
+      "schema": "ConversationOutput",
+      "fixture": "controlled grounded complete preview",
+      "concrete_original_errors_received": true
+    }
+  ],
+  "original_errors": [
+    {
+      "field": [
+        "capture_update",
+        "preview",
+        "points",
+        1,
+        "evidence_quotes",
+        0
+      ],
+      "type": "capture_update_preview_grounding"
+    },
+    {
+      "field": [
+        "capture_update",
+        "preview",
+        "points",
+        1,
+        "evidence_quotes",
+        1
+      ],
+      "type": "capture_update_preview_grounding"
+    }
+  ],
+  "original_output_rejected_before_publication": true,
+  "existing_single_repair_used": true,
+  "candidate_version": 2,
+  "published_version": 3,
+  "preview": {
+    "id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+    "version": 3,
+    "title": "检索相关性与答案正确性的区别、生成对依据的忠实性",
+    "anchor_message_id": "56562566-fd0c-4e5a-ba4e-e7485bfcfe6f",
+    "status": "offered",
+    "next_request": "",
+    "continuation_consumed": true,
+    "error": "",
+    "knowledge_ids": [],
+    "trigger": "verified_check",
+    "scope_summary": "RAG 中高相似度只说明内容与问题贴近，不判断来源是否可信；资料可能错误或过时，生成也可能不忠实资料，核对时要看来源是否可信，并对照发布时间、产品版本和适用场景判断是否适用。",
+    "preview_points": [
+      "相似度只说明内容与问题相关，来源可信度需要单独核对。",
+      "生成模型可能误解资料、遗漏限制或添加无依据内容，答案仍需对照依据。",
+      "旧版本说明可能不再适用，应核对来源、发布时间、产品版本和适用场景。"
+    ],
+    "preview_summary": "高相似度不能保证答案可靠，应核对来源、资料适用条件和生成是否忠实。"
+  },
+  "published_once": true,
+  "one_stable_response_identity": true,
+  "original_history_preserved": true,
+  "learning_progress_preserved": true,
+  "knowledge_saved": 0,
+  "original_trial_counter_and_stop_preserved": true,
+  "fixture": "Real first output, route/preparation/message; second preview is a controlled complete reorganization from selected sources, not a new real model result.",
+  "native_ui_revalidated": false,
+  "new_real_model_repair_verified": false
+}

@@ -1,0 +1,58 @@
+{
+  "outcome": "PASS_CONTROLLED_UPDATE_PREVIEW_REPAIR",
+  "decision": 239,
+  "baseline_commit": "d43e40aa6b397abbab21e108b811d1cd2e6a310b",
+  "changed_production_sources": [
+    "agent-service/agent_service/capture_preview.py",
+    "agent-service/agent_service/knowledge_invitation.py"
+  ],
+  "baseline_tests": "8 failed, 4 passed, 5 warnings, 5 subtests passed in 3.48s",
+  "tests": {
+    "fixed-tests.log": "26 passed, 5 warnings, 25 subtests passed in 9.42s",
+    "full-tests.log": "1241 passed, 4 skipped, 5 warnings, 565 subtests passed in 193.85s (0:03:13)",
+    "deepseek-tests.log": "44 passed, 5 warnings, 29 subtests passed in 20.30s"
+  },
+  "new_tests": 8,
+  "new_subtests": 9,
+  "existing_one_fallback_expectation_revised": true,
+  "retained_data_replay": "replay-result.json",
+  "original_real_quotes_rejected_before_publication": true,
+  "safe_field_locations_received_by_existing_repair": true,
+  "one_repair_total_preserved": true,
+  "legacy_missing_malformed_first_invitation_and_existing_source_guards_preserved": true,
+  "new_real_model_requests": 0,
+  "original_requests": 23,
+  "original_limit": 30,
+  "unused_allowance": 7,
+  "original_stop_and_failed_preview_state_preserved": true,
+  "protected": {
+    "provider_config_sha256": {
+      "count": 2,
+      "changes": []
+    },
+    "swift_source_sha256": {
+      "count": 106,
+      "changes": []
+    },
+    "python_source_sha256": {
+      "count": 72,
+      "changes": [
+        "agent-service/agent_service/capture_preview.py",
+        "agent-service/agent_service/knowledge_invitation.py"
+      ]
+    },
+    "protected_archive_sha256": {
+      "count": 137,
+      "changes": []
+    }
+  },
+  "real_trial_archive_files_unchanged": 44,
+  "daily_files_unchanged": 7,
+  "project_user_difference_preserved": true,
+  "old_batch_30_and_stop_preserved": true,
+  "service_remains_closed": true,
+  "daily_app_replaced": false,
+  "native_ui_revalidated": false,
+  "new_real_model_repair_verified": false,
+  "full_eight_step_acceptance": false
+}

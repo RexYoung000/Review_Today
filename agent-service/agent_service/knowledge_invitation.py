@@ -5,6 +5,7 @@ the displayed version for the existing generation/verification/commit pipeline.
 """
 from copy import deepcopy
 import hashlib
+import json
 import uuid
 
 from agent_service.learning_memory import merge_references
@@ -18,6 +19,7 @@ retained_fragment_ids 只保留仍成立且属于该知识点的旧来源片段 
 逐字连续摘录该知识点的新解释。纠正时排除已推翻的旧片段，不将旧错误与新结论一起保留。
 scope_summary 用一句简短的具体知识概括更新后内容，包含本次补充的要点；不重复标题，不写“对应讲解、有效纠正、保存范围”等流程词，不宣称已保存或已掌握。
 preview 同步重新概括更新后仍成立的全部内容：points 为少量自然要点，summary 为一句总结；每项 text 附 evidence_quotes，逐字引文只能来自本次保留的旧片段或新 evidence_quotes。
+若收到 capture_update_preview_grounding 错误，按指出的要点／总结引文字段，仅用本次选中片段重新给出有依据的完整预览；不从整段历史另取引文。
 更新已有可靠片段时必须给 preview，不能只改 scope_summary 或因为尚未保存返回 null；这只是允许的简略内容概括，仍未生成完整卡片。
 纠正时整组替换预览，不把排除的旧错误留在要点或总结里；保留会改变结论的条件，不为凑条数重复、补写知识或机械截句。无可靠预览时为 null，保留原一句范围兼容；不要生成完整卡片、评分标准或题目。
 同一知识点的适用条件、限制、反例和时效边界都是对原内容的补充，已经解释这些内容时必须更新，不能返回 null。
@@ -45,6 +47,14 @@ def validate_update(update, message, candidates):
             or not set(retained) <= {f['id'] for f in (candidate or {}).get('fragments', [])}
             or not quotes or any(not quote_matches(q.strip(), message) for q in quotes)):
         raise ModelCallError('SCHEMA', 'field=capture_update; select an existing invitation version and real source excerpts only')
+    preview = capture_preview.optional_preview(update.get('preview'))
+    if preview is not None:
+        fragments = [f for f in candidate['fragments'] if f['id'] in retained]
+        fragments += [dict(text=quote.strip()) for quote in quotes]
+        errors = [dict(field=['capture_update', 'preview'] + path, type='capture_update_preview_grounding')
+                  for path in capture_preview.ungrounded_quote_paths(preview, fragments)]
+        if errors:
+            raise ModelCallError('SCHEMA', json.dumps(errors, ensure_ascii=False))
 
 
 def candidates(h, data, run, decision=None):

@@ -151,19 +151,23 @@ class KnowledgeInvitationPreviewTests(unittest.TestCase):
         self.f.action(old, 'capture_save')
         self.f.capture.assert_not_called()
 
-    def test_correction_excludes_old_preview_and_old_witnesses_without_losing_reply(self):
+    def test_correction_with_excluded_old_witnesses_stops_after_one_repair(self):
         old = self.start_preview()
         text = '只有可访问且检索到的资料才可能帮助回答。'
         # A structurally valid old witness is not allowed after its fragment is removed.
-        self.followup(text, preview('不能沿用旧概括。'), correction=True)
+        accepted = self.followup(text, preview('不能沿用旧概括。'), correction=True)
         updated = self.f.offer()
         self.assertEqual(updated['id'], old['id'])
-        self.assertGreater(updated['version'], old['version'])
+        self.assertEqual(updated['version'], old['version'] + 1)
+        self.assertEqual(updated['status'], 'invalidated')
         self.assertNotIn('preview_points', public(updated))
-        self.assertNotIn(LESSON, updated['draft']['content'])
-        self.assertEqual(updated['scope_summary'], text)
-        self.assertEqual(self.f.state()['messages'][-1]['content'], text)
-        self.assertEqual(self.f.state()['runs'][self.f.state()['messages'][-1]['run_id']]['status'], 'completed')
+        self.assertEqual(updated['draft'], old['draft'])
+        state = self.f.state()
+        run = state['runs'][accepted.run_id]
+        self.assertEqual(run['status'], 'retryable_failed')
+        self.assertEqual(run['error_code'], 'RT.MODEL.SCHEMA')
+        self.assertEqual(len([call for call in run['model_calls'] if call['node'] == 'answer']), 2)
+        self.assertFalse(any(m['role'] == 'coach' and m['run_id'] == accepted.run_id for m in state['messages']))
         self.f.capture.assert_not_called()
 
     def test_correction_uses_only_current_preview_and_failed_retry_preserves_it_until_ack(self):
