@@ -1,0 +1,52 @@
+{
+  "outcome": "BLOCKED_BEFORE_MODEL_START",
+  "decision": 237,
+  "real_model_requests": 0,
+  "limit": 30,
+  "remaining_requests": 30,
+  "learning_input_sent": false,
+  "model_audit_started": false,
+  "default_startup_retry_limit": 4,
+  "startup_terminal_failure_seen_in_native_ui": true,
+  "sampled_attempts": 1,
+  "sampled_layer": "Python initialization / directory read",
+  "root_cause": "unknown; a macOS access prompt is a hypothesis, not an established denial",
+  "user_prompt_observation": "User answered 没有理解; presence or absence of an OS prompt is unconfirmed",
+  "learning_steps": "all not run",
+  "native_empty_store_before_and_after": true,
+  "independent_native_disk_read": true,
+  "native_app_and_owned_service_closed": true,
+  "qa_port_listeners": 0,
+  "stop": "HOLD",
+  "backend_store_created": false,
+  "native_reader_migration_backup_files": 1,
+  "protected": {
+    "provider_config_sha256": {
+      "count": 2,
+      "unchanged": true
+    },
+    "swift_source_sha256": {
+      "count": 106,
+      "unchanged": true
+    },
+    "python_source_sha256": {
+      "count": 72,
+      "unchanged": true
+    },
+    "prior_evidence_sha256": {
+      "count": 101,
+      "unchanged": true
+    }
+  },
+  "daily_files_unchanged": 7,
+  "original_project_diff_unchanged": true,
+  "original_batch_counter_and_stop_unchanged": true,
+  "source_sample": {
+    "path": "/tmp/review-today-continuous-bnrjmda_/startup-sample.txt",
+    "sha256": "8722756f0029d267417f7f4ca0dccfce3d322df54aea46a4ea192c99c5848aff",
+    "archived": "startup-stack.txt (call graph excerpt)"
+  },
+  "production_changes": false,
+  "daily_app_replaced": false,
+  "product_acceptance_passed": false
+}

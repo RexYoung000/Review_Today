@@ -1,0 +1,10 @@
+{
+  "decision": 237,
+  "new_batch": true,
+  "limit": 30,
+  "user_confirmation": "按新批 30 次上限验收（推荐）",
+  "provider_config_sha256": {
+    "agent-service/.env": "79b70ced19be1181171afcf11837ac51293717fdf3fb252a70b49c718f75c17c",
+    "agent-service/providers/deepseek/.env": "443e52c57ad9d369c6c0ddbbf1283f2a4bdb9d8635edb9e735a109be9f574554"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-16T10:28:07.327455+00:00",
+  "stage": "blocked_before_model_start",
+  "real_model_requests": 0,
+  "limit": 30,
+  "learning_input_sent": false,
+  "model_audit_started": false,
+  "native_empty_store_checked": true,
+  "user_question": "User replied 没有理解; OS prompt presence is unconfirmed; clarified in plain language, no settings change requested",
+  "diagnostic": "sample shows Python initialization blocked in os.listdir/opendir/open before sitecustomize and service import",
+  "remaining_requests": 30,
+  "stop_source": "local controller held startup awaiting OS prompt information",
+  "native_app_and_owned_service_closed": true,
+  "independent_native_disk_read": "0 cards/sources/FSRS/messages/runs; same empty session"
+}

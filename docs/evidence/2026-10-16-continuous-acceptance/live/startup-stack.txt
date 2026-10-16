@@ -1,0 +1,54 @@
+Analysis of sampling Python (pid 31948) every 1 millisecond
+Process:         Python [31948]
+Path:            /opt/homebrew/*/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python
+Load Address:    0x102014000
+Identifier:      org.python.python
+Version:         3.13.3 (3.13.3)
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  ContinuousQA [31936]
+Target Type:     live task
+
+Date/Time:       2026-10-16 18:22:53.337 +0800
+Launch Time:     2026-10-16 18:21:41.925 +0800
+OS Version:      macOS 27.0.1 (26A434)
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint:         5408K
+Physical footprint (peak):  5440K
+Idle exit:                  untracked
+----
+
+Call graph:
+    872 Thread_26720535   DispatchQueue_1: com.apple.main-thread  (serial)
+      872 start  (in dyld) + 6688  [0x18060be80]
+        872 Py_BytesMain  (in Python) + 40  [0x102a62fe4]
+          872 pymain_main  (in Python) + 260  [0x102a62f18]
+            872 Py_InitializeFromConfig  (in Python) + 760  [0x102a34888]
+              872 pyinit_main  (in Python) + 52  [0x102a34a34]
+                872 init_interp_main  (in Python) + 1504  [0x102a379dc]
+                  872 PyImport_ImportModule  (in Python) + 64  [0x102a18370]
+                    872 PyImport_Import  (in Python) + 332  [0x102a1855c]
+                      872 PyObject_CallFunction  (in Python) + 56  [0x1028a8ce8]
+                        872 _PyObject_CallFunctionVa  (in Python) + 156  [0x1028a8d90]
+                          872 cfunction_vectorcall_FASTCALL_KEYWORDS  (in Python) + 88  [0x102904a10]
+                            872 builtin___import__  (in Python) + 172  [0x1029c8368]
+                              872 PyImport_ImportModuleLevelObject  (in Python) + 3136  [0x102a19658]
+                                872 PyObject_CallMethodObjArgs  (in Python) + 104  [0x1028a9b6c]
+                                  872 object_vacall  (in Python) + 268  [0x1028a9cf4]
+                                    872 _PyEval_EvalFrameDefault  (in Python) + 10532  [0x1029d1618]
+                                      872 builtin_exec  (in Python) + 440  [0x1029c9cd0]
+                                        872 PyEval_EvalCode  (in Python) + 200  [0x1029cea78]
+                                          872 _PyEval_EvalFrameDefault  (in Python) + 6876  [0x1029d07d0]
+                                            872 PyObject_Vectorcall  (in Python) + 92  [0x1028a83a0]
+                                              872 cfunction_vectorcall_FASTCALL_KEYWORDS  (in Python) + 88  [0x102904a10]
+                                                872 os_listdir  (in Python) + 264  [0x102a693fc]
+                                                  872 __opendir2  (in libsystem_c.dylib) + 44  [0x1808bc5f4]
+                                                    872 open$NOCANCEL  (in libsystem_kernel.dylib) + 64  [0x1809b2024]
+                                                      872 __open_nocancel  (in libsystem_kernel.dylib) + 8  [0x18099d93c]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        __open_nocancel  (in libsystem_kernel.dylib)        872

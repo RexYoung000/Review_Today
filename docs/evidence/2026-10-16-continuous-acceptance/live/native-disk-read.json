@@ -1,0 +1,21 @@
+{
+  "cards" : [
+
+  ],
+  "fsrs_count" : 0,
+  "knowledge_count" : 0,
+  "layer" : "fresh_process_swiftdata_read_after_app_quit",
+  "messages" : [
+
+  ],
+  "runs" : [
+
+  ],
+  "sessions" : [
+    {
+      "cursor" : 0,
+      "id" : "4af445c0-3bd3-41a7-acb5-0e3f54b3344b"
+    }
+  ],
+  "source_count" : 0
+}

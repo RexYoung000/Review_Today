@@ -1,0 +1,11 @@
+/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-16-continuous-acceptance/live/NativeContinuousQA.swift:111:86: warning: expression implicitly coerced from 'String?' to 'Any'
+109 |                 "tasks": tasks.map { ["id": $0.id.uuidString, "status": $0.status, "mode": $0.mode,
+110 |                     "memory_committed": $0.memoryCommitted] as [String: Any] },
+111 |                 "capture_offers_json": session.captureOffersJSON, "checkpoint_json": session.checkpointJSON, "cursor": session.lastSessionEventSeq, "runs": (try reader.fetch(FetchDescriptor<AgentRun>())).map { ["id": $0.id.uuidString, "status": $0.status] },
+    |                                                                                      |       |- note: provide a default value to avoid this warning
+    |                                                                                      |       |- note: force-unwrap the value to avoid this warning
+    |                                                                                      |       `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |                                                                                      `- warning: expression implicitly coerced from 'String?' to 'Any'
+112 |                 "messages": messages.map { ["id": $0.id.uuidString, "role": $0.role, "text": $0.content, "delivery": $0.deliveryStatus, "run_id": $0.runID?.uuidString ?? "", "client_id": $0.clientMessageID?.uuidString ?? "", "response_state": $0.responseState] }]
+113 |             if let receipt {
+/tmp/review-today-continuous-bnrjmda_/ContinuousQA.app: replacing existing signature
