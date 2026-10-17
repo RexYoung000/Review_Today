@@ -1,0 +1,61 @@
+Window: "RAG · 全新连续验收 · 真实模型隔离验收", App: ContinuousResumeQA.
+0 standard window RAG · 全新连续验收 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 独立插问真实复验 · 累计请求以账本为准
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 text 依赖加载检查通过；学习服务尚未启动。
+		6 button (disabled) 选择 Review_Today 项目文件夹
+		7 button Description: 会话标签, ID: tag
+		8 button Description: 归档, ID: archivebox
+		9 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		10 button Description: 学习安排, 分清检索相关性与答案正确性不是一回事, Value: 已展开
+		11 scroll area
+			12 button Description: 1, 分清检索相关性与答案正确性不是一回事, 已讲解, Help: 查看对应内容，不会改变理解状态
+			13 button Description: 2, 识别来源资料本身可能错误或过时带来的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			14 button Description: 3, 识别生成阶段可能不忠实依据资料带来的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			15 button Description: 4, 养成核对来源与适用条件的习惯, 待学习, Help: 查看对应内容，不会改变理解状态
+		16 text 点击步骤回看内容；要调整安排，直接告诉我。
+		17 scroll area Secondary Actions: Scroll Up, Scroll Down
+			18 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				19 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				20 text 这个补充是对的，而且原来的说法确实偏窄：相似度只反映内容相关，不能用它判断来源是否可信。因此“核对来源与适用条件”应当展开成两步：先确认来源本身可信，再对照资料的发布时间、产品版本和适用场景来判断它是否适用于当前问题——一条旧发布说明可能因版本变化失效，一份面向其他场景的文档也可能因前提不同而不适用。仍按同一个知识点、同一张尚未保存的 RAG 预览处理，暂不保存、不进入下一步。
+					21 text 这个补充是对的，而且原来的说法确实偏窄：相似度只反映内容相关，不能用它判断来源是否可信。因此“核对来源与适用条件”应当展开成两步：先确认来源本身可信，再对照资料的发布时间、产品版本和适用场景来判断它是否适用于当前问题——一条旧发布说明可能因版本变化失效，一份面向其他场景的文档也可能因前提不同而不适用。仍按同一个知识点、同一张尚未保存的 RAG 预览处理，暂不保存、不进入下一步。
+				22 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				23 text 顺便问一个与这张 RAG 卡无关的小问题：HTTP 的幂等性是什么意思？请简短解释并举一个例子。只回答这个独立问题，保留原 RAG 预览，不保存，也不推进原学习安排。
+					24 text 顺便问一个与这张 RAG 卡无关的小问题：HTTP 的幂等性是什么意思？请简短解释并举一个例子。只回答这个独立问题，保留原 RAG 预览，不保存，也不推进原学习安排。
+				25 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				26 text HTTP 幂等性指：同一个请求按相同参数重复发送多次，服务端产生的效果与只发送一次相同。它约束的是服务端状态变化，不要求每次返回的内容完全一样。 一个例子：DELETE /orders/123 第一次调用删除订单 123，第二次再调用时订单已不存在，可能返回 404 而不是 204，但订单 123 最终仍处于被删除的状态，没有产生额外的副作用，因此这个删除操作按设计是幂等的。相反，POST /orders 每次调用通常都会新建一笔订单，连发三次就会有三笔，所以默认不是幂等的。 需要注意：这个保证来自服务端的具体实现，而不是请求方法的名称本身。是否幂等要看接口文档和实际行为；网络超时后能否安全重试，也应以该接口的实际幂等设计为准。 原 RAG 的预览和学习安排保持不动，不保存，也不推进。
+				27 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			28 scroll bar (settable, float) 1
+				29 value indicator (settable, float) 1
+				30 increment arrow button
+				31 decrement arrow button
+				32 increment page button
+				33 decrement page button
+		34 scroll area
+			35 text entry area (settable) 学习输入
+		36 button Description: 添加材料, Value: 已收起, ID: plus
+		37 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		38 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		39 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 25,142 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		40 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		41 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		42 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	43 close button
+	44 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	45 minimize button
+46 menu bar
+	47 ContinuousResumeQA
+	48 File
+	49 Edit
+	50 View
+	51 Window
+	52 Help
+
+The focused UI element is 35 text entry area (settable) 学习输入

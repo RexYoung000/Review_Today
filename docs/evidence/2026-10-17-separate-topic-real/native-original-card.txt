@@ -1,0 +1,32 @@
+The following is a diff from the previous accessibility tree for Window: "RAG · 全新连续验收 · 真实模型隔离验收" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 23-27
++		60 button 回到最新
++				61 text 相似度高只能说明检索片段和问题在语义上接近，不能证明内容正确。资料本身可能写错，也可能已经过时，所以检索分数高仍然不能保证答案正确。
++					62 text 相似度高只能说明检索片段和问题在语义上接近，不能证明内容正确。资料本身可能写错，也可能已经过时，所以检索分数高仍然不能保证答案正确。
++				63 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
++				64 text 你答对了关键一点：高相似度只说明语义接近，不等于内容真实或最新，资料本身可能写错或过时。 还缺题目明确要求的一点：即使检索到了资料，生成阶段也可能不忠实于资料。例如模型可能忽略检索内容、误解它，或把外部知识混进去，因此最终答案仍可能偏离依据。正因为资料可能错、可能过时，生成又可能不忠实，所以需要核对来源与适用条件。
++				65 heading 独立回答
++					66 text 独立回答
++				67 text 请补充说明：为什么“生成可能不忠实依据资料”会让高相似度检索仍然不能保证最终答案正确？
++					68 text 请补充说明：为什么“生成可能不忠实依据资料”会让高相似度检索仍然不能保证最终答案正确？
++				69 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
++				70 text 即使拿到相似度很高的资料，生成模型也可能把资料意思理解错、遗漏重要限制，或加进资料没有支持的说法，所以最后的回答仍可能不正确。再加上来源本身也可能错误或过时，相似度只是相关程度。因此还要回看原始出处和发布时间，把答案逐条对照资料，并检查它适用的版本、情境和前提条件。
++					71 text 即使拿到相似度很高的资料，生成模型也可能把资料意思理解错、遗漏重要限制，或加进资料没有支持的说法，所以最后的回答仍可能不正确。再加上来源本身也可能错误或过时，相似度只是相关程度。因此还要回看原始出处和发布时间，把答案逐条对照资料，并检查它适用的版本、情境和前提条件。
++				72 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
++				73 text 答对了关键点：高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。
++					74 text 答对了关键点：高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。
++				75 heading Description: 检索相关性与答案正确性的区别、生成对依据的忠实性, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
++				76 unknown Description: RAG 先检索相关资料，再让生成模型依据资料作答。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
++				77 unknown Description: 高相似度只说明内容与问题语义相近，不代表内容真实、最新或适用。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
++				78 unknown Description: 相似度只反映内容相关，不能用它判断来源是否可信。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
++				79 unknown Description: 生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确；核对适用条件需先确认来源可信，再对照发布时间、产品版本与适用场景。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
++				80 text Value: 一句话记住 高相似度只代表内容相关，不能判断来源是否可信；答案还可能因来源错误或过时、生成不忠实依据而出错，所以需先确认来源可信，再对照发布时间、产品版本与适用场景核对适用条件。 未保存, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
++				81 button Description: 稍后, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
++				82 button Description: 保存为知识卡, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
++				83 checkbox Description: 已学过，加入复习, Value: 0, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
++				84 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
++				85 text 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
++					86 text 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
+~			28 scroll bar (settable, float) 0.5504869297796002
+~				29 value indicator (settable, float) 0.5504869297796002
+The focused UI element is 35 text entry area (settable) 学习输入

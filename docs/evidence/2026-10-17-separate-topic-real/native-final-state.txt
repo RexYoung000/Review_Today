@@ -1,0 +1,84 @@
+Window: "RAG · 全新连续验收 · 真实模型隔离验收", App: ContinuousResumeQA.
+0 standard window RAG · 全新连续验收 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 独立插问真实复验 · 累计请求以账本为准
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 text 依赖加载检查通过；学习服务尚未启动。
+		6 button (disabled) 选择 Review_Today 项目文件夹
+		7 button Description: 会话标签, ID: tag
+		8 button Description: 归档, ID: archivebox
+		9 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		10 button Description: 学习安排, 分清检索相关性与答案正确性不是一回事, Value: 已收起
+		11 button 回到最新
+		12 scroll area Secondary Actions: Scroll Up, Scroll Down
+			13 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				14 text 相似度高只能说明检索片段和问题在语义上接近，不能证明内容正确。资料本身可能写错，也可能已经过时，所以检索分数高仍然不能保证答案正确。
+					15 text 相似度高只能说明检索片段和问题在语义上接近，不能证明内容正确。资料本身可能写错，也可能已经过时，所以检索分数高仍然不能保证答案正确。
+				16 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				17 text 你答对了关键一点：高相似度只说明语义接近，不等于内容真实或最新，资料本身可能写错或过时。 还缺题目明确要求的一点：即使检索到了资料，生成阶段也可能不忠实于资料。例如模型可能忽略检索内容、误解它，或把外部知识混进去，因此最终答案仍可能偏离依据。正因为资料可能错、可能过时，生成又可能不忠实，所以需要核对来源与适用条件。
+				18 heading 独立回答
+					19 text 独立回答
+				20 text 请补充说明：为什么“生成可能不忠实依据资料”会让高相似度检索仍然不能保证最终答案正确？
+					21 text 请补充说明：为什么“生成可能不忠实依据资料”会让高相似度检索仍然不能保证最终答案正确？
+				22 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				23 text 即使拿到相似度很高的资料，生成模型也可能把资料意思理解错、遗漏重要限制，或加进资料没有支持的说法，所以最后的回答仍可能不正确。再加上来源本身也可能错误或过时，相似度只是相关程度。因此还要回看原始出处和发布时间，把答案逐条对照资料，并检查它适用的版本、情境和前提条件。
+					24 text 即使拿到相似度很高的资料，生成模型也可能把资料意思理解错、遗漏重要限制，或加进资料没有支持的说法，所以最后的回答仍可能不正确。再加上来源本身也可能错误或过时，相似度只是相关程度。因此还要回看原始出处和发布时间，把答案逐条对照资料，并检查它适用的版本、情境和前提条件。
+				25 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				26 text 答对了关键点：高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。
+					27 text 答对了关键点：高相似度只说明相关，生成模型仍可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确。
+				28 heading Description: 检索相关性与答案正确性的区别、生成对依据的忠实性, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				29 unknown Description: RAG 先检索相关资料，再让生成模型依据资料作答。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				30 unknown Description: 高相似度只说明内容与问题语义相近，不代表内容真实、最新或适用。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				31 unknown Description: 相似度只反映内容相关，不能用它判断来源是否可信。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				32 unknown Description: 生成模型可能误解资料、遗漏限制或添加无依据内容，因此最终答案仍可能不正确；核对适用条件需先确认来源可信，再对照发布时间、产品版本与适用场景。, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				33 text Value: 一句话记住 高相似度只代表内容相关，不能判断来源是否可信；答案还可能因来源错误或过时、生成不忠实依据而出错，所以需先确认来源可信，再对照发布时间、产品版本与适用场景核对适用条件。 未保存, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				34 button Description: 稍后, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				35 button Description: 保存为知识卡, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				36 checkbox Description: 已学过，加入复习, Value: 0, ID: knowledge-invitation-5E4C72F1-1627-4BF4-B3F9-02026DAC4720
+				37 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				38 text 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
+					39 text 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
+				40 container
+					41 button 重试
+					42 button 取消目标
+					43 button Description: 运行详情, Help: 展开运行详情, Value: 已收起，回答格式暂时有问题，可重试；输入和学习进度已保留
+				44 text 这个补充是对的，而且比原来的说法更准确：相似度只反映内容相关，不能用它判断来源是否可信。同理，核对适用条件也不只是看时间，还要看资料的发布时间、产品版本和适用场景——一条旧的发布说明可能因为版本已经变化而不再适用，一份面向其他场景的文档也可能因为前提不同而不适用。 按这个口径，原来那条预览里的“核对来源与适用条件”应该展开为：先确认来源本身可信，再对照发布时间、产品版本和适用场景判断它是否适用于当前问题。 我把它更新进同一个尚未保存的 RAG 预览，范围仍是同一个知识点，不保存、不进入下一步。
+				45 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				46 text 回复未完成，已保留已输出内容 我补充并把刚才的说法讲准确一点：相似度只反映内容相关，不能用它判断来源是否可信；核对适用条件时，要看资料的发布时间、产品版本和适用场景。请把这点补进刚才那张尚未保存的 RAG 预览，仍是同一个知识点；暂时不要保存，也不要进入下一步。
+				47 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				48 text 这个补充是对的，而且原来的说法确实偏窄：相似度只反映内容相关，不能用它判断来源是否可信。因此“核对来源与适用条件”应当展开成两步：先确认来源本身可信，再对照资料的发布时间、产品版本和适用场景来判断它是否适用于当前问题——一条旧发布说明可能因版本变化失效，一份面向其他场景的文档也可能因前提不同而不适用。仍按同一个知识点、同一张尚未保存的 RAG 预览处理，暂不保存、不进入下一步。
+					49 text 这个补充是对的，而且原来的说法确实偏窄：相似度只反映内容相关，不能用它判断来源是否可信。因此“核对来源与适用条件”应当展开成两步：先确认来源本身可信，再对照资料的发布时间、产品版本和适用场景来判断它是否适用于当前问题——一条旧发布说明可能因版本变化失效，一份面向其他场景的文档也可能因前提不同而不适用。仍按同一个知识点、同一张尚未保存的 RAG 预览处理，暂不保存、不进入下一步。
+				50 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			51 scroll bar (settable, float) 0.5228821811100293
+				52 value indicator (settable, float) 0.5228821811100293
+				53 increment arrow button
+				54 decrement arrow button
+				55 increment page button
+				56 decrement page button
+		57 scroll area
+			58 text entry area (settable) 学习输入
+		59 button Description: 添加材料, Value: 已收起, ID: plus
+		60 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		61 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		62 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 25,142 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		63 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		64 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		65 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	66 close button
+	67 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	68 minimize button
+69 menu bar
+	70 ContinuousResumeQA
+	71 File
+	72 Edit
+	73 View
+	74 Window
+	75 Help
+
+The focused UI element is 58 text entry area (settable) 学习输入

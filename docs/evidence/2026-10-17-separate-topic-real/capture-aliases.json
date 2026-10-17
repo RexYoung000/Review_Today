@@ -1,0 +1,7 @@
+{
+  "after-send.json": {
+    "canonical": "backend-after.json",
+    "sha256": "478518ab46834a0413e9e82192c338986a55549331326be244573158d77b1091",
+    "reason": "Byte-identical response completion and shutdown checkpoint; stage logs and summaries retained."
+  }
+}

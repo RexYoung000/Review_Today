@@ -1,0 +1,14 @@
+{
+  "platform": "macOS",
+  "product_version": "27.0.1",
+  "build": "26A434",
+  "appearance": "light",
+  "window_points": [
+    1040,
+    820
+  ],
+  "native_scope": "ordinary question reply; original card and original plan; no save",
+  "voiceover_run": false,
+  "motion_revalidated": false,
+  "narrow_window_rechecked": false
+}

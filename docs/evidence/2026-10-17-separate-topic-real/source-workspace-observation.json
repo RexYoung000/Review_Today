@@ -1,0 +1,18 @@
+{
+  "scope": "read-only observation, not an approved production change",
+  "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+  "before_task_source_count": 1,
+  "after_task_source_count": 0,
+  "original_offer_exactly_preserved": true,
+  "offer_source_count": 1,
+  "offer_draft_answer_sources_preserved": true,
+  "learning_plan_preserved": true,
+  "other_task_difference": "updated_at only",
+  "source_path": "agent-service/agent_service/conditional_teaching.py",
+  "cause": "new_topic clears the prior source workspace; no-search preparation writes empty sources into the still-active task context",
+  "intended_separation": "independent question does not inherit prior-topic evidence",
+  "unverified_consequence": "whether a later return to RAG loses needed teaching evidence; no actual return request was made",
+  "production_fix_authorized": false,
+  "production_fix_implemented": false,
+  "additional_model_requests": 0
+}
