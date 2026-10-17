@@ -1,0 +1,210 @@
+{
+  "outcome": "AUDIT_REPRODUCED_SOURCE_INPUT_GAP",
+  "real_model_requests": 0,
+  "original_actual_requests": 30,
+  "original_limit": 30,
+  "original_stop_unchanged": true,
+  "cases": [
+    {
+      "case": "before26",
+      "action": "return_answer",
+      "fixture_schemas": [
+        "IntentDecision",
+        "TeachingPreparation",
+        "ConversationOutput"
+      ],
+      "boundary_reached": true,
+      "boundary": "prepared_answer_input",
+      "system_sha256": "4d014a725b4281b8c3411e0d5e0ab9c9194dc719825f4317be3c6c3e5e99367e",
+      "source_count": 1,
+      "source_ids": [
+        "ae766a8c-1747-5890-ae3c-aee0a56cbcdb"
+      ],
+      "last_lesson_length": 495,
+      "original_lesson_preserved": true,
+      "timeout_example_in_lesson": true,
+      "run_teaching_sources_count": 1,
+      "model_calls": [
+        {
+          "node": "intent",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "teaching_preparation",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "answer",
+          "status": "failed_or_cancelled",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        }
+      ]
+    },
+    {
+      "case": "before26",
+      "action": "bound_save",
+      "fixture_schemas": [],
+      "boundary_reached": true,
+      "boundary": "before_capture_generation",
+      "source_count": 1,
+      "content_sha256": "aa1e617359b9bb1412d02c9adfb17eea85d56d36b8f79e93cc6ba4dc049d33c3",
+      "frozen_draft_matches_original": true,
+      "frozen_sources_match_original": true,
+      "model_calls": []
+    },
+    {
+      "case": "after30",
+      "action": "return_answer",
+      "fixture_schemas": [
+        "IntentDecision",
+        "TeachingPreparation",
+        "ConversationOutput"
+      ],
+      "boundary_reached": true,
+      "boundary": "prepared_answer_input",
+      "system_sha256": "4d014a725b4281b8c3411e0d5e0ab9c9194dc719825f4317be3c6c3e5e99367e",
+      "source_count": 0,
+      "source_ids": [],
+      "last_lesson_length": 495,
+      "original_lesson_preserved": true,
+      "timeout_example_in_lesson": true,
+      "run_teaching_sources_count": 0,
+      "model_calls": [
+        {
+          "node": "intent",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "teaching_preparation",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "answer",
+          "status": "failed_or_cancelled",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        }
+      ]
+    },
+    {
+      "case": "after30",
+      "action": "bound_save",
+      "fixture_schemas": [],
+      "boundary_reached": true,
+      "boundary": "before_capture_generation",
+      "source_count": 1,
+      "content_sha256": "aa1e617359b9bb1412d02c9adfb17eea85d56d36b8f79e93cc6ba4dc049d33c3",
+      "frozen_draft_matches_original": true,
+      "frozen_sources_match_original": true,
+      "model_calls": []
+    },
+    {
+      "case": "after30_restored_sources",
+      "action": "return_answer",
+      "fixture_schemas": [
+        "IntentDecision",
+        "TeachingPreparation",
+        "ConversationOutput"
+      ],
+      "boundary_reached": true,
+      "boundary": "prepared_answer_input",
+      "system_sha256": "4d014a725b4281b8c3411e0d5e0ab9c9194dc719825f4317be3c6c3e5e99367e",
+      "source_count": 1,
+      "source_ids": [
+        "ae766a8c-1747-5890-ae3c-aee0a56cbcdb"
+      ],
+      "last_lesson_length": 495,
+      "original_lesson_preserved": true,
+      "timeout_example_in_lesson": true,
+      "run_teaching_sources_count": 1,
+      "model_calls": [
+        {
+          "node": "intent",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "teaching_preparation",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "answer",
+          "status": "failed_or_cancelled",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        }
+      ]
+    },
+    {
+      "case": "after30_restored_sources",
+      "action": "bound_save",
+      "fixture_schemas": [],
+      "boundary_reached": true,
+      "boundary": "before_capture_generation",
+      "source_count": 1,
+      "content_sha256": "aa1e617359b9bb1412d02c9adfb17eea85d56d36b8f79e93cc6ba4dc049d33c3",
+      "frozen_draft_matches_original": true,
+      "frozen_sources_match_original": true,
+      "model_calls": []
+    }
+  ],
+  "guards": {
+    "network": 0,
+    "sdk_client": 0,
+    "request_identity": 0,
+    "unexpected_model": 0,
+    "outside_sqlite": 0
+  },
+  "protected_count": 562,
+  "protected_files_unchanged": true,
+  "daily_existing_count": 5,
+  "daily_missing_unchanged": [
+    "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-wal",
+    "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-shm"
+  ],
+  "app_files_unchanged": 3,
+  "production_code_unchanged": true,
+  "user_project_diff_unchanged": true,
+  "findings": {
+    "return_answer_explicit_sources": [
+      1,
+      0,
+      1
+    ],
+    "narrative_lesson_preserved": true,
+    "bound_save_frozen_sources": [
+      1,
+      1,
+      1
+    ],
+    "bound_save_content_identical": true
+  },
+  "unverified": [
+    "Real semantic route back to RAG",
+    "Real answer quality",
+    "Model grounding/verification",
+    "Actual native save and ACK"
+  ],
+  "caveat": "Stopped before generation; no successful model answer or saved card is claimed."
+}

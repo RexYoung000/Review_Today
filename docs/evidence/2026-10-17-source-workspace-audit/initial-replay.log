@@ -1,0 +1,35 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-17-source-workspace-audit/replay.py", line 239, in <module>
+    main()
+    ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-17-source-workspace-audit/replay.py", line 131, in main
+    from agent_service.conversation import ConversationHarness
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/conversation.py", line 23, in <module>
+    from agent_service.conditional_teaching import ConditionalTeaching
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/conditional_teaching.py", line 13, in <module>
+    from agent_service.conversation_store import Superseded
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/conversation_store.py", line 13, in <module>
+    from agent_service.harness_store import HarnessStore, harness_store, now_iso
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/harness_store.py", line 281, in <module>
+    harness_store = HarnessStore()
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/harness_store.py", line 92, in __init__
+    self._init_db()
+    ~~~~~~~~~~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/harness_store.py", line 106, in _init_db
+    with self._connection() as connection:
+         ~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/harness_store.py", line 96, in _connection
+    connection = sqlite3.connect(self.path, timeout=10)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py", line 1234, in _execute_mock_call
+    result = effect(*args, **kwargs)
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-17-source-workspace-audit/replay.py", line 122, in isolated_sqlite
+    raise AssertionError("SQLite outside isolated audit directory")
+AssertionError: SQLite outside isolated audit directory

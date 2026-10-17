@@ -1,0 +1,22 @@
+{
+  "directory": "/private/tmp/review-today-source-workspace-audit-_tws7o20",
+  "baseline_commit": "f40b765bbfcdfc6854cd6439d3ef4e59c74f3ebe",
+  "checkpoints": {
+    "docs/evidence/2026-10-17-separate-topic-real/before-input.json": "81f296f1fd6ac811714de35e3f39faab7303e34ac16436a5bf809c60efa84d0f",
+    "docs/evidence/2026-10-17-separate-topic-real/backend-after.json": "478518ab46834a0413e9e82192c338986a55549331326be244573158d77b1091"
+  },
+  "session_id": "4af445c0-3bd3-41a7-acb5-0e3f54b3344b",
+  "task_id": "7e28764b-95d5-4014-8d9f-3edb4137eec2",
+  "offer_id": "5e4c72f1-1627-4bf4-b3f9-02026dac4720",
+  "offer_version": 3,
+  "protected_count": 562,
+  "protected_archive_count": 297,
+  "daily_missing": [
+    "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-wal",
+    "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-shm"
+  ],
+  "production_mutation_authorized": false,
+  "real_model_limit_remaining": 0,
+  "return_input": "回到刚才的 RAG：高相似度是否能证明资料可信？请结合刚才讲义中的过时接口例子解释；只解释，不保存或进入下一步。",
+  "caveat": "Semantic fixtures only; stop before answer or capture. No real routing, answer, verification, save or ACK."
+}
