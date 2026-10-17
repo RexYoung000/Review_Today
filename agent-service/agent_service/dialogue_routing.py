@@ -50,15 +50,26 @@ def conversational_goal(decision):
             and decision.programming_boundary == decision.resource_boundary == 'none')
 
 
-def ordinary_question(data, decision, last):
-    """A workflow/scope suggestion alone cannot authorize a learning task."""
+def local_question(decision, last):
+    """A question without a teaching, continuation or state-changing request."""
     substantive = set(decision.intents) - {'social', 'greeting', 'thanks'}
-    return (data['mode'] == 'auto' and bool(substantive)
+    return (bool(substantive)
             and substantive <= LOCAL_QUESTIONS
             and not (last.get('operation') or decision.proposed_actions or decision.requested_mode
                      or decision.direct_teaching or decision.is_jd or decision.continuation_evidence
                      or decision.comprehensive_check)
             and decision.programming_boundary == 'none')
+
+
+def ordinary_question(data, decision, last):
+    """A workflow/scope suggestion alone cannot authorize a learning task."""
+    return data['mode'] == 'auto' and local_question(decision, last)
+
+
+def independent_question(decision, last):
+    """An explicit standalone answer owns no existing learning task's sources."""
+    return (decision.relation == 'new_topic' and decision.scope == 'conversation'
+            and decision.answer_only and local_question(decision, last))
 
 
 def normalize(data, decision, last):

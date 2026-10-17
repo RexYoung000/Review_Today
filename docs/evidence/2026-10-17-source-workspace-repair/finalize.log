@@ -1,0 +1,41 @@
+{
+  "outcome": "PASS",
+  "real_model_requests": 0,
+  "original_actual_requests": 30,
+  "original_stop_unchanged": true,
+  "tests": {
+    "baseline": "6 failed, 3 passed",
+    "targeted": "104 passed",
+    "full": "1250 passed, 4 skipped",
+    "deepseek": "78 passed"
+  },
+  "new_behavior_tests": 9,
+  "full_subtests": 565,
+  "targeted_subtests": 22,
+  "deepseek_subtests": 11,
+  "protected_files_checked": 577,
+  "protected_unchanged": 575,
+  "changed_production": [
+    "agent-service/agent_service/conversation.py",
+    "agent-service/agent_service/dialogue_routing.py"
+  ],
+  "daily_existing_unchanged": 5,
+  "daily_missing_unchanged": [
+    "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-wal",
+    "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3-shm"
+  ],
+  "provider_configs_unchanged": true,
+  "swift_sources_unchanged": 106,
+  "other_python_sources_unchanged": 70,
+  "historical_evidence_unchanged": 312,
+  "user_project_diff_unchanged": true,
+  "native_app_unchanged": true,
+  "native_app_rebuilt": false,
+  "service_started": false,
+  "real_save_or_ack": false,
+  "markdown_files": 7,
+  "local_links_checked": 426,
+  "missing_links": [],
+  "credential_pattern_files": [],
+  "caveat": "Controlled state/input proof only; actual model semantics, native save and full continuous acceptance remain open."
+}

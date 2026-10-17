@@ -1231,6 +1231,14 @@ class ConversationHarness(ConditionalTeaching):
                 '这项开发交付我不能直接替你完成。')
             return
         context, last = self._context(data, run)
+        if (node == 'answer' and not (teaching or draft or generated) and not run.get('dialogue_only')
+                and dialogue_routing.independent_question(decision, last)):
+            # Selected learning modes can still receive standalone questions.
+            # Fence ownership before material reads/preparation and final writes.
+            with self.store.transaction(sid, rid, rev) as current:
+                current['runs'][rid].update(dialogue_only=True, task_id=None)
+            data, run = self._snapshot(sid, rid, rev)
+            context, last = self._context(data, run)
         task = self._task(data, run)
         from agent_service.web_privacy import require_public_url, sensitive_material
         instruction += "\n本轮原话明确要求的长度、句数与表达形式优先于默认讲解模板；例如只要一句话，就不额外追加例子、背景或邀请。"

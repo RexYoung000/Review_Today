@@ -1,0 +1,286 @@
+{
+  "outcome": "PASS",
+  "directory": "/private/tmp/review-today-source-repair-replay-ag9rspbk",
+  "cases": [
+    {
+      "case": "legacy",
+      "fixture_schemas": [
+        {
+          "phase": "independent",
+          "schema": "IntentDecision"
+        },
+        {
+          "phase": "independent",
+          "schema": "TeachingPreparation"
+        },
+        {
+          "phase": "independent",
+          "schema": "ConversationOutput"
+        },
+        {
+          "phase": "return",
+          "schema": "IntentDecision"
+        },
+        {
+          "phase": "return",
+          "schema": "TeachingPreparation"
+        },
+        {
+          "phase": "return",
+          "schema": "ConversationOutput"
+        }
+      ],
+      "answer_attempts": 1,
+      "independent_calls": [
+        {
+          "node": "intent",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "teaching_preparation",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "answer",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        }
+      ],
+      "original_task_unchanged": false,
+      "task_source_count": 0,
+      "original_invitation_unchanged": true,
+      "old_messages_and_runs_unchanged": true,
+      "independent_answer_source_count": 0,
+      "return_source_count": 0,
+      "last_lesson_preserved": true,
+      "return_calls": [
+        {
+          "node": "intent",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "teaching_preparation",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "answer",
+          "status": "failed_or_cancelled",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        }
+      ],
+      "save_calls": []
+    },
+    {
+      "case": "fixed",
+      "fixture_schemas": [
+        {
+          "phase": "independent",
+          "schema": "IntentDecision"
+        },
+        {
+          "phase": "independent",
+          "schema": "TeachingPreparation"
+        },
+        {
+          "phase": "independent",
+          "schema": "ConversationOutput"
+        },
+        {
+          "phase": "return",
+          "schema": "IntentDecision"
+        },
+        {
+          "phase": "return",
+          "schema": "TeachingPreparation"
+        },
+        {
+          "phase": "return",
+          "schema": "ConversationOutput"
+        }
+      ],
+      "answer_attempts": 1,
+      "independent_calls": [
+        {
+          "node": "intent",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "teaching_preparation",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "answer",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        }
+      ],
+      "original_task_unchanged": true,
+      "task_source_count": 1,
+      "original_invitation_unchanged": true,
+      "old_messages_and_runs_unchanged": true,
+      "independent_answer_source_count": 0,
+      "return_source_count": 1,
+      "last_lesson_preserved": true,
+      "return_calls": [
+        {
+          "node": "intent",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "teaching_preparation",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "answer",
+          "status": "failed_or_cancelled",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        }
+      ],
+      "save_calls": []
+    },
+    {
+      "case": "fixed_format_repair",
+      "fixture_schemas": [
+        {
+          "phase": "independent",
+          "schema": "IntentDecision"
+        },
+        {
+          "phase": "independent",
+          "schema": "TeachingPreparation"
+        },
+        {
+          "phase": "independent",
+          "schema": "ConversationOutput"
+        },
+        {
+          "phase": "independent",
+          "schema": "ConversationOutput"
+        },
+        {
+          "phase": "return",
+          "schema": "IntentDecision"
+        },
+        {
+          "phase": "return",
+          "schema": "TeachingPreparation"
+        },
+        {
+          "phase": "return",
+          "schema": "ConversationOutput"
+        }
+      ],
+      "answer_attempts": 2,
+      "independent_calls": [
+        {
+          "node": "intent",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "teaching_preparation",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "answer",
+          "status": "failed_or_cancelled",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "answer",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        }
+      ],
+      "original_task_unchanged": true,
+      "task_source_count": 1,
+      "original_invitation_unchanged": true,
+      "old_messages_and_runs_unchanged": true,
+      "independent_answer_source_count": 0,
+      "return_source_count": 1,
+      "last_lesson_preserved": true,
+      "return_calls": [
+        {
+          "node": "intent",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "teaching_preparation",
+          "status": "returned",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        },
+        {
+          "node": "answer",
+          "status": "failed_or_cancelled",
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage": []
+        }
+      ],
+      "save_calls": []
+    }
+  ],
+  "real_model_requests": 0,
+  "original_actual_requests": 30,
+  "original_stop_unchanged": true,
+  "guards": {
+    "network": 0,
+    "sdk_client": 0,
+    "request_identity": 0,
+    "outside_sqlite": 0,
+    "unexpected_model": 0
+  },
+  "original_after30_checkpoint_unchanged": true,
+  "protected_files_unchanged": 575,
+  "production_changes": [
+    "agent-service/agent_service/conversation.py",
+    "agent-service/agent_service/dialogue_routing.py"
+  ],
+  "caveat": "Historical HTTP route/preparation/final output frozen; return route is controlled; stop before new RAG answer or capture. No real quality or native save claim."
+}

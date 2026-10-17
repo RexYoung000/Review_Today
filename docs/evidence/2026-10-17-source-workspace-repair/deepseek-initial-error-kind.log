@@ -1,0 +1,58 @@
+.....F.............................................................. [ 87%]
+..........                                                        [100%]
+=================================== FAILURES ===================================
+_ IndependentQuestionSourcesTests.test_independent_unreadable_page_does_not_fall_back_to_goal_sources _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_independent_unreadable_page_does_not_fall_back_to_goal_sources>
+
+    def test_independent_unreadable_page_does_not_fall_back_to_goal_sources(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model), \
+                patch('agent_service.conversation.web_search_text', return_value=self.url), \
+                patch('agent_service.conditional_teaching.fetch_public_url', side_effect=ModelCallError('CONNECTION')):
+            accepted = self.independent(needs_verification=True, public_search_query='HTTP idempotency')
+        run = self.f.state()['runs'][accepted.run_id]
+        self.assertEqual(run['status'], 'completed')
+>       self.assertEqual(run['search_state'], 'insufficient')
+E       AssertionError: 'failed' != 'insufficient'
+E       - failed
+E       + insufficient
+
+agent-service/tests/test_independent_question_sources.py:105: AssertionError
+=============================== warnings summary ===============================
+agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent-service/agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent-service/agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_independent_unreadable_page_does_not_fall_back_to_goal_sources
+1 failed, 77 passed, 5 warnings, 11 subtests passed in 29.01s

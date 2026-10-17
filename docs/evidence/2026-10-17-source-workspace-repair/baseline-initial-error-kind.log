@@ -1,0 +1,172 @@
+..FFFFFF.                                                                [100%]
+=================================== FAILURES ===================================
+_ IndependentQuestionSourcesTests.test_independent_format_repair_keeps_goal_untouched_on_both_attempts _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_independent_format_repair_keeps_goal_untouched_on_both_attempts>
+
+    def test_independent_format_repair_keeps_goal_untouched_on_both_attempts(self):
+        self.seed()
+        attempts = []
+    
+        def repair(system, user, schema, **kwargs):
+            if issubclass(schema, ConversationOutput):
+                attempts.append(user)
+                if len(attempts) == 1:
+                    raise ModelCallError('SCHEMA', 'json_invalid/non_json')
+            return self.model(system, user, schema, **kwargs)
+    
+        with patch('agent_service.conversation.parse_model', side_effect=repair):
+            accepted = self.independent()
+        self.assertEqual(len(attempts), 2)
+        self.assertEqual(self.f.state()['runs'][accepted.run_id]['status'], 'completed')
+>       self.assert_goal_preserved()
+
+agent-service/tests/test_independent_question_sources.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent-service/tests/test_independent_question_sources.py:59: in assert_goal_preserved
+    self.assertEqual(state['tasks'], self.before['tasks'])
+E   AssertionError: {'4be[656 chars]s': [], 'taught_concepts': [], 'verified_queri[4820 chars]00'}} != {'4be[656 chars]s': [{'source_id': 'b0b864f1-5e38-52eb-b646-24[5078 chars]00'}}
+E   Diff is 18735 characters long. Set self.maxDiff to None to see it.
+_ IndependentQuestionSourcesTests.test_independent_question_without_search_preserves_goal_and_frozen_offer _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_independent_question_without_search_preserves_goal_and_frozen_offer>
+
+    def test_independent_question_without_search_preserves_goal_and_frozen_offer(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model), \
+                patch('agent_service.conversation.web_search_text') as search:
+            accepted = self.independent()
+        self.assertEqual(self.f.state()['runs'][accepted.run_id]['status'], 'completed')
+        self.assertEqual(self.answer_inputs()[-1]['sources'], [])
+>       self.assert_goal_preserved()
+
+agent-service/tests/test_independent_question_sources.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent-service/tests/test_independent_question_sources.py:59: in assert_goal_preserved
+    self.assertEqual(state['tasks'], self.before['tasks'])
+E   AssertionError: {'c1c[656 chars]s': [], 'taught_concepts': [], 'verified_queri[4820 chars]00'}} != {'c1c[656 chars]s': [{'source_id': '16c1f667-bde6-502a-8d41-4e[5078 chars]00'}}
+E   Diff is 18736 characters long. Set self.maxDiff to None to see it.
+_ IndependentQuestionSourcesTests.test_independent_search_failure_does_not_replace_goal_evidence _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_independent_search_failure_does_not_replace_goal_evidence>
+
+    def test_independent_search_failure_does_not_replace_goal_evidence(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model), \
+                patch('agent_service.conversation.web_search_text', side_effect=ModelCallError('CONNECTION')):
+            accepted = self.independent(needs_verification=True, public_search_query='HTTP idempotency')
+        self.assertEqual(self.f.state()['runs'][accepted.run_id]['search_state'], 'failed')
+>       self.assert_goal_preserved()
+
+agent-service/tests/test_independent_question_sources.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent-service/tests/test_independent_question_sources.py:59: in assert_goal_preserved
+    self.assertEqual(state['tasks'], self.before['tasks'])
+E   AssertionError: {'42a[600 chars]e': 'insufficient', 'summary': '本次网页核验未完成，以下先说[4920 chars]00'}} != {'42a[600 chars]e': 'unverified', 'summary': '', 'sources': [][5134 chars]00'}}
+E   Diff is 19423 characters long. Set self.maxDiff to None to see it.
+_ IndependentQuestionSourcesTests.test_independent_unreadable_page_does_not_fall_back_to_goal_sources _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_independent_unreadable_page_does_not_fall_back_to_goal_sources>
+
+    def test_independent_unreadable_page_does_not_fall_back_to_goal_sources(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model), \
+                patch('agent_service.conversation.web_search_text', return_value=self.url), \
+                patch('agent_service.conditional_teaching.fetch_public_url', side_effect=ModelCallError('CONNECTION')):
+            accepted = self.independent(needs_verification=True, public_search_query='HTTP idempotency')
+        run = self.f.state()['runs'][accepted.run_id]
+        self.assertEqual(run['status'], 'completed')
+>       self.assertEqual(run['search_state'], 'insufficient')
+E       AssertionError: 'failed' != 'insufficient'
+E       - failed
+E       + insufficient
+
+agent-service/tests/test_independent_question_sources.py:105: AssertionError
+_ IndependentQuestionSourcesTests.test_independent_verified_page_belongs_to_question_and_does_not_replace_goal _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_independent_verified_page_belongs_to_question_and_does_not_replace_goal>
+
+    def test_independent_verified_page_belongs_to_question_and_does_not_replace_goal(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model), \
+                patch('agent_service.conversation.web_search_text', return_value=self.url), \
+                patch('agent_service.conditional_teaching.fetch_public_url', return_value=('HTTP', self.output)):
+            accepted = self.independent(needs_verification=True, public_search_query='HTTP idempotency')
+        run = self.f.state()['runs'][accepted.run_id]
+        self.assertEqual(run['status'], 'completed')
+        self.assertEqual(run['search_state'], 'verified')
+        self.assertEqual([s['url'] for s in self.answer_inputs()[-1]['sources']], [self.url])
+        self.assertEqual([s['url'] for s in run['answer_sources']], [self.url])
+>       self.assert_goal_preserved()
+
+agent-service/tests/test_independent_question_sources.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent-service/tests/test_independent_question_sources.py:59: in assert_goal_preserved
+    self.assertEqual(state['tasks'], self.before['tasks'])
+E   AssertionError: {'3f7[600 chars]e': 'supported', 'summary': '当前资料支持该说明。', 'sou[5677 chars]00'}} != {'3f7[600 chars]e': 'unverified', 'summary': '', 'sources': [][5134 chars]00'}}
+E   Diff is 22956 characters long. Set self.maxDiff to None to see it.
+_ IndependentQuestionSourcesTests.test_return_to_goal_uses_original_sources_after_independent_verified_question _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_return_to_goal_uses_original_sources_after_independent_verified_question>
+
+    def test_return_to_goal_uses_original_sources_after_independent_verified_question(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model), \
+                patch('agent_service.conversation.web_search_text', return_value=self.url), \
+                patch('agent_service.conditional_teaching.fetch_public_url', return_value=('HTTP', self.output)):
+            self.independent(needs_verification=True, public_search_query='HTTP idempotency')
+        self.f.decision = f.intent('followup', scope='continue_goal', target_task_id=self.tid, answer_only=True)
+        accepted = self.f.send('回到原来的 RAG，请再解释原讲义里的例子，不推进。')
+        self.assertEqual(self.f.state()['runs'][accepted.run_id]['status'], 'completed')
+>       self.assertEqual(self.answer_inputs()[-1]['sources'], self.before['tasks'][self.tid]['context']['sources'])
+E       AssertionError: Lists differ: [{'source_id': '7e06411c-b4f5-5215-a5bb-037bc584791d', 'v[572 chars]}]}}] != [{'source_id': '6da1cc92-26a9-5f5a-ae20-59098dcc80c1', 'v[198 chars]答。'}]
+E       
+E       First differing element 0:
+E       {'source_id': '7e06411c-b4f5-5215-a5bb-037bc584791d', 'v[571 chars]'}]}}
+E       {'source_id': '6da1cc92-26a9-5f5a-ae20-59098dcc80c1', 'v[197 chars]回答。'}
+E       
+E       Diff is 1234 characters long. Set self.maxDiff to None to see it.
+
+agent-service/tests/test_independent_question_sources.py:135: AssertionError
+=============================== warnings summary ===============================
+agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent-service/agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent-service/agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_independent_format_repair_keeps_goal_untouched_on_both_attempts
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_independent_question_without_search_preserves_goal_and_frozen_offer
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_independent_search_failure_does_not_replace_goal_evidence
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_independent_unreadable_page_does_not_fall_back_to_goal_sources
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_independent_verified_page_belongs_to_question_and_does_not_replace_goal
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_return_to_goal_uses_original_sources_after_independent_verified_question
+6 failed, 3 passed, 5 warnings in 6.93s

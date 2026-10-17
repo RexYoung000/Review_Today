@@ -1,0 +1,23 @@
+{
+  "outcome": "PASS",
+  "variants": 3,
+  "flows": 9,
+  "original_task_unchanged": [
+    false,
+    true,
+    true
+  ],
+  "return_sources": [
+    0,
+    1,
+    1
+  ],
+  "actual_requests": 0,
+  "guards": {
+    "network": 0,
+    "sdk_client": 0,
+    "request_identity": 0,
+    "outside_sqlite": 0,
+    "unexpected_model": 0
+  }
+}

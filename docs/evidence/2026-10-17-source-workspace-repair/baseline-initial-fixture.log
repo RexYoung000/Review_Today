@@ -1,0 +1,237 @@
+.FFFFFF.                                                                 [100%]
+=================================== FAILURES ===================================
+_ IndependentQuestionSourcesTests.test_bound_save_after_independent_question_keeps_frozen_input _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_bound_save_after_independent_question_keeps_frozen_input>
+
+    def test_bound_save_after_independent_question_keeps_frozen_input(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model):
+>           self.independent()
+
+agent-service/tests/test_independent_question_sources.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent-service/tests/test_independent_question_sources.py:39: in independent
+    self.f.decision = f.intent('question', scope='conversation', answer_only=True, workflow='ordinary',
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+workflow = 'ordinary', scope = 'conversation', names = ('question',)
+kw = {'answer_only': True}
+
+    def intent(*names, workflow=None, scope=None, **kw):
+        if scope is None:
+            scope = "learning" if "goal" in names else "conversation"
+>       return IntentDecision(intents=list(names), workflow=workflow, scope=scope, relation="continuation", rationale="受控测试意图", **kw)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for IntentDecision
+E       workflow
+E         Input should be 'memory_organization', 'source_learning', 'topic_exploration' or 'problem_solving' [type=literal_error, input_value='ordinary', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/literal_error
+
+agent-service/tests/test_conversation_v2.py:22: ValidationError
+_ IndependentQuestionSourcesTests.test_independent_format_repair_keeps_goal_untouched_on_both_attempts _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_independent_format_repair_keeps_goal_untouched_on_both_attempts>
+
+    def test_independent_format_repair_keeps_goal_untouched_on_both_attempts(self):
+        self.seed()
+        attempts = []
+    
+        def repair(system, user, schema, **kwargs):
+            if issubclass(schema, ConversationOutput):
+                attempts.append(user)
+                if len(attempts) == 1:
+                    raise ModelCallError('SCHEMA', 'json_invalid/non_json')
+            return self.model(system, user, schema, **kwargs)
+    
+        with patch('agent_service.conversation.parse_model', side_effect=repair):
+>           accepted = self.independent()
+                       ^^^^^^^^^^^^^^^^^^
+
+agent-service/tests/test_independent_question_sources.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent-service/tests/test_independent_question_sources.py:39: in independent
+    self.f.decision = f.intent('question', scope='conversation', answer_only=True, workflow='ordinary',
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+workflow = 'ordinary', scope = 'conversation', names = ('question',)
+kw = {'answer_only': True}
+
+    def intent(*names, workflow=None, scope=None, **kw):
+        if scope is None:
+            scope = "learning" if "goal" in names else "conversation"
+>       return IntentDecision(intents=list(names), workflow=workflow, scope=scope, relation="continuation", rationale="受控测试意图", **kw)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for IntentDecision
+E       workflow
+E         Input should be 'memory_organization', 'source_learning', 'topic_exploration' or 'problem_solving' [type=literal_error, input_value='ordinary', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/literal_error
+
+agent-service/tests/test_conversation_v2.py:22: ValidationError
+_ IndependentQuestionSourcesTests.test_independent_question_without_search_preserves_goal_and_frozen_offer _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_independent_question_without_search_preserves_goal_and_frozen_offer>
+
+    def test_independent_question_without_search_preserves_goal_and_frozen_offer(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model), \
+                patch('agent_service.conversation.web_search_text') as search:
+>           accepted = self.independent()
+                       ^^^^^^^^^^^^^^^^^^
+
+agent-service/tests/test_independent_question_sources.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent-service/tests/test_independent_question_sources.py:39: in independent
+    self.f.decision = f.intent('question', scope='conversation', answer_only=True, workflow='ordinary',
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+workflow = 'ordinary', scope = 'conversation', names = ('question',)
+kw = {'answer_only': True}
+
+    def intent(*names, workflow=None, scope=None, **kw):
+        if scope is None:
+            scope = "learning" if "goal" in names else "conversation"
+>       return IntentDecision(intents=list(names), workflow=workflow, scope=scope, relation="continuation", rationale="受控测试意图", **kw)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for IntentDecision
+E       workflow
+E         Input should be 'memory_organization', 'source_learning', 'topic_exploration' or 'problem_solving' [type=literal_error, input_value='ordinary', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/literal_error
+
+agent-service/tests/test_conversation_v2.py:22: ValidationError
+_ IndependentQuestionSourcesTests.test_independent_search_failure_does_not_replace_goal_evidence _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_independent_search_failure_does_not_replace_goal_evidence>
+
+    def test_independent_search_failure_does_not_replace_goal_evidence(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model), \
+                patch('agent_service.conversation.web_search_text', side_effect=ModelCallError('CONNECTION')):
+>           accepted = self.independent(needs_verification=True, public_search_query='HTTP idempotency')
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+agent-service/tests/test_independent_question_sources.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent-service/tests/test_independent_question_sources.py:39: in independent
+    self.f.decision = f.intent('question', scope='conversation', answer_only=True, workflow='ordinary',
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+workflow = 'ordinary', scope = 'conversation', names = ('question',)
+kw = {'answer_only': True, 'needs_verification': True, 'public_search_query': 'HTTP idempotency'}
+
+    def intent(*names, workflow=None, scope=None, **kw):
+        if scope is None:
+            scope = "learning" if "goal" in names else "conversation"
+>       return IntentDecision(intents=list(names), workflow=workflow, scope=scope, relation="continuation", rationale="受控测试意图", **kw)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for IntentDecision
+E       workflow
+E         Input should be 'memory_organization', 'source_learning', 'topic_exploration' or 'problem_solving' [type=literal_error, input_value='ordinary', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/literal_error
+
+agent-service/tests/test_conversation_v2.py:22: ValidationError
+_ IndependentQuestionSourcesTests.test_independent_verified_page_belongs_to_question_and_does_not_replace_goal _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_independent_verified_page_belongs_to_question_and_does_not_replace_goal>
+
+    def test_independent_verified_page_belongs_to_question_and_does_not_replace_goal(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model), \
+                patch('agent_service.conversation.web_search_text', return_value=self.url), \
+                patch('agent_service.conditional_teaching.fetch_public_url', return_value=('HTTP', self.output)):
+>           accepted = self.independent(needs_verification=True, public_search_query='HTTP idempotency')
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+agent-service/tests/test_independent_question_sources.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent-service/tests/test_independent_question_sources.py:39: in independent
+    self.f.decision = f.intent('question', scope='conversation', answer_only=True, workflow='ordinary',
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+workflow = 'ordinary', scope = 'conversation', names = ('question',)
+kw = {'answer_only': True, 'needs_verification': True, 'public_search_query': 'HTTP idempotency'}
+
+    def intent(*names, workflow=None, scope=None, **kw):
+        if scope is None:
+            scope = "learning" if "goal" in names else "conversation"
+>       return IntentDecision(intents=list(names), workflow=workflow, scope=scope, relation="continuation", rationale="受控测试意图", **kw)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for IntentDecision
+E       workflow
+E         Input should be 'memory_organization', 'source_learning', 'topic_exploration' or 'problem_solving' [type=literal_error, input_value='ordinary', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/literal_error
+
+agent-service/tests/test_conversation_v2.py:22: ValidationError
+_ IndependentQuestionSourcesTests.test_return_to_goal_uses_original_sources_after_independent_verified_question _
+
+self = <test_independent_question_sources.IndependentQuestionSourcesTests testMethod=test_return_to_goal_uses_original_sources_after_independent_verified_question>
+
+    def test_return_to_goal_uses_original_sources_after_independent_verified_question(self):
+        self.seed()
+        with patch('agent_service.conversation.parse_model', side_effect=self.model), \
+                patch('agent_service.conversation.web_search_text', return_value=self.url), \
+                patch('agent_service.conditional_teaching.fetch_public_url', return_value=('HTTP', self.output)):
+>           self.independent(needs_verification=True, public_search_query='HTTP idempotency')
+
+agent-service/tests/test_independent_question_sources.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent-service/tests/test_independent_question_sources.py:39: in independent
+    self.f.decision = f.intent('question', scope='conversation', answer_only=True, workflow='ordinary',
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+workflow = 'ordinary', scope = 'conversation', names = ('question',)
+kw = {'answer_only': True, 'needs_verification': True, 'public_search_query': 'HTTP idempotency'}
+
+    def intent(*names, workflow=None, scope=None, **kw):
+        if scope is None:
+            scope = "learning" if "goal" in names else "conversation"
+>       return IntentDecision(intents=list(names), workflow=workflow, scope=scope, relation="continuation", rationale="受控测试意图", **kw)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for IntentDecision
+E       workflow
+E         Input should be 'memory_organization', 'source_learning', 'topic_exploration' or 'problem_solving' [type=literal_error, input_value='ordinary', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/literal_error
+
+agent-service/tests/test_conversation_v2.py:22: ValidationError
+=============================== warnings summary ===============================
+agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent-service/agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent-service/agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_bound_save_after_independent_question_keeps_frozen_input
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_independent_format_repair_keeps_goal_untouched_on_both_attempts
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_independent_question_without_search_preserves_goal_and_frozen_offer
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_independent_search_failure_does_not_replace_goal_evidence
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_independent_verified_page_belongs_to_question_and_does_not_replace_goal
+FAILED agent-service/tests/test_independent_question_sources.py::IndependentQuestionSourcesTests::test_return_to_goal_uses_original_sources_after_independent_verified_question
+6 failed, 2 passed, 5 warnings in 2.35s
