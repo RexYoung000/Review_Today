@@ -1,0 +1,229 @@
+{
+  "started_at": "2026-10-18T09:03:08.922525+00:00",
+  "finished_at": "2026-10-18T09:11:56.416673+00:00",
+  "models": {
+    "router": "deepseek-flash",
+    "coach": "deepseek-v4-flash",
+    "evidence": "deepseek-v4-pro"
+  },
+  "jobs": 16,
+  "real_model_requests": 97,
+  "unique_usage_receipts": 97,
+  "web_operations": 49,
+  "balance_reads": 4,
+  "groups": {
+    "exa_first": {
+      "model_usd": 0.05290264,
+      "model_cny": 0.35917962,
+      "web_auto_tariff_usd": 0.08855,
+      "total_auto_tariff_usd": 0.14145264,
+      "total_instant_tariff_sensitivity_usd": 0.12345264,
+      "total_exa_tavily_credits_sensitivity_usd": 0.05365264,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.007,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0192,
+      "deepseek_tools_cny": 0.005,
+      "jobs": 8,
+      "fully_grounded": 6,
+      "facts_complete": 7,
+      "model_requests": 48,
+      "web_requests": 24,
+      "median_seconds": 34.3315,
+      "mean_seconds": 35.145625,
+      "min_seconds": 27.963,
+      "max_seconds": 46.868,
+      "cost_per_fully_grounded_answer_usd": 0.02357544,
+      "repairs": 2,
+      "supplements": 3,
+      "tokens": {
+        "input_tokens": 244000,
+        "output_tokens": 12301,
+        "total_tokens": 256301,
+        "cached_input_tokens": 159232
+      }
+    },
+    "deepseek_first": {
+      "model_usd": 0.051631874,
+      "model_cny": 0.35049158,
+      "web_auto_tariff_usd": 0.0542,
+      "total_auto_tariff_usd": 0.105831874,
+      "total_instant_tariff_sensitivity_usd": 0.093831874,
+      "total_exa_tavily_credits_sensitivity_usd": 0.057631874,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.007,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0128,
+      "deepseek_tools_cny": 0.04,
+      "jobs": 8,
+      "fully_grounded": 6,
+      "facts_complete": 7,
+      "model_requests": 49,
+      "web_requests": 25,
+      "median_seconds": 31.522,
+      "mean_seconds": 30.66375,
+      "min_seconds": 13.35,
+      "max_seconds": 51.918,
+      "cost_per_fully_grounded_answer_usd": 0.017638646,
+      "repairs": 1,
+      "supplements": 5,
+      "tokens": {
+        "input_tokens": 241287,
+        "output_tokens": 13569,
+        "total_tokens": 254856,
+        "cached_input_tokens": 161920
+      }
+    }
+  },
+  "pairs": [
+    {
+      "case": "javascript_arrays",
+      "exa_grounded": false,
+      "deepseek_grounded": true,
+      "deepseek_minus_exa_seconds": 15.211,
+      "deepseek_minus_exa_cost_usd": 0.00351807
+    },
+    {
+      "case": "git_undo",
+      "exa_grounded": true,
+      "deepseek_grounded": false,
+      "deepseek_minus_exa_seconds": 5.05,
+      "deepseek_minus_exa_cost_usd": -0.006619894
+    },
+    {
+      "case": "sqlite_wal",
+      "exa_grounded": true,
+      "deepseek_grounded": true,
+      "deepseek_minus_exa_seconds": -9.152,
+      "deepseek_minus_exa_cost_usd": -0.007160932
+    },
+    {
+      "case": "http_revalidation",
+      "exa_grounded": true,
+      "deepseek_grounded": true,
+      "deepseek_minus_exa_seconds": -3.617,
+      "deepseek_minus_exa_cost_usd": -0.004929302
+    },
+    {
+      "case": "kubernetes_probes",
+      "exa_grounded": true,
+      "deepseek_grounded": true,
+      "deepseek_minus_exa_seconds": -25.917,
+      "deepseek_minus_exa_cost_usd": -0.008078912
+    },
+    {
+      "case": "deepseek_search_contract",
+      "exa_grounded": false,
+      "deepseek_grounded": false,
+      "deepseek_minus_exa_seconds": -23.154,
+      "deepseek_minus_exa_cost_usd": -0.01698671
+    },
+    {
+      "case": "spaced_practice",
+      "exa_grounded": true,
+      "deepseek_grounded": true,
+      "deepseek_minus_exa_seconds": 7.726,
+      "deepseek_minus_exa_cost_usd": 0.002665044
+    },
+    {
+      "case": "figma_autolayout",
+      "exa_grounded": true,
+      "deepseek_grounded": true,
+      "deepseek_minus_exa_seconds": -2.002,
+      "deepseek_minus_exa_cost_usd": 0.00197187
+    }
+  ],
+  "balances": {
+    "namespace_net_changes": [
+      {
+        "namespace": "model",
+        "before_status": "ok",
+        "after_status": "ok",
+        "deltas": [
+          {
+            "currency": "CNY",
+            "net_decrease": "0.54"
+          }
+        ]
+      },
+      {
+        "namespace": "web",
+        "before_status": "ok",
+        "after_status": "ok",
+        "deltas": [
+          {
+            "currency": "CNY",
+            "net_decrease": "0.54"
+          }
+        ]
+      }
+    ],
+    "namespaces_have_identical_snapshots": true,
+    "per_job_billing_verified": false
+  },
+  "limits": "Purposive eight-topic single pass per configuration, same-agent label-masked review; full ordinary warm conversations, no cold startup/native/save acceptance; public tariffs and balance movement are not complete attributed invoices.",
+  "tokens": {
+    "input_tokens": 485287,
+    "output_tokens": 25870,
+    "total_tokens": 511157,
+    "cached_input_tokens": 321152,
+    "reasoning_output_tokens": 0
+  },
+  "provider_operations": {
+    "exa:search:ok": 10,
+    "exa:read:ok": 18,
+    "deepseek:search:ok": 9,
+    "tavily:search:ok": 5,
+    "exa:search:failed": 2,
+    "tavily:read:ok": 5
+  },
+  "cooldown_skips": [
+    {
+      "job": "http_revalidation:deepseek_first",
+      "provider": "exa",
+      "operation": "read",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    },
+    {
+      "job": "http_revalidation:exa_first",
+      "provider": "exa",
+      "operation": "search",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    },
+    {
+      "job": "http_revalidation:exa_first",
+      "provider": "exa",
+      "operation": "read",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    },
+    {
+      "job": "http_revalidation:exa_first",
+      "provider": "exa",
+      "operation": "read",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    },
+    {
+      "job": "kubernetes_probes:exa_first",
+      "provider": "exa",
+      "operation": "read",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    },
+    {
+      "job": "kubernetes_probes:deepseek_first",
+      "provider": "exa",
+      "operation": "read",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    }
+  ],
+  "paired_description": {
+    "deepseek_faster": 5,
+    "deepseek_less_expensive_at_base_tariff": 5,
+    "quality_deepseek_wins": 1,
+    "quality_exa_wins": 1,
+    "quality_ties": 6
+  },
+  "tariff_savings_percent": 25.182,
+  "cny_model_plus_direct_tools_tariff_estimate": 0.7546712
+}

@@ -1,0 +1,86 @@
+{
+  "operations": [
+    {
+      "provider": "deepseek",
+      "operation": "search",
+      "attempts": 9,
+      "ok": 9,
+      "median_seconds": 0.416
+    },
+    {
+      "provider": "exa",
+      "operation": "read",
+      "attempts": 18,
+      "ok": 18,
+      "median_seconds": 5.7509999999999994
+    },
+    {
+      "provider": "exa",
+      "operation": "search",
+      "attempts": 12,
+      "ok": 10,
+      "median_seconds": 11.037
+    },
+    {
+      "provider": "tavily",
+      "operation": "read",
+      "attempts": 5,
+      "ok": 5,
+      "median_seconds": 1.761
+    },
+    {
+      "provider": "tavily",
+      "operation": "search",
+      "attempts": 5,
+      "ok": 5,
+      "median_seconds": 4.332
+    }
+  ],
+  "cooldown_skips": [
+    {
+      "job": "http_revalidation:deepseek_first",
+      "provider": "exa",
+      "operation": "read",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    },
+    {
+      "job": "http_revalidation:exa_first",
+      "provider": "exa",
+      "operation": "search",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    },
+    {
+      "job": "http_revalidation:exa_first",
+      "provider": "exa",
+      "operation": "read",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    },
+    {
+      "job": "http_revalidation:exa_first",
+      "provider": "exa",
+      "operation": "read",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    },
+    {
+      "job": "kubernetes_probes:exa_first",
+      "provider": "exa",
+      "operation": "read",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    },
+    {
+      "job": "kubernetes_probes:deepseek_first",
+      "provider": "exa",
+      "operation": "read",
+      "status": "skipped",
+      "code": "RT.WEB.TIMEOUT"
+    }
+  ],
+  "not_semantic_success_rates": true,
+  "deepseek_fetch_calls": 0,
+  "browser_reads": 0
+}

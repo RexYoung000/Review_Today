@@ -1,0 +1,66 @@
+{
+  "checked_at": "2026-10-18",
+  "model_rates_per_million": {
+    "USD": {
+      "flash": {
+        "cached_input": 0.003,
+        "uncached_input": 0.15,
+        "output": 0.6
+      },
+      "pro": {
+        "cached_input": 0.022,
+        "uncached_input": 0.66,
+        "output": 1.98
+      }
+    },
+    "CNY": {
+      "flash": {
+        "cached_input": 0.02,
+        "uncached_input": 1,
+        "output": 4
+      },
+      "pro": {
+        "cached_input": 0.15,
+        "uncached_input": 4.5,
+        "output": 13.5
+      }
+    }
+  },
+  "time_basis": "Sunday, off-peak; check observed request timestamps. Flash aliases have the same published tariff; use response model and actual cached-input receipts.",
+  "web_tariffs": {
+    "deepseek": {
+      "USD_per_successful_request": 0.00075,
+      "CNY_per_successful_request": 0.005
+    },
+    "exa": {
+      "USD_per_auto_search": 0.007,
+      "USD_per_instant_search": 0.004,
+      "USD_per_contents_text_page": 0.001
+    },
+    "tavily": {
+      "USD_per_basic_search_payg": 0.008,
+      "USD_per_basic_extract_successful_page_proportional": 0.0016,
+      "USD_per_extract_one_credit_rounding_sensitivity": 0.008
+    }
+  },
+  "sources": {
+    "model_usd": "https://api-docs.deepseek.com/quick_start/pricing/?model_version=DeepSeek-V4-Pro-0813",
+    "model_cny": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+    "deepseek_tools": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+    "balance": "https://api-docs.deepseek.com/api/get-user-balance/",
+    "exa": "https://exa.ai/pricing",
+    "exa_mcp_auth": "https://github.com/exa-labs/exa-mcp-server/blob/main/api/mcp.ts",
+    "exa_mcp_search": "https://github.com/exa-labs/exa-mcp-server/blob/main/src/tools/webSearch.ts",
+    "exa_mcp_read": "https://github.com/exa-labs/exa-mcp-server/blob/main/src/tools/webFetch.ts",
+    "tavily": "https://docs.tavily.com/documentation/api-credits"
+  },
+  "assumptions": [
+    "Main illustration uses Exa Auto Search at $0.007 and one text Contents at $0.001 per successful logical tool invocation. Official current MCP source accepts plain Bearer API keys, defaults search to auto absent override, and fetches /contents text. Hosted deployment/default environment and account bills are not exposed; this is an inference, not an invoice.",
+    "Exa Instant ($0.004) and zero marginal web charge under free credits are sensitivity cases, not claims about this account. Search summaries/highlights are not counted as independent full reads.",
+    "Tavily basic PAYG at $0.008 per credit. Basic Extract pricing is one credit per five successes; proportional vs one-credit-per-request rounding sensitivity. Free plans, keyless limits, subscriptions and grants not known.",
+    "DeepSeek direct Search/Fetch successful nonempty tariff applies; the temporary free period for server-hosted tools in named coding products is not assumed for our direct standalone HTTP requests.",
+    "Transport/local format failures can hide upstream successful processing; uncertain charged attempts shown separately and never declared free solely because local status failed.",
+    "Account before/after balance is net movement in a namespace, may include outside usage and billing lag, does not identify accounts or per-job invoices. Equal starting/ending balances across different keys are not added as separate accounts.",
+    "Full raw balances remain in ignored output; only deltas are public. No exchange-rate conversion between CNY model balances and USD web estimates."
+  ]
+}

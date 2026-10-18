@@ -1,0 +1,847 @@
+{
+  "method": "cost-method.json",
+  "rows": [
+    {
+      "id": "javascript_arrays:exa_first",
+      "configuration": "exa_first",
+      "case": "javascript_arrays",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": null,
+      "full_grounded_pass": false,
+      "facts_complete": true,
+      "elapsed_seconds": 27.963,
+      "model_requests": 5,
+      "web_requests": 2,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 28387,
+        "output_tokens": 1274,
+        "total_tokens": 29661,
+        "cached_input_tokens": 17408,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "exa:search": 1,
+        "exa:read": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/map"
+      ],
+      "model_usd": 0.006314094,
+      "model_cny": 0.04286216,
+      "model_all_input_uncached_sensitivity_usd": 0.00887307,
+      "web_auto_tariff_usd": 0.008,
+      "total_auto_tariff_usd": 0.014314094,
+      "total_instant_tariff_sensitivity_usd": 0.011314094,
+      "total_exa_tavily_credits_sensitivity_usd": 0.006314094,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.0,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "MDN Array.prototype.map Array.prototype.forEach 区别"
+      }
+    },
+    {
+      "id": "javascript_arrays:deepseek_first",
+      "configuration": "deepseek_first",
+      "case": "javascript_arrays",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": {
+        "after_provider": "deepseek",
+        "reason": "no_usable_source"
+      },
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 43.174,
+      "model_requests": 7,
+      "web_requests": 4,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 33425,
+        "output_tokens": 1948,
+        "total_tokens": 35373,
+        "cached_input_tokens": 21248,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "deepseek:search": 1,
+        "exa:search": 1,
+        "exa:read": 2
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map",
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach"
+      ],
+      "model_usd": 0.008082164,
+      "model_cny": 0.05489146,
+      "model_all_input_uncached_sensitivity_usd": 0.01277682,
+      "web_auto_tariff_usd": 0.00975,
+      "total_auto_tariff_usd": 0.017832164,
+      "total_instant_tariff_sensitivity_usd": 0.014832164,
+      "total_exa_tavily_credits_sensitivity_usd": 0.008832164,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.005,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "MDN Array.prototype.map forEach difference return value"
+      }
+    },
+    {
+      "id": "git_undo:deepseek_first",
+      "configuration": "deepseek_first",
+      "case": "git_undo",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "scoped",
+      "quality_supplement": {
+        "after_provider": "deepseek",
+        "reason": "scoped"
+      },
+      "full_grounded_pass": false,
+      "facts_complete": true,
+      "elapsed_seconds": 51.918,
+      "model_requests": 8,
+      "web_requests": 4,
+      "model_repairs_or_transport_fallbacks": 1,
+      "tokens": {
+        "input_tokens": 44958,
+        "output_tokens": 3135,
+        "total_tokens": 48093,
+        "cached_input_tokens": 25728,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "deepseek:search": 1,
+        "exa:read": 2,
+        "exa:search": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://git-scm.com/book/zh/v2/%e9%99%84%e5%bd%95-C:-Git-%e5%91%bd%e4%bb%a4-%e8%a1%a5%e4%b8%81#_git_cherry_pick",
+        "https://git-scm.com/docs/git-revert.html"
+      ],
+      "model_usd": 0.011122312,
+      "model_cny": 0.07542962,
+      "model_all_input_uncached_sensitivity_usd": 0.01672692,
+      "web_auto_tariff_usd": 0.00975,
+      "total_auto_tariff_usd": 0.020872312,
+      "total_instant_tariff_sensitivity_usd": 0.017872312,
+      "total_exa_tavily_credits_sensitivity_usd": 0.011872312,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.005,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "Git revert 与 git reset --hard 区别 官方文档"
+      }
+    },
+    {
+      "id": "git_undo:exa_first",
+      "configuration": "exa_first",
+      "case": "git_undo",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": {
+        "after_provider": "exa",
+        "reason": "insufficient"
+      },
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 46.868,
+      "model_requests": 7,
+      "web_requests": 4,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 37555,
+        "output_tokens": 1995,
+        "total_tokens": 39550,
+        "cached_input_tokens": 21504,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "exa:search": 1,
+        "exa:read": 2,
+        "tavily:search": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://git-scm.com/docs/git-revert.html",
+        "https://git-scm.com/docs/git-reset/zh_HANS-CN"
+      ],
+      "model_usd": 0.010492206,
+      "model_cny": 0.07131686,
+      "model_all_input_uncached_sensitivity_usd": 0.01535019,
+      "web_auto_tariff_usd": 0.017,
+      "total_auto_tariff_usd": 0.027492206,
+      "total_instant_tariff_sensitivity_usd": 0.024492206,
+      "total_exa_tavily_credits_sensitivity_usd": 0.010492206,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.0,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "git revert reset --hard 区别 官方文档"
+      }
+    },
+    {
+      "id": "sqlite_wal:exa_first",
+      "configuration": "exa_first",
+      "case": "sqlite_wal",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": null,
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 28.305,
+      "model_requests": 6,
+      "web_requests": 2,
+      "model_repairs_or_transport_fallbacks": 1,
+      "tokens": {
+        "input_tokens": 31473,
+        "output_tokens": 1191,
+        "total_tokens": 32664,
+        "cached_input_tokens": 21120,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "exa:search": 1,
+        "exa:read": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://www.sqlite.org/wal.html"
+      ],
+      "model_usd": 0.004462602,
+      "model_cny": 0.03017674,
+      "model_all_input_uncached_sensitivity_usd": 0.00794433,
+      "web_auto_tariff_usd": 0.008,
+      "total_auto_tariff_usd": 0.012462602,
+      "total_instant_tariff_sensitivity_usd": 0.009462602,
+      "total_exa_tavily_credits_sensitivity_usd": 0.004462602,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.0,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "SQLite WAL mode concurrency multiple writers network filesystem official documentation"
+      }
+    },
+    {
+      "id": "sqlite_wal:deepseek_first",
+      "configuration": "deepseek_first",
+      "case": "sqlite_wal",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": null,
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 19.153,
+      "model_requests": 5,
+      "web_requests": 2,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 24456,
+        "output_tokens": 1061,
+        "total_tokens": 25517,
+        "cached_input_tokens": 18816,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "deepseek:search": 1,
+        "exa:read": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://www2.sqlite.org/draft/wal.html"
+      ],
+      "model_usd": 0.00355167,
+      "model_cny": 0.02408216,
+      "model_all_input_uncached_sensitivity_usd": 0.00669471,
+      "web_auto_tariff_usd": 0.00175,
+      "total_auto_tariff_usd": 0.00530167,
+      "total_instant_tariff_sensitivity_usd": 0.00530167,
+      "total_exa_tavily_credits_sensitivity_usd": 0.00430167,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.005,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "SQLite WAL mode concurrent readers single writer network file system official documentation"
+      }
+    },
+    {
+      "id": "http_revalidation:deepseek_first",
+      "configuration": "deepseek_first",
+      "case": "http_revalidation",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": {
+        "after_provider": "deepseek",
+        "reason": "no_usable_source"
+      },
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 35.213,
+      "model_requests": 6,
+      "web_requests": 4,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 30817,
+        "output_tokens": 1521,
+        "total_tokens": 32338,
+        "cached_input_tokens": 18944,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "deepseek:search": 1,
+        "exa:search": 1,
+        "tavily:search": 1,
+        "tavily:read": 1
+      },
+      "web_failed": 1,
+      "source_urls": [
+        "https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Guides/Caching"
+      ],
+      "model_usd": 0.00779013,
+      "model_cny": 0.05294364,
+      "model_all_input_uncached_sensitivity_usd": 0.01114053,
+      "web_auto_tariff_usd": 0.01035,
+      "total_auto_tariff_usd": 0.01814013,
+      "total_instant_tariff_sensitivity_usd": 0.01814013,
+      "total_exa_tavily_credits_sensitivity_usd": 0.00854013,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.007,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0064,
+      "deepseek_tools_cny": 0.005,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "HTTP conditional requests ETag If-None-Match 304 Not Modified MDN RFC 9110"
+      }
+    },
+    {
+      "id": "http_revalidation:exa_first",
+      "configuration": "exa_first",
+      "case": "http_revalidation",
+      "status": "completed",
+      "error": null,
+      "search_state": "insufficient",
+      "evidence_state": "insufficient",
+      "quality_supplement": {
+        "after_provider": "tavily",
+        "reason": "insufficient"
+      },
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 38.83,
+      "model_requests": 7,
+      "web_requests": 5,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 37185,
+        "output_tokens": 2226,
+        "total_tokens": 39411,
+        "cached_input_tokens": 22272,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "tavily:search": 1,
+        "tavily:read": 2,
+        "deepseek:search": 1,
+        "exa:read": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/304",
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-None-Match",
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/304#1"
+      ],
+      "model_usd": 0.010119432,
+      "model_cny": 0.06877006,
+      "model_all_input_uncached_sensitivity_usd": 0.0154674,
+      "web_auto_tariff_usd": 0.01295,
+      "total_auto_tariff_usd": 0.023069432,
+      "total_instant_tariff_sensitivity_usd": 0.023069432,
+      "total_exa_tavily_credits_sensitivity_usd": 0.010869432,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0128,
+      "deepseek_tools_cny": 0.005,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "HTTP ETag If-None-Match conditional GET 304 Not Modified MDN RFC 9110"
+      }
+    },
+    {
+      "id": "kubernetes_probes:exa_first",
+      "configuration": "exa_first",
+      "case": "kubernetes_probes",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": null,
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 39.267,
+      "model_requests": 5,
+      "web_requests": 3,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 28476,
+        "output_tokens": 1381,
+        "total_tokens": 29857,
+        "cached_input_tokens": 18560,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "exa:search": 1,
+        "tavily:search": 1,
+        "tavily:read": 1
+      },
+      "web_failed": 1,
+      "source_urls": [
+        "https://kubernetes.io/zh-cn/docs/concepts/workloads/pods/probes"
+      ],
+      "model_usd": 0.005941992,
+      "model_cny": 0.04032754,
+      "model_all_input_uncached_sensitivity_usd": 0.0090474,
+      "web_auto_tariff_usd": 0.0096,
+      "total_auto_tariff_usd": 0.015541992,
+      "total_instant_tariff_sensitivity_usd": 0.015541992,
+      "total_exa_tavily_credits_sensitivity_usd": 0.005941992,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.007,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0064,
+      "deepseek_tools_cny": 0.0,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "Kubernetes 官方文档 liveness readiness startup probe 区别"
+      }
+    },
+    {
+      "id": "kubernetes_probes:deepseek_first",
+      "configuration": "deepseek_first",
+      "case": "kubernetes_probes",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": null,
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 13.35,
+      "model_requests": 5,
+      "web_requests": 2,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 26286,
+        "output_tokens": 1304,
+        "total_tokens": 27590,
+        "cached_input_tokens": 18816,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "deepseek:search": 1,
+        "tavily:read": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://kubernetes.io/docs/concepts/workloads/pods/probes/"
+      ],
+      "model_usd": 0.00511308,
+      "model_cny": 0.03472066,
+      "model_all_input_uncached_sensitivity_usd": 0.00825612,
+      "web_auto_tariff_usd": 0.00235,
+      "total_auto_tariff_usd": 0.00746308,
+      "total_instant_tariff_sensitivity_usd": 0.00746308,
+      "total_exa_tavily_credits_sensitivity_usd": 0.00586308,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0064,
+      "deepseek_tools_cny": 0.005,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "Kubernetes readiness liveness startup probe 官方文档 区别"
+      }
+    },
+    {
+      "id": "deepseek_search_contract:deepseek_first",
+      "configuration": "deepseek_first",
+      "case": "deepseek_search_contract",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": null,
+      "full_grounded_pass": false,
+      "facts_complete": false,
+      "elapsed_seconds": 18.804,
+      "model_requests": 5,
+      "web_requests": 2,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 27416,
+        "output_tokens": 1286,
+        "total_tokens": 28702,
+        "cached_input_tokens": 18560,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "deepseek:search": 1,
+        "exa:read": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://api-docs.deepseek.com/zh-cn/guides/search/"
+      ],
+      "model_usd": 0.005290212,
+      "model_cny": 0.03589704,
+      "model_all_input_uncached_sensitivity_usd": 0.00839562,
+      "web_auto_tariff_usd": 0.00175,
+      "total_auto_tariff_usd": 0.007040212,
+      "total_instant_tariff_sensitivity_usd": 0.007040212,
+      "total_exa_tavily_credits_sensitivity_usd": 0.006040212,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.005,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "DeepSeek API search fetch 文档 query 长度 count 范围 计费 官方"
+      }
+    },
+    {
+      "id": "deepseek_search_contract:exa_first",
+      "configuration": "exa_first",
+      "case": "deepseek_search_contract",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "scoped",
+      "quality_supplement": {
+        "after_provider": "exa",
+        "reason": "scoped"
+      },
+      "full_grounded_pass": false,
+      "facts_complete": false,
+      "elapsed_seconds": 41.958,
+      "model_requests": 7,
+      "web_requests": 4,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 31682,
+        "output_tokens": 1495,
+        "total_tokens": 33177,
+        "cached_input_tokens": 20992,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "exa:search": 1,
+        "exa:read": 2,
+        "tavily:search": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://api-docs.deepseek.com/zh-cn/api/search/",
+        "https://api-docs.deepseek.com/zh-cn/guides/search"
+      ],
+      "model_usd": 0.007026922,
+      "model_cny": 0.04774056,
+      "model_all_input_uncached_sensitivity_usd": 0.01155825,
+      "web_auto_tariff_usd": 0.017,
+      "total_auto_tariff_usd": 0.024026922,
+      "total_instant_tariff_sensitivity_usd": 0.021026922,
+      "total_exa_tavily_credits_sensitivity_usd": 0.007026922,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.0,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "DeepSeek API 官方文档 Search Fetch query 长度上限 count 价格 空结果计费"
+      }
+    },
+    {
+      "id": "spaced_practice:exa_first",
+      "configuration": "exa_first",
+      "case": "spaced_practice",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": null,
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 28.141,
+      "model_requests": 6,
+      "web_requests": 2,
+      "model_repairs_or_transport_fallbacks": 1,
+      "tokens": {
+        "input_tokens": 24307,
+        "output_tokens": 1528,
+        "total_tokens": 25835,
+        "cached_input_tokens": 18560,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "exa:search": 1,
+        "exa:read": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://doi.org/10.1037/0033-2909.132.3.354"
+      ],
+      "model_usd": 0.004559352,
+      "model_cny": 0.03095204,
+      "model_all_input_uncached_sensitivity_usd": 0.00766476,
+      "web_auto_tariff_usd": 0.008,
+      "total_auto_tariff_usd": 0.012559352,
+      "total_instant_tariff_sensitivity_usd": 0.009559352,
+      "total_exa_tavily_credits_sensitivity_usd": 0.004559352,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.0,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "Cepeda 2006 Distributed practice in verbal recall meta-analysis spacing effect retention interval"
+      }
+    },
+    {
+      "id": "spaced_practice:deepseek_first",
+      "configuration": "deepseek_first",
+      "case": "spaced_practice",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": {
+        "after_provider": "deepseek",
+        "reason": "insufficient"
+      },
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 35.867,
+      "model_requests": 7,
+      "web_requests": 4,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 26943,
+        "output_tokens": 1974,
+        "total_tokens": 28917,
+        "cached_input_tokens": 20864,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "deepseek:search": 1,
+        "exa:read": 2,
+        "exa:search": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://psycnet.apa.org/record/2006-06233-002",
+        "https://doi.org/10.1037/0033-2909.132.3.354"
+      ],
+      "model_usd": 0.005474396,
+      "model_cny": 0.03717986,
+      "model_all_input_uncached_sensitivity_usd": 0.00992406,
+      "web_auto_tariff_usd": 0.00975,
+      "total_auto_tariff_usd": 0.015224396,
+      "total_instant_tariff_sensitivity_usd": 0.012224396,
+      "total_exa_tavily_credits_sensitivity_usd": 0.006224396,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.005,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "Cepeda 2006 Distributed practice in verbal recall meta-analysis spacing effect retention interval"
+      }
+    },
+    {
+      "id": "figma_autolayout:deepseek_first",
+      "configuration": "deepseek_first",
+      "case": "figma_autolayout",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": {
+        "after_provider": "deepseek",
+        "reason": "no_usable_source"
+      },
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 27.831,
+      "model_requests": 6,
+      "web_requests": 3,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 26986,
+        "output_tokens": 1340,
+        "total_tokens": 28326,
+        "cached_input_tokens": 18944,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "deepseek:search": 1,
+        "exa:search": 1,
+        "exa:read": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma"
+      ],
+      "model_usd": 0.00520791,
+      "model_cny": 0.03534714,
+      "model_all_input_uncached_sensitivity_usd": 0.00855831,
+      "web_auto_tariff_usd": 0.00875,
+      "total_auto_tariff_usd": 0.01395791,
+      "total_instant_tariff_sensitivity_usd": 0.01095791,
+      "total_exa_tavily_credits_sensitivity_usd": 0.00595791,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.005,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "Figma Auto layout Hug contents vs Fill container width official help"
+      }
+    },
+    {
+      "id": "figma_autolayout:exa_first",
+      "configuration": "exa_first",
+      "case": "figma_autolayout",
+      "status": "completed",
+      "error": null,
+      "search_state": "verified",
+      "evidence_state": "supported",
+      "quality_supplement": null,
+      "full_grounded_pass": true,
+      "facts_complete": true,
+      "elapsed_seconds": 29.833,
+      "model_requests": 5,
+      "web_requests": 2,
+      "model_repairs_or_transport_fallbacks": 0,
+      "tokens": {
+        "input_tokens": 24935,
+        "output_tokens": 1211,
+        "total_tokens": 26146,
+        "cached_input_tokens": 18816,
+        "reasoning_output_tokens": 0
+      },
+      "web_counts": {
+        "exa:search": 1,
+        "exa:read": 1
+      },
+      "web_failed": 0,
+      "source_urls": [
+        "https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout"
+      ],
+      "model_usd": 0.00398604,
+      "model_cny": 0.02703366,
+      "model_all_input_uncached_sensitivity_usd": 0.00712908,
+      "web_auto_tariff_usd": 0.008,
+      "total_auto_tariff_usd": 0.01198604,
+      "total_instant_tariff_sensitivity_usd": 0.00898604,
+      "total_exa_tavily_credits_sensitivity_usd": 0.00398604,
+      "additional_unknown_failed_charge_sensitivity_usd": 0.0,
+      "additional_tavily_extract_rounding_sensitivity_usd": 0.0,
+      "deepseek_tools_cny": 0.0,
+      "intent": {
+        "intents": [
+          "question"
+        ],
+        "scope": "conversation",
+        "verification_mode": null,
+        "needs_verification": true,
+        "public_search_query": "Figma Auto layout Hug contents vs Fill container width official help"
+      }
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "frozen_before_execution": true,
+  "production_commit": "8778600175c4592df96e284d42896cd93373c5cf",
+  "comparison": "Sixteen fresh, isolated ordinary conversations; real intent, preparation, search, source selection, reading, projection, assessment and answer",
+  "max_model_requests": 192,
+  "max_web_requests": 160,
+  "max_model_requests_per_job": 12,
+  "max_requests_per_model_step": 2,
+  "max_tool_requests_per_job": 10,
+  "jobs": 16,
+  "repeats": 1,
+  "models": "Unchanged configured ROUTER_MODEL, RISK_MODEL and COACH_MODEL; smart strength; existing bounded repair and run deadlines",
+  "orders": {
+    "exa_first": ["exa", "tavily", "deepseek"],
+    "deepseek_first": ["deepseek", "exa", "tavily"]
+  },
+  "execution_order": "case order as listed; Exa first on even case index and DeepSeek first on odd case index; sequential, shared cooldowns and upstream caches retained",
+  "read_order": ["exa", "tavily", "deepseek", "browser"],
+  "browser": true,
+  "no_startup_probes": true,
+  "no_daily_data_or_app": true,
+  "no_save_or_learning_generation": true,
+  "balance_reads": "At most four read-only DeepSeek /user/balance requests, two key namespaces before and after; raw balances private, account deltas not per-job invoices",
+  "failure_policy": "Retain all failed jobs. No repeated jobs, new topics, budget refills, production fixes or prompt tuning during execution. At most the existing two requests per logical model step and twelve per run. Evaluation guards admit before network dispatch.",
+  "review": "Freeze provider-label-masked manual checks before unblinding. Same evaluator, not an independent human panel. Read bodies and actual assessment/answer inputs accompany final replies. All mandatory facts must be correct, requested provenance met, citations read and materially supporting claims for a fully grounded pass. Honest partial answers separate from unsupported confidence. Runtime completed/supported are not quality grades. No content judge API calls.",
+  "cost": "All admitted models and web attempts including failures and repairs counted. Deduplicate usage by local request identity. Public tariff estimates separate from account balance deltas; Exa authenticated MCP tariff mapping, credits and Tavily extract rounding remain assumptions. Report sum cost / fully grounded answers, undefined when denominator is zero. No assertion of universal superiority from a purposive eight-topic sample.",
+  "cases": [
+    {
+      "id": "javascript_arrays",
+      "question": "请依据 MDN 文档简短比较 JavaScript 数组 map 和 forEach：返回什么、会不会自动改原数组？用 [1,2] 各举一个小例子，并附来源。",
+      "references": ["https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map", "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach"],
+      "checks": ["map constructs a new array from callback return values", "forEach returns undefined", "neither method automatically changes the original array, though callbacks can mutate it", "both [1,2] examples have correct results and return values"],
+      "required_domains": ["developer.mozilla.org"]
+    },
+    {
+      "id": "git_undo",
+      "question": "请依据 Git 官方文档，简短解释 revert 与 reset --hard 的区别。一个普通提交已推送到多人共享分支，想撤销它，通常选哪个？说明历史与未提交改动的影响，并附来源。",
+      "references": ["https://git-scm.com/docs/git-revert", "https://git-scm.com/docs/git-reset"],
+      "checks": ["revert records a new commit reversing the selected commit, preserving existing history", "reset --hard moves the current branch/HEAD and resets index and working tree to the target", "reset --hard discards tracked uncommitted changes", "revert normally suits a pushed shared ordinary commit; no need to rewrite shared history"],
+      "required_domains": ["git-scm.com"]
+    },
+    {
+      "id": "sqlite_wal",
+      "question": "请依据 SQLite 官方资料，简短说明 WAL 模式下读写能否并行、能否同时有多个 writer，以及数据库文件能不能放在多台机器共享的网络文件系统上；附来源。",
+      "references": ["https://sqlite.org/wal.html"],
+      "checks": ["WAL generally permits concurrent readers and a writer", "there is still only one writer at a time", "WAL requires same-host shared memory and is unsuitable for multi-host network filesystems"],
+      "required_domains": ["sqlite.org"]
+    },
+    {
+      "id": "http_revalidation",
+      "question": "请依据 MDN 或 HTTP 规范，简短说明浏览器怎样用 ETag 与 If-None-Match 重新验证一个缓存的 GET 响应：匹配和不匹配各返回什么，304 有没有新的响应正文？附来源。",
+      "references": ["https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-None-Match", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag", "https://httpwg.org/specs/rfc9110.html#field.if-none-match"],
+      "checks": ["client sends cached entity tag in If-None-Match", "matching current representation yields 304 for conditional GET", "304 has no new response body and allows cached body reuse", "a changed nonmatching representation normally yields 200 with the new body and tag"],
+      "required_domains": ["developer.mozilla.org", "httpwg.org", "rfc-editor.org"]
+    },
+    {
+      "id": "kubernetes_probes",
+      "question": "请按 Kubernetes 官方文档，简短区分 readiness、liveness 和 startup probe：失败分别怎样影响流量或重启？配置 startup probe 后，其他两种探针什么时候开始？附来源。",
+      "references": ["https://kubernetes.io/docs/concepts/workloads/pods/probes/"],
+      "checks": ["failed readiness stops matching Service traffic without itself restarting the container", "failed liveness past the configured threshold causes a container restart subject to policy", "startup success gates both readiness and liveness; startup failure past tolerance kills the container subject to restart policy"],
+      "required_domains": ["kubernetes.io"]
+    },
+    {
+      "id": "deepseek_search_contract",
+      "question": "请按 DeepSeek 当前官方 Search/Fetch 文档，简短说明 query 的长度上限、count 范围、改变 count 会不会改变单次价格，以及空结果或请求失败是否收费；附来源。",
+      "references": ["https://api-docs.deepseek.com/zh-cn/guides/search/", "https://api-docs.deepseek.com/guides/search/"],
+      "checks": ["query contains 1 to 128 Unicode characters and is not blank", "count ranges from 1 to 50 with default 10", "count does not change per-request tariff", "only successful HTTP 200 requests with results/body are charged; empty or failed requests are not"],
+      "required_domains": ["api-docs.deepseek.com"]
+    },
+    {
+      "id": "spaced_practice",
+      "question": "请根据 Cepeda 等 2006 年 Distributed practice in verbal recall 这篇元分析的原始摘要，简短说明：复习间隔和最终保留时长是什么关系，能不能据此定出人人通用的最佳复习天数？给出论文来源。",
+      "references": ["https://pubmed.ncbi.nlm.nih.gov/16719566/", "https://doi.org/10.1037/0033-2909.132.3.354"],
+      "checks": ["identifies Cepeda et al. 2006 distributed practice meta-analysis", "interstudy interval and retention interval jointly affect retention", "optimal interstudy interval grows as the desired retention interval grows", "does not invent a universal fixed schedule or a numeric ratio unsupported by the abstract"],
+      "required_domains": ["pubmed.ncbi.nlm.nih.gov", "apa.org", "psycnet.apa.org"]
+    },
+    {
+      "id": "figma_autolayout",
+      "question": "请依据 Figma 官方帮助，简短解释 Auto layout 的 Hug contents 与 Fill container 怎样决定宽度。文案变长的按钮通常怎么选？想铺满父容器的一行通常怎么选？附来源。",
+      "references": ["https://help.figma.com/hc/en-us/articles/360040451373-Guide-to-auto-layout-in-Figma"],
+      "checks": ["Hug sizes an auto-layout frame around its children and spacing/padding", "Fill uses available space within a parent auto-layout frame", "a content-sized button normally hugs its text plus padding", "a full-width row normally fills its parent; distinction is evaluated per axis"],
+      "required_domains": ["help.figma.com"]
+    }
+  ]
+}

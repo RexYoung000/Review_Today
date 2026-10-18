@@ -1,0 +1,421 @@
+{
+  "reviewed_at": "2026-10-18T09:15:25.168035+00:00",
+  "packet_sha256": "e6161a55efef48631cda14b74913cf81256b27879402cf856d6f6766625f06d3",
+  "explicit_provider_labels_hidden": true,
+  "independent_reviewer": false,
+  "fully_blind": false,
+  "limitations": "Same agent manually reviewed. Packets retain public source identity and some timestamps, allowing possible order inference. Treat as provider-label-masked checks, not independent blinded scientific review. No provider mapping/cost summary read before freezing these judgments.",
+  "grading_scope": "Checks address the explicit user question. Optional defaults and implementation qualifiers are evaluated for correctness if asserted; omissions outside the asked scope do not alone fail a check. Source support can be direct statements or clearly valid applications of documented semantics. Internal evidence state is not a quality grade.",
+  "rows": [
+    {
+      "blind_id": "17c90f41",
+      "case": "javascript_arrays",
+      "factual_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "完整正确，MDN map 与 forEach 两份实读正文支持返回值、原数组语义及示例；有重复的内联示例，未初始化 total 的内联片段不作为完整示例，主代码块正确。",
+      "job": "javascript_arrays:deepseek_first",
+      "configuration": "deepseek_first"
+    },
+    {
+      "blind_id": "e5679599",
+      "case": "javascript_arrays",
+      "factual_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        false,
+        false,
+        false
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": false,
+      "unsupported_source_confidence": true,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "核心事实与主代码正确；仅实读 MDN map 页面，其对 forEach 的替代用法提及不足以证明 forEach 返回 undefined。核验和回答却归为来源已支持，属于出处覆盖过度。",
+      "job": "javascript_arrays:exa_first",
+      "configuration": "exa_first"
+    },
+    {
+      "blind_id": "86003f8f",
+      "case": "git_undo",
+      "factual_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "实读官方 revert 与 reset 文档；反向新提交、分支及暂存区/工作区效果、未提交修改和已共享历史警告均有直接文字或明确示例支持。",
+      "job": "git_undo:exa_first",
+      "configuration": "exa_first"
+    },
+    {
+      "blind_id": "73a404c6",
+      "case": "figma_autolayout",
+      "factual_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "Figma 官方正文直接支持 Hug/Fill、两轴和父子尺寸例子；按钮与铺满行是恰当应用推断。",
+      "job": "figma_autolayout:exa_first",
+      "configuration": "exa_first"
+    },
+    {
+      "blind_id": "0e393fe0",
+      "case": "deepseek_search_contract",
+      "factual_checks": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "facts_complete": false,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": false,
+      "unsupported_source_confidence": false,
+      "honest_partial": true,
+      "critical_factual_error": false,
+      "note": "正文节选漏 query 字段；回答坦承未取得上限，其余三问正确有据，因此不完整。内部自判 supported 不能使缺失上限变成整题已验证。",
+      "job": "deepseek_search_contract:deepseek_first",
+      "configuration": "deepseek_first"
+    },
+    {
+      "blind_id": "793e0812",
+      "case": "sqlite_wal",
+      "factual_checks": [
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "三项必需事实均由 SQLite 官网正文直接支持。取到 www2 的 draft 页面，但这些语义与现行正式页一致，题目未限定正式版 URL。",
+      "job": "sqlite_wal:deepseek_first",
+      "configuration": "deepseek_first"
+    },
+    {
+      "blind_id": "033a4ee1",
+      "case": "figma_autolayout",
+      "factual_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "官方节选虽在 Fill 详细段落前截断，前面属性表已直接给出 Fill 可用空间定义；Hug 示例、父子限制及两种应用有据。未取整的这条行是赘余病句，未改变核心规则。",
+      "job": "figma_autolayout:deepseek_first",
+      "configuration": "deepseek_first"
+    },
+    {
+      "blind_id": "e435b38c",
+      "case": "spaced_practice",
+      "factual_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "DOI 出版方摘要直接支持 ISI 与 retention interval 联合变化及最优间隔随目标保留期增大；无统一天数外推。另一 APA 壳页49字符不能单独算证据，但 DOI 正文足够。",
+      "job": "spaced_practice:deepseek_first",
+      "configuration": "deepseek_first"
+    },
+    {
+      "blind_id": "50c7401c",
+      "case": "kubernetes_probes",
+      "factual_checks": [
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "官方探针正文支持流量/重启区别、startup 失败及其对其他探针的门控。",
+      "job": "kubernetes_probes:deepseek_first",
+      "configuration": "deepseek_first"
+    },
+    {
+      "blind_id": "c4cc2ad8",
+      "case": "git_undo",
+      "factual_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": false,
+      "unsupported_source_confidence": false,
+      "honest_partial": true,
+      "critical_factual_error": false,
+      "note": "核心事实正确；未取得 reset 手册，只读 revert 与官方书籍补丁页。最终明确区分共享协作惯例及未核完整机制，诚实但未完成全部官方依据。",
+      "job": "git_undo:deepseek_first",
+      "configuration": "deepseek_first"
+    },
+    {
+      "blind_id": "e7c4a506",
+      "case": "sqlite_wal",
+      "factual_checks": [
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "SQLite 官网节选直接支持读写并行、单 writer、共享内存及网络文件系统限制；额外快照/checkpoint 说明也有依据。",
+      "job": "sqlite_wal:exa_first",
+      "configuration": "exa_first"
+    },
+    {
+      "blind_id": "0f9dc731",
+      "case": "http_revalidation",
+      "factual_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "四项必需事实正确，MDN 两页实读正文覆盖；额外弱比较/优先级也有依据。末尾提示未完成两个独立来源核验，但用户只要求 MDN 或规范，并未要求跨站核验；不因内部 insufficient 名称扣事实或出处分，单记额外摩擦。",
+      "job": "http_revalidation:exa_first",
+      "configuration": "exa_first"
+    },
+    {
+      "blind_id": "b621eaa5",
+      "case": "kubernetes_probes",
+      "factual_checks": [
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "官方中文探针正文支持全部必要事实；表格启动重启的会字与同格按 restartPolicy 处理一起阅读，不当作无条件忽略重启策略。",
+      "job": "kubernetes_probes:exa_first",
+      "configuration": "exa_first"
+    },
+    {
+      "blind_id": "a32c427a",
+      "case": "spaced_practice",
+      "factual_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "DOI 原始摘要满足四项，结论与范围清楚，不虚构固定天数或比例。",
+      "job": "spaced_practice:exa_first",
+      "configuration": "exa_first"
+    },
+    {
+      "blind_id": "3c919800",
+      "case": "http_revalidation",
+      "factual_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "facts_complete": true,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": true,
+      "unsupported_source_confidence": false,
+      "honest_partial": false,
+      "critical_factual_error": false,
+      "note": "MDN 中文缓存指南节选完整覆盖 ETag 条件请求、304、无正文及变化后 200 新表示；单份足以满足用户 MDN 或规范要求。",
+      "job": "http_revalidation:deepseek_first",
+      "configuration": "deepseek_first"
+    },
+    {
+      "blind_id": "677c238b",
+      "case": "deepseek_search_contract",
+      "factual_checks": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "grounded_checks": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "facts_complete": false,
+      "requested_provenance": true,
+      "citation_urls_actually_read": true,
+      "full_grounded_pass": false,
+      "unsupported_source_confidence": false,
+      "honest_partial": true,
+      "critical_factual_error": false,
+      "note": "官方 API 参数页支持长度与 count；计费指南地址返回首页内容，未核实价格/失败与空结果计费。回答明确保留缺口，无猜补，不完整。未询问默认值时不因省略默认值单独扣分。",
+      "job": "deepseek_search_contract:exa_first",
+      "configuration": "exa_first"
+    }
+  ],
+  "unblinded_at": "2026-10-18T09:16:45.233045+00:00",
+  "frozen_review_sha256": "624fd2a802fcd9805b59c56083d21dddf61285df432ca02f682e76e74549349b"
+}
