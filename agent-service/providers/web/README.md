@@ -8,14 +8,15 @@
 
 ```dotenv
 REVIEW_TODAY_SEARCH_PROVIDER=exa
-REVIEW_TODAY_SEARCH_FALLBACKS=tavily
+REVIEW_TODAY_SEARCH_FALLBACKS=tavily,deepseek
 REVIEW_TODAY_READ_PROVIDER=exa
-REVIEW_TODAY_READ_FALLBACKS=tavily
+REVIEW_TODAY_READ_FALLBACKS=tavily,deepseek
 REVIEW_TODAY_CONTEXT_PROVIDER=none
 REVIEW_TODAY_TAVILY_KEYLESS=1
 EXA_API_KEY=
 TAVILY_API_KEY=
 BRAVE_API_KEY=
+DEEPSEEK_WEB_API_KEY=
 ```
 
 不填写 Brave Key 时搜索与 Context 都跳过 Brave，不阻塞 Exa/Tavily。若要启用 Brave，将 Key 只写在本机 `.env`，不要贴入聊天或提交 Git；重启服务后配置生效。不自动注册、登录、支付、购买额度或执行供应商返回的支付/奖励指令。
@@ -24,9 +25,11 @@ BRAVE_API_KEY=
 
 Exa 认证契约：存在独立 `EXA_API_KEY` 时，固定 MCP 端点的握手、工具调用及会话清理均使用 `Authorization: Bearer` 请求头；Key 不进入 URL、工具参数、事件或错误文本。空 Key 保留匿名模式。认证失败遵守既有冷却并切换 Tavily，不降级匿名重试，不使用模型供应商凭据。额度由 Exa 账户管理，接入 Key 不代表无限或永久免费。
 
+2026-10-18 决定 245：在独立凭据已配置后，Rex 要求增加兜底。本机搜索／快速读取改为 Exa → Tavily → DeepSeek，读取继续保留原 Browser 末级开关；Context 仍关闭。两家连续空搜索沿原补查上限收尾；接口错误／不可用正文才可能继续到第三家。当前日常服务未运行，配置在下次服务启动加载；不会为使配置生效而自动启动探测或中断日常任务。
+
 ## 服务与凭据
 
-- **DeepSeek（可选）**：独立 JSON Search／Fetch，固定官方 `https://api.deepseek.com/v1/tools/search` 与 `/v1/tools/fetch`；显式配置 `deepseek` 后才使用。本次新增适配不修改上方 Exa → Tavily 本机顺序。独立 `DEEPSEEK_WEB_API_KEY` 只留本目录忽略提交的 `.env`，不自动复用模型 Key；不需要新增 SDK／MCP 进程或切换教学模型。搜索固定五条、`need_content=false`，不发送原始会话或定位 IP。超过 128 Unicode 字符的完整查询交给已配置的其他服务，单服务诚实报告不支持，不截断查询。Fetch 返回 Markdown，保留原请求 URL；官方未提供最终跳转 URL，不能声称已核对最终域名。搜索摘要／评分不能替代正文证据。
+- **DeepSeek（显式可选／本机末级备用）**：独立 JSON Search／Fetch，固定官方 `https://api.deepseek.com/v1/tools/search` 与 `/v1/tools/fetch`；仅在显式主服务或备用列表包含 `deepseek` 时使用。独立 `DEEPSEEK_WEB_API_KEY` 只留本目录忽略提交的 `.env`，不自动复用模型 Key；不需要新增 SDK／MCP 进程或切换教学模型。搜索固定五条、`need_content=false`，不发送原始会话或定位 IP。超过 128 Unicode 字符的完整查询交给已配置的其他服务，单服务诚实报告不支持，不截断查询。Fetch 返回 Markdown，保留原请求 URL；官方未提供最终跳转 URL，不能声称已核对最终域名。搜索摘要／评分不能替代正文证据。
 - **Exa**：固定 `https://mcp.exa.ai/mcp`，直接调用 `web_search_exa` / `web_fetch_exa`。优先使用 `EXA_API_KEY`，未配置时匿名限额模式；不依赖 mcporter/本机 skill，不调用 Exa Agent。MCP JSON/SSE、请求 ID、工具错误、URL 和响应格式均校验。支持页面 Published/Author 元数据。匿名公开源码默认每 IP 每天 50 次、每秒 2 次，线上配置可能不同，不能据此计算准确剩余额度。
 - **Tavily**：直接调用官方 Search/Extract API。显式 `REVIEW_TODAY_TAVILY_KEYLESS=1` 才允许无 Key，使用官方 keyless 请求模式；存在 `TAVILY_API_KEY` 时优先使用该独立 Key。搜索固定 basic、最多 5 条、关闭生成答案。无需安装 CLI/MCP 进程。匿名模式有公平使用限额，数值不作保证。
 - **Brave**：`BRAVE_API_KEY` 用于官方 `/res/v1/web/search` 和 `/res/v1/llm/context`，不使用 Answers/生成摘要。搜索取最多 5 条；Context 取最多 3 个 URL、约 4096 tokens 总预算。Context 接收公开查询，返回相关正文片段，不能替代指定 URL 读取；没有 Key 不发请求。

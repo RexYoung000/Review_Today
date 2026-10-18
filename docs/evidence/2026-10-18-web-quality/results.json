@@ -1,0 +1,1770 @@
+{
+  "started_at": "2026-10-18T02:13:28.670629+00:00",
+  "manifest_sha256": "361541c13aa6d07262361c9810cbc18e121d0339756b285dd1666d8eead961c3",
+  "model": "deepseek-v4-flash",
+  "reasoning_effort": "none",
+  "max_retries": 0,
+  "startup_probes": 0,
+  "model_request_limit": 9,
+  "web_counts": {
+    "search": 18,
+    "read": 34
+  },
+  "model_requests": [
+    {
+      "request_id": "150d73de-1187-4efa-a92b-1adb0bf4c042",
+      "case": "python",
+      "provider": "exa",
+      "started_at": "2026-10-18T02:17:25.611029+00:00",
+      "status": "ok"
+    },
+    {
+      "request_id": "0b04160a-9e88-4692-bc1f-3458358d5f2a",
+      "case": "python",
+      "provider": "tavily",
+      "started_at": "2026-10-18T02:17:28.752485+00:00",
+      "status": "ok"
+    },
+    {
+      "request_id": "bd105921-0a62-470f-a3d3-38b3c2083e4d",
+      "case": "python",
+      "provider": "deepseek",
+      "started_at": "2026-10-18T02:17:31.411027+00:00",
+      "status": "ok"
+    },
+    {
+      "request_id": "9623d71f-a400-4791-a38c-095c035bcdf1",
+      "case": "deepseek_api",
+      "provider": "tavily",
+      "started_at": "2026-10-18T02:17:34.176049+00:00",
+      "status": "ok"
+    },
+    {
+      "request_id": "470cce62-a680-4ca6-964f-03d8a8779d85",
+      "case": "deepseek_api",
+      "provider": "deepseek",
+      "started_at": "2026-10-18T02:17:38.076108+00:00",
+      "status": "ok"
+    },
+    {
+      "request_id": "fbc9fe8c-6874-4b72-ace9-0c7acf068f46",
+      "case": "deepseek_api",
+      "provider": "exa",
+      "started_at": "2026-10-18T02:17:41.233317+00:00",
+      "status": "ok"
+    },
+    {
+      "request_id": "c808f34c-ba41-49ff-be63-42c677c5b5c7",
+      "case": "swift_cancel",
+      "provider": "deepseek",
+      "started_at": "2026-10-18T02:17:43.345454+00:00",
+      "status": "ok"
+    },
+    {
+      "request_id": "127815b0-6164-45a5-8981-c631e027b661",
+      "case": "swift_cancel",
+      "provider": "exa",
+      "started_at": "2026-10-18T02:17:45.936016+00:00",
+      "status": "ok"
+    }
+  ],
+  "cases": [
+    {
+      "case": "python",
+      "provider": "exa",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 5.409,
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.15.0 documentation",
+          "body_chars": 20000,
+          "body_sha256": "c926d4f8e6099f388896e2eca1e078be57d7ce4ebe469982502e290d9b6ac3e0",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 5.009,
+          "url": "https://docs.python.org/zh-cn/3.13/faq/programming.html",
+          "title": "编程常见问题 — Python 3.13.12 文档",
+          "body_chars": 20000,
+          "body_sha256": "514091965549aba9ca4adcfe7fb75c9e4c0ad6ad03dca6d173578cc7410c68f1",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 8.715
+      },
+      "results": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.14.5 documentation"
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.13/faq/programming.html",
+          "title": "编程常见问题— Python 3.13.16 文档"
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.8/faq/programming.html",
+          "title": "编程常见问题— Python 3.8.20 文档"
+        },
+        {
+          "url": "https://docs.python.org/3/builtins/stdtypes.html",
+          "title": "Built-in Types — Python 3.14.8 documentation"
+        },
+        {
+          "url": "https://docs.python.org/3/library/array.html",
+          "title": "array — Efficient arrays of numeric values — Python 3.14.8 documentation"
+        }
+      ],
+      "input_sha256": "29390f50b38cade75d6325baa9ffc47b072c6ec989ba3f68f4415ee475debe44",
+      "source_manifest": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.15.0 documentation",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "c926d4f8e6099f388896e2eca1e078be57d7ce4ebe469982502e290d9b6ac3e0",
+            "query_hash": "6239ed22859e708e9d97aa1d82d21b5ddd74f5273f314a9af71a1927794756fc",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.13/faq/programming.html",
+          "title": "编程常见问题 — Python 3.13.12 文档",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "514091965549aba9ca4adcfe7fb75c9e4c0ad6ad03dca6d173578cc7410c68f1",
+            "query_hash": "6239ed22859e708e9d97aa1d82d21b5ddd74f5273f314a9af71a1927794756fc",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 4960,
+                "end": 8960,
+                "reason": "query_match"
+              }
+            ]
+          }
+        }
+      ],
+      "generation": {
+        "status": "ok",
+        "usage": [
+          {
+            "response_id": "3bf9522a-6c86-46f3-9e87-4f70f81e2281",
+            "input_tokens": 4005,
+            "output_tokens": 469,
+            "total_tokens": 4474,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "reported_model": "deepseek-flash",
+            "request_id": "150d73de-1187-4efa-a92b-1adb0bf4c042"
+          }
+        ],
+        "cited_urls_in_supplied_sources": true,
+        "elapsed_seconds": 3.201,
+        "answer_sha256": "70ab6ec1fca99f0a33f68799298df3cd75804d719f703d400242e3a7f0f46f05"
+      }
+    },
+    {
+      "case": "python",
+      "provider": "tavily",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 2.565,
+          "url": "https://docs.python.org/3/library/collections.html",
+          "title": "https://docs.python.org/3/library/collections.html",
+          "body_chars": 19999,
+          "body_sha256": "294535546fad84405495825197fb8488bc9c59db89b49cebde341361eaa60bbb",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 1.455,
+          "url": "https://docs.python.org/3/library/array.html",
+          "title": "https://docs.python.org/3/library/array.html",
+          "body_chars": 9770,
+          "body_sha256": "146e37330056b15dcf078a4e92f4c22e464a0a329398f3690a68ddfb8176fea7",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 3.535
+      },
+      "results": [
+        {
+          "url": "https://docs.python.org/3/library/collections.html",
+          "title": "collections — Container datatypes — Python 3.15.0 documentation"
+        },
+        {
+          "url": "https://docs.python.org/3/library/array.html",
+          "title": "array — Efficient arrays of numeric values — Python 3.15.0 documentation"
+        },
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.15.0 documentation"
+        },
+        {
+          "url": "https://docs.python.org/3/library/pickle.html",
+          "title": "pickle — Python object serialization — Python 3.15.0 documentation"
+        },
+        {
+          "url": "https://docs.python.org/3/builtins/threadsafety.html",
+          "title": "Thread Safety Guarantees — Python 3.15.0 documentation"
+        }
+      ],
+      "input_sha256": "7f4ecf48359fd23ff6cbbe99a41085783436d290ea1641486fb9cbaa0f191ae9",
+      "source_manifest": [
+        {
+          "url": "https://docs.python.org/3/library/collections.html",
+          "title": "https://docs.python.org/3/library/collections.html",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "294535546fad84405495825197fb8488bc9c59db89b49cebde341361eaa60bbb",
+            "query_hash": "6239ed22859e708e9d97aa1d82d21b5ddd74f5273f314a9af71a1927794756fc",
+            "original_chars": 19999,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 15999,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 14800,
+                "end": 18800,
+                "reason": "query_match"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://docs.python.org/3/library/array.html",
+          "title": "https://docs.python.org/3/library/array.html",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "146e37330056b15dcf078a4e92f4c22e464a0a329398f3690a68ddfb8176fea7",
+            "query_hash": "6239ed22859e708e9d97aa1d82d21b5ddd74f5273f314a9af71a1927794756fc",
+            "original_chars": 9770,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 5770,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 3400,
+                "end": 7400,
+                "reason": "query_match"
+              }
+            ]
+          }
+        }
+      ],
+      "generation": {
+        "status": "ok",
+        "usage": [
+          {
+            "response_id": "96bd4df7-fb72-45ed-956c-313d278e4c39",
+            "input_tokens": 2738,
+            "output_tokens": 467,
+            "total_tokens": 3205,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "reported_model": "deepseek-flash",
+            "request_id": "0b04160a-9e88-4692-bc1f-3458358d5f2a"
+          }
+        ],
+        "cited_urls_in_supplied_sources": true,
+        "elapsed_seconds": 2.647,
+        "answer_sha256": "923dfd5f955659078dd5d8eb33ff80a07d98b118a74c2019f5f0d1afb50cccba"
+      }
+    },
+    {
+      "case": "python",
+      "provider": "deepseek",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "started",
+              "code": ""
+            },
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "succeeded",
+              "code": ""
+            }
+          ],
+          "elapsed_seconds": 11.7,
+          "url": "https://docs.python.org/zh-cn/2/_sources/tutorial/datastructures.rst.txt",
+          "title": "https://docs.python.org/zh-cn/2/_sources/tutorial/datastructures.rst.txt",
+          "body_chars": 19999,
+          "body_sha256": "d293819ad625132b2915f5ab1172c05d4b27671af71c026111047b2909e7ce23",
+          "details": {
+            "provider": "deepseek",
+            "requested_url": "https://docs.python.org/zh-cn/2/_sources/tutorial/datastructures.rst.txt",
+            "content_kind": "page_text",
+            "truncated": true
+          }
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "started",
+              "code": ""
+            },
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "succeeded",
+              "code": ""
+            }
+          ],
+          "elapsed_seconds": 4.182,
+          "url": "https://docs.python.org/fr/2/_sources/tutorial/datastructures.rst.txt",
+          "title": "https://docs.python.org/fr/2/_sources/tutorial/datastructures.rst.txt",
+          "body_chars": 19999,
+          "body_sha256": "d293819ad625132b2915f5ab1172c05d4b27671af71c026111047b2909e7ce23",
+          "details": {
+            "provider": "deepseek",
+            "requested_url": "https://docs.python.org/fr/2/_sources/tutorial/datastructures.rst.txt",
+            "content_kind": "page_text",
+            "truncated": true
+          }
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "started",
+            "code": ""
+          },
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "succeeded",
+            "code": ""
+          }
+        ],
+        "elapsed_seconds": 0.364
+      },
+      "results": [
+        {
+          "url": "https://docs.python.org/zh-cn/2/_sources/tutorial/datastructures.rst.txt",
+          "title": "https://docs.python.org/zh-cn/2/_sources/tutorial/datastructures.rst.txt"
+        },
+        {
+          "url": "https://docs.python.org/fr/2/_sources/tutorial/datastructures.rst.txt",
+          "title": "https://docs.python.org/fr/2/_sources/tutorial/datastructures.rst.txt"
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.10/tutorial/datastructures.html?highlight=queue",
+          "title": "5. 数据结构¶"
+        },
+        {
+          "url": "https://docs.python.org/ko/3.11/tutorial/datastructures.html#nested-list-comprehensions",
+          "title": "5. 자료 구조"
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+          "title": "5. 数据结构"
+        }
+      ],
+      "input_sha256": "7a962dc3773bc31a990a794e089ff359b036fc54ac49072acb506d8ac3b1f570",
+      "source_manifest": [
+        {
+          "url": "https://docs.python.org/zh-cn/2/_sources/tutorial/datastructures.rst.txt",
+          "title": "https://docs.python.org/zh-cn/2/_sources/tutorial/datastructures.rst.txt",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "d293819ad625132b2915f5ab1172c05d4b27671af71c026111047b2909e7ce23",
+            "query_hash": "6239ed22859e708e9d97aa1d82d21b5ddd74f5273f314a9af71a1927794756fc",
+            "original_chars": 19999,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 15999,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://docs.python.org/fr/2/_sources/tutorial/datastructures.rst.txt",
+          "title": "https://docs.python.org/fr/2/_sources/tutorial/datastructures.rst.txt",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "d293819ad625132b2915f5ab1172c05d4b27671af71c026111047b2909e7ce23",
+            "query_hash": "6239ed22859e708e9d97aa1d82d21b5ddd74f5273f314a9af71a1927794756fc",
+            "original_chars": 19999,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 15999,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        }
+      ],
+      "generation": {
+        "status": "ok",
+        "usage": [
+          {
+            "response_id": "cfbee609-eccd-447f-ac3c-5710793ee47d",
+            "input_tokens": 4661,
+            "output_tokens": 437,
+            "total_tokens": 5098,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "reported_model": "deepseek-flash",
+            "request_id": "bd105921-0a62-470f-a3d3-38b3c2083e4d"
+          }
+        ],
+        "cited_urls_in_supplied_sources": true,
+        "elapsed_seconds": 2.777,
+        "answer_sha256": "bf16f58400ad2502439727ff9d45151f4927ccfd8b48ee782b4dbcb841e09028"
+      }
+    },
+    {
+      "case": "deepseek_api",
+      "provider": "tavily",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 2.298,
+          "url": "https://api-docs.deepseek.com/zh-cn/guides/search",
+          "title": "https://api-docs.deepseek.com/zh-cn/guides/search",
+          "body_chars": 6992,
+          "body_sha256": "b4121940efc6219285a1ee124eb6de5450263dd68b2454695e190480a1505a62",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 1.89,
+          "url": "https://api-docs.deepseek.com/zh-cn/news/news260910",
+          "title": "https://api-docs.deepseek.com/zh-cn/news/news260910",
+          "body_chars": 1432,
+          "body_sha256": "c7845a2d18c7a602d442430e35d842896870ae67bed1fb4c153d4f83dd096ed7",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 3.138
+      },
+      "results": [
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/guides/search",
+          "title": "网页搜索与抓取 | DeepSeek API Docs"
+        },
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/news/news260910",
+          "title": "DeepSeek V4.1 Flash：更强、更快、更普惠 | DeepSeek API Docs"
+        },
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+          "title": "模型 & 价格 | DeepSeek API Docs"
+        },
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/news/news251201",
+          "title": "DeepSeek V3.2 正式版：强化 Agent 能力，融入思考推理 | DeepSeek API Docs"
+        },
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/quick_start/agent_integrations/workbuddy",
+          "title": "接入 WorkBuddy/CodeBuddy | DeepSeek API Docs"
+        }
+      ],
+      "input_sha256": "61c189c7e14dd93ffa656ddd69e6c01879801421f1f3e7f8e46fa5deaf4b6724",
+      "source_manifest": [
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/guides/search",
+          "title": "https://api-docs.deepseek.com/zh-cn/guides/search",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "b4121940efc6219285a1ee124eb6de5450263dd68b2454695e190480a1505a62",
+            "query_hash": "31996629430d5a41fa2c491fca4664d3407c727a18fe5d528ce8599dcc911b6e",
+            "original_chars": 6992,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 2992,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 2992,
+                "end": 6992,
+                "reason": "query_match"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/news/news260910",
+          "title": "https://api-docs.deepseek.com/zh-cn/news/news260910",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "c7845a2d18c7a602d442430e35d842896870ae67bed1fb4c153d4f83dd096ed7",
+            "query_hash": "31996629430d5a41fa2c491fca4664d3407c727a18fe5d528ce8599dcc911b6e",
+            "original_chars": 1432,
+            "selected_chars": 1432,
+            "projected_chars": 1432,
+            "omitted_chars": 0,
+            "reason": "full",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 1432,
+                "reason": "full"
+              }
+            ]
+          }
+        }
+      ],
+      "generation": {
+        "status": "ok",
+        "usage": [
+          {
+            "response_id": "4fb859ac-f771-4a00-8ec7-c8a65ba4713e",
+            "input_tokens": 3358,
+            "output_tokens": 715,
+            "total_tokens": 4073,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "reported_model": "deepseek-flash",
+            "request_id": "9623d71f-a400-4791-a38c-095c035bcdf1"
+          }
+        ],
+        "cited_urls_in_supplied_sources": true,
+        "elapsed_seconds": 3.886,
+        "answer_sha256": "a1869b64427196d87745386494639ec931a8fb1df5d4f62f2f7491fb4ffaa010"
+      }
+    },
+    {
+      "case": "deepseek_api",
+      "provider": "deepseek",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "started",
+              "code": ""
+            },
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "succeeded",
+              "code": ""
+            }
+          ],
+          "elapsed_seconds": 0.233,
+          "url": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+          "title": "网页搜索与抓取",
+          "body_chars": 6402,
+          "body_sha256": "34e13f6ae1a8f83541fffe1a72860e59850ae6c1fe2278c821d4f4c3e824ebe5",
+          "details": {
+            "provider": "deepseek",
+            "requested_url": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+            "content_kind": "page_text",
+            "truncated": false
+          }
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "started",
+              "code": ""
+            },
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "succeeded",
+              "code": ""
+            }
+          ],
+          "elapsed_seconds": 0.15,
+          "url": "https://api-docs.deepseek.com/guides/search/",
+          "title": "Search & Fetch | DeepSeek API Docs",
+          "body_chars": 10279,
+          "body_sha256": "0469ad478d25e853ffe58f685d220d1faad1cea1f05f5822be34cfbddd98f77a",
+          "details": {
+            "provider": "deepseek",
+            "requested_url": "https://api-docs.deepseek.com/guides/search/",
+            "content_kind": "page_text",
+            "truncated": false
+          }
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "started",
+            "code": ""
+          },
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "succeeded",
+            "code": ""
+          }
+        ],
+        "elapsed_seconds": 0.283
+      },
+      "results": [
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+          "title": "网页搜索与抓取"
+        },
+        {
+          "url": "https://api-docs.deepseek.com/guides/search/",
+          "title": "Search & Fetch | DeepSeek API Docs"
+        },
+        {
+          "url": "https://api-docs.deepseek.com/api/search/",
+          "title": "Search | DeepSeek API Docs"
+        }
+      ],
+      "input_sha256": "0ba761454a0e44d3c88f9a67a422b2732aa8939e552e1a00203fcfa66509b879",
+      "source_manifest": [
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+          "title": "网页搜索与抓取",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "34e13f6ae1a8f83541fffe1a72860e59850ae6c1fe2278c821d4f4c3e824ebe5",
+            "query_hash": "31996629430d5a41fa2c491fca4664d3407c727a18fe5d528ce8599dcc911b6e",
+            "original_chars": 6402,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 2402,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 2402,
+                "end": 6402,
+                "reason": "query_match"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api-docs.deepseek.com/guides/search/",
+          "title": "Search & Fetch | DeepSeek API Docs",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "0469ad478d25e853ffe58f685d220d1faad1cea1f05f5822be34cfbddd98f77a",
+            "query_hash": "31996629430d5a41fa2c491fca4664d3407c727a18fe5d528ce8599dcc911b6e",
+            "original_chars": 10279,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 6279,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 6279,
+                "end": 10279,
+                "reason": "query_match"
+              }
+            ]
+          }
+        }
+      ],
+      "generation": {
+        "status": "ok",
+        "usage": [
+          {
+            "response_id": "964c9fc0-2ab2-492f-bb83-2a92c4fcc4d5",
+            "input_tokens": 4429,
+            "output_tokens": 519,
+            "total_tokens": 4948,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "reported_model": "deepseek-flash",
+            "request_id": "470cce62-a680-4ca6-964f-03d8a8779d85"
+          }
+        ],
+        "cited_urls_in_supplied_sources": true,
+        "elapsed_seconds": 3.162,
+        "answer_sha256": "8dc6bd8e0f7917cddbf393f26dc35370f7672f26f8d9484aa764538fe9957a39"
+      }
+    },
+    {
+      "case": "deepseek_api",
+      "provider": "exa",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 5.842,
+          "url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+          "title": "模型 & 价格 | DeepSeek API Docs",
+          "body_chars": 1491,
+          "body_sha256": "21cb57e3fa106c2025669be00e5f23fc7c6dfed9523c3465621d4454cd913c01",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 9.629,
+          "url": "https://api-docs.deepseek.com/zh-cn/updates",
+          "title": "更新日志 | DeepSeek API Docs",
+          "body_chars": 9243,
+          "body_sha256": "97ac70e5be5e3e2b21541a392f31ab64433f62ff4a4c2ce288b58d1a0ee5780b",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 11.147
+      },
+      "results": [
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+          "title": "模型 & 价格 | DeepSeek API Docs"
+        },
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/updates",
+          "title": "更新日志 | DeepSeek API Docs"
+        },
+        {
+          "url": "https://api-docs.deepseek.com/updates",
+          "title": "Change Log | DeepSeek API Docs"
+        },
+        {
+          "url": "https://api-docs.deepseek.com/quick_start/pricing",
+          "title": "Models & Pricing | DeepSeek API Docs"
+        },
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/news/news260813",
+          "title": "DeepSeek-V4-Pro 正式版上线 | DeepSeek API Docs"
+        }
+      ],
+      "input_sha256": "149b8dd5dc944fa7c85836fc97e6bfb39634bcabf54bd02201afd9e9ea035010",
+      "source_manifest": [
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+          "title": "模型 & 价格 | DeepSeek API Docs",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "21cb57e3fa106c2025669be00e5f23fc7c6dfed9523c3465621d4454cd913c01",
+            "query_hash": "31996629430d5a41fa2c491fca4664d3407c727a18fe5d528ce8599dcc911b6e",
+            "original_chars": 1491,
+            "selected_chars": 1491,
+            "projected_chars": 1491,
+            "omitted_chars": 0,
+            "reason": "full",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 1491,
+                "reason": "full"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://api-docs.deepseek.com/zh-cn/updates",
+          "title": "更新日志 | DeepSeek API Docs",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "97ac70e5be5e3e2b21541a392f31ab64433f62ff4a4c2ce288b58d1a0ee5780b",
+            "query_hash": "31996629430d5a41fa2c491fca4664d3407c727a18fe5d528ce8599dcc911b6e",
+            "original_chars": 9243,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 5243,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        }
+      ],
+      "generation": {
+        "status": "ok",
+        "usage": [
+          {
+            "response_id": "b856521f-9f03-444a-b563-896ca38036f9",
+            "input_tokens": 3623,
+            "output_tokens": 334,
+            "total_tokens": 3957,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "reported_model": "deepseek-flash",
+            "request_id": "fbc9fe8c-6874-4b72-ace9-0c7acf068f46"
+          }
+        ],
+        "cited_urls_in_supplied_sources": true,
+        "elapsed_seconds": 2.11,
+        "answer_sha256": "c73536035295444b3030e708011039dc4252f821d67d75f0abd052b0d9eec1f6"
+      }
+    },
+    {
+      "case": "swift_cancel",
+      "provider": "deepseek",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "started",
+              "code": ""
+            },
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "succeeded",
+              "code": ""
+            }
+          ],
+          "elapsed_seconds": 7.758,
+          "url": "https://docs.swift.org/main/documentation/swift/task/cancel()/",
+          "title": "cancel() | Documentation",
+          "body_chars": 2833,
+          "body_sha256": "fd2c9ece162a73f97e216c8167cb365445f2337ab0e9adbcf650f41c0fcbfe57",
+          "details": {
+            "provider": "deepseek",
+            "requested_url": "https://docs.swift.org/main/documentation/swift/task/cancel()/",
+            "content_kind": "page_text",
+            "truncated": false
+          }
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "started",
+              "code": ""
+            },
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "succeeded",
+              "code": ""
+            }
+          ],
+          "elapsed_seconds": 5.213,
+          "url": "https://docs.swift.org/main/documentation/swift/taskgroup/cancelall()/",
+          "title": "cancelAll() | Documentation",
+          "body_chars": 901,
+          "body_sha256": "b7f85d1a2dcc6116dbff4ff8586786b5ec1b3f632dbb0de585175246a7fca474",
+          "details": {
+            "provider": "deepseek",
+            "requested_url": "https://docs.swift.org/main/documentation/swift/taskgroup/cancelall()/",
+            "content_kind": "page_text",
+            "truncated": false
+          }
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "started",
+            "code": ""
+          },
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "succeeded",
+            "code": ""
+          }
+        ],
+        "elapsed_seconds": 0.285
+      },
+      "results": [
+        {
+          "url": "https://docs.swift.org/main/documentation/swift/task/cancel()/",
+          "title": "cancel() | Documentation"
+        },
+        {
+          "url": "https://docs.swift.org/main/documentation/swift/taskgroup/cancelall()/",
+          "title": "cancelAll() | Documentation"
+        },
+        {
+          "url": "https://docs.swift.org/latest/documentation/swift/withtaskcancellationhandler(operation:oncancel:isolation:)/",
+          "title": "withTaskCancellationHandler(operation:onCancel:isolation:) | Documentation"
+        },
+        {
+          "url": "https://docs.swift.org/latest/documentation/swift/task/checkcancellation()/",
+          "title": "checkCancellation() | Documentation"
+        },
+        {
+          "url": "https://docs.swift.org/main/documentation/swift/task/cancel(reason:)/",
+          "title": "cancel(reason:) | Documentation"
+        }
+      ],
+      "input_sha256": "7f037575c06dbdc2146e2525937a588ce8e131cc695a7fae7a24b33fcdb03b79",
+      "source_manifest": [
+        {
+          "url": "https://docs.swift.org/main/documentation/swift/task/cancel()/",
+          "title": "cancel() | Documentation",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "fd2c9ece162a73f97e216c8167cb365445f2337ab0e9adbcf650f41c0fcbfe57",
+            "query_hash": "1fd6ede29878fde552250f2b5379fffda199476580ad1dacab4629f0afc398b4",
+            "original_chars": 2833,
+            "selected_chars": 2833,
+            "projected_chars": 2833,
+            "omitted_chars": 0,
+            "reason": "full",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 2833,
+                "reason": "full"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://docs.swift.org/main/documentation/swift/taskgroup/cancelall()/",
+          "title": "cancelAll() | Documentation",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "b7f85d1a2dcc6116dbff4ff8586786b5ec1b3f632dbb0de585175246a7fca474",
+            "query_hash": "1fd6ede29878fde552250f2b5379fffda199476580ad1dacab4629f0afc398b4",
+            "original_chars": 901,
+            "selected_chars": 901,
+            "projected_chars": 901,
+            "omitted_chars": 0,
+            "reason": "full",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 901,
+                "reason": "full"
+              }
+            ]
+          }
+        }
+      ],
+      "generation": {
+        "status": "ok",
+        "usage": [
+          {
+            "response_id": "4472f7db-ec1c-4985-bda1-fb8cd61dab57",
+            "input_tokens": 1723,
+            "output_tokens": 363,
+            "total_tokens": 2086,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "reported_model": "deepseek-flash",
+            "request_id": "c808f34c-ba41-49ff-be63-42c677c5b5c7"
+          }
+        ],
+        "cited_urls_in_supplied_sources": true,
+        "elapsed_seconds": 2.585,
+        "answer_sha256": "e176cbf2f24816d11a4eb67726775926185d43f3441c857ff554d491b813d161"
+      }
+    },
+    {
+      "case": "swift_cancel",
+      "provider": "exa",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 5.046,
+          "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/",
+          "title": "Concurrency | Documentation",
+          "body_chars": 20000,
+          "body_sha256": "8dcaccf2d6173a9bf80377babe5e3ae8842ac586b91b709fed0fc65f265804b5",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 4.9,
+          "url": "https://docs.swift.org/latest/documentation/testing/enablinganddisabling/",
+          "title": "Enabling and disabling tests | Documentation",
+          "body_chars": 3985,
+          "body_sha256": "8b98bb90356b70bec0338ea89cf611c153939e599b3dbe4947b6a2673d63c7f8",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 10.774
+      },
+      "results": [
+        {
+          "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/",
+          "title": "Concurrency | Documentation"
+        },
+        {
+          "url": "https://docs.swift.org/latest/documentation/testing/enablinganddisabling/",
+          "title": "Enabling and disabling tests | Documentation"
+        },
+        {
+          "url": "https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html",
+          "title": "The Swift Programming Language: Redirect"
+        },
+        {
+          "url": "https://docs.swift.org/swift-book/LanguageGuide/",
+          "title": "Index of /swift-book/LanguageGuide"
+        },
+        {
+          "url": "https://docs.swift.org/latest/documentation/testing/test/",
+          "title": "Test | Documentation"
+        }
+      ],
+      "input_sha256": "34b41cdc8695b09aba0116093b48ead781e2a4cfdefae305593abd3020a78280",
+      "source_manifest": [
+        {
+          "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/",
+          "title": "Concurrency | Documentation",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "8dcaccf2d6173a9bf80377babe5e3ae8842ac586b91b709fed0fc65f265804b5",
+            "query_hash": "1fd6ede29878fde552250f2b5379fffda199476580ad1dacab4629f0afc398b4",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 16000,
+                "end": 20000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        },
+        {
+          "url": "https://docs.swift.org/latest/documentation/testing/enablinganddisabling/",
+          "title": "Enabling and disabling tests | Documentation",
+          "source_selection": {
+            "version": 1,
+            "content_hash": "8b98bb90356b70bec0338ea89cf611c153939e599b3dbe4947b6a2673d63c7f8",
+            "query_hash": "1fd6ede29878fde552250f2b5379fffda199476580ad1dacab4629f0afc398b4",
+            "original_chars": 3985,
+            "selected_chars": 3985,
+            "projected_chars": 3985,
+            "omitted_chars": 0,
+            "reason": "full",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 3985,
+                "reason": "full"
+              }
+            ]
+          }
+        }
+      ],
+      "generation": {
+        "status": "ok",
+        "usage": [
+          {
+            "response_id": "5b1d877f-3ad6-4a83-a49c-75d15c14c1b5",
+            "input_tokens": 2759,
+            "output_tokens": 380,
+            "total_tokens": 3139,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "reported_model": "deepseek-flash",
+            "request_id": "127815b0-6164-45a5-8981-c631e027b661"
+          }
+        ],
+        "cited_urls_in_supplied_sources": true,
+        "elapsed_seconds": 2.589,
+        "answer_sha256": "e4a0bdd43d2913b6682d61bcd1c880a37db5926109a05b1ade20104e2d8ce20d"
+      }
+    },
+    {
+      "case": "swift_cancel",
+      "provider": "tavily",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "failed",
+          "events": [],
+          "error_code": "RT.WEB.READ_FAILED",
+          "elapsed_seconds": 2.877,
+          "url": "https://docs.swift.org/latest/documentation/the-swift-programming-language/concurrency"
+        },
+        {
+          "operation": "read",
+          "status": "failed",
+          "events": [],
+          "error_code": "RT.WEB.READ_FAILED",
+          "elapsed_seconds": 2.619,
+          "url": "https://docs.swift.org/latest/documentation/swift/task/cancel()"
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 3.968
+      },
+      "results": [
+        {
+          "url": "https://docs.swift.org/latest/documentation/the-swift-programming-language/concurrency",
+          "title": "Concurrency - Swift Documentation"
+        },
+        {
+          "url": "https://docs.swift.org/latest/documentation/swift/task/cancel()",
+          "title": "cancel()"
+        }
+      ],
+      "input_sha256": "f282be8365848c6fae39285c721d379a544a9b5531fbcc6e2d8eaddcdb33496a",
+      "source_manifest": [],
+      "generation": {
+        "status": "skipped_no_readable_evidence",
+        "usage": []
+      }
+    },
+    {
+      "case": "postgres",
+      "provider": "exa",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 6.125,
+          "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+          "title": "PostgreSQL: Documentation: 18: 13.2. Transaction Isolation",
+          "body_chars": 20000,
+          "body_sha256": "b9ca96e0f2b5534ef9788f6c2f1f9888fbea127c4d011d8bf06d00656a5962f7",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 4.883,
+          "url": "https://www.postgresql.org/docs/current/mvcc.html",
+          "title": "PostgreSQL: Documentation: 18: Chapter 13. Concurrency Control",
+          "body_chars": 1440,
+          "body_sha256": "747e15567565e795cd32555fc288415d86dd07b65c65dadebc0fffc888332226",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 9.642
+      },
+      "results": [
+        {
+          "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+          "title": "PostgreSQL: Documentation: 18: 13.2. Transaction Isolation"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/current/mvcc.html",
+          "title": "PostgreSQL: Documentation: 18: Chapter 13. Concurrency Control"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/current/applevel-consistency.html",
+          "title": "PostgreSQL: Documentation: 18: 13.4. Data Consistency Checks at the Application Level"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/18/transaction-iso.html",
+          "title": "PostgreSQL: Documentation: 18: 13.2. Transaction Isolation"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/current/sql-lock.html",
+          "title": "PostgreSQL: Documentation: 18: LOCK"
+        }
+      ]
+    },
+    {
+      "case": "postgres",
+      "provider": "tavily",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 1.526,
+          "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+          "title": "https://www.postgresql.org/docs/current/transaction-iso.html",
+          "body_chars": 20000,
+          "body_sha256": "2c5d1ab431e27e45400405a207e467d5609312105820c8f401fd5e01c2956cd3",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 1.602,
+          "url": "https://www.postgresql.org/docs/7.2/xact-read-committed.html",
+          "title": "https://www.postgresql.org/docs/7.2/xact-read-committed.html",
+          "body_chars": 2271,
+          "body_sha256": "8c1fbbf897189320a900c7e1740e29244da0b3c6d334bc146a5df1b56e6f84a1",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 3.745
+      },
+      "results": [
+        {
+          "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+          "title": "PostgreSQL: Documentation: 18: 13.2. Transaction Isolation"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/7.2/xact-read-committed.html",
+          "title": "PostgreSQL: Documentation: 7.2: Read Committed Isolation Level"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/current/sql-set-transaction.html",
+          "title": "PostgreSQL: Documentation: 18: SET TRANSACTION"
+        },
+        {
+          "url": "https://wiki.postgresql.org/images/4/4f/SSI-PGConfEU2011.pdf",
+          "title": "Serializable Snapshot Isolation"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/8.3/applevel-consistency.html",
+          "title": "PostgreSQL: Documentation: 8.3: Data Consistency Checks at the Application Level"
+        }
+      ]
+    },
+    {
+      "case": "postgres",
+      "provider": "deepseek",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "started",
+              "code": ""
+            },
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "succeeded",
+              "code": ""
+            }
+          ],
+          "elapsed_seconds": 6.218,
+          "url": "https://www.postgresql.org/docs/7.4/transaction-iso.html#MVCC-ISOLEVEL-TABLE",
+          "title": "Transaction Isolation",
+          "body_chars": 7859,
+          "body_sha256": "ee0a39f680f8e3e4cfd1df0d3d7211d82366d48f41719a51056a2b0577bc5e24",
+          "details": {
+            "provider": "deepseek",
+            "requested_url": "https://www.postgresql.org/docs/7.4/transaction-iso.html#MVCC-ISOLEVEL-TABLE",
+            "content_kind": "page_text",
+            "truncated": false
+          }
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "started",
+              "code": ""
+            },
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "succeeded",
+              "code": ""
+            }
+          ],
+          "elapsed_seconds": 4.72,
+          "url": "https://www.postgresql.org/docs/10/sql-set-transaction.html",
+          "title": "SET TRANSACTION",
+          "body_chars": 7338,
+          "body_sha256": "1c1dd671165add332398926fcecbdd421084bca512fe7018c3f94c6a8b366e08",
+          "details": {
+            "provider": "deepseek",
+            "requested_url": "https://www.postgresql.org/docs/10/sql-set-transaction.html",
+            "content_kind": "page_text",
+            "truncated": false
+          }
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "started",
+            "code": ""
+          },
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "succeeded",
+            "code": ""
+          }
+        ],
+        "elapsed_seconds": 0.283
+      },
+      "results": [
+        {
+          "url": "https://www.postgresql.org/docs/7.4/transaction-iso.html#MVCC-ISOLEVEL-TABLE",
+          "title": "Transaction Isolation"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/10/sql-set-transaction.html",
+          "title": "SET TRANSACTION"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/7.1/xact-read-committed.html",
+          "title": "Read Committed Isolation Level"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/8.0/applevel-consistency.html",
+          "title": "Data Consistency Checks at the Application Level"
+        },
+        {
+          "url": "https://www.postgresql.org/docs/17/transaction-iso.html",
+          "title": "13.2. Transaction Isolation"
+        }
+      ]
+    },
+    {
+      "case": "http_cache",
+      "provider": "tavily",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 1.568,
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control",
+          "title": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control",
+          "body_chars": 20000,
+          "body_sha256": "312348955b095a5a0a191d1945ef2953de98a0b01ebfe8ae817393997654455e",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 1.724,
+          "url": "https://stackoverflow.com/questions/18148884/difference-between-no-cache-and-must-revalidate-for-cache-control",
+          "title": "https://stackoverflow.com/questions/18148884/difference-between-no-cache-and-must-revalidate-for-cache-control",
+          "body_chars": 20000,
+          "body_sha256": "ffcd804dd02c976cc36ffef8deb3d92325bb78a2055d35209e33af4da55f4f6c",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 2.964
+      },
+      "results": [
+        {
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control",
+          "title": "Cache-Control header - HTTP | MDN"
+        },
+        {
+          "url": "https://stackoverflow.com/questions/18148884/difference-between-no-cache-and-must-revalidate-for-cache-control",
+          "title": "Difference between no-cache and must-revalidate for Cache-Control?"
+        },
+        {
+          "url": "https://www.rfc-editor.org/info/rfc9111",
+          "title": "RFC 9111: HTTP Caching | RFC Editor"
+        },
+        {
+          "url": "https://csswizardry.com/2025/03/why-do-we-have-a-cache-control-request-header",
+          "title": "Why Do We Have a Cache-Control Request Header? – CSS Wizardry"
+        },
+        {
+          "url": "https://http.dev/cache-control",
+          "title": "Cache-Control - Expert Guide to HTTP headers"
+        }
+      ]
+    },
+    {
+      "case": "http_cache",
+      "provider": "deepseek",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "started",
+              "code": ""
+            },
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "succeeded",
+              "code": ""
+            }
+          ],
+          "elapsed_seconds": 9.293,
+          "url": "https://learn.microsoft.com/pt-pt/aspnet/core/performance/caching/response?view=aspnetcore-8.0#2",
+          "title": "Cache de resposta no ASP.NET Core",
+          "body_chars": 20000,
+          "body_sha256": "2aa8ef265b8be7511b33bc508d486248169f9b1ff099f277a156879e79865785",
+          "details": {
+            "provider": "deepseek",
+            "requested_url": "https://learn.microsoft.com/pt-pt/aspnet/core/performance/caching/response?view=aspnetcore-8.0#2",
+            "content_kind": "page_text",
+            "truncated": true
+          }
+        },
+        {
+          "operation": "read",
+          "status": "failed",
+          "events": [
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "started",
+              "code": ""
+            },
+            {
+              "provider": "deepseek",
+              "operation": "read",
+              "status": "failed",
+              "code": "RT.WEB.TIMEOUT"
+            }
+          ],
+          "error_code": "RT.WEB.CHAIN_FAILED",
+          "cause": "RT.WEB.TIMEOUT",
+          "elapsed_seconds": 12.129,
+          "url": "https://learn.microsoft.com/eu-es/aspnet/core/performance/caching/response?view=aspnetcore-8.0#2"
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "started",
+            "code": ""
+          },
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "succeeded",
+            "code": ""
+          }
+        ],
+        "elapsed_seconds": 0.504
+      },
+      "results": [
+        {
+          "url": "https://learn.microsoft.com/pt-pt/aspnet/core/performance/caching/response?view=aspnetcore-8.0#2",
+          "title": "Cache de resposta no ASP.NET Core - Para armazenamento em cache no lado do servidor que segue a especificação de armazenamento em cache do HTTP 1.1, use middleware ..."
+        },
+        {
+          "url": "https://learn.microsoft.com/eu-es/aspnet/core/performance/caching/response?view=aspnetcore-8.0#2",
+          "title": "Almacenamiento en caché de respuestas de ASP.NET Core - RFC 9111: almacenamiento en caché HTTP describe cómo deben comportarse las cachés de Internet"
+        },
+        {
+          "url": "https://learn.microsoft.com/pt-br/aspnet/core/performance/caching/response?view=aspnetcore-8.0#2",
+          "title": "Cache de resposta no ASP.NET Core - RFC 9111: O cache HTTP descreve como os caches de Internet devem se comportar"
+        },
+        {
+          "url": "https://stackoverflow.com/feeds/question/74464884",
+          "title": "Cache-Control: no store Vs Cache-Control: no store, no cache"
+        },
+        {
+          "url": "https://lists.w3.org/Archives/Public/ietf-http-wg/1998JulSep/att-0172/01-part#16",
+          "title": "cache MUST first revalidate it with the origin server, using the"
+        }
+      ]
+    },
+    {
+      "case": "http_cache",
+      "provider": "exa",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 6.669,
+          "url": "https://www.rfc-editor.org/rfc/rfc9111.pdf",
+          "title": "RFC 9111: HTTP Caching",
+          "body_chars": 20000,
+          "body_sha256": "2c93038c4007d6588995ed5ad0ee301fc40876bab100f681d5ddde9ef99bc5c6",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 5.506,
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control",
+          "title": "Cache-Control header - HTTP | MDN",
+          "body_chars": 19470,
+          "body_sha256": "78464481127145ba2952ed93f744c415ddb8834bd592633cbad2dfff81596fe5",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 11.523
+      },
+      "results": [
+        {
+          "url": "https://www.rfc-editor.org/rfc/rfc9111.pdf",
+          "title": "RFC 9111: HTTP Caching"
+        },
+        {
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control",
+          "title": "Cache-Control header - HTTP | MDN"
+        },
+        {
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching",
+          "title": "HTTP caching - HTTP | MDN"
+        },
+        {
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Web_Cache_Security_Cheat_Sheet.html",
+          "title": "Web Cache Security - OWASP Cheat Sheet Series"
+        },
+        {
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/performance/caching/response?view=aspnetcore-9.0",
+          "title": "Response caching in ASP.NET Core"
+        }
+      ]
+    },
+    {
+      "case": "retrieval_learning",
+      "provider": "deepseek",
+      "reads": [],
+      "search": {
+        "operation": "search",
+        "status": "failed",
+        "events": [
+          {
+            "provider": "deepseek",
+            "operation": "search",
+            "status": "skipped",
+            "code": "RT.WEB.TIMEOUT"
+          }
+        ],
+        "error_code": "RT.WEB.CHAIN_FAILED",
+        "cause": "RT.WEB.NOT_CONFIGURED",
+        "elapsed_seconds": 0.0
+      },
+      "results": []
+    },
+    {
+      "case": "retrieval_learning",
+      "provider": "exa",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 5.444,
+          "url": "https://doi.org/10.1111/j.1467-9280.2006.01693.x",
+          "title": "Test-Enhanced Learning",
+          "body_chars": 8239,
+          "body_sha256": "55be70905ece049170d03ecfd83364b47762b086ad9e5997b65ef8b7340e1214",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 4.84,
+          "url": "https://pubmed.ncbi.nlm.nih.gov/16507066/",
+          "title": "Test-enhanced learning: taking memory tests improves long-term retention - PubMed",
+          "body_chars": 1410,
+          "body_sha256": "7d60098d83a5b2f551b1f6f6ac20899989e94c64522e42fe712b10f60df0de4e",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 8.354
+      },
+      "results": [
+        {
+          "url": "https://doi.org/10.1111/j.1467-9280.2006.01693.x",
+          "title": "Test-Enhanced Learning"
+        },
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/16507066/",
+          "title": "Test-enhanced learning: taking memory tests improves long-term retention - PubMed"
+        },
+        {
+          "url": "https://journals.sagepub.com/doi/10.1111/j.1745-6916.2006.00012.x",
+          "title": "The Power of Testing Memory: Basic Research and Implications for Educational Practice - Henry L. Roediger, Jeffrey D. Karpicke, 2006"
+        },
+        {
+          "url": "https://learninglab.psych.purdue.edu/downloads/2006/2006_Roediger_Karpicke_Review.pdf",
+          "title": "fasttrack_bwus_ppsc_1_3_fmi 1.."
+        },
+        {
+          "url": "https://learninglab.psych.purdue.edu/downloads/2007/2007_Karpicke_Roediger_JML.pdf",
+          "title": "doi:10.1016/j.jml.2006.09.004"
+        }
+      ]
+    },
+    {
+      "case": "retrieval_learning",
+      "provider": "tavily",
+      "reads": [
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 1.897,
+          "url": "https://yukaichou.com/gamification-analysis/retrieval-practice-testing-effect-roediger-karpicke-learning",
+          "title": "https://yukaichou.com/gamification-analysis/retrieval-practice-testing-effect-roediger-karpicke-learning",
+          "body_chars": 19999,
+          "body_sha256": "e9b6c868882c7170ca9e78ae2fddf4a5220fafd18653de3c9dc815b655b02747",
+          "details": {}
+        },
+        {
+          "operation": "read",
+          "status": "ok",
+          "events": [],
+          "elapsed_seconds": 1.782,
+          "url": "https://learninglab.psych.purdue.edu/downloads/2007/2007_Karpicke_Roediger_JML.pdf",
+          "title": "https://learninglab.psych.purdue.edu/downloads/2007/2007_Karpicke_Roediger_JML.pdf",
+          "body_chars": 20000,
+          "body_sha256": "d2219080cfa66dfc8c2377891893d12a8333e349e5fe84b3e19307c69883cbbf",
+          "details": {}
+        }
+      ],
+      "search": {
+        "operation": "search",
+        "status": "ok",
+        "events": [],
+        "elapsed_seconds": 2.643
+      },
+      "results": [
+        {
+          "url": "https://yukaichou.com/gamification-analysis/retrieval-practice-testing-effect-roediger-karpicke-learning",
+          "title": "Retrieval Practice: Testing Beats Rereading"
+        },
+        {
+          "url": "https://learninglab.psych.purdue.edu/downloads/2007/2007_Karpicke_Roediger_JML.pdf",
+          "title": "[PDF] Repeated retrieval during learning is the key to long-term retention"
+        },
+        {
+          "url": "https://www.structural-learning.com/post/testing-effect-retrieval-practice",
+          "title": "Testing Effect: Retrieval Practice Strategies for Teachers"
+        },
+        {
+          "url": "https://brucehayes.org/Teaching/papers/2006_Roediger_Karpicke_Review.pdf",
+          "title": "The power of testing memory"
+        },
+        {
+          "url": "https://researchschool.org.uk/durrington/news/getting-the-most-out-of-revision-by-using-the-testing-effect",
+          "title": "Getting the Most Out of Revision by… | Durrington Research School"
+        }
+      ]
+    }
+  ],
+  "finished_at": "2026-10-18T02:17:48.524920+00:00",
+  "full_local_evidence": "output/web-quality-2026-10-18/{results.json,captures.json,answers.md}"
+}

@@ -1,0 +1,59 @@
+{
+  "search_order": [
+    "exa",
+    "tavily",
+    "deepseek"
+  ],
+  "read_order": [
+    "exa",
+    "tavily",
+    "deepseek"
+  ],
+  "browser_flag_preserved": true,
+  "browser_appends_last": true,
+  "capabilities": {
+    "search": {
+      "status": "unverified",
+      "provider": "exa",
+      "reason": "requires_search_result",
+      "protocol": "harness_web_tools_v1",
+      "providers": [
+        {
+          "provider": "exa",
+          "status": "unverified"
+        },
+        {
+          "provider": "tavily",
+          "status": "unverified"
+        },
+        {
+          "provider": "deepseek",
+          "status": "unverified"
+        }
+      ]
+    },
+    "read": {
+      "status": "unverified",
+      "provider": "exa",
+      "reason": "requires_public_page_read",
+      "providers": [
+        {
+          "provider": "exa",
+          "status": "unverified"
+        },
+        {
+          "provider": "tavily",
+          "status": "unverified"
+        },
+        {
+          "provider": "deepseek",
+          "status": "unverified"
+        }
+      ]
+    }
+  },
+  "network_requests": 0,
+  "model_requests": 0,
+  "daily_runtime_started": false,
+  "boundary": "Fresh configuration load and controlled backend availability only; no live health claim."
+}

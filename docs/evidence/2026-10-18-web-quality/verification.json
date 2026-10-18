@@ -1,0 +1,27 @@
+{
+  "controlled_tests": {
+    "passed": 85,
+    "skipped": 4,
+    "subtests": 71,
+    "seconds": 5.89
+  },
+  "full_suite_repeated": false,
+  "production_business_code_changed": false,
+  "new_fallback_cases": 5,
+  "new_budget_guard_cases": 2,
+  "frozen_manifest_matches_run": true,
+  "input_hashes_match": true,
+  "reserved_model_requests": 8,
+  "completed_model_responses": 8,
+  "skipped_generation_slots": 1,
+  "model_probes": 0,
+  "automatic_retries": 0,
+  "automatic_repairs": 0,
+  "search_attempts": 18,
+  "read_attempts": 34,
+  "search_cooldown_skips": 1,
+  "long_local_evidence_git_ignored": true,
+  "daily_app_started": false,
+  "new_default_chain_live_app_verified": false,
+  "old_eval_budget_resumed": false
+}

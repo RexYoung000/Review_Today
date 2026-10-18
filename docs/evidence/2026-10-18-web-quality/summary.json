@@ -1,0 +1,41 @@
+{
+  "exa": {
+    "search_success": 6,
+    "search_attempts": 6,
+    "mean_successful_search_seconds": 10.026,
+    "readable": 12,
+    "read_attempts": 12,
+    "direct_top1": 5,
+    "evaluated_top1": 6
+  },
+  "tavily": {
+    "search_success": 6,
+    "search_attempts": 6,
+    "mean_successful_search_seconds": 3.332,
+    "readable": 10,
+    "read_attempts": 12,
+    "direct_top1": 5,
+    "evaluated_top1": 6
+  },
+  "deepseek": {
+    "search_success": 5,
+    "search_attempts": 6,
+    "mean_successful_search_seconds": 0.344,
+    "readable": 9,
+    "read_attempts": 10,
+    "direct_top1": 2,
+    "evaluated_top1": 5
+  },
+  "totals": {
+    "search_attempts": 18,
+    "read_attempts": 34,
+    "model_requests": 8,
+    "input_tokens": 27296,
+    "output_tokens": 3684,
+    "total_tokens": 30980,
+    "controlled_tests_passed": 85,
+    "controlled_tests_skipped": 4,
+    "controlled_subtests_passed": 71,
+    "paid_bill_verified": false
+  }
+}

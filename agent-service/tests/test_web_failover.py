@@ -29,6 +29,61 @@ class FailoverTests(unittest.TestCase):
         self.factory = patch.object(web, '_backend', side_effect=lambda provider: self.backends[provider])
         self.factory.start(); self.addCleanup(self.factory.stop)
 
+    def deepseek_fallback(self):
+        self.backends['deepseek'] = Mock()
+        self.backends['deepseek'].search.return_value = [web.SearchResult(URL, 'Docs', 'summary')]
+        self.backends['deepseek'].read.return_value = ('Docs', 'actual body')
+        return patch.dict(os.environ, dict(REVIEW_TODAY_SEARCH_FALLBACKS='tavily,deepseek',
+            REVIEW_TODAY_READ_FALLBACKS='tavily,deepseek', REVIEW_TODAY_BROWSER_FALLBACK='0'))
+
+    def test_deepseek_is_explicit_last_fallback_and_not_used_after_primary_success(self):
+        with self.deepseek_fallback():
+            self.assertEqual(web.provider_chain('search'), ['exa', 'tavily', 'deepseek'])
+            self.assertEqual(web.provider_chain('read'), ['exa', 'tavily', 'deepseek'])
+            self.assertEqual(json.loads(web.web_search_text('Python'))['provider'], 'exa')
+            web.read_public_url(URL)
+        self.backends['deepseek'].search.assert_not_called()
+        self.backends['deepseek'].read.assert_not_called()
+
+    def test_two_existing_service_errors_reach_deepseek_without_model_call(self):
+        with self.deepseek_fallback(), patch('agent_service.openai_client._client') as model:
+            self.backends['exa'].search.side_effect = WebToolError('RATE_LIMIT')
+            self.backends['tavily'].search.side_effect = WebToolError('PROVIDER', 'HTTP 503')
+            self.assertEqual(json.loads(web.web_search_text('Python'))['provider'], 'deepseek')
+            self.backends['deepseek'].search.assert_called_once()
+            model.assert_not_called()
+
+    def test_unreadable_existing_pages_reach_deepseek_before_browser(self):
+        with self.deepseek_fallback(), patch.dict(os.environ, {'REVIEW_TODAY_BROWSER_FALLBACK':'1'}):
+            self.backends['browser'] = Mock()
+            self.backends['browser'].read.return_value = ('Browser', 'rendered public body')
+            self.backends['exa'].read.side_effect = WebToolError('READ_FAILED')
+            self.backends['tavily'].read.return_value = ('Shell', 'Sign in to continue')
+            self.assertEqual(web.read_public_url(URL), ('Docs', 'actual body'))
+            self.backends['browser'].read.assert_not_called()
+            self.backends['deepseek'].read.side_effect = WebToolError('READ_FAILED')
+            self.assertEqual(web.read_public_url(URL), ('Browser', 'rendered public body'))
+            self.assertEqual(self.backends['deepseek'].read.call_args.args, (URL,))
+
+    def test_two_empty_searches_keep_existing_bound_and_do_not_spend_third_query(self):
+        with self.deepseek_fallback():
+            self.backends['exa'].search.return_value=[]
+            self.backends['tavily'].search.return_value=[]
+            self.assertEqual(json.loads(web.web_search_text('Python'))['results'], [])
+            self.backends['deepseek'].search.assert_not_called()
+
+    def test_cancel_after_second_failure_does_not_start_last_fallback(self):
+        handles=[]
+        def cancel(*args, **kwargs):
+            handles[0]()
+            raise WebToolError('READ_FAILED')
+        with self.deepseek_fallback():
+            self.backends['exa'].read.side_effect=WebToolError('READ_FAILED')
+            self.backends['tavily'].read.side_effect=cancel
+            with self.assertRaisesRegex(WebToolError,'CANCELLED'):
+                web.read_public_url(URL,on_cancel_handle=handles.append)
+            self.backends['deepseek'].read.assert_not_called()
+
     def test_429_search_switches_and_cooldown_is_shared_with_reads(self):
         self.backends['exa'].search.side_effect = WebToolError('RATE_LIMIT')
         events = []

@@ -1,0 +1,35 @@
+{
+  "reviewer": "Codex manual evidence review; provider identities visible; no extra judge model",
+  "interpretation": "Small fixed set, not benchmark accuracy. Direct hit means top1_relevance=3. A cooldown skip is unevaluated, not an irrelevant result. Answer scores are per-case aids, not an overall ranking.",
+  "searches": [
+    {"case":"python","provider":"exa","top1_relevance":3,"original_source":true,"note":"Top result is the Python 3 list documentation. Other top3 entries are list-aliasing FAQs, less direct."},
+    {"case":"python","provider":"tavily","top1_relevance":1,"original_source":true,"note":"Top two are collections/deque and array, not list. The correct list page exists at rank3 and was not read under the fixed top2 design."},
+    {"case":"python","provider":"deepseek","top1_relevance":1,"original_source":true,"note":"Top two are Python2 raw-source documents, including an fr locale path. A Python3 page is available at rank3. Version mismatch, not proof that the stable append/extend facts changed."},
+    {"case":"deepseek_api","provider":"exa","top1_relevance":1,"original_source":true,"note":"Top1 is token-based model pricing; top2/3 are update logs. Actual captured excerpts omit the new Search/Fetch rules."},
+    {"case":"deepseek_api","provider":"tavily","top1_relevance":3,"original_source":true,"note":"Top1 is the exact Chinese Search/Fetch guide. Later model release/pricing results are less relevant."},
+    {"case":"deepseek_api","provider":"deepseek","top1_relevance":3,"original_source":true,"note":"Chinese and English endpoint guides are direct matches; they are bilingual versions of the same source, not independent corroboration."},
+    {"case":"swift_cancel","provider":"exa","top1_relevance":3,"original_source":true,"note":"Official concurrency book covers the actual question and captured cancellation section. Rank2 concerns testing cancellation, not Task cancellation."},
+    {"case":"swift_cancel","provider":"tavily","top1_relevance":3,"original_source":true,"note":"Search identifies relevant concurrency and Task.cancel pages, but Extract failed on both URLs in this run. Retrieval failure is distinct from bad relevance."},
+    {"case":"swift_cancel","provider":"deepseek","top1_relevance":3,"original_source":true,"note":"Direct Task.cancel and TaskGroup.cancelAll official API pages; both readable. Main-branch documentation rather than a frozen released-version reference."},
+    {"case":"postgres","provider":"exa","top1_relevance":3,"original_source":true,"note":"Current PostgreSQL transaction-isolation page directly explains statement vs transaction snapshots."},
+    {"case":"postgres","provider":"tavily","top1_relevance":3,"original_source":true,"note":"Current transaction-isolation page at rank1; rank2 is a much older 7.2 Read Committed page, so later candidates still need version checks."},
+    {"case":"postgres","provider":"deepseek","top1_relevance":1,"original_source":true,"note":"Rank1 is PostgreSQL7.4; rank2 is v10 and rank3 is v7.1. Older isolation semantics differ from current Repeatable Read. No PostgreSQL answer was generated in this batch."},
+    {"case":"http_cache","provider":"exa","top1_relevance":3,"original_source":true,"note":"Original RFC9111 at rank1, followed by direct MDN pages; both chosen pages readable under the cap."},
+    {"case":"http_cache","provider":"tavily","top1_relevance":3,"original_source":false,"note":"MDN gives a direct useful explanation; rank2 is community discussion and RFC appears at rank3."},
+    {"case":"http_cache","provider":"deepseek","top1_relevance":2,"original_source":true,"note":"Portuguese/Spanish ASP.NET caching pages partially cover the directives but shift language and framework context. One read timed out; escaped no-cache/no-store are present in the readable first page."},
+    {"case":"retrieval_learning","provider":"exa","top1_relevance":3,"original_source":true,"note":"Original 2006 experiment and PubMed at ranks1/2. Captured abstract distinguishes immediate benefit of restudy from delayed benefit of testing."},
+    {"case":"retrieval_learning","provider":"tavily","top1_relevance":3,"original_source":false,"note":"Top1 is a relevant practitioner explanation; rank2 is an original 2007 paper and rank3 another educational explainer."},
+    {"case":"retrieval_learning","provider":"deepseek","top1_relevance":null,"original_source":null,"note":"Prior timeout caused the shared 30-second cooldown to skip this search. No result was obtained; relevance is unknown, not scored zero."}
+  ],
+  "answers": [
+    {"case":"python","provider":"exa","coverage":2,"support":2,"relevance":2,"clarity":2,"hard_failure":false,"verdict":"Complete useful answer, with a correct nested-vs-flat example. Return-None inference is explicitly qualified."},
+    {"case":"python","provider":"tavily","coverage":0,"support":2,"relevance":1,"clarity":1,"hard_failure":false,"verdict":"Honest evidence limitation: deque/array cannot establish list behavior. It gives a clearly labelled deque example, not a verified list answer; overlong for an inability response."},
+    {"case":"python","provider":"deepseek","coverage":2,"support":1,"relevance":2,"clarity":2,"hard_failure":false,"verdict":"Useful stable-concept explanation with a correct example, but evidence is Python2. The answer explicitly discloses the version mismatch and derived return value."},
+    {"case":"deepseek_api","provider":"exa","coverage":0,"support":2,"relevance":2,"clarity":1,"hard_failure":false,"verdict":"Correctly declines to infer Search/Fetch from model-token pricing and old release excerpts. Core question remains unanswered."},
+    {"case":"deepseek_api","provider":"tavily","coverage":2,"support":2,"relevance":2,"clarity":1,"hard_failure":false,"verdict":"Covers functions, successful-result billing and summary/body distinction. Faithful, but adds dense field lists, quotas and an unnecessary long example."},
+    {"case":"deepseek_api","provider":"deepseek","coverage":2,"support":2,"relevance":2,"clarity":2,"hard_failure":false,"verdict":"Covers all core facts using the endpoint guides. Separates CNY/USD source statements without inventing an exchange-rate equivalence."},
+    {"case":"swift_cancel","provider":"exa","coverage":2,"support":2,"relevance":2,"clarity":2,"hard_failure":false,"verdict":"Correct cooperative-cancellation explanation and practical checks; explicitly ignores the unrelated testing page."},
+    {"case":"swift_cancel","provider":"tavily","coverage":null,"support":null,"relevance":null,"clarity":null,"hard_failure":null,"verdict":"Not generated: both actual body reads failed. No model request was spent."},
+    {"case":"swift_cancel","provider":"deepseek","coverage":2,"support":2,"relevance":2,"clarity":2,"hard_failure":false,"verdict":"Correct direct answer, cancellation flag vs cooperation, checks and short loop illustration. Derived illustration is labelled, not claimed as original source code."}
+  ]
+}
