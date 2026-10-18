@@ -2,6 +2,19 @@
 
 本文维护 Agent 的状态、授权与执行契约，历史增量及证据保留；文档职责见 [文档导航](README.md)，实际进度以 [统一状态](work-status.md) 为准。本轮请先看 [检查通过后的知识邀请](#knowledge-save-invitation-contract)，现行收尾基线见 [§18.7](#187-工具与-badcase)，知识点证据边界见 [§17.3](#173-五模式与成果)。
 
+<a id="deepseek-web-tools"></a>
+## DeepSeek 独立网页服务（2026-10-18，已实现／工具层分项验证通过）
+
+Rex 确认先将 Search／Fetch 接成可选服务，与 Exa／Tavily 对照后再决定主备顺序。本次沿用统一独立网页工具架构：对话查证、资料学习、主题探索及知识保存核验共用工具层；教学模型、是否联网的规则与本机 Exa → Tavily 顺序保持。
+
+- 显式选择 `deepseek` 时只调用官方 `POST https://api.deepseek.com/v1/tools/search` 与 `/v1/tools/fetch`，不调用模型生成／托管搜索。凭据使用独立 `DEEPSEEK_WEB_API_KEY`，不回退到教学模型的 `DEEPSEEK_API_KEY`；缺失时报告未配置，允许已有显式备用接续。
+- 搜索最多取五项，关闭 `need_content`，仅发送必要公开 query。摘要仅供选择来源，`authority`／排序分数不构成核验结论；指定 URL 与入库证据继续读取正文并沿用现有判断。公开 query 超过官方 128 Unicode 字符限制时，DeepSeek 不发送、不截断、不新增模型压缩；有显式备用时以原完整查询接续，单服务报告不支持该长度。
+- Fetch 只发送已通过原有检查的公开 URL，正文沿用可读性、长度及来源守卫。当前官方响应只有标题／Markdown 正文，保留请求 URL，不编造已观测的最终跳转 URL。动态页面或不可用正文沿显式读取备用链处理，启用时保留本机 Browser 末级兜底。
+- 新服务的单服务和多服务路径都遵守统一轮次／调用／取消预算及遥测。进程内保守串行且两次启动至少间隔 0.25 秒；官方 Search／Fetch 各自账号级 5 QPS，跨进程或其他客户端仍可能触发 429，不能承诺全账号限流。429 沿用冷却及 `Retry-After`；401 与余额不足冷却服务，Fetch 的 403／404 只使该页失败，不误判为凭据失效或全服务故障。
+- 本次真实对照仅使用公开样本、有限调用且不调用教学模型；无独立工具凭据时仅完成受控验证，明确记录未实测。不得借用原 EVAL-03 的已冻结预算、恢复日常 Run 或将本次适配视为原生／Rex 验收通过。
+
+接口依据：[官方 Search／Fetch 指南](https://api-docs.deepseek.com/zh-cn/guides/search/)。实际进度与验证边界见 [WEB-01](work-status.md#deepseek-web-tools)。
+
 <a id="conservative-check-scope"></a>
 ## 普通小题与本节综合检查（2026-10-13，已实现／分项自测通过／待体验）
 

@@ -1,0 +1,36 @@
+{
+  "started_at": "2026-10-18T00:29:37.293998+00:00",
+  "operation": "read",
+  "provider": "deepseek",
+  "url": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+  "max_operations": 1,
+  "model_requests": 0,
+  "automatic_retries": false,
+  "fallback_enabled": false,
+  "events": [
+    {
+      "provider": "deepseek",
+      "operation": "read",
+      "status": "started",
+      "code": ""
+    },
+    {
+      "provider": "deepseek",
+      "operation": "read",
+      "status": "succeeded",
+      "code": ""
+    }
+  ],
+  "status": "ok",
+  "body_characters": 6402,
+  "escaped_field_present": true,
+  "original_body_preserved": true,
+  "read_details": {
+    "provider": "deepseek",
+    "requested_url": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+    "content_kind": "page_text",
+    "truncated": false
+  },
+  "operations": 1,
+  "elapsed_seconds": 0.419
+}

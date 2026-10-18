@@ -1,0 +1,37 @@
+.                                                                 [100%]
+=================================== FAILURES ===================================
+_ DeepSeekWebTests.test_missing_body_or_access_shell_is_never_read_evidence (payload={'title': 'Shell', 'content': 'var a\\=window\\.x\\; document\\.cookie\\=\\"a\\"\\; function\\(\\)\\{window\\.y\\=2\\;\\}\\;'}) _
+
+self = <test_deepseek_web_tools.DeepSeekWebTests testMethod=test_missing_body_or_access_shell_is_never_read_evidence>
+
+    def test_missing_body_or_access_shell_is_never_read_evidence(self):
+        for payload in [dict(title='Python'), dict(title='Python', content=''),
+                        dict(title='Python', content=[]), dict(title='Python', content='Python'),
+                        dict(title='Login', content='Sign in to continue'),
+                        dict(title='Shell', content='var a=window.x; document.cookie="a"; function(){window.y=2;};'),
+                        dict(title='Shell', content=r'var a\=window\.x\; document\.cookie\=\"a\"\; function\(\)\{window\.y\=2\;\}\;')]:
+            self.fresh()
+            with self.subTest(payload=payload), self.transport(payload):
+                search = json.dumps(dict(protocol=web.PROTOCOL, results=[dict(url=URL, snippet='claim')]))
+>               self.assertEqual(web.read_search_evidence(search), [])
+E               AssertionError: Lists differ: [{'url': 'https://docs.python.org/3/tutori[387 chars]se}}] != []
+E
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               {'url': 'https://docs.python.org/3/tutorial/datastructures.html', 'title': 'Shell', 'content': 'var a\\=window\\.x\\; document\\.cookie\\=\\"a\\"\\; function\\(\\)\\{window\\.y\\=2\\;\\}\\;', 'requested_url': 'https://docs.python.org/3/tutorial/datastructures.html', 'read_details': {'provider': 'deepseek', 'requested_url': 'https://docs.python.org/3/tutorial/datastructures.html', 'content_kind': 'page_text', 'truncated': False}}
+E
+E               + []
+E               - [{'content': 'var a\\=window\\.x\\; document\\.cookie\\=\\"a\\"\\; '
+E               -              'function\\(\\)\\{window\\.y\\=2\\;\\}\\;',
+E               -   'read_details': {'content_kind': 'page_text',
+E               -                    'provider': 'deepseek',
+E               -                    'requested_url': 'https://docs.python.org/3/tutorial/datastructures.html',
+E               -                    'truncated': False},
+E               -   'requested_url': 'https://docs.python.org/3/tutorial/datastructures.html',
+E               -   'title': 'Shell',
+E               -   'url': 'https://docs.python.org/3/tutorial/datastructures.html'}]
+
+tests/test_deepseek_web_tools.py:148: AssertionError
+=========================== short test summary info ============================
+SUBFAILED(payload={'title': 'Shell', 'content': 'var a\\=window\\.x\\; document\\.cookie\\=\\"a\\"\\; function\\(\\)\\{window\\.y\\=2\\;\\}\\;'}) tests/test_deepseek_web_tools.py::DeepSeekWebTests::test_missing_body_or_access_shell_is_never_read_evidence
+1 failed, 1 passed, 22 deselected, 6 subtests passed in 0.20s

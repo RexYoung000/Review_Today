@@ -1,0 +1,507 @@
+{
+  "started_at": "2026-10-18T00:23:26.378468+00:00",
+  "max_operations": 15,
+  "model_requests": 0,
+  "automatic_retries": false,
+  "fallback_enabled": false,
+  "boundary": "Fixed public samples only. Marker coverage is not semantic completeness or correctness.",
+  "records": [
+    {
+      "provider": "deepseek",
+      "operation": "search",
+      "sample": "zh",
+      "query": "Python 列表 append extend 区别 site:docs.python.org",
+      "url": null,
+      "status": "ok",
+      "events": [
+        {
+          "provider": "deepseek",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "deepseek",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "results": [
+        {
+          "url": "https://docs.python.org/zh-cn/2/_sources/tutorial/datastructures.rst.txt",
+          "title": "",
+          "snippet": "You can't use lists as keys, since lists can be modified in place using index\nassignments, slice assignments, or methods like :meth:`append` and\n:meth:`extend`."
+        },
+        {
+          "url": "https://docs.python.org/fr/2/_sources/tutorial/datastructures.rst.txt",
+          "title": "",
+          "snippet": "You can't use lists as keys, since lists can be modified in place using index\nassignments, slice assignments, or methods like :meth:`append` and\n:meth:`extend`."
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.14/tutorial/datastructures.html",
+          "title": "5. 数据结构",
+          "snippet": "你不能使用列表作为键，因为列表可使用索引赋值、切片赋值或append() 和 extend() 等方法进行原地修改。"
+        },
+        {
+          "url": "https://docs.python.org/zh-tw/3/tutorial/datastructures.html",
+          "title": "5. 資料結構",
+          "snippet": "你無法使用 list 當作鍵，因為 list 可以經由索引指派 (index assignment)、切片指派 (slice assignment) 或是像append() 和 extend() 等方法被修改。\n...\nfiltered_data.append(value)"
+        },
+        {
+          "url": "https://docs.python.org/tr/3.16/tutorial/datastructures.html#more-on-conditions",
+          "title": "5. Veri Yapıları",
+          "snippet": "You can’t use lists as keys, since lists can be modified in place using index assignments, slice assignments, or methods likeappend() and"
+        }
+      ],
+      "result_count": 5,
+      "official_domain_results": 5,
+      "elapsed_seconds": 0.412
+    },
+    {
+      "provider": "deepseek",
+      "operation": "search",
+      "sample": "en",
+      "query": "Python list append extend difference site:docs.python.org",
+      "url": null,
+      "status": "ok",
+      "events": [
+        {
+          "provider": "deepseek",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "deepseek",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "results": [
+        {
+          "url": "https://docs.python.org/zh-cn/2/_sources/tutorial/datastructures.rst.txt",
+          "title": "",
+          "snippet": "You can't use lists as keys, since lists can be modified in place using index\nassignments, slice assignments, or methods like :meth:`append` and\n:meth:`extend`."
+        },
+        {
+          "url": "https://docs.python.org/fr/2/_sources/tutorial/datastructures.rst.txt",
+          "title": "",
+          "snippet": "You can't use lists as keys, since lists can be modified in place using index\nassignments, slice assignments, or methods like :meth:`append` and\n:meth:`extend`."
+        },
+        {
+          "url": "https://docs.python.org/3.14/tutorial/datastructures.html",
+          "title": "5. Data Structures",
+          "snippet": "You can’t use lists as keys, since lists can be modified in place using index assignments, slice assignments, or methods likeappend() and\nextend().\n...\nIt is sometimes tempting to change a list while you are looping over it;"
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.16/tutorial/datastructures.html#more-on-lists",
+          "title": "5. 数据结构",
+          "snippet": "你不能使用列表作为键，因为列表可使用索引赋值、切片赋值或append() 和 extend() 等方法进行原地修改。"
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.10/tutorial/datastructures.html?highlight=queue",
+          "title": "5. 数据结构¶",
+          "snippet": "列表不能当关键字，因为列表可以用索引、切片、append() 、extend() 等方法修改。"
+        }
+      ],
+      "result_count": 5,
+      "official_domain_results": 5,
+      "elapsed_seconds": 0.453
+    },
+    {
+      "provider": "deepseek",
+      "operation": "read",
+      "sample": "python_zh",
+      "query": null,
+      "url": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+      "status": "ok",
+      "events": [
+        {
+          "provider": "deepseek",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "deepseek",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "title": "5. 数据结构",
+      "body_characters": 16444,
+      "body_sha256": "4d8a1bd661bc54bee1808c90d2c0e7082a24bb7ddee0f3b1502c964f00584398",
+      "marker_hits": {
+        "append": true,
+        "extend": true,
+        "列表": true
+      },
+      "excerpt": "\\# 5\\. 数据结构¶\n\n本章深入讲解之前学过的一些内容，同时，还增加了新的知识点。\n\n\\#\\# 5\\.1\\. 列表详解¶\n\n列表 数据类型具有更多的方法。 下面是列表对象的所有方法：\n\n\\- list\\.append\\(value\\, \\/\\)\n\n在列表末尾添加一项。 类似于\na\\[len\\(a\\)\\:\\] \\= \\[x\\]。\n\n\\- list\\.extend\\(iterable\\, \\/\\)\n\n通过添加来自 iterable 的所有项来扩展列表。 类似于\na\\[len\\(a\\)\\:\\] \\= iterable。\n\n\\- list\\.insert\\(index\\, value\\, \\/\\)\n\n在指定位置插入元素。第一个参数是插入元素的索引，因此，\na\\.insert\\(0\\, x\\) 在列表开头插入元素， a\\.insert\\(len\\(a\\)\\, x\\) 等同于 a\\.append\\(x\\) 。\n\n\\- list\\.remove\\(value\\, \\/\\)\n\n从列表中移除第一个值为 value 的条目。 如果无此条目则会引发\nValueError。\n\n\\- list\\.pop\\(index\\=\\-1\\, \\/\\)\n\n移除列表中给定位置上的条目，并返回该条目。 如果未指定索引号，则\na\\.pop\\(\\) 将移除并返回列表中的最后一个条目。 如果列表为空或索引号在列表索引范围之外则会引发 IndexError。\n\n\\- list\\.clear\\(\\)\n\n移除列表中的所有项。 类似于\ndel a\\[\\:\\]。\n\n\\- list\\.index\\(value\\[\\, start\\[\\, stop\\]\\]\\)\n\n返回列表中 value 首次出现所在的从零开始的索引。 如无此条目则会引发\nValueError。\n可选参数 start 和 end 是切片符号，用于将搜索限制为列表的特定子序列。返回的索引是相对于整个序列的开始计算的，而不是 start 参数。\n\n\\- list\\.count\\(value\\, \\/\\)\n\n返回列表中 value 出现的次数。\n\n\\- list\\.sort\\(\\*\\, key\\=None\\, reverse\\=False\\)\n\n原地排序列表中的元素 \\(要了解自定义排序参数，详见\nsorted\\(\\)\\)。\n\n\\- list\\.reverse\\(\\)\n\n翻转列表中的元素。\n\n\\- list\\.copy\\(\\)\n\n返回列表的浅拷贝。 类似于\na\\[\\:\\]。\n\n多数列表方法示例：\n\\>\\>\\> fruits \\= \\[\\'orange\\'\\, \\'apple\\'\\, \\'pear\\'\\, \\'banana\\'\\, \\'kiwi\\'\\, \\'apple\\'\\, \\'banana\\'\\]\n\\>\\>\\> fruits\\.count\\(\\'apple\\'\\)\n2\n\\>\\>\\> fruits\\.count\\(\\'tangerine\\'\\)\n0\n\\>\\>\\> fruits\\.index\\(\\'banana\\'\\)\n3\n\\>\\>\\> fruits\\.index\\(\\'banana\\'\\, 4\\)  \\# 从 4 号位开始查找下一个 banana\n6\n\\>\\>\\> fruits\\.reverse\\(\\)\n\\>\\>\\> fruits\n\\[\\'banana\\'\\, \\'apple\\'\\, \\'kiwi\\'\\, \\'banana\\'\\, \\'pear\\'\\, \\'apple\\'\\, \\'orange\\'\\]\n\\>\\>\\> fruits\\.append\\(\\'grape\\'\\)\n\\>\\>\\> fruits\n\\[\\'banana\\'\\, \\'apple\\'\\, \\'kiwi\\'\\, \\'banana\\'\\, \\'pear\\'\\, \\'apple\\'\\",
+      "read_details": {
+        "provider": "deepseek",
+        "requested_url": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+        "content_kind": "page_text",
+        "truncated": false
+      },
+      "elapsed_seconds": 3.885
+    },
+    {
+      "provider": "deepseek",
+      "operation": "read",
+      "sample": "python_en",
+      "query": null,
+      "url": "https://docs.python.org/3/tutorial/datastructures.html",
+      "status": "ok",
+      "events": [
+        {
+          "provider": "deepseek",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "deepseek",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "title": "5. Data Structures",
+      "body_characters": 20000,
+      "body_sha256": "a3a048dd06b414708ec9526a212a09b0efbe7c088a7e34d1dfe0f6589d62ba22",
+      "marker_hits": {
+        "append": true,
+        "extend": true,
+        "list": true
+      },
+      "excerpt": "\\# 5\\. Data Structures¶\n\nThis chapter describes some things you’ve learned about already in more detail\\, and adds some new things as well\\.\n\n\\#\\# 5\\.1\\. More on Lists¶\n\nThe list data type has some more methods\\. Here are all of the methods of list objects\\:\n\n\\- list\\.append\\(value\\, \\/\\)\n\nAdd an item to the end of the list\\. Similar to\na\\[len\\(a\\)\\:\\] \\= \\[x\\]\\.\n\n\\- list\\.extend\\(iterable\\, \\/\\)\n\nExtend the list by appending all the items from the iterable\\. Similar to\na\\[len\\(a\\)\\:\\] \\= iterable\\.\n\n\\- list\\.insert\\(index\\, value\\, \\/\\)\n\nInsert an item at a given position\\. The first argument is the index of the element before which to insert\\, so\na\\.insert\\(0\\, x\\) inserts at the front of\nthe list\\, and a\\.insert\\(len\\(a\\)\\, x\\) is equivalent to a\\.append\\(x\\)\\.\n\n\\- list\\.remove\\(value\\, \\/\\)\n\nRemove the first item from the list whose value is equal to value\\. It raises a\nValueError if there is no such item\\.\n\n\\- list\\.pop\\(index\\=\\-1\\, \\/\\)\n\nRemove the item at the given position in the list\\, and return it\\. If no index is specified\\,\na\\.pop\\(\\) removes and returns the last item in the list\\.\nIt raises an IndexError if the list is empty or the index is\noutside the list range\\.\n\n\\- list\\.clear\\(\\)\n\nRemove all items from the list\\. Similar to\ndel a\\[\\:\\]\\.\n\n\\- list\\.index\\(value\\[\\, start\\[\\, stop\\]\\]\\)\n\nReturn zero\\-based index of the first occurrence of value in the list\\. Raises a\nValueError if there is no such item\\.\nThe optional arguments start and end are interpreted as in the slice notation and are used to limit the search to a particular subsequence of the list\\. T",
+      "read_details": {
+        "provider": "deepseek",
+        "requested_url": "https://docs.python.org/3/tutorial/datastructures.html",
+        "content_kind": "page_text",
+        "truncated": true
+      },
+      "elapsed_seconds": 3.331
+    },
+    {
+      "provider": "deepseek",
+      "operation": "read",
+      "sample": "deepseek_search",
+      "query": null,
+      "url": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+      "status": "ok",
+      "events": [
+        {
+          "provider": "deepseek",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "deepseek",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "title": "网页搜索与抓取",
+      "body_characters": 6402,
+      "body_sha256": "34e13f6ae1a8f83541fffe1a72860e59850ae6c1fe2278c821d4f4c3e824ebe5",
+      "marker_hits": {
+        "need_content": false,
+        "128": true,
+        "Fetch": true
+      },
+      "excerpt": "Search \\/ Fetch API 已上线，使用自研搜索引擎，支持网页搜索与抓取，点此查看使用指南。\n\n\\# 网页搜索与抓取\n\nSearch 接口和 Fetch 接口为 Agent 与 RAG 应用提供实时网页内容：\n\n\\- Search 接口按 query 搜索网页，返回结构化结果。该接口由 DeepSeek 自研搜索引擎提供支持。\n\\- Fetch 接口抓取单个网页，以 Markdown 文本返回页面内容。\n\n两者都是原始 JSON API，使用与 DeepSeek API 相同的 Bearer 鉴权。\n\nBase URL 为https\\:\\/\\/api\\.deepseek\\.com：\n\nAPI \\| Endpoint \n\\-\\-\\-\\|\\-\\-\\-\nSearch \\| POST https\\:\\/\\/api\\.deepseek\\.com\\/v1\\/tools\\/search \nFetch \\| POST https\\:\\/\\/api\\.deepseek\\.com\\/v1\\/tools\\/fetch \n\n完整的请求与响应 Schema 请参考 Search API Reference 和 Fetch API Reference。\n\n\\#\\# 鉴权\n\n在请求头中携带 API Key 和 JSON 内容类型：\n\n请求头 \\| 必填 \\| 值 \n\\-\\-\\-\\|\\-\\-\\-\\|\\-\\-\\-\nAuthorization \\| 是 \\| Bearer \\<DeepSeek API Key\\> \nContent\\-Type \\| 是 \\| application\\/json \n\n\\#\\# Search 接口\n\n\\#\\#\\# 请求\ncurl https\\:\\/\\/api\\.deepseek\\.com\\/v1\\/tools\\/search \\\\\n  \\-H \\\"Authorization\\: Bearer \\<DeepSeek API Key\\>\\\" \\\\\n  \\-H \\\"Content\\-Type\\: application\\/json\\\" \\\\\n  \\-d \\'\\{\n    \\\"query\\\"\\: \\\"DeepSeek V4 模型 发布\\\"\\,\n    \\\"count\\\"\\: 5\\,\n    \\\"need\\_content\\\"\\: true\n  \\}\\'\nimport requests\n\nresponse \\= requests\\.post\\(\n    \\\"https\\:\\/\\/api\\.deepseek\\.com\\/v1\\/tools\\/search\\\"\\,\n    headers\\=\\{\n        \\\"Authorization\\\"\\: \\\"Bearer \\<DeepSeek API Key\\>\\\"\\,\n    \\}\\,\n    json\\=\\{\n        \\\"query\\\"\\: \\\"DeepSeek V4 模型 发布\\\"\\,\n        \\\"count\\\"\\: 5\\,\n        \\\"need\\_content\\\"\\: True\\,\n    \\}\\,\n\\)\nresponse\\.raise\\_for\\_status\\(\\)\n\nfor result in response\\.json\\(\\)\\[\\\"results\\\"\\]\\:\n    print\\(result\\[\\\"title\\\"\\]\\, result\\[\\\"url\\\"\\]\\)\n    print\\(result\\[\\\"summary\\\"\\]\\)\n\n请求字段：\n\n字段 \\| 类型 \\| 必填 \\| 默认值 \\| 说明 \n\\-\\-\\-\\|\\-\\-\\-\\|\\-\\-\\-\\|\\-\\-\\-\\|\\-\\-\\-\nquery \\| string \\| 是 \\| \\- \\| 搜索词，1～128",
+      "read_details": {
+        "provider": "deepseek",
+        "requested_url": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+        "content_kind": "page_text",
+        "truncated": false
+      },
+      "elapsed_seconds": 0.144
+    },
+    {
+      "provider": "exa",
+      "operation": "search",
+      "sample": "zh",
+      "query": "Python 列表 append extend 区别 site:docs.python.org",
+      "url": null,
+      "status": "ok",
+      "events": [],
+      "results": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.15.0 documentation",
+          "snippet": "## 5.1. More on Lists¶\n\nThe list data type has some more methods. Here are all of the methods of list objects:\n\nlist. append(value, /)\n: Add an item to the end of the list. Similar to `a[len(a):] = [x]`.\n\nlist. extend(iterable, /)\n: Extend the list by appending all the items from the iterable. Similar to `a[len(a):] = iterable`.\n\nlist. insert(index, value, /)\n: Insert an item at a given position. The first argument is the index of the element before which to insert, so `a.insert(0, x)` inserts at the front of the list, and `a.insert(len(a), x)` is equivalent to `a.append(x)`.\n\n...\n\n` ... range\n\n...\n\nYou might have noticed that methods like `insert`, `remove` or `sort` that only modify the list have no return value printed – they return the default `None`. [1] This is a design principle for all mutable data structures in Python.\n\n...\n\n### 5.1.1. Using Lists as Stacks¶\n\nThe list methods make it very easy to use a list as a stack, where the last element added is the first element retrieved (“last-in, first-out”). To add an item to the top of the stack, use `append()`. To retrieve an item from the top of the stack, use `pop()` without an explicit index. For example:\n\n```\n>>> stack = [3, 4, 5]\n>>> stack.append(6)\n>>> stack.append(7)\n>>> stack\n[3, 4, 5, 6, 7]\n>>> stack.pop()\n7\n>>> stack\n[3, 4, 5, 6]\n>>> stack.pop()\n6\n>>> stack.pop()\n5\n>>> stack\n[3, 4]\n\n```\n\n...\n\nIt is also possible to use a list as a queue, where the first element added is the first element retrieved (“first-in, fi"
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.14/tutorial/datastructures.html",
+          "title": "5. 数据结构— Python 3.14.8 文档",
+          "snippet": "<ÅË2%Q\")Q2)q$ñuð\u0016#ÞO™A7€Oþ › ... ÝUYUYYY™YY™çþåãÿüè‹ÿûÙ ... fÏ\u0007B¡Ö@×1Ž;×+ð1ü ... \u0013.Å£Büháâ©x6Î' ...  áÜ8ÁÆv/ f -|F€rÐ@. \u000føl\\L9Õ ™¨\u0014OÓ\"\u001a\u0004eîyñÙ‚²ñB\u001eX*­þXzòCaë†<2.¯<.í\u000f\u0015ï]/læ Û³òà€ ... ¿ÔÕ¾ùÌ§âdÈqä\b°œ° ... ÅsÖW @¤ÅçÏÉÉÔSyò* <\n"
+        },
+        {
+          "url": "https://docs.python.org/zh-cn/3.12/tutorial/datastructures.html",
+          "title": "5. 数据结构— Python 3.12.15 文档",
+          "snippet": "## 5.1. 列表详解¶\n\n列表数据类型支持很多方法，列表对象的所有方法所示如下：\n\nlist.append(x)\n\n在列表末尾添加一项。 类似于`a[len(a):] = [x]`。\n\nlist.extend(iterable)\n\n通过添加来自 iterable 的所有项来扩展列表。 类似于`a[len(a):] = iterable`。\n\nlist.insert(i, x)\n\n在指定位置插入元素。第一个参数是插入元素的索引，因此，`a.insert(0, x)`在列表开头插入元素，`a.insert(len(a), x)`等同于`a.append(x)`。\n\n...\n\n你可能已经注意到`insert`,`remove`或`sort`等仅修改列表的方法都不会打印返回值 -- 它们返回默认值`None`。 [1] 这是适用于 Python 中所有可变数据结构的设计原则。\n\n...\n\n### 5.1.1. 用列表实现堆栈¶\n\n列表方法使得将列表用作栈非常容易，最后添加的元素会最先被取出（“后进先出”）。 要将一个条目添加到栈顶，可使用`append()`。 要从栈顶取出一个条目，则使用`pop()`且不必显式指定索引。 例如:\n\n```\n>>> stack = [3, 4, 5]\n>>> stack.append(6)\n>>> stack.append(7)\n>>> stack\n[3, 4, 5, 6, 7]\n>>> stack.pop()\n7\n>>> stack\n[3, 4, 5, 6]\n>>> stack.pop()\n6\n>>> stack.pop()\n5\n>>> stack\n[3, 4]\n\n```\n\n...\n\n列表也可以用作队列，最先加入的元素，最先取出（“先进先出”）；然而，列表作为队列的效率很低。因为，在列表末尾添加和删除元素非常快，但在列表开头插入或移除元素却很慢（因为所有其他元素都必须移动一位）。\n"
+        },
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html?highlight=extend",
+          "title": "5.  Data Structures ¶",
+          "snippet": "## 5.1. More on Lists¶\n\nThe list data type has some more methods. Here are all of the methods of list objects:\n\nlist.append(x)\n\nAdd an item to the end of the list. Equivalent to`a[len(a):] = [x]`.\n\nlist.extend(iterable)\n\nExtend the list by appending all the items from the iterable. Equivalent to`a[len(a):] = iterable`.\n\n...\n\nlist.insert(i, x)\n\nInsert an item at a given position. The first argument is the index of the element before which to insert, so`a.insert(0, x)` inserts at the front of the list, and`a.insert(len(a), x)` is equivalent to`a.append(x)`.\n\n...\n\nYou might have noticed that methods like`insert`,`remove` or`sort` that only modify the list have no return value printed – they return the default`None`. [1] This is a design principle for all mutable data structures in Python.\n\n...\n\nThe list methods make it very easy to use a list as a stack, where the last element added is the first element retrieved (“last-in, first-out”). To add an item to the top of the stack, use`append()`. To retrieve an item from the top of the stack, use`pop()` without an explicit index. For example:\n"
+        },
+        {
+          "url": "https://docs.python.org/zh-tw/3/tutorial/datastructures.html",
+          "title": "5. 資料結構— Python 3.15.0 說明文件",
+          "snippet": "## 5.1. 進一步了解 List（串列）¶\n\nList（串列）這個資料型別具有更多方法。下面條列了 list 物件的所有 method：\n\nlist.append(x)\n\n將一個新的項目加到 list 的尾端。與`a[len(a):] = [x]`類似。\n\nlist.extend(iterable)\n\n將 iterable（可疊代物件）接到 list 的尾端。與`a[len(a):] = iterable`類似。\n\n...\n\nlist.insert(i, x)\n\n將一個項目插入至 list 中給定的位置。第一個引數為插入處前元素的索引值，所以`a.insert(0, x)`會插入在 list 首位，而`a.insert(len(a), x)`則相當於`a.append(x)`。\n\n...\n\n. ... . 將 ... 作為 ... ¶\n\n...\n\nList 的操作方法使得它非常簡單可以用來實作 stack（堆疊）。Stack 為一個遵守最後加入元素最先被取回（後進先出，\"last-in, first-out\"）規則的資料結構。你可以使用方法 append()將一個項目放到堆疊的頂層。而使用方法 pop()且不給定索引值去取得堆疊最上面的項目。舉例而言：\n\n...\n\n我們 ... 將 list 當作 queue（佇列）使用 ... 即最先加入元素最先被取回（先進先出， ... first-in, first-out ... ）的 ... ，list 在 ... 使用方式下效率較差。使用`append`和`pop`來加入和取出尾端的元素較快，而 ... `insert`和`pop` ... 插入 ... 取出頭端的元素較慢（因為其他元素都需要挪 ... 一格）。"
+        }
+      ],
+      "result_count": 5,
+      "official_domain_results": 5,
+      "elapsed_seconds": 8.219
+    },
+    {
+      "provider": "exa",
+      "operation": "search",
+      "sample": "en",
+      "query": "Python list append extend difference site:docs.python.org",
+      "url": null,
+      "status": "ok",
+      "events": [],
+      "results": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.15.0 documentation",
+          "snippet": "## 5.1. More on Lists¶\n\nThe list data type has some more methods. Here are all of the methods of list objects:\n\nlist. append(value, /)\n: Add an item to the end of the list. Similar to `a[len(a):] = [x]`.\n\nlist. extend(iterable, /)\n: Extend the list by appending all the items from the iterable. Similar to `a[len(a):] = iterable`.\n\nlist. insert(index, value, /)\n: Insert an item at a given position. The first argument is the index of the element before which to insert, so `a.insert(0, x)` inserts at the front of the list, and `a.insert(len(a), x)` is equivalent to `a.append(x)`.\n\n...\n\nAn example that uses most of the list methods:\n\n```\n>>> fruits = ['orange', 'apple', 'pear', 'banana', 'kiwi', 'apple', 'banana']\n>>> fruits.count('apple')\n2\n>>> fruits.count('tangerine')\n0\n>>> fruits.index('banana')\n3\n>>> fruits.index('banana', 4)  # Find next banana starting at\n\n...\n\nYou might have noticed that methods like `insert`, `remove` or `sort` that only modify the list have no return value printed – they return the default `None`. [1] This is a design principle for all mutable data structures in Python.\n\n...\n\n### 5.1.1. Using Lists as Stacks¶\n\nThe list methods make it very easy to use a list as a stack, where the last element added is the first element retrieved (“last-in, first-out”). To add an item to the top of the stack, use `append()`. To retrieve an item from the top of the stack, use `pop()` without an explicit index. For example:\n\n```\n>>> stack = [3, 4, 5]\n>>> stack.append(6)\n>>>"
+        },
+        {
+          "url": "https://docs.python.org/3/builtins/stdtypes.html",
+          "title": "Built-in Types — Python 3.14.8 documentation",
+          "snippet": "The operations in the following table are supported by most sequence types, both mutable and immutable. The `collections.abc.Sequence` ABC is provided to make it easier to correctly implement these operations on custom sequence types.\n\nThis table lists the sequence operations sorted in ascending priority. In the table, s and t are sequences of the same type, n, i, j and k are integers and x is an arbitrary object that meets any type and value restrictions imposed by s.\n\nThe `in` and `not in` operations have the same priorities as the comparison operations. The `+` (concatenation) and `*` (repetition) operations have the same priority as the corresponding numeric operations. [3]\n\nSee Time complexity of operations on built-in types for the costs of the various sequence operations.\n\n| Operation | Result | Notes |\n| --- | --- | --- |\n| `x in s` | `True` if an item of s is equal to x, else `False` | (1) |\n| `x not in s` | `False` if an item of s is equal to x, else `True` | (1) |\n| `s + t` | the concatenation of s and t | (6)(7) |\n| `s * n` or `n * s` | equivalent to adding s to itself n times | (2)(7) |\n| `s[i]` | i th item of s, origin 0 | (3)(8) |\n| `s[i:j]` | slice of s from i to j | (3)(4) |\n| `s[i:j:k]` | slice of s from i to j with step k | (3)(5) |\n| `len(s)` | length of s | |\n| `min(s)` | smallest item of s | |\n| `max(s)` | largest item of s | |\n\n...\n\n```\n2. Values of n less than `0` are treated as `0` (which yields an empty sequence of the same type as s). Note that item"
+        },
+        {
+          "url": "https://docs.python.org/3/builtins/time-complexity.html",
+          "title": "Time complexity of operations on built-in types — Python 3.15.0 documentation",
+          "snippet": "We use Big O notation to describe how the running time of an operation grows with the size of its inputs. Unless stated otherwise, n denotes the number of elements currently in the container, and k is the value of a numeric parameter, such as an index or a repeat count.\n\n## `list`¶\n\nLists are mutable sequences; for more detail on the implementation see How are lists implemented in CPython?. The largest costs come from growing beyond the current allocation size (because everything must move), or from inserting or deleting somewhere near the beginning (because everything after that must move). If you need to add or remove at both ends, consider using a `collections.deque` instead.\n\n| Operation | Complexity |\n| --- | --- |\n| Copy (`l.copy()`) | O(n) |\n| Append (`l.append(x)`) [1] | O(1) |\n| Pop (`l.pop(k)`) [1] [2] | O(n - k) |\n| Insert (`l.insert(k, x)`) [1] [2] | O(n - k) |\n| Get item (`l[k]`) | O(1) |\n| Set item (`l[k] = x`) | O(1) |\n| Delete item (`del l[k]`) [2] | O(n - k) |\n| Iteration | O(n) |\n| Get slice (`l[i:j]`) | O(j - i) |\n| Set slice (`l[i:j] = t`) [1] | O(j - i) if len(t) == j - i, otherwise O(n - i + len(t)) |\n| Delete slice (`del l[i:j]`) | O(n - i) |\n| Extend (`l.extend(t)`) [1] [3] | O(len(t)) |\n| Sort (`l.sort()`) [4] | O(n log n) |\n| Concatenate (`l1 + l2`) | O(len(l1) + len(l2)) |\n| Multiply (`l * k`) | O(nk) |\n| `x in l` | O(n) |\n| `min(l)`, `max(l)` | O(n) |\n| Get length (`len(l)`) [5] | O(1) |\n\n...\n\n.\n\n| Operation | Complexity |\n| --- | --- |\n| `x in s` "
+        },
+        {
+          "url": "https://docs.python.org/3/tutorial/controlflow.html",
+          "title": "4. More Control Flow Tools — Python 3.14.8 documentation",
+          "snippet": "It is simple to write a function that returns a list of the numbers of the Fibonacci series, instead of printing it:\n\n```\n>>> def fib2(n):  # return Fibonacci series up to n\n...     \"\"\"Return a list containing the Fibonacci series up to n.\"\"\"\n...     result = []\n...     a, b = 0, 1\n...     while a < n:\n...         result.append(a)    # see below\n...         a, b = b, a+b\n...     return result\n...\n>>> f100 = fib2(100)    # call it\n>>> f100                # write the result\n[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]\n\n```\n\n...\n\nThis example, as usual, demonstrates some new Python features:\n\n- The `return` statement returns with a value from a function. `return` without an expression argument returns `None`. Falling off the end of a function also returns `None`.\n- The statement `result.append(a)` calls a method of the list object `result`. A method is a function that ‘belongs’ to an object and is named `obj.methodname`, where `obj` is some object (this may be an expression), and `methodname` is the name of a method that is defined by the object’s type. Different types define different methods. Methods of different types may have the same name without causing ambiguity. (It is possible to define your own object types and methods, using classes, see Classes) The method `append()` shown in the example is defined for list objects; it adds a new element at the end of the list. In this example it is equivalent to `result = result + [a]`, but more efficient.\n"
+        },
+        {
+          "url": "https://docs.python.org/3/library/collections.html",
+          "title": "collections — Container datatypes — Python 3.15.0 ...",
+          "snippet": "class collections. deque([iterable [, maxlen]])¶\n: Returns a new deque object initialized left-to-right (using `append()`) with data from iterable. If iterable is not specified, the new deque is empty.\n\nDeques are a generalization of stacks and queues (the name is pronounced “deck” and is short for “double-ended queue”). Deques support thread-safe, memory efficient appends and pops from either side of the deque with approximately the same O(1) performance in either direction.\n\nThough `list` objects support similar operations, they are optimized for fast fixed-length operations and incur O(n) memory movement costs for `pop(0)` and `insert(0, v)` operations which change both the size and position of the underlying data representation.\n\nIf maxlen is not specified or is `None`, deques may grow to an arbitrary length. Otherwise, the deque is bounded to the specified maximum length. Once a bounded length deque is full, when new items are added, a corresponding number of items are discarded from the opposite end. Bounded length deques provide functionality similar to the `tail` filter in Unix. They are also useful for tracking transactions and other pools of data where only the most recent activity is of interest.\n\n...\n\n)¶\n: Count the number of deque elements equal to value.\n\nAdded in version 3.2.\n\nextend(iterable, /)¶\n: Extend the right side of the deque by appending elements from the iterable argument.\n\nextendleft(iterable, /)¶\n: Extend the left side of the deque by appending elem"
+        }
+      ],
+      "result_count": 5,
+      "official_domain_results": 5,
+      "elapsed_seconds": 7.541
+    },
+    {
+      "provider": "exa",
+      "operation": "read",
+      "sample": "python_zh",
+      "query": null,
+      "url": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+      "status": "ok",
+      "events": [],
+      "title": "5. 数据结构 — Python 3.14.7 文档",
+      "body_characters": 13133,
+      "body_sha256": "fdef35a3fca9d43ba0fb68fcb85a0fe41406e22e946727fe5fef3017319bf073",
+      "marker_hits": {
+        "append": true,
+        "extend": true,
+        "列表": true
+      },
+      "excerpt": "5. 数据结构 — Python 3.14.7 文档\n\n# 5. 数据结构¶\n\n本章深入讲解之前学过的一些内容，同时，还增加了新的知识点。\n\n## 5.1. 列表详解¶\n\n列表数据类型具有更多的方法。 下面是列表对象的所有方法：\n\nlist.append(value, /)\n\n在列表末尾添加一项。 类似于`a[len(a):] = [x]`。\n\nlist.extend(iterable, /)\n\n通过添加来自 iterable 的所有项来扩展列表。 类似于`a[len(a):] = iterable`。\n\nlist.insert(index, value, /)\n\n在指定位置插入元素。第一个参数是插入元素的索引，因此，`a.insert(0, x)`在列表开头插入元素，`a.insert(len(a), x)`等同于`a.append(x)`。\n\nlist.remove(value, /)\n\n从列表中移除第一个值为 value 的条目。 如果无此条目则会引发 ValueError。\n\nlist.pop(index=-1, /)\n\n移除列表中给定位置上的条目，并返回该条目。 如果未指定索引号，则`a.pop()`将移除并返回列表中的最后一个条目。 如果列表为空或索引号在列表索引范围之外则会引发 IndexError。\n\nlist.clear()\n\n移除列表中的所有项。 类似于`del a[:]`。\n\nlist.index(value[, start[, stop]])\n\n返回列表中 value 首次出现所在的从零开始的索引。 如无此条目则会引发 ValueError。\n\n可选参数 start 和 end 是切片符号，用于将搜索限制为列表的特定子序列。返回的索引是相对于整个序列的开始计算的，而不是 start 参数。\n\nlist.count(value, /)\n\n返回列表中 value 出现的次数。\n\nlist.sort(*, key=None, reverse=False)\n\n原地排序列表中的元素 (要了解自定义排序参数，详见 sorted())。\n\nlist.reverse()\n\n翻转列表中的元素。\n\nlist.copy()\n\n返回列表的浅拷贝。 类似于`a[:]`。\n\n多数列表方法示例：\n\n```\n>>> fruits = ['orange', 'apple', 'pear', 'banana', 'kiwi', 'apple', 'banana']\n>>> fruits.count('apple')\n2\n>>> fruits.count('tangerine')\n0\n>>> fruits.index('banana')\n3\n>>> fruits.index('banana', 4)  # 从 4 号位开始查找下一个 banana\n6\n>>> fruits.reverse()\n>>> fruits\n['banana', 'apple', 'kiwi', 'banana', 'pear', 'apple', 'orange']\n>>> fruits.append('grape')\n>>> fruits\n['banana', 'apple', 'kiwi', 'banana', 'pear', 'apple', 'orange', 'grape']\n>>> fruits.sort()\n>>> fruits\n['apple', 'apple', 'banana', 'banana', 'grape', 'kiwi', 'orange', 'pear']\n>>> fruits.pop()\n'pear'\n\n```\n\n你可能已经注意到`insert`,`remove`或`sort`等仅修改列表的方法都不会打印返回值 -- 它们返回默认值`None`。 ",
+      "read_details": {},
+      "elapsed_seconds": 4.846
+    },
+    {
+      "provider": "exa",
+      "operation": "read",
+      "sample": "python_en",
+      "query": null,
+      "url": "https://docs.python.org/3/tutorial/datastructures.html",
+      "status": "ok",
+      "events": [],
+      "title": "5. Data Structures — Python 3.15.0 documentation",
+      "body_characters": 20000,
+      "body_sha256": "c926d4f8e6099f388896e2eca1e078be57d7ce4ebe469982502e290d9b6ac3e0",
+      "marker_hits": {
+        "append": true,
+        "extend": true,
+        "list": true
+      },
+      "excerpt": "5. Data Structures — Python 3.15.0 documentation\n\n# 5. Data Structures¶\n\nThis chapter describes some things you’ve learned about already in more detail, and adds some new things as well.\n\n## 5.1. More on Lists¶\n\nThe list data type has some more methods. Here are all of the methods of list objects:\n\nlist. append(value, /)\n: Add an item to the end of the list. Similar to `a[len(a):] = [x]`.\n\nlist. extend(iterable, /)\n: Extend the list by appending all the items from the iterable. Similar to `a[len(a):] = iterable`.\n\nlist. insert(index, value, /)\n: Insert an item at a given position. The first argument is the index of the element before which to insert, so `a.insert(0, x)` inserts at the front of the list, and `a.insert(len(a), x)` is equivalent to `a.append(x)`.\n\nlist. remove(value, /)\n: Remove the first item from the list whose value is equal to value. It raises a `ValueError` if there is no such item.\n\nlist. pop(index=-1, /)\n: Remove the item at the given position in the list, and return it. If no index is specified, `a.pop()` removes and returns the last item in the list. It raises an `IndexError` if the list is empty or the index is outside the list range.\n\nlist. clear()\n: Remove all items from the list. Similar to `del a[:]`.\n\nlist. index(value [, start [, stop]])\n: Return zero-based index of the first occurrence of value in the list. Raises a `ValueError` if there is no such item.\n\nThe optional arguments start and end are interpreted as in the slice notation and are used to limit the search to a particular subsequence of the list. The returned index is computed relative",
+      "read_details": {},
+      "elapsed_seconds": 4.828
+    },
+    {
+      "provider": "exa",
+      "operation": "read",
+      "sample": "deepseek_search",
+      "query": null,
+      "url": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+      "status": "ok",
+      "events": [],
+      "title": "网页搜索与抓取 | DeepSeek API Docs",
+      "body_characters": 6122,
+      "body_sha256": "e67761b7fa356377b70d56ebf6faf79fd673713beceebb1c2e4343cdb0a20602",
+      "marker_hits": {
+        "need_content": true,
+        "128": true,
+        "Fetch": true
+      },
+      "excerpt": "网页搜索与抓取 | DeepSeek API Docs\n\n# 网页搜索与抓取\n\nSearch 接口和 Fetch 接口为 Agent 与 RAG 应用提供实时网页内容：\n\n- Search 接口按 query 搜索网页，返回结构化结果。该接口由 DeepSeek 自研搜索引擎提供支持。\n- Fetch 接口抓取单个网页，以 Markdown 文本返回页面内容。\n\n两者都是原始 JSON API，使用与 DeepSeek API 相同的 Bearer 鉴权。\n\nBase URL 为 `https://api.deepseek.com`：\n\n| API | Endpoint |\n| --- | --- |\n| Search | `POST https://api.deepseek.com/v1/tools/search` |\n| Fetch | `POST https://api.deepseek.com/v1/tools/fetch` |\n\n完整的请求与响应 Schema 请参考 Search API Reference 和 Fetch API Reference。\n\n## 鉴权​\n\n在请求头中携带 API Key 和 JSON 内容类型：\n\n| 请求头 | 必填 | 值 |\n| --- | --- | --- |\n| `Authorization` | 是 | `Bearer ` |\n| `Content-Type` | 是 | `application/json` |\n\n### 请求​\n\n```bash\ncurl https://api.deepseek.com/v1/tools/search \\  -H \"Authorization: Bearer <DeepSeek API Key>\" \\  -H \"Content-Type: application/json\" \\  -d '{    \"query\": \"DeepSeek V4 模型 发布\",    \"count\": 5,    \"need_content\": true  }'\n```\n\n```python\nimport requestsresponse = requests.post(    \"https://api.deepseek.com/v1/tools/search\",    headers={        \"Authorization\": \"Bearer <DeepSeek API Key>\",    },    json={        \"query\": \"DeepSeek V4 模型 发布\",        \"count\": 5,        \"need_content\": True,    },)response.raise_for_status()for result in response.json()[\"results\"]:    print(result[\"title\"], result[\"url\"])    print(result[\"summary\"])\n```\n\n请求字段：\n\n| 字段 | 类型 | 必填 | 默认值 | 说明 |\n| --- | --- | --- | --- | --- |\n| `query` | string | 是 | - | 搜索词，1～128 个 Unicode 字符，不能全为空白，支持下方列出的搜索语法。 |\n| `count` | integer | 否 | `10` | 返回条数，1～50。 |\n| `ori_question` | string | 否 | - | 触发搜索的用户原始问题，1～128 个字符，有助于更好地理解搜索意图，传 `null` 视为未提供。 |\n| `localization` | str",
+      "read_details": {},
+      "elapsed_seconds": 5.22
+    },
+    {
+      "provider": "tavily",
+      "operation": "search",
+      "sample": "zh",
+      "query": "Python 列表 append extend 区别 site:docs.python.org",
+      "url": null,
+      "status": "ok",
+      "events": [],
+      "results": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.15.0 documentation",
+          "snippet": "list.extend(iterable, /)\n:   Extend the list by appending all the items from the iterable. Similar to `a[len(a):] = iterable`.\n\nlist.insert(index, value, /)\n:   Insert an item at a given position. The first argument is the index of the element before which to insert, so `a.insert(0,x)` inserts at the front of the list, and `a.insert(len(a),x)` is equivalent to `a.append(x)`. [...] object either directly or indirectly, it cannot be used as a key. You can’t use lists as keys, since lists can be modified in place using index assignments, slice assignments, or methods like `append()` and `extend()`. [...] The list methods make it very easy to use a list as a stack, where the last element added is the first element retrieved (“last-in, first-out”). To add an item to the top of the stack, use `append()`. To retrieve an item from the top of the stack, use `pop()` without an explicit index. For example:\n\n```\n>>> stack =[3, 4, 5]>>> stack. append(6)>>> stack. append(7)>>> stack[3, 4, 5, 6, 7]>>> stack. pop() 7>>> stack[3, 4, 5, 6]>>> stack. pop() 6>>> stack. pop() 5>>> stack[3, 4]\n```"
+        },
+        {
+          "url": "https://docs.python.org/3/library/argparse.html",
+          "title": "argparse — Parser for command-line options, arguments and subcommands — Python 3.15.0 documentation",
+          "snippet": "```\n `'extend'` - This appends each item from a multi-value argument to a list. The `'extend'` action is typically used with the nargs keyword argument value `'+'` or `''`. Note that when nargs is `None` (the default) or `'?'`, each character of the argument string will be appended to the list. Example usage: [...] ```\n `'append'` - This appends each argument value to a list. It is useful for allowing an option to be specified multiple times. If the default value is a non-empty list, the parsed value will start with the default list’s elements and any values from the command line will be appended after those default values. Example usage: [...] You may also specify an arbitrary action by passing an `Action` subclass (e.g. `BooleanOptionalAction`) or other object that implements the same interface. Only actions that consume command-line arguments (e.g. `'store'`, `'append'`, `'extend'`, or custom actions with non-zero `nargs`) can be used with positional arguments."
+        },
+        {
+          "url": "https://docs.python.org/3/library/collections.html",
+          "title": "collections — Container datatypes — Python 3.15.0 documentation",
+          "snippet": "count(value, /)¶\n    :   Count the number of deque elements equal to value.\n\n        Added in version 3.2.\n\n    extend(iterable, /)¶\n    :   Extend the right side of the deque by appending elements from the iterable argument.\n\n    extendleft(iterable, /)¶\n    :   Extend the left side of the deque by appending elements from iterable. Note, the series of left appends results in reversing the order of elements in the iterable argument. [...] When each key is encountered for the first time, it is not already in the mapping; so an entry is automatically created using the `default_factory` function which returns an empty `list`. The `list.append()` operation then attaches the value to the new list. When keys are encountered again, the look-up proceeds normally (returning the list for that key) and the `list.append()` operation adds another value to the list. This technique is simpler and faster than an equivalent technique using"
+        },
+        {
+          "url": "https://docs.python.org/zh-tw/3/tutorial/datastructures.html",
+          "title": "5. 資料結構 — Python 3.15.0 說明文件",
+          "snippet": "### 導航\n\n 索引\n 模組 |\n 下一頁\") |\n 上一頁 |\n Python »\n 3.15.0 Documentation »\n Python 教學 »\n 5. 資料結構\n |\n |\n\n# 5. 資料結構¶\n\n## 5.1. 進一步了解 List（串列）¶\n\nList（串列）這個資料型別具有更多方法。下面條列了 list 物件的所有 method：\n\nlist.append(value, /)\n:   將一個新的項目加到 list 的尾端。與 `a[len(a):] =[x]` 類似。\n\nlist.extend(iterable, /)\n:   將 iterable（可疊代物件）接到 list 的尾端。與 `a[len(a):] = iterable` 類似。\n\nlist.insert(index, value, /)\n:   將一個項目插入至 list 中給定的位置。第一個引數為插入處前元素的索引值，所以 `a.insert(0,x)` 會插入在 list 首位，而 `a.insert(len(a),x)` 則相當於 `a.append(x)`。 [...] 下一個常用的 Python 內建資料類型為 dictionary（請參考Mapping types --- dict, frozendict）。 Dictionary 有時被稱為「關聯記憶體」(associative memories) 或「關聯陣列」(associative arrays)。不像序列是由一個範圍內的數字當作索引，dictionary 是由鍵 (key) 來當索引，鍵可以是任何不可變的類型；字串和數字都可以當作鍵。Tuple 也可以當作鍵，如果他們只含有字串、數字或 tuple；若一個 tuple 直接或間接地含有任何可變的物件，它就不能當作鍵。你無法使用 list 當作鍵，因為 list 可以經由索引指派 (index assignment)、切片指派 (slice assignment) 或是像 `append()` 和 `extend()` 等方法被修改。 [...] ```\n>>> stack =[3, 4, 5]>>> stack. append(6)>>> stack. append(7)>>> stack[3, 4, 5, 6, 7]>>> stack. pop() 7>>> stack[3, 4, 5, 6]>>> stack. pop() 6>>> stack. pop() 5>>> stack[3, 4]\n```\n\n### 5.1.2. 將 List 作為 Queue（佇列）使用¶\n\n我們也可以將 list 當作 queue（佇列）使用，即最先加入元素最先被取回（先進先出，\"first-in, first-out\"）的資料結構。然而，list 在這種使用方式下效率較差。使用 `append` 和 `pop` 來加入和取出尾端的元素較快，而使用 `insert` 和 `pop` 來插入和取出頭端的元素較慢（因為其他元素都需要挪動一格）。更多資訊請參閱 Time complexity of operations on built-in types。"
+        },
+        {
+          "url": "https://docs.python.org/zh-tw/3.13/tutorial/datastructures.html",
+          "title": "5. 資料結構 — Python 3.13.16 說明文件",
+          "snippet": "### 導航\n\n 索引\n 模組 |\n 下一頁\") |\n 上一頁 |\n Python »\n 3.13.16 Documentation »\n Python 教學 »\n 5. 資料結構\n |\n |\n\n# 5. 資料結構¶\n\n## 5.1. 進一步了解 List（串列）¶\n\nThe list data type has some more methods. Here are all of the methods of list objects:\n\nlist.append(value, /)\n:   將一個新的項目加到 list 的尾端。與 `a[len(a):] =[x]` 類似。\n\nlist.extend(iterable, /)\n:   將 iterable（可疊代物件）接到 list 的尾端。與 `a[len(a):] = iterable` 類似。 [...] The list methods make it very easy to use a list as a stack, where the last element added is the first element retrieved (\"last-in, first-out\"). To add an item to the top of the stack, use `append()`. To retrieve an item from the top of the stack, use `pop()` without an explicit index. For example:\n\n```\n>>> stack =[3, 4, 5]>>> stack. append(6)>>> stack. append(7)>>> stack[3, 4, 5, 6, 7]>>> stack. pop() 7>>> stack[3, 4, 5, 6]>>> stack. pop() 6>>> stack. pop() 5>>> stack[3, 4]\n``` [...] list.insert(index, value, /)\n:   將一個項目插入至 list 中給定的位置。第一個引數為插入處前元素的索引值，所以 `a.insert(0,x)` 會插入在 list 首位，而 `a.insert(len(a),x)` 則相當於 `a.append(x)`。\n\nlist.remove(value, /)\n:   Remove the first item from the list whose value is equal to value. It raises a `ValueError` if there is no such item.\n\nlist.pop(index=-1, /)\n:   移除 list 中給定位置的項目，並回傳它。如果沒有指定位置， `a.pop()` 將會移除 list 中最後的項目並回傳它。若 list 是空的或是索引值超出範圍，則會引發 `IndexError` 例外。\n\nlist.clear()\n:   刪除 list 中所有項目。與 `dela[:]` 類似。"
+        }
+      ],
+      "result_count": 5,
+      "official_domain_results": 5,
+      "elapsed_seconds": 5.03
+    },
+    {
+      "provider": "tavily",
+      "operation": "search",
+      "sample": "en",
+      "query": "Python list append extend difference site:docs.python.org",
+      "url": null,
+      "status": "ok",
+      "events": [],
+      "results": [
+        {
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "title": "5. Data Structures — Python 3.15.0 documentation",
+          "snippet": "list.extend(iterable, /)\n:   Extend the list by appending all the items from the iterable. Similar to `a[len(a):] = iterable`.\n\nlist.insert(index, value, /)\n:   Insert an item at a given position. The first argument is the index of the element before which to insert, so `a.insert(0,x)` inserts at the front of the list, and `a.insert(len(a),x)` is equivalent to `a.append(x)`. [...] object either directly or indirectly, it cannot be used as a key. You can’t use lists as keys, since lists can be modified in place using index assignments, slice assignments, or methods like `append()` and `extend()`. [...] The list methods make it very easy to use a list as a stack, where the last element added is the first element retrieved (“last-in, first-out”). To add an item to the top of the stack, use `append()`. To retrieve an item from the top of the stack, use `pop()` without an explicit index. For example:\n\n```\n>>> stack =[3, 4, 5]>>> stack. append(6)>>> stack. append(7)>>> stack[3, 4, 5, 6, 7]>>> stack. pop() 7>>> stack[3, 4, 5, 6]>>> stack. pop() 6>>> stack. pop() 5>>> stack[3, 4]\n```"
+        },
+        {
+          "url": "https://docs.python.org/3/library/collections.html",
+          "title": "collections — Container datatypes — Python 3.15.0 documentation",
+          "snippet": "When each key is encountered for the first time, it is not already in the mapping; so an entry is automatically created using the `default_factory` function which returns an empty `list`. The `list.append()` operation then attaches the value to the new list. When keys are encountered again, the look-up proceeds normally (returning the list for that key) and the `list.append()` operation adds another value to the list. This technique is simpler and faster than an equivalent technique using [...] count(value, /)¶\n    :   Count the number of deque elements equal to value.\n\n        Added in version 3.2.\n\n    extend(iterable, /)¶\n    :   Extend the right side of the deque by appending elements from the iterable argument.\n\n    extendleft(iterable, /)¶\n    :   Extend the left side of the deque by appending elements from iterable. Note, the series of left appends results in reversing the order of elements in the iterable argument."
+        },
+        {
+          "url": "https://docs.python.org/3/faq/programming.html",
+          "title": "Programming FAQ — Python 3.15.0 documentation",
+          "snippet": "To see why this happens, you need to know that (a) if an object implements an `__iadd__()` magic method, it gets called when the `+=` augmented assignment is executed, and its return value is what gets used in the assignment statement; and (b) for lists, `__iadd__()` is equivalent to calling `extend()` on the list and returning the list. That’s why we say that for lists, `+=` is a “shorthand” for `list.extend()`:\n\n```\n>>> a_list =[]>>> a_list +=>>> a_list\n```\n\nThis is equivalent to: [...] However, there is one class of operations where the same operation sometimes has different behaviors with different types: the augmented assignment operators. For example, `+=` mutates lists but not tuples or ints (`a_list +=[1,2,3]` is equivalent to `a_list.extend([1,2,3])` and mutates `a_list`, whereas `some_tuple +=(1,2,3)` and `some_int += 1` create new objects).\n\nIn other words: [...] Some operations (for example `y.append(10)` and `y.sort()`) mutate the object, whereas superficially similar operations (for example `y = y +` and `sorted(y)`) create a new object. In general in Python (and in all cases in the standard library) a method that mutates an object will return `None` to help avoid getting the two types of operations confused. So if you mistakenly write `y.sort()` thinking it will give you a sorted copy of `y`, you’ll instead end up with `None`, which will likely"
+        },
+        {
+          "url": "https://docs.python.org/3/tutorial/controlflow.html",
+          "title": "4. More Control Flow Tools — Python 3.15.0 documentation",
+          "snippet": "using classes, see Classes) The method `append()` shown in the example is defined for list objects; it adds a new element at the end of the list. In this example it is equivalent to `result = result +[a]`, but more efficient. [...] The statement `result.append(a)` calls a method of the list object `result`. A method is a function that ‘belongs’ to an object and is named `obj.methodname`, where `obj` is some object (this may be an expression), and `methodname` is the name of a method that is defined by the object’s type. Different types define different methods. Methods of different types may have the same name without causing ambiguity. (It is possible to define your own object types and methods, using classes, see [...] ```\n i = 5 def  f(arg = i): print(arg) i = 6 f()\n```\n\nwill print `5`.\n\nImportant warning: The default value is evaluated only once. This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes. For example, the following function accumulates the arguments passed to it on subsequent calls:\n\n```\n def  f(a, L =[]): L. append(a) return L print(f(1)) print(f(2)) print(f(3))\n```\n\nThis will print\n\n```\n[1, 2][1, 2, 3]\n```"
+        },
+        {
+          "url": "https://docs.python.org/3/c-api/list.html",
+          "title": "List Objects — Python 3.15.0 documentation",
+          "snippet": "Extend list with the contents of iterable. This is the same as `PyList_SetSlice(list,PY_SSIZE_T_MAX,PY_SSIZE_T_MAX,iterable)` and analogous to `list.extend(iterable)` or `list += iterable`.\n\n    Raise an exception and return `-1` if list is not a `list` object. Return 0 on success.\n\n    Added in version 3.13.\n\n    Note [...] Note\n\n    In the free-threaded build, when itemlist is a `list`, both list and itemlist are locked for the duration of the operation. For other iterables (or `NULL`), only list is locked.\n\nint PyList\\_Extend(PyObject \\list, PyObject \\iterable)¶\n:   Thread safety: Safe for concurrent use on the same object. [...] Insert the item item into list list in front of index index. Return `0` if successful; return `-1` and set an exception if unsuccessful. Analogous to `list.insert(index,item)`.\n\nint PyList\\_Append(PyObject \\list, PyObject \\item)¶\n:   Part of the Stable ABI. Thread safety: Atomic.\n\n    Append the object item at the end of list list. Return `0` if successful; return `-1` and set an exception if unsuccessful. Analogous to `list.append(item)`."
+        }
+      ],
+      "result_count": 5,
+      "official_domain_results": 5,
+      "elapsed_seconds": 3.301
+    },
+    {
+      "provider": "tavily",
+      "operation": "read",
+      "sample": "python_zh",
+      "query": null,
+      "url": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+      "status": "ok",
+      "events": [],
+      "title": "https://docs.python.org/zh-cn/3/tutorial/datastructures.html",
+      "body_characters": 6270,
+      "body_sha256": "1b51f33686a851014d31e27aab2e455cd0e1a03b77090fb6f8bc6e153dbb3911",
+      "marker_hits": {
+        "append": true,
+        "extend": true,
+        "列表": true
+      },
+      "excerpt": "Python logo\n目录\ndel\n上一主题\n4. 更多控制流工具\n下一主题\n6. 模块\n当前页\n导航\nPython logo\n5. 数据结构¶\n本章深入讲解之前学过的一些内容，同时，还增加了新的知识点。\n5.1. 列表详解¶\n列表 数据类型具有更多的方法。 下面是列表对象的所有方法：\n在列表末尾添加一项。 类似于 a[len(a):] = [x]。\na[len(a):] = [x]\n通过添加来自 iterable 的所有项来扩展列表。 类似于 a[len(a):] = iterable。\na[len(a):] = iterable\n在指定位置插入元素。第一个参数是插入元素的索引，因此，a.insert(0, x) 在列表开头插入元素， a.insert(len(a), x) 等同于 a.append(x) 。\na.insert(0, x)\na.insert(len(a), x)\na.append(x)\n从列表中移除第一个值为 value 的条目。 如果无此条目则会引发 ValueError。\nValueError\n移除列表中给定位置上的条目，并返回该条目。 如果未指定索引号，则 a.pop() 将移除并返回列表中的最后一个条目。 如果列表为空或索引号在列表索引范围之外则会引发 IndexError。\na.pop()\nIndexError\n移除列表中的所有项。 类似于 del a[:]。\ndel a[:]\n返回列表中 value 首次出现所在的从零开始的索引。 如无此条目则会引发 ValueError。\nValueError\n可选参数 start 和 end 是切片符号，用于将搜索限制为列表的特定子序列。返回的索引是相对于整个序列的开始计算的，而不是 start 参数。\n返回列表中 value 出现的次数。\n原地排序列表中的元素 (要了解自定义排序参数，详见 sorted())。\nsorted()\n翻转列表中的元素。\n返回列表的浅拷贝。 类似于 a[:]。\na[:]\n多数列表方法示例：\n你可能已经注意到 insert, remove 或 sort 等仅修改列表的方法都不会打印返回值 -- 它们返回默认值 None。 (#id2) 这是适用于 Python 中所有可变数据结构的设计原则。\ninsert\nremove\nsort\nNone\n你可能会注意到的另一件事是并非所有数据都可以排序或比较。 举例来说，[None, 'hello', 10] 就不可排序因为整数不能与字符串比较而 None 不能与其他类型比较。 此外，还存在一些没有定义顺序关系的类型。 例如，3+4j < 5+7j 就不是一个合法的比较。\n[None, 'hello', 10]\nNone\n3+4j < 5+7j\n5.1.1. 用列表实现堆栈¶\n列表方法使得将列表作为栈来使用非常容易，最后添加的元素会最先被取出（“后进先出”）。 要将一个条目添加到栈顶，可使用 append()。 要从栈顶取出一个条目，则使用 pop() 而不必显式指定索引。 例如:\nappend()\npop()\n5.1.2. 用列表实现队列¶\n列表也可当作队列来使用，首先添加的元素将被首先提取（“先进先出”）；不过，列表这样使用是低效的。 虽然在列表末尾添加和弹出条目很快速，但在列表开头插入或弹出条目却很慢（因为所有其他元素都必须移动一位）。 详情参见 Time complexity of operations on built-in types。\n实现队列最好用 collections.deque，可以快速从两端添加或删除元素。例如：\ncollections.deque\n5.1.3. 列表推导式¶\n列表推导式创建列表的方式更简洁。常见的用法为，对序列或可迭代对象中的每个元素应用某种操作，用生成的结果创建新的列",
+      "read_details": {},
+      "elapsed_seconds": 3.392
+    },
+    {
+      "provider": "tavily",
+      "operation": "read",
+      "sample": "python_en",
+      "query": null,
+      "url": "https://docs.python.org/3/tutorial/datastructures.html",
+      "status": "ok",
+      "events": [],
+      "title": "https://docs.python.org/3/tutorial/datastructures.html",
+      "body_characters": 19999,
+      "body_sha256": "f23e47338bf9afeeb6b3035e3634c5e9d37813e441cac1019980f1ba1befd2a5",
+      "marker_hits": {
+        "append": true,
+        "extend": true,
+        "list": true
+      },
+      "excerpt": "Navigation\n index\n modules |\n next |\n previous |\n Python »\n 3.15.0 Documentation »\n The Python Tutorial »\n 5. Data Structures\n |\n |\n5. Data Structures¶\nThis chapter describes some things you’ve learned about already in more detail, and adds some new things as well.\n5.1. More on Lists¶\nThe list data type has some more methods. Here are all of the methods of list objects:\nlist.append(value, /)\n:   Add an item to the end of the list. Similar to a[len(a):] =[x].\nlist.extend(iterable, /)\n:   Extend the list by appending all the items from the iterable. Similar to a[len(a):] = iterable.\nlist.insert(index, value, /)\n:   Insert an item at a given position. The first argument is the index of the element before which to insert, so a.insert(0,x) inserts at the front of the list, and a.insert(len(a),x) is equivalent to a.append(x).\nlist.remove(value, /)\n:   Remove the first item from the list whose value is equal to value. It raises a ValueError if there is no such item.\nlist.pop(index=-1, /)\n:   Remove the item at the given position in the list, and return it. If no index is specified, a.pop() removes and returns the last item in the list. It raises an IndexError if the list is empty or the index is outside the list range.\nlist.clear()\n:   Remove all items from the list. Similar to dela[:].\nlist.index(value[, start[, stop]])\n:   Return zero-based index of the first occurrence of value in the list. Raises a ValueError if there is no such item.\nThe optional arguments start and end are interpreted as in the slice notation and are used to limit the search to a particular subsequence of th",
+      "read_details": {},
+      "elapsed_seconds": 1.572
+    },
+    {
+      "provider": "tavily",
+      "operation": "read",
+      "sample": "deepseek_search",
+      "query": null,
+      "url": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+      "status": "ok",
+      "events": [],
+      "title": "https://api-docs.deepseek.com/zh-cn/guides/search/",
+      "body_characters": 6992,
+      "body_sha256": "b4121940efc6219285a1ee124eb6de5450263dd68b2454695e190480a1505a62",
+      "marker_hits": {
+        "need_content": true,
+        "128": true,
+        "Fetch": true
+      },
+      "excerpt": "Search / Fetch API 已上线，使用自研搜索引擎，支持网页搜索与抓取，点此查看使用指南。\n网页搜索与抓取\nSearch 接口和 Fetch 接口为 Agent 与 RAG 应用提供实时网页内容：\n Search 接口按 query 搜索网页，返回结构化结果。该接口由 DeepSeek 自研搜索引擎提供支持。\n Fetch 接口抓取单个网页，以 Markdown 文本返回页面内容。\n两者都是原始 JSON API，使用与 DeepSeek API 相同的 Bearer 鉴权。\nBase URL 为 \n| API | Endpoint |\n --- |\n| Search | POST  |\n| Fetch | POST  |\n完整的请求与响应 Schema 请参考 Search API Reference 和 Fetch API Reference。\n鉴权​\n在请求头中携带 API Key 和 JSON 内容类型：\n| 请求头 | 必填 | 值 |\n --- \n| Authorization | 是 | Bearer <DeepSeek API Key> |\n| Content-Type | 是 | application/json |\nSearch 接口​\n请求​\ncurl  \\curl  \\  -H \"Authorization: Bearer <DeepSeek API Key>\" \\  -H \"Authorization: Bearer <DeepSeek API Key>\" \\  -H \"Content-Type: application/json\" \\  -H \"Content-Type: application/json\" \\  -d '{  -d '{    \"query\": \"DeepSeek V4 模型 发布\",    \"query\": \"DeepSeek V4 模型 发布\",    \"count\": 5,    \"count\": 5,    \"need_content\": true    \"need_content\": true  }'  }'\nimport requests import  requests response = requests.post(response =  requests. post(    \"     \"     headers={    headers ={        \"Authorization\": \"Bearer <DeepSeek API Key>\",         \"Authorization\":  \"Bearer <DeepSeek API Key>\",     },     },     json={    json ={        \"query\": \"DeepSeek V4 模型 发布\",         \"query\":  \"DeepSeek V4 模型 发布\",         \"count\": 5,         \"count\":  5,         \"need_content\": True,         \"need_content\":  True,     },     }, ) ) response.raise_for_status() response. raise_for_status()  for result in response.json()[\"results\"]: for  result in  response. json()[\"results\"]:     print(result[\"title\"], result[\"url\"])     print(result[\"title\"],  result[\"url\"])  ",
+      "read_details": {},
+      "elapsed_seconds": 1.815
+    }
+  ],
+  "finished_at": "2026-10-18T00:24:20.381923+00:00",
+  "operations": 15,
+  "deepseek_possible_cost_cny_upper_bound": 0.025
+}

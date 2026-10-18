@@ -41,7 +41,7 @@ def read_provider():
 
 
 def browser_fallback_enabled():
-    return os.getenv('REVIEW_TODAY_BROWSER_FALLBACK') == '1' and read_provider() in {'exa', 'tavily'}
+    return os.getenv('REVIEW_TODAY_BROWSER_FALLBACK') == '1' and read_provider() in {'exa', 'tavily', 'deepseek'}
 
 
 def _backend(provider):
@@ -59,6 +59,9 @@ def _backend(provider):
     if provider == 'brave':
         from agent_service.brave_tools import BraveBackend
         return BraveBackend(os.getenv('BRAVE_API_KEY', '').strip())
+    if provider == 'deepseek':
+        from agent_service.deepseek_web_tools import DeepSeekWebBackend
+        return DeepSeekWebBackend(os.getenv('DEEPSEEK_WEB_API_KEY', '').strip())
     raise WebToolError('NOT_CONFIGURED' if provider == 'none' else 'UNSUPPORTED')
 
 
@@ -69,13 +72,13 @@ def provider_chain(operation):
     providers = [p for p in providers if p != 'browser']
     if operation == 'read' and browser_fallback_enabled():
         providers.append('browser')
-    allowed = {'exa', 'tavily', 'brave'} if operation == 'search' else {'exa', 'tavily'}
+    allowed = {'exa', 'tavily', 'brave', 'deepseek'} if operation == 'search' else {'exa', 'tavily', 'deepseek'}
     # 'none' and local-only mode cannot silently enable a remote provider.
     return providers if primary in allowed else [primary]
 
 
 def _operation_backend(provider, operation):
-    if operation == 'read' and provider not in {'exa', 'tavily', 'browser'}:
+    if operation == 'read' and provider not in {'exa', 'tavily', 'deepseek', 'browser'}:
         raise WebToolError('UNSUPPORTED')
     return _backend(provider)
 
@@ -119,7 +122,7 @@ def web_context_capability():
 def web_search_text(query: str, *, on_cancel_handle=None) -> str:
     query = require_public_query(query)
     chain = provider_chain('search')
-    if len(chain) == 1:
+    if len(chain) == 1 and chain[0] != 'deepseek':
         backend = _backend(chain[0])
         with budget_scope():
             results = backend.search(query, on_cancel_handle=on_cancel_handle)
@@ -141,7 +144,7 @@ def read_public_url(url: str, limit: int = 20000, *, on_cancel_handle=None) -> t
         from agent_service.capture.fetch import fetch_public_url
         return readable_page(fetch_public_url(url, limit=limit))
     public_service_url(url)
-    if len(chain) == 1:
+    if len(chain) == 1 and chain[0] != 'deepseek':
         with budget_scope(seconds=30):
             return readable_page(_operation_backend(chain[0], 'read').read(url, limit=limit, on_cancel_handle=on_cancel_handle))
     from agent_service.web_resilience import route

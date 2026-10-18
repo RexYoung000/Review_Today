@@ -17,6 +17,8 @@ def diagnose(error):
     elif code.endswith(('PRIVATE_INPUT', 'PRIVATE_QUERY', 'PRIVATE_URL', 'SCOPE_BLOCKED')): category = 'request_boundary'
     elif code == "RT.MODEL.BUSY": category = "capacity_busy"
     elif code.endswith(("CHAIN_FAILED", "BUDGET_EXHAUSTED")): category = "web_unavailable"
+    elif code.endswith('BALANCE_REQUIRED'): category = 'balance_required'
+    elif code.endswith('READ_FAILED'): category = 'read_failed'
     elif status == 429 or code.endswith("RATE_LIMIT"): category = "rate_limit"
     elif code.endswith(("AUTH_REQUIRED", "CANCELLED", "TOOL_FAILED")): category = code.rsplit(".", 1)[-1].lower()
     elif status in (401, 403): category = "access_denied"

@@ -66,7 +66,8 @@ _states_lock = threading.Lock()
 
 def provider_state(provider):
     # Configuration changes select a new state, but neither keys nor hashes leave memory.
-    config = '|'.join([provider, os.getenv(provider.upper() + '_API_KEY', ''),
+    key_name = 'DEEPSEEK_WEB_API_KEY' if provider == 'deepseek' else provider.upper() + '_API_KEY'
+    config = '|'.join([provider, os.getenv(key_name, ''),
                        os.getenv('REVIEW_TODAY_TAVILY_KEYLESS', '')])
     key = hashlib.sha256(config.encode()).digest()
     with _states_lock:
@@ -81,9 +82,11 @@ def emit(state, provider, operation, status, code=''):
 def cooldown(error):
     kind = error.code.rsplit('.', 1)[-1]
     diagnostic = getattr(error, 'diagnostic', '')
+    if kind == 'READ_FAILED':
+        return 0
     if kind == 'RATE_LIMIT' or diagnostic == 'HTTP 429':
         return getattr(error, 'retry_after', None) or 300
-    if kind in {'AUTH_REQUIRED', 'NO_KEY'} or diagnostic in {'HTTP 401', 'HTTP 403'}:
+    if kind in {'AUTH_REQUIRED', 'NO_KEY', 'BALANCE_REQUIRED'} or diagnostic in {'HTTP 401', 'HTTP 403'}:
         return 3600
     if kind in {'TIMEOUT', 'CONNECTION', 'PROTOCOL', 'INCOMPLETE', 'TOOL_FAILED'} or diagnostic.startswith('HTTP 5'):
         return 30
@@ -165,7 +168,8 @@ def route(providers, operation, invoke, *, on_cancel_handle=None):
                         emit(state, provider, operation, 'skipped', 'RT.WEB.BUDGET_EXHAUSTED')
                         raise WebToolError('BUDGET_EXHAUSTED')
                     state.calls += 1
-                    shared.next_start = time.monotonic() + (.55 if provider == 'exa' else .1)
+                    interval = .55 if provider == 'exa' else .25 if provider == 'deepseek' else .1
+                    shared.next_start = time.monotonic() + interval
                     emit(state, provider, operation, 'started')
                     try:
                         provider_seconds = BROWSER_SECONDS if provider == 'browser' else PROVIDER_SECONDS
