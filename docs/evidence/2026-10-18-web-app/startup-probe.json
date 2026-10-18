@@ -1,0 +1,226 @@
+{
+  "batch_id": "565af5c6-f2a6-4369-bc7b-c496c9c2eecd",
+  "provider": "deepseek",
+  "created_at": 1792316794.4862,
+  "updated_at": 1792316799.98649,
+  "rounds": 1,
+  "status": "finished",
+  "calls": [
+    {
+      "id": "d1fcce67-56d2-4305-bb15-f9dff1cd007a",
+      "round": 1,
+      "model": "deepseek-v4-pro",
+      "roles": [
+        "risk"
+      ],
+      "kind": "structured",
+      "strength": "smart",
+      "transport_requests": 1,
+      "request_ids": [
+        "4a9d4eec-1921-4dfd-a932-ccdabd2da94c"
+      ],
+      "usage": [
+        {
+          "response_id": "374e645c-21fd-4807-ab3c-6cb003a90cca",
+          "input_tokens": 129,
+          "output_tokens": 5,
+          "total_tokens": 134,
+          "cached_input_tokens": 128,
+          "reasoning_output_tokens": 0,
+          "request_id": "4a9d4eec-1921-4dfd-a932-ccdabd2da94c"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "77d617f6-e0c3-4846-85d0-4b341d4a9516",
+      "round": 1,
+      "model": "deepseek-flash",
+      "roles": [
+        "router"
+      ],
+      "kind": "structured",
+      "strength": "smart",
+      "transport_requests": 1,
+      "request_ids": [
+        "7355f498-b04c-463c-8068-ddd2a4333780"
+      ],
+      "usage": [
+        {
+          "response_id": "4f7ba188-c9fa-4ab5-b746-50dd77a07e93",
+          "input_tokens": 130,
+          "output_tokens": 5,
+          "total_tokens": 135,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "request_id": "7355f498-b04c-463c-8068-ddd2a4333780"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "cbd04c50-c7f8-4c18-b37c-f2f48c33c690",
+      "round": 1,
+      "model": "deepseek-v4-flash",
+      "roles": [
+        "coach"
+      ],
+      "kind": "structured",
+      "strength": "smart",
+      "transport_requests": 1,
+      "request_ids": [
+        "a5759048-2e59-4311-a652-1ddca719656e"
+      ],
+      "usage": [
+        {
+          "response_id": "b5106c63-1874-4fd5-bd95-692a3bfbb674",
+          "input_tokens": 130,
+          "output_tokens": 5,
+          "total_tokens": 135,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "request_id": "a5759048-2e59-4311-a652-1ddca719656e"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "076cadaf-93ea-4647-8c04-f3ddae805b36",
+      "round": 1,
+      "model": "deepseek-v4-flash",
+      "roles": [
+        "coach"
+      ],
+      "kind": "structured",
+      "strength": "deep",
+      "transport_requests": 1,
+      "request_ids": [
+        "c3e7e311-98ab-4f80-8792-732cb431957d"
+      ],
+      "usage": [
+        {
+          "response_id": "2a1a9fda-7271-409c-8447-378c231e1b76",
+          "input_tokens": 155,
+          "output_tokens": 37,
+          "total_tokens": 192,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 31,
+          "request_id": "c3e7e311-98ab-4f80-8792-732cb431957d"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "0e40b084-2ed1-4d44-8dde-b94aae490eab",
+      "round": 1,
+      "model": "deepseek-flash",
+      "roles": [
+        "router"
+      ],
+      "kind": "structured",
+      "strength": "deep",
+      "transport_requests": 1,
+      "request_ids": [
+        "2205b81a-9140-4765-ae85-8f3ce57f5d85"
+      ],
+      "usage": [
+        {
+          "response_id": "1441aea4-86f0-42bc-a0f9-5219778e10dd",
+          "input_tokens": 155,
+          "output_tokens": 33,
+          "total_tokens": 188,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 27,
+          "request_id": "2205b81a-9140-4765-ae85-8f3ce57f5d85"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "442caadb-a672-4bc1-9a44-7ad730a3fb89",
+      "round": 1,
+      "model": "deepseek-v4-pro",
+      "roles": [
+        "risk"
+      ],
+      "kind": "structured",
+      "strength": "deep",
+      "transport_requests": 1,
+      "request_ids": [
+        "7c8465b6-5de9-4490-9c91-d8648215ace2"
+      ],
+      "usage": [
+        {
+          "response_id": "727fa42c-5551-4995-91cf-bc621bb3ffc9",
+          "input_tokens": 208,
+          "output_tokens": 52,
+          "total_tokens": 260,
+          "cached_input_tokens": 128,
+          "reasoning_output_tokens": 46,
+          "request_id": "7c8465b6-5de9-4490-9c91-d8648215ace2"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "395cce5b-93f1-44f6-8cc3-41571fa8b799",
+      "round": 1,
+      "model": "deepseek-v4-flash",
+      "roles": [
+        "coach"
+      ],
+      "kind": "streaming",
+      "strength": "smart",
+      "transport_requests": 1,
+      "request_ids": [
+        "ba709355-db02-4283-bc37-3dcf69d5eecb"
+      ],
+      "usage": [
+        {
+          "response_id": "1ce4fc2c-8904-4756-9726-ed78212d16e4",
+          "input_tokens": 156,
+          "output_tokens": 80,
+          "total_tokens": 236,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "request_id": "ba709355-db02-4283-bc37-3dcf69d5eecb"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "2f197646-6139-4a47-871c-5851722dba58",
+      "round": 1,
+      "model": "deepseek-v4-flash",
+      "roles": [
+        "coach"
+      ],
+      "kind": "streaming",
+      "strength": "deep",
+      "transport_requests": 1,
+      "request_ids": [
+        "9a16e2f4-495c-466a-afeb-d7ab128eb9c4"
+      ],
+      "usage": [
+        {
+          "response_id": "28213f48-008d-41a5-9e76-b517c1018414",
+          "input_tokens": 181,
+          "output_tokens": 113,
+          "total_tokens": 294,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 31,
+          "request_id": "9a16e2f4-495c-466a-afeb-d7ab128eb9c4"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    }
+  ]
+}

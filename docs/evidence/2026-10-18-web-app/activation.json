@@ -1,0 +1,143 @@
+{
+  "verified_at": "2026-10-18T09:50:20.550421+00:00",
+  "scope": "Local signed Debug App activation; no product release",
+  "build": {
+    "app": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+    "bundle_id": "Rex.Review-Today",
+    "signature_verified": true,
+    "identity": [
+      "Identifier=Rex.Review-Today",
+      "CDHash=60b7309034c1d2c24539c24536b67d2f8af41a4d",
+      "TeamIdentifier=7NDKLL3UJK"
+    ],
+    "binaries": {
+      "Review_Today": "5755773ffcacc29413666122273d8d5e8e473c562a2a96efbd146e88a67e5bea",
+      "__preview.dylib": "7848da845604e57711d0446f984f3ebd95c3ed675c9357df49dc968507af70e9",
+      "Review_Today.debug.dylib": "5a6435de9e216cc5a06c9f1a948f96b5449f0c277555a7593b2a64eeb890d36d"
+    }
+  },
+  "build_succeeded": true,
+  "app_running": true,
+  "app_pid": 2333,
+  "service_pid": 2374,
+  "service_parent_pid": 2333,
+  "service_working_directory": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service",
+  "web_search_chain": [
+    "deepseek",
+    "exa",
+    "tavily"
+  ],
+  "web_read_chain": [
+    "exa",
+    "tavily",
+    "deepseek",
+    "browser"
+  ],
+  "context_provider": "none",
+  "model_roles": {
+    "router": "deepseek-flash",
+    "coach": "deepseek-v4-flash",
+    "risk": "deepseek-v4-pro"
+  },
+  "all_model_roles_ready": true,
+  "coach_smart_and_deep_streaming_ready": true,
+  "ui": {
+    "normal_identity": true,
+    "page": "Agent",
+    "input_and_send_available": true,
+    "blocking_service_banner": false,
+    "today_knowledge_count": 11,
+    "new_user_message_sent": false
+  },
+  "startup_probe": {
+    "batches": 1,
+    "rounds": 1,
+    "transport_requests": 8,
+    "unique_request_ids": 8,
+    "usage_receipts": 8,
+    "status": "finished",
+    "tokens": {
+      "input_tokens": 1244,
+      "output_tokens": 330,
+      "total_tokens": 1574,
+      "cached_input_tokens": 256,
+      "reasoning_output_tokens": 135
+    }
+  },
+  "existing_run_model_requests_before": 124,
+  "existing_run_model_requests_after": 124,
+  "new_conversation_model_requests": 0,
+  "new_web_operations": 0,
+  "consistent_database_backups": 3,
+  "integrity": "all_three_ok",
+  "source_and_configuration_files_unchanged": 183,
+  "native_knowledge_count": 11,
+  "native_messages_count": 37,
+  "native_sessions_count": 7,
+  "strict_native_business_tables_preserved": [
+    "ZSOURCE",
+    "ZKNOWLEDGE",
+    "ZQUESTION",
+    "ZFSRSSTATE",
+    "ZREVIEWSESSION",
+    "ZREVIEWATTEMPT",
+    "ZAGENTMESSAGE",
+    "ZKNOWLEDGEREFERENCE",
+    "ZSOURCEREFERENCE"
+  ],
+  "existing_service_tables_preserved": true,
+  "existing_review_service_tables_preserved": true,
+  "expected_native_sync_changes": [
+    {
+      "database": "Data/ReviewToday.store",
+      "table": "ZAGENTSESSION",
+      "before": 7,
+      "after": 7,
+      "changed_columns": [
+        "ZCHECKPOINTJSON",
+        "ZLEARNINGEVIDENCEJSON",
+        "ZCAPTUREOFFERSREVISION"
+      ]
+    },
+    {
+      "database": "Data/ReviewToday.store",
+      "table": "ZAPPSETTINGS",
+      "before": 1,
+      "after": 1,
+      "changed_columns": [
+        "ZAGENTDRAFTMESSAGEID",
+        "ZAGENTDRAFTID"
+      ]
+    },
+    {
+      "database": "Data/ReviewToday.store",
+      "table": "ZLEARNINGTASK",
+      "before": 5,
+      "after": 5,
+      "changed_columns": [
+        "ZUPDATEDAT"
+      ]
+    },
+    {
+      "database": "Data/ReviewToday.store",
+      "table": "Z_PRIMARYKEY",
+      "before": 22,
+      "after": 22,
+      "changed_columns": [
+        "Z_MAX"
+      ]
+    }
+  ],
+  "project_original_diff_preserved": true,
+  "prior_evaluation_batches_resumed": false,
+  "secret_values_included": false,
+  "web_content_verified_in_this_service_process": false,
+  "prior_real_web_quality_evidence": "../2026-10-18-web-ab/README.md",
+  "release_build_or_distribution": false,
+  "matches_web04_production_source": true,
+  "final_health_roles_ready": true,
+  "startup_probe_requests_still_eight": true,
+  "new_markdown_local_links_checked": 13,
+  "secret_scan_passed": true,
+  "private_backups_ignored": true
+}
