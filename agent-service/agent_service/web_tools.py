@@ -65,7 +65,7 @@ def _backend(provider):
     raise WebToolError('NOT_CONFIGURED' if provider == 'none' else 'UNSUPPORTED')
 
 
-def provider_chain(operation):
+def provider_chain(operation, *, after_provider=''):
     primary = search_provider() if operation == 'search' else read_provider()
     fallback = os.getenv('REVIEW_TODAY_' + operation.upper() + '_FALLBACKS', '')
     providers = list(dict.fromkeys([primary] + [p.strip() for p in fallback.split(',') if p.strip()]))
@@ -74,7 +74,32 @@ def provider_chain(operation):
         providers.append('browser')
     allowed = {'exa', 'tavily', 'brave', 'deepseek'} if operation == 'search' else {'exa', 'tavily', 'deepseek'}
     # 'none' and local-only mode cannot silently enable a remote provider.
-    return providers if primary in allowed else [primary]
+    providers = providers if primary in allowed else [primary]
+    if after_provider:
+        if operation != 'search' or primary not in allowed or after_provider not in providers:
+            return []
+        providers = providers[providers.index(after_provider) + 1:]
+    return providers
+
+
+def quality_fallback_after(search):
+    """Only an actual structured result may advance the explicit search chain."""
+    from agent_service.web_resilience import active_round
+    state = active_round.get()
+    if state is not None and state.empty_searches >= 2:
+        return ''
+    try:
+        data = json.loads(search)
+        provider = data.get('provider', '')
+        if data.get('protocol') != PROTOCOL or not isinstance(data.get('results'), list):
+            return ''
+        if data.get('empty_searches', 0) >= 2:
+            return ''
+        if provider and provider_chain('search', after_provider=provider):
+            return provider
+    except (ValueError, TypeError, AttributeError):
+        pass
+    return ''
 
 
 def _operation_backend(provider, operation):
@@ -119,22 +144,28 @@ def web_context_capability():
     return dict(provider=provider, status='unverified', reason='requires_extracted_chunks', content_kind='extracted_chunks')
 
 
-def web_search_text(query: str, *, on_cancel_handle=None) -> str:
+def web_search_text(query: str, *, on_cancel_handle=None, after_provider='') -> str:
     query = require_public_query(query)
-    chain = provider_chain('search')
-    if len(chain) == 1 and chain[0] != 'deepseek':
-        backend = _backend(chain[0])
-        with budget_scope():
-            results = backend.search(query, on_cancel_handle=on_cancel_handle)
-        provider = backend.name
-    else:
-        from agent_service.web_resilience import route
-        def invoke(provider, backend, register):
-            if backend is None: return _backend(provider)
-            return backend.search(query, on_cancel_handle=register)
-        provider, results = route(chain, 'search', invoke, on_cancel_handle=on_cancel_handle)
-    return json.dumps(dict(protocol=PROTOCOL, provider=provider,
-                           results=[asdict(r) for r in results]), ensure_ascii=False)
+    chain = provider_chain('search', after_provider=after_provider)
+    if not chain:
+        raise WebToolError('NOT_CONFIGURED')
+    from agent_service.web_resilience import web_round_scope
+    with web_round_scope() as state:
+        if len(chain) == 1 and chain[0] != 'deepseek' and not after_provider:
+            backend = _backend(chain[0])
+            with budget_scope():
+                results = backend.search(query, on_cancel_handle=on_cancel_handle)
+            provider = backend.name
+            if not results:
+                state.empty_searches += 1
+        else:
+            from agent_service.web_resilience import route
+            def invoke(provider, backend, register):
+                if backend is None: return _backend(provider)
+                return backend.search(query, on_cancel_handle=register)
+            provider, results = route(chain, 'search', invoke, on_cancel_handle=on_cancel_handle)
+        return json.dumps(dict(protocol=PROTOCOL, provider=provider,
+                               results=[asdict(r) for r in results], empty_searches=state.empty_searches), ensure_ascii=False)
 
 
 def read_public_url(url: str, limit: int = 20000, *, on_cancel_handle=None) -> tuple[str, str]:

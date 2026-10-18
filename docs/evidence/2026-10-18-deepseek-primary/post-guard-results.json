@@ -1,0 +1,497 @@
+{
+  "manifest_sha256": "8ed116926b8d8ee3ba9c8c9701318aefe808b556cc83630d178155f2502b88a5",
+  "started_at": "2026-10-18T06:50:12.935306+00:00",
+  "models": {
+    "coach": "deepseek-v4-flash",
+    "evidence": "deepseek-v4-pro"
+  },
+  "fixed_nodes": [
+    "intent",
+    "teaching_preparation"
+  ],
+  "startup_probes": 0,
+  "model_requests": [
+    {
+      "id": "af847816-f191-429e-9cbc-215b778b6144",
+      "job": "python3_dict_update:deepseek_first",
+      "model": "deepseek-v4-pro",
+      "schema": "SourceList",
+      "started_at": "2026-10-18T06:50:13.530508+00:00",
+      "harness_request_id": "85efc7cb-1450-4140-ad11-fc5ff933a7f1"
+    },
+    {
+      "id": "547b7350-1c1a-4971-a3cc-e23599e77083",
+      "job": "python3_dict_update:deepseek_first",
+      "model": "deepseek-v4-pro",
+      "schema": "SourceList",
+      "started_at": "2026-10-18T06:50:28.276626+00:00",
+      "harness_request_id": "e5d66d6b-a9d1-4e89-ba70-eea5dd928c79"
+    },
+    {
+      "id": "d484dc49-5318-4a93-8b9d-64a4bb890e71",
+      "job": "python3_dict_update:deepseek_first",
+      "model": "deepseek-v4-pro",
+      "schema": "EvidenceAssessmentV2",
+      "started_at": "2026-10-18T06:50:37.431058+00:00",
+      "harness_request_id": "8de422df-9a60-4389-a66b-58f13f13b125"
+    },
+    {
+      "id": "f4fa9568-7e80-4c64-95e4-c8413487c25f",
+      "job": "python3_dict_update:deepseek_first",
+      "model": "deepseek-v4-pro",
+      "schema": "EvidenceAssessmentV2",
+      "started_at": "2026-10-18T06:50:46.600683+00:00",
+      "harness_request_id": "10210892-5485-4331-b81e-c011ee0bef54"
+    },
+    {
+      "id": "eec38f53-b308-4080-80c1-e33eacc89697",
+      "job": "python3_dict_update:deepseek_first",
+      "model": "deepseek-v4-flash",
+      "schema": "ConversationOutput",
+      "started_at": "2026-10-18T06:50:50.063831+00:00",
+      "harness_request_id": "59344053-433d-4ccc-a29c-7dad988dc250"
+    }
+  ],
+  "web_requests": [
+    {
+      "job": "python3_dict_update:deepseek_first",
+      "provider": "deepseek",
+      "operation": "search",
+      "value": "Python 3 dict update existing key return None documentation site:python.org",
+      "status": "ok",
+      "result_count": 5,
+      "elapsed_seconds": 0.49
+    },
+    {
+      "job": "python3_dict_update:deepseek_first",
+      "provider": "exa",
+      "operation": "search",
+      "value": "Python 3 dict update existing key return None documentation site:python.org",
+      "status": "ok",
+      "result_count": 5,
+      "elapsed_seconds": 11.894
+    },
+    {
+      "job": "python3_dict_update:deepseek_first",
+      "provider": "exa",
+      "operation": "read",
+      "value": "https://docs.python.org/3/tutorial/datastructures.html",
+      "status": "ok",
+      "body_sha256": "c926d4f8e6099f388896e2eca1e078be57d7ce4ebe469982502e290d9b6ac3e0",
+      "body_chars": 20000,
+      "details": {},
+      "elapsed_seconds": 6.177
+    },
+    {
+      "job": "python3_dict_update:deepseek_first",
+      "provider": "exa",
+      "operation": "read",
+      "value": "https://docs.python.org/3/reference/datamodel.html",
+      "status": "ok",
+      "body_sha256": "6d94d7e65b9202bcf496888366583f413f85e39762545a6f1739658bc4b5038f",
+      "body_chars": 20000,
+      "details": {},
+      "elapsed_seconds": 6.275
+    }
+  ],
+  "jobs": [
+    {
+      "id": "python3_dict_update:deepseek_first",
+      "case": "python3_dict_update",
+      "configuration": "deepseek_first",
+      "usage": [
+        {
+          "response_id": "2352df85-e745-497e-ae9b-ef0d57a4cc6d",
+          "input_tokens": 1534,
+          "output_tokens": 81,
+          "total_tokens": 1615,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "85efc7cb-1450-4140-ad11-fc5ff933a7f1"
+        },
+        {
+          "response_id": "9db3f5f0-9add-4d44-86e3-6c3d45842614",
+          "input_tokens": 2135,
+          "output_tokens": 240,
+          "total_tokens": 2375,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "e5d66d6b-a9d1-4e89-ba70-eea5dd928c79"
+        },
+        {
+          "response_id": "917a57b0-9e9f-42ec-afd2-f14ca603da43",
+          "input_tokens": 2201,
+          "output_tokens": 159,
+          "total_tokens": 2360,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "8de422df-9a60-4389-a66b-58f13f13b125"
+        },
+        {
+          "response_id": "369eb330-6891-4f4e-9fd2-fdf5eb24cbfc",
+          "input_tokens": 3465,
+          "output_tokens": 247,
+          "total_tokens": 3712,
+          "cached_input_tokens": 2176,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "10210892-5485-4331-b81e-c011ee0bef54"
+        },
+        {
+          "response_id": "52b4fd78-6a70-49c2-8279-3084295474bc",
+          "input_tokens": 8553,
+          "output_tokens": 265,
+          "total_tokens": 8818,
+          "cached_input_tokens": 4224,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "59344053-433d-4ccc-a29c-7dad988dc250"
+        }
+      ],
+      "status": "completed",
+      "search_state": "verified",
+      "error": null,
+      "evidence": {
+        "state": "scoped",
+        "sources": [
+          "https://docs.python.org/3/tutorial/datastructures.html",
+          "https://docs.python.org/3/reference/datamodel.html"
+        ],
+        "source_selection": [
+          {
+            "source_id": "42b90c1b-fb1e-5230-ae3c-17ba8fcd4ecc",
+            "source_version": 1,
+            "url": "https://docs.python.org/3/tutorial/datastructures.html",
+            "version": 1,
+            "content_hash": "c926d4f8e6099f388896e2eca1e078be57d7ce4ebe469982502e290d9b6ac3e0",
+            "query_hash": "e1e4552e1ba62e5ba0941baf146c86e5bf365dd70a0e7de517c807edef0a2198",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 16000,
+                "end": 20000,
+                "reason": "query_match"
+              }
+            ]
+          },
+          {
+            "source_id": "57e197da-230b-573d-8118-72c3c84d9ed1",
+            "source_version": 1,
+            "url": "https://docs.python.org/3/reference/datamodel.html",
+            "version": 1,
+            "content_hash": "6d94d7e65b9202bcf496888366583f413f85e39762545a6f1739658bc4b5038f",
+            "query_hash": "e1e4552e1ba62e5ba0941baf146c86e5bf365dd70a0e7de517c807edef0a2198",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 13840,
+                "end": 17840,
+                "reason": "query_match"
+              }
+            ]
+          }
+        ]
+      },
+      "quality_supplement": {
+        "after_provider": "deepseek",
+        "reason": "no_usable_source"
+      },
+      "model_calls": [
+        {
+          "id": "0498fece-9ede-45b8-b6d0-5430b9581570",
+          "budget_id": "973f78d3-d89d-4c34-83ac-7ce4044bedde",
+          "revision": 1,
+          "background": false,
+          "node": "source_candidates",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 2811,
+          "transport_requests": 1,
+          "request_ids": [
+            "85efc7cb-1450-4140-ad11-fc5ff933a7f1"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "2352df85-e745-497e-ae9b-ef0d57a4cc6d",
+              "input_tokens": 1534,
+              "output_tokens": 81,
+              "total_tokens": 1615,
+              "cached_input_tokens": 0,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "85efc7cb-1450-4140-ad11-fc5ff933a7f1"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "f7864136-360f-41e3-8749-6bac38f84995",
+          "budget_id": "973f78d3-d89d-4c34-83ac-7ce4044bedde",
+          "revision": 1,
+          "background": false,
+          "node": "source_candidates",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 4109,
+          "transport_requests": 1,
+          "request_ids": [
+            "e5d66d6b-a9d1-4e89-ba70-eea5dd928c79"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "9db3f5f0-9add-4d44-86e3-6c3d45842614",
+              "input_tokens": 2135,
+              "output_tokens": 240,
+              "total_tokens": 2375,
+              "cached_input_tokens": 0,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "e5d66d6b-a9d1-4e89-ba70-eea5dd928c79"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "385bfe5d-19ad-42d0-a838-7c41a0652279",
+          "budget_id": "973f78d3-d89d-4c34-83ac-7ce4044bedde",
+          "revision": 1,
+          "background": false,
+          "node": "evidence_assessment",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 3561,
+          "transport_requests": 1,
+          "request_ids": [
+            "8de422df-9a60-4389-a66b-58f13f13b125"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "917a57b0-9e9f-42ec-afd2-f14ca603da43",
+              "input_tokens": 2201,
+              "output_tokens": 159,
+              "total_tokens": 2360,
+              "cached_input_tokens": 0,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "8de422df-9a60-4389-a66b-58f13f13b125"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "08cf110b-c306-463a-843f-7e197501e529",
+          "budget_id": "973f78d3-d89d-4c34-83ac-7ce4044bedde",
+          "revision": 1,
+          "background": false,
+          "node": "evidence_assessment",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 5960,
+          "transport_requests": 1,
+          "request_ids": [
+            "10210892-5485-4331-b81e-c011ee0bef54"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "369eb330-6891-4f4e-9fd2-fdf5eb24cbfc",
+              "input_tokens": 3465,
+              "output_tokens": 247,
+              "total_tokens": 3712,
+              "cached_input_tokens": 2176,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "10210892-5485-4331-b81e-c011ee0bef54"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "6f27de47-ca54-48ad-91c4-f55a3089639c",
+          "budget_id": "973f78d3-d89d-4c34-83ac-7ce4044bedde",
+          "revision": 1,
+          "background": false,
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 16012,
+          "transport_requests": 1,
+          "request_ids": [
+            "59344053-433d-4ccc-a29c-7dad988dc250"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "52b4fd78-6a70-49c2-8279-3084295474bc",
+              "input_tokens": 8553,
+              "output_tokens": 265,
+              "total_tokens": 8818,
+              "cached_input_tokens": 4224,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "59344053-433d-4ccc-a29c-7dad988dc250"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "source_selection": {
+        "evidence_assessment": [
+          {
+            "source_id": "42b90c1b-fb1e-5230-ae3c-17ba8fcd4ecc",
+            "source_version": 1,
+            "url": "https://docs.python.org/3/tutorial/datastructures.html",
+            "version": 1,
+            "content_hash": "c926d4f8e6099f388896e2eca1e078be57d7ce4ebe469982502e290d9b6ac3e0",
+            "query_hash": "e1e4552e1ba62e5ba0941baf146c86e5bf365dd70a0e7de517c807edef0a2198",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 16000,
+                "end": 20000,
+                "reason": "query_match"
+              }
+            ]
+          },
+          {
+            "source_id": "57e197da-230b-573d-8118-72c3c84d9ed1",
+            "source_version": 1,
+            "url": "https://docs.python.org/3/reference/datamodel.html",
+            "version": 1,
+            "content_hash": "6d94d7e65b9202bcf496888366583f413f85e39762545a6f1739658bc4b5038f",
+            "query_hash": "e1e4552e1ba62e5ba0941baf146c86e5bf365dd70a0e7de517c807edef0a2198",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 13840,
+                "end": 17840,
+                "reason": "query_match"
+              }
+            ]
+          }
+        ],
+        "answer": [
+          {
+            "source_id": "42b90c1b-fb1e-5230-ae3c-17ba8fcd4ecc",
+            "source_version": 1,
+            "url": "https://docs.python.org/3/tutorial/datastructures.html",
+            "version": 1,
+            "content_hash": "c926d4f8e6099f388896e2eca1e078be57d7ce4ebe469982502e290d9b6ac3e0",
+            "query_hash": "e1e4552e1ba62e5ba0941baf146c86e5bf365dd70a0e7de517c807edef0a2198",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 16000,
+                "end": 20000,
+                "reason": "query_match"
+              }
+            ]
+          },
+          {
+            "source_id": "57e197da-230b-573d-8118-72c3c84d9ed1",
+            "source_version": 1,
+            "url": "https://docs.python.org/3/reference/datamodel.html",
+            "version": 1,
+            "content_hash": "6d94d7e65b9202bcf496888366583f413f85e39762545a6f1739658bc4b5038f",
+            "query_hash": "e1e4552e1ba62e5ba0941baf146c86e5bf365dd70a0e7de517c807edef0a2198",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 13840,
+                "end": 17840,
+                "reason": "query_match"
+              }
+            ]
+          }
+        ]
+      },
+      "provider_events": [
+        {
+          "provider": "deepseek",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "deepseek",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "source_urls": [
+        "https://docs.python.org/3/tutorial/datastructures.html",
+        "https://docs.python.org/3/reference/datamodel.html"
+      ],
+      "elapsed_seconds": 39.468,
+      "replies_sha256": [
+        "0dd2b4a1d026ff7867239124b598de843b56caa643e1cfc91aa1e3466697da7b"
+      ]
+    }
+  ],
+  "prior_model_requests": 14,
+  "prior_web_requests": 11,
+  "prior_results_sha256": "24af65bb15b7a69f0f09869c74e13f1374838c3e0820e481a1b9e12cbafaeb81",
+  "finished_at": "2026-10-18T06:50:52.405603+00:00"
+}

@@ -1,0 +1,45 @@
+{
+  "frozen_before_execution": true,
+  "mode": "post_guard_validation",
+  "max_model_requests": 5,
+  "max_web_requests": 10,
+  "prior_results_sha256": "24af65bb15b7a69f0f09869c74e13f1374838c3e0820e481a1b9e12cbafaeb81",
+  "cumulative_limits": {
+    "model": 20,
+    "web": 40
+  },
+  "no_repeat_prior_jobs": true,
+  "purpose": "Validate full question and formal-document requirement after the first regression exposed missing assessment input; this is not another A/B comparison.",
+  "cases": [
+    {
+      "id": "python3_dict_update",
+      "question": "请依据 Python 3 正式官方文档，简短说明 dict.update 遇到已有键时怎样更新、返回什么；给一个例子。邮件列表或论坛讨论不能替代官方文档。",
+      "query": "Python 3 dict update existing key return None documentation",
+      "domain": "python.org",
+      "concepts": [
+        "Python 3 dict.update",
+        "existing key",
+        "return None"
+      ],
+      "reference": "https://docs.python.org/3/library/stdtypes.html#dict.update",
+      "checks": [
+        "Formal docs.python.org source read, or explicitly report source-type limitation",
+        "Existing key value overwritten by supplied mapping",
+        "Mutates mapping and returns None",
+        "Example matches described semantics",
+        "Only read URLs cited"
+      ]
+    }
+  ],
+  "fixed_nodes": [
+    "intent",
+    "teaching_preparation"
+  ],
+  "read_order": [
+    "exa",
+    "tavily",
+    "deepseek"
+  ],
+  "browser": false,
+  "failure_policy": "One request per logical model step; preserve failure, no repair, repeated job, or remaining-budget refill"
+}

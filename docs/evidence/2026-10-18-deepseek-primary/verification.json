@@ -1,0 +1,24 @@
+{
+  "model_request_cap": true,
+  "web_request_cap": true,
+  "all_19_have_unique_usage_receipts": true,
+  "original_manifest_hash": "fb0f32cab6781e942f75fa88ae241064c7624a4651fc8850fd2157a8d7028bb4",
+  "post_manifest_hash": "8ed116926b8d8ee3ba9c8c9701318aefe808b556cc83630d178155f2502b88a5",
+  "original_result_hash": "24af65bb15b7a69f0f09869c74e13f1374838c3e0820e481a1b9e12cbafaeb81",
+  "post_result_hash": "290f9a455180693a02a0691f68fe2e11ca32236517d5e568a6ac7f011710abee",
+  "no_repeated_original_jobs": true,
+  "old_eval03_budget_resumed": false,
+  "source": {
+    "before_final_input_guard": "live-code-hashes.json",
+    "post_input_guard": "post-guard-code-hashes.json"
+  },
+  "limits": "Scope, native app, formal save and general semantic accuracy are not implied by these checks.",
+  "protected_files_or_absence_matched": 6,
+  "only_two_local_search_settings_changed": true,
+  "credentials_scanned_without_values": 6,
+  "planned_commit_secret_scan_passed": true,
+  "private_env_and_captures_ignored": true,
+  "unrelated_xcode_diff_preserved": true,
+  "markdown_file_links_valid": true,
+  "daily_service_started": false
+}

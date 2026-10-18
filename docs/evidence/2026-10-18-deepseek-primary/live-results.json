@@ -1,0 +1,1304 @@
+{
+  "manifest_sha256": "fb0f32cab6781e942f75fa88ae241064c7624a4651fc8850fd2157a8d7028bb4",
+  "started_at": "2026-10-18T06:44:16.050861+00:00",
+  "models": {
+    "coach": "deepseek-v4-flash",
+    "evidence": "deepseek-v4-pro"
+  },
+  "fixed_nodes": [
+    "intent",
+    "teaching_preparation"
+  ],
+  "startup_probes": 0,
+  "model_requests": [
+    {
+      "id": "50381e77-5192-4876-bf2c-c8f4ffae56e8",
+      "job": "python3:exa_first",
+      "model": "deepseek-v4-pro",
+      "schema": "SourceList",
+      "started_at": "2026-10-18T06:44:25.232125+00:00",
+      "harness_request_id": "f1fe4d86-2280-4e09-a187-22cdd044248f"
+    },
+    {
+      "id": "231234ed-500b-4ac0-a562-c3dad01b5a22",
+      "job": "python3:exa_first",
+      "model": "deepseek-v4-pro",
+      "schema": "EvidenceAssessmentV2",
+      "started_at": "2026-10-18T06:44:34.460649+00:00",
+      "harness_request_id": "3b593c6c-abb3-460d-854c-d683b9e1cbdc"
+    },
+    {
+      "id": "4e752140-0a28-4d52-bef5-c78fa380e6b8",
+      "job": "python3:exa_first",
+      "model": "deepseek-v4-pro",
+      "schema": "SourceList",
+      "started_at": "2026-10-18T06:44:39.377128+00:00",
+      "harness_request_id": "0f1b5e40-ad43-4581-9bb1-53f03cee77f8"
+    },
+    {
+      "id": "c75ce448-a43f-4805-b5b9-ba8414e2b13e",
+      "job": "python3:deepseek_first",
+      "model": "deepseek-v4-pro",
+      "schema": "SourceList",
+      "started_at": "2026-10-18T06:44:42.769678+00:00",
+      "harness_request_id": "85d25640-08a3-462c-a084-adbbc97af7e3"
+    },
+    {
+      "id": "85c999e2-70ad-4a24-825a-51f473be0534",
+      "job": "python3:deepseek_first",
+      "model": "deepseek-v4-pro",
+      "schema": "EvidenceAssessmentV2",
+      "started_at": "2026-10-18T06:44:54.015984+00:00",
+      "harness_request_id": "5b723b9f-1b75-4400-992b-4b78da94f709"
+    },
+    {
+      "id": "f17a5bff-b321-4b2e-b63b-169df964e22b",
+      "job": "python3:deepseek_first",
+      "model": "deepseek-v4-flash",
+      "schema": "ConversationOutput",
+      "started_at": "2026-10-18T06:44:57.580281+00:00",
+      "harness_request_id": "cbb5b678-17b5-4515-9f9f-c8a85024de0f"
+    },
+    {
+      "id": "1abff99d-1c42-4aa5-acab-e83fe81c7d01",
+      "job": "postgresql_current:deepseek_first",
+      "model": "deepseek-v4-pro",
+      "schema": "SourceList",
+      "started_at": "2026-10-18T06:45:00.256824+00:00",
+      "harness_request_id": "718b6347-e961-4029-881b-732ab5e28784"
+    },
+    {
+      "id": "80acc8d6-5349-46e7-8a35-46d4cb73eb79",
+      "job": "postgresql_current:deepseek_first",
+      "model": "deepseek-v4-pro",
+      "schema": "EvidenceAssessmentV2",
+      "started_at": "2026-10-18T06:45:13.832707+00:00",
+      "harness_request_id": "7ab59f01-1cd9-46e6-bdba-e6afa53b18fc"
+    },
+    {
+      "id": "9273ab77-c171-459a-a13e-28b4d8b93f69",
+      "job": "postgresql_current:deepseek_first",
+      "model": "deepseek-v4-pro",
+      "schema": "SourceList",
+      "started_at": "2026-10-18T06:45:23.932037+00:00",
+      "harness_request_id": "73c5dba3-cb20-44bd-a7c2-8063e3f6df35"
+    },
+    {
+      "id": "bd79f420-d426-4cf6-98b9-ec096fee4248",
+      "job": "postgresql_current:deepseek_first",
+      "model": "deepseek-v4-pro",
+      "schema": "EvidenceAssessmentV2",
+      "started_at": "2026-10-18T06:45:32.117641+00:00",
+      "harness_request_id": "9d75b071-4ec0-4384-993c-a2bcbfbb5164"
+    },
+    {
+      "id": "03a171e8-301b-450c-a040-6b6b835b92a7",
+      "job": "postgresql_current:deepseek_first",
+      "model": "deepseek-v4-flash",
+      "schema": "ConversationOutput",
+      "started_at": "2026-10-18T06:45:34.583162+00:00",
+      "harness_request_id": "95d31ddc-14dd-4b98-bb7b-49730fbf9cca"
+    },
+    {
+      "id": "c09cd925-bd25-41ec-9ef8-f08fc9589d3e",
+      "job": "postgresql_current:exa_first",
+      "model": "deepseek-v4-pro",
+      "schema": "SourceList",
+      "started_at": "2026-10-18T06:45:46.059000+00:00",
+      "harness_request_id": "02db1bac-ed06-40f9-ade3-127b8500db30"
+    },
+    {
+      "id": "0b47a63b-2521-49e4-95d7-5a379265ed15",
+      "job": "postgresql_current:exa_first",
+      "model": "deepseek-v4-pro",
+      "schema": "EvidenceAssessmentV2",
+      "started_at": "2026-10-18T06:45:59.395622+00:00",
+      "harness_request_id": "90a21b36-bb63-4127-ac71-6c78faf12598"
+    },
+    {
+      "id": "49df2f23-f94f-4d9b-a5d6-8d274fc4d485",
+      "job": "postgresql_current:exa_first",
+      "model": "deepseek-v4-flash",
+      "schema": "ConversationOutput",
+      "started_at": "2026-10-18T06:46:03.659085+00:00",
+      "harness_request_id": "21cf70d7-49b9-4817-844d-3fb41f23c140"
+    }
+  ],
+  "web_requests": [
+    {
+      "job": "python3:exa_first",
+      "provider": "exa",
+      "operation": "search",
+      "value": "Python 3 list append extend return None nested list example site:python.org",
+      "status": "ok",
+      "result_count": 5,
+      "elapsed_seconds": 9.069
+    },
+    {
+      "job": "python3:exa_first",
+      "provider": "exa",
+      "operation": "read",
+      "value": "https://docs.python.org/3/tutorial/datastructures.html",
+      "status": "ok",
+      "body_sha256": "c926d4f8e6099f388896e2eca1e078be57d7ce4ebe469982502e290d9b6ac3e0",
+      "body_chars": 20000,
+      "details": {},
+      "elapsed_seconds": 6.687
+    },
+    {
+      "job": "python3:exa_first",
+      "provider": "tavily",
+      "operation": "search",
+      "value": "Python 3 list append extend return None nested list example site:python.org",
+      "status": "ok",
+      "result_count": 5,
+      "elapsed_seconds": 3.265
+    },
+    {
+      "job": "python3:deepseek_first",
+      "provider": "deepseek",
+      "operation": "search",
+      "value": "Python 3 list append extend return None nested list example site:python.org",
+      "status": "ok",
+      "result_count": 5,
+      "elapsed_seconds": 0.406
+    },
+    {
+      "job": "python3:deepseek_first",
+      "provider": "exa",
+      "operation": "read",
+      "value": "https://mail.python.org/pipermail/python-list/2010-January/566123.html",
+      "status": "ok",
+      "body_sha256": "904f0f3c49ca48c1e4037c04f4fc8a376ca65468103baa40f23e17ea4bbbfd88",
+      "body_chars": 1254,
+      "details": {},
+      "elapsed_seconds": 8.109
+    },
+    {
+      "job": "postgresql_current:deepseek_first",
+      "provider": "deepseek",
+      "operation": "search",
+      "value": "PostgreSQL current transaction isolation repeatable read serializable 2026 site:postgresql.org",
+      "status": "ok",
+      "result_count": 5,
+      "elapsed_seconds": 0.302
+    },
+    {
+      "job": "postgresql_current:deepseek_first",
+      "provider": "exa",
+      "operation": "read",
+      "value": "https://www.postgresql.org/docs/14/transaction-iso.html",
+      "status": "ok",
+      "body_sha256": "d775b540baea230c7f0df6489b6120ca97aaf921513613579516ac2391b57a4e",
+      "body_chars": 20000,
+      "details": {},
+      "elapsed_seconds": 5.469
+    },
+    {
+      "job": "postgresql_current:deepseek_first",
+      "provider": "exa",
+      "operation": "search",
+      "value": "PostgreSQL current transaction isolation repeatable read serializable 2026 site:postgresql.org",
+      "status": "ok",
+      "result_count": 5,
+      "elapsed_seconds": 7.206
+    },
+    {
+      "job": "postgresql_current:deepseek_first",
+      "provider": "exa",
+      "operation": "read",
+      "value": "https://www.postgresql.org/docs/current/transaction-iso.html",
+      "status": "ok",
+      "body_sha256": "b9ca96e0f2b5534ef9788f6c2f1f9888fbea127c4d011d8bf06d00656a5962f7",
+      "body_chars": 20000,
+      "details": {},
+      "elapsed_seconds": 5.25
+    },
+    {
+      "job": "postgresql_current:exa_first",
+      "provider": "exa",
+      "operation": "search",
+      "value": "PostgreSQL current transaction isolation repeatable read serializable 2026 site:postgresql.org",
+      "status": "ok",
+      "result_count": 5,
+      "elapsed_seconds": 8.018
+    },
+    {
+      "job": "postgresql_current:exa_first",
+      "provider": "exa",
+      "operation": "read",
+      "value": "https://www.postgresql.org/docs/current/transaction-iso.html",
+      "status": "ok",
+      "body_sha256": "b9ca96e0f2b5534ef9788f6c2f1f9888fbea127c4d011d8bf06d00656a5962f7",
+      "body_chars": 20000,
+      "details": {},
+      "elapsed_seconds": 11.101
+    }
+  ],
+  "jobs": [
+    {
+      "id": "python3:exa_first",
+      "case": "python3",
+      "configuration": "exa_first",
+      "usage": [
+        {
+          "response_id": "3ca68e9e-5e57-4701-be75-f5480e228f74",
+          "input_tokens": 2828,
+          "output_tokens": 237,
+          "total_tokens": 3065,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "f1fe4d86-2280-4e09-a187-22cdd044248f"
+        },
+        {
+          "response_id": "d1cb5187-f976-4689-a514-4efd0a7fc0bb",
+          "input_tokens": 1932,
+          "output_tokens": 112,
+          "total_tokens": 2044,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "3b593c6c-abb3-460d-854c-d683b9e1cbdc"
+        },
+        {
+          "response_id": "5dae8ba0-d1e8-4829-929d-fd114304c34d",
+          "input_tokens": 1968,
+          "output_tokens": 192,
+          "total_tokens": 2160,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "0f1b5e40-ad43-4581-9bb1-53f03cee77f8"
+        }
+      ],
+      "status": "retryable_failed",
+      "search_state": null,
+      "error": "RT.RUN.EXECUTION_FAILED",
+      "evidence": null,
+      "quality_supplement": {
+        "after_provider": "exa",
+        "reason": "scoped"
+      },
+      "model_calls": [
+        {
+          "id": "37110edb-630e-446d-8a5a-0418bfc1d8e3",
+          "budget_id": "a3b3cdd1-c837-414d-8b71-75ca3680b739",
+          "revision": 1,
+          "background": false,
+          "node": "source_candidates",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 4712,
+          "transport_requests": 1,
+          "request_ids": [
+            "f1fe4d86-2280-4e09-a187-22cdd044248f"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "3ca68e9e-5e57-4701-be75-f5480e228f74",
+              "input_tokens": 2828,
+              "output_tokens": 237,
+              "total_tokens": 3065,
+              "cached_input_tokens": 0,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "f1fe4d86-2280-4e09-a187-22cdd044248f"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "dcba665f-8988-4a5f-b7b0-c633e22a9b7d",
+          "budget_id": "a3b3cdd1-c837-414d-8b71-75ca3680b739",
+          "revision": 1,
+          "background": false,
+          "node": "evidence_assessment",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 3258,
+          "transport_requests": 1,
+          "request_ids": [
+            "3b593c6c-abb3-460d-854c-d683b9e1cbdc"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "d1cb5187-f976-4689-a514-4efd0a7fc0bb",
+              "input_tokens": 1932,
+              "output_tokens": 112,
+              "total_tokens": 2044,
+              "cached_input_tokens": 0,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "3b593c6c-abb3-460d-854c-d683b9e1cbdc"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "e50f122a-8e8d-41ef-bde5-06ee69857b3d",
+          "budget_id": "a3b3cdd1-c837-414d-8b71-75ca3680b739",
+          "revision": 1,
+          "background": false,
+          "node": "source_candidates",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 3569,
+          "transport_requests": 1,
+          "request_ids": [
+            "0f1b5e40-ad43-4581-9bb1-53f03cee77f8"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "5dae8ba0-d1e8-4829-929d-fd114304c34d",
+              "input_tokens": 1968,
+              "output_tokens": 192,
+              "total_tokens": 2160,
+              "cached_input_tokens": 0,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "0f1b5e40-ad43-4581-9bb1-53f03cee77f8"
+            }
+          ],
+          "status": "failed_or_cancelled"
+        },
+        {
+          "id": "e5898fb2-e8f4-495b-8c0b-418efbf5d924",
+          "budget_id": "a3b3cdd1-c837-414d-8b71-75ca3680b739",
+          "revision": 1,
+          "background": false,
+          "node": "source_candidates",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 3815,
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "failed_or_cancelled"
+        }
+      ],
+      "source_selection": {
+        "evidence_assessment": [
+          {
+            "source_id": "2eb3c1eb-6f8b-59a8-8ef9-58efc76dd61b",
+            "source_version": 1,
+            "url": "https://docs.python.org/3/tutorial/datastructures.html",
+            "version": 1,
+            "content_hash": "c926d4f8e6099f388896e2eca1e078be57d7ce4ebe469982502e290d9b6ac3e0",
+            "query_hash": "20cbaf4ed663e3e0b271ef4801a811e9fb7f8abc439d28bc76571b145589e4d4",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 880,
+                "end": 4880,
+                "reason": "query_match"
+              }
+            ]
+          }
+        ]
+      },
+      "provider_events": [
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "tavily",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "tavily",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "source_urls": [],
+      "elapsed_seconds": 26.208,
+      "replies_sha256": []
+    },
+    {
+      "id": "python3:deepseek_first",
+      "case": "python3",
+      "configuration": "deepseek_first",
+      "usage": [
+        {
+          "response_id": "ce87917e-523a-4eeb-9415-069bb1c21dce",
+          "input_tokens": 1972,
+          "output_tokens": 293,
+          "total_tokens": 2265,
+          "cached_input_tokens": 384,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "85d25640-08a3-462c-a084-adbbc97af7e3"
+        },
+        {
+          "response_id": "f5aceccf-3c40-486a-9f64-9b564eb1aec1",
+          "input_tokens": 1134,
+          "output_tokens": 129,
+          "total_tokens": 1263,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "5b723b9f-1b75-4400-992b-4b78da94f709"
+        },
+        {
+          "response_id": "baab560d-d196-4e91-a606-0e5f99ee4fe3",
+          "input_tokens": 5987,
+          "output_tokens": 355,
+          "total_tokens": 6342,
+          "cached_input_tokens": 4096,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "cbb5b678-17b5-4515-9f9f-c8a85024de0f"
+        }
+      ],
+      "status": "completed",
+      "search_state": "verified",
+      "error": null,
+      "evidence": {
+        "state": "supported",
+        "sources": [
+          "https://mail.python.org/pipermail/python-list/2010-January/566123.html"
+        ],
+        "source_selection": [
+          {
+            "source_id": "2bdf3487-765f-56cc-8a2d-f9482be8e28f",
+            "source_version": 1,
+            "url": "https://mail.python.org/pipermail/python-list/2010-January/566123.html",
+            "version": 1,
+            "content_hash": "904f0f3c49ca48c1e4037c04f4fc8a376ca65468103baa40f23e17ea4bbbfd88",
+            "query_hash": "20cbaf4ed663e3e0b271ef4801a811e9fb7f8abc439d28bc76571b145589e4d4",
+            "original_chars": 1254,
+            "selected_chars": 1254,
+            "projected_chars": 1254,
+            "omitted_chars": 0,
+            "reason": "full",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 1254,
+                "reason": "full"
+              }
+            ]
+          }
+        ]
+      },
+      "quality_supplement": null,
+      "model_calls": [
+        {
+          "id": "d7de1790-23eb-4a5c-9e74-ec2eb8a70dc6",
+          "budget_id": "10938e15-b993-454b-b9ca-fc2afa89f110",
+          "revision": 1,
+          "background": false,
+          "node": "source_candidates",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 3291,
+          "transport_requests": 1,
+          "request_ids": [
+            "85d25640-08a3-462c-a084-adbbc97af7e3"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "ce87917e-523a-4eeb-9415-069bb1c21dce",
+              "input_tokens": 1972,
+              "output_tokens": 293,
+              "total_tokens": 2265,
+              "cached_input_tokens": 384,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "85d25640-08a3-462c-a084-adbbc97af7e3"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "01850c83-634e-4d50-ae2c-e975a95c2d50",
+          "budget_id": "10938e15-b993-454b-b9ca-fc2afa89f110",
+          "revision": 1,
+          "background": false,
+          "node": "evidence_assessment",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 1814,
+          "transport_requests": 1,
+          "request_ids": [
+            "5b723b9f-1b75-4400-992b-4b78da94f709"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "f5aceccf-3c40-486a-9f64-9b564eb1aec1",
+              "input_tokens": 1134,
+              "output_tokens": 129,
+              "total_tokens": 1263,
+              "cached_input_tokens": 0,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "5b723b9f-1b75-4400-992b-4b78da94f709"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "a6250c1b-877b-4394-a283-43ca95606c30",
+          "budget_id": "10938e15-b993-454b-b9ca-fc2afa89f110",
+          "revision": 1,
+          "background": false,
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 11663,
+          "transport_requests": 1,
+          "request_ids": [
+            "cbb5b678-17b5-4515-9f9f-c8a85024de0f"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "baab560d-d196-4e91-a606-0e5f99ee4fe3",
+              "input_tokens": 5987,
+              "output_tokens": 355,
+              "total_tokens": 6342,
+              "cached_input_tokens": 4096,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "cbb5b678-17b5-4515-9f9f-c8a85024de0f"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "source_selection": {
+        "evidence_assessment": [
+          {
+            "source_id": "2bdf3487-765f-56cc-8a2d-f9482be8e28f",
+            "source_version": 1,
+            "url": "https://mail.python.org/pipermail/python-list/2010-January/566123.html",
+            "version": 1,
+            "content_hash": "904f0f3c49ca48c1e4037c04f4fc8a376ca65468103baa40f23e17ea4bbbfd88",
+            "query_hash": "20cbaf4ed663e3e0b271ef4801a811e9fb7f8abc439d28bc76571b145589e4d4",
+            "original_chars": 1254,
+            "selected_chars": 1254,
+            "projected_chars": 1254,
+            "omitted_chars": 0,
+            "reason": "full",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 1254,
+                "reason": "full"
+              }
+            ]
+          }
+        ],
+        "answer": [
+          {
+            "source_id": "2bdf3487-765f-56cc-8a2d-f9482be8e28f",
+            "source_version": 1,
+            "url": "https://mail.python.org/pipermail/python-list/2010-January/566123.html",
+            "version": 1,
+            "content_hash": "904f0f3c49ca48c1e4037c04f4fc8a376ca65468103baa40f23e17ea4bbbfd88",
+            "query_hash": "20cbaf4ed663e3e0b271ef4801a811e9fb7f8abc439d28bc76571b145589e4d4",
+            "original_chars": 1254,
+            "selected_chars": 1254,
+            "projected_chars": 1254,
+            "omitted_chars": 0,
+            "reason": "full",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 1254,
+                "reason": "full"
+              }
+            ]
+          }
+        ]
+      },
+      "provider_events": [
+        {
+          "provider": "deepseek",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "deepseek",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "source_urls": [
+        "https://mail.python.org/pipermail/python-list/2010-January/566123.html"
+      ],
+      "elapsed_seconds": 17.598,
+      "replies_sha256": [
+        "ef09140fc91d74cb3e022e85e75dfb594325718cee00c453be993240793b8fee"
+      ]
+    },
+    {
+      "id": "postgresql_current:deepseek_first",
+      "case": "postgresql_current",
+      "configuration": "deepseek_first",
+      "usage": [
+        {
+          "response_id": "fa757179-70b7-4553-a11d-93a0e31cec87",
+          "input_tokens": 1931,
+          "output_tokens": 883,
+          "total_tokens": 2814,
+          "cached_input_tokens": 384,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "718b6347-e961-4029-881b-732ab5e28784"
+        },
+        {
+          "response_id": "11e6f04c-dd13-4dbb-a277-da2ae0896be3",
+          "input_tokens": 1650,
+          "output_tokens": 196,
+          "total_tokens": 1846,
+          "cached_input_tokens": 384,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "7ab59f01-1cd9-46e6-bdba-e6afa53b18fc"
+        },
+        {
+          "response_id": "51e9318c-ef21-4f31-9c46-8506013e1f25",
+          "input_tokens": 1667,
+          "output_tokens": 255,
+          "total_tokens": 1922,
+          "cached_input_tokens": 384,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "73c5dba3-cb20-44bd-a7c2-8063e3f6df35"
+        },
+        {
+          "response_id": "2a4c7b8a-ab21-4db0-9b56-c9225e21f3bf",
+          "input_tokens": 2798,
+          "output_tokens": 191,
+          "total_tokens": 2989,
+          "cached_input_tokens": 1536,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "9d75b071-4ec0-4384-993c-a2bcbfbb5164"
+        },
+        {
+          "response_id": "70dc30b0-c934-43e9-b421-d11de50622aa",
+          "input_tokens": 7955,
+          "output_tokens": 442,
+          "total_tokens": 8397,
+          "cached_input_tokens": 4224,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "95d31ddc-14dd-4b98-bb7b-49730fbf9cca"
+        }
+      ],
+      "status": "completed",
+      "search_state": "verified",
+      "error": null,
+      "evidence": {
+        "state": "supported",
+        "sources": [
+          "https://www.postgresql.org/docs/14/transaction-iso.html",
+          "https://www.postgresql.org/docs/current/transaction-iso.html"
+        ],
+        "source_selection": [
+          {
+            "source_id": "a35ae62e-95bc-535b-abf4-7918a492ee02",
+            "source_version": 1,
+            "url": "https://www.postgresql.org/docs/14/transaction-iso.html",
+            "version": 1,
+            "content_hash": "d775b540baea230c7f0df6489b6120ca97aaf921513613579516ac2391b57a4e",
+            "query_hash": "c7f44116af3ba66c3655da2d0458858dccebb3e86c9b5290031e2d8f2e4f1bc6",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          },
+          {
+            "source_id": "90379cdf-d533-5b9d-beef-6335b4cf7b11",
+            "source_version": 1,
+            "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+            "version": 1,
+            "content_hash": "b9ca96e0f2b5534ef9788f6c2f1f9888fbea127c4d011d8bf06d00656a5962f7",
+            "query_hash": "c7f44116af3ba66c3655da2d0458858dccebb3e86c9b5290031e2d8f2e4f1bc6",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        ]
+      },
+      "quality_supplement": {
+        "after_provider": "deepseek",
+        "reason": "insufficient"
+      },
+      "model_calls": [
+        {
+          "id": "75cbe87f-ba59-4e1c-be2a-e0c1c4a9bb93",
+          "budget_id": "fc010da8-b2f8-4df2-950c-a80190901a8d",
+          "revision": 1,
+          "background": false,
+          "node": "source_candidates",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 4477,
+          "transport_requests": 1,
+          "request_ids": [
+            "718b6347-e961-4029-881b-732ab5e28784"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "fa757179-70b7-4553-a11d-93a0e31cec87",
+              "input_tokens": 1931,
+              "output_tokens": 883,
+              "total_tokens": 2814,
+              "cached_input_tokens": 384,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "718b6347-e961-4029-881b-732ab5e28784"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "5f9a9766-1fea-4a2c-aae9-929352da6ae5",
+          "budget_id": "fc010da8-b2f8-4df2-950c-a80190901a8d",
+          "revision": 1,
+          "background": false,
+          "node": "evidence_assessment",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 3252,
+          "transport_requests": 1,
+          "request_ids": [
+            "7ab59f01-1cd9-46e6-bdba-e6afa53b18fc"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "11e6f04c-dd13-4dbb-a277-da2ae0896be3",
+              "input_tokens": 1650,
+              "output_tokens": 196,
+              "total_tokens": 1846,
+              "cached_input_tokens": 384,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "7ab59f01-1cd9-46e6-bdba-e6afa53b18fc"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "85c7e753-9d20-43fb-8ac8-43ae86f776b9",
+          "budget_id": "fc010da8-b2f8-4df2-950c-a80190901a8d",
+          "revision": 1,
+          "background": false,
+          "node": "source_candidates",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 3643,
+          "transport_requests": 1,
+          "request_ids": [
+            "73c5dba3-cb20-44bd-a7c2-8063e3f6df35"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "51e9318c-ef21-4f31-9c46-8506013e1f25",
+              "input_tokens": 1667,
+              "output_tokens": 255,
+              "total_tokens": 1922,
+              "cached_input_tokens": 384,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "73c5dba3-cb20-44bd-a7c2-8063e3f6df35"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "b867867b-748f-4bfc-8e88-9e3808b05f21",
+          "budget_id": "fc010da8-b2f8-4df2-950c-a80190901a8d",
+          "revision": 1,
+          "background": false,
+          "node": "evidence_assessment",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 5647,
+          "transport_requests": 1,
+          "request_ids": [
+            "9d75b071-4ec0-4384-993c-a2bcbfbb5164"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "2a4c7b8a-ab21-4db0-9b56-c9225e21f3bf",
+              "input_tokens": 2798,
+              "output_tokens": 191,
+              "total_tokens": 2989,
+              "cached_input_tokens": 1536,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "9d75b071-4ec0-4384-993c-a2bcbfbb5164"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "a85acea3-e517-4194-986f-2c5471e61fe3",
+          "budget_id": "fc010da8-b2f8-4df2-950c-a80190901a8d",
+          "revision": 1,
+          "background": false,
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 15906,
+          "transport_requests": 1,
+          "request_ids": [
+            "95d31ddc-14dd-4b98-bb7b-49730fbf9cca"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "70dc30b0-c934-43e9-b421-d11de50622aa",
+              "input_tokens": 7955,
+              "output_tokens": 442,
+              "total_tokens": 8397,
+              "cached_input_tokens": 4224,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "95d31ddc-14dd-4b98-bb7b-49730fbf9cca"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "source_selection": {
+        "evidence_assessment": [
+          {
+            "source_id": "a35ae62e-95bc-535b-abf4-7918a492ee02",
+            "source_version": 1,
+            "url": "https://www.postgresql.org/docs/14/transaction-iso.html",
+            "version": 1,
+            "content_hash": "d775b540baea230c7f0df6489b6120ca97aaf921513613579516ac2391b57a4e",
+            "query_hash": "c7f44116af3ba66c3655da2d0458858dccebb3e86c9b5290031e2d8f2e4f1bc6",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          },
+          {
+            "source_id": "90379cdf-d533-5b9d-beef-6335b4cf7b11",
+            "source_version": 1,
+            "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+            "version": 1,
+            "content_hash": "b9ca96e0f2b5534ef9788f6c2f1f9888fbea127c4d011d8bf06d00656a5962f7",
+            "query_hash": "c7f44116af3ba66c3655da2d0458858dccebb3e86c9b5290031e2d8f2e4f1bc6",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        ],
+        "answer": [
+          {
+            "source_id": "a35ae62e-95bc-535b-abf4-7918a492ee02",
+            "source_version": 1,
+            "url": "https://www.postgresql.org/docs/14/transaction-iso.html",
+            "version": 1,
+            "content_hash": "d775b540baea230c7f0df6489b6120ca97aaf921513613579516ac2391b57a4e",
+            "query_hash": "c7f44116af3ba66c3655da2d0458858dccebb3e86c9b5290031e2d8f2e4f1bc6",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          },
+          {
+            "source_id": "90379cdf-d533-5b9d-beef-6335b4cf7b11",
+            "source_version": 1,
+            "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+            "version": 1,
+            "content_hash": "b9ca96e0f2b5534ef9788f6c2f1f9888fbea127c4d011d8bf06d00656a5962f7",
+            "query_hash": "c7f44116af3ba66c3655da2d0458858dccebb3e86c9b5290031e2d8f2e4f1bc6",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        ]
+      },
+      "provider_events": [
+        {
+          "provider": "deepseek",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "deepseek",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "source_urls": [
+        "https://www.postgresql.org/docs/14/transaction-iso.html",
+        "https://www.postgresql.org/docs/current/transaction-iso.html"
+      ],
+      "elapsed_seconds": 38.091,
+      "replies_sha256": [
+        "9dffe525bfb852a9cb1b76f6b3bd6c39135dbf8bd4143d9b93390d8152e72e79"
+      ]
+    },
+    {
+      "id": "postgresql_current:exa_first",
+      "case": "postgresql_current",
+      "configuration": "exa_first",
+      "usage": [
+        {
+          "response_id": "50b64abc-0953-457e-a571-489389f5f9a8",
+          "input_tokens": 1667,
+          "output_tokens": 150,
+          "total_tokens": 1817,
+          "cached_input_tokens": 1664,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "02db1bac-ed06-40f9-ade3-127b8500db30"
+        },
+        {
+          "response_id": "054ec115-f792-403d-80de-2db45c7fde7f",
+          "input_tokens": 1622,
+          "output_tokens": 161,
+          "total_tokens": 1783,
+          "cached_input_tokens": 384,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "90a21b36-bb63-4127-ac71-6c78faf12598"
+        },
+        {
+          "response_id": "8cdd597b-8c4a-4a4c-97a0-1a753bc2375f",
+          "input_tokens": 6513,
+          "output_tokens": 275,
+          "total_tokens": 6788,
+          "cached_input_tokens": 4224,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "21cf70d7-49b9-4817-844d-3fb41f23c140"
+        }
+      ],
+      "status": "completed",
+      "search_state": "verified",
+      "error": null,
+      "evidence": {
+        "state": "supported",
+        "sources": [
+          "https://www.postgresql.org/docs/current/transaction-iso.html"
+        ],
+        "source_selection": [
+          {
+            "source_id": "7b906ba5-7afc-5331-a0ad-356d981cafe9",
+            "source_version": 1,
+            "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+            "version": 1,
+            "content_hash": "b9ca96e0f2b5534ef9788f6c2f1f9888fbea127c4d011d8bf06d00656a5962f7",
+            "query_hash": "c7f44116af3ba66c3655da2d0458858dccebb3e86c9b5290031e2d8f2e4f1bc6",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        ]
+      },
+      "quality_supplement": null,
+      "model_calls": [
+        {
+          "id": "592e5839-667f-45ab-b2bf-6bb37d85cc02",
+          "budget_id": "d42220fe-cb90-43e6-b36b-477f4dfb4039",
+          "revision": 1,
+          "background": false,
+          "node": "source_candidates",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 3643,
+          "transport_requests": 1,
+          "request_ids": [
+            "02db1bac-ed06-40f9-ade3-127b8500db30"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "50b64abc-0953-457e-a571-489389f5f9a8",
+              "input_tokens": 1667,
+              "output_tokens": 150,
+              "total_tokens": 1817,
+              "cached_input_tokens": 1664,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "02db1bac-ed06-40f9-ade3-127b8500db30"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "cc5f4dce-b0d1-47b9-8e91-083d55c647be",
+          "budget_id": "d42220fe-cb90-43e6-b36b-477f4dfb4039",
+          "revision": 1,
+          "background": false,
+          "node": "evidence_assessment",
+          "model": "deepseek-v4-pro",
+          "estimated_input_tokens": 3246,
+          "transport_requests": 1,
+          "request_ids": [
+            "90a21b36-bb63-4127-ac71-6c78faf12598"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "054ec115-f792-403d-80de-2db45c7fde7f",
+              "input_tokens": 1622,
+              "output_tokens": 161,
+              "total_tokens": 1783,
+              "cached_input_tokens": 384,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-v4-pro",
+              "request_id": "90a21b36-bb63-4127-ac71-6c78faf12598"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "a00db0c1-0ebf-4a8b-b6be-66e5960ac6d6",
+          "budget_id": "d42220fe-cb90-43e6-b36b-477f4dfb4039",
+          "revision": 1,
+          "background": false,
+          "node": "answer",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 13170,
+          "transport_requests": 1,
+          "request_ids": [
+            "21cf70d7-49b9-4817-844d-3fb41f23c140"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "8cdd597b-8c4a-4a4c-97a0-1a753bc2375f",
+              "input_tokens": 6513,
+              "output_tokens": 275,
+              "total_tokens": 6788,
+              "cached_input_tokens": 4224,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "21cf70d7-49b9-4817-844d-3fb41f23c140"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "source_selection": {
+        "evidence_assessment": [
+          {
+            "source_id": "7b906ba5-7afc-5331-a0ad-356d981cafe9",
+            "source_version": 1,
+            "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+            "version": 1,
+            "content_hash": "b9ca96e0f2b5534ef9788f6c2f1f9888fbea127c4d011d8bf06d00656a5962f7",
+            "query_hash": "c7f44116af3ba66c3655da2d0458858dccebb3e86c9b5290031e2d8f2e4f1bc6",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        ],
+        "answer": [
+          {
+            "source_id": "7b906ba5-7afc-5331-a0ad-356d981cafe9",
+            "source_version": 1,
+            "url": "https://www.postgresql.org/docs/current/transaction-iso.html",
+            "version": 1,
+            "content_hash": "b9ca96e0f2b5534ef9788f6c2f1f9888fbea127c4d011d8bf06d00656a5962f7",
+            "query_hash": "c7f44116af3ba66c3655da2d0458858dccebb3e86c9b5290031e2d8f2e4f1bc6",
+            "original_chars": 20000,
+            "selected_chars": 4000,
+            "projected_chars": 4000,
+            "omitted_chars": 16000,
+            "reason": "query_match",
+            "ranges": [
+              {
+                "start": 0,
+                "end": 4000,
+                "reason": "query_match"
+              }
+            ]
+          }
+        ]
+      },
+      "provider_events": [
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "search",
+          "status": "succeeded",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "started",
+          "code": ""
+        },
+        {
+          "provider": "exa",
+          "operation": "read",
+          "status": "succeeded",
+          "code": ""
+        }
+      ],
+      "source_urls": [
+        "https://www.postgresql.org/docs/current/transaction-iso.html"
+      ],
+      "elapsed_seconds": 27.582,
+      "replies_sha256": [
+        "61af68f565fa4729a193040e9c4019e0ce863d25f6aaeeef86b7dd0a1cf226a3"
+      ]
+    }
+  ],
+  "finished_at": "2026-10-18T06:46:05.536029+00:00"
+}

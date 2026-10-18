@@ -1,0 +1,60 @@
+{
+  "search": [
+    "deepseek",
+    "exa",
+    "tavily"
+  ],
+  "read": [
+    "exa",
+    "tavily",
+    "deepseek"
+  ],
+  "context": "none",
+  "search_capability": {
+    "status": "unverified",
+    "provider": "deepseek",
+    "reason": "requires_search_result",
+    "protocol": "harness_web_tools_v1",
+    "providers": [
+      {
+        "provider": "deepseek",
+        "status": "unverified"
+      },
+      {
+        "provider": "exa",
+        "status": "unverified"
+      },
+      {
+        "provider": "tavily",
+        "status": "unverified"
+      }
+    ]
+  },
+  "read_capability": {
+    "status": "unverified",
+    "provider": "exa",
+    "reason": "requires_public_page_read",
+    "providers": [
+      {
+        "provider": "exa",
+        "status": "unverified"
+      },
+      {
+        "provider": "tavily",
+        "status": "unverified"
+      },
+      {
+        "provider": "deepseek",
+        "status": "unverified"
+      }
+    ]
+  },
+  "network_calls": 0,
+  "model_requests": 0,
+  "debug_app_read_order": [
+    "exa",
+    "tavily",
+    "deepseek",
+    "browser"
+  ]
+}

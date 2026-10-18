@@ -24,6 +24,7 @@ class WebRound:
     seconds: float = ROUND_SECONDS
     spent: float = 0
     calls: int = 0
+    empty_searches: int = 0
     on_event: object = None
     check_cancel: object = None
     deadline: float | None = None
@@ -116,6 +117,11 @@ def route(providers, operation, invoke, *, on_cancel_handle=None):
     if on_cancel_handle:
         on_cancel_handle(cancel)
     with web_round_scope() as state:
+        if cancelled.is_set():
+            raise WebToolError('CANCELLED')
+        state.check()
+        if operation == 'search' and state.empty_searches >= 2:
+            return providers[0], []
         started = time.monotonic()
         chain_seconds = READ_CHAIN_SECONDS if operation == 'read' and 'browser' in providers else CHAIN_SECONDS
         deadline = started + min(chain_seconds, state.seconds - state.spent)
@@ -182,7 +188,10 @@ def route(providers, operation, invoke, *, on_cancel_handle=None):
                             emit(state, provider, operation, 'empty')
                             empty_result = (provider, result)
                             empty_searches += 1
-                            if empty_searches >= 2: return empty_result
+                            if operation == 'search':
+                                state.empty_searches += 1
+                            if empty_searches >= 2 or (operation == 'search' and state.empty_searches >= 2):
+                                return empty_result
                             continue
                         emit(state, provider, operation, 'succeeded')
                         return provider, result

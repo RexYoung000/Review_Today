@@ -1,0 +1,46 @@
+{
+  "method": "Manual review against frozen questions and source constraints; provider-visible, no additional judge model or blind accuracy claim.",
+  "cases": [
+    {
+      "id": "python3:exa_first",
+      "phase": "before_full_question_input_guard",
+      "outcome": "not_evaluable_as_final_answer",
+      "finding": "Exa returned formal documentation. The first excerpt was scoped. Supplementary candidate selection returned Markdown-fenced JSON; the evaluation blocked the normal repair before any second transport. No final answer. This is a model-format failure, not evidence of an Exa retrieval outage."
+    },
+    {
+      "id": "python3:deepseek_first",
+      "phase": "before_full_question_input_guard",
+      "outcome": "source_requirement_not_met",
+      "core_facts": "Examples correctly distinguish nested append from iterated extend and show mutating methods returning None.",
+      "limitations": "A 2010 python.org mailing-list message is not the requested formal Python 3 documentation. The answer discloses this but the earlier assessment incorrectly marked full support. One prose reference incorrectly says add([]) rather than append([]). No numerical win score is assigned."
+    },
+    {
+      "id": "postgresql_current:deepseek_first",
+      "phase": "before_full_question_input_guard",
+      "outcome": "core_matrix_correct_with_coverage_gap",
+      "core_facts": "Default Read Committed; PostgreSQL Repeatable Read prevents phantoms but allows serialization anomalies; Serializable prevents serialization anomalies for committed transactions.",
+      "limitations": "Initial v14 excerpt judged insufficient for current question, then Exa supplied current documentation. Final answer does not describe serialization-failure retry handling, a frozen check. Two versions of one official source do not establish independent corroboration; this ordinary question did not request it."
+    },
+    {
+      "id": "postgresql_current:exa_first",
+      "phase": "before_full_question_input_guard",
+      "outcome": "core_matrix_correct_with_retry_detail_gap",
+      "core_facts": "Current documentation supports default and isolation matrix; final answer mentions retry on conflict.",
+      "limitations": "It does not explicitly say to retry the complete transaction. The original handling question admits some interpretation; the frozen check asked for this detail. Do not count either PostgreSQL answer as passing every check."
+    },
+    {
+      "id": "python3_dict_update:deepseek_first",
+      "phase": "after_full_question_input_guard",
+      "outcome": "partial_support_correctly_retained",
+      "findings": "Full question and source-type requirement enter both semantic stages. Candidate URLs fabricated by adding an anchor or changing a returned URL were rejected by the existing exact-URL guard; one quality supplement then obtained formal docs. Both body assessments retain scoped because supplied excerpts do not directly document dict.update returning None. The final correct example explicitly marks that detail as unverified by this round. Two reads, two assessments, one supplement and five model requests; no third search.",
+      "limitations": "This is one different input-contract validation, not a rerun of the old mailing-list case or a general semantic accuracy proof; the complete source requirement remains partially unanswered."
+    }
+  ],
+  "source_cross_check": [
+    "https://docs.python.org/3/tutorial/datastructures.html",
+    "https://docs.python.org/3/library/stdtypes.html#dict.update",
+    "https://www.postgresql.org/docs/current/transaction-iso.html"
+  ],
+  "aggregate_winner": null,
+  "cost_interpretation": "Public tariff illustration, excluding free credits and unverified MCP/account mapping. Only PostgreSQL has two completed same-question answers; different cache receipts and one sample prevent a general cost-reduction claim."
+}

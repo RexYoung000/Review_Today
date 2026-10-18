@@ -1698,11 +1698,18 @@ class ConversationHarness(ConditionalTeaching):
             with self._worker_lock:
                 self._cancel_handles.pop(handle_key, None)
 
-    def _search(self, sid, rid, rev, query, *, purpose='answer'):
+    def _search(self, sid, rid, rev, query, *, purpose='answer', after_provider=''):
         from agent_service.request_scope import check_web
         check_web(self, sid, rid, rev, query, operation='search', purpose=purpose)
         data, run = self._snapshot(sid, rid, rev)
-        key = hashlib.sha256((query + json.dumps(web_search_capability(), sort_keys=True)).encode()).hexdigest()
+        key_input = query + json.dumps(web_search_capability(), sort_keys=True)
+        if after_provider:
+            from agent_service.web_tools import provider_chain
+            chain = provider_chain('search', after_provider=after_provider)
+            if not chain:
+                raise WebToolError('NOT_CONFIGURED')
+            key_input += '|after:' + after_provider
+        key = hashlib.sha256(key_input.encode()).hexdigest()
         if key in run.get("search_results", {}):
             return run["search_results"][key]
         if web_search_capability()["status"] == "unavailable":
@@ -1722,9 +1729,10 @@ class ConversationHarness(ConditionalTeaching):
                 for attempt in range(1, 3):
                     try:
                         with self.store.transaction(sid, rid, rev) as current:
-                            event = self.store.event(current, current["runs"][rid], "search_attempt", "正在查找公开资料", payload={"step_attempt": attempt, "web_provider": web_search_capability()["provider"]})
+                            event = self.store.event(current, current["runs"][rid], "search_attempt", "正在查找公开资料", payload={"step_attempt": attempt, "web_provider": chain[0] if after_provider else web_search_capability()["provider"]})
                             event["attempt"] = attempt
-                        result = web_search_text(query, on_cancel_handle=register)
+                        result = web_search_text(query, on_cancel_handle=register,
+                                                 **({'after_provider': after_provider} if after_provider else {}))
                         break
                     except CallError as error:
                         if attempt == 2 or budget.attempts >= budget.limit or not diagnose(error)["retryable"]:

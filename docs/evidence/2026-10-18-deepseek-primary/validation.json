@@ -1,0 +1,31 @@
+{
+  "full_controlled": {
+    "passed": 1300,
+    "skipped": 4,
+    "subtests": 593,
+    "seconds": 189.04,
+    "log_sha256": "370f96343e0c6bc85769d796007a2c3b3fc7542913521352b53bb4bce5036634",
+    "command": "bash agent-service/run-controlled.sh"
+  },
+  "prior_full_controlled": {
+    "passed": 1296,
+    "skipped": 4,
+    "subtests": 593
+  },
+  "final_question_subset": {
+    "passed": 52,
+    "subtests": 2
+  },
+  "initial_failures_retained": [
+    "tool-call-budget exhausted by initial unreadable-candidate fixture",
+    "official-source fixture omitted source domains"
+  ],
+  "intermediate_full_runs": "Two incomplete runs intentionally interrupted after fixture or cancellation-boundary additions; not counted as full passes.",
+  "offline_runner_validation": {
+    "jobs": 4,
+    "synthetic_requests": 12,
+    "real_requests": 0
+  },
+  "native_app_acceptance": false,
+  "account_invoice_verified": false
+}

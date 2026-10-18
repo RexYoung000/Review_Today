@@ -1,0 +1,40 @@
+{
+  "frozen_before_execution": true,
+  "max_model_requests": 20,
+  "max_web_requests": 40,
+  "max_requests_per_model_step": 1,
+  "max_tool_requests_per_job": 10,
+  "model_timeout_seconds": 45,
+  "comparison": "production V2 source selection, assessment, projection and final answer; fixed intent and preparation",
+  "models": "unchanged configured RISK_MODEL and COACH_MODEL; smart strength",
+  "read_order": ["exa", "tavily", "deepseek"],
+  "browser": false,
+  "orders": [
+    ["exa", "tavily", "deepseek"],
+    ["deepseek", "exa", "tavily"]
+  ],
+  "no_startup_probes": true,
+  "no_daily_data_or_app": true,
+  "failure_policy": "retain each failed job; no automatic model-step retry, repeated job or budget refill",
+  "cases": [
+    {
+      "id": "python3",
+      "question": "请依据 Python 3 官方资料，简短解释列表 append 与 extend 怎样添加元素、返回值是什么，各给一个小例子。",
+      "query": "Python 3 list append extend return None nested list example",
+      "domain": "python.org",
+      "concepts": ["Python 3 list", "append", "extend", "return None"],
+      "reference": "https://docs.python.org/3/tutorial/datastructures.html",
+      "checks": ["append adds one object; list remains nested", "extend iterates and appends elements", "both mutate list and return None", "old source is acceptable only if actual facts apply to Python 3", "citations must be read URLs"]
+    },
+    {
+      "id": "postgresql_current",
+      "question": "请按当前 PostgreSQL 官方文档，简短比较 READ COMMITTED、REPEATABLE READ 与 SERIALIZABLE：默认隔离级别是什么、幻读与序列化异常怎样处理？",
+      "query": "PostgreSQL current transaction isolation repeatable read serializable 2026",
+      "domain": "postgresql.org",
+      "concepts": ["PostgreSQL transaction isolation", "phantom read", "serialization anomaly"],
+      "reference": "https://www.postgresql.org/docs/current/transaction-iso.html",
+      "checks": ["default Read Committed", "PostgreSQL Repeatable Read prevents phantom reads but can allow serialization anomalies", "Serializable prevents serialization anomalies for committed transactions", "serialization failures require retrying the whole transaction", "do not apply obsolete PostgreSQL 7.x isolation mapping to current PostgreSQL", "citations must be read URLs"]
+    }
+  ],
+  "review": "Manual source and factual checks, provider-visible; known weak cases, not blind or representative accuracy. Total elapsed covers source preparation and answer with fixed routing, not native startup or full teaching/save acceptance. Actual account bills remain unavailable."
+}

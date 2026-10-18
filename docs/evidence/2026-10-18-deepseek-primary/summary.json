@@ -1,0 +1,174 @@
+{
+  "model_requests": 19,
+  "web_requests": 15,
+  "usage_receipts": 19,
+  "tokens": {
+    "input_tokens": 59512,
+    "output_tokens": 4863,
+    "total_tokens": 64375,
+    "cached_input_tokens": 24064,
+    "reasoning_output_tokens": 0
+  },
+  "completed_replies": 4,
+  "quality_supplements": 3,
+  "total_limit": {
+    "model": 20,
+    "web": 40
+  },
+  "startup_probes": 0,
+  "actual_account_bill_checked": false,
+  "jobs": [
+    {
+      "batch": "live",
+      "id": "python3:exa_first",
+      "status": "retryable_failed",
+      "evidence_state": null,
+      "quality_supplement": {
+        "after_provider": "exa",
+        "reason": "scoped"
+      },
+      "elapsed_seconds": 26.208,
+      "model_requests": 3,
+      "usage_receipts": 3,
+      "web_requests": 3,
+      "web_counts": {
+        "exa:search": 1,
+        "exa:read": 1,
+        "tavily:search": 1
+      },
+      "tokens": {
+        "input_tokens": 6728,
+        "output_tokens": 541,
+        "total_tokens": 7269,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 0
+      },
+      "estimated_model_usd": 0.00551166,
+      "illustrative_web_usd": 0.016,
+      "illustrative_total_usd": 0.02151166,
+      "source_urls": []
+    },
+    {
+      "batch": "live",
+      "id": "python3:deepseek_first",
+      "status": "completed",
+      "evidence_state": "supported",
+      "quality_supplement": null,
+      "elapsed_seconds": 17.598,
+      "model_requests": 3,
+      "usage_receipts": 3,
+      "web_requests": 2,
+      "web_counts": {
+        "deepseek:search": 1,
+        "exa:read": 1
+      },
+      "tokens": {
+        "input_tokens": 9093,
+        "output_tokens": 777,
+        "total_tokens": 9870,
+        "cached_input_tokens": 4480,
+        "reasoning_output_tokens": 0
+      },
+      "estimated_model_usd": 0.00314947,
+      "illustrative_web_usd": 0.00175,
+      "illustrative_total_usd": 0.00489947,
+      "source_urls": [
+        "https://mail.python.org/pipermail/python-list/2010-January/566123.html"
+      ]
+    },
+    {
+      "batch": "live",
+      "id": "postgresql_current:deepseek_first",
+      "status": "completed",
+      "evidence_state": "supported",
+      "quality_supplement": {
+        "after_provider": "deepseek",
+        "reason": "insufficient"
+      },
+      "elapsed_seconds": 38.091,
+      "model_requests": 5,
+      "usage_receipts": 5,
+      "web_requests": 4,
+      "web_counts": {
+        "deepseek:search": 1,
+        "exa:read": 2,
+        "exa:search": 1
+      },
+      "tokens": {
+        "input_tokens": 16001,
+        "output_tokens": 1967,
+        "total_tokens": 17968,
+        "cached_input_tokens": 6912,
+        "reasoning_output_tokens": 0
+      },
+      "estimated_model_usd": 0.00745244,
+      "illustrative_web_usd": 0.00975,
+      "illustrative_total_usd": 0.01720244,
+      "source_urls": [
+        "https://www.postgresql.org/docs/14/transaction-iso.html",
+        "https://www.postgresql.org/docs/current/transaction-iso.html"
+      ]
+    },
+    {
+      "batch": "live",
+      "id": "postgresql_current:exa_first",
+      "status": "completed",
+      "evidence_state": "supported",
+      "quality_supplement": null,
+      "elapsed_seconds": 27.582,
+      "model_requests": 3,
+      "usage_receipts": 3,
+      "web_requests": 2,
+      "web_counts": {
+        "exa:search": 1,
+        "exa:read": 1
+      },
+      "tokens": {
+        "input_tokens": 9802,
+        "output_tokens": 586,
+        "total_tokens": 10388,
+        "cached_input_tokens": 6272,
+        "reasoning_output_tokens": 0
+      },
+      "estimated_model_usd": 0.00200092,
+      "illustrative_web_usd": 0.008,
+      "illustrative_total_usd": 0.01000092,
+      "source_urls": [
+        "https://www.postgresql.org/docs/current/transaction-iso.html"
+      ]
+    },
+    {
+      "batch": "post-guard",
+      "id": "python3_dict_update:deepseek_first",
+      "status": "completed",
+      "evidence_state": "scoped",
+      "quality_supplement": {
+        "after_provider": "deepseek",
+        "reason": "no_usable_source"
+      },
+      "elapsed_seconds": 39.468,
+      "model_requests": 5,
+      "usage_receipts": 5,
+      "web_requests": 4,
+      "web_counts": {
+        "deepseek:search": 1,
+        "exa:search": 1,
+        "exa:read": 2
+      },
+      "tokens": {
+        "input_tokens": 17888,
+        "output_tokens": 992,
+        "total_tokens": 18880,
+        "cached_input_tokens": 6400,
+        "reasoning_output_tokens": 0
+      },
+      "estimated_model_usd": 0.00703329,
+      "illustrative_web_usd": 0.00975,
+      "illustrative_total_usd": 0.01678329,
+      "source_urls": [
+        "https://docs.python.org/3/tutorial/datastructures.html",
+        "https://docs.python.org/3/reference/datamodel.html"
+      ]
+    }
+  ]
+}
