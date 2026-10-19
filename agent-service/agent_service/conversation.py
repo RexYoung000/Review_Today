@@ -1333,6 +1333,9 @@ class ConversationHarness(ConditionalTeaching):
         with self.store.transaction(sid, rid, rev) as current:
             current["runs"][rid]["allowed_source_urls"] = readable_urls
         instruction += "\n标有 content_excerpted 的网页仅向本次回答提供节选；结合 evidence 的核验范围回答，不补写未见原文或声称节选是全文。"
+        if any(s.get('text_coverage') for s in projected_sources):
+            from agent_service.article_coverage import INSTRUCTION
+            instruction += '\n' + INSTRUCTION
         lesson_target = step_target(task) if teaching and task else None
         if lesson_target and not task["context"].get("requires_mastery"):
             instruction += ("\n本轮实际要讲解和检查的步骤以 learning_step 为准。用户要求继续或跳过时，程序已选择应讲步骤，"
@@ -1394,6 +1397,8 @@ class ConversationHarness(ConditionalTeaching):
         cited = [source for source in projected_sources if source.get('content') and source.get("url") in set(evidence.get("sources", [])) | direct_urls and source["url"] not in text]
         if cited:
             text += render_sources(cited)
+        from agent_service.article_coverage import notice
+        text += notice(projected_sources)
         with self.store.transaction(sid, rid, rev) as data:
             task = self._task(data, data["runs"][rid])
             data["runs"][rid]["answer_sources"] = sources

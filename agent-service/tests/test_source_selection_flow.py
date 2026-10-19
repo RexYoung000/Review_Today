@@ -193,6 +193,53 @@ def test_material_readiness_and_final_analysis_share_the_same_excerpt(flow, jd):
     assert len(calls(flow, "JDAnalysis" if jd else "ConversationOutput")) == 1
 
 
+def test_whole_article_input_covers_every_character_then_followup_returns_to_focused(flow):
+    flow.core.decision = base.intent('material', 'question', public_source_scope='full_text')
+    accepted = flow.core.send('请逐章总结这篇文章，包括结尾的限制。' + URL)
+    readiness = calls(flow, 'MaterialReadiness')[-1]
+    answer = calls(flow, 'ConversationOutput')[-1]
+    assert_same_packet(readiness, answer)
+    selected = public(answer)[0]
+    assert selected['content'] == BODY
+    assert ALPHA in selected['content'] and BETA in selected['content']
+    assert selected['source_selection']['ranges'] == [dict(start=0, end=len(BODY), reason='full')]
+    assert selected['text_coverage']['delivered_text_complete'] is True
+    assert selected['text_coverage']['original_page_complete'] == 'unverified'
+    state = flow.core.state()
+    run = state['runs'][accepted.run_id]
+    assert run['status'] == 'completed'
+    assert run['source_selection_packet']['scope'] == 'full_text'
+    assert run['source_cache'][URL]['content'] == BODY
+    assert 'text_coverage' not in run['source_cache'][URL]
+    message = [m for m in state['messages'] if m['role'] == 'coach'][-1]['content']
+    assert '文字已全部纳入总结输入' in message and '网页图片内容未识读' in message
+    assert len(flow.read_calls) == 1 and flow.search_calls == []
+    flow.core.decision = base.intent('followup', public_source_scope='focused')
+    flow.core.send(QUESTION_ALPHA)
+    focused = public(calls(flow, 'ConversationOutput')[-1])[0]
+    assert len(focused['content']) <= 4_000
+    assert 'text_coverage' not in focused
+    assert ALPHA in focused['content'] and BETA not in focused['content']
+    assert len(flow.read_calls) == 1
+
+
+def test_whole_article_does_not_hide_reader_truncation(flow):
+    from agent_service.source_content import PageRead
+    reader = lambda url, **kwargs: PageRead('Synthetic specification', BODY,
+        details=dict(provider='deepseek', truncated=True, content_kind='page_text'))
+    flow.core.decision = base.intent('material', 'question', public_source_scope='full_text')
+    with patch('agent_service.conversation.fetch_public_url', side_effect=reader):
+        accepted = flow.core.send('请完整总结这篇文章。' + URL)
+    selected = public(calls(flow, 'ConversationOutput')[-1])[0]
+    assert selected['content'] == BODY
+    assert selected['text_coverage']['reader_truncated'] is True
+    state = flow.core.state()
+    assert state['runs'][accepted.run_id]['status'] == 'completed'
+    message = [m for m in state['messages'] if m['role'] == 'coach'][-1]['content']
+    assert '读取结果已截断' in message and '仅总结已提供部分' in message
+    assert '文字已全部纳入总结输入' not in message
+
+
 def test_problem_answer_refreshes_sources_and_excludes_raw_task_source_fields(flow):
     flow.core.decision = base.intent("question", workflow="problem_solving", scope="learning",
         needs_verification=True, public_search_query="public specification")

@@ -12,6 +12,8 @@ import re
 VERSION = 1
 TOTAL_CHARS = 12_000
 PER_SOURCE = 4_000
+FULL_TOTAL_CHARS = 80_000
+FULL_PER_SOURCE = 20_000
 _STOP = set('a an the and or is are was were be been to of in on for from with this that it its how what when where why please explain about can could would should do does tell me'.split())
 _CN_STOP = set('什么 怎么 如何 哪些 为什么 请问 请你 一下 这个 那个 刚才 继续 解释 资料 内容 具体 问题 能否 是否'.split())
 
@@ -54,7 +56,12 @@ def _window(text, terms, allowance):
     return start, best_score
 
 
-def answer_sources(sources, *, query='', total_chars=TOTAL_CHARS, per_source=PER_SOURCE):
+def answer_sources(sources, *, query='', total_chars=None, per_source=None, scope='focused'):
+    full_text = scope == 'full_text'
+    if total_chars is None:
+        total_chars = FULL_TOTAL_CHARS if full_text else TOTAL_CHARS
+    if per_source is None:
+        per_source = FULL_PER_SOURCE if full_text else PER_SOURCE
     projected = _unique_sources(sources)
     terms = _terms(query)
     remaining = max(0, total_chars)
@@ -62,31 +69,37 @@ def answer_sources(sources, *, query='', total_chars=TOTAL_CHARS, per_source=PER
     ranked = []
     for index, source in enumerate(projected):
         if source.get('type') == 'public_source':
-            _, score = _window(source.get('content', ''), terms, min(per_source, remaining))
+            _, score = (0, 0.0) if full_text else _window(source.get('content', ''), terms, min(per_source, remaining))
             ranked.append((index, score))
     # Relevant later sources can use the budget before unrelated earlier ones.
     for index, _ in sorted(ranked, key=lambda item: (-item[1], item[0])):
         source = projected[index]
+        upstream_excerpted = bool(source.get('content_excerpted'))
         original = source.get('content', '')
         allowance = min(per_source, remaining)
-        start, score = _window(original, terms, allowance)
+        start, score = (0, 0.0) if full_text else _window(original, terms, allowance)
         end = min(len(original), start + allowance)
         if not allowance:
             reason = 'budget_exhausted'
         elif len(original) <= allowance:
             start, end, reason = 0, len(original), 'full'
+        elif full_text:
+            reason = 'full_text_limit'
         elif score:
             reason = 'query_match'
         else:
             reason = 'no_match_fallback' if terms else 'no_query_fallback'
         source['content'] = original[start:end]
         selected = end - start
-        source['source_selection'] = dict(version=VERSION, content_hash=_hash(original), query_hash=_hash(query),
+        source['source_selection'] = dict(version=VERSION, scope=scope, content_hash=_hash(original), query_hash=_hash(query),
             original_chars=len(original), selected_chars=selected, projected_chars=selected,
             omitted_chars=len(original) - selected, reason=reason,
             ranges=[dict(start=start, end=end, reason=reason)] if selected else [])
         if selected < len(original):
             source['content_excerpted'] = True
+        if full_text:
+            from agent_service.article_coverage import describe
+            source['text_coverage'] = describe(original, source, upstream_excerpted=upstream_excerpted)
         remaining -= selected
     return projected
 
@@ -133,7 +146,12 @@ def project_for_run(h, sid, rid, rev, sources, *, stage, query=''):
     input_signature = _hash(json.dumps([run.get('input_ids', []), context['current_inputs']], ensure_ascii=False))
     packet = deepcopy(run.get('source_selection_packet', {}))
     if packet.get('input_signature') != input_signature:
-        packet = dict(input_signature=input_signature, query=query or '\n'.join(context['current_inputs']), entries={})
+        scope = (run.get('intent') or {}).get('public_source_scope', 'focused')
+        packet = dict(input_signature=input_signature, query=query or '\n'.join(context['current_inputs']),
+                      scope=scope, entries={})
+    # Legacy packets and unchanged-input retries retain their original scope.
+    scope = packet.get('scope', 'focused')
+    total_chars = FULL_TOTAL_CHARS if scope == 'full_text' else TOTAL_CHARS
     packet['revision'] = rev
     entries = packet['entries']
     # A refreshed body replaces the old version's allocation, not its evidence.
@@ -144,19 +162,23 @@ def project_for_run(h, sid, rid, rev, sources, *, stage, query=''):
                 if value['source_id'] == identity and old_key != key:
                     del entries[old_key]
     new = [s for s in sources if s.get('type') == 'public_source' and _key(s) not in entries]
-    remaining = max(0, TOTAL_CHARS - sum(v['selection']['projected_chars'] for v in entries.values()))
-    for original, source in zip(new, answer_sources(new, query=packet['query'], total_chars=remaining)):
+    remaining = max(0, total_chars - sum(v['selection']['projected_chars'] for v in entries.values()))
+    for original, source in zip(new, answer_sources(new, query=packet['query'], total_chars=remaining, scope=scope)):
         entries[_key(original)] = dict(source_id=_identity(source), selection=source['source_selection'])
     projected = deepcopy(sources)
     for source in projected:
         if source.get('type') != 'public_source':
             continue
         selection = deepcopy(entries[_key(source)]['selection'])
+        upstream_excerpted = bool(source.get('content_excerpted'))
         original = source.get('content', '')
         source['content'] = ''.join(original[item['start']:item['end']] for item in selection['ranges'])
         source['source_selection'] = selection
         if selection['omitted_chars']:
             source['content_excerpted'] = True
+        if scope == 'full_text':
+            from agent_service.article_coverage import describe
+            source['text_coverage'] = describe(original, source, upstream_excerpted=upstream_excerpted)
     record = manifest(projected)
     with h.store.transaction(sid, rid, rev) as current:
         active = current['runs'][rid]
@@ -166,7 +188,7 @@ def project_for_run(h, sid, rid, rev, sources, *, stage, query=''):
         if record and previous != record:
             h.store.event(current, active, 'source_selection', '已整理本轮资料片段',
                           payload={'source_selection': dict(stage=stage, sources=record,
-                              public_chars=sum(s['projected_chars'] for s in record), budget=TOTAL_CHARS)})
+                              public_chars=sum(s['projected_chars'] for s in record), budget=total_chars, scope=scope)})
     return projected
 
 

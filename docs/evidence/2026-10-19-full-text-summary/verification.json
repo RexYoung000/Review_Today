@@ -1,0 +1,114 @@
+{
+  "date": "2026-10-19",
+  "implementation_scope": "Whole-article delivery; focused selection budgets preserved",
+  "live_batch_status": "failed",
+  "live_full_text_cases": [
+    {
+      "id": "wechat_full",
+      "model_chars": 16649,
+      "source_chars": 16649,
+      "hash_matches": true,
+      "source_sha256": "24c1e1c7497b570de71033a173d407f12852752fcfe38101f6e3d8a59cfb0e5a",
+      "continuous_ranges": [
+        {
+          "start": 0,
+          "end": 16649,
+          "reason": "full"
+        }
+      ],
+      "output_sha256": "6e99473827c4d13b9440e9be13aa9c0e627a9f709b0dcc1a5ff4bedf4b344bbb",
+      "coverage": "Chapters 1-6, advanced methods 3.1-3.8, tuning 4.1-4.3",
+      "original_page_complete": "unverified"
+    },
+    {
+      "id": "official_full",
+      "model_chars": 6405,
+      "source_chars": 6405,
+      "hash_matches": true,
+      "source_sha256": "fec6dc80ba5520b2b2c08f8f0331b8d0c6c0dddbe7d3f6e84fc385b65a7bcbd0",
+      "continuous_ranges": [
+        {
+          "start": 0,
+          "end": 6405,
+          "reason": "full"
+        }
+      ],
+      "output_sha256": "eff429b98404f5ef8e61e58aec64b95f08a87c93865a7af94ddef3bf55bfb82f",
+      "coverage": "Seven predefined document topics",
+      "original_page_complete": "prior independent reference match; this run reuses frozen returned text"
+    }
+  ],
+  "new_model_requests": 10,
+  "unique_usage_identities": 10,
+  "reported_tokens": {
+    "input": 90883,
+    "output": 5956,
+    "total": 96839,
+    "cached_input": 41600
+  },
+  "new_web_requests": 0,
+  "frozen_read_replays": 3,
+  "startup_probes_during_evaluation": 0,
+  "focused_case": {
+    "intent": "focused",
+    "selected_chars": 4000,
+    "answer_produced": false,
+    "baseline_same_span": true,
+    "outcome": "Existing focused selector chose irrelevant middle content; material readiness declined."
+  },
+  "evaluation_stop": {
+    "reason": "Script expected answer record for a readiness-declined run; IndexError retained",
+    "remaining_requests_unspent": 6,
+    "intent_only_cases_not_executed": 2
+  },
+  "controlled_first": {
+    "passed": 1308,
+    "failed": 2,
+    "skipped": 4,
+    "subtests": 593
+  },
+  "controlled_final": {
+    "passed": 1311,
+    "failed": 0,
+    "skipped": 4,
+    "subtests": 593
+  },
+  "app": {
+    "backend_reloaded": true,
+    "app_owned_child_verified": true,
+    "roles_ready": true,
+    "native_ui_verified": false,
+    "normal_chat_requests_added": 0,
+    "normal_web_calls": 0,
+    "previous_session_model_requests": 124,
+    "current_session_model_requests": 124,
+    "startup_requests": 8,
+    "startup_tokens": {
+      "input_tokens": 1244,
+      "output_tokens": 329,
+      "total_tokens": 1573
+    },
+    "data_semantic_fields_preserved": true,
+    "knowledge": 11,
+    "messages": 37,
+    "metadata_changes": [
+      "SwiftData persistent history tables ACHANGE/ATRANSACTION and their internal primary-key counters",
+      "ZLEARNINGTASK.ZUPDATEDAT and framework Z_OPT; learning content and progress unchanged",
+      "New standalone capability probe batch"
+    ],
+    "credentials_and_original_project_diff_preserved": true
+  },
+  "limits": {
+    "full_text_per_source": 20000,
+    "full_text_total": 80000,
+    "focused_per_source": 4000,
+    "focused_total": 12000
+  },
+  "image_content_verified": false,
+  "old_learning_batch": "30/30 STOP unchanged; pending new learning-save allowance unchanged",
+  "report_preview": {
+    "browser_rendered": false,
+    "reason": "Local file protocol refused by browser policy; no workaround attempted.",
+    "static_html_and_links_checked": true
+  }
+}
