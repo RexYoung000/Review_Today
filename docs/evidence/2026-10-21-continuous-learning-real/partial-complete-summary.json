@@ -1,0 +1,33 @@
+{
+  "phase": "partial-complete",
+  "model_requests": 13,
+  "web_operations": 0,
+  "stop": false,
+  "runs": [
+    {
+      "id": "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "ceddb794-d67d-427e-8fd3-6c15f3dcf658",
+      "status": "completed",
+      "error": null,
+      "action": null
+    }
+  ],
+  "active_task": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+  "messages": [
+    {
+      "role": "user",
+      "content": "高相似度只说明检索片段和问题在语义上接近；但来源资料本身可能错误或过时，所以即使检索很相关，也不能保证答案正确。"
+    },
+    {
+      "role": "coach",
+      "content": "你答对了**资料层**：检索片段语义接近，但资料本身可能错误或过时，所以相关不等于正确。\n\n还缺两层：\n\n- **生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。\n- **事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。\n\n---\n\n### 独立回答\n\n请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？"
+    }
+  ],
+  "offers": [],
+  "tasks": 1
+}

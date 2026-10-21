@@ -47,3 +47,7 @@ STATUS-02 已在新 9／12 批完成真实原生查询。Rex 回复「继续」�
 - [最终准备核对](verification.json)通过：实际 bootstrap 在 pending 时于服务导入前阻断，held 文件无变化；三个既有运行／待确认目录、旧 QA App、184 份源码／配置及用户工程差异保持，没有模型账本、事件日志或旧就绪标记。当前没有启动 App 或服务，因此没有原生窗口或真实模型通过结果。
 
 脚本入口为 [run_checks.py](run_checks.py)、[prepare.py](prepare.py)、[verify.py](verify.py)，对应日志为 [checks.log](checks.log)、[prepare.log](prepare.log)、[verify.log](verify.log)。`prepare.py` 不可重复运行以重置该批；临时路径、新会话身份与保护散列保存在 [setup.json](setup.json)，授权仍 pending／HOLD。获得新上限后须先增量核对源码、配置和空库，再开始实际验收；当前执行位置见[工作记录](../../work-status.md#cursor)。
+
+## 后续确认及实际停点
+
+Rex 随后确认决定 252 的 40／16。新批空库已真实启动；讲解与漏答拦截通过，完整补答后首次邀请缺要点／总结，在 15 模型／0 网页后 STOP，余 25 冻结，后续未运行。上文 pending／HOLD 是准备时的真实历史，准备 JSON 与验证不回写为已通过；实际授权、原生失败、零请求定位和退出读盘另存于[执行记录](../2026-10-21-continuous-learning-real/README.md)。

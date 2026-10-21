@@ -1,0 +1,45 @@
+{
+  "startup": {
+    "outcome": "PASS",
+    "actual_requests": 8,
+    "ready_roles": true,
+    "empty_service": true
+  },
+  "lesson": {
+    "outcome": "PASS",
+    "actual_requests": 3,
+    "required_source_and_generation_risks_in_lesson_and_question": true,
+    "source_time_version_and_conditions_explained": true,
+    "no_offer_or_save": true,
+    "semantic_note": "开场真实讲解与复述题覆盖约定四项；生成层措辞不够顺，含义仍为可能混入记忆、过度概括或补写，无关卡缺口。"
+  },
+  "partial_answer": {
+    "outcome": "PASS",
+    "cumulative_model_requests": 13,
+    "missing_generation_and_verification_requested": true,
+    "no_offer": true,
+    "not_verified": true
+  },
+  "complete_answer": {
+    "outcome": "FAIL_STRUCTURED_PREVIEW_MISSING",
+    "correctness_feedback": "PASS",
+    "parsed_evaluation_passed": true,
+    "capture_invitation_shown": true,
+    "preview_points": 0,
+    "preview_summary": null,
+    "visible_fallback_scope_summary": true,
+    "no_persisted_card": true,
+    "cumulative_model_requests": 15
+  },
+  "remaining": {
+    "outcome": "NOT_RUN_AFTER_FAILURE",
+    "stages": [
+      "same_topic_update",
+      "independent_question",
+      "return_to_rag",
+      "native_save",
+      "details_and_status",
+      "progress_and_disk_as_full_flow"
+    ]
+  }
+}

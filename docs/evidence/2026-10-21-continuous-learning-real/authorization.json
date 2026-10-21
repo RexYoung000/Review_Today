@@ -1,0 +1,12 @@
+{
+  "status": "approved",
+  "batch_id": "8c4bf1a7-ba0e-4908-9d70-dcf837360c05",
+  "actual_model_request_limit": 40,
+  "provider_web_operation_limit": 16,
+  "scope": "fresh empty same-session lesson, partial/full answer, same-topic correction, independent question and return, native save, details/status/progress; stop on failed gate or either cap",
+  "counting": "all probes, retries, fallbacks, background and timeouts; no old allowance reuse",
+  "decision": 252,
+  "user_confirmation": "按 40／16 新上限验收（推荐）",
+  "new_batch": true,
+  "plan_sha256": "01a26d7118c12165dc3b19b06655067eed2db615fab4164e757c181cec578896"
+}

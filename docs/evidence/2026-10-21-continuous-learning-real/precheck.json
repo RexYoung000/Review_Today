@@ -1,0 +1,23 @@
+{
+  "outcome": "PASS",
+  "checks": {
+    "native": {
+      "ZKNOWLEDGE": 0,
+      "ZSOURCE": 0,
+      "ZAGENTMESSAGE": 0,
+      "ZAGENTSESSION": 0,
+      "ZLEARNINGTASK": 0,
+      "ZAGENTRUN": 0,
+      "ZFSRSSTATE": 0
+    },
+    "service": {
+      "agent_sessions_v2": 0,
+      "harness_tasks": 0,
+      "agent_memory_policy_v2": 0
+    }
+  },
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "protected_files": 184,
+  "original_frozen_runtime_files_preserved": true
+}

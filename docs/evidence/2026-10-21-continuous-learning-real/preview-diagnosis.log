@@ -1,0 +1,21 @@
+{
+  "outcome": "REPRODUCED_PARSED_NULL_ACCEPTED_WITH_VALID_SELECTED_SOURCES",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "observed_evaluation_passed": true,
+  "parsed_preview": null,
+  "original_capture_quote_count": 2,
+  "original_feedback_quote_count": 1,
+  "selected_quotes_match_request_and_feedback": true,
+  "original_null_passes_request_validation": true,
+  "original_grounded_fields": {},
+  "offer_has_structured_preview": false,
+  "controlled_candidate_can_be_grounded": true,
+  "controlled_candidate_is_not_real_model_output": true,
+  "raw_provider_preview_available": false,
+  "raw_null_or_missing_vs_malformed_coercion_cannot_be_distinguished": true,
+  "optional_null_and_malformed_values_both_normalize_to_none": true,
+  "observed_chain": "parsed MasteryEvaluation.capture_preview=None -> Run.capture_preview=None -> replace(None) clears fields -> native scope-summary fallback",
+  "limitation": "Observer recorded the parsed schema, not the raw SDK response. Do not attribute null exclusively to a provider omission.",
+  "proposed_next_scope": "Discuss a bounded missing-preview validation/repair handoff for new passed-answer invitations with valid sources; preserve grading, provenance, old-data fallback and one-repair limit. No implementation in this batch."
+}

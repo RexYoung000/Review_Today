@@ -19,7 +19,7 @@
     "empty-native.json": "a829eb3402b13631dfee174adf8d913165dfe7e014c2f6c4bbb32f9a14984b8c",
     "checks.log": "10846d3325071d429884f3c9ac69ad9965407d4c00d594a830870fc9e0de89e6",
     "web.log": "2be31358fabd12c7fc54c48db1b53cc944b597bbada5ade750d7edc0d9c846c9",
-    "README.md": "7b63611cb25e16a3dbb5fb1e55a6236e31c83c363aff4945fc44dda55287fb36",
+    "README.md": "6d54c37fe4de440e18c0566c4bc20de22b58f0d4fd5030db5127e40f876f98ce",
     "serial.log": "9e6787b18ec8efc879228b7c3e1d532b5b1a607a9a275117f274d503d92b6c9e",
     "duplicate.log": "5ff5401cd50e556f0fa83092cf4fc99c3c1be34f391f8c62e1b704824eaece8b",
     "hold.log": "f8cd2524902c8e03fa3f6629a5e727cbd6252432b4947006bf3affd841125bb5",
@@ -35,5 +35,6 @@
     "timeout.log": "717db7abd1de4cebb0c1446f66166089d053bbf803997e1aff47e925da98a261",
     "prepare.py": "3ae2ba75ac4e6241a615e452c5720df8bc214551451bde988329bc9c87904dec",
     "native-build.log": "725e8c8f90d799d8fa022ebcf268627422a8668fce4b940d4c6218410d5eb06d"
-  }
+  },
+  "readme_followup": "2026-10-21 decision252 actual 15/40 STOP is linked; preparation JSON and all other original artifacts unchanged"
 }
