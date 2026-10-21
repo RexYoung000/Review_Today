@@ -1,0 +1,15 @@
+{
+  "outcome": "PASS_WITH_PREVIEW_REFRESH_OBSERVATION",
+  "actual_answer_original_sources": 1,
+  "original_sources_exact": true,
+  "learning_plan_preserved": true,
+  "new_goal": false,
+  "same_offer_identity": true,
+  "offer_version_before": 3,
+  "offer_version_after": 4,
+  "preview_refreshed": true,
+  "correction_log_appended_recap_request": true,
+  "save_will_bind_visible_current_version": true,
+  "requests": 15,
+  "web": 0
+}

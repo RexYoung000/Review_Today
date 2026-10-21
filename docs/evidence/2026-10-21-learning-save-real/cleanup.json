@@ -1,0 +1,10 @@
+{
+  "native_app_closed": true,
+  "service_closed": true,
+  "prior_qa_app_restored": true,
+  "fresh_native_process_read": true,
+  "reader_source": "docs/evidence/2026-10-16-status-native-input/NativeDiskRead.swift",
+  "reader_sha256": "508dfb4ff1aaf52039f33024e205906cb22e4b5837b128998cb503e42a613d10",
+  "daily_app_replaced": false,
+  "model_requests": 22
+}

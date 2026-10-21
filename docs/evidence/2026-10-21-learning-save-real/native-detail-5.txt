@@ -1,0 +1,46 @@
+Window: "知识库", App: ContinuousResumeQA.
+0 standard window 知识库, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 学习保存真实续验 · 累计请求以账本为准
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 button 回到学习
+		6 text 依赖加载检查通过；学习服务尚未启动。
+		7 button (disabled) 选择 Review_Today 项目文件夹
+		8 container 知识卡片
+			9 text Help: 左划下一张，右划上一张，也可使用左右方向键或侧边定位条, Value: 检索增强生成 按来源观点说明：相似度不能判断来源可信；核对来源与适用条件应分两步：先确认来源本身可信，再对照资料的发布时间、产品版本和适用场景判断是否适用于当前问题；必要时回看原始出处。
+			10 button Description: 关闭知识详情, ID: xmark
+			11 scroll area Secondary Actions: Scroll Up, Scroll Down
+				12 heading 主问题
+				13 text 在RAG核对中，为什么相似度不能用来判断来源是否可信？核对来源与适用条件应按什么步骤进行？
+				14 heading 详解
+				15 text 1 相似度只反映内容相关，不能用来判断来源是否可信。 2 核对来源与适用条件应分两步：先确认来源本身可信。 3 第二步对照资料的发布时间、产品版本和适用场景，判断其是否适用于当前问题。 4 必要时回看原始出处，再按上述条件核对。
+				16 heading 判断关键点
+				17 text 先确认来源可信，再对照时间、版本和场景。 相似度只反映内容相关，不能用来判断来源是否可信 核对分两步： 先确认来源本身可信 再对照发布时间、产品版本和适用场景判断是否适用 必要时回看原始出处
+				18 disclosure triangle Description: 常见误区, 2, Help: 展开或收起常见误区, Value: off, Details: 已收起
+				19 disclosure triangle Description: 来源证据, Help: 展开或收起来源证据, Value: off, Details: 已收起
+				20 scroll bar (settable, float) 0
+					21 value indicator (settable, float) 0
+					22 increment arrow button
+					23 decrement arrow button
+					24 increment page button
+					25 decrement page button
+			26 checkbox Description: 已学过，参与间隔复习, Value: 0
+			27 text 仅保存资料 · 未参与复习
+			28 menu button 更多
+			29 button 试一题
+			30 text 共 5 张知识卡
+			31 unknown Description: 知识卡定位, Details: 第 5 张，共 5 张，按来源观点说明：相似度不能判断来源可信；核对来源与适用条件应分两步：先确认来源本身可信，再对照资料的发布时间、产品版本和适用场景判断是否适用于当前问题；必要时回看原始出处。, Secondary Actions: Increment, Decrement
+	32 close button
+	33 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	34 minimize button
+	35 text 知识库
+36 menu bar
+	37 ContinuousResumeQA
+	38 File
+	39 Edit
+	40 View
+	41 Window
+	42 Help
+
+The focused UI element is 0 standard window 知识库, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1

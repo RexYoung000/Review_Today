@@ -1,0 +1,502 @@
+{
+  "spec": {
+    "status": "approved",
+    "batch_id": "74e3f66e-5580-446b-a53b-6a06f5d75a5a",
+    "decision": 249,
+    "actual_model_request_limit": 24,
+    "provider_web_operation_limit": 16,
+    "user_confirmation": "按 24／16 新上限执行（推荐）",
+    "new_batch": true,
+    "counting": "all startup probes, retries, fallback, background and timeouts; conservative pretransport admission",
+    "scope": "separate question, return RAG, native save, detail/status/progress; stop on final gate failure or either cap"
+  },
+  "closed": false,
+  "model_requests": 22,
+  "web_operations": 0,
+  "entries": [
+    {
+      "token": "ceaf6904-ead0-4e14-a23d-c6dd0f7a5a4d",
+      "kind": "model",
+      "number": 1,
+      "provider": "",
+      "operation": "",
+      "program_id": "cb71d42a-b5d0-4b77-9be8-cd000683a13a",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "aa66c507-a652-49aa-ab58-cbcdcf99ef25",
+          "input_tokens": 129,
+          "output_tokens": 5,
+          "total_tokens": 134,
+          "cached_input_tokens": 128,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "cb71d42a-b5d0-4b77-9be8-cd000683a13a"
+        }
+      ]
+    },
+    {
+      "token": "443eba2b-4312-4a37-a86d-8987fdc11d19",
+      "kind": "model",
+      "number": 2,
+      "provider": "",
+      "operation": "",
+      "program_id": "19a67e7b-b69c-484b-bed1-4d66f12533b1",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "2d40e4be-b81d-40c4-8e3c-0e9606325f42",
+          "input_tokens": 130,
+          "output_tokens": 5,
+          "total_tokens": 135,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "19a67e7b-b69c-484b-bed1-4d66f12533b1"
+        }
+      ]
+    },
+    {
+      "token": "8c939019-f05c-4294-86d2-cc678dcc4efc",
+      "kind": "model",
+      "number": 3,
+      "provider": "",
+      "operation": "",
+      "program_id": "456daba3-fee9-4554-9789-cffa901bef64",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "389af469-6e2f-44bd-adc6-6853a7193bec",
+          "input_tokens": 130,
+          "output_tokens": 5,
+          "total_tokens": 135,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "456daba3-fee9-4554-9789-cffa901bef64"
+        }
+      ]
+    },
+    {
+      "token": "57da25ac-4ff8-4298-baf6-78f8086d87fc",
+      "kind": "model",
+      "number": 4,
+      "provider": "",
+      "operation": "",
+      "program_id": "a9528c22-b091-43e6-89a4-e96c59d165d3",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "c221e82e-cd8f-420f-9c35-49aa5371dd7b",
+          "input_tokens": 155,
+          "output_tokens": 26,
+          "total_tokens": 181,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 20,
+          "reported_model": "deepseek-flash",
+          "request_id": "a9528c22-b091-43e6-89a4-e96c59d165d3"
+        }
+      ]
+    },
+    {
+      "token": "d6e8a160-0e70-4b30-b59a-06a3b658ebcb",
+      "kind": "model",
+      "number": 5,
+      "provider": "",
+      "operation": "",
+      "program_id": "8ac93c79-3196-464f-add9-f7870f089b3a",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "d14c9d4d-2fe3-40d7-8c47-7ff69d6418ae",
+          "input_tokens": 155,
+          "output_tokens": 21,
+          "total_tokens": 176,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 15,
+          "reported_model": "deepseek-flash",
+          "request_id": "8ac93c79-3196-464f-add9-f7870f089b3a"
+        }
+      ]
+    },
+    {
+      "token": "e7d9fcbe-c31d-4123-9311-7db115bfff3c",
+      "kind": "model",
+      "number": 6,
+      "provider": "",
+      "operation": "",
+      "program_id": "5de6c54f-d879-4131-b594-75aa3ee8c6ee",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "47393610-d458-47f2-b274-2878a6045bfe",
+          "input_tokens": 208,
+          "output_tokens": 99,
+          "total_tokens": 307,
+          "cached_input_tokens": 128,
+          "reasoning_output_tokens": 93,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "5de6c54f-d879-4131-b594-75aa3ee8c6ee"
+        }
+      ]
+    },
+    {
+      "token": "8de13eac-4e7f-4350-a36e-ac9feec7f3f0",
+      "kind": "model",
+      "number": 7,
+      "provider": "",
+      "operation": "",
+      "program_id": "c6f19e3f-45ca-46d6-be07-51ddc663c87c",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "1d60a857-6e26-4922-9105-c803b0918440",
+          "input_tokens": 156,
+          "output_tokens": 102,
+          "total_tokens": 258,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "c6f19e3f-45ca-46d6-be07-51ddc663c87c"
+        }
+      ]
+    },
+    {
+      "token": "8c29a45b-c469-4665-9ff4-ff6ed51e8948",
+      "kind": "model",
+      "number": 8,
+      "provider": "",
+      "operation": "",
+      "program_id": "c9aed7d4-88d3-452d-bd81-11be930b367f",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "cda8c015-75ee-4f58-ae3c-9433c3315a41",
+          "input_tokens": 181,
+          "output_tokens": 50,
+          "total_tokens": 231,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "c9aed7d4-88d3-452d-bd81-11be930b367f"
+        }
+      ]
+    },
+    {
+      "token": "89b964fc-b045-4a97-b9c1-6b060f0ca7b3",
+      "kind": "model",
+      "number": 9,
+      "provider": "",
+      "operation": "",
+      "program_id": "7cdce638-8f3d-4593-844c-59fd4953f81d",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "d1dfb340-bb36-4c17-98be-795413594de8",
+          "input_tokens": 21064,
+          "output_tokens": 330,
+          "total_tokens": 21394,
+          "cached_input_tokens": 12928,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "7cdce638-8f3d-4593-844c-59fd4953f81d"
+        }
+      ]
+    },
+    {
+      "token": "a51a7069-b752-40c7-a6cc-4724ecaea130",
+      "kind": "model",
+      "number": 10,
+      "provider": "",
+      "operation": "",
+      "program_id": "d52c38fb-9055-48d7-9148-b6a60d692fb7",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "764d80ee-ddaf-414f-bbaa-d7cdd1752f23",
+          "input_tokens": 933,
+          "output_tokens": 101,
+          "total_tokens": 1034,
+          "cached_input_tokens": 512,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "d52c38fb-9055-48d7-9148-b6a60d692fb7"
+        }
+      ]
+    },
+    {
+      "token": "a206b6ec-9668-4179-9688-df1f661b5f24",
+      "kind": "model",
+      "number": 11,
+      "provider": "",
+      "operation": "",
+      "program_id": "407400b5-22df-4b95-8056-2823600dd9a1",
+      "dispatched": true,
+      "outcome": "failed_or_cancelled",
+      "usage": [
+        {
+          "response_id": "03d03b96-d513-4632-9407-b4a0a1027a33",
+          "input_tokens": 7972,
+          "output_tokens": 154,
+          "total_tokens": 8126,
+          "cached_input_tokens": 4736,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "407400b5-22df-4b95-8056-2823600dd9a1"
+        }
+      ]
+    },
+    {
+      "token": "cde49454-0a3d-42d5-b597-f9ebac7f4df7",
+      "kind": "model",
+      "number": 12,
+      "provider": "",
+      "operation": "",
+      "program_id": "0637cf29-b56b-48cf-bf0a-bea2666a898b",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "b474be67-95d6-419d-a4b2-022819ddd44e",
+          "input_tokens": 8086,
+          "output_tokens": 272,
+          "total_tokens": 8358,
+          "cached_input_tokens": 4864,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "0637cf29-b56b-48cf-bf0a-bea2666a898b"
+        }
+      ]
+    },
+    {
+      "token": "66dc19cd-b0e9-4d18-aabe-3764e0b56822",
+      "kind": "model",
+      "number": 13,
+      "provider": "",
+      "operation": "",
+      "program_id": "7cb2ffea-1687-453f-9142-013a77d49852",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "daed0c8d-1712-4b02-8f25-74b92702dd25",
+          "input_tokens": 20685,
+          "output_tokens": 423,
+          "total_tokens": 21108,
+          "cached_input_tokens": 13312,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "7cb2ffea-1687-453f-9142-013a77d49852"
+        }
+      ]
+    },
+    {
+      "token": "a6b8c438-178b-4dd3-aab3-8739ac20f8c2",
+      "kind": "model",
+      "number": 14,
+      "provider": "",
+      "operation": "",
+      "program_id": "1e46aa1d-9066-4c7e-acbf-e0b3dad8b4b3",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "dc4a606a-9a0d-4c63-aa5d-92e7a34a1648",
+          "input_tokens": 1240,
+          "output_tokens": 97,
+          "total_tokens": 1337,
+          "cached_input_tokens": 640,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "1e46aa1d-9066-4c7e-acbf-e0b3dad8b4b3"
+        }
+      ]
+    },
+    {
+      "token": "7777cdb2-7a50-495a-9d19-689f184d72cc",
+      "kind": "model",
+      "number": 15,
+      "provider": "",
+      "operation": "",
+      "program_id": "6622fafc-56b6-4512-9920-fe48493b8eb6",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "259d82f9-ccb4-4801-a100-89fe51896a19",
+          "input_tokens": 13583,
+          "output_tokens": 1132,
+          "total_tokens": 14715,
+          "cached_input_tokens": 2560,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "6622fafc-56b6-4512-9920-fe48493b8eb6"
+        }
+      ]
+    },
+    {
+      "token": "356629fc-c347-49fd-aebc-83baf5039b1e",
+      "kind": "model",
+      "number": 16,
+      "provider": "",
+      "operation": "",
+      "program_id": "b9a21bda-1bda-4eed-88b8-a70d651e43a9",
+      "dispatched": true,
+      "outcome": "failed_or_cancelled",
+      "usage": [
+        {
+          "response_id": "c3e5914b-754f-4bb4-a370-55c609f4acc4",
+          "input_tokens": 2473,
+          "output_tokens": 1850,
+          "total_tokens": 4323,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "b9a21bda-1bda-4eed-88b8-a70d651e43a9"
+        }
+      ]
+    },
+    {
+      "token": "4af9ceff-64ff-40c2-9b4b-51d0bc78cdeb",
+      "kind": "model",
+      "number": 17,
+      "provider": "",
+      "operation": "",
+      "program_id": "6daf6890-e0bc-4ef3-a42c-28352c358954",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "2584c522-7b47-410b-9c25-f54a901ef669",
+          "input_tokens": 2590,
+          "output_tokens": 3522,
+          "total_tokens": 6112,
+          "cached_input_tokens": 896,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "6daf6890-e0bc-4ef3-a42c-28352c358954"
+        }
+      ]
+    },
+    {
+      "token": "106da401-8a9b-4d98-aa7f-860b7ee53927",
+      "kind": "model",
+      "number": 18,
+      "provider": "",
+      "operation": "",
+      "program_id": "a244520f-020a-4ed4-a944-a65ab9e91fac",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "c44f45b1-420e-4502-9c7b-6adfecdd6933",
+          "input_tokens": 4513,
+          "output_tokens": 211,
+          "total_tokens": 4724,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "a244520f-020a-4ed4-a944-a65ab9e91fac"
+        }
+      ]
+    },
+    {
+      "token": "95410d45-12f1-4f3d-8e0a-9c46ca5eb29c",
+      "kind": "model",
+      "number": 19,
+      "provider": "",
+      "operation": "",
+      "program_id": "b7d57d5e-5224-42df-8c36-480a0ced5fb0",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "49112773-9738-40d0-a024-0fbf2e5caa6d",
+          "input_tokens": 6261,
+          "output_tokens": 2937,
+          "total_tokens": 9198,
+          "cached_input_tokens": 896,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "b7d57d5e-5224-42df-8c36-480a0ced5fb0"
+        }
+      ]
+    },
+    {
+      "token": "e8ed7550-f3ad-4786-9fd0-eaa0a31ab7c9",
+      "kind": "model",
+      "number": 20,
+      "provider": "",
+      "operation": "",
+      "program_id": "ecc19561-eeca-461f-a5ad-bc60a30c5450",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "dcb0a709-bc68-4ac2-9980-0fc5e70a09ef",
+          "input_tokens": 3928,
+          "output_tokens": 9,
+          "total_tokens": 3937,
+          "cached_input_tokens": 768,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "ecc19561-eeca-461f-a5ad-bc60a30c5450"
+        }
+      ]
+    },
+    {
+      "token": "c1f349c5-e3a9-4b43-9875-6e714bbfc58e",
+      "kind": "model",
+      "number": 21,
+      "provider": "",
+      "operation": "",
+      "program_id": "08b90afc-0917-4107-8954-f3d8578ae750",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "39706baa-d4a6-4f04-80b1-521394c61cd5",
+          "input_tokens": 529,
+          "output_tokens": 13,
+          "total_tokens": 542,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-v4-pro",
+          "request_id": "08b90afc-0917-4107-8954-f3d8578ae750"
+        }
+      ]
+    },
+    {
+      "token": "5c371763-e368-4187-ab64-619473a5c5b5",
+      "kind": "model",
+      "number": 22,
+      "provider": "",
+      "operation": "",
+      "program_id": "bbf2597b-640f-49be-b6cc-8a6b7ae515e9",
+      "dispatched": true,
+      "outcome": "returned",
+      "usage": [
+        {
+          "response_id": "33dcf1d0-74cf-48c2-bcdc-420ef119a9c2",
+          "input_tokens": 22914,
+          "output_tokens": 511,
+          "total_tokens": 23425,
+          "cached_input_tokens": 13312,
+          "reasoning_output_tokens": 0,
+          "reported_model": "deepseek-flash",
+          "request_id": "bbf2597b-640f-49be-b6cc-8a6b7ae515e9"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "outcome": "REAL_QUERY_FAILURE_REPRODUCED_OFFLINE",
+  "actual_router_status_query": true,
+  "real_focus": [
+    {
+      "label": "检索相关性与答案正确性不是一回事",
+      "message_id": "58547a75-6418-4900-9894-27bdff95ae9a",
+      "quote": "**检索相关不等于答案正确**，原因可以从两个环节来说。",
+      "covered_by_saved_offer": false
+    },
+    {
+      "label": "生成对依据的忠实性",
+      "message_id": "58547a75-6418-4900-9894-27bdff95ae9a",
+      "quote": "检索到资料后，生成模型还可能误解资料、遗漏重要限制，或加进资料没有支持的说法，因此最终答案仍可能偏离依据。",
+      "covered_by_saved_offer": true
+    },
+    {
+      "label": "核对来源与适用条件",
+      "message_id": "58547a75-6418-4900-9894-27bdff95ae9a",
+      "quote": "所以要回看原始出处，并对照资料的**发布时间、产品版本和适用场景**，判断它是否适用于当前问题。",
+      "covered_by_saved_offer": true
+    }
+  ],
+  "actual_stage": "scope_unconfirmed",
+  "actual_reply": "刚才讨论的是检索相关性与答案正确性不是一回事、生成对依据的忠实性、核对来源与适用条件。这些内容的保存范围不完全一致，尚不能作为一个整体确认。已保存的部分可以到知识库查看。其余内容需要先明确保存范围。请分别核对对应记录的保存范围。",
+  "receipt_count": 5,
+  "offer_status": "saved",
+  "offer_version": 4,
+  "offer_receipt_ids_match": true,
+  "matched_task_mode": "memory_organization",
+  "no_semantic_focus_diagnostic_stage": "saved",
+  "no_semantic_focus_diagnostic_count": 5,
+  "diagnosis": "Semantic focus selects a recap heading outside frozen excerpts; coverage guard replaces matched save result with mixed-scope uncertainty.",
+  "no_additional_requests": true,
+  "quota_unchanged": true,
+  "production_modified": false,
+  "recommendation": "Bind explicit this-save queries to an eligible program-owned save operation and durable receipt; retain excerpt coverage for questions about all discussed knowledge. Do not relax quote checks globally."
+}

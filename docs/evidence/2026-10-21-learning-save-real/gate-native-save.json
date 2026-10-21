@@ -1,0 +1,11 @@
+{
+  "outcome": "PASS",
+  "saved_cards": 5,
+  "matching_durable_receipt": true,
+  "current_offer_version": 4,
+  "review_disabled": true,
+  "original_learning_task_exactly_preserved": true,
+  "model_requests": 21,
+  "web": 0,
+  "conditional_web_path_exercised": false
+}

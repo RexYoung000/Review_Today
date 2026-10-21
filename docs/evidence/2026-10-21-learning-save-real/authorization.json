@@ -1,0 +1,11 @@
+{
+  "status": "approved",
+  "batch_id": "74e3f66e-5580-446b-a53b-6a06f5d75a5a",
+  "decision": 249,
+  "actual_model_request_limit": 24,
+  "provider_web_operation_limit": 16,
+  "user_confirmation": "按 24／16 新上限执行（推荐）",
+  "new_batch": true,
+  "counting": "all startup probes, retries, fallback, background and timeouts; conservative pretransport admission",
+  "scope": "separate question, return RAG, native save, detail/status/progress; stop on final gate failure or either cap"
+}
