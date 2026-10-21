@@ -1,0 +1,47 @@
+{
+  "outcome": "PASS",
+  "production_changed": [
+    "agent-service/agent_service/knowledge_capture_status.py",
+    "agent-service/agent_service/conversation.py",
+    "agent-service/agent_service/conversation_prompts.py",
+    "agent-service/agent_service/schemas.py"
+  ],
+  "production_changed_sha256": {
+    "agent-service/agent_service/knowledge_capture_status.py": "eb36185e447baf77692897aa4e1353e38559960661e35a6622c465308f752d5a",
+    "agent-service/agent_service/conversation.py": "6fc8b7b10398cdb1cfe25c9e0562ab021d5e9282dad119c38cd7d6897dd4615d",
+    "agent-service/agent_service/conversation_prompts.py": "3705a8d3eec35059355b38fc54d0cf7134ae3af0523a24a43f735372136b0c3d",
+    "agent-service/agent_service/schemas.py": "51bca95cf1f10bbdbdea56309e631205172f1e636485465b6896a5cb06f48234"
+  },
+  "other_production_and_swift_preserved": 176,
+  "configurations_preserved": 2,
+  "prior_archives_preserved": 54,
+  "real_runtime_files_preserved": 29,
+  "real_batch_requests": 22,
+  "real_batch_web_operations": 0,
+  "real_STOP_preserved": true,
+  "user_project_difference_preserved": true,
+  "qa_app_preserved": true,
+  "new_real_model_requests": 0,
+  "new_real_web_operations": 0,
+  "controlled_suite": {
+    "passed": 1326,
+    "skipped": 4,
+    "subtests": 611
+  },
+  "final_targeted": {
+    "passed": 103,
+    "subtests": 62
+  },
+  "deepseek_targeted": {
+    "passed": 53,
+    "subtests": 28
+  },
+  "additional_tests_after_full_collection": 4,
+  "added_tests": 19,
+  "production_changed_after_full_suite": false,
+  "real_retained_state_http_replay": "PASS_WITH_CONTROLLED_OPERATION_SELECTION",
+  "new_live_model_selection_verified": false,
+  "new_native_input_verified": false,
+  "app_or_service_restarted": false,
+  "warnings": "Five pre-existing framework deprecation warnings; four existing skipped tests unchanged."
+}

@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-save-query-binding-repair/replay.py", line 78, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-save-query-binding-repair/replay.py", line 63, in main
+    assert any(event.get('message',{}).get('content')==text for event in public['events'])
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-save-query-binding-repair/replay.py", line 63, in <genexpr>
+    assert any(event.get('message',{}).get('content')==text for event in public['events'])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'

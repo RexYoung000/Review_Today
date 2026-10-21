@@ -717,6 +717,14 @@ class KnowledgeStatusPriorClaim(BaseModel):
         description='Meaning of the historical positive card assertion: recorded, generated or saved. A proposal for program verification, never proof of any current state.')
 
 
+class KnowledgeSaveOperationReference(BaseModel):
+    task_id: str = Field(min_length=1,
+        description='Copy task_id from knowledge_capture_status.save_operations for an explicit enquiry about that save operation, not whether all discussed knowledge is covered.')
+    version: int = Field(ge=1, description='Copy the frozen invitation version from that same save operation.')
+    evidence: str = Field(min_length=1, max_length=300,
+        description='Exact contiguous words in THIS user request referring to that save result, its count or names. Not a quote from history or source material.')
+
+
 class KnowledgeStatusContext(BaseModel):
     focus: list[KnowledgeStatusFocus] = Field(default_factory=list, max_length=3,
         description='Select only topics referred to by this query, with the primary topic first. A query about the just-answered question centers on the latest question, user answer and feedback, not every earlier lesson candidate. Every selected reference must be valid; do not replace a missing primary reference with an older generic topic. Three is a maximum, not a target.')
@@ -739,6 +747,8 @@ class IntentDecision(BaseModel):
         description='Pure conversation only: product_information asks about this assistant identity, capabilities, memory or configured model; boundary_confirmation only confirms the immediately preceding product limit. Any independent knowledge question or operation must use none.')
     knowledge_card_status: bool = Field(default=False,
         description='Pure enquiry about whether the current conversation content has become knowledge cards, what was saved, or the steps to generate/save those cards. No save authorization. False for a request to actually organize/save, mixed substantive requests, or generic assistant memory capabilities.')
+    knowledge_save_operation: KnowledgeSaveOperationReference | None = Field(default=None,
+        description='Only for a read-only enquiry explicitly about a provided save operation. Null for whether the discussed knowledge is all saved, new knowledge or any write/control request.')
     status_context: KnowledgeStatusContext | None = Field(default=None,
         description='For knowledge_card_status only: grounded topic and historical-claim references for a contextual status reply. The program validates all references and supplies the actual save state; this field authorizes no action.')
     repair_target_message_id: str = ""
@@ -805,8 +815,25 @@ class IntentDecision(BaseModel):
             raise ValueError('status_context is only available for a read-only knowledge_card_status enquiry')
         return value
 
+    @field_validator('knowledge_save_operation')
+    @classmethod
+    def save_operation_requires_status_query(cls, value, info):
+        if value is not None and not info.data.get('knowledge_card_status'):
+            raise ValueError('knowledge_save_operation is only available for a read-only knowledge_card_status enquiry')
+        return value
+
     def validate_request(self, payload):
         state = payload.get('knowledge_capture_status') or {}
+        operation = self.knowledge_save_operation
+        if operation is not None:
+            from agent_service.knowledge_capture_status import select_save_operation
+            current = payload.get('current_inputs') or []
+            if not self.knowledge_card_status or not select_save_operation(state, operation, current[-1] if current else ''):
+                import json
+                from agent_service.openai_client import ModelCallError
+                raise ModelCallError('SCHEMA', json.dumps([dict(
+                    field=['knowledge_save_operation'], type='knowledge_save_operation_grounding')]))
+            return
         if not self.knowledge_card_status or not state.get('discussion_sources'):
             return
         from agent_service.knowledge_capture_status import validate_context

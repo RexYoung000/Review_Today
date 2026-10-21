@@ -87,7 +87,64 @@ def _offer_covers_focus(offer, item):
                             for fragment in offer.get('fragments', [])))
 
 
-def facts(data, *, related_knowledge=None, valid_run=None, status_context=None):
+def _save_operations(data, valid_run=None):
+    """Program-owned recent save bindings, not a guess from message wording."""
+    if data.get('status', 'active') != 'active':
+        return []
+    messages = data.get('messages', [])
+    positions = {m['message_id']: i for i, m in enumerate(messages)}
+    boundary = -1
+    for index, message in enumerate(messages):
+        run = data.get('runs', {}).get(message.get('run_id'), {})
+        if (_is_learning(run) or (run.get('intent') or {}).get('relation') == 'new_topic'
+                and not run.get('knowledge_status_reply')):
+            boundary = index
+    result = []
+    lifecycle = data.get('lifecycle_revision', 0)
+    for offer in data.get('capture_offers', {}).values():
+        task = data.get('tasks', {}).get(offer.get('save_task_id'), {})
+        ctx = task.get('context', {})
+        run = data.get('runs', {}).get(ctx.get('origin_run_id'), {})
+        origin = data.get('tasks', {}).get(offer.get('origin_task_id'), {})
+        message = next((m for m in messages if m['message_id'] == offer.get('action_input_id')), {})
+        draft = offer.get('draft') or {}
+        if (not task or task.get('session_id') != data.get('session_id')
+                or task.get('mode') != 'memory_organization' or not ctx.get('conversation_managed')
+                or not message or message.get('role') != 'user'
+                or positions[message['message_id']] < boundary
+                or message['message_id'] not in run.get('input_ids', [])
+                or message.get('run_id') != run.get('run_id')
+                or run.get('task_id') != task.get('task_id') or run.get('status') != 'completed'
+                or run.get('capture_offer_id') != offer.get('id')
+                or ctx.get('capture_offer_id') != offer.get('id')
+                or ctx.get('draft_id') != offer.get('id') or draft.get('id') != offer.get('id')
+                or type(offer.get('version')) is not int
+                or not ctx.get('draft_version') == offer['version'] == draft.get('version')
+                or ctx.get('commit_revision') != run.get('revision')
+                or any(item.get('lifecycle_revision') != lifecycle for item in (offer, ctx, run))
+                or offer.get('status') not in {'saving', 'saved', 'failed'}
+                or draft.get('invalidated') or run.get('memory_invalidated') or ctx.get('memory_invalidated')
+                or origin.get('context', {}).get('memory_invalidated')
+                or valid_run is not None and not valid_run(run)):
+            continue
+        result.append(dict(task_id=task['task_id'], offer_id=offer['id'], version=offer['version'],
+                           run_id=run['run_id'], input_message_id=message['message_id'],
+                           request=message.get('content', '')[:300], title=offer.get('title', ''),
+                           scope_summary=offer.get('scope_summary', '')))
+    return sorted(result, key=lambda item: positions[item['input_message_id']])[-3:]
+
+
+def select_save_operation(state, proposal, current_request):
+    value = proposal.model_dump() if hasattr(proposal, 'model_dump') else proposal or {}
+    evidence = value.get('evidence', '').strip()
+    if not evidence or len(evidence) > 300 or evidence not in current_request or type(value.get('version')) is not int:
+        return None
+    return next((item for item in state.get('save_operations', [])
+                 if item['task_id'] == value.get('task_id') and item['version'] == value['version']), None)
+
+
+def facts(data, *, related_knowledge=None, valid_run=None, status_context=None,
+          save_operation=None, current_request=''):
     """Return plain state for the intent/context projection; do not mutate it."""
     messages = data.get('messages', [])
     positions = {message['message_id']: index for index, message in enumerate(messages)}
@@ -99,11 +156,18 @@ def facts(data, *, related_knowledge=None, valid_run=None, status_context=None):
     saved_ids = list(dict.fromkeys(identity for ids in receipts.values() for identity in ids))
     capture_offers = list(data.get('capture_offers', {}).values())
     discussion, prior_statuses = _discussion_context(data, valid_run)
+    operations = _save_operations(data, valid_run)
+    selected_operation = select_save_operation(dict(save_operations=operations), save_operation, current_request)
+    if save_operation is not None and selected_operation is None:
+        from agent_service.openai_client import ModelCallError
+        raise ModelCallError('SCHEMA', 'field=knowledge_save_operation; select a current program-owned save operation and quote this request')
     current_offer = None
     scope_unconfirmed, scope_has_uncovered, scope_has_unconfirmed = False, False, False
     scope_saved_ids = []
     latest_position = positions.get((latest or {}).get('message_id'), -1)
-    if status_context is not None:
+    if selected_operation:
+        current_offer = next(candidate for candidate in capture_offers if candidate['id'] == selected_operation['offer_id'])
+    elif status_context is not None:
         selected = validate_context(dict(discussion_sources=discussion), status_context)
         if selected['focus_labels']:
             value = status_context.model_dump() if hasattr(status_context, 'model_dump') else status_context
@@ -201,6 +265,7 @@ def facts(data, *, related_knowledge=None, valid_run=None, status_context=None):
                 title = (card.get('title') or card.get('learning_goal') or '').strip()
                 current_cards[card['id']] = dict(id=card['id'], title=title)
     return dict(stage=stage, current_knowledge_ids=knowledge_ids, current_cards=list(current_cards.values())[:8],
+                save_operations=operations, selected_save_operation=deepcopy(selected_operation),
                 discussion_sources=discussion, prior_status_messages=prior_statuses,
                 session_has_generated_package=any(task.get('memory_package') for task in tasks.values()
                     if task.get('session_id') == data.get('session_id')),
@@ -302,7 +367,7 @@ def reply(state, status_context=None):
             dismissed='这次新增知识提示已收起，来源仍保留，也还没有写入知识库。可以明确说「把刚才内容整理成知识卡」。',
             failed='这次新增知识尚未完成，不能算作已保存。请在这条邀请中查看原因，修订内容或选择「重试录入」。',
             invalidated='这条新增知识邀请的范围或来源已经变化，旧版不能继续保存。需要先完成修订，再确认新的范围。')
-    context = validate_context(state, status_context)
+    context = validate_context(state, None if state.get('selected_save_operation') else status_context)
     text = ''
     if context['correction_quote']:
         text = '前面关于本轮知识卡的说法不准确；没有可确认的本轮知识卡保存记录。\n\n'

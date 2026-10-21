@@ -712,9 +712,12 @@ class ConversationHarness(ConditionalTeaching):
                               knowledge_status_reply=True)
                 state = knowledge_capture_status.facts(current,
                     related_knowledge=last.get('context', {}).get('knowledge_summaries', []), valid_run=self._memory_run_valid,
-                    status_context=decision.status_context)
-                explanation = knowledge_capture_status.validate_context(state, decision.status_context)
+                    status_context=decision.status_context, save_operation=decision.knowledge_save_operation,
+                    current_request=last['content'])
+                explanation = knowledge_capture_status.validate_context(state,
+                    None if state.get('selected_save_operation') else decision.status_context)
                 active['knowledge_status_context'] = explanation
+                active['knowledge_status_save_operation'] = state.get('selected_save_operation')
                 active['knowledge_status_correction_message_id'] = explanation['correction_message_id']
                 self.store.event(current, active, 'knowledge_status', '已核对当前知识卡状态',
                                  payload={'stage': state['stage']})

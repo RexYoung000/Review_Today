@@ -1,0 +1,34 @@
+{
+  "outcome": "PASS",
+  "results": [
+    {
+      "case": "original_router_negative",
+      "outcome": "EXPECTED_NEGATIVE",
+      "http_post_status": 200,
+      "http_event_page_status": 200,
+      "run_status": "completed",
+      "reply": "刚才讨论的是检索相关性与答案正确性不是一回事、生成对依据的忠实性、核对来源与适用条件。这些内容的保存范围不完全一致，尚不能作为一个整体确认。已保存的部分可以到知识库查看。其余内容需要先明确保存范围。请分别核对对应记录的保存范围。",
+      "controlled_intent_calls": 1,
+      "actual_model_requests": 0,
+      "web_operations": 0,
+      "tasks_offers_draft_progress_and_old_history_unchanged": true,
+      "selection_is_new_real_model_output": false
+    },
+    {
+      "case": "controlled_save_operation",
+      "outcome": "PASS",
+      "http_post_status": 200,
+      "http_event_page_status": 200,
+      "run_status": "completed",
+      "reply": "这次确认的内容已成功写入 5 张知识卡。 本次保存范围：RAG 中高相似度只说明语义相关，资料可能错误或过时，生成也可能不忠实依据；核对时需先确认来源可信，再对照发布时间、产品版本与适用场景。 内容包括：检索相关性与正确性；生成忠实性风险；来源与适用条件核对；版本与场景适用性；检索机制判断局限。",
+      "controlled_intent_calls": 1,
+      "actual_model_requests": 0,
+      "web_operations": 0,
+      "tasks_offers_draft_progress_and_old_history_unchanged": true,
+      "selection_is_new_real_model_output": false
+    }
+  ],
+  "actual_model_requests": 0,
+  "actual_provider_web_operations": 0,
+  "limitation": "New operation selection is controlled, not a new real model judgment. Native input/outbox/UI not rerun."
+}

@@ -1,0 +1,23 @@
+{
+  "README.md": "ad6a3fdbd7bef10d40c565b5a56dc023ab5cb2cd690f206d1951aca0192fca33",
+  "controlled-initial-guard-result.json": "4ebf9bfc98cca20dde1f9493dd6f556a5e6ba6ba3bc5e24482d2d5627a076669",
+  "controlled-initial-guard.log.gz": "2a3c8c372ae889398e9a0a6ccf64f70bc98510989d070694b143d25876cf4d84",
+  "controlled-result.json": "fcc2b9900f26b1f041ff1ececb37b254d518b2cda3e09a3d288e207c413c7768",
+  "controlled-runner.log": "8ebe4da55f76f4b732477f1ee3dfc4f6cc631be403f98f0c5cb049b20290d89e",
+  "controlled.log": "3af5b4f29cfef65694aff6964b19e8d37d9e5ec369dffa08fa7b507d7bde0f83",
+  "controlled_save_operation-public-events.json": "941ef5f8fde52fd9a7ba5da81fc9d7ca8fad9ca38d44c333cc44df63576b82d0",
+  "deepseek-initial-inapplicable-openai-contract.log": "06c2d122aa29d77e784bd6570ca7ef5fe8e9f68ae8674ed25c2b38f56b10f791",
+  "deepseek-targeted.log": "06f2b46e700d1e640afbc567e8046fe8bfdd0d8f1c2aa5469d4e08fd6332aaf8",
+  "original_router_negative-public-events.json": "6ae735354bf96ca096ba57232f586df235e7a811ec87750ed9303e1878a4d575",
+  "protection-before.json": "76b377bf08b270b9865589b510e8c7b93b440751dd99bee36f9015d90d3797a2",
+  "replay-initial-event-shape.log": "af64ba83294de31927b0464b21a2c7ff66a8f76958d825e66e698ffaf61d12d8",
+  "replay-result.json": "2f651ddc4d36061266f0526690f008d5f62115e4edf0b9e441dc107c4ce6c832",
+  "replay.log": "a2ba5005cac570933676046e8e4829767a75e90c29202ed6d7b7f13a6a1f03ab",
+  "replay.py": "bf0951421cc53e259b3b4b5a59aa39dbeb8a9ed3e5a2872a10a17a4ee32ea9e4",
+  "run_checks.py": "975aa261b77751f5d8e7d4248cbc2217c901d06430585b09b16fa6b41404c93c",
+  "targeted-final.log": "2696e69f9dd86caf1a7f9c9b8ab591bbe8f012e2feb3008ae1f487d5860e0f33",
+  "targeted-initial.log": "3160214cd51afe242f9344a344839ce52fde00d0f2a7370c40eb71a36d2b6095",
+  "verification.json": "47234f20d8e6125462319e96146c0ea79dfcf7525f7c528676929e2e638bc4d9",
+  "verification.log": "47234f20d8e6125462319e96146c0ea79dfcf7525f7c528676929e2e638bc4d9",
+  "verify.py": "0cacf7f22f63923767449433497c0da731c975f63d0c5360aa3b9051f247eae8"
+}
