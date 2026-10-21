@@ -1,0 +1,76 @@
+Window: "RAG · 全新连续验收 · 真实模型隔离验收", App: ContinuousResumeQA.
+0 standard window RAG · 全新连续验收 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 保存结果查询复验 · 累计请求以账本为准
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 text 依赖加载检查通过；学习服务尚未启动。
+		6 button (disabled) 选择 Review_Today 项目文件夹
+		7 button Description: 会话标签, ID: tag
+		8 button Description: 归档, ID: archivebox
+		9 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		10 button Description: 学习安排, 分清检索相关性与答案正确性不是一回事, Value: 已展开
+		11 scroll area
+			12 button Description: 1, 分清检索相关性与答案正确性不是一回事, 已讲解, Help: 查看对应内容，不会改变理解状态
+			13 button Description: 2, 识别来源资料本身可能错误或过时带来的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			14 button Description: 3, 识别生成阶段可能不忠实依据资料带来的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			15 button Description: 4, 养成核对来源与适用条件的习惯, 待学习, Help: 查看对应内容，不会改变理解状态
+		16 text 点击步骤回看内容；要调整安排，直接告诉我。
+		17 scroll area Secondary Actions: Scroll Up, Scroll Down
+			18 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				19 text 接着看刚才的 RAG 内容：检索相关不等于答案正确，原因可以从两个环节来说。
+					20 text 接着看刚才的 RAG 内容：检索相关不等于答案正确，原因可以从两个环节来说。
+				21 heading 检索环节
+					22 text 检索环节
+				23 text 相似度高只说明片段与问题语义接近，检索机制本身不判断内容真假，也不判断时间新旧。资料可能本身就写错，也可能已经过时。 另外，相似度只反映内容相关，不能用它判断来源是否可信。
+				24 heading 生成环节
+					25 text 生成环节
+				26 text 检索到资料后，生成模型还可能误解资料、遗漏重要限制，或加进资料没有支持的说法，因此最终答案仍可能偏离依据。
+					27 text 检索到资料后，生成模型还可能误解资料、遗漏重要限制，或加进资料没有支持的说法，因此最终答案仍可能偏离依据。
+				28 heading 所以需要核对
+					29 text 所以需要核对
+				30 text 正因为资料可能错、可能过时，生成又可能不忠实，所以要回看原始出处，并对照资料的发布时间、产品版本和适用场景，判断它是否适用于当前问题。 刚才那张尚未保存的 RAG 预览仍按同一知识点保留，不保存，也不进入下一步。
+				31 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				32 text 保存为知识卡 刚才保存的 RAG 知识卡存好了吗？这次一共保存了几张，分别叫什么？只查询这次的真实保存结果，不新增或修改知识卡，也不要推进学习。
+				33 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				34 text 刚才讨论的是检索相关性与答案正确性不是一回事、生成对依据的忠实性、核对来源与适用条件。这些内容的保存范围不完全一致，尚不能作为一个整体确认。已保存的部分可以到知识库查看。其余内容需要先明确保存范围。请分别核对对应记录的保存范围。
+					35 text 刚才讨论的是检索相关性与答案正确性不是一回事、生成对依据的忠实性、核对来源与适用条件。这些内容的保存范围不完全一致，尚不能作为一个整体确认。已保存的部分可以到知识库查看。其余内容需要先明确保存范围。请分别核对对应记录的保存范围。
+				36 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				37 text 刚才保存的 RAG 知识卡存好了吗？这次一共保存了几张，分别叫什么？只查询这次的真实保存结果，不新增或修改知识卡，也不要推进学习。
+					38 text 刚才保存的 RAG 知识卡存好了吗？这次一共保存了几张，分别叫什么？只查询这次的真实保存结果，不新增或修改知识卡，也不要推进学习。
+				39 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				40 text 这次确认的内容已成功写入 5 张知识卡。 本次保存范围：RAG 中高相似度只说明语义相关，资料可能错误或过时，生成也可能不忠实依据；核对时需先确认来源可信，再对照发布时间、产品版本与适用场景。 内容包括：检索相关性与正确性；生成忠实性风险；来源与适用条件核对；版本与场景适用性；检索机制判断局限。
+					41 text 这次确认的内容已成功写入 5 张知识卡。 本次保存范围：RAG 中高相似度只说明语义相关，资料可能错误或过时，生成也可能不忠实依据；核对时需先确认来源可信，再对照发布时间、产品版本与适用场景。 内容包括：检索相关性与正确性；生成忠实性风险；来源与适用条件核对；版本与场景适用性；检索机制判断局限。
+				42 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			43 scroll bar (settable, float) 1
+				44 value indicator (settable, float) 1
+				45 increment arrow button
+				46 decrement arrow button
+				47 increment page button
+				48 decrement page button
+		49 scroll area
+			50 text entry area (settable) 学习输入
+		51 button Description: 添加材料, Value: 已收起, ID: plus
+		52 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		53 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		54 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 48,698 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		55 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		56 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		57 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	58 close button
+	59 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	60 minimize button
+61 menu bar
+	62 ContinuousResumeQA
+	63 File
+	64 Edit
+	65 View
+	66 Window
+	67 Help
+
+The focused UI element is 50 text entry area (settable) 学习输入

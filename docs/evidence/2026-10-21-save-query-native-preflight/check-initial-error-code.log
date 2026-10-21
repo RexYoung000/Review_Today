@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-save-query-native-preflight/check.py", line 91, in main
+    try: getattr(web_tools._backend(provider), operation)('fixture')
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-learning-save-preflight/quota.py", line 209, in search
+    return self.invoke('search', *args, **kwargs)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-learning-save-preflight/quota.py", line 199, in invoke
+    raise WebToolError('CANCELLED', str(error)) from None
+agent_service.call_errors.WebToolError: RT.WEB.CANCELLED
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-save-query-native-preflight/check.py", line 134, in <module>
+    if __name__ == '__main__': main()
+                               ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-save-query-native-preflight/check.py", line 92, in main
+    except WebToolError as error: assert error.code == 'CANCELLED'
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

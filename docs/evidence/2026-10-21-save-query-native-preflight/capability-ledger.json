@@ -1,0 +1,680 @@
+[
+  {
+    "batch_id": "9899a0b9-163d-4a5c-b2b9-b2aeb14a9534",
+    "provider": "deepseek",
+    "created_at": 1792147985.078457,
+    "updated_at": 1792147990.5777988,
+    "rounds": 1,
+    "status": "finished",
+    "calls": [
+      {
+        "id": "de4bd0a0-5bb3-4bce-a1de-504068b5a254",
+        "round": 1,
+        "model": "deepseek-flash",
+        "roles": [
+          "router"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "a3cddc3e-8401-4490-9f07-e60941040e43"
+        ],
+        "usage": [
+          {
+            "response_id": "f68a6f70-97a2-4c60-9e9e-01e43f59478e",
+            "input_tokens": 130,
+            "output_tokens": 5,
+            "total_tokens": 135,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "a3cddc3e-8401-4490-9f07-e60941040e43"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "96c6eb93-5c8f-4da7-b91c-e6b9087d666c",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "2da5a79f-b094-4c7b-80d8-d2b2ab4c17b3"
+        ],
+        "usage": [
+          {
+            "response_id": "039c78f4-28cb-44f0-b3dc-fb64f21fa8af",
+            "input_tokens": 130,
+            "output_tokens": 5,
+            "total_tokens": 135,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "2da5a79f-b094-4c7b-80d8-d2b2ab4c17b3"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "f3c43d61-99c8-4c9a-b5c3-cafb188f9167",
+        "round": 1,
+        "model": "deepseek-v4-pro",
+        "roles": [
+          "risk"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "b3b769fa-657c-4d90-bb6e-fa37f579e293"
+        ],
+        "usage": [
+          {
+            "response_id": "6ad617d7-b273-456b-84d1-bed220f75a20",
+            "input_tokens": 129,
+            "output_tokens": 5,
+            "total_tokens": 134,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "request_id": "b3b769fa-657c-4d90-bb6e-fa37f579e293"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "4871a742-77cc-4fba-8ff3-f47d5ca2818f",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "1e2b717d-5966-46f2-a6f7-7948e666fa02"
+        ],
+        "usage": [
+          {
+            "response_id": "8b54ac4e-7e2c-4a2b-8800-56eeaeaabb35",
+            "input_tokens": 155,
+            "output_tokens": 53,
+            "total_tokens": 208,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 47,
+            "request_id": "1e2b717d-5966-46f2-a6f7-7948e666fa02"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "9f1730cd-7863-4856-9512-649da9931aa8",
+        "round": 1,
+        "model": "deepseek-flash",
+        "roles": [
+          "router"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "fd7e0b88-0417-4514-bc5d-6959443dbbbb"
+        ],
+        "usage": [
+          {
+            "response_id": "93ee714a-d597-4bda-9be3-a12485aeab6d",
+            "input_tokens": 155,
+            "output_tokens": 24,
+            "total_tokens": 179,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 18,
+            "request_id": "fd7e0b88-0417-4514-bc5d-6959443dbbbb"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "648a36df-8e3e-4ac2-9739-72766978149c",
+        "round": 1,
+        "model": "deepseek-v4-pro",
+        "roles": [
+          "risk"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "4d502a26-16f6-4c18-ac9f-a4a909e17650"
+        ],
+        "usage": [
+          {
+            "response_id": "3839b632-765b-47dd-84af-48ca6274315e",
+            "input_tokens": 208,
+            "output_tokens": 88,
+            "total_tokens": 296,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 82,
+            "request_id": "4d502a26-16f6-4c18-ac9f-a4a909e17650"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "a6fea2ed-12a2-45b2-9302-7e510721146e",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "streaming",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "49018d66-3957-44b2-96d6-efdf4c3041ff"
+        ],
+        "usage": [
+          {
+            "response_id": "37d5dca2-62ef-4683-8ff7-6915593c5704",
+            "input_tokens": 156,
+            "output_tokens": 68,
+            "total_tokens": 224,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "49018d66-3957-44b2-96d6-efdf4c3041ff"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "da32a89b-36a5-4b45-940f-a7d8a5dfbb6d",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "streaming",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "3200cf8d-4c66-4651-b2fb-65d41c96da1c"
+        ],
+        "usage": [
+          {
+            "response_id": "d9d6c767-7dac-4b2f-b4b5-d5fe52e94446",
+            "input_tokens": 181,
+            "output_tokens": 72,
+            "total_tokens": 253,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 22,
+            "request_id": "3200cf8d-4c66-4651-b2fb-65d41c96da1c"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      }
+    ]
+  },
+  {
+    "batch_id": "86a104d3-8717-4c53-b00a-92a00c64ba66",
+    "provider": "deepseek",
+    "created_at": 1792548768.615502,
+    "updated_at": 1792548774.002531,
+    "rounds": 1,
+    "status": "finished",
+    "calls": [
+      {
+        "id": "6815d4e4-0881-438d-aacf-fecf391d3e67",
+        "round": 1,
+        "model": "deepseek-flash",
+        "roles": [
+          "router"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "19a67e7b-b69c-484b-bed1-4d66f12533b1"
+        ],
+        "usage": [
+          {
+            "response_id": "2d40e4be-b81d-40c4-8e3c-0e9606325f42",
+            "input_tokens": 130,
+            "output_tokens": 5,
+            "total_tokens": 135,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "19a67e7b-b69c-484b-bed1-4d66f12533b1"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "8036515c-49ce-4773-a0bc-167f7b5f574c",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "456daba3-fee9-4554-9789-cffa901bef64"
+        ],
+        "usage": [
+          {
+            "response_id": "389af469-6e2f-44bd-adc6-6853a7193bec",
+            "input_tokens": 130,
+            "output_tokens": 5,
+            "total_tokens": 135,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "456daba3-fee9-4554-9789-cffa901bef64"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "7e13a6ea-8676-4925-8ca4-fc42f2eede1b",
+        "round": 1,
+        "model": "deepseek-v4-pro",
+        "roles": [
+          "risk"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "cb71d42a-b5d0-4b77-9be8-cd000683a13a"
+        ],
+        "usage": [
+          {
+            "response_id": "aa66c507-a652-49aa-ab58-cbcdcf99ef25",
+            "input_tokens": 129,
+            "output_tokens": 5,
+            "total_tokens": 134,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "request_id": "cb71d42a-b5d0-4b77-9be8-cd000683a13a"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "55787300-013a-49c8-a023-377bfd66da68",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "a9528c22-b091-43e6-89a4-e96c59d165d3"
+        ],
+        "usage": [
+          {
+            "response_id": "c221e82e-cd8f-420f-9c35-49aa5371dd7b",
+            "input_tokens": 155,
+            "output_tokens": 26,
+            "total_tokens": 181,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 20,
+            "request_id": "a9528c22-b091-43e6-89a4-e96c59d165d3"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "5c8e5637-dc81-475f-bf98-83231a46bcf8",
+        "round": 1,
+        "model": "deepseek-flash",
+        "roles": [
+          "router"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "8ac93c79-3196-464f-add9-f7870f089b3a"
+        ],
+        "usage": [
+          {
+            "response_id": "d14c9d4d-2fe3-40d7-8c47-7ff69d6418ae",
+            "input_tokens": 155,
+            "output_tokens": 21,
+            "total_tokens": 176,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 15,
+            "request_id": "8ac93c79-3196-464f-add9-f7870f089b3a"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "8341e7ab-70ac-410a-b0ea-b7e7057e2fec",
+        "round": 1,
+        "model": "deepseek-v4-pro",
+        "roles": [
+          "risk"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "5de6c54f-d879-4131-b594-75aa3ee8c6ee"
+        ],
+        "usage": [
+          {
+            "response_id": "47393610-d458-47f2-b274-2878a6045bfe",
+            "input_tokens": 208,
+            "output_tokens": 99,
+            "total_tokens": 307,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 93,
+            "request_id": "5de6c54f-d879-4131-b594-75aa3ee8c6ee"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "f4d98e1c-9427-4f69-967a-745b75f2ce48",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "streaming",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "c6f19e3f-45ca-46d6-be07-51ddc663c87c"
+        ],
+        "usage": [
+          {
+            "response_id": "1d60a857-6e26-4922-9105-c803b0918440",
+            "input_tokens": 156,
+            "output_tokens": 102,
+            "total_tokens": 258,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "c6f19e3f-45ca-46d6-be07-51ddc663c87c"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "4fd17aa3-c13a-48e2-a029-acbe2664adc7",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "streaming",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "c9aed7d4-88d3-452d-bd81-11be930b367f"
+        ],
+        "usage": [
+          {
+            "response_id": "cda8c015-75ee-4f58-ae3c-9433c3315a41",
+            "input_tokens": 181,
+            "output_tokens": 50,
+            "total_tokens": 231,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "c9aed7d4-88d3-452d-bd81-11be930b367f"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      }
+    ]
+  },
+  {
+    "batch_id": "d102c3ff-c3f9-4fab-8f6f-d41b35f41663",
+    "provider": "deepseek",
+    "created_at": 1792552025.160049,
+    "updated_at": 1792552030.310414,
+    "rounds": 1,
+    "status": "finished",
+    "calls": [
+      {
+        "id": "cac1f3bb-3437-4f91-8d62-838fa98c8d5d",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "621bdaad-03c6-46a9-abd1-c23d06754ccd"
+        ],
+        "usage": [
+          {
+            "response_id": "48dd5646-f607-4e41-aba0-21d41eec3796",
+            "input_tokens": 130,
+            "output_tokens": 5,
+            "total_tokens": 135,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "621bdaad-03c6-46a9-abd1-c23d06754ccd"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "4ce4a2a0-f9da-4f46-b7e4-b01d71513cc3",
+        "round": 1,
+        "model": "deepseek-flash",
+        "roles": [
+          "router"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "e04a74d2-b7d5-4a42-8162-c2dd1c56918d"
+        ],
+        "usage": [
+          {
+            "response_id": "37b1b442-6e0b-4c7c-b498-34220ad56c49",
+            "input_tokens": 130,
+            "output_tokens": 5,
+            "total_tokens": 135,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "e04a74d2-b7d5-4a42-8162-c2dd1c56918d"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "6976701c-c057-4653-86d5-f212c12915e7",
+        "round": 1,
+        "model": "deepseek-v4-pro",
+        "roles": [
+          "risk"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "1f80c9e4-a191-4fd7-9373-b229719d270e"
+        ],
+        "usage": [
+          {
+            "response_id": "d79989d5-99a7-4594-9a7f-ad8fbdfd9deb",
+            "input_tokens": 129,
+            "output_tokens": 5,
+            "total_tokens": 134,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "request_id": "1f80c9e4-a191-4fd7-9373-b229719d270e"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "e6a66fad-9c6f-4c0b-84f1-c70c1cd1b316",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "e9536910-f40b-45bc-9728-e8c632f00d30"
+        ],
+        "usage": [
+          {
+            "response_id": "8004be0e-2825-4925-a346-d87917f4da38",
+            "input_tokens": 155,
+            "output_tokens": 47,
+            "total_tokens": 202,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 41,
+            "request_id": "e9536910-f40b-45bc-9728-e8c632f00d30"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "0ac39d0b-757c-47e7-a435-dd1a2973e56c",
+        "round": 1,
+        "model": "deepseek-flash",
+        "roles": [
+          "router"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "e4b6d67c-fd86-4211-bbc3-2642ab8258e1"
+        ],
+        "usage": [
+          {
+            "response_id": "db669ab1-85f4-46cd-91f4-07fe1773afd3",
+            "input_tokens": 155,
+            "output_tokens": 23,
+            "total_tokens": 178,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 17,
+            "request_id": "e4b6d67c-fd86-4211-bbc3-2642ab8258e1"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "a30b8a96-5901-4d07-ab82-d7ad8613b87d",
+        "round": 1,
+        "model": "deepseek-v4-pro",
+        "roles": [
+          "risk"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "c11cc1df-e048-42c5-922b-fed072da4791"
+        ],
+        "usage": [
+          {
+            "response_id": "05b375a5-175b-4fa3-a85f-ca5f83f4786a",
+            "input_tokens": 208,
+            "output_tokens": 39,
+            "total_tokens": 247,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 33,
+            "request_id": "c11cc1df-e048-42c5-922b-fed072da4791"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "5af8318a-0494-4829-972c-b5b8092206f2",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "streaming",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "27790c93-ff05-46ca-99f9-c0b2902fcf91"
+        ],
+        "usage": [
+          {
+            "response_id": "79887e60-2e75-4ab4-a983-52732fec60d2",
+            "input_tokens": 156,
+            "output_tokens": 85,
+            "total_tokens": 241,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "27790c93-ff05-46ca-99f9-c0b2902fcf91"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "d1013022-43ca-47bb-8e5c-ff3c97d6f844",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "streaming",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "28b0124d-f3c1-4b77-9eeb-3cdf43fdb569"
+        ],
+        "usage": [
+          {
+            "response_id": "105cb70b-0d74-4324-96ba-ee70dc6226a7",
+            "input_tokens": 181,
+            "output_tokens": 215,
+            "total_tokens": 396,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 108,
+            "request_id": "28b0124d-f3c1-4b77-9eeb-3cdf43fdb569"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      }
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-save-query-native-preflight/check.py", line 136, in <module>
+    if __name__ == '__main__': main()
+                               ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-save-query-native-preflight/check.py", line 99, in main
+    with sqlite3.connect(f'file:{held}/checkpoint.sqlite3?mode=ro', uri=True) as db:
+         ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-save-query-native-preflight/check.py", line 36, in audit
+    assert Path(name).resolve().is_relative_to(temporary) or Path(name).resolve().is_relative_to(held)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

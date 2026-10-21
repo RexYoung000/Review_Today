@@ -1,0 +1,11 @@
+{
+  "status": "approved",
+  "batch_id": "c508c1ee-e2f6-4178-8139-c128c4d2ca32",
+  "actual_model_request_limit": 12,
+  "provider_web_operation_limit": 0,
+  "scope": "fresh startup probes, one native read-only save-result query, native reply and durable readback; stop on failed gate or cap",
+  "counting": "all probes, retries, fallbacks, background and timeout attempts; do not use frozen old allowance",
+  "decision": 251,
+  "user_confirmation": "按 12／0 新上限验证（推荐）",
+  "new_batch": true
+}

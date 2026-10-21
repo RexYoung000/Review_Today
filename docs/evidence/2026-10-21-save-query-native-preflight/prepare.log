@@ -1,0 +1,50 @@
+{
+  "status": "PREPARED_HOLD",
+  "directory": "/tmp/review-today-save-query-native-pending-18ddwmdc",
+  "port": 63928,
+  "model_limit": 12,
+  "web_limit": 0,
+  "checks": {
+    "native": {
+      "quick_check": "ok",
+      "counts": {
+        "knowledge": 5,
+        "source": 1,
+        "message": 17,
+        "task": 2,
+        "run": 9,
+        "fsrs": 5
+      },
+      "cursor": 247
+    },
+    "service": {
+      "quick_check": "ok",
+      "messages": 16,
+      "runs": 9,
+      "version": 4,
+      "save_task": "1e2868f3-36fb-5b53-9b52-30afa9d73a1f",
+      "expected_cards": [
+        {
+          "id": "5f0f4c1e-3a2b-4c8d-9e7f-1a2b3c4d5e6f",
+          "title": "检索相关性与正确性"
+        },
+        {
+          "id": "6a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+          "title": "生成忠实性风险"
+        },
+        {
+          "id": "7b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e",
+          "title": "来源与适用条件核对"
+        },
+        {
+          "id": "8c3d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f",
+          "title": "版本与场景适用性"
+        },
+        {
+          "id": "9d4e5f6a-7b8c-9d0e-1f2a-3b4c5d6e7f8a",
+          "title": "检索机制判断局限"
+        }
+      ]
+    }
+  }
+}

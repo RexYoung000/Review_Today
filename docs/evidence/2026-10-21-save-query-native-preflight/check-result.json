@@ -1,0 +1,23 @@
+{
+  "outcome": "PASS",
+  "cases": [
+    "pending_and_hold_block_before_writes",
+    "zero_web_denied_without_consuming_model_allowance",
+    "twelve_model_cap_stops_further_admissions",
+    "all_nine_provider_operation_entries_block_before_backend",
+    "current_retained_state_exposes_one_bound_five_card_receipt",
+    "actual_bootstrap_refuses_pending_before_service_import"
+  ],
+  "actual_new_model_requests": 0,
+  "actual_new_web_operations": 0,
+  "simulated_model_admissions": 12,
+  "rejected_provider_operations": 9,
+  "prepared_batch_pending_and_hold": true,
+  "old_runtime_and_app_unchanged": true,
+  "native_bundle_built_and_signature_verified": true,
+  "app_launched": false,
+  "service_started": false,
+  "model_selection_verified": false,
+  "native_input_verified": false,
+  "caveat": "Offline checks and a held native bundle cannot certify real model selection or native reply."
+}
