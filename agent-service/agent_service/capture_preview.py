@@ -1,5 +1,6 @@
 """Optional, source-backed invitation prose; never a generated knowledge card."""
 from copy import deepcopy
+import json
 
 from pydantic import BaseModel, Field, ValidationError, field_validator
 
@@ -32,7 +33,7 @@ class CapturePreview(BaseModel):
 
 
 def optional_preview(value):
-    """Malformed optional presentation must not fail an answer/schema repair."""
+    """Keep legacy parsing optional; new eligible invitations validate separately."""
     try:
         if isinstance(value, CapturePreview):
             value = value.model_dump()
@@ -65,6 +66,41 @@ def grounded_fields(value, fragments):
     if len(set(points)) != len(points):
         return {}
     return dict(preview_points=points, preview_summary=preview.summary.text)
+
+
+def validate_initial_preview(output, payload, *, passed):
+    """Repair a missing new invitation preview, preserving optional legacy reads."""
+    binding = payload.get('check_binding')
+    concepts = payload.get('capture_concepts')
+    quotes = output.capture_quotes
+    reference = payload.get('reference')
+    if (passed is not True or output.question_validity != 'valid' or payload.get('hint_used')
+            or not isinstance(binding, dict) or not binding.get('step_id')
+            or not isinstance(concepts, list) or not concepts):
+        return
+    from agent_service.call_errors import ModelCallError
+    if not quotes or not isinstance(reference, str) or any(quote not in reference for quote in quotes):
+        if payload.get('_repair_missing_capture_preview') is True:
+            raise ModelCallError('SCHEMA', json.dumps([
+                dict(field=['capture_quotes'], type='initial_capture_preview_source_missing')]))
+        return
+    if output.capture_preview is None:
+        error = ModelCallError('SCHEMA', json.dumps([
+            dict(field=['capture_preview'], type='initial_capture_preview_missing')]))
+        error.repair_missing_capture_preview = True
+        raise error
+    # Only the repair of this missing field tightens provenance here. Existing
+    # valid-shaped initial previews retain their original fallback behavior.
+    if payload.get('_repair_missing_capture_preview') is not True:
+        return
+    preview = output.capture_preview
+    fragments = [dict(text=quote) for quote in quotes + output.capture_feedback_quotes]
+    issues = [dict(field=['capture_preview'] + path, type='initial_capture_preview_grounding')
+              for path in ungrounded_quote_paths(preview, fragments)]
+    if len({item.text for item in preview.points}) != len(preview.points):
+        issues.append(dict(field=['capture_preview', 'points'], type='initial_capture_preview_duplicate'))
+    if issues:
+        raise ModelCallError('SCHEMA', json.dumps(issues))
 
 
 def clear(offer):

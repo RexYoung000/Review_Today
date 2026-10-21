@@ -1,0 +1,40 @@
+{
+  "outcome": "OFFLINE_PASS",
+  "decision": 253,
+  "issue": "KT-05",
+  "new_tests": 14,
+  "tests": {
+    "full": {
+      "passed": 1353,
+      "skipped": 4,
+      "subtests": 628
+    },
+    "targeted": {
+      "passed": 92,
+      "subtests": 78
+    },
+    "deepseek": {
+      "passed": 82,
+      "subtests": 73
+    }
+  },
+  "controlled_production_http_cases": 4,
+  "new_actual_model_requests": 0,
+  "new_provider_web_operations": 0,
+  "real_model_generation_verified": false,
+  "native_new_preview_verified": false,
+  "daily_service_refreshed": false,
+  "old_real_failure_preserved": true,
+  "original_batch": {
+    "used": 15,
+    "limit": 40,
+    "STOP": true,
+    "remaining_frozen": 25
+  },
+  "next_gate": "New real first structured invitation, then unfinished same-topic update through save/status/progress; requires explicit live scope and budget.",
+  "links": {
+    "checks": "controlled-result.json",
+    "replay": "replay-result.json",
+    "protection": "protection-result.json"
+  }
+}

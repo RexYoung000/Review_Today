@@ -125,6 +125,7 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                           idle_seconds=30 if streamable else None) as budget:
             choices = ([model, model] if images else [model] + (alternatives(model, strength, streamable) or [model]))[:2]
             repaired = False
+            repairing_missing_preview = False
             for index, selected_model in enumerate(choices):
                 attempt_event = None
                 try:
@@ -176,7 +177,10 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                     except ValidationError:
                         raise ModelCallError("SCHEMA", "ValidationError") from None
                     if hasattr(parsed, 'validate_request'):
-                        parsed.validate_request(json.loads(prompt))
+                        validation_payload = json.loads(prompt)
+                        if repairing_missing_preview:
+                            validation_payload['_repair_missing_capture_preview'] = True
+                        parsed.validate_request(validation_payload)
                     if schema is IntentDecision:
                         from agent_service.learning_progress import comprehensive_bound
                         task_context = (intent_context.get("task") or {}).get("context", {})
@@ -196,6 +200,7 @@ def call(self, session_id, run_id, revision, node, system, prompt, schema, model
                     model = selected_model
                     break
                 except ModelCallError as error:
+                    repairing_missing_preview |= bool(getattr(error, 'repair_missing_capture_preview', False))
                     if attempt_event is not None:
                         with self.store.transaction(session_id, run_id, revision) as current:
                             event = self.store.event(current, current["runs"][run_id], "model_attempt_failed",

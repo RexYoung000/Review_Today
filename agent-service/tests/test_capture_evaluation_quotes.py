@@ -146,7 +146,10 @@ class RubricFallbackScopeTests(unittest.TestCase):
     def test_jev_uses_combined_actual_reference_and_keeps_one_feedback_call(self):
         task = self.task()
         feedback = feedback_values(capture_quotes=["参考答案：语义匹配比较含义。", "**语义匹配**看意思是否接近。"],
-                                   capture_feedback_quotes=["语义接近不代表一定命中。"])
+                                   capture_feedback_quotes=["语义接近不代表一定命中。"],
+                                   capture_preview=dict(points=[dict(text="语义匹配比较含义。",
+                                       evidence_quotes=["参考答案：语义匹配比较含义。"])],
+                                       summary=dict(text="语义接近不保证命中。", evidence_quotes=["语义接近不代表一定命中。"])))
         h, calls, dispositions, state = self.harness(task, feedback)
         output = evaluate(h, "session", "run", 1, task, "比较意思是否相近。", "原判题规则")
         self.assertEqual(len(calls), 1)

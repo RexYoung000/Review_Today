@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field, create_model, field_validator
 
 from agent_service.judgment_types import JudgmentRequest, digest, question
 from agent_service.learning_progress import current_step, check_reference
-from agent_service.capture_preview import CapturePreview, optional_preview
+from agent_service.capture_preview import CapturePreview, optional_preview, validate_initial_preview
 from agent_service.schemas import (ScoringSpec, ConversationOutput, QuestionAnalysis,
                                   ProblemCoachBundle, MasteryEvaluation, CheckBinding,
                                   validate_capture_quote_fields, StepCompletionEvidence)
@@ -70,6 +70,7 @@ class JudgmentFeedback(BaseModel):
 
     def validate_request(self, payload):
         validate_capture_quote_fields(self, payload)
+        validate_initial_preview(self, payload, passed=payload.get('effective_passed'))
 
 
 CAPTURE_QUOTE_RULE = """

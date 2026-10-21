@@ -1,0 +1,30 @@
+{
+  "outcome": "PASS",
+  "production_changed": [
+    "agent-service/agent_service/capture_preview.py",
+    "agent-service/agent_service/conversation_model_call.py",
+    "agent-service/agent_service/judgment_grading.py",
+    "agent-service/agent_service/schemas.py"
+  ],
+  "other_production_unchanged": 176,
+  "changed_production_sha256": {
+    "agent-service/agent_service/capture_preview.py": "d989ece6d5701c12cc7a0db210ccf0c6ed165041c70e1c404425ba13eaaab078",
+    "agent-service/agent_service/conversation_model_call.py": "d429928f44484a487ef4ddd80feb27de78f92d29cb09d19f03d10a88def7fcc1",
+    "agent-service/agent_service/judgment_grading.py": "d06b2d09ed70670a977a8d9b7861ec5c9792971fceac0d6db670825b3882d094",
+    "agent-service/agent_service/schemas.py": "b15efacd8fe26e2c7bfa057489c8f1ce99acbc46a69c30696b1573abcc28ba5c"
+  },
+  "configuration_files_unchanged": 3,
+  "prior_runtime_files_unchanged": 29,
+  "prior_archive_files_unchanged": 39,
+  "user_project_diff_unchanged": true,
+  "original_batch": {
+    "model_requests": 15,
+    "model_limit": 40,
+    "web_operations": 0,
+    "stop": true,
+    "remaining_frozen": 25
+  },
+  "actual_new_model_requests": 0,
+  "actual_new_provider_web_operations": 0,
+  "no_app_or_daily_service_restart": true
+}

@@ -102,6 +102,10 @@ class KnowledgeInvitationTests(unittest.TestCase):
             if schema is MasteryEvaluation:
                 self.assertEqual(json.loads(user)['capture_concepts'], ['检索错误风险'])
                 result.capture_quotes = ['但仍可能检索错或答错。']
+                from agent_service.capture_preview import CapturePreview
+                result.capture_preview = CapturePreview.model_validate(dict(
+                    points=[dict(text='RAG 仍可能检索错或答错。', evidence_quotes=result.capture_quotes)],
+                    summary=dict(text='检索增强不能保证答案正确。', evidence_quotes=result.capture_quotes)))
             return result
         with patch('agent_service.conversation.parse_model', side_effect=evaluate):
             self.answer()

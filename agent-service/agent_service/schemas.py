@@ -3,7 +3,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 from agent_service.image_inputs import ImageAttachment
-from agent_service.capture_preview import CapturePreview, optional_preview
+from agent_service.capture_preview import CapturePreview, optional_preview, validate_initial_preview
 
 KnowledgeType = Literal["fact", "concept", "procedure"]
 Attribution = Literal["claim", "source_view", "personal"]
@@ -633,6 +633,7 @@ class MasteryEvaluation(BaseModel):
             from agent_service.openai_client import ModelCallError
             raise ModelCallError("SCHEMA", json.dumps([dict(field=["step_completion_evidence"], type="completion_answer_grounding")]))
         guard_completion(self, payload.get("check_binding"), payload.get("answer", ""))
+        validate_initial_preview(self, payload, passed=self.passed)
         # Legacy/non-conversation evaluations have no frozen incoming binding.
         if not payload.get("check_binding") or not self.followup_question.strip():
             return

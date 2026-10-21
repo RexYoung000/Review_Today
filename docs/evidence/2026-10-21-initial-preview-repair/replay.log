@@ -1,0 +1,104 @@
+[
+  {
+    "case": "controlled_grounded_repair",
+    "outcome": "PASS",
+    "http_post": 200,
+    "http_events": 200,
+    "run_status": "completed",
+    "controlled_intent_calls": 1,
+    "controlled_evaluation_calls": 2,
+    "repair_diagnostics": [
+      {
+        "code": "RT.MODEL.SCHEMA",
+        "diagnostic": "[{\"field\": [\"capture_preview\"], \"type\": \"initial_capture_preview_missing\"}]"
+      }
+    ],
+    "real_model_requests": 0,
+    "real_web_operations": 0,
+    "old_history_unchanged": true,
+    "saved_cards": 0,
+    "title": "生成不忠实于依据资料、来源与适用条件核对",
+    "points": [
+      "生成可能混入无依据内容，或遗漏资料中的限制。",
+      "核对来源的发布者、时间，以及版本、地区和适用前提。"
+    ],
+    "summary": "相关和带引用仍不保证正确，答案还需核对来源与适用条件。",
+    "version": 1,
+    "anchored_to_feedback": true
+  },
+  {
+    "case": "second_missing_stops",
+    "outcome": "PASS",
+    "http_post": 200,
+    "http_events": 200,
+    "run_status": "retryable_failed",
+    "controlled_intent_calls": 1,
+    "controlled_evaluation_calls": 2,
+    "repair_diagnostics": [
+      {
+        "code": "RT.MODEL.SCHEMA",
+        "diagnostic": "[{\"field\": [\"capture_preview\"], \"type\": \"initial_capture_preview_missing\"}]"
+      },
+      {
+        "code": "RT.MODEL.SCHEMA",
+        "diagnostic": "[{\"field\": [\"capture_preview\"], \"type\": \"initial_capture_preview_missing\"}]"
+      }
+    ],
+    "real_model_requests": 0,
+    "real_web_operations": 0,
+    "old_history_unchanged": true,
+    "saved_cards": 0,
+    "no_invitation": true,
+    "error_code": "RT.MODEL.SCHEMA"
+  },
+  {
+    "case": "second_bad_source_stops",
+    "outcome": "PASS",
+    "http_post": 200,
+    "http_events": 200,
+    "run_status": "retryable_failed",
+    "controlled_intent_calls": 1,
+    "controlled_evaluation_calls": 2,
+    "repair_diagnostics": [
+      {
+        "code": "RT.MODEL.SCHEMA",
+        "diagnostic": "[{\"field\": [\"capture_preview\"], \"type\": \"initial_capture_preview_missing\"}]"
+      },
+      {
+        "code": "RT.MODEL.SCHEMA",
+        "diagnostic": "[{\"field\": [\"capture_preview\", \"points\", 0, \"evidence_quotes\", 0], \"type\": \"initial_capture_preview_grounding\"}]"
+      }
+    ],
+    "real_model_requests": 0,
+    "real_web_operations": 0,
+    "old_history_unchanged": true,
+    "saved_cards": 0,
+    "no_invitation": true,
+    "error_code": "RT.MODEL.SCHEMA"
+  },
+  {
+    "case": "second_drops_sources_stops",
+    "outcome": "PASS",
+    "http_post": 200,
+    "http_events": 200,
+    "run_status": "retryable_failed",
+    "controlled_intent_calls": 1,
+    "controlled_evaluation_calls": 2,
+    "repair_diagnostics": [
+      {
+        "code": "RT.MODEL.SCHEMA",
+        "diagnostic": "[{\"field\": [\"capture_preview\"], \"type\": \"initial_capture_preview_missing\"}]"
+      },
+      {
+        "code": "RT.MODEL.SCHEMA",
+        "diagnostic": "[{\"field\": [\"capture_quotes\"], \"type\": \"initial_capture_preview_source_missing\"}]"
+      }
+    ],
+    "real_model_requests": 0,
+    "real_web_operations": 0,
+    "old_history_unchanged": true,
+    "saved_cards": 0,
+    "no_invitation": true,
+    "error_code": "RT.MODEL.SCHEMA"
+  }
+]

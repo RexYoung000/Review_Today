@@ -1,0 +1,3100 @@
+{
+  "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+  "events": [
+    {
+      "event_id": "e8b479c2-8a39-4d30-bcf5-4ec56420c6eb",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": null,
+      "seq": 72,
+      "occurred_at": "2026-10-21T04:36:25.506928+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "received",
+      "state": "accepted",
+      "node": "received",
+      "user_summary": "已保存，准备回应",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 0,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    },
+    {
+      "event_id": "780fa460-5bf0-41ac-a538-ee6898d8c42b",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": null,
+      "seq": 73,
+      "occurred_at": "2026-10-21T04:36:25.517470+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "understanding",
+      "state": "running",
+      "node": "understanding",
+      "user_summary": "正在理解本轮意图",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    },
+    {
+      "event_id": "f73458cf-a96d-4de7-80be-c9f43927e7fd",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": null,
+      "seq": 74,
+      "occurred_at": "2026-10-21T04:36:25.559099+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "intent",
+      "state": "running",
+      "node": "intent",
+      "user_summary": "正在理解本轮意图",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "context_capacity": {
+          "estimated": true,
+          "input_tokens": 39924,
+          "input_budget": 256000,
+          "compact_threshold": 220000,
+          "compact_target": 144000,
+          "ratio": 0.155953125,
+          "output_reserve": 4096,
+          "model_window": null,
+          "budget_source": "local_limit",
+          "omitted_narrative": []
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "a46a31e5-cf1d-4726-8bae-e300ee2a56b7",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": null,
+      "seq": 75,
+      "occurred_at": "2026-10-21T04:36:25.589394+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "model_attempt",
+      "state": "running",
+      "node": "model_attempt",
+      "user_summary": "正在处理当前步骤",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "step": "intent",
+        "step_attempt": 1
+      },
+      "message": null
+    },
+    {
+      "event_id": "d6e83314-c84f-48d2-b24c-292c9196a612",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": null,
+      "seq": 76,
+      "occurred_at": "2026-10-21T04:36:25.606835+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "intent",
+      "state": "running",
+      "node": "intent",
+      "user_summary": "本步骤已完成",
+      "detail_summary": "",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": 43,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    },
+    {
+      "event_id": "7ebf1df1-2c9f-4c83-8a9b-a1034db5c928",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 77,
+      "occurred_at": "2026-10-21T04:36:25.632679+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "intent_decided",
+      "state": "running",
+      "node": "intent_decided",
+      "user_summary": "已理解本轮要求",
+      "detail_summary": "用户补答了上一轮检查题的两点追问，属于对当前检查题的实际作答，应交给评价节点。",
+      "model": "gpt-5.6-luna",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "intent": {
+          "conversation_kind": "ordinary",
+          "clarification_kind": "none",
+          "conversation_repair": false,
+          "reply_feedback": "none",
+          "reply_purpose": "none",
+          "knowledge_card_status": false,
+          "knowledge_save_operation": null,
+          "status_context": null,
+          "repair_target_message_id": "",
+          "continuation_evidence": "",
+          "continuation_topic": "",
+          "programming_boundary": "none",
+          "programming_learning_request": "",
+          "resource_boundary": "none",
+          "resource_learning_request": "",
+          "learning_reply_sentence_limit": null,
+          "intents": [
+            "answer"
+          ],
+          "target_task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+          "target_description": "理解高相似度检索不能保证答案正确的原因，并完成复述题",
+          "relation": "continuation",
+          "workflow": null,
+          "scope": "continue_goal",
+          "proposed_actions": [],
+          "clarification": "",
+          "rationale": "用户补答了上一轮检查题的两点追问，属于对当前检查题的实际作答，应交给评价节点。",
+          "understanding": "unknown",
+          "answer_evidence": "模型生成时可能误解资料、遗漏重要限制，或加入资料没有支持的内容，所以即使检索片段很相关，最终答案仍可能偏离依据。高相似度也不证明来源真实或最新；因此要回到原始出处核对发布者和发布时间，再检查版本、地区及适用前提是否匹配。资料本身错误或过时，与生成不忠实，是两种独立风险。",
+          "topic_closure": null,
+          "learning_goal_ready": true,
+          "direct_teaching": false,
+          "comprehensive_check": null,
+          "answer_only": false,
+          "is_jd": false,
+          "material_focus": "none",
+          "public_source_scope": "focused",
+          "jd_request": "none",
+          "needs_verification": false,
+          "cross_check_sources": false,
+          "requested_mode": null,
+          "refresh_sources": false,
+          "public_search_query": "",
+          "light_reply": "",
+          "session_tags": [],
+          "handoff_source_ids": [],
+          "handoff_step_ids": [],
+          "memory_selections": []
+        },
+        "memory_references": []
+      },
+      "message": null
+    },
+    {
+      "event_id": "70a2aa0f-ee04-4516-997a-167d5923b1b4",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 78,
+      "occurred_at": "2026-10-21T04:36:25.704101+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "evaluate",
+      "state": "running",
+      "node": "evaluate",
+      "user_summary": "正在评价这次独立作答",
+      "detail_summary": "",
+      "model": "gpt-5.6-terra",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "context_capacity": {
+          "estimated": true,
+          "input_tokens": 10397,
+          "input_budget": 256000,
+          "compact_threshold": 220000,
+          "compact_target": 144000,
+          "ratio": 0.04061328125,
+          "output_reserve": 4096,
+          "model_window": null,
+          "budget_source": "local_limit",
+          "omitted_narrative": []
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "4d02eee9-fdb2-4cf5-bcb1-6fc8e4119d69",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 79,
+      "occurred_at": "2026-10-21T04:36:25.730259+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "model_attempt",
+      "state": "running",
+      "node": "model_attempt",
+      "user_summary": "正在处理当前步骤",
+      "detail_summary": "",
+      "model": "gpt-5.6-terra",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "step": "evaluate",
+        "step_attempt": 1
+      },
+      "message": null
+    },
+    {
+      "event_id": "b06dd1ca-97ee-4aa6-9ccb-1ca6923ec42e",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 80,
+      "occurred_at": "2026-10-21T04:36:25.748196+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "model_attempt_failed",
+      "state": "running",
+      "node": "model_attempt_failed",
+      "user_summary": "本次模型输出格式未通过",
+      "detail_summary": "[{\"field\": [\"capture_preview\"], \"type\": \"initial_capture_preview_missing\"}]",
+      "model": "gpt-5.6-terra",
+      "attempt": 1,
+      "duration_ms": 14,
+      "error_code": "RT.MODEL.SCHEMA",
+      "payload": {
+        "step": "evaluate",
+        "step_attempt": 1,
+        "diagnostic": {
+          "category": "schema",
+          "http_status": null,
+          "request_id": null,
+          "retryable": false,
+          "diagnostic": "RT.MODEL.SCHEMA",
+          "recovery": "check_configuration"
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "02d832ad-1b96-4ba4-9190-8bcb4f36a1c7",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 81,
+      "occurred_at": "2026-10-21T04:36:25.766921+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "context_capacity",
+      "state": "running",
+      "node": "context_capacity",
+      "user_summary": "上下文容量已更新",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "context_capacity": {
+          "estimated": true,
+          "input_tokens": 10593,
+          "input_budget": 256000,
+          "compact_threshold": 220000,
+          "compact_target": 144000,
+          "ratio": 0.04137890625,
+          "output_reserve": 4096,
+          "model_window": null,
+          "budget_source": "local_limit",
+          "omitted_narrative": []
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "9301c1c0-3bf3-417c-9e8a-f422a774b46f",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 82,
+      "occurred_at": "2026-10-21T04:36:25.781550+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "model_attempt",
+      "state": "running",
+      "node": "model_attempt",
+      "user_summary": "正在处理当前步骤",
+      "detail_summary": "",
+      "model": "gpt-5.6-terra",
+      "attempt": 2,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "step": "evaluate",
+        "step_attempt": 2
+      },
+      "message": null
+    },
+    {
+      "event_id": "09860af9-4653-4cd9-bbd5-b4e5b331426b",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 83,
+      "occurred_at": "2026-10-21T04:36:25.798121+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "evaluate",
+      "state": "running",
+      "node": "evaluate",
+      "user_summary": "本步骤已完成",
+      "detail_summary": "",
+      "model": "gpt-5.6-terra",
+      "attempt": 1,
+      "duration_ms": 90,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    },
+    {
+      "event_id": "0b3f30cb-b08e-4dbb-a25c-9eefbad5edea",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 84,
+      "occurred_at": "2026-10-21T04:36:25.813771+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "lesson_checked",
+      "state": "running",
+      "node": "lesson_checked",
+      "user_summary": "已回应",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {},
+      "message": {
+        "message_id": "6b6d0117-55c5-49e2-bd75-1854855cfa64",
+        "role": "coach",
+        "content": "答对了：模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。",
+        "created_at": "2026-10-21T04:36:25.813771+00:00"
+      }
+    },
+    {
+      "event_id": "d10c87ac-2155-4311-a94e-e505e8ca76ac",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 85,
+      "occurred_at": "2026-10-21T04:36:25.813880+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "task_updated",
+      "state": "running",
+      "node": "task_updated",
+      "user_summary": "等你继续",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "task": {
+          "commit_run_id": "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2",
+          "commit_revision": null,
+          "goal_ownership_json": null,
+          "lifecycle_revision": 0,
+          "learning_plan_json": "{\"id\": \"e222d507-f9f3-48e9-9f1e-03bf04b060c4\", \"version\": 1, \"goal\": \"理解高相似度检索不能保证答案正确的原因，并完成复述题\", \"steps\": [{\"id\": \"042cc306-d35f-4b94-9ee5-a9dfd0820ac2\", \"state\": \"explained\", \"understanding\": \"unknown\", \"message_ids\": [\"2885c5b5-5bca-4008-8f44-1d7caff55fe0\", \"c43f0801-edc5-4d8a-a878-8b3ee9fc9e5e\", \"6b6d0117-55c5-49e2-bd75-1854855cfa64\"], \"completion_condition\": \"能说明相似度只反映问题与片段的相关程度，不判断真假、时效和适用范围\", \"title\": \"理解相似度衡量的是检索相关性，不等于正确性\", \"verified_concepts\": [{\"concept\": \"生成不忠实于依据资料\", \"message_id\": \"e236a590-4b4c-4689-98e5-fe55b6d45c51\", \"question\": \"请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？\"}, {\"concept\": \"来源与适用条件核对\", \"message_id\": \"e236a590-4b4c-4689-98e5-fe55b6d45c51\", \"question\": \"请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？\"}]}, {\"id\": \"d8ef4f37-92a4-41db-85bd-8ddcaaca94c2\", \"state\": \"pending\", \"understanding\": \"unknown\", \"message_ids\": [], \"completion_condition\": \"能分别举出资料层与生成层各一种导致答案错误的可能情形\", \"title\": \"分清两类失效：来源资料错误或过时、生成回答不忠实于资料\"}, {\"id\": \"65cb254c-7a43-43c4-8380-2044ffe15501\", \"state\": \"pending\", \"understanding\": \"unknown\", \"message_ids\": [], \"completion_condition\": \"能在给定答案时指出应核对哪些来源信息与适用条件\", \"title\": \"学会核对来源与适用条件来检验答案\"}], \"current_step_id\": \"042cc306-d35f-4b94-9ee5-a9dfd0820ac2\", \"success_check\": \"能独立复述高相似度检索为何不保证正确，指出资料错误/过时与生成不忠实两层原因，并说明核对来源和适用条件的必要\"}",
+          "learning_outcome_json": null,
+          "sources_json": "[{\"source_id\": \"0e7c68a2-1973-55e1-a292-0fc88ff2c2d1\", \"version\": 1, \"type\": \"agent_generated\", \"url\": \"\", \"title\": \"Agent 生成讲义\", \"fetched_at\": \"2026-10-21T03:33:29.793508+00:00\", \"locator\": \"task:e222d507-f9f3-48e9-9f1e-03bf04b060c4\", \"content\": \"RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\\n\\n## 学习地图\\n\\n1. 理解相似度与正确性不是一回事\\n2. 分清两类失效：资料本身有问题、生成不忠实\\n3. 学会用来源与适用条件核验答案\\n\\n## 第一步：相似度衡量的是什么\\n\\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\\n\\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\\n\\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\\n\\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。\"}]",
+          "memory_references_json": "[]",
+          "draft_target_id": null,
+          "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+          "understanding": "unknown",
+          "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+          "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+          "client_message_id": "84697821-2b70-4f81-b327-a89bd6a8195e",
+          "mode": "source_learning",
+          "status": "awaiting_user",
+          "stage": "lesson_checked",
+          "user_summary": "等你继续",
+          "retry_count": 0,
+          "error_code": null,
+          "required_action": {
+            "type": "respond",
+            "prompt": "继续下一节或追问",
+            "options": []
+          },
+          "result_summary": "",
+          "last_event_seq": 4,
+          "last_acked_seq": 3,
+          "memory_package": null,
+          "memory_source_text": ""
+        },
+        "memory_references": []
+      },
+      "message": null
+    },
+    {
+      "event_id": "f6e4f147-913a-40fb-a2bc-d414cd9354b5",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 86,
+      "occurred_at": "2026-10-21T04:36:25.814142+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "capture_offer",
+      "state": "running",
+      "node": "capture_offer",
+      "user_summary": "知识收尾状态已更新",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "capture_offer": {
+          "id": "ca660c09-9269-4b9e-948d-1a6495c1e776",
+          "version": 1,
+          "title": "生成不忠实于依据资料、来源与适用条件核对",
+          "anchor_message_id": "6b6d0117-55c5-49e2-bd75-1854855cfa64",
+          "status": "offered",
+          "next_request": "",
+          "continuation_consumed": true,
+          "error": "",
+          "knowledge_ids": [],
+          "trigger": "verified_check",
+          "scope_summary": "模型生成可能不忠实于资料；引用与高相似度不能替代来源和适用条件核对。",
+          "preview_points": [
+            "生成可能混入无依据内容，或遗漏资料中的限制。",
+            "核对来源的发布者、时间，以及版本、地区和适用前提。"
+          ],
+          "preview_summary": "相关和带引用仍不保证正确，答案还需核对来源与适用条件。"
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "116ceded-6f1a-4f5f-bba2-8dd473f5d1dc",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 87,
+      "occurred_at": "2026-10-21T04:36:25.830951+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "learning_evidence",
+      "state": "completed",
+      "node": "learning_evidence",
+      "user_summary": "学习记录已更新",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {
+        "learning_evidence": {
+          "id": "6b6d0117-55c5-49e2-bd75-1854855cfa64",
+          "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+          "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+          "message_id": "6b6d0117-55c5-49e2-bd75-1854855cfa64",
+          "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+          "step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+          "concept": "生成不忠实于依据资料、来源与适用条件核对",
+          "concepts": [
+            "生成不忠实于依据资料",
+            "来源与适用条件核对"
+          ],
+          "kind": "independently_verified",
+          "hint_used": false,
+          "excerpt": "答对了：模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。",
+          "source_ids": [
+            "0e7c68a2-1973-55e1-a292-0fc88ff2c2d1"
+          ],
+          "evidence_message_ids": [
+            "e236a590-4b4c-4689-98e5-fe55b6d45c51"
+          ],
+          "dependencies": [],
+          "occurred_at": "2026-10-21T04:36:25.830929+00:00",
+          "revision": 1
+        }
+      },
+      "message": null
+    },
+    {
+      "event_id": "19548d34-66c0-46a1-bdd0-2abb431a777f",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "seq": 88,
+      "occurred_at": "2026-10-21T04:36:25.830959+00:00",
+      "revision": 1,
+      "lifecycle_revision": 0,
+      "stage": "completed",
+      "state": "completed",
+      "node": "completed",
+      "user_summary": "本轮已回应",
+      "detail_summary": "",
+      "model": "",
+      "attempt": 1,
+      "duration_ms": null,
+      "error_code": null,
+      "payload": {},
+      "message": null
+    }
+  ],
+  "status": "active",
+  "lifecycle_revision": 0,
+  "last_seq": 88,
+  "paused": false,
+  "mode": "source_learning",
+  "goal_ownership": [],
+  "recovery": {
+    "version": 130,
+    "checkpoint": {
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "mode": "source_learning",
+      "paused": false,
+      "foreground": null,
+      "active_task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "messages": [
+        {
+          "message_id": "84697821-2b70-4f81-b327-a89bd6a8195e",
+          "role": "user",
+          "content": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请先简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料；以及为什么要核对来源和适用条件。现在只学习和作答，先不要保存知识卡，也不要进行本节综合检查。讲解阶段不需要联网。",
+          "content_type": "text",
+          "input_channel": "text",
+          "created_at": "2026-10-21T03:33:26.090197+00:00",
+          "run_id": "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2",
+          "task_id": null,
+          "context": {
+            "continuation_candidates": [],
+            "summary": "",
+            "recent_messages": [],
+            "knowledge_summaries": [],
+            "handoff": null,
+            "memory_lookup_available": false,
+            "memory_candidates": [],
+            "invalid_memory_run_ids": []
+          },
+          "operation": null
+        },
+        {
+          "message_id": "2885c5b5-5bca-4008-8f44-1d7caff55fe0",
+          "role": "coach",
+          "content": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。\n\n---\n\n### 想一想\n\n用自己的话复述：高相似度检索为什么不能保证答案正确？请至少说到两点——资料本身可能错误或过时、生成可能不忠实于资料——并说明为什么答完还要核对来源和适用条件。",
+          "created_at": "2026-10-21T03:33:42.224718+00:00",
+          "run_id": "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2",
+          "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4"
+        },
+        {
+          "message_id": "be60c737-6cf1-4e75-a770-9af63f592f30",
+          "role": "user",
+          "content": "高相似度只说明检索片段和问题在语义上接近；但来源资料本身可能错误或过时，所以即使检索很相关，也不能保证答案正确。",
+          "content_type": "text",
+          "input_channel": "text",
+          "created_at": "2026-10-21T03:34:11.294250+00:00",
+          "run_id": "ceddb794-d67d-427e-8fd3-6c15f3dcf658",
+          "task_id": null,
+          "context": {
+            "continuation_candidates": [],
+            "summary": "",
+            "recent_messages": [
+              {
+                "role": "user",
+                "content": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请先简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料；以及为什么要核对来源和适用条件。现在只学习和作答，先不要保存知识卡，也不要进行本节综合检查。讲解阶段不需要联网。"
+              },
+              {
+                "role": "coach",
+                "content": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。\n\n---\n\n### 想一想\n\n用自己的话复述：高相似度检索为什么不能保证答案正确？请至少说到两点——资料本身可能错误或过时、生成可能不忠实于资料——并说明为什么答完还要核对来源和适用条件。"
+              }
+            ],
+            "knowledge_summaries": [],
+            "handoff": null,
+            "memory_lookup_available": false,
+            "memory_candidates": [],
+            "invalid_memory_run_ids": []
+          },
+          "operation": null
+        },
+        {
+          "message_id": "c43f0801-edc5-4d8a-a878-8b3ee9fc9e5e",
+          "role": "coach",
+          "content": "你答对了**资料层**：检索片段语义接近，但资料本身可能错误或过时，所以相关不等于正确。\n\n还缺两层：\n\n- **生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。\n- **事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。\n\n---\n\n### 独立回答\n\n请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+          "created_at": "2026-10-21T03:34:25.285809+00:00",
+          "run_id": "ceddb794-d67d-427e-8fd3-6c15f3dcf658",
+          "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4"
+        },
+        {
+          "message_id": "e236a590-4b4c-4689-98e5-fe55b6d45c51",
+          "role": "user",
+          "content": "模型生成时可能误解资料、遗漏重要限制，或加入资料没有支持的内容，所以即使检索片段很相关，最终答案仍可能偏离依据。高相似度也不证明来源真实或最新；因此要回到原始出处核对发布者和发布时间，再检查版本、地区及适用前提是否匹配。资料本身错误或过时，与生成不忠实，是两种独立风险。",
+          "content_type": "text",
+          "input_channel": "text",
+          "created_at": "2026-10-21T04:36:25.506849+00:00",
+          "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+          "task_id": null,
+          "context": {
+            "continuation_candidates": null,
+            "summary": "",
+            "recent_messages": [],
+            "knowledge_summaries": [],
+            "handoff": null,
+            "memory_lookup_available": false,
+            "memory_candidates": [],
+            "invalid_memory_run_ids": []
+          },
+          "operation": null
+        },
+        {
+          "message_id": "6b6d0117-55c5-49e2-bd75-1854855cfa64",
+          "role": "coach",
+          "content": "答对了：模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。",
+          "created_at": "2026-10-21T04:36:25.813771+00:00",
+          "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+          "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4"
+        }
+      ],
+      "runs": {
+        "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2": {
+          "run_id": "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2",
+          "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+          "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+          "input_ids": [
+            "84697821-2b70-4f81-b327-a89bd6a8195e"
+          ],
+          "input_channel": "text",
+          "voice_input_ids": [],
+          "revision": 1,
+          "status": "completed",
+          "stage": "completed",
+          "user_summary": "本轮已回应",
+          "attempt": 1,
+          "intent": {
+            "conversation_kind": "ordinary",
+            "clarification_kind": "none",
+            "conversation_repair": false,
+            "reply_feedback": "none",
+            "reply_purpose": "none",
+            "knowledge_card_status": false,
+            "knowledge_save_operation": null,
+            "status_context": null,
+            "repair_target_message_id": "",
+            "continuation_evidence": "",
+            "continuation_topic": "",
+            "programming_boundary": "none",
+            "programming_learning_request": "",
+            "resource_boundary": "none",
+            "resource_learning_request": "",
+            "learning_reply_sentence_limit": null,
+            "intents": [
+              "goal"
+            ],
+            "target_task_id": "",
+            "target_description": "理解高相似度检索不能保证答案正确的原因，并完成复述题",
+            "relation": "new_topic",
+            "workflow": "source_learning",
+            "scope": "learning",
+            "proposed_actions": [],
+            "clarification": "",
+            "rationale": "用户明确要求直接讲解一个 RAG 知识点并出一道复述题，主题与用途明确，属于直接教学；同时明确不保存知识卡、不做综合检查、不联网。",
+            "understanding": "unknown",
+            "answer_evidence": "",
+            "topic_closure": null,
+            "learning_goal_ready": true,
+            "direct_teaching": true,
+            "comprehensive_check": null,
+            "answer_only": false,
+            "is_jd": false,
+            "material_focus": "none",
+            "public_source_scope": "focused",
+            "jd_request": "none",
+            "needs_verification": false,
+            "cross_check_sources": false,
+            "requested_mode": null,
+            "refresh_sources": false,
+            "public_search_query": "",
+            "light_reply": "",
+            "session_tags": [
+              "RAG",
+              "检索与生成"
+            ],
+            "handoff_source_ids": [],
+            "handoff_step_ids": [],
+            "memory_selections": []
+          },
+          "steps": {
+            "053570c59f3b2f5f04f5295d156724b12456e1403a8fd3c3ad67aae584559ecd": {
+              "conversation_kind": "ordinary",
+              "clarification_kind": "none",
+              "conversation_repair": false,
+              "reply_feedback": "none",
+              "reply_purpose": "none",
+              "knowledge_card_status": false,
+              "knowledge_save_operation": null,
+              "status_context": null,
+              "repair_target_message_id": "",
+              "continuation_evidence": "",
+              "continuation_topic": "",
+              "programming_boundary": "none",
+              "programming_learning_request": "",
+              "resource_boundary": "none",
+              "resource_learning_request": "",
+              "learning_reply_sentence_limit": null,
+              "intents": [
+                "goal"
+              ],
+              "target_task_id": "",
+              "target_description": "理解高相似度检索不能保证答案正确的原因，并完成复述题",
+              "relation": "new_topic",
+              "workflow": "source_learning",
+              "scope": "learning",
+              "proposed_actions": [],
+              "clarification": "",
+              "rationale": "用户明确要求直接讲解一个 RAG 知识点并出一道复述题，主题与用途明确，属于直接教学；同时明确不保存知识卡、不做综合检查、不联网。",
+              "understanding": "unknown",
+              "answer_evidence": "",
+              "topic_closure": null,
+              "learning_goal_ready": true,
+              "direct_teaching": true,
+              "comprehensive_check": null,
+              "answer_only": false,
+              "is_jd": false,
+              "material_focus": "none",
+              "public_source_scope": "focused",
+              "jd_request": "none",
+              "needs_verification": false,
+              "cross_check_sources": false,
+              "requested_mode": null,
+              "refresh_sources": false,
+              "public_search_query": "",
+              "light_reply": "",
+              "session_tags": [
+                "RAG",
+                "检索与生成"
+              ],
+              "handoff_source_ids": [],
+              "handoff_step_ids": [],
+              "memory_selections": []
+            },
+            "73f8012c979307dbb6c7502ae1892da7ea53fdc2de767527b208682a987d5755": {
+              "official_sources_required": false,
+              "source_domains": [],
+              "concepts": [
+                "RAG 中检索相似度高不等于答案正确",
+                "来源资料本身可能错误或过时",
+                "生成回答可能不忠实于检索资料",
+                "核对来源与适用条件"
+              ],
+              "public_query": "RAG 高相似度检索为何不能保证答案正确 检索相似度 生成忠实性 来源错误过时",
+              "new_knowledge": true
+            },
+            "bcb038a2d1f4cbc9938409650f40bf7262a01234085738407f78eac027f00669": {
+              "message": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。",
+              "check_question": "用自己的话复述：高相似度检索为什么不能保证答案正确？请至少说到两点——资料本身可能错误或过时、生成可能不忠实于资料——并说明为什么答完还要核对来源和适用条件。",
+              "evidence_state": "unverified",
+              "learning_plan": {
+                "goal": "理解高相似度检索不能保证答案正确的原因，并能说清资料层与生成层的失效以及核对来源、适用条件的必要性",
+                "steps": [
+                  "理解相似度衡量的是检索相关性，不等于正确性",
+                  "分清两类失效：来源资料错误或过时、生成回答不忠实于资料",
+                  "学会核对来源与适用条件来检验答案"
+                ],
+                "success_check": "能独立复述高相似度检索为何不保证正确，指出资料错误/过时与生成不忠实两层原因，并说明核对来源和适用条件的必要",
+                "step_conditions": [
+                  "能说明相似度只反映问题与片段的相关程度，不判断真假、时效和适用范围",
+                  "能分别举出资料层与生成层各一种导致答案错误的可能情形",
+                  "能在给定答案时指出应核对哪些来源信息与适用条件"
+                ],
+                "step_ids": []
+              },
+              "learning_concepts": [
+                "RAG 检索增强生成",
+                "相似度与相关性",
+                "来源资料错误或过时",
+                "生成不忠实于依据资料",
+                "来源与适用条件核对"
+              ],
+              "check_binding": {
+                "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+                "concepts": [
+                  "相似度与相关性",
+                  "来源资料错误或过时",
+                  "生成不忠实于依据资料",
+                  "来源与适用条件核对"
+                ],
+                "evidence_quotes": [
+                  "高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确",
+                  "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+                  "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                  "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                ],
+                "scope": "concept"
+              },
+              "capture_update": null
+            }
+          },
+          "action_ids": [],
+          "error_code": null,
+          "created_at": "2026-10-21T03:33:26.090141+00:00",
+          "updated_at": "2026-10-21T03:33:42.259536+00:00",
+          "started_at": null,
+          "elapsed_ms": 16154,
+          "attempt_durations": [
+            16154
+          ],
+          "first_text_ms": 4751,
+          "activity_candidate": "lesson_step",
+          "activity_kind": "lesson_step",
+          "completed_at": "2026-10-21T03:33:42.259437+00:00",
+          "paused_entry": false,
+          "lifecycle_revision": 0,
+          "thinking_strength": "smart",
+          "model_calls": [
+            {
+              "id": "5f2b130a-dcb8-4222-8443-8cf31bd11a0c",
+              "budget_id": "beecd1a8-ec4e-449e-bdeb-c62d0de02ddb",
+              "revision": 1,
+              "background": false,
+              "node": "intent",
+              "model": "deepseek-flash",
+              "estimated_input_tokens": 30800,
+              "transport_requests": 1,
+              "request_ids": [
+                "2d01cd46-77fe-4f57-a6c1-bd3eee72144d"
+              ],
+              "usage_state": "reported",
+              "usage": [
+                {
+                  "response_id": "895a5d4c-431d-4dd0-9952-aa38caf7547a",
+                  "input_tokens": 13956,
+                  "output_tokens": 403,
+                  "total_tokens": 14359,
+                  "cached_input_tokens": 13312,
+                  "reasoning_output_tokens": 0,
+                  "reported_model": "deepseek-flash",
+                  "request_id": "2d01cd46-77fe-4f57-a6c1-bd3eee72144d"
+                }
+              ],
+              "status": "returned"
+            },
+            {
+              "id": "825e4b2c-f02f-4921-8462-9a019b0e9fee",
+              "budget_id": "beecd1a8-ec4e-449e-bdeb-c62d0de02ddb",
+              "revision": 1,
+              "background": false,
+              "node": "teaching_preparation",
+              "model": "deepseek-flash",
+              "estimated_input_tokens": 1910,
+              "transport_requests": 1,
+              "request_ids": [
+                "35844502-e868-4f4e-aefc-4b4c31b44538"
+              ],
+              "usage_state": "reported",
+              "usage": [
+                {
+                  "response_id": "678f8e64-4a95-43e4-abb9-c46635de129a",
+                  "input_tokens": 967,
+                  "output_tokens": 98,
+                  "total_tokens": 1065,
+                  "cached_input_tokens": 512,
+                  "reasoning_output_tokens": 0,
+                  "reported_model": "deepseek-flash",
+                  "request_id": "35844502-e868-4f4e-aefc-4b4c31b44538"
+                }
+              ],
+              "status": "returned"
+            },
+            {
+              "id": "ae4fc9bb-7cce-4102-b38d-738e8b6d7f33",
+              "budget_id": "beecd1a8-ec4e-449e-bdeb-c62d0de02ddb",
+              "revision": 1,
+              "background": false,
+              "node": "lesson",
+              "model": "deepseek-v4-flash",
+              "estimated_input_tokens": 11868,
+              "transport_requests": 1,
+              "request_ids": [
+                "9654ce21-2110-4eb0-818c-451d28e689f7"
+              ],
+              "usage_state": "reported",
+              "usage": [
+                {
+                  "response_id": "cb3db891-44cc-4004-8ab8-48c15cf0a059",
+                  "input_tokens": 5853,
+                  "output_tokens": 847,
+                  "total_tokens": 6700,
+                  "cached_input_tokens": 2432,
+                  "reasoning_output_tokens": 0,
+                  "reported_model": "deepseek-flash",
+                  "request_id": "9654ce21-2110-4eb0-818c-451d28e689f7"
+                }
+              ],
+              "status": "returned"
+            }
+          ],
+          "execution_budget": {
+            "id": "beecd1a8-ec4e-449e-bdeb-c62d0de02ddb",
+            "started": 1792553606.105244,
+            "attempts": 3,
+            "estimated_input_tokens": 44578
+          },
+          "memory_references": [],
+          "context_capacity": {
+            "estimated": true,
+            "input_tokens": 11868,
+            "input_budget": 256000,
+            "compact_threshold": 220000,
+            "compact_target": 144000,
+            "ratio": 0.046359375,
+            "output_reserve": 4096,
+            "model_window": 1000000,
+            "budget_source": "local_limit",
+            "omitted_narrative": []
+          },
+          "dialogue_policy": "dialogue-materials-11",
+          "request_scope": {
+            "input_ids": [
+              "84697821-2b70-4f81-b327-a89bd6a8195e"
+            ],
+            "resource_boundary": "none",
+            "programming_boundary": "none"
+          },
+          "decision_input_ids": [
+            "84697821-2b70-4f81-b327-a89bd6a8195e"
+          ],
+          "decision_mode": "source_learning",
+          "completed_operations": {
+            "22b56be28dc8cdb50813f7b04b78af1be83b8e9810a74de8a59e4bdeb00b36d2": false
+          },
+          "material_reads": [],
+          "material_sources": [],
+          "allowed_source_urls": [],
+          "teaching_signature": "b396d1348ebc88164a63014f37910f32fbe181f5d9cc50c99cdb551616e9212a",
+          "source_selection_packet": {
+            "input_signature": "a0ce83c42ef55db9041659220da8e073b18b59faf5068bfea0ea8261eb9fb49f",
+            "query": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请先简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料；以及为什么要核对来源和适用条件。现在只学习和作答，先不要保存知识卡，也不要进行本节综合检查。讲解阶段不需要联网。\nRAG 高相似度检索为何不能保证答案正确 检索相似度 生成忠实性 来源错误过时",
+            "scope": "focused",
+            "entries": {},
+            "revision": 1
+          },
+          "source_selection_records": {
+            "evidence_reuse": [],
+            "lesson": []
+          },
+          "search_state": "not_called",
+          "verification_notice": "",
+          "teaching_evidence": {
+            "state": "unverified",
+            "summary": "",
+            "sources": []
+          },
+          "teaching_sources": [],
+          "learning_concepts": [
+            "RAG 检索增强生成",
+            "相似度与相关性",
+            "来源资料错误或过时",
+            "生成不忠实于依据资料",
+            "来源与适用条件核对"
+          ],
+          "answer_sources": [
+            {
+              "source_id": "0e7c68a2-1973-55e1-a292-0fc88ff2c2d1",
+              "version": 1,
+              "type": "agent_generated",
+              "url": "",
+              "title": "Agent 生成讲义",
+              "fetched_at": "2026-10-21T03:33:29.793508+00:00",
+              "locator": "task:e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+              "content": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。"
+            }
+          ],
+          "answer_source_type": "agent_generated",
+          "teaching_step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+          "teaching_plan_version": 1,
+          "execution_complete": true
+        },
+        "ceddb794-d67d-427e-8fd3-6c15f3dcf658": {
+          "run_id": "ceddb794-d67d-427e-8fd3-6c15f3dcf658",
+          "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+          "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+          "input_ids": [
+            "be60c737-6cf1-4e75-a770-9af63f592f30"
+          ],
+          "input_channel": "text",
+          "voice_input_ids": [],
+          "revision": 1,
+          "status": "completed",
+          "stage": "completed",
+          "user_summary": "本轮已回应",
+          "attempt": 1,
+          "intent": {
+            "conversation_kind": "ordinary",
+            "clarification_kind": "none",
+            "conversation_repair": false,
+            "reply_feedback": "none",
+            "reply_purpose": "none",
+            "knowledge_card_status": false,
+            "knowledge_save_operation": null,
+            "status_context": null,
+            "repair_target_message_id": "",
+            "continuation_evidence": "",
+            "continuation_topic": "",
+            "programming_boundary": "none",
+            "programming_learning_request": "",
+            "resource_boundary": "none",
+            "resource_learning_request": "",
+            "learning_reply_sentence_limit": null,
+            "intents": [
+              "answer"
+            ],
+            "target_task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+            "target_description": "复述高相似度检索不能保证答案正确的原因",
+            "relation": "continuation",
+            "workflow": null,
+            "scope": "continue_goal",
+            "proposed_actions": [],
+            "clarification": "",
+            "rationale": "用户在回应上一轮发出的复述题，用自己的话作答，属于 answer；继续当前 source_learning 目标，交给评价节点判断，不额外出题或纠正。",
+            "understanding": "unknown",
+            "answer_evidence": "高相似度只说明检索片段和问题在语义上接近；但来源资料本身可能错误或过时，所以即使检索很相关，也不能保证答案正确。",
+            "topic_closure": null,
+            "learning_goal_ready": true,
+            "direct_teaching": false,
+            "comprehensive_check": null,
+            "answer_only": false,
+            "is_jd": false,
+            "material_focus": "none",
+            "public_source_scope": "focused",
+            "jd_request": "none",
+            "needs_verification": false,
+            "cross_check_sources": false,
+            "requested_mode": null,
+            "refresh_sources": false,
+            "public_search_query": "",
+            "light_reply": "",
+            "session_tags": [],
+            "handoff_source_ids": [],
+            "handoff_step_ids": [],
+            "memory_selections": []
+          },
+          "steps": {
+            "9d48d200d67707192efda0e27bcb2204891aa13e4441344b333e28ac6cecb7d6": {
+              "conversation_kind": "ordinary",
+              "clarification_kind": "none",
+              "conversation_repair": false,
+              "reply_feedback": "none",
+              "reply_purpose": "none",
+              "knowledge_card_status": false,
+              "knowledge_save_operation": null,
+              "status_context": null,
+              "repair_target_message_id": "",
+              "continuation_evidence": "",
+              "continuation_topic": "",
+              "programming_boundary": "none",
+              "programming_learning_request": "",
+              "resource_boundary": "none",
+              "resource_learning_request": "",
+              "learning_reply_sentence_limit": null,
+              "intents": [
+                "answer"
+              ],
+              "target_task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+              "target_description": "复述高相似度检索不能保证答案正确的原因",
+              "relation": "continuation",
+              "workflow": null,
+              "scope": "continue_goal",
+              "proposed_actions": [],
+              "clarification": "",
+              "rationale": "用户在回应上一轮发出的复述题，用自己的话作答，属于 answer；继续当前 source_learning 目标，交给评价节点判断，不额外出题或纠正。",
+              "understanding": "unknown",
+              "answer_evidence": "高相似度只说明检索片段和问题在语义上接近；但来源资料本身可能错误或过时，所以即使检索很相关，也不能保证答案正确。",
+              "topic_closure": null,
+              "learning_goal_ready": true,
+              "direct_teaching": false,
+              "comprehensive_check": null,
+              "answer_only": false,
+              "is_jd": false,
+              "material_focus": "none",
+              "public_source_scope": "focused",
+              "jd_request": "none",
+              "needs_verification": false,
+              "cross_check_sources": false,
+              "requested_mode": null,
+              "refresh_sources": false,
+              "public_search_query": "",
+              "light_reply": "",
+              "session_tags": [],
+              "handoff_source_ids": [],
+              "handoff_step_ids": [],
+              "memory_selections": []
+            },
+            "f7725728889a5735c06f9f9ec4e27a0ddb4492c08f90824b73f3144461bfcdd2": {
+              "passed": false,
+              "correctness": "已正确指出“高相似度只说明检索片段和问题在语义上接近”，也说明来源资料可能错误或过时。但题目要求的另外两点没有答到。",
+              "completeness": "题面要求至少两点原因：资料本身可能错误或过时、生成可能不忠实于资料；还要求说明答完为何要核对来源和适用条件。答案只覆盖第一点原因，缺少生成不忠实与核对来源、适用条件两点。",
+              "expression": "表述简洁、语义清楚，因果关系自然。",
+              "transfer": "对“相似度≠正确性”的把握基本正确，但未展示对生成层失效及事后核验的迁移理解。",
+              "feedback": "你答对了**资料层**：检索片段语义接近，但资料本身可能错误或过时，所以相关不等于正确。\n\n还缺两层：\n\n- **生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。\n- **事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。",
+              "followup_question": "请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+              "question_validity": "valid",
+              "answer_coverage": [
+                {
+                  "question_quote": "资料本身可能错误或过时",
+                  "demonstrated": true,
+                  "answer_quotes": [
+                    "但来源资料本身可能错误或过时"
+                  ]
+                },
+                {
+                  "question_quote": "生成可能不忠实于资料",
+                  "demonstrated": false,
+                  "answer_quotes": []
+                },
+                {
+                  "question_quote": "并说明为什么答完还要核对来源和适用条件",
+                  "demonstrated": false,
+                  "answer_quotes": []
+                }
+              ],
+              "step_completion_demonstrated": false,
+              "step_completion_evidence": [],
+              "followup_binding": {
+                "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+                "concepts": [
+                  "生成不忠实于依据资料",
+                  "来源与适用条件核对"
+                ],
+                "evidence_quotes": [
+                  "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                  "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                ],
+                "scope": "concept"
+              },
+              "capture_quotes": [
+                "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+                "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+              ],
+              "capture_feedback_quotes": [
+                "**生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。",
+                "**事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。"
+              ],
+              "capture_scope_summary": "高相似度只代表检索相关；资料可能错误过时，生成也可能不忠实，需核对来源与适用条件。",
+              "capture_preview": {
+                "points": [
+                  {
+                    "text": "检索片段本身可能错误、片面或过时，模型忠实引用也只是忠实于错误。",
+                    "evidence_quotes": [
+                      "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。"
+                    ]
+                  },
+                  {
+                    "text": "模型生成时可能混入自身记忆、过度概括或补全没写的内容，不忠实于依据资料。",
+                    "evidence_quotes": [
+                      "**生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。"
+                    ]
+                  },
+                  {
+                    "text": "相似度不检查真假、时效和范围，因此要核对来源以及地区、版本、前提等适用条件。",
+                    "evidence_quotes": [
+                      "**事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。"
+                    ]
+                  }
+                ],
+                "summary": {
+                  "text": "高相似度仅是检索相关，资料错误过时与生成不忠实都会破坏正确性，需另核对来源和适用条件。",
+                  "evidence_quotes": [
+                    "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+                    "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                    "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                  ]
+                }
+              }
+            }
+          },
+          "action_ids": [],
+          "error_code": null,
+          "created_at": "2026-10-21T03:34:11.294208+00:00",
+          "updated_at": "2026-10-21T03:34:25.319079+00:00",
+          "started_at": null,
+          "elapsed_ms": 14010,
+          "attempt_durations": [
+            14010
+          ],
+          "first_text_ms": 3698,
+          "activity_candidate": null,
+          "activity_kind": null,
+          "completed_at": null,
+          "paused_entry": false,
+          "lifecycle_revision": 0,
+          "thinking_strength": "smart",
+          "model_calls": [
+            {
+              "id": "ef08f549-0a8f-435f-8103-ac48ee42953c",
+              "budget_id": "c3053e1e-f073-4f26-9021-6f82c73f0593",
+              "revision": 1,
+              "background": false,
+              "node": "intent",
+              "model": "deepseek-flash",
+              "estimated_input_tokens": 35905,
+              "transport_requests": 1,
+              "request_ids": [
+                "a053ed3d-a79c-4cb6-a356-1f7e1f9df8ae"
+              ],
+              "usage_state": "reported",
+              "usage": [
+                {
+                  "response_id": "1688f083-cc40-4c63-95bb-50971139918f",
+                  "input_tokens": 16605,
+                  "output_tokens": 391,
+                  "total_tokens": 16996,
+                  "cached_input_tokens": 13312,
+                  "reasoning_output_tokens": 0,
+                  "reported_model": "deepseek-flash",
+                  "request_id": "a053ed3d-a79c-4cb6-a356-1f7e1f9df8ae"
+                }
+              ],
+              "status": "returned"
+            },
+            {
+              "id": "eb31b268-1671-45c7-93c3-a2514982096b",
+              "budget_id": "c3053e1e-f073-4f26-9021-6f82c73f0593",
+              "revision": 1,
+              "background": false,
+              "node": "evaluate",
+              "model": "deepseek-v4-flash",
+              "estimated_input_tokens": 10534,
+              "transport_requests": 1,
+              "request_ids": [
+                "e5cd3ece-bbf6-498b-b73f-f3c1caf29bab"
+              ],
+              "usage_state": "reported",
+              "usage": [
+                {
+                  "response_id": "e339c793-66ec-49ba-8e87-8ba25056c298",
+                  "input_tokens": 5297,
+                  "output_tokens": 1150,
+                  "total_tokens": 6447,
+                  "cached_input_tokens": 0,
+                  "reasoning_output_tokens": 0,
+                  "reported_model": "deepseek-flash",
+                  "request_id": "e5cd3ece-bbf6-498b-b73f-f3c1caf29bab"
+                }
+              ],
+              "status": "returned"
+            }
+          ],
+          "execution_budget": {
+            "id": "c3053e1e-f073-4f26-9021-6f82c73f0593",
+            "started": 1792553651.3085299,
+            "attempts": 2,
+            "estimated_input_tokens": 46439
+          },
+          "memory_references": [],
+          "context_capacity": {
+            "estimated": true,
+            "input_tokens": 10534,
+            "input_budget": 256000,
+            "compact_threshold": 220000,
+            "compact_target": 144000,
+            "ratio": 0.0411484375,
+            "output_reserve": 4096,
+            "model_window": 1000000,
+            "budget_source": "local_limit",
+            "omitted_narrative": []
+          },
+          "dialogue_policy": "dialogue-materials-11",
+          "request_scope": {
+            "input_ids": [
+              "be60c737-6cf1-4e75-a770-9af63f592f30"
+            ],
+            "resource_boundary": "none",
+            "programming_boundary": "none"
+          },
+          "decision_input_ids": [
+            "be60c737-6cf1-4e75-a770-9af63f592f30"
+          ],
+          "decision_mode": "source_learning",
+          "completed_operations": {
+            "2000acfff0f709c5c183d782581e5b275f37de8e81d460d353ccc2376a42e5f1": false
+          },
+          "evaluated_step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+          "evaluated_binding": {
+            "question": "用自己的话复述：高相似度检索为什么不能保证答案正确？请至少说到两点——资料本身可能错误或过时、生成可能不忠实于资料——并说明为什么答完还要核对来源和适用条件。",
+            "step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+            "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+            "concepts": [
+              "相似度与相关性",
+              "来源资料错误或过时",
+              "生成不忠实于依据资料",
+              "来源与适用条件核对"
+            ],
+            "evidence_quotes": [
+              "高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确",
+              "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+              "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+              "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+            ],
+            "scope": "concept",
+            "reference_stamp": "9e71662a846aca5344aedc4c65c28af28002704c6b418f0928a90d33806cb4f8",
+            "plan_version": 1,
+            "completion_condition": "",
+            "completion_requirements": [],
+            "check_kind": "concept",
+            "scope_policy": "explicit-comprehensive-1"
+          },
+          "evaluation_message_id": "be60c737-6cf1-4e75-a770-9af63f592f30",
+          "capture_quotes": [
+            "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+            "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+            "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+          ],
+          "capture_feedback_quotes": [
+            "**生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。",
+            "**事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。"
+          ],
+          "capture_scope_summary": "高相似度只代表检索相关；资料可能错误过时，生成也可能不忠实，需核对来源与适用条件。",
+          "capture_preview": {
+            "points": [
+              {
+                "text": "检索片段本身可能错误、片面或过时，模型忠实引用也只是忠实于错误。",
+                "evidence_quotes": [
+                  "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。"
+                ]
+              },
+              {
+                "text": "模型生成时可能混入自身记忆、过度概括或补全没写的内容，不忠实于依据资料。",
+                "evidence_quotes": [
+                  "**生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。"
+                ]
+              },
+              {
+                "text": "相似度不检查真假、时效和范围，因此要核对来源以及地区、版本、前提等适用条件。",
+                "evidence_quotes": [
+                  "**事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。"
+                ]
+              }
+            ],
+            "summary": {
+              "text": "高相似度仅是检索相关，资料错误过时与生成不忠实都会破坏正确性，需另核对来源和适用条件。",
+              "evidence_quotes": [
+                "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+                "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+              ]
+            }
+          },
+          "verified_concepts": [],
+          "execution_complete": true
+        },
+        "4e84d18a-ae85-47d2-8d8a-c0310982fa1c": {
+          "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+          "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+          "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+          "input_ids": [
+            "e236a590-4b4c-4689-98e5-fe55b6d45c51"
+          ],
+          "input_channel": "text",
+          "voice_input_ids": [],
+          "revision": 1,
+          "status": "completed",
+          "stage": "completed",
+          "user_summary": "本轮已回应",
+          "attempt": 1,
+          "intent": {
+            "conversation_kind": "ordinary",
+            "clarification_kind": "none",
+            "conversation_repair": false,
+            "reply_feedback": "none",
+            "reply_purpose": "none",
+            "knowledge_card_status": false,
+            "knowledge_save_operation": null,
+            "status_context": null,
+            "repair_target_message_id": "",
+            "continuation_evidence": "",
+            "continuation_topic": "",
+            "programming_boundary": "none",
+            "programming_learning_request": "",
+            "resource_boundary": "none",
+            "resource_learning_request": "",
+            "learning_reply_sentence_limit": null,
+            "intents": [
+              "answer"
+            ],
+            "target_task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+            "target_description": "理解高相似度检索不能保证答案正确的原因，并完成复述题",
+            "relation": "continuation",
+            "workflow": null,
+            "scope": "continue_goal",
+            "proposed_actions": [],
+            "clarification": "",
+            "rationale": "用户补答了上一轮检查题的两点追问，属于对当前检查题的实际作答，应交给评价节点。",
+            "understanding": "unknown",
+            "answer_evidence": "模型生成时可能误解资料、遗漏重要限制，或加入资料没有支持的内容，所以即使检索片段很相关，最终答案仍可能偏离依据。高相似度也不证明来源真实或最新；因此要回到原始出处核对发布者和发布时间，再检查版本、地区及适用前提是否匹配。资料本身错误或过时，与生成不忠实，是两种独立风险。",
+            "topic_closure": null,
+            "learning_goal_ready": true,
+            "direct_teaching": false,
+            "comprehensive_check": null,
+            "answer_only": false,
+            "is_jd": false,
+            "material_focus": "none",
+            "public_source_scope": "focused",
+            "jd_request": "none",
+            "needs_verification": false,
+            "cross_check_sources": false,
+            "requested_mode": null,
+            "refresh_sources": false,
+            "public_search_query": "",
+            "light_reply": "",
+            "session_tags": [],
+            "handoff_source_ids": [],
+            "handoff_step_ids": [],
+            "memory_selections": []
+          },
+          "steps": {
+            "1433c773fad90810b146be801d7d9bf27a9aa64acd497dbc31330e5af19c11f0": {
+              "conversation_kind": "ordinary",
+              "clarification_kind": "none",
+              "conversation_repair": false,
+              "reply_feedback": "none",
+              "reply_purpose": "none",
+              "knowledge_card_status": false,
+              "knowledge_save_operation": null,
+              "status_context": null,
+              "repair_target_message_id": "",
+              "continuation_evidence": "",
+              "continuation_topic": "",
+              "programming_boundary": "none",
+              "programming_learning_request": "",
+              "resource_boundary": "none",
+              "resource_learning_request": "",
+              "learning_reply_sentence_limit": null,
+              "intents": [
+                "answer"
+              ],
+              "target_task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+              "target_description": "理解高相似度检索不能保证答案正确的原因，并完成复述题",
+              "relation": "continuation",
+              "workflow": null,
+              "scope": "continue_goal",
+              "proposed_actions": [],
+              "clarification": "",
+              "rationale": "用户补答了上一轮检查题的两点追问，属于对当前检查题的实际作答，应交给评价节点。",
+              "understanding": "unknown",
+              "answer_evidence": "模型生成时可能误解资料、遗漏重要限制，或加入资料没有支持的内容，所以即使检索片段很相关，最终答案仍可能偏离依据。高相似度也不证明来源真实或最新；因此要回到原始出处核对发布者和发布时间，再检查版本、地区及适用前提是否匹配。资料本身错误或过时，与生成不忠实，是两种独立风险。",
+              "topic_closure": null,
+              "learning_goal_ready": true,
+              "direct_teaching": false,
+              "comprehensive_check": null,
+              "answer_only": false,
+              "is_jd": false,
+              "material_focus": "none",
+              "public_source_scope": "focused",
+              "jd_request": "none",
+              "needs_verification": false,
+              "cross_check_sources": false,
+              "requested_mode": null,
+              "refresh_sources": false,
+              "public_search_query": "",
+              "light_reply": "",
+              "session_tags": [],
+              "handoff_source_ids": [],
+              "handoff_step_ids": [],
+              "memory_selections": []
+            },
+            "b9125a716e02574561e2f4bed6a2698f1d9d27243addf2873b066498568731cb": {
+              "passed": true,
+              "correctness": "两点都答对了：①指出模型可能误解资料、遗漏限制、加入资料无支持的内容；②指出高相似度不证明来源真实或最新，并说明需核对发布者、时间、版本、地区与适用前提。",
+              "completeness": "题面要求的两个并列要点均已覆盖，没有漏答。",
+              "expression": "表达清楚、层次分明，并用“资料本身错误或过时”与“生成不忠实”是独立风险作收束，概念区分准确。",
+              "transfer": "能把“相似度只反映检索相关性”迁移到来源真实性与适用条件的核对，属于正确迁移；可进一步延伸到多来源口径冲突时的取舍判断。",
+              "feedback": "答对了：模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。",
+              "followup_question": "如果两段资料都对“退票规则”描述得很清楚、相似度也都很高，但发布时间和适用地区不同，你会先比较哪些信息，再决定用哪一段支持答案？",
+              "question_validity": "valid",
+              "answer_coverage": [
+                {
+                  "question_quote": "①模型生成时可能怎样不忠实于检索到的资料？",
+                  "demonstrated": true,
+                  "answer_quotes": [
+                    "模型生成时可能误解资料、遗漏重要限制，或加入资料没有支持的内容"
+                  ]
+                },
+                {
+                  "question_quote": "②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+                  "demonstrated": true,
+                  "answer_quotes": [
+                    "高相似度也不证明来源真实或最新；因此要回到原始出处核对发布者和发布时间，再检查版本、地区及适用前提是否匹配。"
+                  ]
+                }
+              ],
+              "step_completion_demonstrated": false,
+              "step_completion_evidence": [],
+              "followup_binding": {
+                "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+                "concepts": [
+                  "生成不忠实于依据资料",
+                  "来源与适用条件核对"
+                ],
+                "evidence_quotes": [
+                  "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                  "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                ],
+                "scope": "concept"
+              },
+              "capture_quotes": [
+                "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+              ],
+              "capture_feedback_quotes": [
+                "模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。"
+              ],
+              "capture_scope_summary": "模型生成可能不忠实于资料；引用与高相似度不能替代来源和适用条件核对。",
+              "capture_preview": {
+                "points": [
+                  {
+                    "text": "生成可能混入无依据内容，或遗漏资料中的限制。",
+                    "evidence_quotes": [
+                      "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。"
+                    ]
+                  },
+                  {
+                    "text": "核对来源的发布者、时间，以及版本、地区和适用前提。",
+                    "evidence_quotes": [
+                      "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                    ]
+                  }
+                ],
+                "summary": {
+                  "text": "相关和带引用仍不保证正确，答案还需核对来源与适用条件。",
+                  "evidence_quotes": [
+                    "模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。"
+                  ]
+                }
+              }
+            }
+          },
+          "action_ids": [],
+          "error_code": null,
+          "created_at": "2026-10-21T04:36:25.506789+00:00",
+          "updated_at": "2026-10-21T04:36:25.830959+00:00",
+          "started_at": null,
+          "elapsed_ms": 313,
+          "attempt_durations": [
+            313
+          ],
+          "first_text_ms": null,
+          "activity_candidate": null,
+          "activity_kind": null,
+          "completed_at": null,
+          "paused_entry": false,
+          "lifecycle_revision": 0,
+          "thinking_strength": "smart",
+          "model_calls": [
+            {
+              "id": "1edc704f-ad7b-4a21-a327-164ee3ac01de",
+              "budget_id": "2e61b8cc-2841-4535-9e18-bb0c3da03cb2",
+              "revision": 1,
+              "background": false,
+              "node": "intent",
+              "model": "gpt-5.6-luna",
+              "estimated_input_tokens": 39924,
+              "transport_requests": 0,
+              "request_ids": [],
+              "usage_state": "unavailable",
+              "usage": [],
+              "status": "returned"
+            },
+            {
+              "id": "b25e55a7-7d04-45b8-803f-9c218a1efbc0",
+              "budget_id": "2e61b8cc-2841-4535-9e18-bb0c3da03cb2",
+              "revision": 1,
+              "background": false,
+              "node": "evaluate",
+              "model": "gpt-5.6-terra",
+              "estimated_input_tokens": 10397,
+              "transport_requests": 0,
+              "request_ids": [],
+              "usage_state": "unavailable",
+              "usage": [],
+              "status": "returned"
+            },
+            {
+              "id": "4bbd20b0-6fc1-4143-b69c-b40363eb681d",
+              "budget_id": "2e61b8cc-2841-4535-9e18-bb0c3da03cb2",
+              "revision": 1,
+              "background": false,
+              "node": "evaluate",
+              "model": "gpt-5.6-terra",
+              "estimated_input_tokens": 10593,
+              "transport_requests": 0,
+              "request_ids": [],
+              "usage_state": "unavailable",
+              "usage": [],
+              "status": "returned"
+            }
+          ],
+          "execution_budget": {
+            "id": "2e61b8cc-2841-4535-9e18-bb0c3da03cb2",
+            "started": 1792557385.517451,
+            "attempts": 3,
+            "estimated_input_tokens": 60914
+          },
+          "memory_references": [],
+          "context_capacity": {
+            "estimated": true,
+            "input_tokens": 10593,
+            "input_budget": 256000,
+            "compact_threshold": 220000,
+            "compact_target": 144000,
+            "ratio": 0.04137890625,
+            "output_reserve": 4096,
+            "model_window": null,
+            "budget_source": "local_limit",
+            "omitted_narrative": []
+          },
+          "dialogue_policy": "dialogue-materials-11",
+          "request_scope": {
+            "input_ids": [
+              "e236a590-4b4c-4689-98e5-fe55b6d45c51"
+            ],
+            "resource_boundary": "none",
+            "programming_boundary": "none"
+          },
+          "decision_input_ids": [
+            "e236a590-4b4c-4689-98e5-fe55b6d45c51"
+          ],
+          "decision_mode": "source_learning",
+          "completed_operations": {
+            "4be90be45bc7991363b0f111dca1092930b050c670684b1892345cf071624880": false
+          },
+          "evaluated_step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+          "evaluated_binding": {
+            "question": "请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+            "step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+            "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+            "concepts": [
+              "生成不忠实于依据资料",
+              "来源与适用条件核对"
+            ],
+            "evidence_quotes": [
+              "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+              "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+            ],
+            "scope": "concept",
+            "reference_stamp": "9e71662a846aca5344aedc4c65c28af28002704c6b418f0928a90d33806cb4f8",
+            "plan_version": 1,
+            "completion_condition": "",
+            "completion_requirements": [],
+            "check_kind": "concept",
+            "scope_policy": "explicit-comprehensive-1"
+          },
+          "evaluation_message_id": "e236a590-4b4c-4689-98e5-fe55b6d45c51",
+          "capture_quotes": [
+            "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+            "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+          ],
+          "capture_feedback_quotes": [
+            "模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。"
+          ],
+          "capture_scope_summary": "模型生成可能不忠实于资料；引用与高相似度不能替代来源和适用条件核对。",
+          "capture_preview": {
+            "points": [
+              {
+                "text": "生成可能混入无依据内容，或遗漏资料中的限制。",
+                "evidence_quotes": [
+                  "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。"
+                ]
+              },
+              {
+                "text": "核对来源的发布者、时间，以及版本、地区和适用前提。",
+                "evidence_quotes": [
+                  "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                ]
+              }
+            ],
+            "summary": {
+              "text": "相关和带引用仍不保证正确，答案还需核对来源与适用条件。",
+              "evidence_quotes": [
+                "模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。"
+              ]
+            }
+          },
+          "verified_concepts": [
+            "生成不忠实于依据资料",
+            "来源与适用条件核对"
+          ],
+          "execution_complete": true
+        }
+      },
+      "pending": null,
+      "draft": null,
+      "summary": "",
+      "summary_version": 0,
+      "status": "active",
+      "lifecycle_revision": 0,
+      "lifecycle_actions": {},
+      "message_receipts": {
+        "84697821-2b70-4f81-b327-a89bd6a8195e": {
+          "fingerprint": "ef51fe12d7904687f174e57ef55a2ac732688fddb2ed75b2b0a7c23a6f3c8181",
+          "run_id": "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2"
+        },
+        "be60c737-6cf1-4e75-a770-9af63f592f30": {
+          "fingerprint": "f000258f1cf19e0869afbf97e1f7cc7f9d8d10e9c823bea3dbf75c7dc99fddea",
+          "run_id": "ceddb794-d67d-427e-8fd3-6c15f3dcf658"
+        },
+        "e236a590-4b4c-4689-98e5-fe55b6d45c51": {
+          "fingerprint": "05024b7b3904fe34a5c0d13ff67b54bd8350145f6cfd9394beae83510c0b4fa2",
+          "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c"
+        }
+      },
+      "thinking_strength": "smart",
+      "capture_offers": {
+        "ca660c09-9269-4b9e-948d-1a6495c1e776": {
+          "id": "ca660c09-9269-4b9e-948d-1a6495c1e776",
+          "version": 1,
+          "trigger": "verified_check",
+          "title": "生成不忠实于依据资料、来源与适用条件核对",
+          "concepts": [
+            "生成不忠实于依据资料",
+            "来源与适用条件核对"
+          ],
+          "scope_summary": "模型生成可能不忠实于资料；引用与高相似度不能替代来源和适用条件核对。",
+          "anchor_message_id": "6b6d0117-55c5-49e2-bd75-1854855cfa64",
+          "fragments": [
+            {
+              "id": "08b0d88f-e0d1-4cc7-970d-bd7734d57f2d",
+              "text": "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+              "message_id": "2885c5b5-5bca-4008-8f44-1d7caff55fe0",
+              "run_id": "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2",
+              "kind": "teaching",
+              "memory_references": [],
+              "sources": [
+                {
+                  "source_id": "0e7c68a2-1973-55e1-a292-0fc88ff2c2d1",
+                  "version": 1,
+                  "type": "agent_generated",
+                  "url": "",
+                  "title": "Agent 生成讲义",
+                  "fetched_at": "2026-10-21T03:33:29.793508+00:00",
+                  "locator": "task:e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+                  "content": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。"
+                }
+              ],
+              "source_type": "agent_generated"
+            },
+            {
+              "id": "0da96292-738d-4834-bbe8-a08fba29d002",
+              "text": "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。",
+              "message_id": "2885c5b5-5bca-4008-8f44-1d7caff55fe0",
+              "run_id": "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2",
+              "kind": "teaching",
+              "memory_references": [],
+              "sources": [
+                {
+                  "source_id": "0e7c68a2-1973-55e1-a292-0fc88ff2c2d1",
+                  "version": 1,
+                  "type": "agent_generated",
+                  "url": "",
+                  "title": "Agent 生成讲义",
+                  "fetched_at": "2026-10-21T03:33:29.793508+00:00",
+                  "locator": "task:e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+                  "content": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。"
+                }
+              ],
+              "source_type": "agent_generated"
+            },
+            {
+              "id": "31081edf-d975-403c-8062-08e63a50f19b",
+              "text": "模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。",
+              "message_id": "6b6d0117-55c5-49e2-bd75-1854855cfa64",
+              "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+              "kind": "evaluation",
+              "memory_references": [],
+              "sources": [],
+              "source_type": "agent_generated"
+            }
+          ],
+          "check_scope_key": "e70654b0ec146da4ff1fcdce4c99f68495d6632d62d1a5937147159f8dc4eeaa",
+          "origin_task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+          "step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+          "lifecycle_revision": 0,
+          "status": "offered",
+          "next_request": "",
+          "continuation_consumed": true,
+          "requires_mastery": false,
+          "error": "",
+          "knowledge_ids": [],
+          "public_search_query": "",
+          "preview_points": [
+            "生成可能混入无依据内容，或遗漏资料中的限制。",
+            "核对来源的发布者、时间，以及版本、地区和适用前提。"
+          ],
+          "preview_summary": "相关和带引用仍不保证正确，答案还需核对来源与适用条件。",
+          "preview": {
+            "points": [
+              {
+                "text": "生成可能混入无依据内容，或遗漏资料中的限制。",
+                "evidence_quotes": [
+                  "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。"
+                ]
+              },
+              {
+                "text": "核对来源的发布者、时间，以及版本、地区和适用前提。",
+                "evidence_quotes": [
+                  "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                ]
+              }
+            ],
+            "summary": {
+              "text": "相关和带引用仍不保证正确，答案还需核对来源与适用条件。",
+              "evidence_quotes": [
+                "模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。"
+              ]
+            }
+          },
+          "preview_version": 1,
+          "message_ids": [
+            "2885c5b5-5bca-4008-8f44-1d7caff55fe0",
+            "6b6d0117-55c5-49e2-bd75-1854855cfa64"
+          ],
+          "sources": [
+            {
+              "source_id": "0e7c68a2-1973-55e1-a292-0fc88ff2c2d1",
+              "version": 1,
+              "type": "agent_generated",
+              "url": "",
+              "title": "Agent 生成讲义",
+              "fetched_at": "2026-10-21T03:33:29.793508+00:00",
+              "locator": "task:e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+              "content": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。"
+            }
+          ],
+          "source_key": "5920d4bb553aa48cfa88fdda360fc8aef669e50fe717c849ef369e3bf2eafdc4",
+          "draft": {
+            "id": "ca660c09-9269-4b9e-948d-1a6495c1e776",
+            "version": 1,
+            "content": "仅整理以下知识范围：生成不忠实于依据资料、来源与适用条件核对\n本次可见范围：模型生成可能不忠实于资料；引用与高相似度不能替代来源和适用条件核对。\n\n当前有效来源选段（不将答题评价或掌握描述当作知识事实）：\n**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。\n\n模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。",
+            "understanding": "unknown",
+            "source_type": "agent_generated",
+            "source_message_ids": [
+              "2885c5b5-5bca-4008-8f44-1d7caff55fe0",
+              "6b6d0117-55c5-49e2-bd75-1854855cfa64"
+            ],
+            "answer_sources": [
+              {
+                "source_id": "0e7c68a2-1973-55e1-a292-0fc88ff2c2d1",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-21T03:33:29.793508+00:00",
+                "locator": "task:e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+                "content": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。"
+              }
+            ],
+            "memory_references": [],
+            "public_search_query": ""
+          }
+        }
+      },
+      "focus_goal": "理解高相似度检索不能保证答案正确的原因，并完成复述题",
+      "tasks": {
+        "e222d507-f9f3-48e9-9f1e-03bf04b060c4": {
+          "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+          "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+          "client_message_id": "84697821-2b70-4f81-b327-a89bd6a8195e",
+          "content": "理解高相似度检索不能保证答案正确的原因，并完成复述题",
+          "content_type": "text",
+          "primary_language": "zh",
+          "mode_preset": "source_learning",
+          "context": {
+            "conversation_managed": true,
+            "understanding": "unknown",
+            "requires_mastery": false,
+            "origin_run_id": "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2",
+            "memory_references": [],
+            "latest_run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+            "lifecycle_revision": 0,
+            "evidence": {
+              "state": "unverified",
+              "summary": "",
+              "sources": []
+            },
+            "sources": [
+              {
+                "source_id": "0e7c68a2-1973-55e1-a292-0fc88ff2c2d1",
+                "version": 1,
+                "type": "agent_generated",
+                "url": "",
+                "title": "Agent 生成讲义",
+                "fetched_at": "2026-10-21T03:33:29.793508+00:00",
+                "locator": "task:e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+                "content": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。"
+              }
+            ],
+            "taught_concepts": [],
+            "verified_queries": [],
+            "learning_plan": {
+              "id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+              "version": 1,
+              "goal": "理解高相似度检索不能保证答案正确的原因，并完成复述题",
+              "steps": [
+                {
+                  "id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+                  "state": "explained",
+                  "understanding": "unknown",
+                  "message_ids": [
+                    "2885c5b5-5bca-4008-8f44-1d7caff55fe0",
+                    "c43f0801-edc5-4d8a-a878-8b3ee9fc9e5e",
+                    "6b6d0117-55c5-49e2-bd75-1854855cfa64"
+                  ],
+                  "completion_condition": "能说明相似度只反映问题与片段的相关程度，不判断真假、时效和适用范围",
+                  "title": "理解相似度衡量的是检索相关性，不等于正确性",
+                  "verified_concepts": [
+                    {
+                      "concept": "生成不忠实于依据资料",
+                      "message_id": "e236a590-4b4c-4689-98e5-fe55b6d45c51",
+                      "question": "请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？"
+                    },
+                    {
+                      "concept": "来源与适用条件核对",
+                      "message_id": "e236a590-4b4c-4689-98e5-fe55b6d45c51",
+                      "question": "请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？"
+                    }
+                  ]
+                },
+                {
+                  "id": "d8ef4f37-92a4-41db-85bd-8ddcaaca94c2",
+                  "state": "pending",
+                  "understanding": "unknown",
+                  "message_ids": [],
+                  "completion_condition": "能分别举出资料层与生成层各一种导致答案错误的可能情形",
+                  "title": "分清两类失效：来源资料错误或过时、生成回答不忠实于资料"
+                },
+                {
+                  "id": "65cb254c-7a43-43c4-8380-2044ffe15501",
+                  "state": "pending",
+                  "understanding": "unknown",
+                  "message_ids": [],
+                  "completion_condition": "能在给定答案时指出应核对哪些来源信息与适用条件",
+                  "title": "学会核对来源与适用条件来检验答案"
+                }
+              ],
+              "current_step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+              "success_check": "能独立复述高相似度检索为何不保证正确，指出资料错误/过时与生成不忠实两层原因，并说明核对来源和适用条件的必要"
+            },
+            "understanding_by_lesson": {
+              "0": "unknown"
+            },
+            "check_question": "请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+            "last_lesson": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。",
+            "source_type": "agent_generated",
+            "lesson_index": 1,
+            "practice": [
+              {
+                "message_id": "be60c737-6cf1-4e75-a770-9af63f592f30",
+                "run_id": "ceddb794-d67d-427e-8fd3-6c15f3dcf658",
+                "revision": 1,
+                "hint_used": false,
+                "binding": {
+                  "question": "用自己的话复述：高相似度检索为什么不能保证答案正确？请至少说到两点——资料本身可能错误或过时、生成可能不忠实于资料——并说明为什么答完还要核对来源和适用条件。",
+                  "step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+                  "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+                  "concepts": [
+                    "相似度与相关性",
+                    "来源资料错误或过时",
+                    "生成不忠实于依据资料",
+                    "来源与适用条件核对"
+                  ],
+                  "evidence_quotes": [
+                    "高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确",
+                    "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+                    "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                    "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                  ],
+                  "scope": "concept",
+                  "reference_stamp": "9e71662a846aca5344aedc4c65c28af28002704c6b418f0928a90d33806cb4f8",
+                  "plan_version": 1,
+                  "completion_condition": "",
+                  "completion_requirements": [],
+                  "check_kind": "concept",
+                  "scope_policy": "explicit-comprehensive-1"
+                },
+                "verified_concepts": [],
+                "evaluation": {
+                  "passed": false,
+                  "correctness": "已正确指出“高相似度只说明检索片段和问题在语义上接近”，也说明来源资料可能错误或过时。但题目要求的另外两点没有答到。",
+                  "completeness": "题面要求至少两点原因：资料本身可能错误或过时、生成可能不忠实于资料；还要求说明答完为何要核对来源和适用条件。答案只覆盖第一点原因，缺少生成不忠实与核对来源、适用条件两点。",
+                  "expression": "表述简洁、语义清楚，因果关系自然。",
+                  "transfer": "对“相似度≠正确性”的把握基本正确，但未展示对生成层失效及事后核验的迁移理解。",
+                  "feedback": "你答对了**资料层**：检索片段语义接近，但资料本身可能错误或过时，所以相关不等于正确。\n\n还缺两层：\n\n- **生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。\n- **事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。",
+                  "followup_question": "请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+                  "question_validity": "valid",
+                  "answer_coverage": [
+                    {
+                      "question_quote": "资料本身可能错误或过时",
+                      "demonstrated": true,
+                      "answer_quotes": [
+                        "但来源资料本身可能错误或过时"
+                      ]
+                    },
+                    {
+                      "question_quote": "生成可能不忠实于资料",
+                      "demonstrated": false,
+                      "answer_quotes": []
+                    },
+                    {
+                      "question_quote": "并说明为什么答完还要核对来源和适用条件",
+                      "demonstrated": false,
+                      "answer_quotes": []
+                    }
+                  ],
+                  "step_completion_demonstrated": false,
+                  "step_completion_evidence": [],
+                  "followup_binding": {
+                    "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+                    "concepts": [
+                      "生成不忠实于依据资料",
+                      "来源与适用条件核对"
+                    ],
+                    "evidence_quotes": [
+                      "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                      "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                    ],
+                    "scope": "concept"
+                  },
+                  "capture_quotes": [
+                    "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+                    "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                    "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                  ],
+                  "capture_feedback_quotes": [
+                    "**生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。",
+                    "**事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。"
+                  ],
+                  "capture_scope_summary": "高相似度只代表检索相关；资料可能错误过时，生成也可能不忠实，需核对来源与适用条件。",
+                  "capture_preview": {
+                    "points": [
+                      {
+                        "text": "检索片段本身可能错误、片面或过时，模型忠实引用也只是忠实于错误。",
+                        "evidence_quotes": [
+                          "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。"
+                        ]
+                      },
+                      {
+                        "text": "模型生成时可能混入自身记忆、过度概括或补全没写的内容，不忠实于依据资料。",
+                        "evidence_quotes": [
+                          "**生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。"
+                        ]
+                      },
+                      {
+                        "text": "相似度不检查真假、时效和范围，因此要核对来源以及地区、版本、前提等适用条件。",
+                        "evidence_quotes": [
+                          "**事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。"
+                        ]
+                      }
+                    ],
+                    "summary": {
+                      "text": "高相似度仅是检索相关，资料错误过时与生成不忠实都会破坏正确性，需另核对来源和适用条件。",
+                      "evidence_quotes": [
+                        "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+                        "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                        "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "message_id": "e236a590-4b4c-4689-98e5-fe55b6d45c51",
+                "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+                "revision": 1,
+                "hint_used": false,
+                "binding": {
+                  "question": "请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+                  "step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+                  "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+                  "concepts": [
+                    "生成不忠实于依据资料",
+                    "来源与适用条件核对"
+                  ],
+                  "evidence_quotes": [
+                    "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                    "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                  ],
+                  "scope": "concept",
+                  "reference_stamp": "9e71662a846aca5344aedc4c65c28af28002704c6b418f0928a90d33806cb4f8",
+                  "plan_version": 1,
+                  "completion_condition": "",
+                  "completion_requirements": [],
+                  "check_kind": "concept",
+                  "scope_policy": "explicit-comprehensive-1"
+                },
+                "verified_concepts": [
+                  "生成不忠实于依据资料",
+                  "来源与适用条件核对"
+                ],
+                "evaluation": {
+                  "passed": true,
+                  "correctness": "两点都答对了：①指出模型可能误解资料、遗漏限制、加入资料无支持的内容；②指出高相似度不证明来源真实或最新，并说明需核对发布者、时间、版本、地区与适用前提。",
+                  "completeness": "题面要求的两个并列要点均已覆盖，没有漏答。",
+                  "expression": "表达清楚、层次分明，并用“资料本身错误或过时”与“生成不忠实”是独立风险作收束，概念区分准确。",
+                  "transfer": "能把“相似度只反映检索相关性”迁移到来源真实性与适用条件的核对，属于正确迁移；可进一步延伸到多来源口径冲突时的取舍判断。",
+                  "feedback": "答对了：模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。",
+                  "followup_question": "如果两段资料都对“退票规则”描述得很清楚、相似度也都很高，但发布时间和适用地区不同，你会先比较哪些信息，再决定用哪一段支持答案？",
+                  "question_validity": "valid",
+                  "answer_coverage": [
+                    {
+                      "question_quote": "①模型生成时可能怎样不忠实于检索到的资料？",
+                      "demonstrated": true,
+                      "answer_quotes": [
+                        "模型生成时可能误解资料、遗漏重要限制，或加入资料没有支持的内容"
+                      ]
+                    },
+                    {
+                      "question_quote": "②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+                      "demonstrated": true,
+                      "answer_quotes": [
+                        "高相似度也不证明来源真实或最新；因此要回到原始出处核对发布者和发布时间，再检查版本、地区及适用前提是否匹配。"
+                      ]
+                    }
+                  ],
+                  "step_completion_demonstrated": false,
+                  "step_completion_evidence": [],
+                  "followup_binding": {
+                    "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+                    "concepts": [
+                      "生成不忠实于依据资料",
+                      "来源与适用条件核对"
+                    ],
+                    "evidence_quotes": [
+                      "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                      "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                    ],
+                    "scope": "concept"
+                  },
+                  "capture_quotes": [
+                    "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                    "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                  ],
+                  "capture_feedback_quotes": [
+                    "模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。"
+                  ],
+                  "capture_scope_summary": "模型生成可能不忠实于资料；引用与高相似度不能替代来源和适用条件核对。",
+                  "capture_preview": {
+                    "points": [
+                      {
+                        "text": "生成可能混入无依据内容，或遗漏资料中的限制。",
+                        "evidence_quotes": [
+                          "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。"
+                        ]
+                      },
+                      {
+                        "text": "核对来源的发布者、时间，以及版本、地区和适用前提。",
+                        "evidence_quotes": [
+                          "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+                        ]
+                      }
+                    ],
+                    "summary": {
+                      "text": "相关和带引用仍不保证正确，答案还需核对来源与适用条件。",
+                      "evidence_quotes": [
+                        "模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。"
+                      ]
+                    }
+                  }
+                }
+              }
+            ],
+            "hint_used": false,
+            "check_binding": {
+              "question": "请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+              "step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+              "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+              "concepts": [
+                "生成不忠实于依据资料",
+                "来源与适用条件核对"
+              ],
+              "evidence_quotes": [
+                "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+                "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+              ],
+              "scope": "concept",
+              "reference_stamp": "9e71662a846aca5344aedc4c65c28af28002704c6b418f0928a90d33806cb4f8",
+              "plan_version": 1,
+              "completion_condition": "",
+              "completion_requirements": [],
+              "check_kind": "concept",
+              "scope_policy": "explicit-comprehensive-1"
+            },
+            "knowledge_capture_explained": true
+          },
+          "mode": "source_learning",
+          "status": "awaiting_user",
+          "stage": "lesson_checked",
+          "user_summary": "等你继续",
+          "retry_count": 0,
+          "error_code": null,
+          "required_action": {
+            "type": "respond",
+            "prompt": "继续下一节或追问",
+            "options": []
+          },
+          "result_summary": "",
+          "memory_package": null,
+          "memory_source_text": "",
+          "events": [
+            {
+              "event_id": "c86f9e33-da06-40cc-a1ed-38b140df04d5",
+              "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+              "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+              "seq": 1,
+              "occurred_at": "2026-10-21T03:33:28.801370+00:00",
+              "stage": "accepted",
+              "state": "accepted",
+              "node": "accepted",
+              "user_summary": "已接收，准备处理",
+              "detail_summary": "",
+              "attempt": 1,
+              "duration_ms": null,
+              "error_code": null,
+              "recovery_action": null,
+              "required_action": null,
+              "message": null,
+              "payload": {}
+            },
+            {
+              "event_id": "3a770ffc-36dd-4656-9391-43fa5a3fd58b",
+              "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+              "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+              "seq": 2,
+              "occurred_at": "2026-10-21T03:33:42.224762+00:00",
+              "stage": "teaching",
+              "state": "awaiting_user",
+              "node": "teaching",
+              "user_summary": "等你继续",
+              "detail_summary": "",
+              "attempt": 1,
+              "duration_ms": null,
+              "error_code": null,
+              "recovery_action": null,
+              "required_action": {
+                "type": "submit_answer",
+                "prompt": "用自己的话复述：高相似度检索为什么不能保证答案正确？请至少说到两点——资料本身可能错误或过时、生成可能不忠实于资料——并说明为什么答完还要核对来源和适用条件。",
+                "options": []
+              },
+              "message": {
+                "message_id": "2885c5b5-5bca-4008-8f44-1d7caff55fe0",
+                "role": "coach",
+                "content": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。\n\n---\n\n### 想一想\n\n用自己的话复述：高相似度检索为什么不能保证答案正确？请至少说到两点——资料本身可能错误或过时、生成可能不忠实于资料——并说明为什么答完还要核对来源和适用条件。",
+                "created_at": "2026-10-21T03:33:42.224718+00:00"
+              },
+              "payload": {}
+            },
+            {
+              "event_id": "1dfe62e1-2c3d-46d0-bcd2-012e61de57f7",
+              "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+              "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+              "seq": 3,
+              "occurred_at": "2026-10-21T03:34:25.285854+00:00",
+              "stage": "practice",
+              "state": "awaiting_user",
+              "node": "practice",
+              "user_summary": "等你继续",
+              "detail_summary": "",
+              "attempt": 1,
+              "duration_ms": null,
+              "error_code": null,
+              "recovery_action": null,
+              "required_action": {
+                "type": "submit_answer",
+                "prompt": "请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+                "options": []
+              },
+              "message": {
+                "message_id": "c43f0801-edc5-4d8a-a878-8b3ee9fc9e5e",
+                "role": "coach",
+                "content": "你答对了**资料层**：检索片段语义接近，但资料本身可能错误或过时，所以相关不等于正确。\n\n还缺两层：\n\n- **生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。\n- **事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。\n\n---\n\n### 独立回答\n\n请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+                "created_at": "2026-10-21T03:34:25.285809+00:00"
+              },
+              "payload": {}
+            },
+            {
+              "event_id": "71f5a6bd-8ed9-4ac9-a96d-8cf1f680721e",
+              "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+              "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+              "seq": 4,
+              "occurred_at": "2026-10-21T04:36:25.813798+00:00",
+              "stage": "lesson_checked",
+              "state": "awaiting_user",
+              "node": "lesson_checked",
+              "user_summary": "等你继续",
+              "detail_summary": "",
+              "attempt": 1,
+              "duration_ms": null,
+              "error_code": null,
+              "recovery_action": null,
+              "required_action": {
+                "type": "respond",
+                "prompt": "继续下一节或追问",
+                "options": []
+              },
+              "message": {
+                "message_id": "6b6d0117-55c5-49e2-bd75-1854855cfa64",
+                "role": "coach",
+                "content": "答对了：模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。",
+                "created_at": "2026-10-21T04:36:25.813771+00:00"
+              },
+              "payload": {}
+            }
+          ],
+          "processed_action_ids": [],
+          "completed_action_ids": [],
+          "action_history": [],
+          "last_acked_seq": 3,
+          "created_at": "2026-10-21T03:33:28.801314+00:00",
+          "updated_at": "2026-10-21T04:36:25.814542+00:00"
+        }
+      },
+      "events": [],
+      "event_base_seq": 88,
+      "last_acked_seq": 0
+    }
+  },
+  "thinking_strength": "smart",
+  "capture_offers_revision": 130,
+  "capture_offers": [
+    {
+      "id": "ca660c09-9269-4b9e-948d-1a6495c1e776",
+      "version": 1,
+      "title": "生成不忠实于依据资料、来源与适用条件核对",
+      "anchor_message_id": "6b6d0117-55c5-49e2-bd75-1854855cfa64",
+      "status": "offered",
+      "next_request": "",
+      "continuation_consumed": true,
+      "error": "",
+      "knowledge_ids": [],
+      "trigger": "verified_check",
+      "scope_summary": "模型生成可能不忠实于资料；引用与高相似度不能替代来源和适用条件核对。",
+      "preview_points": [
+        "生成可能混入无依据内容，或遗漏资料中的限制。",
+        "核对来源的发布者、时间，以及版本、地区和适用前提。"
+      ],
+      "preview_summary": "相关和带引用仍不保证正确，答案还需核对来源与适用条件。"
+    }
+  ],
+  "pending": null,
+  "runs": [
+    {
+      "run_id": "699e7b01-f7d7-40d0-8ebc-38c5be63c5f2",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "input_ids": [
+        "84697821-2b70-4f81-b327-a89bd6a8195e"
+      ],
+      "input_channel": "text",
+      "voice_input_ids": [],
+      "revision": 1,
+      "status": "completed",
+      "stage": "completed",
+      "user_summary": "本轮已回应",
+      "attempt": 1,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "knowledge_save_operation": null,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "goal"
+        ],
+        "target_task_id": "",
+        "target_description": "理解高相似度检索不能保证答案正确的原因，并完成复述题",
+        "relation": "new_topic",
+        "workflow": "source_learning",
+        "scope": "learning",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户明确要求直接讲解一个 RAG 知识点并出一道复述题，主题与用途明确，属于直接教学；同时明确不保存知识卡、不做综合检查、不联网。",
+        "understanding": "unknown",
+        "answer_evidence": "",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": true,
+        "comprehensive_check": null,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "public_source_scope": "focused",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [
+          "RAG",
+          "检索与生成"
+        ],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "error_code": null,
+      "created_at": "2026-10-21T03:33:26.090141+00:00",
+      "updated_at": "2026-10-21T03:33:42.259536+00:00",
+      "started_at": null,
+      "elapsed_ms": 16154,
+      "attempt_durations": [
+        16154
+      ],
+      "first_text_ms": 4751,
+      "activity_candidate": "lesson_step",
+      "activity_kind": "lesson_step",
+      "completed_at": "2026-10-21T03:33:42.259437+00:00",
+      "paused_entry": false,
+      "lifecycle_revision": 0,
+      "thinking_strength": "smart",
+      "model_calls": [
+        {
+          "id": "5f2b130a-dcb8-4222-8443-8cf31bd11a0c",
+          "budget_id": "beecd1a8-ec4e-449e-bdeb-c62d0de02ddb",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 30800,
+          "transport_requests": 1,
+          "request_ids": [
+            "2d01cd46-77fe-4f57-a6c1-bd3eee72144d"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "895a5d4c-431d-4dd0-9952-aa38caf7547a",
+              "input_tokens": 13956,
+              "output_tokens": 403,
+              "total_tokens": 14359,
+              "cached_input_tokens": 13312,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "2d01cd46-77fe-4f57-a6c1-bd3eee72144d"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "825e4b2c-f02f-4921-8462-9a019b0e9fee",
+          "budget_id": "beecd1a8-ec4e-449e-bdeb-c62d0de02ddb",
+          "revision": 1,
+          "background": false,
+          "node": "teaching_preparation",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 1910,
+          "transport_requests": 1,
+          "request_ids": [
+            "35844502-e868-4f4e-aefc-4b4c31b44538"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "678f8e64-4a95-43e4-abb9-c46635de129a",
+              "input_tokens": 967,
+              "output_tokens": 98,
+              "total_tokens": 1065,
+              "cached_input_tokens": 512,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "35844502-e868-4f4e-aefc-4b4c31b44538"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "ae4fc9bb-7cce-4102-b38d-738e8b6d7f33",
+          "budget_id": "beecd1a8-ec4e-449e-bdeb-c62d0de02ddb",
+          "revision": 1,
+          "background": false,
+          "node": "lesson",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 11868,
+          "transport_requests": 1,
+          "request_ids": [
+            "9654ce21-2110-4eb0-818c-451d28e689f7"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "cb3db891-44cc-4004-8ab8-48c15cf0a059",
+              "input_tokens": 5853,
+              "output_tokens": 847,
+              "total_tokens": 6700,
+              "cached_input_tokens": 2432,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "9654ce21-2110-4eb0-818c-451d28e689f7"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "execution_budget": {
+        "id": "beecd1a8-ec4e-449e-bdeb-c62d0de02ddb",
+        "started": 1792553606.105244,
+        "attempts": 3,
+        "estimated_input_tokens": 44578
+      },
+      "memory_references": [],
+      "context_capacity": {
+        "estimated": true,
+        "input_tokens": 11868,
+        "input_budget": 256000,
+        "compact_threshold": 220000,
+        "compact_target": 144000,
+        "ratio": 0.046359375,
+        "output_reserve": 4096,
+        "model_window": 1000000,
+        "budget_source": "local_limit",
+        "omitted_narrative": []
+      },
+      "dialogue_policy": "dialogue-materials-11",
+      "request_scope": {
+        "input_ids": [
+          "84697821-2b70-4f81-b327-a89bd6a8195e"
+        ],
+        "resource_boundary": "none",
+        "programming_boundary": "none"
+      },
+      "decision_input_ids": [
+        "84697821-2b70-4f81-b327-a89bd6a8195e"
+      ],
+      "decision_mode": "source_learning",
+      "completed_operations": {
+        "22b56be28dc8cdb50813f7b04b78af1be83b8e9810a74de8a59e4bdeb00b36d2": false
+      },
+      "material_reads": [],
+      "material_sources": [],
+      "allowed_source_urls": [],
+      "teaching_signature": "b396d1348ebc88164a63014f37910f32fbe181f5d9cc50c99cdb551616e9212a",
+      "source_selection_packet": {
+        "input_signature": "a0ce83c42ef55db9041659220da8e073b18b59faf5068bfea0ea8261eb9fb49f",
+        "query": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请先简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料；以及为什么要核对来源和适用条件。现在只学习和作答，先不要保存知识卡，也不要进行本节综合检查。讲解阶段不需要联网。\nRAG 高相似度检索为何不能保证答案正确 检索相似度 生成忠实性 来源错误过时",
+        "scope": "focused",
+        "entries": {},
+        "revision": 1
+      },
+      "source_selection_records": {
+        "evidence_reuse": [],
+        "lesson": []
+      },
+      "search_state": "not_called",
+      "verification_notice": "",
+      "teaching_evidence": {
+        "state": "unverified",
+        "summary": "",
+        "sources": []
+      },
+      "teaching_sources": [],
+      "learning_concepts": [
+        "RAG 检索增强生成",
+        "相似度与相关性",
+        "来源资料错误或过时",
+        "生成不忠实于依据资料",
+        "来源与适用条件核对"
+      ],
+      "answer_sources": [
+        {
+          "source_id": "0e7c68a2-1973-55e1-a292-0fc88ff2c2d1",
+          "version": 1,
+          "type": "agent_generated",
+          "url": "",
+          "title": "Agent 生成讲义",
+          "fetched_at": "2026-10-21T03:33:29.793508+00:00",
+          "locator": "task:e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+          "content": "RAG 是“检索增强生成”：先从资料里检索相关片段，再让模型据此写答案。高相似度只说明“找到的这段话和问题在语义上接近”，它检查的是**检索相关性**，不检查资料真假、是否过时，也不检查模型有没有照着资料写。\n\n## 学习地图\n\n1. 理解相似度与正确性不是一回事\n2. 分清两类失效：资料本身有问题、生成不忠实\n3. 学会用来源与适用条件核验答案\n\n## 第一步：相似度衡量的是什么\n\n把问题表示成向量，把资料片段也表示成向量，再看两者有多接近。高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确：一段把旧政策写得非常清楚的资料，可能和“现在怎么退票”高度相似，但内容已过时。相似度看不出时间、真假和适用范围。\n\n这也是为什么高相似度检索不能保证答案正确，失效至少有两层：\n\n- **资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。\n- **生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。\n\n所以看到“检索相似度高”或“答案里有引用”，都不能直接当正确。需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。这两步是在检索和生成之外单独做的核对，相似度分数不会替你完成。"
+        }
+      ],
+      "answer_source_type": "agent_generated",
+      "teaching_step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+      "teaching_plan_version": 1,
+      "execution_complete": true
+    },
+    {
+      "run_id": "ceddb794-d67d-427e-8fd3-6c15f3dcf658",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "input_ids": [
+        "be60c737-6cf1-4e75-a770-9af63f592f30"
+      ],
+      "input_channel": "text",
+      "voice_input_ids": [],
+      "revision": 1,
+      "status": "completed",
+      "stage": "completed",
+      "user_summary": "本轮已回应",
+      "attempt": 1,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "knowledge_save_operation": null,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "answer"
+        ],
+        "target_task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+        "target_description": "复述高相似度检索不能保证答案正确的原因",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "continue_goal",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户在回应上一轮发出的复述题，用自己的话作答，属于 answer；继续当前 source_learning 目标，交给评价节点判断，不额外出题或纠正。",
+        "understanding": "unknown",
+        "answer_evidence": "高相似度只说明检索片段和问题在语义上接近；但来源资料本身可能错误或过时，所以即使检索很相关，也不能保证答案正确。",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": false,
+        "comprehensive_check": null,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "public_source_scope": "focused",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "error_code": null,
+      "created_at": "2026-10-21T03:34:11.294208+00:00",
+      "updated_at": "2026-10-21T03:34:25.319079+00:00",
+      "started_at": null,
+      "elapsed_ms": 14010,
+      "attempt_durations": [
+        14010
+      ],
+      "first_text_ms": 3698,
+      "activity_candidate": null,
+      "activity_kind": null,
+      "completed_at": null,
+      "paused_entry": false,
+      "lifecycle_revision": 0,
+      "thinking_strength": "smart",
+      "model_calls": [
+        {
+          "id": "ef08f549-0a8f-435f-8103-ac48ee42953c",
+          "budget_id": "c3053e1e-f073-4f26-9021-6f82c73f0593",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "deepseek-flash",
+          "estimated_input_tokens": 35905,
+          "transport_requests": 1,
+          "request_ids": [
+            "a053ed3d-a79c-4cb6-a356-1f7e1f9df8ae"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "1688f083-cc40-4c63-95bb-50971139918f",
+              "input_tokens": 16605,
+              "output_tokens": 391,
+              "total_tokens": 16996,
+              "cached_input_tokens": 13312,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "a053ed3d-a79c-4cb6-a356-1f7e1f9df8ae"
+            }
+          ],
+          "status": "returned"
+        },
+        {
+          "id": "eb31b268-1671-45c7-93c3-a2514982096b",
+          "budget_id": "c3053e1e-f073-4f26-9021-6f82c73f0593",
+          "revision": 1,
+          "background": false,
+          "node": "evaluate",
+          "model": "deepseek-v4-flash",
+          "estimated_input_tokens": 10534,
+          "transport_requests": 1,
+          "request_ids": [
+            "e5cd3ece-bbf6-498b-b73f-f3c1caf29bab"
+          ],
+          "usage_state": "reported",
+          "usage": [
+            {
+              "response_id": "e339c793-66ec-49ba-8e87-8ba25056c298",
+              "input_tokens": 5297,
+              "output_tokens": 1150,
+              "total_tokens": 6447,
+              "cached_input_tokens": 0,
+              "reasoning_output_tokens": 0,
+              "reported_model": "deepseek-flash",
+              "request_id": "e5cd3ece-bbf6-498b-b73f-f3c1caf29bab"
+            }
+          ],
+          "status": "returned"
+        }
+      ],
+      "execution_budget": {
+        "id": "c3053e1e-f073-4f26-9021-6f82c73f0593",
+        "started": 1792553651.3085299,
+        "attempts": 2,
+        "estimated_input_tokens": 46439
+      },
+      "memory_references": [],
+      "context_capacity": {
+        "estimated": true,
+        "input_tokens": 10534,
+        "input_budget": 256000,
+        "compact_threshold": 220000,
+        "compact_target": 144000,
+        "ratio": 0.0411484375,
+        "output_reserve": 4096,
+        "model_window": 1000000,
+        "budget_source": "local_limit",
+        "omitted_narrative": []
+      },
+      "dialogue_policy": "dialogue-materials-11",
+      "request_scope": {
+        "input_ids": [
+          "be60c737-6cf1-4e75-a770-9af63f592f30"
+        ],
+        "resource_boundary": "none",
+        "programming_boundary": "none"
+      },
+      "decision_input_ids": [
+        "be60c737-6cf1-4e75-a770-9af63f592f30"
+      ],
+      "decision_mode": "source_learning",
+      "completed_operations": {
+        "2000acfff0f709c5c183d782581e5b275f37de8e81d460d353ccc2376a42e5f1": false
+      },
+      "evaluated_step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+      "evaluated_binding": {
+        "question": "用自己的话复述：高相似度检索为什么不能保证答案正确？请至少说到两点——资料本身可能错误或过时、生成可能不忠实于资料——并说明为什么答完还要核对来源和适用条件。",
+        "step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+        "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+        "concepts": [
+          "相似度与相关性",
+          "来源资料错误或过时",
+          "生成不忠实于依据资料",
+          "来源与适用条件核对"
+        ],
+        "evidence_quotes": [
+          "高相似度意味着“这段资料可能在谈相关的事”，因此值得交给模型参考。然而，相关不等于正确",
+          "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+          "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+          "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+        ],
+        "scope": "concept",
+        "reference_stamp": "9e71662a846aca5344aedc4c65c28af28002704c6b418f0928a90d33806cb4f8",
+        "plan_version": 1,
+        "completion_condition": "",
+        "completion_requirements": [],
+        "check_kind": "concept",
+        "scope_policy": "explicit-comprehensive-1"
+      },
+      "evaluation_message_id": "be60c737-6cf1-4e75-a770-9af63f592f30",
+      "capture_quotes": [
+        "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+        "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+        "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+      ],
+      "capture_feedback_quotes": [
+        "**生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。",
+        "**事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。"
+      ],
+      "capture_scope_summary": "高相似度只代表检索相关；资料可能错误过时，生成也可能不忠实，需核对来源与适用条件。",
+      "capture_preview": {
+        "points": [
+          {
+            "text": "检索片段本身可能错误、片面或过时，模型忠实引用也只是忠实于错误。",
+            "evidence_quotes": [
+              "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。"
+            ]
+          },
+          {
+            "text": "模型生成时可能混入自身记忆、过度概括或补全没写的内容，不忠实于依据资料。",
+            "evidence_quotes": [
+              "**生成层**：模型可能不忠实于资料，混入自身记忆、过度概括或补全没写的内容。"
+            ]
+          },
+          {
+            "text": "相似度不检查真假、时效和范围，因此要核对来源以及地区、版本、前提等适用条件。",
+            "evidence_quotes": [
+              "**事后核验**：相似度分数不检查真假、时效和范围，因此还要核对**来源**（谁、何时、什么口径发布）和**适用条件**（地区、版本、前提是否一致）。"
+            ]
+          }
+        ],
+        "summary": {
+          "text": "高相似度仅是检索相关，资料错误过时与生成不忠实都会破坏正确性，需另核对来源和适用条件。",
+          "evidence_quotes": [
+            "**资料层**：检索回来的片段本身可能错误、片面或过时，模型再忠实地引用，也只会忠实于错误。",
+            "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+            "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+          ]
+        }
+      },
+      "verified_concepts": [],
+      "execution_complete": true
+    },
+    {
+      "run_id": "4e84d18a-ae85-47d2-8d8a-c0310982fa1c",
+      "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+      "task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+      "input_ids": [
+        "e236a590-4b4c-4689-98e5-fe55b6d45c51"
+      ],
+      "input_channel": "text",
+      "voice_input_ids": [],
+      "revision": 1,
+      "status": "completed",
+      "stage": "completed",
+      "user_summary": "本轮已回应",
+      "attempt": 1,
+      "intent": {
+        "conversation_kind": "ordinary",
+        "clarification_kind": "none",
+        "conversation_repair": false,
+        "reply_feedback": "none",
+        "reply_purpose": "none",
+        "knowledge_card_status": false,
+        "knowledge_save_operation": null,
+        "status_context": null,
+        "repair_target_message_id": "",
+        "continuation_evidence": "",
+        "continuation_topic": "",
+        "programming_boundary": "none",
+        "programming_learning_request": "",
+        "resource_boundary": "none",
+        "resource_learning_request": "",
+        "learning_reply_sentence_limit": null,
+        "intents": [
+          "answer"
+        ],
+        "target_task_id": "e222d507-f9f3-48e9-9f1e-03bf04b060c4",
+        "target_description": "理解高相似度检索不能保证答案正确的原因，并完成复述题",
+        "relation": "continuation",
+        "workflow": null,
+        "scope": "continue_goal",
+        "proposed_actions": [],
+        "clarification": "",
+        "rationale": "用户补答了上一轮检查题的两点追问，属于对当前检查题的实际作答，应交给评价节点。",
+        "understanding": "unknown",
+        "answer_evidence": "模型生成时可能误解资料、遗漏重要限制，或加入资料没有支持的内容，所以即使检索片段很相关，最终答案仍可能偏离依据。高相似度也不证明来源真实或最新；因此要回到原始出处核对发布者和发布时间，再检查版本、地区及适用前提是否匹配。资料本身错误或过时，与生成不忠实，是两种独立风险。",
+        "topic_closure": null,
+        "learning_goal_ready": true,
+        "direct_teaching": false,
+        "comprehensive_check": null,
+        "answer_only": false,
+        "is_jd": false,
+        "material_focus": "none",
+        "public_source_scope": "focused",
+        "jd_request": "none",
+        "needs_verification": false,
+        "cross_check_sources": false,
+        "requested_mode": null,
+        "refresh_sources": false,
+        "public_search_query": "",
+        "light_reply": "",
+        "session_tags": [],
+        "handoff_source_ids": [],
+        "handoff_step_ids": [],
+        "memory_selections": []
+      },
+      "error_code": null,
+      "created_at": "2026-10-21T04:36:25.506789+00:00",
+      "updated_at": "2026-10-21T04:36:25.830959+00:00",
+      "started_at": null,
+      "elapsed_ms": 313,
+      "attempt_durations": [
+        313
+      ],
+      "first_text_ms": null,
+      "activity_candidate": null,
+      "activity_kind": null,
+      "completed_at": null,
+      "paused_entry": false,
+      "lifecycle_revision": 0,
+      "thinking_strength": "smart",
+      "model_calls": [
+        {
+          "id": "1edc704f-ad7b-4a21-a327-164ee3ac01de",
+          "budget_id": "2e61b8cc-2841-4535-9e18-bb0c3da03cb2",
+          "revision": 1,
+          "background": false,
+          "node": "intent",
+          "model": "gpt-5.6-luna",
+          "estimated_input_tokens": 39924,
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "returned"
+        },
+        {
+          "id": "b25e55a7-7d04-45b8-803f-9c218a1efbc0",
+          "budget_id": "2e61b8cc-2841-4535-9e18-bb0c3da03cb2",
+          "revision": 1,
+          "background": false,
+          "node": "evaluate",
+          "model": "gpt-5.6-terra",
+          "estimated_input_tokens": 10397,
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "returned"
+        },
+        {
+          "id": "4bbd20b0-6fc1-4143-b69c-b40363eb681d",
+          "budget_id": "2e61b8cc-2841-4535-9e18-bb0c3da03cb2",
+          "revision": 1,
+          "background": false,
+          "node": "evaluate",
+          "model": "gpt-5.6-terra",
+          "estimated_input_tokens": 10593,
+          "transport_requests": 0,
+          "request_ids": [],
+          "usage_state": "unavailable",
+          "usage": [],
+          "status": "returned"
+        }
+      ],
+      "execution_budget": {
+        "id": "2e61b8cc-2841-4535-9e18-bb0c3da03cb2",
+        "started": 1792557385.517451,
+        "attempts": 3,
+        "estimated_input_tokens": 60914
+      },
+      "memory_references": [],
+      "context_capacity": {
+        "estimated": true,
+        "input_tokens": 10593,
+        "input_budget": 256000,
+        "compact_threshold": 220000,
+        "compact_target": 144000,
+        "ratio": 0.04137890625,
+        "output_reserve": 4096,
+        "model_window": null,
+        "budget_source": "local_limit",
+        "omitted_narrative": []
+      },
+      "dialogue_policy": "dialogue-materials-11",
+      "request_scope": {
+        "input_ids": [
+          "e236a590-4b4c-4689-98e5-fe55b6d45c51"
+        ],
+        "resource_boundary": "none",
+        "programming_boundary": "none"
+      },
+      "decision_input_ids": [
+        "e236a590-4b4c-4689-98e5-fe55b6d45c51"
+      ],
+      "decision_mode": "source_learning",
+      "completed_operations": {
+        "4be90be45bc7991363b0f111dca1092930b050c670684b1892345cf071624880": false
+      },
+      "evaluated_step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+      "evaluated_binding": {
+        "question": "请补说两点：①模型生成时可能怎样不忠实于检索到的资料？②为什么答案有引用、检索相似度高，仍要再核对来源和适用条件？",
+        "step_id": "042cc306-d35f-4b94-9ee5-a9dfd0820ac2",
+        "step_title": "理解相似度衡量的是检索相关性，不等于正确性",
+        "concepts": [
+          "生成不忠实于依据资料",
+          "来源与适用条件核对"
+        ],
+        "evidence_quotes": [
+          "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+          "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+        ],
+        "scope": "concept",
+        "reference_stamp": "9e71662a846aca5344aedc4c65c28af28002704c6b418f0928a90d33806cb4f8",
+        "plan_version": 1,
+        "completion_condition": "",
+        "completion_requirements": [],
+        "check_kind": "concept",
+        "scope_policy": "explicit-comprehensive-1"
+      },
+      "evaluation_message_id": "e236a590-4b4c-4689-98e5-fe55b6d45c51",
+      "capture_quotes": [
+        "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。",
+        "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+      ],
+      "capture_feedback_quotes": [
+        "模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。"
+      ],
+      "capture_scope_summary": "模型生成可能不忠实于资料；引用与高相似度不能替代来源和适用条件核对。",
+      "capture_preview": {
+        "points": [
+          {
+            "text": "生成可能混入无依据内容，或遗漏资料中的限制。",
+            "evidence_quotes": [
+              "**生成层**：模型可能没那么多忠实依据资料，而是混入自己记忆中的说法、过度概括或补全没写的内容。"
+            ]
+          },
+          {
+            "text": "核对来源的发布者、时间，以及版本、地区和适用前提。",
+            "evidence_quotes": [
+              "需要核对**来源**（是谁、什么时间、什么口径发布）和**适用条件**（地区、版本、前提是否和你一致）。"
+            ]
+          }
+        ],
+        "summary": {
+          "text": "相关和带引用仍不保证正确，答案还需核对来源与适用条件。",
+          "evidence_quotes": [
+            "模型可能误解资料、漏掉限制或补入无依据内容；相似度高和带引用都不等于来源真实、最新或适用，仍需核对发布者、时间、版本和前提。"
+          ]
+        }
+      },
+      "verified_concepts": [
+        "生成不忠实于依据资料",
+        "来源与适用条件核对"
+      ],
+      "execution_complete": true
+    }
+  ]
+}
