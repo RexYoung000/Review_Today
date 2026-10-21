@@ -1,0 +1,13 @@
+{
+  "status": "PREPARED_HOLD",
+  "directory": "/tmp/review-today-first-preview-pending-8dzum5y0",
+  "session_id": "a223ea4d-869d-4620-8a44-67495ba4a80d",
+  "port": 49384,
+  "model_limit": 20,
+  "web_limit": 0,
+  "service_starting_counts": {
+    "agent_sessions_v2": 0,
+    "harness_tasks": 0,
+    "agent_memory_policy_v2": 0
+  }
+}

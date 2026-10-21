@@ -1,0 +1,39 @@
+{
+  "outcome": "READY_PENDING_ALLOWANCE",
+  "proposed_model_limit": 20,
+  "proposed_web_limit": 0,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "authorization_confirmed": false,
+  "empty_database_checks": {
+    "native": {
+      "ZKNOWLEDGE": 0,
+      "ZSOURCE": 0,
+      "ZAGENTMESSAGE": 0,
+      "ZAGENTSESSION": 0,
+      "ZLEARNINGTASK": 0,
+      "ZAGENTRUN": 0,
+      "ZFSRSSTATE": 0
+    },
+    "service": {
+      "agent_sessions_v2": 0,
+      "harness_tasks": 0,
+      "agent_memory_policy_v2": 0
+    }
+  },
+  "sdk_guard_cases": 11,
+  "all_nine_web_entries_block_before_backend": true,
+  "actual_bootstrap_blocks_pending_before_import": true,
+  "prepared_files_unchanged": true,
+  "protected_source_configuration_files": 184,
+  "old_runtime_files_unchanged": 97,
+  "old_native_app_unchanged": true,
+  "user_project_diff_preserved": true,
+  "native_bundle_compile_and_signature_pass": true,
+  "app_or_service_started": false,
+  "native_ui_checked": false,
+  "real_model_checked": false,
+  "frozen_old_allowances_unchanged": true,
+  "plan_sha256": "00764ba7e63b43c8569859380ec30d8e3935adea235526c7cc51ac7f2408b544",
+  "next_step": "Confirm the new first-preview-only 20/0 allowance before launch or probes."
+}

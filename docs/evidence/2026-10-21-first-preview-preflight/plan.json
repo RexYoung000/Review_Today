@@ -1,0 +1,63 @@
+{
+  "status": "PROPOSED_PENDING_ALLOWANCE",
+  "date": "2026-10-21",
+  "model_request_limit": 20,
+  "provider_web_operation_limit": 0,
+  "first_input": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请先简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料；以及为什么要核对来源和适用条件。现在只学习和作答，先不要保存知识卡，也不要进行本节综合检查。讲解阶段不需要联网。",
+  "required_concepts": [
+    "相似度衡量语义相关，不证明答案正确",
+    "来源资料本身可能错误或过时",
+    "生成可能不忠实依据或遗漏限制条件",
+    "核对原始来源可信度与时间、版本及场景适用性"
+  ],
+  "gates": [
+    {
+      "id": "startup",
+      "action": "启动独立空库 App，重新探测，不沿用旧就绪标记",
+      "pass": "服务实际加载当前源码，角色与本轮智能强度可用；全批实际请求可追溯，尚无学习输入和知识卡"
+    },
+    {
+      "id": "lesson",
+      "action": "从正式原生输入框发送 first_input 一次",
+      "pass": "真实讲解及题面覆盖必要要求，同一新会话形成真实学习任务；尚无保存授权、知识卡或复习参与",
+      "estimated_model_requests": 3
+    },
+    {
+      "id": "partial_answer",
+      "action": "按实际题面仅答语义相关与来源风险，明确遗漏生成风险及核对条件",
+      "pass": "正确部分获反馈，缺口仍待补答；不认证全题、不触发答题通过邀请、不写知识卡",
+      "estimated_model_requests": 2
+    },
+    {
+      "id": "complete_answer",
+      "action": "针对本次实际题目与补答要求完整作答，不预填模型判断",
+      "pass": "只验证该题实际概念；出现未保存的标题、少量要点和一句总结，语义忠于有效讲解与作答；不升级整节掌握",
+      "estimated_model_requests": 2
+    },
+    {
+      "id": "disk_readback",
+      "action": "邀请关通过或失败后正常退出，用新原生进程读取隔离磁盘",
+      "pass": "原生与服务的输入、回复、Run、邀请字段和版本匹配；知识卡、来源、FSRS 为零，整节不因本题通过而完成"
+    }
+  ],
+  "startup_estimate": 8,
+  "path_estimate": 15,
+  "reserve_within_limit": 5,
+  "counting": "全部启动探测、模型实际请求、格式修复、自动知识修复、兼容回退、后台与超时分别计数；每次供应商搜索、读取和兜底分别计网页额度。次数不是金额上限。",
+  "stop_conditions": [
+    "任一关卡最终失败，保留输出及状态后停止，不手动重跑至通过",
+    "任一调用维度到限，禁止新请求，即使流程尚未完成",
+    "发生数据归属、版本、持久化或隔离保护不符",
+    "需要代码修复、人工替换输出、修改数据库或重启恢复才能推进；后续分项另记，不称本次无中断通过"
+  ],
+  "normal_behavior_allowed": "程序既有的有限格式修复及一次知识修复可正常运行且计数；成功不能证明未触发的错误恢复路径。",
+  "excluded": [
+    "日常 App 更新或日常数据写入",
+    "恢复任何旧批或本批停止后的冻结余量",
+    "新增产品规则、模型配置、核验调用或子 Agent",
+    "通用教学准确率、完整异常恢复、完整 VoiceOver、Rex 体验或 M1 总体验收关闭",
+    "同点更新、独立插问回切、知识卡保存、详情与状态查询；不冒充完整连续链通过"
+  ],
+  "scope": "fresh empty native lesson, incomplete and complete answers, first structured preview and durable readback; no update, save or web",
+  "repair_commit": "f5a9180"
+}

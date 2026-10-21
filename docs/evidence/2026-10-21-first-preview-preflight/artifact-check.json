@@ -1,0 +1,9 @@
+{
+  "outcome": "PASS",
+  "credential_bytes_absent": true,
+  "local_links_valid": true,
+  "json_valid": true,
+  "production_diff_empty": true,
+  "real_requests": 0,
+  "held_pending_and_unlaunched": true
+}
