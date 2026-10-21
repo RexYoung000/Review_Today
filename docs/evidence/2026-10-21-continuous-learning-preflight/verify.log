@@ -1,0 +1,37 @@
+{
+  "outcome": "READY_PENDING_ALLOWANCE",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "proposed_model_limit": 40,
+  "proposed_web_limit": 16,
+  "authorization_confirmed": false,
+  "actual_bootstrap_blocks_pending_before_import": true,
+  "prepared_files_unchanged": true,
+  "empty_database_checks": {
+    "native": {
+      "ZKNOWLEDGE": 0,
+      "ZSOURCE": 0,
+      "ZAGENTMESSAGE": 0,
+      "ZAGENTSESSION": 0,
+      "ZLEARNINGTASK": 0,
+      "ZAGENTRUN": 0,
+      "ZFSRSSTATE": 0
+    },
+    "service": {
+      "agent_sessions_v2": 0,
+      "harness_tasks": 0,
+      "agent_memory_policy_v2": 0
+    }
+  },
+  "sdk_guard_cases": 11,
+  "native_bundle_compile_and_signature_pass": true,
+  "native_ui_checked": false,
+  "real_model_checked": false,
+  "app_or_service_started": false,
+  "old_runtime_files_unchanged": 68,
+  "protected_source_configuration_files": 184,
+  "user_project_diff_preserved": true,
+  "plan_sha256": "01a26d7118c12165dc3b19b06655067eed2db615fab4164e757c181cec578896",
+  "frozen_old_allowances_unchanged": true,
+  "next_step": "Explicit new 40/16 allowance before starting native App or fresh probes; recheck fingerprints first."
+}

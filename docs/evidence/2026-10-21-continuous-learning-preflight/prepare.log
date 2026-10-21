@@ -1,0 +1,13 @@
+{
+  "status": "PREPARED_HOLD",
+  "directory": "/tmp/review-today-continuous-learning-pending-ly7q01m0",
+  "session_id": "91e9fe67-b89f-44e4-9314-a6ca0a35a319",
+  "port": 50322,
+  "model_limit": 40,
+  "web_limit": 16,
+  "service_starting_counts": {
+    "agent_sessions_v2": 0,
+    "harness_tasks": 0,
+    "agent_memory_policy_v2": 0
+  }
+}
