@@ -1,0 +1,64 @@
+{
+  "status": "PROPOSED_PENDING_ALLOWANCE",
+  "date": "2026-10-21",
+  "model_request_limit": 32,
+  "provider_web_operation_limit": 16,
+  "basis": "isolate a copy of decision254 successful v1 preview; real prior history retained, no synthetic outputs",
+  "startup_estimate": 8,
+  "path_estimate": 24,
+  "reserve_within_limit": 8,
+  "gates": [
+    {
+      "id": "startup",
+      "action": "重新探测，核对保留的任务、讲义、v1预览及六条消息",
+      "pass": "新进程加载当前代码；旧就绪状态未复用，数据与来源一致且无新保存"
+    },
+    {
+      "id": "same_topic_update",
+      "action": "向刚才RAG预览补充一个适用条件的具体例子，明确暂不保存",
+      "estimated_model_requests": 3,
+      "pass": "同一邀请接纳本知识点有效补充；新版本、要点／总结及所选引文一致，无知识落盘或学习推进"
+    },
+    {
+      "id": "independent_question",
+      "action": "临时问Python列表和元组的可变性，明确不并入RAG预览",
+      "estimated_model_requests": 3,
+      "pass": "普通问答完成，原任务、来源、计划和邀请保持，不增加学习或保存授权"
+    },
+    {
+      "id": "return_to_rag",
+      "action": "回到原RAG，只用原讲义和补充简短回顾，不保存或进入下一节",
+      "estimated_model_requests": 3,
+      "pass": "本轮回答实际获得原任务来源，内容忠于相关事实，未混入Python；邀请如依规则变化则核对当前版本与有效范围"
+    },
+    {
+      "id": "native_save",
+      "action": "从当前有效原生预览点击保存一次，复习默认关闭",
+      "estimated_model_requests": 6,
+      "pass": "按点击版本与范围生成、核验、真实本机落盘，匹配真实ACK后显示保存结果，实际卡数不预设；无重复或跨题污染"
+    },
+    {
+      "id": "details_status_progress",
+      "action": "打开本次全部实际卡片详情，再查这次保存的数量和名称并核对学习进度",
+      "estimated_model_requests": 1,
+      "pass": "详情与当前真实回执相符；查询返回实际数量／名称，复习关闭，不因保存认证整节或推进"
+    },
+    {
+      "id": "disk_readback",
+      "action": "正常退出后用新原生进程读取隔离磁盘",
+      "pass": "消息、Run、卡片、来源与保存回执匹配，原库及旧冻结额度不变"
+    }
+  ],
+  "counting": "all startup probes, retries, fallbacks, background and timeout attempts; each search/read/fallback charged as web operation; request caps are not monetary limits",
+  "stop_conditions": [
+    "任一关卡最终失败或任一维度到限即停止留证，不手动重试到通过",
+    "需要改代码、替换输出、重启恢复或调整数据库才能推进时停止，不在试跑中扩大整改",
+    "隔离、来源、版本或真实持久化不符时立即停止"
+  ],
+  "excluded": [
+    "日常App更新或日常业务数据写入",
+    "任何旧余额或本批停止后的余额恢复",
+    "新的模型配置、产品规则、独立日常核验或子Agent",
+    "从空会话无中断完整链验收、真实缺失预览修复路径及M1／Rex体验关闭"
+  ]
+}

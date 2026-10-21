@@ -1,0 +1,36 @@
+{
+  "status": "PREPARED_HOLD",
+  "directory": "/tmp/review-today-preview-save-pending-a9aqb_be",
+  "port": 60672,
+  "session_id": "a223ea4d-869d-4620-8a44-67495ba4a80d",
+  "model_limit": 32,
+  "web_limit": 16,
+  "checks": {
+    "native": {
+      "quick_check": "ok",
+      "counts": {
+        "ZKNOWLEDGE": 0,
+        "ZSOURCE": 0,
+        "ZAGENTMESSAGE": 6,
+        "ZLEARNINGTASK": 1,
+        "ZAGENTRUN": 3,
+        "ZFSRSSTATE": 0,
+        "ZAGENTSESSION": 1
+      },
+      "cursor": 91
+    },
+    "service": {
+      "messages": 6,
+      "runs": 3,
+      "tasks": 1,
+      "active_task": "3a3e93d1-c2d3-4f9b-8fc9-bc25dda70e85",
+      "offer_id": "25d85e7d-5b03-4d7b-a7b2-c95ec9558c9e",
+      "version": 1,
+      "points": 2,
+      "summary": "检索正确且相似只说明资料相关，生成可能不忠实；还需核对来源与适用条件是否匹配当前问题。",
+      "source_ids": [
+        "ad5acf7b-428c-5da5-94c5-057f423ec956"
+      ]
+    }
+  }
+}

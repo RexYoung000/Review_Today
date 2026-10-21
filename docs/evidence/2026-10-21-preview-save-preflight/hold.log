@@ -1,0 +1,1 @@
+{"case": "hold", "outcome": "PASS", "mock_model_transport": 0, "mock_web_operations": 0, "real_requests": 0, "denied": {"socket": 0, "outside_sqlite": 0}, "pending_or_stopped_files_unchanged": true}
