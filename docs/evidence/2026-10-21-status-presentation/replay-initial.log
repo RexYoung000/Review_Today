@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-status-presentation/replay.py", line 72, in <module>
+    main()
+    ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-status-presentation/replay.py", line 55, in main
+    assert after['tasks'] == data['tasks'] and after['capture_offers'] == data['capture_offers']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

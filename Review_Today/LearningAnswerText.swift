@@ -79,6 +79,7 @@ struct LearningAnswerText: View {
                             .foregroundStyle(runway.copy)
                         prose(item.text).frame(maxWidth: .infinity, alignment: .leading)
                     }.padding(.leading, CGFloat(item.indent) * 16).accessibilityElement(children: .combine)
+                        .accessibilityLabel(Text("\(item.marker) \(item.text)"))
                 }
             }
         case .table(let headers, let rows):

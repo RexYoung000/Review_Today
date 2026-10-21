@@ -79,6 +79,34 @@ class SaveOperationStatusTests(unittest.TestCase):
         self.assertEqual(operation['request'], '保存为知识卡')
         self.assertNotIn('knowledge', operation)
 
+    def test_selected_saved_receipt_lists_names_without_unrelated_scope_notices(self):
+        state = self.selected(related_knowledge=[dict(id='reference-only')])
+        state['coverage_note'] = '旧讨论的覆盖备注'
+        text = reply(state)
+        self.assertIn('已成功写入 5 张知识卡', text)
+        for index, card in enumerate(state['current_cards'], 1):
+            self.assertIn(f'{index}. {card["title"]}', text)
+        for notice in ('本次保存范围', '旧卡只是参考', '旧讨论的覆盖备注', '内容包括'):
+            self.assertNotIn(notice, text)
+
+    def test_partial_name_projection_does_not_claim_to_list_every_saved_card(self):
+        state = self.selected()
+        state['current_cards'] = state['current_cards'][:2]
+        text = reply(state)
+        self.assertIn('已成功写入 5 张知识卡', text)
+        self.assertIn('其余 3 张的名称可到知识库查看', text)
+
+    def test_short_success_does_not_replace_unconfirmed_operation_or_discussion_scope(self):
+        before = reply(facts(self.data, related_knowledge=[dict(id='reference-only')],
+                             status_context=self.decision['status_context']), self.decision['status_context'])
+        self.assertIn('保存范围不完全一致', before)
+        self.task['events'] = []
+        state = self.selected(related_knowledge=[dict(id='reference-only')])
+        self.assertEqual(state['stage'], 'saving')
+        text = reply(state)
+        self.assertIn('还不能确认', text)
+        self.assertNotIn('已成功写入', text)
+
     def test_no_ack_and_mismatched_ids_do_not_borrow_success(self):
         for change in ('no_ack', 'different_offer_ids', 'different_package_ids'):
             with self.subTest(change=change):

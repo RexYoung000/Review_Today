@@ -368,6 +368,18 @@ def reply(state, status_context=None):
             failed='这次新增知识尚未完成，不能算作已保存。请在这条邀请中查看原因，修订内容或选择「重试录入」。',
             invalidated='这条新增知识邀请的范围或来源已经变化，旧版不能继续保存。需要先完成修订，再确认新的范围。')
     context = validate_context(state, None if state.get('selected_save_operation') else status_context)
+    if stage == 'saved' and state.get('selected_save_operation'):
+        # The operation binding already fixes scope. Answer its receipt without
+        # adding discussion coverage or unrelated library-reference notices.
+        count = len(state['current_knowledge_ids'])
+        titles = [' '.join(card['title'].split()) for card in state.get('current_cards', []) if card.get('title', '').strip()]
+        text = f'这次已成功写入 {count} 张知识卡。'
+        if titles:
+            text += '\n\n' + '\n'.join(f'{index}. {title[:120]}' + ('…' if len(title) > 120 else '')
+                                        for index, title in enumerate(titles, 1))
+        if len(titles) < count:
+            text += f'\n\n其余 {count - len(titles)} 张的名称可到知识库查看。'
+        return text
     text = ''
     if context['correction_quote']:
         text = '前面关于本轮知识卡的说法不准确；没有可确认的本轮知识卡保存记录。\n\n'

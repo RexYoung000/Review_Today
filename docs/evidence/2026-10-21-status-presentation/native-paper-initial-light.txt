@@ -1,0 +1,48 @@
+Window: "保存结果与来源标签 · 离线展示复验", App: StatusPresentationQA.
+0 standard window 保存结果与来源标签 · 离线展示复验, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<StatusPresentationQA.PresentationRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 离线组件复验 · 留存真实数据 · 无模型或网页调用
+		3 checkbox Description: 深色, Value: 1
+		4 checkbox Description: 纸面详情, Value: 1
+		5 button 常规窗口
+		6 button 紧凑窗口
+		7 container 知识卡片
+			8 text Help: 左划下一张，右划上一张，也可使用左右方向键或侧边定位条, Value: 检索相似度与答案正确性
+			9 button Description: 关闭知识详情, ID: xmark
+			10 scroll area Secondary Actions: Scroll Up, Scroll Down
+				11 heading Description: 核对来源与适用条件, Help: 左划下一张，右划上一张，也可使用左右方向键或侧边定位条
+				12 heading 主问题
+				13 text 拿到一个以高相似度资料为依据的回答时，你应该核对哪些方面？为什么？
+				14 heading 讲解
+				15 text 1 拿到以高相似度资料为依据的回答时，要回到来源本身核对。 2 需要确认适用条件是否与当前问题一致，例如时间、地区、对象和版本。 3 生成回答可能误解、遗漏限制或混入资料未支持的内容。 4 高相似度不保证来源真实或最新，所以还要核对时间、地区、版本、对象和适用前提。
+				16 heading 判断关键点
+				17 text 先说明核对来源，再说明核对适用条件，最后说明原因。 要回到来源本身核对 要确认适用条件与当前问题一致 适用条件包括时间、地区、对象和版本 生成回答可能遗漏限制或混入未支持内容 高相似度不保证来源真实或最新
+				18 heading 常见误区
+				19 text 认为高相似度资料可直接作为答案依据，无需核对来源 忽略适用条件，把资料内容直接套用到当前问题
+				20 heading 来源依据
+				21 text 来源摘录 拿到以“高相似度资料”为依据的回答时，需要回到**来源本身**核对，并确认**适用条件**，比如时间、地区、对象和版本，是否和当前问题一致。 生成回答可能误解、遗漏限制或混入资料未支持的内容；高相似度也不保证来源真实或最新，所以还要核对时间、地区、版本、对象和适用前提。
+				22 scroll bar (settable, float) 0
+					23 value indicator (settable, float) 0
+					24 increment arrow button
+					25 decrement arrow button
+					26 increment page button
+					27 decrement page button
+			28 checkbox Description: 已学过，参与间隔复习, Value: 0
+			29 text 仅保存资料 · 未参与复习
+			30 menu button 更多, Description: More, ID: ellipsis
+			31 button 试一题
+			32 text 共 4 张知识卡
+			33 unknown Description: 知识卡定位, Details: 第 1 张，共 4 张，核对来源与适用条件, Secondary Actions: Increment, Decrement
+	34 close button
+	35 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	36 minimize button
+	37 text 保存结果与来源标签 · 离线展示复验
+38 menu bar
+	39 StatusPresentationQA
+	40 File
+	41 Edit
+	42 View
+	43 Window
+	44 Help
+
+The focused UI element is 0 standard window 保存结果与来源标签 · 离线展示复验, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<StatusPresentationQA.PresentationRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1

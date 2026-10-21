@@ -1,0 +1,13 @@
+{
+  "outcome": "QA_STARTUP_REJECTED_BEFORE_DATA_OPEN",
+  "directory": "/tmp/review-today-status-presentation-0xsetb5e",
+  "bundle_identifier": "local.review-today.status-presentation-offline",
+  "port": 1,
+  "reason": "Existing AppRuntime requires .NativeQA bundle suffix and port 1024..65535 excluding daily 8742",
+  "cua_error": "timeoutReached",
+  "qa_crash_reports": 3,
+  "production_guard_unchanged": true,
+  "daily_database_not_opened": true,
+  "new_model_requests": 0,
+  "new_web_operations": 0
+}

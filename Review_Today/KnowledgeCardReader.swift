@@ -275,7 +275,7 @@ private struct KnowledgeDepthCard: View {
             if let locator = sourceLocator {
                 Link("打开来源", destination: locator).font(.caption)
             } else {
-                Text("来自你提交的原文").font(.caption).foregroundStyle(.secondary)
+                Text("来源摘录").font(.caption).foregroundStyle(.secondary)
             }
             let evidence = item.evidenceExcerpt.trimmingCharacters(in: .whitespacesAndNewlines)
             if evidence.isEmpty {
@@ -517,7 +517,7 @@ private struct KnowledgeDepthCard: View {
                         Link(String(localized: "打开来源"), destination: locator)
                             .font(.caption)
                     } else {
-                        Text(String(localized: "来自你提交的原文"))
+                        Text(String(localized: "来源摘录"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

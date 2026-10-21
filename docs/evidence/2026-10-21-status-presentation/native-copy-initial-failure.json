@@ -1,0 +1,9 @@
+{
+  "outcome": "QA_COPY_MISSING_MIGRATION_MARKER",
+  "directory": "/tmp/review-today-status-presentation-uxifzmes",
+  "existing_product_guard_unchanged": true,
+  "normal_database_opened": false,
+  "fix": "Copy existing migration marker together with already-migrated native store; keep original data untouched",
+  "real_model_requests": 0,
+  "real_web_operations": 0
+}

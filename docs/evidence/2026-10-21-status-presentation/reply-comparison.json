@@ -1,0 +1,13 @@
+{
+  "layer": "controlled_production_harness_replay",
+  "prior_real_reply": "这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索资料正确时生成仍可能不忠实；高相似度不保证真实最新，需核对时间、地区、版本等适用条件；原文无误但转述漏掉地区、版本限定，也会把局部规则错误套用。 内容包括：检索相似度；生成不忠实；核对来源与适用条件；适用边界丢失。 上下文中引用的知识库旧卡只是参考，不代表本轮新生成的卡。",
+  "corrected_reply": "这次已成功写入 4 张知识卡。\n\n1. 检索相似度\n2. 生成不忠实\n3. 核对来源与适用条件\n4. 适用边界丢失",
+  "prior_characters": 166,
+  "corrected_characters": 57,
+  "original_real_intent_reused": true,
+  "synthetic_model_reply": false,
+  "network_blocked": true,
+  "real_model_requests": 0,
+  "real_web_operations": 0,
+  "task_offer_and_prior_history_unchanged": true
+}

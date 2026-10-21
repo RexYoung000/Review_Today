@@ -1,0 +1,29 @@
+Window: "保存结果与来源标签 · 离线展示复验", App: StatusPresentationQA.
+0 standard window 保存结果与来源标签 · 离线展示复验, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<StatusPresentationQA.PresentationRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 离线组件复验 · 留存真实数据 · 无模型或网页调用
+		3 checkbox Description: 深色, Value: 1
+		4 checkbox Description: 纸面详情, Value: 1
+		5 button 常规窗口
+		6 button 紧凑窗口
+		7 scroll area
+			8 text 刚才这次一共保存了几张知识卡，分别叫什么？ 这次已成功写入 4 张知识卡。
+			9 unknown 1. 检索相似度
+			10 unknown 2. 生成不忠实
+			11 unknown 3. 核对来源与适用条件
+			12 unknown 4. 适用边界丢失
+			13 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			14 button 查看知识卡来源
+	15 close button
+	16 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	17 minimize button
+	18 text 保存结果与来源标签 · 离线展示复验
+19 menu bar
+	20 StatusPresentationQA
+	21 File
+	22 Edit
+	23 View
+	24 Window
+	25 Help
+
+The focused UI element is 0 standard window 保存结果与来源标签 · 离线展示复验, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<StatusPresentationQA.PresentationRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
