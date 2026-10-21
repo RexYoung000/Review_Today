@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-learning-save-preflight/refresh.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-learning-save-preflight/refresh.py", line 76, in main
+    assert all(digest(Path(parent['directory']) / name) == expected for name, expected in parent['sha256'].items())
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-learning-save-preflight/refresh.py", line 76, in <genexpr>
+    assert all(digest(Path(parent['directory']) / name) == expected for name, expected in parent['sha256'].items())
+               ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-21-learning-save-preflight/refresh.py", line 21, in digest
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_abc.py", line 625, in read_bytes
+    with self.open(mode='rb') as f:
+         ~~~~~~~~~^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/review-today-preview-repair-real-uuwxobp6/verified-roles.json'
