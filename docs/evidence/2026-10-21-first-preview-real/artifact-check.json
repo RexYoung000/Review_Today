@@ -1,0 +1,11 @@
+{
+  "outcome": "PASS",
+  "credential_bytes_absent": true,
+  "local_links_checked": 625,
+  "json_valid": true,
+  "production_diff_empty": true,
+  "prior_manifests_valid": true,
+  "real_requests": 15,
+  "web_operations": 0,
+  "remaining_frozen": 5
+}

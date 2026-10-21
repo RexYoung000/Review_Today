@@ -1,0 +1,228 @@
+[
+  {
+    "batch_id": "417ef262-8b67-4037-a5df-b4804614d0aa",
+    "provider": "deepseek",
+    "created_at": 1792565793.1947799,
+    "updated_at": 1792565798.633355,
+    "rounds": 1,
+    "status": "finished",
+    "calls": [
+      {
+        "id": "7c15d7e2-3672-4f2c-b77d-d872fb9a3dd6",
+        "round": 1,
+        "model": "deepseek-flash",
+        "roles": [
+          "router"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "22a47898-0d40-416c-91f5-084062999119"
+        ],
+        "usage": [
+          {
+            "response_id": "ee4d2ebd-9798-402d-a72d-1225b742ce05",
+            "input_tokens": 130,
+            "output_tokens": 5,
+            "total_tokens": 135,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "22a47898-0d40-416c-91f5-084062999119"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "04a38264-f503-45ab-9919-6bc188a8a565",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "cb25a103-cb29-4842-b553-660c46920a9a"
+        ],
+        "usage": [
+          {
+            "response_id": "237bafab-d909-4b3f-9c20-f65018d3cd85",
+            "input_tokens": 130,
+            "output_tokens": 5,
+            "total_tokens": 135,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "cb25a103-cb29-4842-b553-660c46920a9a"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "c22ec8c2-190e-4619-829e-8cbbb551dbff",
+        "round": 1,
+        "model": "deepseek-v4-pro",
+        "roles": [
+          "risk"
+        ],
+        "kind": "structured",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "9a66c480-9915-4333-bc0b-161cff3703c4"
+        ],
+        "usage": [
+          {
+            "response_id": "9d02c441-d806-4787-a9fc-c9cb01ba8ddb",
+            "input_tokens": 129,
+            "output_tokens": 5,
+            "total_tokens": 134,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 0,
+            "request_id": "9a66c480-9915-4333-bc0b-161cff3703c4"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "f058391b-38a8-481e-aa86-6b7cc3f48200",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "46a7448d-adb5-4393-b300-525466110838"
+        ],
+        "usage": [
+          {
+            "response_id": "10d4d177-67c2-4f73-a8c4-f864683098ed",
+            "input_tokens": 155,
+            "output_tokens": 29,
+            "total_tokens": 184,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 23,
+            "request_id": "46a7448d-adb5-4393-b300-525466110838"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "bdf8d680-f6ec-46d2-b17f-6267c96501fa",
+        "round": 1,
+        "model": "deepseek-flash",
+        "roles": [
+          "router"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "f7cd4336-5725-44e2-a5cb-33ec892117b4"
+        ],
+        "usage": [
+          {
+            "response_id": "0c314b3f-ebf6-41aa-8c6f-ac53509a612e",
+            "input_tokens": 155,
+            "output_tokens": 71,
+            "total_tokens": 226,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 65,
+            "request_id": "f7cd4336-5725-44e2-a5cb-33ec892117b4"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "95d0a6de-2a76-458d-acc1-f248ac3c607d",
+        "round": 1,
+        "model": "deepseek-v4-pro",
+        "roles": [
+          "risk"
+        ],
+        "kind": "structured",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "5d0175e1-7921-4496-af6d-50a52ed49953"
+        ],
+        "usage": [
+          {
+            "response_id": "a52b4efa-0169-44dc-9936-6221870870d2",
+            "input_tokens": 208,
+            "output_tokens": 35,
+            "total_tokens": 243,
+            "cached_input_tokens": 128,
+            "reasoning_output_tokens": 29,
+            "request_id": "5d0175e1-7921-4496-af6d-50a52ed49953"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "a1244dec-2ca7-4c7a-9a01-d9f010009148",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "streaming",
+        "strength": "smart",
+        "transport_requests": 1,
+        "request_ids": [
+          "35ec2fc3-8808-4ad9-8966-ee23b18f2056"
+        ],
+        "usage": [
+          {
+            "response_id": "74d99fd0-2c8d-419b-a94e-b4d0786226f8",
+            "input_tokens": 156,
+            "output_tokens": 84,
+            "total_tokens": 240,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 0,
+            "request_id": "35ec2fc3-8808-4ad9-8966-ee23b18f2056"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      },
+      {
+        "id": "bbc05dd2-318c-403c-b8b7-407d34a7e549",
+        "round": 1,
+        "model": "deepseek-v4-flash",
+        "roles": [
+          "coach"
+        ],
+        "kind": "streaming",
+        "strength": "deep",
+        "transport_requests": 1,
+        "request_ids": [
+          "8828ef88-e596-4607-bdfc-9584453aeb16"
+        ],
+        "usage": [
+          {
+            "response_id": "2b9c7038-ebdd-48a7-80c5-b63bd2eb884a",
+            "input_tokens": 181,
+            "output_tokens": 175,
+            "total_tokens": 356,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 91,
+            "request_id": "8828ef88-e596-4607-bdfc-9584453aeb16"
+          }
+        ],
+        "usage_state": "reported",
+        "status": "returned"
+      }
+    ]
+  }
+]

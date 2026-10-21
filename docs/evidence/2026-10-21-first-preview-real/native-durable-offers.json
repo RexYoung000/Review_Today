@@ -1,0 +1,20 @@
+[
+  {
+    "trigger": "verified_check",
+    "continuation_consumed": true,
+    "scope_summary": "检索资料正确时生成仍可能不忠实；高相似度不保证真实最新，需核对时间、地区、版本等适用条件。",
+    "anchor_message_id": "f30127e9-05af-4a22-a40e-75477c26c11a",
+    "next_request": "",
+    "preview_points": [
+      "模型拿到正确资料后，仍可能改写走样、只取片面内容或加入资料没有的说法。",
+      "以高相似度资料为依据时，还要回到来源本身，核对时间、地区、对象、版本等适用条件。"
+    ],
+    "title": "检索相似度、答案正确性",
+    "id": "25d85e7d-5b03-4d7b-a7b2-c95ec9558c9e",
+    "version": 1,
+    "preview_summary": "检索正确且相似只说明资料相关，生成可能不忠实；还需核对来源与适用条件是否匹配当前问题。",
+    "knowledge_ids": [],
+    "status": "offered",
+    "error": ""
+  }
+]

@@ -1,0 +1,68 @@
+Window: "RAG · 首次预览复验 · 真实模型隔离验收", App: ContinuousResumeQA.
+0 standard window RAG · 首次预览复验 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 首次知识预览复验 · 累计请求以账本为准
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 text 依赖加载检查通过；学习服务尚未启动。
+		6 button (disabled) 选择 Review_Today 项目文件夹
+		7 button Description: 会话标签, ID: tag
+		8 button Description: 归档, ID: archivebox
+		9 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		10 button Description: 学习安排, 区分检索相似度与答案正确性, Value: 已收起
+		11 scroll area Secondary Actions: Scroll Up, Scroll Down
+			12 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				13 text 高相似度只说明检索片段和问题在语义上接近；但来源资料本身可能错误或过时，所以即使检索很相关，也不能保证答案正确。
+					14 text 高相似度只说明检索片段和问题在语义上接近；但来源资料本身可能错误或过时，所以即使检索很相关，也不能保证答案正确。
+				15 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				16 text 你抓住了关键的一半：相似度高只说明匹配程度高，不代表资料内容正确，资料可能错误或过时。 还缺两点：
+				17 heading 独立回答
+					18 text 独立回答
+				19 text 请补充说明：为什么即使检索到的资料内容正确，模型生成的回答仍可能不忠实于资料？并解释核对来源的“适用条件”（如时间、地区、版本）为什么必要。
+					20 text 请补充说明：为什么即使检索到的资料内容正确，模型生成的回答仍可能不忠实于资料？并解释核对来源的“适用条件”（如时间、地区、版本）为什么必要。
+				21 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				22 text 模型生成时可能误解资料、遗漏重要限制，或加入资料没有支持的内容，所以即使检索片段很相关、资料本身正确，最终答案仍可能偏离依据。高相似度也不证明来源真实或最新；因此要回到原始出处核对发布者和发布时间，再检查版本、地区、对象及适用前提是否匹配。资料本身错误或过时，与生成不忠实，是两种独立风险。
+					23 text 模型生成时可能误解资料、遗漏重要限制，或加入资料没有支持的内容，所以即使检索片段很相关、资料本身正确，最终答案仍可能偏离依据。高相似度也不证明来源真实或最新；因此要回到原始出处核对发布者和发布时间，再检查版本、地区、对象及适用前提是否匹配。资料本身错误或过时，与生成不忠实，是两种独立风险。
+				24 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				25 text 两个要点都答到了：生成回答可能误解、遗漏限制或混入资料未支持的内容；高相似度也不保证来源真实或最新，所以还要核对时间、地区、版本、对象和适用前提。
+					26 text 两个要点都答到了：生成回答可能误解、遗漏限制或混入资料未支持的内容；高相似度也不保证来源真实或最新，所以还要核对时间、地区、版本、对象和适用前提。
+				27 heading Description: 检索相似度、答案正确性, ID: knowledge-invitation-25D85E7D-5B03-4D7B-A7B2-C95EC9558C9E
+				28 unknown Description: 模型拿到正确资料后，仍可能改写走样、只取片面内容或加入资料没有的说法。, ID: knowledge-invitation-25D85E7D-5B03-4D7B-A7B2-C95EC9558C9E
+				29 unknown Description: 以高相似度资料为依据时，还要回到来源本身，核对时间、地区、对象、版本等适用条件。, ID: knowledge-invitation-25D85E7D-5B03-4D7B-A7B2-C95EC9558C9E
+				30 text Value: 一句话记住 检索正确且相似只说明资料相关，生成可能不忠实；还需核对来源与适用条件是否匹配当前问题。 未保存, ID: knowledge-invitation-25D85E7D-5B03-4D7B-A7B2-C95EC9558C9E
+				31 button Description: 稍后, ID: knowledge-invitation-25D85E7D-5B03-4D7B-A7B2-C95EC9558C9E
+				32 button Description: 保存为知识卡, ID: knowledge-invitation-25D85E7D-5B03-4D7B-A7B2-C95EC9558C9E
+				33 checkbox Description: 已学过，加入复习, Value: 0, ID: knowledge-invitation-25D85E7D-5B03-4D7B-A7B2-C95EC9558C9E
+				34 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			35 scroll bar (settable, float) 1
+				36 value indicator (settable, float) 1
+				37 increment arrow button
+				38 decrement arrow button
+				39 increment page button
+				40 decrement page button
+		41 scroll area
+			42 text entry area (settable) 学习输入
+		43 button Description: 添加材料, Value: 已收起, ID: plus
+		44 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		45 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		46 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 10,309 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		47 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		48 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		49 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	50 close button
+	51 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	52 minimize button
+53 menu bar
+	54 ContinuousResumeQA
+	55 File
+	56 Edit
+	57 View
+	58 Window
+	59 Help
+
+The focused UI element is 42 text entry area (settable) 学习输入

@@ -1,0 +1,12 @@
+{
+  "status": "approved",
+  "batch_id": "b1233a10-7e97-472e-b2a4-c35de8171d03",
+  "actual_model_request_limit": 20,
+  "provider_web_operation_limit": 0,
+  "scope": "fresh empty native lesson, partial/full answer, first structured preview and durable readback; no save or web; stop on failed gate or cap",
+  "counting": "all probes, retries, fallbacks, background and timeouts; no old allowance reuse",
+  "decision": 254,
+  "user_confirmation": "按 20／0 新上限验证（推荐）",
+  "plan_sha256": "00764ba7e63b43c8569859380ec30d8e3935adea235526c7cc51ac7f2408b544",
+  "new_batch": true
+}

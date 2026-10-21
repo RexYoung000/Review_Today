@@ -1,0 +1,11 @@
+{
+  "phase": "startup",
+  "model_requests": 8,
+  "web_operations": 0,
+  "stop": false,
+  "runs": [],
+  "active_task": null,
+  "messages": [],
+  "offers": [],
+  "tasks": 0
+}

@@ -1,0 +1,48 @@
+{
+  "startup": {
+    "outcome": "PASS",
+    "requests": 8,
+    "fresh_probe_rounds": 1,
+    "web_operations": 0,
+    "empty_session": true
+  },
+  "lesson": {
+    "outcome": "PASS",
+    "cumulative_model_requests": 11,
+    "model_requests": 3,
+    "actual_lesson_and_question_cover_source_and_generation_risks": true,
+    "source_and_applicability_check_required": true,
+    "no_offer_or_save": true
+  },
+  "partial_answer": {
+    "outcome": "PASS",
+    "cumulative_model_requests": 13,
+    "model_requests": 2,
+    "passed": false,
+    "no_offer": true,
+    "no_save": true,
+    "missing_generation_and_verification_requested": true
+  },
+  "complete_answer": {
+    "outcome": "PASS",
+    "parsed_evaluation_passed": true,
+    "capture_invitation_shown": true,
+    "preview_points": 2,
+    "preview_summary": true,
+    "native_visible_and_durable_matches": true,
+    "no_persisted_card": true,
+    "cumulative_model_requests": 15,
+    "missing_preview_repair_triggered": false
+  },
+  "disk_readback": {
+    "outcome": "PASS",
+    "fresh_native_process": true,
+    "native_messages": 6,
+    "native_runs": 3,
+    "knowledge": 0,
+    "sources": 0,
+    "fsrs": 0,
+    "native_offer_matches_service": true,
+    "app_and_service_closed": true
+  }
+}

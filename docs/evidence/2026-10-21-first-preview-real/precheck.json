@@ -1,0 +1,15 @@
+{
+  "app.store": {
+    "ZKNOWLEDGE": 0,
+    "ZSOURCE": 0,
+    "ZFSRSSTATE": 0,
+    "ZAGENTMESSAGE": 0,
+    "ZAGENTRUN": 0,
+    "ZAGENTSESSION": 1
+  },
+  "checkpoint.sqlite3": {
+    "agent_sessions_v2": 0,
+    "harness_tasks": 0,
+    "agent_memory_policy_v2": 0
+  }
+}
