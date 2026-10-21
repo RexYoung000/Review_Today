@@ -1,0 +1,79 @@
+{
+  "startup": {
+    "outcome": "PASS",
+    "new_probe_requests": 8,
+    "web_operations": 0,
+    "original_messages_and_offer_unchanged": true,
+    "original_task_source_and_plan_unchanged": true
+  },
+  "same_topic_update": {
+    "outcome": "PASS",
+    "model_requests": 3,
+    "cumulative_model_requests": 11,
+    "same_invitation": true,
+    "from_version": 1,
+    "version": 2,
+    "preview_points": 3,
+    "summary_present": true,
+    "old_valid_points_retained": true,
+    "no_save": true,
+    "learning_plan_unchanged": true
+  },
+  "independent_question": {
+    "outcome": "PASS",
+    "model_requests": 3,
+    "cumulative_model_requests": 14,
+    "original_offer_task_source_lesson_plan_unchanged": true,
+    "no_new_learning_task": true,
+    "no_save": true,
+    "reply_two_sentences": true
+  },
+  "return_to_rag": {
+    "outcome": "PASS",
+    "model_requests": 3,
+    "cumulative_model_requests": 17,
+    "original_source_present_in_actual_model_input": true,
+    "same_invitation_current_version": 3,
+    "preview_points": 4,
+    "preview_quotes_valid_in_selected_fragments": true,
+    "no_python_in_preview_or_reply": true,
+    "learning_plan_unchanged": true,
+    "no_save": true
+  },
+  "native_save": {
+    "outcome": "PASS",
+    "clicked_offer_version": 3,
+    "model_requests": 7,
+    "cumulative_model_requests": 24,
+    "web_operations": 4,
+    "saved_cards": 4,
+    "matching_durable_receipt_before_success_ui": true,
+    "no_python_in_saved_knowledge": true,
+    "review_disabled": true,
+    "source_all_current_selected_fragments_present": true,
+    "original_learning_plan_unchanged": true
+  },
+  "details_status_progress": {
+    "outcome": "PASS",
+    "all_four_details_opened_with_source_and_review_checked": true,
+    "status_query_new_requests": 1,
+    "cumulative_model_requests": 25,
+    "actual_count_and_all_names_match_receipt": true,
+    "task_and_offer_unchanged_by_query": true,
+    "all_four_cards_review_disabled": true,
+    "current_step_taught_others_pending": true,
+    "experience_acceptance_not_claimed": true
+  },
+  "disk_readback": {
+    "outcome": "PASS",
+    "fresh_native_process": true,
+    "native_messages": 15,
+    "native_runs": 8,
+    "knowledge": 4,
+    "sources": 1,
+    "fsrs": 4,
+    "native_offer_matches_service": true,
+    "native_and_service_messages_match": true,
+    "app_and_service_closed": true
+  }
+}

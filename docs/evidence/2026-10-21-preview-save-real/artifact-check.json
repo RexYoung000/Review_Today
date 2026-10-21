@@ -1,0 +1,10 @@
+{
+  "outcome": "PASS",
+  "local_markdown_links_checked": 648,
+  "json_and_jsonl_parse": true,
+  "python_parse": true,
+  "configured_credential_scan": "PASS_NO_VALUES_EMITTED",
+  "prepared_manifest_preserved_except_status_link_readme": true,
+  "paid_calls": 0,
+  "note": "Only evidence .log trailing whitespace normalized; semantic JSON and outputs preserved."
+}

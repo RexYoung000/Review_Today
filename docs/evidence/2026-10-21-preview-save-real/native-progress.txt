@@ -1,0 +1,68 @@
+Window: "RAG · 首次预览复验 · 真实模型隔离验收", App: ContinuousResumeQA.
+0 standard window RAG · 首次预览复验 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 预览后知识保存链续验 · 累计请求以账本为准
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 text 依赖加载检查通过；学习服务尚未启动。
+		6 button (disabled) 选择 Review_Today 项目文件夹
+		7 button Description: 会话标签, ID: tag
+		8 button Description: 归档, ID: archivebox
+		9 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		10 button Description: 学习安排, 区分检索相似度与答案正确性, Value: 已展开
+		11 scroll area
+			12 button Description: 1, 区分检索相似度与答案正确性, 已讲解, Help: 查看对应内容，不会改变理解状态
+			13 button Description: 2, 识别来源资料本身错误或过时的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			14 button Description: 3, 识别生成回答不忠实于资料的风险, 待学习, Help: 查看对应内容，不会改变理解状态
+			15 button Description: 4, 核对来源与适用条件, 待学习, Help: 查看对应内容，不会改变理解状态
+		16 text 点击步骤回看内容；要调整安排，直接告诉我。
+		17 scroll area Secondary Actions: Scroll Up, Scroll Down
+			18 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				19 text 临时插问：Python 中列表和元组在可变性上有什么区别？用两句话回答即可。这个问题不要并入刚才的 RAG 知识卡预览，也不要保存或推进学习。
+					20 text 临时插问：Python 中列表和元组在可变性上有什么区别？用两句话回答即可。这个问题不要并入刚才的 RAG 知识卡预览，也不要保存或推进学习。
+				21 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				22 text 在 Python 中，列表可变：创建后可以增删元素或改某个位置的值；元组不可变：创建后不能改动已有元素，也不能增删长度。需要注意，元组不可变通常指它不改变自身结构，如果元素本身是列表这类可变对象，那个对象内部仍可能被修改。
+					23 text 在 Python 中，列表可变：创建后可以增删元素或改某个位置的值；元组不可变：创建后不能改动已有元素，也不能增删长度。需要注意，元组不可变通常指它不改变自身结构，如果元素本身是列表这类可变对象，那个对象内部仍可能被修改。
+				24 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				25 text 回到刚才的 RAG：只依据原来的讲义和我们补充的“地区 A、版本 v2”例子，用三句话回顾高相似度为什么不能保证答案正确。不要把 Python 内容带进来，暂不保存，也不要进入下一节。
+					26 text 回到刚才的 RAG：只依据原来的讲义和我们补充的“地区 A、版本 v2”例子，用三句话回顾高相似度为什么不能保证答案正确。不要把 Python 内容带进来，暂不保存，也不要进入下一节。
+				27 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				28 text 高相似度只说明检索片段与问题在语义或字面上很接近，也就是找到了看起来相关的材料，它并不证明资料本身真实或最新，也不证明模型最终回答会忠于这些资料。 资料本身可能错误或过时，生成阶段还可能误解原文、遗漏限制或混入资料没有的说法；像“地区 A、版本 v2”这样的限定一旦在转述中丢掉，原文无误也可能被错误套用。 所以相似度只是召回材料的相关性信号，而不是内容真实性或生成忠实性的保证，拿高相似度回答作依据前仍需回到来源，核对时间、地区、对象和版本是否与当前问题一致。
+				29 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				30 text 保存为知识卡 刚才这次一共保存了几张知识卡，分别叫什么？只查这次实际保存结果，不新增或修改知识卡，也不要推进学习。
+				31 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				32 text 这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索资料正确时生成仍可能不忠实；高相似度不保证真实最新，需核对时间、地区、版本等适用条件；原文无误但转述漏掉地区、版本限定，也会把局部规则错误套用。 内容包括：检索相似度；生成不忠实；核对来源与适用条件；适用边界丢失。 上下文中引用的知识库旧卡只是参考，不代表本轮新生成的卡。
+					33 text 这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索资料正确时生成仍可能不忠实；高相似度不保证真实最新，需核对时间、地区、版本等适用条件；原文无误但转述漏掉地区、版本限定，也会把局部规则错误套用。 内容包括：检索相似度；生成不忠实；核对来源与适用条件；适用边界丢失。 上下文中引用的知识库旧卡只是参考，不代表本轮新生成的卡。
+				34 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			35 scroll bar (settable, float) 0.9484406438631791
+				36 value indicator (settable, float) 0.9484406438631791
+				37 increment arrow button
+				38 decrement arrow button
+				39 increment page button
+				40 decrement page button
+		41 scroll area
+			42 text entry area (settable) 学习输入
+		43 button Description: 添加材料, Value: 已收起, ID: plus
+		44 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		45 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		46 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 49,066 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		47 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		48 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		49 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	50 close button
+	51 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	52 minimize button
+53 menu bar
+	54 ContinuousResumeQA
+	55 File
+	56 Edit
+	57 View
+	58 Window
+	59 Help
+
+The focused UI element is 42 text entry area (settable) 学习输入

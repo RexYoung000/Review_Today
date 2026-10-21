@@ -1,0 +1,12 @@
+{
+  "status": "approved",
+  "batch_id": "0b2971e6-8229-4e39-853b-0747472181df",
+  "actual_model_request_limit": 32,
+  "provider_web_operation_limit": 16,
+  "scope": "same-topic update, independent question and return, native save, details/status/progress, durable readback; stop on failed gate or either cap",
+  "counting": "all probes, retries, fallbacks, background and timeouts; no frozen allowance reuse",
+  "decision": 255,
+  "user_confirmation": "按 32／16 新上限验收（推荐）",
+  "new_batch": true,
+  "plan_sha256": "e710bfa16cbdbbf25cb63bf95f5010af9754901043dec2aad848230fc0cc65d4"
+}

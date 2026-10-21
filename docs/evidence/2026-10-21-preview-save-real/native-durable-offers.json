@@ -1,0 +1,29 @@
+[
+  {
+    "status": "saved",
+    "continuation_consumed": true,
+    "title": "检索相似度、答案正确性",
+    "id": "25d85e7d-5b03-4d7b-a7b2-c95ec9558c9e",
+    "anchor_message_id": "f30127e9-05af-4a22-a40e-75477c26c11a",
+    "knowledge_ids": [
+      "d7c0c6a4-1b1e-4a5e-9f2a-3c8f1d6e2b71",
+      "a3f5b8e2-4c7d-4f1a-9b6e-2d8c0a7e5f43",
+      "c9e2d4f7-6a1b-4c3d-8e5f-0b7a2d9c1e68",
+      "e1b6c3a8-9d2f-4e7a-b5c0-6f3d8a1e4c27"
+    ],
+    "save_task_id": "4f858f4c-d123-5842-8025-5caec866fa7d",
+    "error": "",
+    "trigger": "verified_check",
+    "version": 3,
+    "preview_summary": "高相似度只表示匹配程度，不保证资料真实或生成忠实；转述时还需保留地区、版本等适用条件，避免把局部规则当通用规定。",
+    "next_request": "",
+    "action_input_id": "630605fd-226c-4066-b2de-54c19b6009d6",
+    "scope_summary": "检索资料正确时生成仍可能不忠实；高相似度不保证真实最新，需核对时间、地区、版本等适用条件；原文无误但转述漏掉地区、版本限定，也会把局部规则错误套用。",
+    "preview_points": [
+      "模型拿到正确资料后，仍可能改写走样、只取片面内容或加入资料没有的说法。",
+      "高相似度不保证来源真实或最新，生成阶段也可能误解、遗漏限制，因此要回到来源核对。",
+      "核对来源时还要确认时间、地区、对象和版本等适用条件与当前问题一致。",
+      "即使原文无误，漏掉“地区 A、版本 v2”这类限定，也会把局部规则当通用规定错误套用。"
+    ]
+  }
+]

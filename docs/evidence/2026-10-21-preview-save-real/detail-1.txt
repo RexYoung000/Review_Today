@@ -1,0 +1,49 @@
+Window: "知识库", App: ContinuousResumeQA.
+0 standard window 知识库, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 预览后知识保存链续验 · 累计请求以账本为准
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 button 回到学习
+		6 text 依赖加载检查通过；学习服务尚未启动。
+		7 button (disabled) 选择 Review_Today 项目文件夹
+		8 container 知识卡片
+			9 text Help: 左划下一张，右划上一张，也可使用左右方向键或侧边定位条, Value: 检索相似度与答案正确性 检索相似度
+			10 button Description: 关闭知识详情, ID: xmark
+			11 scroll area Secondary Actions: Scroll Up, Scroll Down
+				12 heading 主问题
+				13 text 请解释检索相似度衡量的是什么，以及高相似度为什么不能直接等同于答案正确。
+				14 heading 详解
+				15 text 1 相似度只看“问题与资料的匹配程度”。 2 高相似度说明检索片段与问题在语义或字面上很接近，即找到了看起来相关的材料。 3 相似度看不出资料对谁、在哪里、在哪个时间或版本有效。 4 高相似度不证明资料本身真实或最新，也不证明模型最终回答会忠于资料。
+				16 heading 判断关键点
+				17 text 先说明相似度的含义，再说明其不能证明什么。 相似度只反映问题与资料的匹配程度 高相似度只说明找到了看起来相关的材料 高相似度不证明资料真实或最新 高相似度不证明模型最终回答会忠于资料
+				18 disclosure triangle Description: 常见误区, 2, Help: 展开或收起常见误区, Value: off, Details: 已收起
+				19 disclosure triangle Description: 来源证据, Help: 展开或收起来源证据, Value: on, Details: 已展开
+				20 text 来自你提交的原文 “相似度只看“问题与资料的匹配程度”，看不出这段资料**对谁、在哪里、在哪个时间或版本有效**。
+
+高相似度只说明检索片段与问题在语义或字面上很接近，也就是**找到了看起来相关的材料**，它并不证明资料本身真实或最新，也不证明模型最终回答会忠于这些资料。”
+				21 scroll bar (settable, float) 0.6599045346062052
+					22 value indicator (settable, float) 0.6599045346062052
+					23 increment arrow button
+					24 decrement arrow button
+					25 increment page button
+					26 decrement page button
+			27 checkbox Description: 已学过，参与间隔复习, Value: 0
+			28 text 仅保存资料 · 未参与复习
+			29 menu button 更多, ID: ellipsis
+			30 button 试一题
+			31 text 共 4 张知识卡
+			32 unknown Description: 知识卡定位, Details: 第 2 张，共 4 张，检索相似度, Secondary Actions: Increment, Decrement
+	33 close button
+	34 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	35 minimize button
+	36 text 知识库
+37 menu bar
+	38 ContinuousResumeQA
+	39 File
+	40 Edit
+	41 View
+	42 Window
+	43 Help
+
+The focused UI element is 0 standard window 知识库, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1

@@ -1,0 +1,80 @@
+Window: "RAG · 首次预览复验 · 真实模型隔离验收", App: ContinuousResumeQA.
+0 standard window RAG · 首次预览复验 · 真实模型隔离验收, Secondary Actions: Raise, ID: SwiftUI.WindowGroup<SwiftUI.ModifiedContent<SwiftUI.ModifiedContent<ContinuousResumeQA.LiveRoot, _SwiftData_SwiftUI.(unknown context at $217f5eaa8).PassthroughModelContainerViewModifier>, ReviewTodayContractSupport.AppearanceGate>>-1-AppWindow-1
+	1 container
+		2 text 预览后知识保存链续验 · 累计请求以账本为准
+		3 checkbox Description: 深色, Value: 0
+		4 button 记录当前状态
+		5 text 依赖加载检查通过；学习服务尚未启动。
+		6 button (disabled) 选择 Review_Today 项目文件夹
+		7 button Description: 会话标签, ID: tag
+		8 button Description: 归档, ID: archivebox
+		9 button Description: 会话操作, Value: 已收起, ID: ellipsis
+		10 button Description: 学习安排, 区分检索相似度与答案正确性, Value: 已收起
+		11 scroll area Secondary Actions: Scroll Up, Scroll Down
+			12 list Secondary Actions: AXScrollToTop, AXScrollToBottom
+				13 text 这个例子说明的正是“引用来源正确”与“答案适用条件正确”是两件事。
+					14 text 这个例子说明的正是“引用来源正确”与“答案适用条件正确”是两件事。
+				15 heading 例子里发生了什么
+					16 text 例子里发生了什么
+				17 text 假设资料原文写的是：“在地区 A、版本 v2 中，退款需在 7 天内申请。”这句话本身没错，用户问“退款多久内申请”时也可能高度相似地检索到它。 但如果在地区 B、版本 v3 下，规则是 15 天内申请，而回答只抄了“7 天内”，却省略“地区 A、版本 v2”，那么：
+				18 text 这时问题不在于检索错误，也不一定是模型篡改原文；主要出在条件在转述中被丢掉了，或模型没有判断当前问题是否落在该条件的范围内。
+					19 text 这时问题不在于检索错误，也不一定是模型篡改原文；主要出在条件在转述中被丢掉了，或模型没有判断当前问题是否落在该条件的范围内。
+				20 heading 适用条件为什么不能省
+					21 text 适用条件为什么不能省
+				22 text 相似度只看“问题与资料的匹配程度”，看不出这段资料对谁、在哪里、在哪个时间或版本有效。因此核对时要把资料里的限制话一并带到答案里；没有核实地区 B、v3 的规定，就不能把地区 A、v2 的结论直接套过去。
+					23 text 相似度只看“问题与资料的匹配程度”，看不出这段资料对谁、在哪里、在哪个时间或版本有效。因此核对时要把资料里的限制话一并带到答案里；没有核实地区 B、v3 的规定，就不能把地区 A、v2 的结论直接套过去。
+				24 heading 同一张预览的更新
+					25 text 同一张预览的更新
+				26 text 保留原有有效要点，并补入这个例子所体现的条件边界：
+					27 text 保留原有有效要点，并补入这个例子所体现的条件边界：
+				28 text 现在只做讲解与预览更新，先不保存，也不进入下一节。
+					29 text 现在只做讲解与预览更新，先不保存，也不进入下一节。
+				30 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				31 text 临时插问：Python 中列表和元组在可变性上有什么区别？用两句话回答即可。这个问题不要并入刚才的 RAG 知识卡预览，也不要保存或推进学习。
+					32 text 临时插问：Python 中列表和元组在可变性上有什么区别？用两句话回答即可。这个问题不要并入刚才的 RAG 知识卡预览，也不要保存或推进学习。
+				33 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				34 text 在 Python 中，列表可变：创建后可以增删元素或改某个位置的值；元组不可变：创建后不能改动已有元素，也不能增删长度。需要注意，元组不可变通常指它不改变自身结构，如果元素本身是列表这类可变对象，那个对象内部仍可能被修改。
+					35 text 在 Python 中，列表可变：创建后可以增删元素或改某个位置的值；元组不可变：创建后不能改动已有元素，也不能增删长度。需要注意，元组不可变通常指它不改变自身结构，如果元素本身是列表这类可变对象，那个对象内部仍可能被修改。
+				36 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				37 text 回到刚才的 RAG：只依据原来的讲义和我们补充的“地区 A、版本 v2”例子，用三句话回顾高相似度为什么不能保证答案正确。不要把 Python 内容带进来，暂不保存，也不要进入下一节。
+					38 text 回到刚才的 RAG：只依据原来的讲义和我们补充的“地区 A、版本 v2”例子，用三句话回顾高相似度为什么不能保证答案正确。不要把 Python 内容带进来，暂不保存，也不要进入下一节。
+				39 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				40 text 高相似度只说明检索片段与问题在语义或字面上很接近，也就是找到了看起来相关的材料，它并不证明资料本身真实或最新，也不证明模型最终回答会忠于这些资料。 资料本身可能错误或过时，生成阶段还可能误解原文、遗漏限制或混入资料没有的说法；像“地区 A、版本 v2”这样的限定一旦在转述中丢掉，原文无误也可能被错误套用。 所以相似度只是召回材料的相关性信号，而不是内容真实性或生成忠实性的保证，拿高相似度回答作依据前仍需回到来源，核对时间、地区、对象和版本是否与当前问题一致。
+				41 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+				42 text 保存为知识卡 刚才这次一共保存了几张知识卡，分别叫什么？只查这次实际保存结果，不新增或修改知识卡，也不要推进学习。
+				43 button Description: 运行详情, Help: 展开运行详情, Value: 已收起
+				44 text 这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索资料正确时生成仍可能不忠实；高相似度不保证真实最新，需核对时间、地区、版本等适用条件；原文无误但转述漏掉地区、版本限定，也会把局部规则错误套用。 内容包括：检索相似度；生成不忠实；核对来源与适用条件；适用边界丢失。 上下文中引用的知识库旧卡只是参考，不代表本轮新生成的卡。
+					45 text 这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索资料正确时生成仍可能不忠实；高相似度不保证真实最新，需核对时间、地区、版本等适用条件；原文无误但转述漏掉地区、版本限定，也会把局部规则错误套用。 内容包括：检索相似度；生成不忠实；核对来源与适用条件；适用边界丢失。 上下文中引用的知识库旧卡只是参考，不代表本轮新生成的卡。
+				46 button Description: 复制完整回答, Help: 复制完整回答，保留格式与来源链接
+			47 scroll bar (settable, float) 0.9936758893280633
+				48 value indicator (settable, float) 0.9936758893280633
+				49 increment arrow button
+				50 decrement arrow button
+				51 increment page button
+				52 decrement page button
+		53 scroll area
+			54 text entry area (settable) 学习输入
+		55 button Description: 添加材料, Value: 已收起, ID: plus
+		56 button Description: 学习方式：资料学习, Help: 学习方式, Value: 已收起
+		57 button Description: 思考强度：智能, Help: 思考强度, Value: 已收起
+		58 button Description: 上下文窗口, Help: 查看上下文用量与上限, Value: 最近一次请求约 49,066 token。
+模型窗口上限：1,000,000 token。
+活动输入上限：256,000 token。
+约 220,000 token 时整理较早上下文。
+回答预留：4,096 token。
+用量为估算；上下文整理后可能减少，不代表全部历史大小。
+		59 button Description: 开始听写, Help: 录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟, ID: mic
+		60 button Description: 开始语音对话, Help: 连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理, ID: waveform
+		61 button Description: 发送, Help: 发送（Return 或 ⌘ Return）, ID: arrow.up
+	62 close button
+	63 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	64 minimize button
+65 menu bar
+	66 ContinuousResumeQA
+	67 File
+	68 Edit
+	69 View
+	70 Window
+	71 Help
+
+The focused UI element is 54 text entry area (settable) 学习输入

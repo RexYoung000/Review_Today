@@ -1,0 +1,18 @@
+{
+  "actual_automatic_payload_repairs": 1,
+  "concrete_issues": [
+    "e1b6c3a8-9d2f-4e7a-b5c0-6f3d8a1e4c27: evidence_excerpt 必须是原文的非空连续子串",
+    "e1b6c3a8-9d2f-4e7a-b5c0-6f3d8a1e4c27: scoring_spec.evidence 必须是原文的非空连续子串"
+  ],
+  "original_outputs_retained": true,
+  "replacement_output_from_real_model": true,
+  "public_verdict": {
+    "verdict": "confirmed",
+    "reason": "待核验内容的核心主张与有效来源相符：正确检索不等于生成忠实，高相似度不保证真实最新，需要核对时间、地区、版本等适用条件；原文无误但转述漏掉限定也可能造成错误套用。来源支持这些观点，部分表述如“地区、版本”限定在来源中体现为适用条件、元数据、版本/生效性等，属于合理的措辞差异。",
+    "sources": [
+      "https://xlmsolutions.com/blog/semantic-similarity-truth-plm-ai/",
+      "https://developers.llamaindex.org.cn/python/framework/module_guides/evaluating/",
+      "https://milvus.io/ai-quick-reference/in-the-context-of-rag-what-does-the-term-answer-correctness-specifically-entail-and-how-can-it-be-measured-differently-from-generic-text-similarity#1"
+    ]
+  }
+}

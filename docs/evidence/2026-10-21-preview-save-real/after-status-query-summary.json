@@ -1,0 +1,78 @@
+{
+  "phase": "after-status-query",
+  "model_requests": 25,
+  "web_operations": 4,
+  "stop": false,
+  "runs": [
+    {
+      "id": "bbd1e481-32f2-4f9d-ad36-ed6e6c45b42c",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "8d59bb55-6c35-45fe-a49c-54f3c4cd61be",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "4347eaed-7d83-41a6-9800-1c11be67e163",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "5da0fd37-aac4-40cc-81d5-eb98f489f9d9",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "4f8f2a34-2b07-4300-bacc-0cff58fcf907",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "6d49ec30-ce8b-4b6e-bbb4-733fb37b269f",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "57c23dc5-0c5e-44b6-9053-2161792cbf2c",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "74a23828-ba08-4a8f-a5c1-2e862fb1718f",
+      "status": "completed",
+      "error": null,
+      "action": null
+    }
+  ],
+  "active_task": "3a3e93d1-c2d3-4f9b-8fc9-bc25dda70e85",
+  "messages": [
+    {
+      "role": "user",
+      "content": "刚才这次一共保存了几张知识卡，分别叫什么？只查这次实际保存结果，不新增或修改知识卡，也不要推进学习。"
+    },
+    {
+      "role": "coach",
+      "content": "这次确认的内容已成功写入 4 张知识卡。 本次保存范围：检索资料正确时生成仍可能不忠实；高相似度不保证真实最新，需核对时间、地区、版本等适用条件；原文无误但转述漏掉地区、版本限定，也会把局部规则错误套用。 内容包括：检索相似度；生成不忠实；核对来源与适用条件；适用边界丢失。 上下文中引用的知识库旧卡只是参考，不代表本轮新生成的卡。"
+    }
+  ],
+  "offers": [
+    {
+      "id": "25d85e7d-5b03-4d7b-a7b2-c95ec9558c9e",
+      "version": 3,
+      "status": "saved",
+      "title": "检索相似度、答案正确性",
+      "points": 4,
+      "preview_summary": "高相似度只表示匹配程度，不保证资料真实或生成忠实；转述时还需保留地区、版本等适用条件，避免把局部规则当通用规定。"
+    }
+  ],
+  "tasks": 2
+}

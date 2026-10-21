@@ -1,0 +1,72 @@
+{
+  "phase": "save-progress",
+  "model_requests": 23,
+  "web_operations": 2,
+  "stop": false,
+  "runs": [
+    {
+      "id": "bbd1e481-32f2-4f9d-ad36-ed6e6c45b42c",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "8d59bb55-6c35-45fe-a49c-54f3c4cd61be",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "4347eaed-7d83-41a6-9800-1c11be67e163",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "5da0fd37-aac4-40cc-81d5-eb98f489f9d9",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "4f8f2a34-2b07-4300-bacc-0cff58fcf907",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "6d49ec30-ce8b-4b6e-bbb4-733fb37b269f",
+      "status": "completed",
+      "error": null,
+      "action": null
+    },
+    {
+      "id": "57c23dc5-0c5e-44b6-9053-2161792cbf2c",
+      "status": "running",
+      "error": null,
+      "action": null
+    }
+  ],
+  "active_task": "4f858f4c-d123-5842-8025-5caec866fa7d",
+  "messages": [
+    {
+      "role": "coach",
+      "content": "高相似度只说明检索片段与问题在语义或字面上很接近，也就是**找到了看起来相关的材料**，它并不证明资料本身真实或最新，也不证明模型最终回答会忠于这些资料。\n\n资料本身可能错误或过时，生成阶段还可能误解原文、遗漏限制或混入资料没有的说法；像“地区 A、版本 v2”这样的限定一旦在转述中丢掉，原文无误也可能被错误套用。\n\n所以相似度只是召回材料的相关性信号，而不是内容真实性或生成忠实性的保证，拿高相似度回答作依据前仍需回到来源，核对时间、地区、对象和版本是否与当前问题一致。"
+    },
+    {
+      "role": "user",
+      "content": "保存为知识卡"
+    }
+  ],
+  "offers": [
+    {
+      "id": "25d85e7d-5b03-4d7b-a7b2-c95ec9558c9e",
+      "version": 3,
+      "status": "saving",
+      "title": "检索相似度、答案正确性",
+      "points": 4,
+      "preview_summary": "高相似度只表示匹配程度，不保证资料真实或生成忠实；转述时还需保留地区、版本等适用条件，避免把局部规则当通用规定。"
+    }
+  ],
+  "tasks": 2
+}
