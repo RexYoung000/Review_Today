@@ -1,0 +1,122 @@
+[
+  {
+    "vendor": "qwen",
+    "operation": "open_provider_connection",
+    "input_seconds": 0,
+    "characters": 0,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:34:05.879579+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "transcribe",
+    "input_seconds": 7.75,
+    "characters": 0,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:34:06.174144+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "transcribe",
+    "input_seconds": 7.99,
+    "characters": 0,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:34:14.144712+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "transcribe",
+    "input_seconds": 8.71,
+    "characters": 0,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:34:22.358882+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "transcribe",
+    "input_seconds": 6.35,
+    "characters": 0,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:34:31.308262+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "transcribe",
+    "input_seconds": 7.65,
+    "characters": 0,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:34:37.862330+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "transcribe",
+    "input_seconds": 6.83,
+    "characters": 0,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:34:45.723200+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "speak",
+    "input_seconds": 0,
+    "characters": 35,
+    "status": "failed",
+    "timestamp": "2026-10-21T11:34:52.762153+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "speak",
+    "input_seconds": 0,
+    "characters": 48,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:34:55.668655+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "speak",
+    "input_seconds": 0,
+    "characters": 30,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:34:57.759887+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "interrupt_speech",
+    "input_seconds": 0,
+    "characters": 129,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:34:59.630898+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "recovery_speech",
+    "input_seconds": 0,
+    "characters": 9,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:35:05.385354+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "open_provider_connection",
+    "input_seconds": 0,
+    "characters": 0,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:37:53.405128+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "cancel_active_generation",
+    "input_seconds": 0,
+    "characters": 129,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:37:53.678684+08:00"
+  },
+  {
+    "vendor": "qwen",
+    "operation": "recovery_after_generation_cancel",
+    "input_seconds": 0,
+    "characters": 9,
+    "status": "completed",
+    "timestamp": "2026-10-21T11:37:54.942634+08:00"
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "name": "plain",
+    "reference": "植物利用光能，把二氧化碳和水转化为有机物，并释放氧气。",
+    "file": "input-plain.wav",
+    "sha256": "7e194fec5fd2cc5c4292d11bab2167d1a1dbcb659b74118b0558131bdf8fb81a",
+    "input_seconds": 6.1,
+    "last_voice_ms": 6000.0,
+    "inserted_pause_seconds": 0
+  },
+  {
+    "name": "terms",
+    "reference": "请解释 RAG 和 API 的区别，再说明向量数据库的作用。",
+    "file": "input-terms.wav",
+    "sha256": "5b09236fe8e7e4a748c4e724bf40f139ef86d06049be6d64662849452892aad7",
+    "input_seconds": 6.34,
+    "last_voice_ms": 6240.0,
+    "inserted_pause_seconds": 0
+  },
+  {
+    "name": "numbers",
+    "reference": "复习时间是明天下午三点半，正确率是百分之八十五，一共十二张卡。",
+    "file": "input-numbers.wav",
+    "sha256": "644c022f8fdb4f26ee06c44212938c68267d041d4087b76e9955af40ae420c53",
+    "input_seconds": 7.06,
+    "last_voice_ms": 6960.0,
+    "inserted_pause_seconds": 0
+  },
+  {
+    "name": "negation",
+    "reference": "先不要保存这张知识卡，也不要把它加入复习。",
+    "file": "input-negation.wav",
+    "sha256": "f3a5c407807fe52225786f9a15757d6fc73b1c04603d9529a97cbde256919eeb",
+    "input_seconds": 4.7,
+    "last_voice_ms": 4600.0,
+    "inserted_pause_seconds": 0
+  },
+  {
+    "name": "correction",
+    "reference": "保存到明天，不对，是后天下午，只保存当前这一张。",
+    "file": "input-correction.wav",
+    "sha256": "70ee7fe8ff882bfc6824314ddf1c035cc6e1c1c20ef8565f480d1b4ecc125039",
+    "input_seconds": 6.0,
+    "last_voice_ms": 5900.0,
+    "inserted_pause_seconds": 0
+  },
+  {
+    "name": "pause",
+    "reference": "我还没有说完，先不要保存，等我确认。",
+    "file": "input-pause.wav",
+    "sha256": "f044a341d71e99df78110989256529605cd427a0eccfb4dabc2a548816330554",
+    "input_seconds": 5.18,
+    "last_voice_ms": 5080.0,
+    "inserted_pause_seconds": 1.1
+  }
+]

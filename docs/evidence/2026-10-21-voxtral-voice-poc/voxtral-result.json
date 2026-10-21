@@ -1,0 +1,20 @@
+{
+  "provider": "voxtral",
+  "started_at": "2026-10-21T11:35:28.735479+08:00",
+  "microphone_used": false,
+  "speaker_used": false,
+  "text_agent_calls": 0,
+  "daily_database_opened": false,
+  "stage_results_are_not_product_acceptance": true,
+  "stages": {},
+  "blocked": "MISTRAL_API_KEY_NOT_CONFIGURED",
+  "protected_unchanged": true,
+  "operations_charged": 0,
+  "runtime": {
+    "python": "3.13.3",
+    "machine": "arm64",
+    "system": "27.0.1",
+    "httpx": "0.28.1",
+    "websockets": "16.1.1"
+  }
+}

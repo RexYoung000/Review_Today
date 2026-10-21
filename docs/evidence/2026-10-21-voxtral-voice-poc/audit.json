@@ -1,0 +1,32 @@
+{
+  "offline_checks_passed": 9,
+  "synthetic_fixture_hashes_match": true,
+  "operation_counts": {
+    "qwen": 15,
+    "voxtral": 0
+  },
+  "qwen_stages_observed": 12,
+  "qwen_stages_blocked_by_existing_readout_guard": 1,
+  "qwen_generations_reported_by_provider": 7,
+  "preserved_audio_verified": [
+    {
+      "file": "qwen-tts-terms_numbers.wav",
+      "seconds": 10.08
+    },
+    {
+      "file": "qwen-tts-negation.wav",
+      "seconds": 6.72
+    },
+    {
+      "file": "qwen-after-generation-interrupt.wav",
+      "seconds": 2.32
+    }
+  ],
+  "first_recovery_audio_lost_due_to_recorded_filename_collision": true,
+  "daily_configuration_and_seven_protected_files_unchanged": true,
+  "text_agent_calls": 0,
+  "microphone_used": false,
+  "speaker_used": false,
+  "remote_cancel_ack_verified": false,
+  "voxtral_live_verified": false
+}

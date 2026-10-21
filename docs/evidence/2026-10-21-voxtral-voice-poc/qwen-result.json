@@ -1,0 +1,201 @@
+{
+  "provider": "qwen",
+  "started_at": "2026-10-21T11:34:05.094745+08:00",
+  "microphone_used": false,
+  "speaker_used": false,
+  "text_agent_calls": 0,
+  "daily_database_opened": false,
+  "stage_results_are_not_product_acceptance": true,
+  "stages": {
+    "asr_plain": {
+      "status": "observed",
+      "reference": "植物利用光能，把二氧化碳和水转化为有机物，并释放氧气。",
+      "input_sha256": "7e194fec5fd2cc5c4292d11bab2167d1a1dbcb659b74118b0558131bdf8fb81a",
+      "transcript": "植物利用光能，把二氧化碳和水转化为有机物，并释放氧气。",
+      "after_commit_ms": 218,
+      "after_last_voice_ms": 1969,
+      "boundary_mode": "controlled manual commit after current 1.65 s pause; native VAD not executed",
+      "normalized_cer": 0.0,
+      "semantic_review": "pending"
+    },
+    "asr_terms": {
+      "status": "observed",
+      "reference": "请解释 RAG 和 API 的区别，再说明向量数据库的作用。",
+      "input_sha256": "5b09236fe8e7e4a748c4e724bf40f139ef86d06049be6d64662849452892aad7",
+      "transcript": "请解释Web和API的区别，再说明向量数据库的作用。",
+      "after_commit_ms": 222,
+      "after_last_voice_ms": 1973,
+      "boundary_mode": "controlled manual commit after current 1.65 s pause; native VAD not executed",
+      "normalized_cer": 0.125,
+      "semantic_review": "pending"
+    },
+    "asr_numbers": {
+      "status": "observed",
+      "reference": "复习时间是明天下午三点半，正确率是百分之八十五，一共十二张卡。",
+      "input_sha256": "644c022f8fdb4f26ee06c44212938c68267d041d4087b76e9955af40ae420c53",
+      "transcript": "复习时间是明天下午三点半，正确率是百分之八十五，一共十二张卡。",
+      "after_commit_ms": 235,
+      "after_last_voice_ms": 1987,
+      "boundary_mode": "controlled manual commit after current 1.65 s pause; native VAD not executed",
+      "normalized_cer": 0.0,
+      "semantic_review": "pending"
+    },
+    "asr_negation": {
+      "status": "observed",
+      "reference": "先不要保存这张知识卡，也不要把它加入复习。",
+      "input_sha256": "f3a5c407807fe52225786f9a15757d6fc73b1c04603d9529a97cbde256919eeb",
+      "transcript": "先不要保存这张知识卡，也不要把它加入复习。",
+      "after_commit_ms": 201,
+      "after_last_voice_ms": 1952,
+      "boundary_mode": "controlled manual commit after current 1.65 s pause; native VAD not executed",
+      "normalized_cer": 0.0,
+      "semantic_review": "pending"
+    },
+    "asr_correction": {
+      "status": "observed",
+      "reference": "保存到明天，不对，是后天下午，只保存当前这一张。",
+      "input_sha256": "70ee7fe8ff882bfc6824314ddf1c035cc6e1c1c20ef8565f480d1b4ecc125039",
+      "transcript": "保存到明天，不对，是后天下午。只保存当前这一张。",
+      "after_commit_ms": 207,
+      "after_last_voice_ms": 1958,
+      "boundary_mode": "controlled manual commit after current 1.65 s pause; native VAD not executed",
+      "normalized_cer": 0.0,
+      "semantic_review": "pending"
+    },
+    "asr_pause": {
+      "status": "observed",
+      "reference": "我还没有说完，先不要保存，等我确认。",
+      "input_sha256": "f044a341d71e99df78110989256529605cd427a0eccfb4dabc2a548816330554",
+      "transcript": "我还没有说完。先不要保存，等我确认。",
+      "after_commit_ms": 202,
+      "after_last_voice_ms": 1953,
+      "boundary_mode": "controlled manual commit after current 1.65 s pause; native VAD not executed",
+      "normalized_cer": 0.0,
+      "semantic_review": "pending"
+    },
+    "tts_plain": {
+      "status": "failed",
+      "error": {
+        "type": "PocFailure",
+        "code": "QWEN_AUTHORIZED_TEXT_MISMATCH"
+      }
+    },
+    "tts_terms_numbers": {
+      "status": "observed",
+      "text": "RAG 是检索增强生成。API 是应用程序接口。明天下午三点半复习十二张卡，正确率百分之八十五。",
+      "sample_rate": 24000,
+      "voice_id": "Tina",
+      "streaming_audio_released_after_text_verification": true,
+      "first_playable_audio_ms": 2040,
+      "completed_ms": 2089,
+      "output_seconds": 10.08,
+      "audio_file": "qwen-tts-terms_numbers.wav",
+      "audio_sha256": "0a348733b9a754fe285ac2949730ad237e3404c9aff0bae925ea987663231ec3",
+      "acoustic_and_naturalness_review": "pending; no speaker was opened"
+    },
+    "tts_negation": {
+      "status": "observed",
+      "text": "好的，先不保存，也不加入复习。你可以继续提问，确认后再操作。",
+      "sample_rate": 24000,
+      "voice_id": "Tina",
+      "streaming_audio_released_after_text_verification": true,
+      "first_playable_audio_ms": 1839,
+      "completed_ms": 1869,
+      "output_seconds": 6.72,
+      "audio_file": "qwen-tts-negation.wav",
+      "audio_sha256": "ca54de250cc38f42401eef4e57811c525fe68efdc97f5ad5b547e430ccbac8a2",
+      "acoustic_and_naturalness_review": "pending; no speaker was opened"
+    },
+    "interrupt_playback": {
+      "status": "observed",
+      "trigger": "600 ms after first playable audio; simulated local queue",
+      "first_playable_audio_ms": 4648,
+      "triggered_ms": 5250,
+      "cleared_queued_ms": 25878,
+      "cancel_task_settled_ms": 0,
+      "old_late_pcm_discarded_bytes": 0,
+      "old_pcm_accepted_after_interrupt": 0,
+      "remote_cancel_ack": "not measured",
+      "provider_generation_already_finished": true
+    },
+    "after_interrupt": {
+      "status": "observed",
+      "sample_rate": 24000,
+      "voice_id": "Tina",
+      "streaming_audio_released_after_text_verification": true,
+      "text": "已停止。我们继续。",
+      "first_playable_audio_ms": 1025,
+      "old_late_transport_bytes_discarded": 0,
+      "audio_retained": false,
+      "artifact_note": "The first recovery WAV was overwritten by the later same-text generation-cancel recovery due to a runner filename collision. Original timing is retained; the first audio is unavailable. Runner now uses distinct filenames and refuses overwrite."
+    },
+    "interrupt_generation": {
+      "status": "observed",
+      "trigger": "observed upstream PCM before text verification",
+      "observed_progress_ms": 760,
+      "playable_bytes_before_cancel": 0,
+      "cleared_queued_ms": 0,
+      "cancel_task_settled_ms": 0,
+      "old_pcm_accepted_after_interrupt": 0,
+      "local_task_cancelled": true,
+      "remote_cancel_ack": "not measured"
+    },
+    "after_generation_interrupt": {
+      "status": "observed",
+      "sample_rate": 24000,
+      "voice_id": "Tina",
+      "streaming_audio_released_after_text_verification": true,
+      "text": "已停止。我们继续。",
+      "first_playable_audio_ms": 919,
+      "audio_file": "qwen-after-generation-interrupt.wav",
+      "old_late_transport_bytes_discarded": 0,
+      "audio_sha256": "84b0e7b143f00bde832d19381b6809aa168b2c73513c534bfd62f0ed37683a7c"
+    }
+  },
+  "model": "qwen3.8-omni-flash-realtime",
+  "connection_ms": 273,
+  "voice_usage": [
+    {
+      "model": "qwen3.8-omni-flash-realtime",
+      "duration_ms": 62358,
+      "calls": 5,
+      "input_bytes": 1448960,
+      "output_bytes": 2196480,
+      "usage": {
+        "input_tokens": 6850,
+        "output_tokens": 893,
+        "total_tokens": 7743
+      }
+    },
+    {
+      "model": "qwen3.8-omni-flash-realtime",
+      "duration_ms": 4306,
+      "calls": 2,
+      "input_bytes": 0,
+      "output_bytes": 111360,
+      "usage": {
+        "input_tokens": 959,
+        "output_tokens": 37,
+        "total_tokens": 996
+      }
+    }
+  ],
+  "protected_unchanged": true,
+  "operations_charged": 15,
+  "finished_at": "2026-10-21T11:37:57.951959+08:00",
+  "generation_probe_started_at": "2026-10-21T11:37:52.866223+08:00",
+  "provider_readout_checks": [
+    {
+      "expected": "已停止。我们继续。",
+      "provider_text": "已停止。我们继续。",
+      "matched": true
+    }
+  ],
+  "runtime": {
+    "python": "3.13.3",
+    "machine": "arm64",
+    "system": "27.0.1",
+    "httpx": "0.28.1",
+    "websockets": "16.1.1"
+  }
+}
