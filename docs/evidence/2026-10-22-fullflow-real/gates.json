@@ -1,0 +1,66 @@
+[
+  {
+    "gate": "startup",
+    "status": "PASS",
+    "models": 8,
+    "web": 0
+  },
+  {
+    "gate": "lesson",
+    "status": "PASS",
+    "models": 12,
+    "web": 0,
+    "note": "既有一次 check_binding 格式修复正常完成，计入真实请求"
+  },
+  {
+    "gate": "partial_answer",
+    "status": "PASS",
+    "models": 14,
+    "web": 0,
+    "note": "passed=false，待补答，无邀请、知识卡或整节通过"
+  },
+  {
+    "gate": "complete_answer",
+    "status": "PASS",
+    "models": 16,
+    "web": 0,
+    "note": "仅当前补答的两个概念获证；未保存预览标题、两要点、一总结齐全"
+  },
+  {
+    "gate": "same_topic_update",
+    "status": "PASS",
+    "models": 19,
+    "web": 0,
+    "note": "同一邀请 v1→v2，4 要点和总结忠于选段，逐字引文有效，未写卡或推进",
+    "observation": "正文对比句前者／后者疑似倒置；具体判断与实际预览正确。作为教学措辞问题保留，不将本次接口链检查扩大为通用语义质量验收。"
+  },
+  {
+    "gate": "independent_question",
+    "status": "PASS",
+    "models": 22,
+    "web": 0,
+    "note": "Python 简短回复完成，原任务／来源／学习安排／整个 v2 邀请逐项不变，无新目标或卡片"
+  },
+  {
+    "gate": "return_to_rag",
+    "status": "FAIL",
+    "models": 25,
+    "web": 0,
+    "note": "只回顾／不进入下一节仍被识别为 continue；实际 current_step_id 从第 1 步改为第 2 步，讲解并新增题目。原邀请保持同一身份但更新至 v3，未保存"
+  },
+  {
+    "gate": "native_save",
+    "status": "NOT_RUN",
+    "note": "前关失败即停"
+  },
+  {
+    "gate": "details_and_status",
+    "status": "NOT_RUN",
+    "note": "前关失败即停"
+  },
+  {
+    "gate": "progress_and_disk",
+    "status": "NOT_COMPLETED",
+    "note": "保存后进度未运行；仅完成失败后的正常退出、新进程读盘及保护收尾"
+  }
+]

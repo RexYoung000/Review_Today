@@ -1,0 +1,15 @@
+{
+  "status": "STOP_FAILED_RETURN_TO_RAG",
+  "decision": 262,
+  "directory": "/private/tmp/review-today-fullflow-i9njdmrd.noindex",
+  "session_id": "9754d7fd-eab8-4ce5-9a26-75442766fd2f",
+  "port": 57407,
+  "native_app": "/private/tmp/review-today-fullflow-i9njdmrd.noindex/FreshFullflowQA.app",
+  "preflight_setup": "docs/evidence/2026-10-22-fullflow-preflight/setup.json",
+  "model_limit": 40,
+  "web_limit": 16,
+  "actual_model_requests": 25,
+  "actual_web_operations": 0,
+  "qa_closed": true,
+  "service_closed": true
+}

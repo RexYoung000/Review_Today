@@ -1,0 +1,26 @@
+{
+  "status": "QA_CLOSED_ARCHIVED",
+  "archive": "/Users/rexyoung/Library/Developer/ReviewTodayAppArchives.noindex/2026-10-22-fullflow-real/FreshFullflowQA.zip",
+  "archive_sha256": "cc1f398e04f6fcec23985c10a10bc88f3a3c840a2b4c017b3b70410ddfbca4d9",
+  "inventory_matched": true,
+  "actual_extract_and_signature_verified": true,
+  "raw_qa_removed": true,
+  "owned_qa_and_service_stopped": true,
+  "normal_app_not_started": true,
+  "native_counts": {
+    "ZKNOWLEDGE": 0,
+    "ZSOURCE": 0,
+    "ZAGENTMESSAGE": 12,
+    "ZLEARNINGTASK": 1,
+    "ZAGENTRUN": 6,
+    "ZAGENTSESSION": 1,
+    "ZFSRSSTATE": 0
+  },
+  "service_counts": {
+    "agent_capability_batches": 1,
+    "agent_memory_policy_v2": 1,
+    "agent_session_deletions": 0,
+    "agent_sessions_v2": 1,
+    "harness_tasks": 1
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "status": "approved",
+  "batch_id": "dde59722-45e9-4f87-a411-d02ffe0b1266",
+  "actual_model_request_limit": 40,
+  "provider_web_operation_limit": 16,
+  "scope": "fresh empty same-session lesson, partial/full answer, preview/update, independent question/return, native save/details/status/progress/disk; stop on failed gate or either cap",
+  "counting": "all startup probes, actual SDK sends, retries, background, fallbacks and timeouts; no old allowance reuse",
+  "decision": 262,
+  "approved_at": "2026-10-22T14:08:19.798138+00:00",
+  "approval_basis": "Rex selected 按新 40／16 上限执行（推荐）"
+}

@@ -1,0 +1,11 @@
+{
+  "decision": 262,
+  "status": "STOP_FAILED_GATE",
+  "gate": "return_to_rag",
+  "reason": "Explicit recap-only/do-not-advance request was routed as continue and advanced original learning plan to second step, taught it and issued a new check question.",
+  "model_requests": 25,
+  "web_operations": 0,
+  "remaining_frozen_model_requests": 15,
+  "remaining_frozen_web_operations": 16,
+  "at": "2026-10-22T14:19:51.601910+00:00"
+}
