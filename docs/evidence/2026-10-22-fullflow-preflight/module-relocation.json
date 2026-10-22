@@ -1,0 +1,16 @@
+{
+  "libFSRS.dylib": {
+    "original_sha256": "a482549a9af6180f0c05d2a31093b61ba17fadb3e1801168013e9facda935b18",
+    "owned_sha256": "3c445d7109560ed17eb8c2de41572d6bfbe1f144b79413e26fdc1998025b13ce",
+    "text_section_sha256": "a2a21fe97618c0b9d2ec457b21ff92fb2b91717e892f98cf83fb8ad8590094c1",
+    "text_section_preserved": true,
+    "no_original_runtime_load_dependency": true
+  },
+  "libReviewTodayContractSupport.dylib": {
+    "original_sha256": "db4a0a68cdf01bd9582d9ad2ef9f54911d251953bc4fb076506d3b75830aedcd",
+    "owned_sha256": "90c1c4fa697b1ad4e5d063a3663bd8acf3e7f58ecee63f8a43320db8682f9df6",
+    "text_section_sha256": "86de35c121964ccf389e0e928357c266bc0f220ec208111f8579f08d2379349c",
+    "text_section_preserved": true,
+    "no_original_runtime_load_dependency": true
+  }
+}

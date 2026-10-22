@@ -1,0 +1,47 @@
+{
+  "status": "READY_PENDING_NEW_40_16",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "authorization_confirmed": false,
+  "native_empty_counts": {
+    "ZKNOWLEDGE": 0,
+    "ZSOURCE": 0,
+    "ZAGENTMESSAGE": 0,
+    "ZLEARNINGTASK": 0,
+    "ZAGENTRUN": 0,
+    "ZAGENTSESSION": 0,
+    "ZFSRSSTATE": 0
+  },
+  "service_empty_counts": {
+    "agent_sessions_v2": 0,
+    "harness_tasks": 0,
+    "agent_memory_policy_v2": 0,
+    "agent_session_deletions": 0,
+    "agent_capability_batches": 0
+  },
+  "capability_batch_table_not_created": true,
+  "actual_bootstrap_and_restore_reject_pending_before_runtime": true,
+  "held_files_unchanged": true,
+  "sdk_fake_transport_cases": 11,
+  "native_compile_sign_and_actual_archive_restore_verified": true,
+  "qa_raw_app_removed": true,
+  "registered_entries": 1,
+  "spotlight_paths": [
+    "/Applications/Review Today.app"
+  ],
+  "source_and_configuration_pins": 238,
+  "old_frozen_files_unchanged": 172,
+  "daily_files_unchanged": 98,
+  "daily_app_unchanged": true,
+  "original_module_unchanged": true,
+  "owned_module_paths_relocated_only": true,
+  "project_diff_unchanged": true,
+  "app_and_service_not_started": true,
+  "real_model_not_run": true,
+  "native_window_not_checked": true,
+  "model_limit_proposed": 40,
+  "web_limit_proposed": 16,
+  "model_path_estimate": 31,
+  "reserve_within_proposed_model_limit": 9,
+  "plan_sha256": "e446102006bac79818aa157354a0a640719459b5756cedabfd42f8834e778636"
+}
