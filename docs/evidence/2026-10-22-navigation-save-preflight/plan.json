@@ -1,0 +1,24 @@
+{
+  "status": "PROPOSED_NEW_BATCH_PENDING",
+  "date": "2026-10-22",
+  "basis_commit": "8d1679268e99768e002bb5d8babac41a09dd62cc",
+  "basis": "Complete closed decision262 final paired databases; retain failed advance/current step2/v3; no rollback or artificial reconstruction of gate08",
+  "model_request_limit": 32,
+  "provider_web_operation_limit": 16,
+  "startup_estimate": 8,
+  "path_estimate": 25,
+  "reserve_within_limit": 7,
+  "gates": [
+    {"id":"startup","action":"启动本批独立 App 和服务，重新探测","pass":"实际加载263固定源码；新探测批次和请求可追溯，旧12消息/6Run及第2步/v3与原生匹配，零卡；不是旧ready","estimated_model_requests":8},
+    {"id":"independent_question","input":"临时插问一个 Python 问题：列表和元组在可变性上有什么区别？请只用两句话回答，不改原来的 RAG 学习任务、知识卡预览或进度，也不要保存。","pass":"原任务、来源、计划、待答题、完整v3邀请及学习证据保持；不创建新学习目标或卡","estimated_model_requests":3},
+    {"id":"return_review","input":"回到原来的 RAG 学习任务。请只用原任务的讲解和刚才补充的例子，简短回顾“资料准确也可能生成不忠实，适用条件需要单独核对”。原知识卡预览保留，不混入 Python 问题；先不保存，也不进入下一节。","pass":"当前仍为原第2步，整个计划、待答题及绑定、last_lesson、来源、掌握/作答证据、整个有效预览不变；本轮只局部回顾，不进入第3步、出新题或保存","estimated_model_requests":3},
+    {"id":"native_save","action":"核对当前有效预览，保持复习关闭，从原生点击保存一次","pass":"当前邀请身份和点击版本/范围绑定；真实生成、必要既有一次修复及核验后落盘，以匹配ACK判成功，不预设卡数；来源归属有效、不混Python、不重复保存","estimated_model_requests":7},
+    {"id":"details_status_progress","input":"这次保存了几张知识卡，分别叫什么？","action":"查看本批全部实际卡片详情和来源摘录，核对学习进度及复习状态","pass":"实际数量/名称与匹配回执、原生和磁盘一致；复习保持关闭，保存未推进或认证整节，不把历史失败当新保存失败","estimated_model_requests":1},
+    {"id":"explicit_advance","input":"这一节先到这里，请明确继续原 RAG 学习任务的下一节。保留刚才保存的知识卡，不重复保存；我没有要求认证本节已经掌握。","pass":"第2步推进到既有第3步恰好一次，原意图携带当前步骤和本轮原话，教学目标为第3步；当前第2步不被额外认证，已保存卡/回执保持","estimated_model_requests":3},
+    {"id":"disk_readback","action":"正常退出，关闭自有服务，用新原生CLI进程读取隔离数据","pass":"所有实际消息/Run/计划/卡片/来源/ACK与服务及磁盘匹配；原失败历史保留，原生与服务关闭；压缩收起临时App、日常仍一入口","estimated_model_requests":0}
+  ],
+  "counting": "Actual SDK sends and provider web search/read/fallback operations, including startup probes, retries, formatting/knowledge repairs, background, fallbacks and timeouts; limits are not a monetary budget",
+  "stop_conditions": ["任一关卡最终失败或任一上限到达立即停止新请求","发生身份、版本、持久化或隔离不符","需要代码修复、人工替换模型输出、手动修改学习数据或重启恢复才能推进"],
+  "allowed_normal_recovery": "Existing bounded format and single knowledge repair, counted in this batch; no manual replay until success",
+  "excluded": ["日常App启动/更新或日常学习数据修改","复活262的15/16或任何旧冻结余量","新产品机制/模型配置/评分/保存规则变更","从空会话无中断全链通过、M1、完整异常恢复/VoiceOver或Rex体验关闭"]
+}

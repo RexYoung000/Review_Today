@@ -1,0 +1,2 @@
+Fresh process read: 0 cards, 12 messages, 6 runs
+{"status": "PREPARED_HOLD_ARCHIVED", "directory": "/private/tmp/review-today-navigation-save-godd38gj.noindex", "port": 61772, "session_id": "9754d7fd-eab8-4ce5-9a26-75442766fd2f", "model_limit": 32, "web_limit": 16, "starting_counts": {"ZKNOWLEDGE": 0, "ZSOURCE": 0, "ZAGENTMESSAGE": 12, "ZLEARNINGTASK": 1, "ZAGENTRUN": 6, "ZAGENTSESSION": 1, "ZFSRSSTATE": 0}, "starting_step_id": "aa861650-0d14-43b6-9aa2-b427786f370e", "offer_version": 3}

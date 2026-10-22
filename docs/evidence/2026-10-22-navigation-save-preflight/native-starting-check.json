@@ -1,0 +1,15 @@
+{
+  "messages": 12,
+  "runs": 6,
+  "sessions": 1,
+  "knowledge": 0,
+  "sources": 0,
+  "fsrs": 0,
+  "real_history_content_matched": true,
+  "cursor": 234,
+  "offer_id": "460d4982-f37d-4a6b-801e-d3b7303e5419",
+  "version": 3,
+  "points": 4,
+  "current_step_index": 2,
+  "paired_original_copied": true
+}

@@ -1,0 +1,6 @@
+{
+  "independent_read_only_review": true,
+  "blockers": [],
+  "real_requests": 0,
+  "scope": "Admission before imports/SQLite/network/ledger; full final paired history retained; fresh probe identity required; no output substitution or old quota reuse; daily single entry unchanged."
+}

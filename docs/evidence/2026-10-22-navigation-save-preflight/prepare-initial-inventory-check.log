@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-22-navigation-save-preflight/prepare.py", line 124, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-22-navigation-save-preflight/prepare.py", line 16, in main
+    assert files(REAL)==repair['previous_batch_files']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
