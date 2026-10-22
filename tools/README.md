@@ -6,6 +6,14 @@
 
 历史证据中记录的原始 App 路径可能已经归档，需按本批目录中的映射恢复到 `.noindex` 隔离位置；不能改写旧校验结果或据此启动日常服务。数据、配置、账本与旧调用额度独立保留，不随应用入口整理而清理。首次整理记录见[单一入口证据](../docs/evidence/2026-10-22-single-app-entry/README.md)。
 
+# 三条历史删除记录的兼容
+
+`repair-legacy-deletion-lifecycle.py` 只处理决定 260 固定的三条记录，不是通用生命周期迁移。默认只检查，`--apply` 才在隔离副本中执行；目前不接受日常目录。固定清单由 `legacy-deletion-lifecycle-scope.json` 单独维护并由工具校验指纹，不允许命令行扩大对象。
+
+工作目录须为本项目 `output/legacy-lifecycle-repair-2026-10-22/` 的子目录，或 `/private/tmp/review-today-legacy-lifecycle-*.noindex/`。提供 `app.store`、`checkpoint.sqlite3` 和 `archive-proof.store` 三份实际副本；工具匹配原删除队列、三份后台内容和固定旧备份，确认这三条本机实体均已不存在且旧状态已归档，只补入两个缺失字段。成功前保留一致备份，三条共用事务；失败回滚，不清除原标记，不发送删除请求。
+
+后续清理仍使用既有原生和服务代码，并独立核对实际回执。当前授权只到隔离复验；日常加载／历史数据处理另行对齐。具体结果见[本批证据](../docs/evidence/2026-10-22-legacy-lifecycle-repair/README.md)。
+
 # 旧知识库接回
 
 `import-legacy-library.py` 配合 SwiftData 写入器，只用于本轮已核实的旧库结构。它不是通用快照恢复器，不导入 Agent 会话、草稿、任务或 outbox，也不推断历史卡片的创建归属。

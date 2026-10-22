@@ -1,0 +1,30 @@
+{
+  "scope_id": "SYNC-01-legacy-lifecycle-2026-10-22",
+  "decision": 260,
+  "archive_proof_sha256": "f4fae9b5b1067565c09da1959d51d90fdd1bd590495046144e52f39409233fb3",
+  "native_queue_sha256": "46e68f9b6fe00a2c1dd29a4e6518fdda93929a84be1c9a96c9b21292955c099b",
+  "records": [
+    {
+      "record_number": 4,
+      "session_id": "23370d37-008b-4f50-983e-c10faf92aa54",
+      "native_marker_sha256": "05092a6b45098a8c23bf040071858f06badd67e46e9c97b8eca9a80bc72d1cff",
+      "service_payload_sha256": "75d6e653ad00305bd9d72180851ce293689f3d1ae66b776f92ce224d8cca5b1f"
+    },
+    {
+      "record_number": 5,
+      "session_id": "4712848c-a300-436d-99f2-ed268fb62ea6",
+      "native_marker_sha256": "abbcc40b5bff2354a1af65c3e29e78f0f0be1de8f0c0155d18e8dcf3d6d7c528",
+      "service_payload_sha256": "fdd7b85cb8ba2730c54eed8b6acd618583ef21941b0c9fff36c53fd14a3f7f03"
+    },
+    {
+      "record_number": 6,
+      "session_id": "06994607-d916-4703-8449-12f218662f57",
+      "native_marker_sha256": "2ed4c9e8dccb565a3c2ec7ab0af68d8cb2da5963e55ab1bdd647dc4fb5abfac1",
+      "service_payload_sha256": "45a11cffd5599e5b3c7d22ea45b3b7d7e26e45b890cee08028567d2a9e38f4b2"
+    }
+  ],
+  "reconstruct": {
+    "status": "archived",
+    "lifecycle_revision": 0
+  }
+}

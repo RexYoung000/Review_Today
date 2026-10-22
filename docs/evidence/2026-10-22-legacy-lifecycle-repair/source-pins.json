@@ -1,0 +1,5 @@
+{
+  "tools/repair-legacy-deletion-lifecycle.py": "c2fa29954db9010d1454c600f8bd4df972bbbee39e57c174b30151b8dc6a8685",
+  "tools/legacy-deletion-lifecycle-scope.json": "a928bb3adec522aaf64321a71ac9fd8ced3f807b506b17d9c255971661470937",
+  "tests/test_legacy_deletion_lifecycle_repair.py": "ff58e18abfa642991368afab417e9f0c7f316467f4677d3b58153493fc5b373f"
+}

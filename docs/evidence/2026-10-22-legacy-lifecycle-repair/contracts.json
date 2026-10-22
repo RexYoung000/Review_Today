@@ -1,0 +1,28 @@
+{
+  "outcome": "PASS",
+  "tests": 20,
+  "case_names": [
+    "test_real_manifest_pin",
+    "test_default_dry_run_writes_nothing",
+    "test_apply_only_two_fields_and_preserves_native",
+    "test_second_apply_does_not_write",
+    "test_changed_delete_identity_refused",
+    "test_present_native_session_refused",
+    "test_archive_fingerprint_change_refused",
+    "test_archive_not_archived_even_if_pinned_refused",
+    "test_one_changed_payload_prevents_all_three",
+    "test_existing_lifecycle_field_refused",
+    "test_missing_service_row_refused",
+    "test_existing_tombstone_refused",
+    "test_failure_on_second_row_rolls_back_first",
+    "test_unexpected_trigger_side_effect_rolls_back",
+    "test_fixed_manifest_cannot_expand",
+    "test_daily_directory_rejected_before_database_access",
+    "test_symlink_input_refused",
+    "test_hardlink_input_refused",
+    "test_tampered_receipt_refused",
+    "test_receipt_write_failure_reports_committed_state"
+  ],
+  "log_sha256": "444c4ab6f11e14f950d4f7f7ffe9a8133bed0f1e4abb71a66a9c0f38d977df97",
+  "initial_setup_failure_retained": true
+}
