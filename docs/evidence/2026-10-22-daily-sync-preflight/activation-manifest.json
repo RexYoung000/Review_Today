@@ -1,0 +1,32 @@
+{
+  "decision": 261,
+  "base_commit": "4369d49ae48fe13dc6a4dfc2936886aa1fc06faf",
+  "public_artifacts": {
+    "activation.md": "9f3b1ff8f0eb38dcc750d311af1e05680addd0594f4d28292ec2bde27ba4ecb8",
+    "activation-result.json": "ac725d129fdc149ff3a6c4504348f590f8de8995c91e968baf3ed1ccbe3bb792",
+    "installation-result.json": "4d09bf0e39c6c857591310388a406b0e0343705b22673c2e9e676e8ac36afefe",
+    "verify_activation.py": "e4f2d10b9e4c6207da93772f68c6f83877e0cb752a9a22d65e4d1d07e3b0c443"
+  },
+  "private_evidence": {
+    "output/daily-sync-preflight-2026-10-22/activation/health-final-live.json": "8b33377cb65c73755ea4f86a5e1b8f5e7fa20c7639c5cdef90749dd70c4e7e3f",
+    "output/daily-sync-preflight-2026-10-22/activation/service.log": "1ceae045d722cb3da892fa4905bb88c64e217833a00321620fef5fe8cbd8adaa",
+    "output/daily-sync-preflight-2026-10-22/activation/quota.json": "aa371e2cbb322a333bc296e979b7b6635020329cd768b361a5b2d11e9c4e8b35",
+    "output/daily-sync-preflight-2026-10-22/activation/STOP": "a31007f677d5899b9819a1330ecae57c8f54b545ef9f4a8d436c9c2a885c0ac3",
+    "output/daily-sync-preflight-2026-10-22/activation/verification.json": "ac725d129fdc149ff3a6c4504348f590f8de8995c91e968baf3ed1ccbe3bb792",
+    "output/daily-sync-preflight-2026-10-22/activation/native-agent.txt": "4cb45bf98dfdb69b50b5c63d3422d0c2d5340fbf7656878048b429a805754218",
+    "output/daily-sync-preflight-2026-10-22/activation/native-library.txt": "d4a41f2d20bcfa952710971585878d99bef0b0feb44bbee7fbc09cae00f60be9",
+    "output/daily-sync-preflight-2026-10-22/activation/native-detail.txt": "cfda58e301a778534b959db03a6946461dbab42b0e0ee015ad542ada62076c28",
+    "output/daily-sync-preflight-2026-10-22/activation/native-agent.png": "683c9f5340105e660c8ffd85014887a80f2523944b742b8462e751d84fd85182",
+    "output/daily-sync-preflight-2026-10-22/activation/native-library.png": "ca277d67ac48078e3699f92a6bb22b6bd967963536e06bf3bcf7aae98f774c8d",
+    "output/daily-sync-preflight-2026-10-22/activation/native-detail.png": "5e96c2c7e2aa5b8c7edbadf2a057dbe242362d89c95f21b19575c7d05aa6df78",
+    "output/daily-sync-preflight-2026-10-22/activation/verify-activation.log": "9abf7af746974ecb5009be93f52eadecbbc53aef4a5f8e73d6e6c27a2c74bfc9",
+    "output/daily-sync-preflight-2026-10-22/activation/verify-activation-initial-assumption-failure.log": "31e07191d8058e8d6f041d8c18d267d024e6857e702afdf0bd30c7e945feb635"
+  },
+  "private_execution_phase": "completed_and_stopped",
+  "model_requests": 8,
+  "web_operations": 0,
+  "stop_present": true,
+  "spotlight_paths": [
+    "/Applications/Review Today.app"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "status": "backend_cleaned",
+  "sessions": 37,
+  "production_http_requests": 68,
+  "native_daily_file_changed": false,
+  "model_requests": 0,
+  "web_operations": 0,
+  "decision": 261,
+  "phase": "backend_cleaned_app_installed",
+  "daily_app_installed": true,
+  "installed_same_entry": "/Applications/Review Today.app",
+  "actual_native_ack_pending": true
+}

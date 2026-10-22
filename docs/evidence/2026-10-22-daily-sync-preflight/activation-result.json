@@ -1,0 +1,129 @@
+{
+  "status": "DAILY_UPDATED_CLEANUP_AND_STARTUP_CHECK_PASS",
+  "decision": 261,
+  "actual_model_requests": 8,
+  "actual_web_operations": 0,
+  "original_native_queue": 37,
+  "native_pending_after": 0,
+  "real_backend_delete_receipts": 37,
+  "original_action_ids_and_revisions_preserved": true,
+  "removed_backend_rows": {
+    "agent_memory_policy_v2": 29,
+    "agent_sessions_v2": 26,
+    "harness_tasks": 10
+  },
+  "all_other_backend_rows_preserved": true,
+  "review_database_preserved": true,
+  "native_counts": {
+    "ZAGENTSESSION": 8,
+    "ZAGENTMESSAGE": 37,
+    "ZKNOWLEDGE": 11,
+    "ZFSRSSTATE": 11
+  },
+  "all_original_native_business_fields_preserved": true,
+  "native_tables_compared": [
+    "ATRANSACTIONSTRING",
+    "ZAGENTMESSAGE",
+    "ZAGENTRUN",
+    "ZAGENTRUNCONTROL",
+    "ZAGENTSESSION",
+    "ZAPPSETTINGS",
+    "ZCAPTURETASK",
+    "ZFSRSSTATE",
+    "ZKNOWLEDGE",
+    "ZKNOWLEDGEREFERENCE",
+    "ZLEARNINGTASK",
+    "ZQUESTION",
+    "ZREVIEWATTEMPT",
+    "ZREVIEWSESSION",
+    "ZSESSIONEVENTRECORD",
+    "ZSESSIONFOLDER",
+    "ZSESSIONSUMMARYRECORD",
+    "ZSOURCE",
+    "ZSOURCEREFERENCE",
+    "ZTASKEVENTRECORD"
+  ],
+  "allowed_native_runtime_fields": {
+    "ZAPPSETTINGS": [
+      "ZSESSIONDELETIONSJSON",
+      "Z_OPT"
+    ],
+    "ZAGENTSESSION": [
+      "Z_OPT"
+    ],
+    "ZLEARNINGTASK": [
+      "ZUPDATEDAT",
+      "Z_OPT"
+    ]
+  },
+  "additive_existing_voice_defaults": {
+    "ZAGENTMESSAGE": {
+      "ZINPUTCHANNEL": "text",
+      "ZVOICEPLAYBACKJSON": null
+    },
+    "ZAGENTRUN": {
+      "ZVOICEINPUTIDSJSON": "[]"
+    }
+  },
+  "internal_model_cache_updated": true,
+  "internal_history_counts": {
+    "ACHANGE": 1221808,
+    "ATRANSACTION": 1208804
+  },
+  "database_integrity": {
+    "Data/ReviewToday.store": [
+      "ok"
+    ],
+    "agent-harness.sqlite3": [
+      "ok"
+    ],
+    "agent-harness.review.sqlite3": [
+      "ok"
+    ]
+  },
+  "startup_rounds": 1,
+  "unique_request_ids": 8,
+  "usage_receipts": 8,
+  "all_roles_ready": true,
+  "coach_smart_and_deep_streaming_ready": true,
+  "reported_tokens": {
+    "input_tokens": 1244,
+    "output_tokens": 278,
+    "total_tokens": 1522,
+    "cached_input_tokens": 256,
+    "reasoning_output_tokens": 86
+  },
+  "ui": {
+    "agent_entry": true,
+    "knowledge_library_11": true,
+    "existing_detail": true,
+    "existing_review_toggle_preserved": true,
+    "new_messages_sent": 0,
+    "saves_clicked": 0,
+    "appearance": "light/current window",
+    "screenshots_private": true,
+    "app_closed_normally": true
+  },
+  "native_http_action_attempts": 74,
+  "original_queue_http_attempts": 68,
+  "existing_session_sync_http_attempts": 6,
+  "already_deleted_archive_conflicts": 31,
+  "same_canonical_entry": "/Applications/Review Today.app",
+  "registered_entries": 1,
+  "app_closed": true,
+  "temporary_service_closed": true,
+  "new_batch_stopped": true,
+  "pinned_sources_and_evidence_unchanged": 223,
+  "old_frozen_non_app_files_unchanged": 141,
+  "existing_backup_files_unchanged": 89,
+  "private_configuration_files_unchanged": 5,
+  "project_diff_unchanged": true,
+  "original_allowances_reused": false,
+  "not_verified": [
+    "fresh managed-child startup",
+    "new full learning chain",
+    "new status query",
+    "full VoiceOver",
+    "Rex experience"
+  ]
+}
