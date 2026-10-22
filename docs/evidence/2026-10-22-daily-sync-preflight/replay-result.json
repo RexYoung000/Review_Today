@@ -1,0 +1,43 @@
+{
+  "outcome": "PASS",
+  "work_directory": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/legacy-lifecycle-repair-2026-10-22/real-2516970a826e40b29795e47790c4994e",
+  "actual_fixed_scope_cli": [
+    {
+      "status": "ready",
+      "written_records": 0
+    },
+    {
+      "status": "applied",
+      "written_records": 3
+    },
+    {
+      "status": "already_applied",
+      "written_records": 0
+    }
+  ],
+  "consistent_backup_verified": true,
+  "native_queue": 37,
+  "pending_after": 0,
+  "production_http_requests": 68,
+  "delete_receipts": 37,
+  "original_action_ids_and_revisions_retained": true,
+  "only_approved_metadata_changed_before_cleanup": true,
+  "all_other_original_native_fields_unchanged": true,
+  "all_other_service_rows_unchanged": true,
+  "review_database_unchanged": true,
+  "additive_schema_defaults_in_test_copy": {
+    "ZAGENTRUN": [
+      "ZVOICEINPUTIDSJSON"
+    ],
+    "ZAGENTMESSAGE": [
+      "ZINPUTCHANNEL",
+      "ZVOICEPLAYBACKJSON"
+    ]
+  },
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "daily_cleanup": false,
+  "daily_app_updated": false,
+  "shared_native_module_sha256": "db4a0a68cdf01bd9582d9ad2ef9f54911d251953bc4fb076506d3b75830aedcd",
+  "native_driver_sha256": "03056e09b407fc3ce9dc4342f8f87387663819c9a4ea492e56a8007e3e5512df"
+}

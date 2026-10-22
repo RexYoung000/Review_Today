@@ -1,0 +1,36 @@
+{
+  "status": "BACKUP_READY_HELD_NO_DAILY_CHANGE",
+  "archive": "/Users/rexyoung/Library/Developer/ReviewTodayAppArchives.noindex/2026-10-22-daily-sync-preflight",
+  "fresh_input": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/daily-sync-preflight-2026-10-22/fresh-input",
+  "active_data_files": 7,
+  "all_daily_files_protected": 96,
+  "existing_backup_files_not_recopied": 89,
+  "databases_consistent": true,
+  "private_config_files": 5,
+  "old_app_zip": "/Users/rexyoung/Library/Developer/ReviewTodayAppArchives.noindex/2026-10-22-daily-sync-preflight/ReviewToday-before.zip",
+  "old_app_zip_sha256": "35f329949b3116e4a2d0def14d79518012993cc256a0bc68bac5b9dbf1d0ace9",
+  "old_app_extracted_and_verified": true,
+  "old_signature": {
+    "bundle_id": "Rex.Review-Today",
+    "team": "7NDKLL3UJK",
+    "strict_verified": true,
+    "binaries": {
+      "Review_Today": "845dbfdd9e5c15905bbc9e199bfc89808b57b8a2caa441e894ea539435def608",
+      "__preview.dylib": "2dc2929b7868a33cd640b7b3c478d78f7bf3b549616938a157bbab5558792e66",
+      "Review_Today.debug.dylib": "4f03722746f8580fe463c2726d1c59b356f04e2a6093923e5d3626998b833da5"
+    }
+  },
+  "native_counts": {
+    "ZAGENTSESSION": 8,
+    "ZAGENTMESSAGE": 37,
+    "ZKNOWLEDGE": 11,
+    "ZFSRSSTATE": 11
+  },
+  "candidate_application_diff": "Only SessionDeletion.swift differs from a29c6f1",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "daily_app_updated": false,
+  "daily_cleanup": false,
+  "activation_status": "pending",
+  "activation_hold": true
+}

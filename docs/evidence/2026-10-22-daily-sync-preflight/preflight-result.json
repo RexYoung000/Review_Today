@@ -1,0 +1,216 @@
+{
+  "outcome": "PASS",
+  "directory": "/private/tmp/review-today-learning-save-preflight-3emawp5j",
+  "baseline_commit": "3e9e2013fbbfb6cfb12af4a6024046b05f6f1a28",
+  "cases": [
+    {
+      "case": "pending",
+      "outcome": "PASS",
+      "mock_model_transport": 0,
+      "mock_web_operations": 0,
+      "real_requests": 0,
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      },
+      "pending_or_stopped_files_unchanged": true
+    },
+    {
+      "case": "hold",
+      "outcome": "PASS",
+      "mock_model_transport": 0,
+      "mock_web_operations": 0,
+      "real_requests": 0,
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      },
+      "pending_or_stopped_files_unchanged": true
+    },
+    {
+      "case": "invalid_limits",
+      "outcome": "PASS",
+      "mock_model_transport": 0,
+      "mock_web_operations": 0,
+      "real_requests": 0,
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      },
+      "pending_or_stopped_files_unchanged": true
+    },
+    {
+      "case": "serial",
+      "outcome": "PASS",
+      "real_requests": 0,
+      "mock_model_transport": 8,
+      "mock_web_operations": 0,
+      "fixture_usage_reports": 8,
+      "sdk_http_module": "httpx2",
+      "sdk_client_classes": [
+        "SyncHttpxClientWrapper"
+      ],
+      "outcomes": [
+        "returned",
+        "returned",
+        "returned",
+        "returned",
+        "returned",
+        "returned",
+        "returned",
+        "returned",
+        "RT.MODEL.CANCELLED"
+      ],
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      }
+    },
+    {
+      "case": "restart",
+      "outcome": "PASS",
+      "mock_model_transport": 0,
+      "mock_web_operations": 0,
+      "real_requests": 0,
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      },
+      "pending_or_stopped_files_unchanged": true
+    },
+    {
+      "case": "parallel",
+      "outcome": "PASS",
+      "real_requests": 0,
+      "mock_model_transport": 2,
+      "mock_web_operations": 0,
+      "fixture_usage_reports": 2,
+      "sdk_http_module": "httpx2",
+      "sdk_client_classes": [
+        "SyncHttpxClientWrapper"
+      ],
+      "outcomes": [
+        "returned",
+        "RT.MODEL.CANCELLED",
+        "RT.MODEL.CANCELLED",
+        "RT.MODEL.CANCELLED",
+        "RT.MODEL.CANCELLED",
+        "returned",
+        "RT.MODEL.CANCELLED",
+        "RT.MODEL.CANCELLED"
+      ],
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      }
+    },
+    {
+      "case": "timeout",
+      "outcome": "PASS",
+      "real_requests": 0,
+      "mock_model_transport": 1,
+      "mock_web_operations": 0,
+      "fixture_usage_reports": 0,
+      "sdk_http_module": "httpx2",
+      "sdk_client_classes": [
+        "SyncHttpxClientWrapper"
+      ],
+      "outcomes": [
+        "RT.MODEL.TIMEOUT",
+        "RT.MODEL.CANCELLED"
+      ],
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      }
+    },
+    {
+      "case": "bypass",
+      "outcome": "PASS",
+      "real_requests": 0,
+      "mock_model_transport": 0,
+      "mock_web_operations": 0,
+      "fixture_usage_reports": 0,
+      "sdk_http_module": "httpx2",
+      "sdk_client_classes": [
+        "SyncHttpxClientWrapper"
+      ],
+      "outcomes": [
+        "unaccounted transport blocked"
+      ],
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      }
+    },
+    {
+      "case": "duplicate",
+      "outcome": "PASS",
+      "real_requests": 0,
+      "mock_model_transport": 1,
+      "mock_web_operations": 0,
+      "fixture_usage_reports": 1,
+      "sdk_http_module": "httpx2",
+      "sdk_client_classes": [
+        "SyncHttpxClientWrapper"
+      ],
+      "outcomes": [
+        "returned",
+        "repeated transport blocked"
+      ],
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      }
+    },
+    {
+      "case": "revoked",
+      "outcome": "PASS",
+      "real_requests": 0,
+      "mock_model_transport": 0,
+      "mock_web_operations": 0,
+      "fixture_usage_reports": 0,
+      "sdk_http_module": "httpx2",
+      "sdk_client_classes": [
+        "SyncHttpxClientWrapper"
+      ],
+      "outcomes": [
+        "RT.MODEL.CANCELLED"
+      ],
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      }
+    },
+    {
+      "case": "web",
+      "outcome": "PASS",
+      "real_requests": 0,
+      "mock_model_transport": 0,
+      "mock_web_operations": 16,
+      "fixture_usage_reports": 0,
+      "sdk_http_module": "httpx2",
+      "sdk_client_classes": [
+        "SyncHttpxClientWrapper"
+      ],
+      "outcomes": [
+        "provider fallback counted",
+        "16 operations admitted",
+        "17th blocked",
+        "model blocked after web cap"
+      ],
+      "denied": {
+        "socket": 0,
+        "outside_sqlite": 0
+      }
+    }
+  ],
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "limits_tested": {
+    "model_requests": 8,
+    "provider_web_operations": 16
+  },
+  "real_prepared_authorization_changed": false,
+  "real_service_or_app_started": false
+}

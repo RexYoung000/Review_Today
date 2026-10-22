@@ -1,0 +1,19 @@
+{
+  "outcome": "PASS",
+  "cases": [
+    "actual_pending_operation_rejected_before_runtime",
+    "operation_hold_rejected",
+    "unreviewed_model_limit_rejected",
+    "wrong_startup_database_rejected",
+    "unrelated_backend_drift_refused_without_writes",
+    "exact_three_metadata_delta_published_in_transaction",
+    "same_backend_executor_got_37_real_fixture_receipts"
+  ],
+  "fixture_directory": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/legacy-lifecycle-repair-2026-10-22/execution-twin-40fb6f58b6a64e6483a95bcfab2a5f56",
+  "actual_prepared_authorizations_unchanged": true,
+  "daily_database_access_forbidden": true,
+  "target_and_approval_overridden_in_fixture_only": true,
+  "actual_daily_executor_not_run": true,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0
+}

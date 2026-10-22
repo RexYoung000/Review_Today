@@ -1,0 +1,9 @@
+{
+  "source": "docs/evidence/2026-10-22-legacy-lifecycle-repair/verify_isolated.py",
+  "source_sha256": "9995a1b0c205574a3c1a66ac74381eca64609a51371d60930992c8eb95895d2e",
+  "changed_assignments": [
+    "INPUT",
+    "OUT"
+  ],
+  "production_or_fixture_logic_changed": false
+}
