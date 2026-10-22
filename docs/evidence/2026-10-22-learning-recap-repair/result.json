@@ -1,0 +1,40 @@
+{
+  "status": "IMPLEMENTED_OFFLINE_VERIFIED_REAL_ACCEPTANCE_PENDING",
+  "full": {
+    "log": "full-suite-controlled.log",
+    "passed": 1369,
+    "skipped": 4,
+    "subtests": 651,
+    "summary": "1369 passed, 4 skipped, 5 warnings, 651 subtests passed in 330.08s (0:05:30)",
+    "provider": "openai_compatible"
+  },
+  "targeted": {
+    "log": "targeted-complete.log",
+    "passed": 128,
+    "skipped": 0,
+    "subtests": 42,
+    "summary": "128 passed, 5 warnings, 42 subtests passed in 37.80s",
+    "early_import_isolation_deviation_disclosed": true,
+    "included_in_final_fully_isolated_suite": true
+  },
+  "deepseek": {
+    "log": "deepseek-controlled.log",
+    "passed": 108,
+    "skipped": 0,
+    "subtests": 42,
+    "summary": "108 passed, 5 warnings, 42 subtests passed in 59.16s",
+    "provider": "deepseek"
+  },
+  "new_navigation_tests": 13,
+  "controlled_real_history_replay": true,
+  "real_model_requests": 0,
+  "real_web_operations": 0,
+  "daily_app_not_started_or_replaced": true,
+  "daily_business_database_hashes_unchanged": true,
+  "disclosed_empty_wal_and_shm_cleanup": true,
+  "all_daily_files_byte_identical": false,
+  "old_frozen_quotas_and_real_evidence_unchanged": true,
+  "source_pins_verified": true,
+  "native_ui_not_run": true,
+  "new_model_navigation_and_full_chain_not_verified": true
+}

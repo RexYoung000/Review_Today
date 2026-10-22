@@ -300,7 +300,9 @@ class ComprehensiveCheckTests(unittest.TestCase):
                 task = self.start_lesson()
                 self.request(task)
                 first = current_step(task)["id"]
-                self.decision = intent(action, workflow="source_learning", scope="continue_goal")
+                self.decision = intent(action, workflow="source_learning", scope="continue_goal",
+                    learning_navigation=dict(action='advance', step_id=first, evidence='继续下一节')
+                        if action == 'continue' else None)
                 self.send("继续下一节" if action == "continue" else "跳过检查继续")
                 after = self.state()["tasks"][task["task_id"]]
                 self.assertNotEqual(current_step(after)["id"], first)

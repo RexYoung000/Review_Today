@@ -1,0 +1,2 @@
+Offline check provider: openai_compatible
+{"result": "VALID", "cases": 55, "judgments": 299, "kinds": {"dialogue": 31, "memory": 6, "source": 6, "grading": 12}, "note": "Offline structure only; no provider/config/database access."}

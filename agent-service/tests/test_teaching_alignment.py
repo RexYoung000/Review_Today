@@ -191,7 +191,8 @@ class TeachingAlignmentTests(unittest.TestCase):
             if issubclass(schema, ConversationOutput):
                 payloads.append(json.loads(user))
             return base(system, user, schema, **kwargs)
-        self.decision = intent("continue", workflow="source_learning", scope="continue_goal")
+        self.decision = intent("continue", workflow="source_learning", scope="continue_goal",
+            learning_navigation=dict(action='advance', step_id=current_step(task)['id'], evidence='继续下一节'))
         with patch("agent_service.conversation.parse_model", side_effect=capture):
             self.send("继续下一节")
         self.assertEqual(payloads[-1]["learning_step"]["completion_condition"], "")
@@ -266,7 +267,8 @@ class TeachingAlignmentTests(unittest.TestCase):
             if issubclass(schema, ConversationOutput):
                 calls.append(json.loads(user))
             return base(system, user, schema, **kwargs)
-        self.decision = intent("continue", workflow="source_learning", scope="continue_goal")
+        self.decision = intent("continue", workflow="source_learning", scope="continue_goal",
+            learning_navigation=dict(action='advance', step_id=current_step(task)['id'], evidence='继续下一节'))
         with patch("agent_service.conversation.parse_model", side_effect=capture):
             self.send("继续下一节")
         after = self.state()["tasks"][task["task_id"]]

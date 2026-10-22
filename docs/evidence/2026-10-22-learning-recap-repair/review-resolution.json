@@ -1,0 +1,16 @@
+{
+  "independent_read_only_review": true,
+  "real_requests": 0,
+  "findings_resolved": [
+    "mixed neutral/self-report intent dropped valid advance",
+    "negative/conditional navigation evidence",
+    "failed selected-step retry degraded to local answer",
+    "bare 别 matched 特别",
+    "exact teaching shortcut rebuilt navigation on retry"
+  ],
+  "additional_verified": "Steering appended input IDs do not inherit an older applied navigation selection",
+  "final_review_blockers": [],
+  "additional_nonregression_check": "Mode-change plus next request follows the existing mode-operation early return; no teaching in current or old control, not expanded.",
+  "final_docs_review_blockers": [],
+  "final_docs_review_note": "Ownership comparison explicit; real model/native pending; 0-byte WAL and companion SHM deviation disclosed; full test counts and frozen quota aligned."
+}

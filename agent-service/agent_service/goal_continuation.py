@@ -231,8 +231,11 @@ def handle(h, sid, rid, rev, decision, last):
                 'RT.GOAL.DESTINATION_BUSY':'当前会话已有进行中的学习目标。请在空的新会话继续旧目标，或先结束当前学习。'}
             h._publish(sid,rid,rev,messages.get(str(exc),'学习记录刚刚发生了变化，这次没有接续。请重新发起续学以核对最新进度。'))
             return True
+    step = current_step(task)
     local = IntentDecision(intents=['continue'], relation='continuation', scope='continue_goal',
-        workflow=task['mode'], target_task_id=task['task_id'], rationale='用户明确续学，已原子交接唯一有效目标。')
+        workflow=task['mode'], target_task_id=task['task_id'],
+        learning_navigation=dict(action='advance', step_id=step['id'], evidence=evidence) if step and evidence else None,
+        rationale='用户明确续学，已原子交接唯一有效目标。')
     with h.store.transaction(sid,rid,rev) as current:
         current['runs'][rid]['intent'] = local.model_dump()
     h._respond(sid,rid,rev,local, '这是同一学习目标在新会话的续学。程序会在正文前附上核实的上次进度；你的正文直接讲当前步骤，不要说本会话刚才已讲过旧步骤。不要重新创建整套课程，不推断已经掌握，不沿用旧的保存或操作授权。', node='lesson',teaching=True)

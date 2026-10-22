@@ -1,0 +1,2 @@
+Offline check provider: openai_compatible
+{"result": "VALID", "scenarios": 103, "trials": 515, "questions": 3605, "variants": ["v0", "v1", "scope", "resource", "progress"], "note": "Offline only; default is structure inventory, not an execution authorization."}

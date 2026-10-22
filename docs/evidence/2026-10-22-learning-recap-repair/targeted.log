@@ -1,0 +1,70 @@
+..............................................................F.................................................. [ 91%]
+...........                                                              [100%]
+=================================== FAILURES ===================================
+_ LearningNavigationHarnessTests.test_failed_next_retries_selected_lesson_once_without_returning_to_followup _
+
+self = <test_learning_navigation.LearningNavigationHarnessTests testMethod=test_failed_next_retries_selected_lesson_once_without_returning_to_followup>
+
+    def test_failed_next_retries_selected_lesson_once_without_returning_to_followup(self):
+        task = self.start_lesson()
+        self.decision = intent('continue', workflow='source_learning', scope='continue_goal',
+            learning_navigation=dict(action='advance', step_id=current_step(task)['id'], evidence='继续下一节'))
+        base = self.harness._call
+        def fail_lesson(*args, **kwargs):
+            if args[3] == 'lesson':
+                raise RuntimeError('controlled failure after selection')
+            return base(*args, **kwargs)
+        with patch.object(self.harness, '_call', side_effect=fail_lesson):
+            accepted = self.send('继续下一节')
+        failed = self.state()
+        self.assertEqual(failed['runs'][accepted.run_id]['status'], 'retryable_failed')
+        selected_id = current_step(failed['tasks'][task['task_id']])['id']
+        self.assertNotEqual(selected_id, current_step(task)['id'])
+        self.calls.clear()
+        self.control(accepted.run_id, 'retry')
+        self.harness.drain(self.sid)
+        after = self.state()
+        self.assertEqual(after['runs'][accepted.run_id]['status'], 'completed')
+        self.assertEqual(after['runs'][accepted.run_id]['intent']['intents'], ['continue'])
+        self.assertEqual(current_step(after['tasks'][task['task_id']])['id'], selected_id)
+>       self.assertIn('TeachingConversationOutput', [schema.__name__ for schema, _ in self.calls])
+E       AssertionError: 'TeachingConversationOutput' not found in []
+
+tests/test_learning_navigation.py:184: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_learning_navigation.py::LearningNavigationHarnessTests::test_failed_next_retries_selected_lesson_once_without_returning_to_followup
+1 failed, 123 passed, 5 warnings, 31 subtests passed in 61.98s (0:01:01)

@@ -669,6 +669,10 @@ class ConversationHarness(ConditionalTeaching):
                                       target_task_id=task["task_id"] if task else "", relation="continuation",
                                       workflow=task["mode"] if task and task["mode"] != "auto" else None,
                                       scope="continue_goal", rationale="用户点击了绑定对象与内容版本的操作；由程序检查执行条件。")
+        elif run.get("intent") and {"programming_boundary", "conversation_kind", "resource_boundary", "reply_feedback"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"] and self._intent_policy_matches(run):
+            # An exact teaching control also owns its original navigation on
+            # retry; rebuilding it from the new current step could advance twice.
+            decision = IntentDecision.model_validate(run["intent"])
         elif not image_inputs.current_images(data, run) and last["content"].strip().rstrip("。！？!?") in {"直接教我", "请直接教我", "直接讲解", "继续讲解"} and (task or dialogue_routing.current_learning_goal(data)):
             # Exact, whole-message teaching controls have no grading/write meaning.
             # Quoted text, pasted material and longer requests still use the model.
@@ -676,9 +680,9 @@ class ConversationHarness(ConditionalTeaching):
                                       target_description=task["content"] if task else dialogue_routing.current_learning_goal(data),
                                       relation="continuation", workflow=task["mode"] if task else "source_learning",
                                       scope="continue_goal", direct_teaching=True, learning_goal_ready=True,
+                                      learning_navigation=dict(action='advance', step_id=current_step(task)['id'],
+                                          evidence=last['content']) if task and current_step(task) else None,
                                       rationale="用户明确要求继续教学，不是独立作答或保存授权。")
-        elif run.get("intent") and {"programming_boundary", "conversation_kind", "resource_boundary", "reply_feedback"} <= run["intent"].keys() and run.get("decision_input_ids") == run["input_ids"] and run.get("decision_mode") == data["mode"] and self._intent_policy_matches(run):
-            decision = IntentDecision.model_validate(run["intent"])
         elif any(not image_inputs.has_reading(m) for m in image_inputs.current_images(data, run)):
             decision = image_inputs.resolve(self, sid, rid, rev, dialogue_routing.intent_context(context, retry_run_id=rid), INTENT_SYSTEM)
             data, run = self._snapshot(sid, rid, rev)
@@ -1268,10 +1272,16 @@ class ConversationHarness(ConditionalTeaching):
         context, last = self._context(data, run)
         task = self._task(data, run)
         if teaching and task and not task["context"].get("requires_mastery"):
+            from agent_service.learning_navigation import should_advance, applied_to_run, record_selection
             with self.store.transaction(sid, rid, rev) as current:
                 live_task = self._task(current, current["runs"][rid])
                 active_run = current["runs"][rid]
-                finished = advance(live_task) if set(decision.intents) & {"continue", "skip_check"} and not active_run.get("goal_step_advanced") else False
+                selected = applied_to_run(active_run, live_task, decision, last, current['mode'])
+                original_step_id = (current_step(live_task) or {}).get('id')
+                finished = advance(live_task) if (should_advance(decision, live_task, last)
+                    and not selected and not active_run.get("goal_step_advanced")) else False
+                if (current_step(live_task) or {}).get('id') != original_step_id:
+                    record_selection(active_run, live_task, decision, last, current['mode'], original_step_id)
                 if active_run.get("goal_transfer"):
                     active_run["goal_step_advanced"] = True
             if finished:

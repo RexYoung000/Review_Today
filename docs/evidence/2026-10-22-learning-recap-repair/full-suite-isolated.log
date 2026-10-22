@@ -1,0 +1,96 @@
+.....................................................................ssss....................................................................................... [ 11%]
+...................................................... [ 15%]
+................................................................................................................................. [ 24%]
+...................................................... [ 28%]
+....................................................... [ 32%]
+............................................................. [ 37%]
+....................................................... [ 41%]
+....................................................... [ 45%]
+................. [ 46%]
+................. [ 47%]
+............ [ 48%]
+................................................................................................... [ 55%]
+................................................................................................................................... [ 65%]
+..........................F
+=================================== FAILURES ===================================
+_ ParseModelCompatibilityTests.test_deep_reasoning_survives_endpoint_compatibility _
+
+self = <test_openai_client.ParseModelCompatibilityTests testMethod=test_deep_reasoning_survives_endpoint_compatibility>
+
+    def test_deep_reasoning_survives_endpoint_compatibility(self):
+        parsed = IntentClass(intent="remember_content")
+        client = Mock()
+        client.responses.parse.return_value = SimpleNamespace(output_parsed=None)
+        client.chat.completions.parse.return_value = SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(parsed=parsed))])
+        with patch("agent_service.openai_client._client", return_value=client):
+>           parse_model("system", "user", IntentClass, reasoning_effort="high")
+
+tests/test_openai_client.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent_service/openai_client.py:104: in parse_model
+    result = _parse_model(system, user, text_format, model=model, timeout=timeout, on_cancel_handle=on_cancel_handle,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+system = 'system', user = 'user'
+text_format = <class 'agent_service.schemas.IntentClass'>, model = None
+timeout = 90.0, on_cancel_handle = None, reasoning_effort = 'high'
+max_output_tokens = None, on_usage = None, on_request = None, images = None
+
+    def _parse_model(system, user, text_format, *, model, timeout, on_cancel_handle=None, reasoning_effort=None, max_output_tokens=None, on_usage=None, on_request=None, images=None):
+        client = _client(timeout=timeout)
+        if on_cancel_handle:
+            on_cancel_handle(client.close)
+        selected_model = model or MODEL
+        params = dict(model=selected_model, input=_input(system, user, images),
+                      timeout=current_budget.get().take(), **({"max_output_tokens": max_output_tokens} if max_output_tokens else {}), **_reasoning(reasoning_effort))
+        request_id = _request_identity(on_request)
+        if PROVIDER == "deepseek":
+            response = client.responses.create(**params, text={"format": _text_format(text_format)})
+        else:
+            response = client.responses.parse(**params, text_format=text_format)
+        _report_usage(response, on_usage, request_id=request_id)
+        if getattr(response, "status", None) in {"incomplete", "failed", "cancelled"}:
+            raise ModelCallError("INCOMPLETE", str(response.status))
+>       for output in getattr(response, "output", []) or []:
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'Mock' object is not iterable
+
+agent_service/openai_client.py:280: TypeError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_openai_client.py::ParseModelCompatibilityTests::test_deep_reasoning_survives_endpoint_compatibility
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 921 passed, 4 skipped, 5 warnings, 475 subtests passed in 302.59s (0:05:02)

@@ -1,0 +1,2 @@
+Offline check provider: openai_compatible
+{"result": "VALID", "scenarios": 55, "trials": 165, "questions": 1430, "note": "Offline only; no provider configuration, model call or database."}

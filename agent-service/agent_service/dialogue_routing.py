@@ -3,7 +3,7 @@ from agent_service.schemas import IntentDecision
 
 LEGACY_QUESTION = '你希望继续刚才的内容，还是开始一个新的学习问题？'
 LOCAL_QUESTIONS = {'question', 'followup', 'example', 'hint'}
-POLICY_VERSION = 'dialogue-materials-11'
+POLICY_VERSION = 'dialogue-materials-12'
 FEEDBACK_INTENTS = {'question', 'followup', 'correction', 'social', 'greeting', 'thanks'}
 
 
@@ -122,7 +122,8 @@ def normalize(data, decision, last):
             'target_task_id': '', 'workflow': None, 'answer_only': True, 'session_tags': [], 'memory_selections': []})
     if ordinary_question(data, decision, last):
         return decision.model_copy(update={'scope': 'conversation', 'workflow': None, 'answer_only': True})
-    return decision
+    from agent_service.learning_navigation import normalize
+    return normalize(data, decision, last)
 
 
 def retire_misrouted_task(harness, sid, rid, rev):

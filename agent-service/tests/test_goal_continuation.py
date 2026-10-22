@@ -211,7 +211,9 @@ class GoalContinuationTests(unittest.TestCase):
     def test_next_step_preserves_current_plan_and_ownership(self):
         sid,tid=self.seed()
         before=copy.deepcopy(self.f.store.get(sid)['tasks'][tid])
-        self.f.decision=intent('continue',scope='continue_goal',target_task_id=tid)
+        self.f.decision=intent('continue',scope='continue_goal',target_task_id=tid,
+            learning_navigation=dict(action='advance',step_id=before['context']['learning_plan']['current_step_id'],
+                                     evidence='我们学下一个内容'))
         with patch.object(self.f.harness,'_call',wraps=self.f.harness._call) as calls:
             result=self.f.send('好的，先这样吧，我们学下一个内容',sid=sid)
         data=self.f.store.get(sid);after=data['tasks'][tid]

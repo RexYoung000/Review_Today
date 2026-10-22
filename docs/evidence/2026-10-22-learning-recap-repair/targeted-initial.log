@@ -1,0 +1,138 @@
+........F.F.....F..................F.............. [ 72%]
+...................                                                      [100%]
+=================================== FAILURES ===================================
+_ LearningNavigationHarnessTests.test_review_with_conflicting_continue_keeps_plan_question_sources_and_history _
+
+self = <test_learning_navigation.LearningNavigationHarnessTests testMethod=test_review_with_conflicting_continue_keeps_plan_question_sources_and_history>
+
+    def test_review_with_conflicting_continue_keeps_plan_question_sources_and_history(self):
+        task = self.start_lesson()
+        before = copy.deepcopy(self.state())
+        self.calls.clear()
+        self.decision = intent('continue', workflow='source_learning', scope='continue_goal',
+            learning_navigation=dict(action='review', step_id=current_step(task)['id'], evidence='回顾原讲解'))
+        with patch.object(socket.socket, 'connect', side_effect=AssertionError('Network forbidden')):
+            accepted = self.send('回到 RAG，回顾原讲解，先不要进入下一节')
+        after = self.state()
+>       self.assertEqual(after['runs'][accepted.run_id]['status'], 'completed')
+E       AssertionError: 'retryable_failed' != 'completed'
+E       - retryable_failed
+E       + completed
+
+tests/test_learning_navigation.py:101: AssertionError
+_ TeachingAlignmentTests.test_continue_after_partial_answer_targets_the_next_step_despite_old_question _
+
+self = <test_teaching_alignment.TeachingAlignmentTests testMethod=test_continue_after_partial_answer_targets_the_next_step_despite_old_question>
+
+    def test_continue_after_partial_answer_targets_the_next_step_despite_old_question(self):
+        task = self.start_lesson()
+        self.partial_answer = True
+        self.answer()
+        calls = []
+        base = self.model
+        def capture(system, user, schema, **kwargs):
+            if issubclass(schema, ConversationOutput):
+                calls.append(json.loads(user))
+            return base(system, user, schema, **kwargs)
+        self.decision = intent("continue", workflow="source_learning", scope="continue_goal")
+        with patch("agent_service.conversation.parse_model", side_effect=capture):
+            self.send("继续下一节")
+        after = self.state()["tasks"][task["task_id"]]
+>       self.assertEqual(calls[-1]["learning_step"]["id"], current_step(after)["id"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests/test_teaching_alignment.py:273: TypeError
+_ TeachingAlignmentTests.test_old_global_placeholder_is_not_a_current_step_requirement _
+
+self = <test_teaching_alignment.TeachingAlignmentTests testMethod=test_old_global_placeholder_is_not_a_current_step_requirement>
+
+    def test_old_global_placeholder_is_not_a_current_step_requirement(self):
+        task = self.start_lesson()
+        with self.store.transaction(self.sid) as data:
+            context = data["tasks"][task["task_id"]]["context"]
+            context["reference_answer"] = "旧的宽泛参考，不应覆盖本节讲解。"
+            plan = context["learning_plan"]
+            for step in plan["steps"]:
+                step["completion_condition"] = plan["success_check"]
+        self.answer()
+        grading = next(payload for schema, payload in self.calls if schema is MasteryEvaluation)
+        self.assertEqual(grading["reference"], LESSON)
+        self.assertNotIn("completion_condition", grading["learning_step"])
+        saved = self.state()["tasks"][task["task_id"]]["context"]["learning_plan"]
+        self.assertTrue(all(step["completion_condition"] == saved["success_check"] for step in saved["steps"]))
+        payloads = []
+        base = self.model
+        def capture(system, user, schema, **kwargs):
+            if issubclass(schema, ConversationOutput):
+                payloads.append(json.loads(user))
+            return base(system, user, schema, **kwargs)
+        self.decision = intent("continue", workflow="source_learning", scope="continue_goal")
+        with patch("agent_service.conversation.parse_model", side_effect=capture):
+            self.send("继续下一节")
+>       self.assertEqual(payloads[-1]["learning_step"]["completion_condition"], "")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests/test_teaching_alignment.py:197: TypeError
+__ GoalContinuationTests.test_next_step_preserves_current_plan_and_ownership ___
+
+self = <test_goal_continuation.GoalContinuationTests testMethod=test_next_step_preserves_current_plan_and_ownership>
+
+    def test_next_step_preserves_current_plan_and_ownership(self):
+        sid,tid=self.seed()
+        before=copy.deepcopy(self.f.store.get(sid)['tasks'][tid])
+        self.f.decision=intent('continue',scope='continue_goal',target_task_id=tid)
+        with patch.object(self.f.harness,'_call',wraps=self.f.harness._call) as calls:
+            result=self.f.send('好的，先这样吧，我们学下一个内容',sid=sid)
+        data=self.f.store.get(sid);after=data['tasks'][tid]
+        self.assertEqual(data['runs'][result.run_id]['status'],'completed')
+        self.assertEqual(data['active_task_id'],tid);self.assertEqual(len(data['tasks']),1)
+        self.assertEqual(ownership(after),ownership(before))
+        self.assertEqual(after['context']['understanding'],'unknown')
+        self.assertEqual([s['id'] for s in after['context']['learning_plan']['steps']],
+                         [s['id'] for s in before['context']['learning_plan']['steps']])
+>       self.assertTrue(any(c.args[3]=='lesson' for c in calls.call_args_list))
+E       AssertionError: False is not true
+
+tests/test_goal_continuation.py:224: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_learning_navigation.py::LearningNavigationHarnessTests::test_review_with_conflicting_continue_keeps_plan_question_sources_and_history
+FAILED tests/test_teaching_alignment.py::TeachingAlignmentTests::test_continue_after_partial_answer_targets_the_next_step_despite_old_question
+FAILED tests/test_teaching_alignment.py::TeachingAlignmentTests::test_old_global_placeholder_is_not_a_current_step_requirement
+FAILED tests/test_goal_continuation.py::GoalContinuationTests::test_next_step_preserves_current_plan_and_ownership
+4 failed, 65 passed, 5 warnings, 22 subtests passed in 32.68s

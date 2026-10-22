@@ -1,0 +1,106 @@
+Offline check provider: openai_compatible
+.....................................................................ssss....................................................................................... [ 11%]
+...................................................... [ 15%]
+................................................................................................................................. [ 24%]
+...................................................... [ 28%]
+....................................................... [ 32%]
+............................................................. [ 37%]
+....................................................... [ 41%]
+....................................................... [ 45%]
+................. [ 46%]
+................. [ 47%]
+............ [ 48%]
+................................................................................................... [ 55%]
+................................................................................................................................... [ 65%]
+......................................................... [ 69%]
+............................................................. [ 74%]
+...................................................... [ 78%]
+...................................................................................................................................... [ 87%]
+................................................................................................................ [ 95%]
+..............................................
+=================================== FAILURES ===================================
+_ IndependentWebTests.test_extract_partial_failure_or_wrong_url_is_not_success (results=[]) _
+agent_service.call_errors.WebToolError: RT.WEB.CHAIN_FAILED
+
+During handling of the above exception, another exception occurred:
+
+self = <test_web_tools.IndependentWebTests testMethod=test_extract_partial_failure_or_wrong_url_is_not_success>
+
+    def test_extract_partial_failure_or_wrong_url_is_not_success(self):
+        for results in [[], [{'url': 'https://example.com/other', 'raw_content': 'body'}], [{'url': 'https://example.com/a', 'content': 'snippet'}]]:
+            with self.subTest(results=results), self.transport({'results': results, 'failed_results': [{'error': 'SECRET'}]}):
+>               with self.assertRaisesRegex(WebToolError, 'READ_FAILED'):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AssertionError: "READ_FAILED" does not match "RT.WEB.CHAIN_FAILED"
+
+tests/test_web_tools.py:76: AssertionError
+_ IndependentWebTests.test_extract_partial_failure_or_wrong_url_is_not_success (results=[{'url': 'https://example.com/other', 'raw_content': 'body'}]) _
+agent_service.call_errors.WebToolError: RT.WEB.CHAIN_FAILED
+
+During handling of the above exception, another exception occurred:
+
+self = <test_web_tools.IndependentWebTests testMethod=test_extract_partial_failure_or_wrong_url_is_not_success>
+
+    def test_extract_partial_failure_or_wrong_url_is_not_success(self):
+        for results in [[], [{'url': 'https://example.com/other', 'raw_content': 'body'}], [{'url': 'https://example.com/a', 'content': 'snippet'}]]:
+            with self.subTest(results=results), self.transport({'results': results, 'failed_results': [{'error': 'SECRET'}]}):
+>               with self.assertRaisesRegex(WebToolError, 'READ_FAILED'):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AssertionError: "READ_FAILED" does not match "RT.WEB.CHAIN_FAILED"
+
+tests/test_web_tools.py:76: AssertionError
+_ IndependentWebTests.test_extract_partial_failure_or_wrong_url_is_not_success (results=[{'url': 'https://example.com/a', 'content': 'snippet'}]) _
+agent_service.call_errors.WebToolError: RT.WEB.CHAIN_FAILED
+
+During handling of the above exception, another exception occurred:
+
+self = <test_web_tools.IndependentWebTests testMethod=test_extract_partial_failure_or_wrong_url_is_not_success>
+
+    def test_extract_partial_failure_or_wrong_url_is_not_success(self):
+        for results in [[], [{'url': 'https://example.com/other', 'raw_content': 'body'}], [{'url': 'https://example.com/a', 'content': 'snippet'}]]:
+            with self.subTest(results=results), self.transport({'results': results, 'failed_results': [{'error': 'SECRET'}]}):
+>               with self.assertRaisesRegex(WebToolError, 'READ_FAILED'):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AssertionError: "READ_FAILED" does not match "RT.WEB.CHAIN_FAILED"
+
+tests/test_web_tools.py:76: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SUBFAILED(results=[]) tests/test_web_tools.py::IndependentWebTests::test_extract_partial_failure_or_wrong_url_is_not_success
+SUBFAILED(results=[{'url': 'https://example.com/other', 'raw_content': 'body'}]) tests/test_web_tools.py::IndependentWebTests::test_extract_partial_failure_or_wrong_url_is_not_success
+SUBFAILED(results=[{'url': 'https://example.com/a', 'content': 'snippet'}]) tests/test_web_tools.py::IndependentWebTests::test_extract_partial_failure_or_wrong_url_is_not_success
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 3 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+3 failed, 1359 passed, 4 skipped, 5 warnings, 627 subtests passed in 520.01s (0:08:40)

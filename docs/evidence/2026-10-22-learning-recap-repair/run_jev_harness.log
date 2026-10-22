@@ -1,0 +1,2 @@
+Offline check provider: openai_compatible
+{"result": "VALID", "dialogues": 31, "node_cases": 27, "paired_runs": 116, "note": "Offline inventory only; no providers or stores imported."}

@@ -1,0 +1,82 @@
+.....................................................................ssss....................................................................................... [ 11%]
+...................................................... [ 15%]
+................................F...........................................................................................
+=================================== FAILURES ===================================
+_ ComprehensiveCheckTests.test_continue_and_skip_keep_unverified_step_and_allow_next_lesson (action='continue') _
+
+self = <test_comprehensive_check.ComprehensiveCheckTests testMethod=test_continue_and_skip_keep_unverified_step_and_allow_next_lesson>
+
+    def test_continue_and_skip_keep_unverified_step_and_allow_next_lesson(self):
+        for action in ("continue", "skip_check"):
+            with self.subTest(action=action):
+                self.sid = str(uuid.uuid4())
+                task = self.start_lesson()
+                self.request(task)
+                first = current_step(task)["id"]
+                self.decision = intent(action, workflow="source_learning", scope="continue_goal")
+                self.send("继续下一节" if action == "continue" else "跳过检查继续")
+                after = self.state()["tasks"][task["task_id"]]
+>               self.assertNotEqual(current_step(after)["id"], first)
+E               AssertionError: '196468fe-bc56-48e1-a67d-896211a068bd' == '196468fe-bc56-48e1-a67d-896211a068bd'
+
+tests/test_comprehensive_check.py:306: AssertionError
+_ ConditionalTeachingTests.test_direct_teaching_control_never_grades_an_unanswered_question _
+
+self = <test_conditional_teaching.ConditionalTeachingTests testMethod=test_direct_teaching_control_never_grades_an_unanswered_question>
+
+    def test_direct_teaching_control_never_grades_an_unanswered_question(self):
+        from agent_service.schemas import MasteryEvaluation
+        self.decision = intent("goal", workflow="source_learning", scope="learning", direct_teaching=True)
+        with patch("agent_service.conversation.web_search_text", side_effect=ModelCallError("UNSUPPORTED")):
+            self.send("直接教我 RAG")
+            self.calls.clear()
+            # Even a model that would mistake this for option B must not grade it.
+            self.decision = intent("answer", scope="continue_goal")
+            accepted = self.send("直接教我！")
+        run = self.state()["runs"][accepted.run_id]
+        self.assertEqual(run["status"], "completed")
+>       self.assertTrue(run["intent"]["direct_teaching"])
+E       AssertionError: False is not true
+
+tests/test_conditional_teaching.py:415: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:53
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+agent_service/main.py:90
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:90: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.13/site-packages/fastapi/applications.py:4681
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/lib/python3.13/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+agent_service/main.py:119
+  /Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/main.py:119: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SUBFAILED(action='continue') tests/test_comprehensive_check.py::ComprehensiveCheckTests::test_continue_and_skip_keep_unverified_step_and_allow_next_lesson
+FAILED tests/test_conditional_teaching.py::ConditionalTeachingTests::test_direct_teaching_control_never_grades_an_unanswered_question
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/harness_store.py:101: KeyboardInterrupt
+(to show a full traceback on KeyboardInterrupt use --full-trace)
+2 failed, 333 passed, 4 skipped, 5 warnings, 88 subtests passed in 100.84s (0:01:40)

@@ -1,0 +1,9 @@
+{
+  "default_import_attempts_daily_store": true,
+  "audit_rejected_before_sqlite_open": true,
+  "attempted_path": [
+    "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3"
+  ],
+  "real_model_requests": 0,
+  "real_web_operations": 0
+}
