@@ -1,0 +1,13 @@
+{
+  "status": "REPRODUCED_PREEXISTING_SYNC_QUEUE_ISSUE",
+  "existed_before_install": true,
+  "native_marker_delete_revision": 1,
+  "replayed_archive_revision": 0,
+  "production_error": "RT.SESSION.INVALID_ACTION",
+  "observed_http_conflicts": 82,
+  "changed_product_files": 0,
+  "actual_new_model_requests": 0,
+  "actual_new_web_operations": 0,
+  "databases_opened": 0,
+  "data_cleanup_executed": false
+}

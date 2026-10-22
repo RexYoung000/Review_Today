@@ -1,0 +1,11 @@
+{
+  "status": "approved",
+  "batch_id": "98c73c91-6e4f-4bb7-9925-d2ca683d70f4",
+  "actual_model_request_limit": 8,
+  "provider_web_operation_limit": 0,
+  "database_path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3",
+  "scope": "one startup probe round only; no messages, saves, retries after failure or web; close App and temporary service after data/UI verification",
+  "decision": 257,
+  "approved_at": "2026-10-22T04:16:30.350036+00:00",
+  "human_answer": "按 8／0 更新并检查（推荐）"
+}

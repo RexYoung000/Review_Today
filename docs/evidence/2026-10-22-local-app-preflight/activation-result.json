@@ -1,0 +1,134 @@
+{
+  "status": "UPDATED_ENTRY_AND_DATA_PASS_PREEXISTING_SYNC_ISSUE_OPEN",
+  "decision": 257,
+  "actual_model_requests": 8,
+  "actual_web_operations": 0,
+  "new_probe_batches": 1,
+  "new_probe_rounds": 1,
+  "unique_request_ids": 8,
+  "usage_receipts": 8,
+  "reported_tokens": {
+    "input_tokens": 1244,
+    "output_tokens": 346,
+    "total_tokens": 1590,
+    "cached_input_tokens": 256,
+    "reasoning_output_tokens": 163
+  },
+  "all_roles_ready": true,
+  "coach_smart_and_deep_streaming_ready": true,
+  "daily_app_updated": true,
+  "daily_app_finally_closed": true,
+  "temporary_service_finally_closed": true,
+  "native_counts": {
+    "ZKNOWLEDGE": 11,
+    "ZAGENTMESSAGE": 37,
+    "ZAGENTSESSION": 8,
+    "ZFSRSSTATE": 11
+  },
+  "native_strict_tables_unchanged": [
+    "ZSOURCE",
+    "ZKNOWLEDGE",
+    "ZQUESTION",
+    "ZFSRSSTATE",
+    "ZREVIEWSESSION",
+    "ZREVIEWATTEMPT",
+    "ZAGENTMESSAGE",
+    "ZKNOWLEDGEREFERENCE",
+    "ZSOURCEREFERENCE",
+    "ZAGENTRUN",
+    "ZSESSIONEVENTRECORD"
+  ],
+  "learning_and_review_fields_preserved": true,
+  "previous_service_sessions_and_tasks_unchanged": true,
+  "previous_capability_batches_unchanged": true,
+  "database_integrity": {
+    "Data/ReviewToday.store": [
+      "ok"
+    ],
+    "agent-harness.sqlite3": [
+      "ok"
+    ],
+    "agent-harness.review.sqlite3": [
+      "ok"
+    ]
+  },
+  "changed_columns": {
+    "Data/ReviewToday.store": {
+      "ZLEARNINGTASK": {
+        "before": 5,
+        "after": 5,
+        "changed_columns": [
+          "ZUPDATEDAT",
+          "Z_OPT"
+        ]
+      },
+      "ZAGENTSESSION": {
+        "before": 8,
+        "after": 8,
+        "changed_columns": [
+          "Z_OPT",
+          "ZCHECKPOINTJSON"
+        ]
+      },
+      "Z_PRIMARYKEY": {
+        "before": 22,
+        "after": 22,
+        "changed_columns": [
+          "Z_MAX"
+        ]
+      }
+    },
+    "agent-harness.sqlite3": {
+      "agent_capability_batches": {
+        "before": 2,
+        "after": 3,
+        "changed_columns": [
+          "batch_id",
+          "payload",
+          "created_at"
+        ]
+      }
+    },
+    "agent-harness.review.sqlite3": {}
+  },
+  "internal_history_counts": {
+    "ACHANGE": 1218473,
+    "ATRANSACTION": 1205478
+  },
+  "pins_unchanged": 194,
+  "old_runtime_files_unchanged": 150,
+  "project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "ui": {
+    "agent_entry": true,
+    "input_and_send_visible": true,
+    "no_blocking_banner": true,
+    "library_11": true,
+    "existing_detail_source_label": true,
+    "review_toggle_off": true,
+    "new_messages_sent": 0,
+    "saves_clicked": 0,
+    "appearance": "light/current window",
+    "native_app_processes_observed": [
+      25528,
+      25715
+    ],
+    "quit_observation_reopened_window": true,
+    "additional_probe_after_reopen": 0
+  },
+  "stop_present": true,
+  "frozen_allowances_reused": false,
+  "open_issue": {
+    "kind": "preexisting deletion outbox repeats invalid archive revision zero",
+    "http_409_count": 82,
+    "reproduced_offline": true,
+    "daily_outbox_unchanged": true,
+    "data_cleanup_executed": false
+  },
+  "not_verified": [
+    "new status query",
+    "new full learning chain",
+    "fresh managed-child startup",
+    "full VoiceOver",
+    "Rex experience"
+  ]
+}
