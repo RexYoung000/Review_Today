@@ -1,0 +1,149 @@
+{
+  "outcome": "PASS",
+  "directory": "/private/tmp/review-today-deletion-sync-dbjdus80/http-replay-74aae416-c8a5-46d5-8b1b-258b731ec6dd",
+  "scenarios": [
+    {
+      "scenario": "real",
+      "outcome": "PASS",
+      "cleared": true,
+      "sequence": [
+        {
+          "action": "delete",
+          "revision": 1,
+          "status": 200,
+          "error": null
+        }
+      ],
+      "pending_before": 37,
+      "pending_after": 36,
+      "unrelated_marker_requests_blocked": 2,
+      "expected_native_state_retained": true,
+      "model_requests": 0,
+      "web_operations": 0
+    },
+    {
+      "scenario": "active_v2",
+      "outcome": "PASS",
+      "cleared": true,
+      "sequence": [
+        {
+          "action": "archive",
+          "revision": 1,
+          "status": 200,
+          "error": null
+        },
+        {
+          "action": "delete",
+          "revision": 2,
+          "status": 200,
+          "error": null
+        }
+      ],
+      "pending_before": 1,
+      "pending_after": 0,
+      "unrelated_marker_requests_blocked": 0,
+      "expected_native_state_retained": true,
+      "model_requests": 0,
+      "web_operations": 0
+    },
+    {
+      "scenario": "lost_ack_v2",
+      "outcome": "PASS",
+      "cleared": true,
+      "sequence": [
+        {
+          "action": "archive",
+          "revision": 1,
+          "status": 200,
+          "error": null
+        },
+        {
+          "action": "delete",
+          "revision": 2,
+          "status": 503,
+          "error": "RT.HARNESS.SERVICE_UNAVAILABLE"
+        },
+        {
+          "action": "archive",
+          "revision": 1,
+          "status": 409,
+          "error": "RT.SESSION.DELETED"
+        },
+        {
+          "action": "delete",
+          "revision": 2,
+          "status": 200,
+          "error": null
+        }
+      ],
+      "pending_before": 1,
+      "pending_after": 0,
+      "unrelated_marker_requests_blocked": 0,
+      "expected_native_state_retained": true,
+      "model_requests": 0,
+      "web_operations": 0
+    },
+    {
+      "scenario": "active_v1",
+      "outcome": "PASS",
+      "cleared": false,
+      "sequence": [
+        {
+          "action": "delete",
+          "revision": 1,
+          "status": 409,
+          "error": "RT.SESSION.NOT_ARCHIVED"
+        }
+      ],
+      "pending_before": 1,
+      "pending_after": 1,
+      "unrelated_marker_requests_blocked": 0,
+      "expected_native_state_retained": true,
+      "model_requests": 0,
+      "web_operations": 0
+    },
+    {
+      "scenario": "stale_v1",
+      "outcome": "PASS",
+      "cleared": false,
+      "sequence": [
+        {
+          "action": "delete",
+          "revision": 1,
+          "status": 409,
+          "error": "RT.SESSION.VERSION_CONFLICT"
+        }
+      ],
+      "pending_before": 1,
+      "pending_after": 1,
+      "unrelated_marker_requests_blocked": 0,
+      "expected_native_state_retained": true,
+      "model_requests": 0,
+      "web_operations": 0
+    },
+    {
+      "scenario": "archive_failure_v2",
+      "outcome": "PASS",
+      "cleared": false,
+      "sequence": [
+        {
+          "action": "archive",
+          "revision": 1,
+          "status": 503,
+          "error": "RT.HARNESS.SERVICE_UNAVAILABLE"
+        }
+      ],
+      "pending_before": 1,
+      "pending_after": 1,
+      "unrelated_marker_requests_blocked": 0,
+      "expected_native_state_retained": true,
+      "model_requests": 0,
+      "web_operations": 0
+    }
+  ],
+  "external_network_attempts": 0,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "daily_app_launched": false,
+  "daily_cleanup": false
+}

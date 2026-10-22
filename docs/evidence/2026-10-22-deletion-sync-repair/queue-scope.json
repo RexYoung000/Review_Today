@@ -1,0 +1,15 @@
+{
+  "retained_markers": 37,
+  "delete_revisions": {
+    "1": 6,
+    "2": 31
+  },
+  "service_state_for_pending": {
+    "no_session_checkpoint": 14,
+    "archived": 5,
+    "active": 18
+  },
+  "read_only": true,
+  "whole_queue_cleanup_tested": false,
+  "daily_cleanup": false
+}

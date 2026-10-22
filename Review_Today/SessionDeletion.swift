@@ -121,22 +121,25 @@ enum SessionDeletion {
         } catch { context.rollback(); throw error }
     }
 
-    static func cleanPending(context: ModelContext) async {
+    static func cleanPending(context: ModelContext,
+                             request: HarnessProcessor.Request = { try await AgentAPI.conversationRequest($0, body: $1) }) async {
         guard let initial = try? records(context) else { return }
         for marker in initial where marker["cleaned"] as? Bool != true {
             guard let sid = marker["session_id"] as? String else { continue }
             do {
-                // Replay the offline archive before destructive service cleanup.
-                // The same action ID and revision are reused across retries.
-                if let archiveID = marker["archive_action_id"] as? String, let revision = marker["lifecycle_revision"] as? Int {
+                // Replay a valid offline archive before service cleanup. A legacy
+                // deletion at revision 1 has no preceding archive revision.
+                // Keep the original action IDs and deletion revision on retries.
+                if let archiveID = marker["archive_action_id"] as? String,
+                   let revision = marker["lifecycle_revision"] as? Int, revision > 1 {
                     do {
-                        _ = try await AgentAPI.conversationRequest("/v2/sessions/\(sid)/actions", body: ["action_id": archiveID, "action": "archive", "lifecycle_revision": revision - 1])
+                        _ = try await request("/v2/sessions/\(sid)/actions", ["action_id": archiveID, "action": "archive", "lifecycle_revision": revision - 1])
                     } catch {
                         let code = HarnessAPIError.code(for: error)
                         if !["RT.SESSION.DELETED", "RT.SESSION.VERSION_CONFLICT"].contains(code) { throw error }
                     }
                 }
-                let result = try await AgentAPI.conversationRequest("/v2/sessions/\(sid)/actions", body: marker)
+                let result = try await request("/v2/sessions/\(sid)/actions", marker)
                 guard result["status"] as? String == "deleted" else { continue }
                 let settings = try AgentComposerStore.settings(context)
                 var updated = LearningMemory.array(settings.sessionDeletionsJSON)

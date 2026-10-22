@@ -1,0 +1,8 @@
+{
+  "outcome": "PASS",
+  "selection": "test_conditional_teaching.py and test_closure_repair.py: delete or archive or session_lifecycle",
+  "network_attempts": 0,
+  "outside_sqlite_attempts": 0,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0
+}

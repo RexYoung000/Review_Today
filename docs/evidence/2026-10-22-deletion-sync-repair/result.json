@@ -1,0 +1,46 @@
+{
+  "status": "IMPLEMENTED_ISOLATED_VERIFIED_DAILY_NOT_UPDATED",
+  "decision": 258,
+  "changed_production_files": [
+    "Review_Today/SessionDeletion.swift"
+  ],
+  "production_sha256": "c557cea609757c0f5d74ca2c6c3b6f5ef28f918493e66c5bb61bfaa242409d2f",
+  "native_contract_groups": 4,
+  "new_deletion_sync_scenarios": 8,
+  "service_tests": 5,
+  "production_http_native_scenarios": 6,
+  "retained_backup_replay": {
+    "pending_before": 37,
+    "pending_after": 36,
+    "only_first_marker_cleared": true,
+    "remaining_markers_unchanged": 36,
+    "native_counts": {
+      "ZKNOWLEDGE": 11,
+      "ZAGENTMESSAGE": 37,
+      "ZAGENTSESSION": 8,
+      "ZFSRSSTATE": 11
+    },
+    "durable_sqlite_readback": true,
+    "whole_queue_cleanup_tested": false
+  },
+  "protected_unchanged": {
+    "protected_sources": 193,
+    "daily_files": 65,
+    "app_files": 13,
+    "frozen_files": 153,
+    "source_backup_files": 2
+  },
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "daily_app_started": false,
+  "daily_app_updated": false,
+  "daily_cleanup": false,
+  "daily_pending_deletions_untouched": true,
+  "old_allowances_reused": false,
+  "project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "remaining": [
+    "daily loading and actual cleanup not authorized",
+    "whole retained queue not accepted",
+    "Rex experience and M1 open"
+  ]
+}

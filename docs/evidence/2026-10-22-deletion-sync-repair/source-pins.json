@@ -1,0 +1,10 @@
+{
+  "Review_Today/SessionDeletion.swift": "c557cea609757c0f5d74ca2c6c3b6f5ef28f918493e66c5bb61bfaa242409d2f",
+  "tests/mac/SessionDeletionSyncContractTests.swift": "63704c1b7706011494bd164d739292ce2a12f76dd0a886ff7145ab58b8e7a1f3",
+  "tests/mac/run-contracts.py": "4fe74013f5645d17b5fbddbbb81a76400cb58c091587a9db52235a1e9aa3e66e",
+  "docs/evidence/2026-10-22-deletion-sync-repair/run_native_checks.py": "3009d69ee27cb7c88cb5bb36e1f2bfa7e5ab6623c87f545d98bb4e9115f2699f",
+  "docs/evidence/2026-10-22-deletion-sync-repair/verify.py": "e39ce798e62f38ac3a297d6bd915394762d5df16588df2daf1382f273a13649e",
+  "docs/evidence/2026-10-22-deletion-sync-repair/prepare.py": "81294eb02dcb93739fd5f14d9e4607223ba936eb0264faa2e5b2917b79b8370c",
+  "docs/evidence/2026-10-22-deletion-sync-repair/http_replay.py": "16fd1f70adcb24a5437c4c15af8214aeafa1686d98620f59dbfffc28f817fc61",
+  "docs/evidence/2026-10-22-deletion-sync-repair/NativeDeletionSyncReplay.swift": "aa4f9a14292992475f79401cbe179e53ecfcfa2c337718d265c16817297ffa03"
+}

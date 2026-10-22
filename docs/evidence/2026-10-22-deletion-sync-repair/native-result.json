@@ -1,0 +1,16 @@
+{
+  "outcome": "PASS",
+  "module": "/tmp/review-today-shared-contracts.j3r_7v6g",
+  "contracts": [
+    "SessionDeletionSyncContractTests",
+    "SessionDeletionContractTests",
+    "SessionOrganizationContractTests",
+    "LearningMemoryContractTests"
+  ],
+  "shared_module_sha256": "db4a0a68cdf01bd9582d9ad2ef9f54911d251953bc4fb076506d3b75830aedcd",
+  "http_executable": "/tmp/review-today-shared-contracts.j3r_7v6g/NativeDeletionSyncReplay",
+  "deletion_sync_scenarios": 8,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "unchanged_production_since_module_compile": true
+}
