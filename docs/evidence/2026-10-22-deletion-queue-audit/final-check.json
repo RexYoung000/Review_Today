@@ -1,0 +1,22 @@
+{
+  "cases": [
+    {
+      "result": "replay-result.json",
+      "all_other_setting_fields_unchanged": true,
+      "separate_sqlite_read_matches_native_result": true
+    },
+    {
+      "result": "simulation-result.json",
+      "all_other_setting_fields_unchanged": true,
+      "separate_sqlite_read_matches_native_result": true
+    }
+  ],
+  "documentation_links_valid": true,
+  "json_and_python_syntax_valid": true,
+  "native_module_sha256": "db4a0a68cdf01bd9582d9ad2ef9f54911d251953bc4fb076506d3b75830aedcd",
+  "production_deletion_sha256": "c557cea609757c0f5d74ca2c6c3b6f5ef28f918493e66c5bb61bfaa242409d2f",
+  "new_evidence_source_sha256": {
+    "NativeQueueAudit.swift": "7ccd7a1e2f7d4b7fd117363012c832c5472512910bf9fbd3e5e7228b92b8ae63",
+    "replay.py": "79b4d305a626956f2684d6479f674253369057b093c99aa155a7c14eef20ad1a"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "status": "PROPOSED_ONLY",
+  "allowed_record_numbers": [
+    4,
+    5,
+    6
+  ],
+  "count": 3,
+  "preconditions": [
+    "matches existing native delete marker and original action identity",
+    "delete revision is 1",
+    "same ID is archived at revision 0 in pinned 20260906 native backup",
+    "service payload lacks both status and lifecycle_revision",
+    "service payload fingerprint matches audited snapshot"
+  ],
+  "only_metadata_to_reconstruct": {
+    "status": "archived",
+    "lifecycle_revision": 0
+  },
+  "delete_revision_and_action_identity": "unchanged",
+  "server_deletion_guards": "unchanged",
+  "initial_execution": "isolated copies only",
+  "daily_data_change": "not authorized by this audit",
+  "simulation_is_implementation": false
+}
