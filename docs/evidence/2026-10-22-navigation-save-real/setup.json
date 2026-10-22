@@ -1,0 +1,15 @@
+{
+  "status": "DIRECTED_FLOW_VERIFIED_PROTECTION_INCOMPLETE_STOP",
+  "decision": 264,
+  "directory": "/private/tmp/review-today-navigation-save-godd38gj.noindex",
+  "session_id": "9754d7fd-eab8-4ce5-9a26-75442766fd2f",
+  "port": 61772,
+  "native_app": "/private/tmp/review-today-navigation-save-godd38gj.noindex/NavigationSaveQA.app",
+  "preflight_setup": "docs/evidence/2026-10-22-navigation-save-preflight/setup.json",
+  "model_limit": 32,
+  "web_limit": 16,
+  "actual_model_requests": 23,
+  "actual_web_operations": 0,
+  "qa_closed": true,
+  "service_closed": true
+}

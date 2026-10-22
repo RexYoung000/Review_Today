@@ -1,0 +1,10 @@
+{
+  "independent_read_only_review": true,
+  "real_calls_started_by_reviewer": 0,
+  "functional_gates": "startup/independent/review/save/5details/status/advance/disk matched",
+  "request_usage_identities": 23,
+  "schema_error_and_repair_retained": true,
+  "final_protection": "11 original tmp files missing; 229 matched; all other defined checks matched",
+  "title_observation": "KnowledgeLexicon incompleteEnds treats final 对 as incomplete; strongTitle falls back to learningGoal; actual stored title unchanged",
+  "raw_model_output_not_substituted": true
+}

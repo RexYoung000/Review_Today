@@ -1,0 +1,35 @@
+{
+  "status": "PARTIAL_EXISTING_COPIES_ONLY_ORIGINAL_PATHS_STILL_MISSING",
+  "original_paths_missing": 11,
+  "original_baseline_preserved": true,
+  "cause": "not established",
+  "files_not_restored": true,
+  "persistently_verified": [
+    {
+      "missing_path": "/tmp/review-today-learning-save-real-az0cls1f/used-native-contents/Info.plist",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayAppArchives.noindex/2026-10-22-single-entry/historical-app-bundles.tar.gz",
+      "member": "private/tmp/review-today-startup-diagnosis-1ux5ch6l/ContinuousResumeQA.app/Contents/Info.plist",
+      "sha256": "b2b1205e9c4051868fff42cdb46a301f34fbf3d7a8832fcd7aa00cbb0d275a47",
+      "verified_by_independent_read_only_member_read": true
+    },
+    {
+      "missing_path": "/tmp/review-today-learning-save-pending-vh7ko8um/source-checkpoint.json",
+      "existing_paths": [
+        "docs/evidence/2026-10-16-preview-repair-real/backend-after.json",
+        "docs/evidence/2026-10-21-learning-save-real/before-input.json"
+      ],
+      "sha256": "81f296f1fd6ac811714de35e3f39faab7303e34ac16436a5bf809c60efa84d0f"
+    }
+  ],
+  "only_temporary_matches": [
+    "app.store.review-v2-backup",
+    "ReviewBackups old main backup",
+    "three SHM files",
+    "two empty WAL files"
+  ],
+  "not_confirmed_in_bounded_existing_evidence_search": [
+    "/tmp/review-today-learning-save-pending-vh7ko8um/app.store",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/checkpoint.sqlite3"
+  ],
+  "claim_limit": "No complete byte-identical recovery established; original 11 paths missing; no restore, SQLite opens or evidence modification by independent audit."
+}

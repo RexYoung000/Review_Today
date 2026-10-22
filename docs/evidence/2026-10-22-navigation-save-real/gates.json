@@ -1,0 +1,97 @@
+[
+  {
+    "gate": "startup",
+    "status": "PASS",
+    "models": 8,
+    "web": 0,
+    "fresh_capability_batch_id": "ca0035e8-3248-4ae4-abef-e09e0138aed6",
+    "old_history_preserved": true
+  },
+  {
+    "gate": "independent_question",
+    "status": "PASS",
+    "models": 11,
+    "web": 0,
+    "task_step_check_sources_and_understanding_unchanged": true,
+    "entire_v3_invitation_unchanged": true,
+    "history_preserved": true,
+    "no_save": true,
+    "new_run_id": "19a9b6dc-bbd9-44ab-af6c-c2180801c996"
+  },
+  {
+    "gate": "return_review",
+    "status": "PASS",
+    "models": 14,
+    "web": 0,
+    "task_step_check_sources_and_understanding_unchanged": true,
+    "entire_v3_invitation_unchanged": true,
+    "history_preserved": true,
+    "no_save": true,
+    "new_run_id": "8082edda-0f66-4c12-9283-10ab2b1a4e71"
+  },
+  {
+    "gate": "native_save",
+    "status": "PASS",
+    "models": 18,
+    "web": 0,
+    "saved_cards": 5,
+    "exact_click_version": 3,
+    "single_matching_native_durable_receipt": true,
+    "all_card_evidence_in_native_source": true,
+    "review_disabled": true,
+    "learning_progress_unchanged": true,
+    "actual_titles": [
+      "生成不忠实",
+      "来源过时的偏差定位",
+      "来源核对与适用条件核对",
+      "漏掉适用条件的偏差定位",
+      "按偏差环节区分并决定核对方式"
+    ],
+    "save_task_id": "ddc3e2be-9d33-5e10-816a-27950b1b5363"
+  },
+  {
+    "gate": "details_status_progress",
+    "status": "PASS",
+    "models": 19,
+    "web": 0,
+    "all_actual_details_and_source_excerpts_opened": 5,
+    "save_query_matches_operation_version_and_real_receipt": true,
+    "exact_actual_names_and_count": true,
+    "learning_plan_unchanged": true,
+    "review_disabled": true,
+    "saved_cards_and_sources_unchanged": true,
+    "reply": "这次已成功写入 5 张知识卡。\n\n1. 生成不忠实\n2. 来源核对与适用条件核对\n3. 漏掉适用条件的偏差定位\n4. 来源过时的偏差定位\n5. 按偏差环节区分并决定核对方式"
+  },
+  {
+    "gate": "explicit_advance",
+    "status": "PASS",
+    "models": 23,
+    "web": 0,
+    "advanced_from_step2_to_step3_once": true,
+    "same_input_navigation_binding_verified": true,
+    "correct_third_step_lesson_and_check": true,
+    "no_extra_understanding_certified": true,
+    "saved_cards_sources_and_offer_unchanged": true,
+    "new_run_id": "83cd6360-c6b0-486b-95bd-4c6152878cca"
+  },
+  {
+    "gate": "disk_readback",
+    "status": "PASS",
+    "models": 23,
+    "web": 0,
+    "native_messages": 21,
+    "native_runs": 11,
+    "native_tasks": 2,
+    "native_cards": 5,
+    "native_sources": 1,
+    "native_fsrs": 5,
+    "cursor_ack_match": true
+  },
+  {
+    "gate": "final_protection",
+    "status": "INCOMPLETE",
+    "reason": "11 historical tmp files missing; 229 matched; original baseline retained",
+    "models": 23,
+    "web": 0
+  }
+]

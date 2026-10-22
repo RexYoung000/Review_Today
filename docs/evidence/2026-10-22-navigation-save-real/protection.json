@@ -1,0 +1,33 @@
+{
+  "status": "INCOMPLETE_OLD_TEMP_FILES_MISSING",
+  "complete": false,
+  "expected_old_files": 240,
+  "matched_old_files": 229,
+  "missing_old_files": [
+    "/tmp/review-today-learning-save-real-az0cls1f/used-native-contents/Info.plist",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/app.store.review-v2-backup",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/checkpoint.sqlite3",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/app.store",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/source-checkpoint.json",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/checkpoint.sqlite3-wal",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/app.store-shm",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/app.store-wal",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/checkpoint.sqlite3-shm",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/ReviewBackups/before-review-v2-2F38F8F4-CE39-44C1-9DC6-1B92E5F81550.sqlite3-shm",
+    "/tmp/review-today-learning-save-pending-vh7ko8um/ReviewBackups/before-review-v2-2F38F8F4-CE39-44C1-9DC6-1B92E5F81550.sqlite3"
+  ],
+  "changed_old_files": [],
+  "original_baseline_preserved": true,
+  "missing_files_not_recreated": true,
+  "cause_not_established": true,
+  "other_protection_checks": {
+    "daily_files_unchanged": true,
+    "daily_app_unchanged": true,
+    "previous_batch_unchanged": true,
+    "source_config_unchanged": true,
+    "user_project_unchanged": true,
+    "original_module_files_unchanged": true,
+    "original_support_files_unchanged": true,
+    "owned_support_files_unchanged": true
+  }
+}

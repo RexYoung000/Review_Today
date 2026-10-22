@@ -1,0 +1,10 @@
+[
+  {
+    "task_id": "5eb6ad80-bbe3-44aa-aaab-d98c968ae38c",
+    "last_acked_seq_before": 5,
+    "last_acked_seq_after": 6,
+    "updated_at_before": "2026-10-22T15:56:58.192943+00:00",
+    "updated_at_after": "2026-10-22T15:56:59.881596+00:00",
+    "reason": "Final native acknowledgement arrived after manual snapshot; all other task fields identical"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "status": "approved",
+  "batch_id": "e3ddea65-f7f0-497e-ae8d-5da5bd225f44",
+  "actual_model_request_limit": 32,
+  "provider_web_operation_limit": 16,
+  "scope": "Retained decision262 final paired history; new independent question/return review, native save/details/status/progress, explicit next and disk; stop on failure or either cap",
+  "counting": "all startup probes, actual SDK sends, retries, background, fallbacks and timeouts; no old allowance reuse",
+  "decision": 264,
+  "approved_at": "2026-10-22T15:44:54.011337+00:00",
+  "approval_basis": "Rex selected 按新 32／16 上限执行（推荐）"
+}

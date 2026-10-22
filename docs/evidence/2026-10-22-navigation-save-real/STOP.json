@@ -1,0 +1,10 @@
+{
+  "reason": "SCOPE_COMPLETE",
+  "decision": 264,
+  "actual_model_requests": 23,
+  "actual_web_operations": 0,
+  "remaining_frozen_models": 9,
+  "remaining_frozen_web": 16,
+  "all_model_runs_completed": true,
+  "retained_saved_draft_is_not_running": true
+}
