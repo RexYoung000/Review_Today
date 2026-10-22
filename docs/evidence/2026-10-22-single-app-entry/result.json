@@ -1,0 +1,31 @@
+{
+  "canonical": "/Applications/Review Today.app",
+  "retired_packages": 80,
+  "unregister_attempts": 131,
+  "unregister_nonzero": 0,
+  "daily_non_app_content_unchanged": true,
+  "old_app_paths_absent": true,
+  "model_requests_started_by_agent": 0,
+  "web_requests": 0,
+  "app_started_by_agent": false,
+  "archive": "/Users/rexyoung/Library/Developer/ReviewTodayAppArchives.noindex/2026-10-22-single-entry/historical-app-bundles.tar.gz",
+  "archive_sha256": "5aa7d8d2b9ee45bbae5e61ac0a7d0db4c72dee72fceabbe1a67a54451e80d4a3",
+  "archive_bytes": 1307194623,
+  "source_bundle_identical": true,
+  "strict_codesign_valid": true,
+  "launchservices_related_count": 1,
+  "spotlight_metadata_related_apps": [
+    "/Applications/Review Today.app"
+  ],
+  "finder_search": {
+    "query": "Review",
+    "scope": "This Mac",
+    "kind": "Application",
+    "result_count": 1,
+    "label": "Review Today.app"
+  },
+  "user_project_diff_unchanged": true,
+  "app_and_service_closed": true,
+  "limits_preserved": true,
+  "launcher_grid_verified": false
+}

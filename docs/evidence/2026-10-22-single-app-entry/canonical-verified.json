@@ -1,0 +1,102 @@
+{
+  "path": "/Applications/Review Today.app",
+  "source": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "identical_inventory": true,
+  "codesign_strict": true,
+  "inventory": {
+    "Contents": {
+      "mode": 493,
+      "type": "dir"
+    },
+    "Contents/Info.plist": {
+      "mode": 420,
+      "type": "file",
+      "size": 1983,
+      "sha256": "75b9373267c6d6a4743d3a83e4a96e9c8d3f9bd4a699ec53e42d5ae68fe9785e"
+    },
+    "Contents/MacOS": {
+      "mode": 493,
+      "type": "dir"
+    },
+    "Contents/PkgInfo": {
+      "mode": 420,
+      "type": "file",
+      "size": 8,
+      "sha256": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0"
+    },
+    "Contents/Resources": {
+      "mode": 493,
+      "type": "dir"
+    },
+    "Contents/_CodeSignature": {
+      "mode": 493,
+      "type": "dir"
+    },
+    "Contents/_CodeSignature/CodeResources": {
+      "mode": 420,
+      "type": "file",
+      "size": 4644,
+      "sha256": "c519ce811998df6571e6c0497e9331ed027d1b4915c26e3cc61d862c687f05bb"
+    },
+    "Contents/MacOS/Review_Today": {
+      "mode": 493,
+      "type": "file",
+      "size": 58864,
+      "sha256": "845dbfdd9e5c15905bbc9e199bfc89808b57b8a2caa441e894ea539435def608"
+    },
+    "Contents/MacOS/Review_Today.debug.dylib": {
+      "mode": 493,
+      "type": "file",
+      "size": 32315840,
+      "sha256": "4f03722746f8580fe463c2726d1c59b356f04e2a6093923e5d3626998b833da5"
+    },
+    "Contents/MacOS/__preview.dylib": {
+      "mode": 493,
+      "type": "file",
+      "size": 34928,
+      "sha256": "2dc2929b7868a33cd640b7b3c478d78f7bf3b549616938a157bbab5558792e66"
+    },
+    "Contents/Resources/AppIcon.icns": {
+      "mode": 420,
+      "type": "file",
+      "size": 85752,
+      "sha256": "4ee9e5aaba5594d3001384e1759fe21d2ec649d77442a853c02a144dafe76dc4"
+    },
+    "Contents/Resources/Assets.car": {
+      "mode": 420,
+      "type": "file",
+      "size": 5020184,
+      "sha256": "2f9ace11dda6dd592e077a08ee60d2d77f173434a4283a8bff65cc6447d70b43"
+    },
+    "Contents/Resources/ExamEntrySpine.html": {
+      "mode": 420,
+      "type": "file",
+      "size": 179342,
+      "sha256": "2285585531776bf94e1a3baa701ae8f7f2f9d33254881d85cffbe6507a5a2b3b"
+    },
+    "Contents/Resources/KNMaiyuan-OFL.txt": {
+      "mode": 420,
+      "type": "file",
+      "size": 4398,
+      "sha256": "8f7498fa590ac61309b0dfa40b737bfde36b1dc407ef91c8debdf5ab37716384"
+    },
+    "Contents/Resources/KNMaiyuan-Regular.ttf": {
+      "mode": 420,
+      "type": "file",
+      "size": 7996068,
+      "sha256": "94ea78c51086b1ea58c1744784b2335dea2c5ef1c5193b80e02c7d46b8e0283f"
+    },
+    "Contents/Resources/MascotMotion.html": {
+      "mode": 420,
+      "type": "file",
+      "size": 3138369,
+      "sha256": "967178efef348724018e2a2a84ae776f41056fc4fe3dc9d4270dce156ee50b95"
+    },
+    "Contents/Resources/MrBMotion.html": {
+      "mode": 420,
+      "type": "file",
+      "size": 6491258,
+      "sha256": "9ca05295206546c56c104c0b4e9363fb0be048dba1afc2ed35ba5d6c810783fd"
+    }
+  }
+}

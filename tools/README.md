@@ -1,3 +1,11 @@
+# 本机应用包管理
+
+日常唯一入口固定为 `/Applications/Review Today.app`。只用已核验的日常签名包更新此路径，不能因为整理入口顺带发布尚未批准加载的修复；更新前退出 App、保留可恢复归档，更新后核对包内容与签名。
+
+开发构建与 QA 包使用 `.noindex` 临时目录；验收结束先退出，再注销该包的 LaunchServices 注册并压缩归档。回退包存入 `~/Library/Developer/ReviewTodayAppArchives.noindex/`，压缩后实际解包核对内容再收起原 `.app`，不在工作区或 Application Support 的数据备份里保留可被搜索的副本。禁止把包含旧 `.app` 的备份递归复制到下一份数据备份。
+
+历史证据中记录的原始 App 路径可能已经归档，需按本批目录中的映射恢复到 `.noindex` 隔离位置；不能改写旧校验结果或据此启动日常服务。数据、配置、账本与旧调用额度独立保留，不随应用入口整理而清理。首次整理记录见[单一入口证据](../docs/evidence/2026-10-22-single-app-entry/README.md)。
+
 # 旧知识库接回
 
 `import-legacy-library.py` 配合 SwiftData 写入器，只用于本轮已核实的旧库结构。它不是通用快照恢复器，不导入 Agent 会话、草稿、任务或 outbox，也不推断历史卡片的创建归属。

@@ -1,0 +1,562 @@
+[
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/agent-voice-integration/AgentVoiceIntegration.app",
+    "bundle": "Rex.Review-Today.AgentVoiceIntegration",
+    "bytes": 29346979,
+    "inventory_sha256": "80db574b97ee83318b297c30fca873a526b2ff5bf2aa613866df9f8d49c61f4d",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/agent-voice-integration/AgentVoiceIntegration.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/agent-voice-local-backup-20261003-223735/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52704374,
+    "inventory_sha256": "2b213dcd9d607ed2f83326e2792aecdabf3ecd02e8a109563a47ed821929be96",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/agent-voice-local-backup-20261003-223735/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/agent-voice-local-backup-20261003-223735/replaced-in-place.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52704374,
+    "inventory_sha256": "2b213dcd9d607ed2f83326e2792aecdabf3ecd02e8a109563a47ed821929be96",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/agent-voice-local-backup-20261003-223735/replaced-in-place.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52007798,
+    "inventory_sha256": "db2dd8f41d3a2fca259eca5528cef13cf29f31002d2b96a6b5ad1de9f8656593",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-image-4063395-20260926-164610/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 50887782,
+    "inventory_sha256": "2307a5981e1e6120a2b5feadfd65d7082a8ae3f9807b74d928300b68db29bbbb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-image-4063395-20260926-164610/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51758806,
+    "inventory_sha256": "6403e2790cbf3da3918b03b58a10bef2da750f20aff6a5eecec1b84fe19fdbbe",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51432518,
+    "inventory_sha256": "24e223179a65a59e5eb33ef7448ba9c692c5f8a541dce7f3957df5307bab7afa",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51808230,
+    "inventory_sha256": "54c89e6dcefa7cbbdacbf6c0cd321ae78797e54c9cd79be33e466ea2c81b3818",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-product-continuation-20260926-225905/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52020438,
+    "inventory_sha256": "65dc1f8263a9598f9ba06b7e1cdc02951ef3144653a1e50f909a7401010b6eab",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-product-continuation-20260926-225905/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-stream-smoothness-20260927-230724/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52037462,
+    "inventory_sha256": "34b884831daab0d0258ff1f54663c57f889b055f16524f7684234c1f02d1e9fb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/ApplicationSupport-ReviewToday/Backups/before-stream-smoothness-20260927-230724/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 54296614,
+    "inventory_sha256": "cfda5d3e12ef87254eb70e30e940e575206b7cf6ccdd8220e0f075461888a9e3",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-215447/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52007798,
+    "inventory_sha256": "db2dd8f41d3a2fca259eca5528cef13cf29f31002d2b96a6b5ad1de9f8656593",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-image-4063395-20260926-164610/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 50887782,
+    "inventory_sha256": "2307a5981e1e6120a2b5feadfd65d7082a8ae3f9807b74d928300b68db29bbbb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-image-4063395-20260926-164610/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51758806,
+    "inventory_sha256": "6403e2790cbf3da3918b03b58a10bef2da750f20aff6a5eecec1b84fe19fdbbe",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51432518,
+    "inventory_sha256": "24e223179a65a59e5eb33ef7448ba9c692c5f8a541dce7f3957df5307bab7afa",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51808230,
+    "inventory_sha256": "54c89e6dcefa7cbbdacbf6c0cd321ae78797e54c9cd79be33e466ea2c81b3818",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-product-continuation-20260926-225905/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52020438,
+    "inventory_sha256": "65dc1f8263a9598f9ba06b7e1cdc02951ef3144653a1e50f909a7401010b6eab",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-product-continuation-20260926-225905/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-stream-smoothness-20260927-230724/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52037462,
+    "inventory_sha256": "34b884831daab0d0258ff1f54663c57f889b055f16524f7684234c1f02d1e9fb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/ApplicationSupport-ReviewToday/Backups/before-stream-smoothness-20260927-230724/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 54296614,
+    "inventory_sha256": "cfda5d3e12ef87254eb70e30e940e575206b7cf6ccdd8220e0f075461888a9e3",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/card-preview-backup-20261004-222547/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/dictation-b-local-backup-20261003-205356/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52172534,
+    "inventory_sha256": "6b7a6872812a8997b97a3d5e146defbf082d65f297ae1f5a9a1e5d3e7a4d5bad",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/dictation-b-local-backup-20261003-205356/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/dictation-integration/DictationIntegration.app",
+    "bundle": "Rex.Review-Today.DictationIntegration",
+    "bytes": 27812596,
+    "inventory_sha256": "2ff6cc9a21b5714d3c7c47365fb92404c950a0900affa972e59773117d81c6a8",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/dictation-integration/DictationIntegration.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/dictation-prototype/DictationPrototype.app",
+    "bundle": "Rex.Review-Today.DictationPrototype",
+    "bytes": 1306890,
+    "inventory_sha256": "d12bcdc833fb2680113a0ce4cf78a685dbf23749a99c5a362a930868db8f036c",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/dictation-prototype/DictationPrototype.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/knowledge-invitation-backup-20261004-211308/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 54225718,
+    "inventory_sha256": "ec94df0397f8c35f37ab0221339f296fe7153e19fda841c965e45e4bc562c826",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/knowledge-invitation-backup-20261004-211308/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52007798,
+    "inventory_sha256": "db2dd8f41d3a2fca259eca5528cef13cf29f31002d2b96a6b5ad1de9f8656593",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-image-4063395-20260926-164610/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 50887782,
+    "inventory_sha256": "2307a5981e1e6120a2b5feadfd65d7082a8ae3f9807b74d928300b68db29bbbb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-image-4063395-20260926-164610/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51758806,
+    "inventory_sha256": "6403e2790cbf3da3918b03b58a10bef2da750f20aff6a5eecec1b84fe19fdbbe",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51432518,
+    "inventory_sha256": "24e223179a65a59e5eb33ef7448ba9c692c5f8a541dce7f3957df5307bab7afa",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51808230,
+    "inventory_sha256": "54c89e6dcefa7cbbdacbf6c0cd321ae78797e54c9cd79be33e466ea2c81b3818",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-product-continuation-20260926-225905/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52020438,
+    "inventory_sha256": "65dc1f8263a9598f9ba06b7e1cdc02951ef3144653a1e50f909a7401010b6eab",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-product-continuation-20260926-225905/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-stream-smoothness-20260927-230724/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52037462,
+    "inventory_sha256": "34b884831daab0d0258ff1f54663c57f889b055f16524f7684234c1f02d1e9fb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/ApplicationSupport-ReviewToday/Backups/before-stream-smoothness-20260927-230724/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 55327782,
+    "inventory_sha256": "6c973562061a80d80493045e2663295892aa24035518e1a2ed1d007918416a0a",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/build/Build/Products/Debug/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 55331638,
+    "inventory_sha256": "0dd66378fe2216cee8cc7dec1888c9c9978dedcc0085fce39f53b882eeba21aa",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/build/Build/Products/Debug/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52007798,
+    "inventory_sha256": "db2dd8f41d3a2fca259eca5528cef13cf29f31002d2b96a6b5ad1de9f8656593",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-image-4063395-20260926-164610/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 50887782,
+    "inventory_sha256": "2307a5981e1e6120a2b5feadfd65d7082a8ae3f9807b74d928300b68db29bbbb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-image-4063395-20260926-164610/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51758806,
+    "inventory_sha256": "6403e2790cbf3da3918b03b58a10bef2da750f20aff6a5eecec1b84fe19fdbbe",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51432518,
+    "inventory_sha256": "24e223179a65a59e5eb33ef7448ba9c692c5f8a541dce7f3957df5307bab7afa",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51808230,
+    "inventory_sha256": "54c89e6dcefa7cbbdacbf6c0cd321ae78797e54c9cd79be33e466ea2c81b3818",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-product-continuation-20260926-225905/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52020438,
+    "inventory_sha256": "65dc1f8263a9598f9ba06b7e1cdc02951ef3144653a1e50f909a7401010b6eab",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-product-continuation-20260926-225905/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-stream-smoothness-20260927-230724/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52037462,
+    "inventory_sha256": "34b884831daab0d0258ff1f54663c57f889b055f16524f7684234c1f02d1e9fb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Application Support/Backups/before-stream-smoothness-20260927-230724/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 55320310,
+    "inventory_sha256": "187cf6c9b13f60c428dbaf685d96e7d68d33bf632c253bf04469274d8508eb39",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-backup-20261014-000742/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52007798,
+    "inventory_sha256": "db2dd8f41d3a2fca259eca5528cef13cf29f31002d2b96a6b5ad1de9f8656593",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-image-4063395-20260926-164610/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 50887782,
+    "inventory_sha256": "2307a5981e1e6120a2b5feadfd65d7082a8ae3f9807b74d928300b68db29bbbb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-image-4063395-20260926-164610/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51758806,
+    "inventory_sha256": "6403e2790cbf3da3918b03b58a10bef2da750f20aff6a5eecec1b84fe19fdbbe",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51432518,
+    "inventory_sha256": "24e223179a65a59e5eb33ef7448ba9c692c5f8a541dce7f3957df5307bab7afa",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51808230,
+    "inventory_sha256": "54c89e6dcefa7cbbdacbf6c0cd321ae78797e54c9cd79be33e466ea2c81b3818",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-product-continuation-20260926-225905/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52020438,
+    "inventory_sha256": "65dc1f8263a9598f9ba06b7e1cdc02951ef3144653a1e50f909a7401010b6eab",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-product-continuation-20260926-225905/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-stream-smoothness-20260927-230724/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52037462,
+    "inventory_sha256": "34b884831daab0d0258ff1f54663c57f889b055f16524f7684234c1f02d1e9fb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Application Support/Backups/before-stream-smoothness-20260927-230724/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 55321158,
+    "inventory_sha256": "05e70b4b850f951e146247af80858be1404d35b7428fb03b638da098f2e93d3b",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/first-pass-Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 55321046,
+    "inventory_sha256": "9f9f2e075037648870b45f65a1b813bf68c62126458d229fa1697c8e0f0fbb18",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/memory-state-backup-20261014-034238/first-pass-Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/save-recovery-backup-20261012-191225/Replaced-App.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 55278486,
+    "inventory_sha256": "09823a0306ad703e7adcabf81f7c134ea81145817123f7a4cdf7bef9d6b424a8",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/save-recovery-backup-20261012-191225/Replaced-App.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/save-recovery-backup-20261012-191225/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 55278486,
+    "inventory_sha256": "09823a0306ad703e7adcabf81f7c134ea81145817123f7a4cdf7bef9d6b424a8",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/save-recovery-backup-20261012-191225/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52007798,
+    "inventory_sha256": "db2dd8f41d3a2fca259eca5528cef13cf29f31002d2b96a6b5ad1de9f8656593",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-image-4063395-20260926-164610/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 50887782,
+    "inventory_sha256": "2307a5981e1e6120a2b5feadfd65d7082a8ae3f9807b74d928300b68db29bbbb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-image-4063395-20260926-164610/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51758806,
+    "inventory_sha256": "6403e2790cbf3da3918b03b58a10bef2da750f20aff6a5eecec1b84fe19fdbbe",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51432518,
+    "inventory_sha256": "24e223179a65a59e5eb33ef7448ba9c692c5f8a541dce7f3957df5307bab7afa",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51808230,
+    "inventory_sha256": "54c89e6dcefa7cbbdacbf6c0cd321ae78797e54c9cd79be33e466ea2c81b3818",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-product-continuation-20260926-225905/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52020438,
+    "inventory_sha256": "65dc1f8263a9598f9ba06b7e1cdc02951ef3144653a1e50f909a7401010b6eab",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-product-continuation-20260926-225905/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-stream-smoothness-20260927-230724/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52037462,
+    "inventory_sha256": "34b884831daab0d0258ff1f54663c57f889b055f16524f7684234c1f02d1e9fb",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Application Support/Backups/before-stream-smoothness-20260927-230724/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 55302806,
+    "inventory_sha256": "fda5c27159e1095c097f7b79d0c68712c8cbc6de6bdbd085fa14e3ab1465919f",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/steering-backup-20261013-174841/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/today-review-prototype/TodayReviewPrototype.app",
+    "bundle": "Rex.Review-Today.TodayReviewPrototype",
+    "bytes": 44767980,
+    "inventory_sha256": "c20342249add9023407b1247a2beeb2f39b81475863ab431451cac74fb402615",
+    "archive_member": "Users/rexyoung/Desktop/vibe coding/Review_Today/output/today-review-prototype/TodayReviewPrototype.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52007798,
+    "inventory_sha256": "db2dd8f41d3a2fca259eca5528cef13cf29f31002d2b96a6b5ad1de9f8656593",
+    "archive_member": "Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-image-4063395-20260926-164610/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 50887782,
+    "inventory_sha256": "2307a5981e1e6120a2b5feadfd65d7082a8ae3f9807b74d928300b68db29bbbb",
+    "archive_member": "Users/rexyoung/Library/Application Support/Review Today/Backups/before-image-4063395-20260926-164610/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51758806,
+    "inventory_sha256": "6403e2790cbf3da3918b03b58a10bef2da750f20aff6a5eecec1b84fe19fdbbe",
+    "archive_member": "Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51432518,
+    "inventory_sha256": "24e223179a65a59e5eb33ef7448ba9c692c5f8a541dce7f3957df5307bab7afa",
+    "archive_member": "Users/rexyoung/Library/Application Support/Review Today/Backups/before-multi-image-4cde95c-20260926-182428/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 51808230,
+    "inventory_sha256": "54c89e6dcefa7cbbdacbf6c0cd321ae78797e54c9cd79be33e466ea2c81b3818",
+    "archive_member": "Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52020438,
+    "inventory_sha256": "65dc1f8263a9598f9ba06b7e1cdc02951ef3144653a1e50f909a7401010b6eab",
+    "archive_member": "Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-stream-smoothness-20260927-230724/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 52037462,
+    "inventory_sha256": "34b884831daab0d0258ff1f54663c57f889b055f16524f7684234c1f02d1e9fb",
+    "archive_member": "Users/rexyoung/Library/Application Support/Review Today/Backups/before-stream-smoothness-20260927-230724/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 55331638,
+    "inventory_sha256": "0dd66378fe2216cee8cc7dec1888c9c9978dedcc0085fce39f53b882eeba21aa",
+    "archive_member": "Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app"
+  },
+  {
+    "original_path": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.before-2026-10-22.app",
+    "bundle": "Rex.Review-Today",
+    "bytes": 55327782,
+    "inventory_sha256": "6c973562061a80d80493045e2663295892aa24035518e1a2ed1d007918416a0a",
+    "archive_member": "Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.before-2026-10-22.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-continuous-learning-pending-ly7q01m0/ContinuousResumeQA.app",
+    "bundle": "Rex.Review-Today.ContinuousResume.NativeQA",
+    "bytes": 511851,
+    "inventory_sha256": "9024054cdec2d0820c8cd423497e972b8648fe3ea93e0c9ef2371062cadec732",
+    "archive_member": "private/tmp/review-today-continuous-learning-pending-ly7q01m0/ContinuousResumeQA.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-first-preview-pending-8dzum5y0/ContinuousResumeQA.app",
+    "bundle": "Rex.Review-Today.ContinuousResume.NativeQA",
+    "bytes": 511723,
+    "inventory_sha256": "139147790fbc4157bf9e070fdeb4ef75bec9d09ca434b60b5ca73b7710d91bd1",
+    "archive_member": "private/tmp/review-today-first-preview-pending-8dzum5y0/ContinuousResumeQA.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-preview-save-pending-a9aqb_be/ContinuousResumeQA.app",
+    "bundle": "Rex.Review-Today.ContinuousResume.NativeQA",
+    "bytes": 509755,
+    "inventory_sha256": "67dea43478c8d410759702aee9ccffb80902147a02cbef38432f688896ce8503",
+    "archive_member": "private/tmp/review-today-preview-save-pending-a9aqb_be/ContinuousResumeQA.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-save-flow-hns515ow/SaveFlowQA.app",
+    "bundle": "Rex.Review-Today.SaveFlow.NativeQA",
+    "bytes": 378581,
+    "inventory_sha256": "40239945df1b9dc6d195d8c975fe5c2b8def317c395abfdb045b3a6aa41d9b8f",
+    "archive_member": "private/tmp/review-today-save-flow-hns515ow/SaveFlowQA.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-save-query-native-pending-18ddwmdc/ContinuousResumeQA.app",
+    "bundle": "Rex.Review-Today.ContinuousResume.NativeQA",
+    "bytes": 509739,
+    "inventory_sha256": "6d3c1a34a64cf42627d73eb107daad3e0267467569251fba8f2b72472eb0f95c",
+    "archive_member": "private/tmp/review-today-save-query-native-pending-18ddwmdc/ContinuousResumeQA.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-startup-diagnosis-1ux5ch6l/ContinuousResumeQA.app",
+    "bundle": "Rex.Review-Today.ContinuousResume.NativeQA",
+    "bytes": 510523,
+    "inventory_sha256": "ef25b72678fbda83862a97dcc095c5f0548f7ba787f3d41d2fa0afb1b0a183ef",
+    "archive_member": "private/tmp/review-today-startup-diagnosis-1ux5ch6l/ContinuousResumeQA.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-status-presentation-0xsetb5e/StatusPresentationQA.app",
+    "bundle": "local.review-today.status-presentation-offline",
+    "bytes": 227143,
+    "inventory_sha256": "35e19231705c7178081fec5b5ced15b7b00a46e45da2049ed6cbf7953de9e1c8",
+    "archive_member": "private/tmp/review-today-status-presentation-0xsetb5e/StatusPresentationQA.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-status-presentation-kivhe1na/StatusPresentationQA.app",
+    "bundle": "local.review-today.status-presentation.NativeQA",
+    "bytes": 259800,
+    "inventory_sha256": "591eb62773fa59ba38194a0054d1e807f9a1063955c6d0a36fca5f285d76c758",
+    "archive_member": "private/tmp/review-today-status-presentation-kivhe1na/StatusPresentationQA.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-status-presentation-uxifzmes/StatusPresentationQA.app",
+    "bundle": "local.review-today.status-presentation.NativeQA",
+    "bytes": 227144,
+    "inventory_sha256": "c300d796e81bb383fb4723668fcf648f695604e739b4a7dfa0dad623723ff138",
+    "archive_member": "private/tmp/review-today-status-presentation-uxifzmes/StatusPresentationQA.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-status-presentation-wz43fo7s/StatusPresentationQA.app",
+    "bundle": "local.review-today.status-presentation.NativeQA",
+    "bytes": 228424,
+    "inventory_sha256": "4837067aa5d0b4c908e322083e70088acc8b3db19defd23bd85c86960a18cc80",
+    "archive_member": "private/tmp/review-today-status-presentation-wz43fo7s/StatusPresentationQA.app"
+  },
+  {
+    "original_path": "/private/tmp/review-today-verify-save-662j7hmq/VerifySaveQA.app",
+    "bundle": "Rex.Review-Today.VerifySave.NativeQA",
+    "bytes": 378797,
+    "inventory_sha256": "52aff23e5bf9e3af32365134a9f9ee9d9270c88dfdfb5a5daa264d32c06cc1fa",
+    "archive_member": "private/tmp/review-today-verify-save-662j7hmq/VerifySaveQA.app"
+  }
+]
