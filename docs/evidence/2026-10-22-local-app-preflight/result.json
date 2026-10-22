@@ -1,0 +1,37 @@
+{
+  "status": "READY_PENDING_NEW_ACTIVATION_ALLOWANCE",
+  "native_counts": {
+    "ZKNOWLEDGE": 11,
+    "ZAGENTMESSAGE": 37,
+    "ZAGENTSESSION": 8,
+    "ZFSRSSTATE": 11
+  },
+  "full_support_backup_bytes": 1641986502,
+  "active_database_integrity": "all_three_ok",
+  "backup_all_table_rows_match": true,
+  "source_all_table_rows_unchanged": true,
+  "old_app_all_three_binaries_match_oct18": true,
+  "current_signed_candidate_verified": true,
+  "old_signed_app_and_backup_verified": true,
+  "private_configs_backed_up_0600": 3,
+  "source_pins_checked": 194,
+  "old_runtime_files_unchanged": 150,
+  "sdk_fake_transport_cases": 11,
+  "extra_probe_checks": [
+    "zero-web",
+    "probe-only",
+    "ninth-transport-blocked",
+    "first-failure-stop"
+  ],
+  "actual_pending_start_and_install_both_rejected": true,
+  "project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "daily_app_replaced": false,
+  "daily_app_launched": false,
+  "proposed_new_limits": {
+    "model_requests": 8,
+    "web_operations": 0
+  },
+  "authorization": "pending/HOLD"
+}

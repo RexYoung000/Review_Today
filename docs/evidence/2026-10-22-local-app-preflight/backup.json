@@ -1,0 +1,35 @@
+{
+  "status": "BACKUP_READY_NO_LAUNCH",
+  "backup": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/backup",
+  "support_bytes": 1641986502,
+  "daily_app": "/Users/rexyoung/Library/Developer/Xcode/DerivedData/Review_Today-gkeqhkrlvxqhunchqjqzselqoapv/Build/Products/Debug/Review_Today.app",
+  "daily_signature": {
+    "bundle_id": "Rex.Review-Today",
+    "team": "7NDKLL3UJK",
+    "strict_verified": true,
+    "binaries": {
+      "Review_Today": "5755773ffcacc29413666122273d8d5e8e473c562a2a96efbd146e88a67e5bea",
+      "__preview.dylib": "7848da845604e57711d0446f984f3ebd95c3ed675c9357df49dc968507af70e9",
+      "Review_Today.debug.dylib": "5a6435de9e216cc5a06c9f1a948f96b5449f0c277555a7593b2a64eeb890d36d"
+    }
+  },
+  "matches_oct18_all_three_binaries": true,
+  "backup_all_three_database_rows_match": true,
+  "source_databases_unchanged": true,
+  "native_counts": {
+    "ZKNOWLEDGE": 11,
+    "ZAGENTMESSAGE": 37,
+    "ZAGENTSESSION": 8,
+    "ZFSRSSTATE": 11
+  },
+  "private_config_sha256": {
+    "agent-service/.env": "79b70ced19be1181171afcf11837ac51293717fdf3fb252a70b49c718f75c17c",
+    "agent-service/providers/deepseek/.env": "443e52c57ad9d369c6c0ddbbf1283f2a4bdb9d8635edb9e735a109be9f574554",
+    "agent-service/providers/web/.env": "ea2d14252be011c083952586e14baaac2b0d065f119195910cc15f95a7d98593"
+  },
+  "project_diff_sha256": "8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "daily_app_launched": false,
+  "baseline_commit": "a29c6f18a9324cc34c7d90f95a5d00092957736e"
+}

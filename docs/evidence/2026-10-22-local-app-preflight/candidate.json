@@ -1,0 +1,18 @@
+{
+  "status": "SIGNED_CANDIDATE_READY_NOT_INSTALLED",
+  "app": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/local-app-preflight-2026-10-22/build/Build/Products/Debug/Review_Today.app",
+  "signature": {
+    "bundle_id": "Rex.Review-Today",
+    "team": "7NDKLL3UJK",
+    "strict_verified": true,
+    "binaries": {
+      "Review_Today": "845dbfdd9e5c15905bbc9e199bfc89808b57b8a2caa441e894ea539435def608",
+      "__preview.dylib": "2dc2929b7868a33cd640b7b3c478d78f7bf3b549616938a157bbab5558792e66",
+      "Review_Today.debug.dylib": "4f03722746f8580fe463c2726d1c59b356f04e2a6093923e5d3626998b833da5"
+    }
+  },
+  "daily_app_unchanged": true,
+  "source_pin_count": 194,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0
+}
