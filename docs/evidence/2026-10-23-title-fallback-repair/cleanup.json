@@ -1,0 +1,13 @@
+{
+  "raw_qa_app_removed": true,
+  "related_registered_entries": 1,
+  "spotlight_paths": [
+    "/Applications/Review Today.app"
+  ],
+  "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-title-fallback/component-evidence.zip",
+  "archive_sha256": "d054ce2383789062be7794cb1b7a1b2f00124945ed1a4fef8e4b373049a825c3",
+  "archive_members_actually_verified": 31,
+  "exact_bundle_unregistered": true,
+  "service_started": false,
+  "daily_app_updated": false
+}

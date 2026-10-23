@@ -1,0 +1,17 @@
+{
+  "directory": "/private/tmp/review-today-title-p7_w14r3.noindex",
+  "app": "/private/tmp/review-today-title-p7_w14r3.noindex/TitleDisplayQA.app",
+  "support": "/tmp/review-today-shared-contracts.xlgn66_8",
+  "source_files": {
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/navigation-save-real-2026-10-22/disk-final/app.store.review-v2-backup": "14a0431950011e133aa7a47c3630901df8a4a8b985b1c9155ff313ec4cbfc86c",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/navigation-save-real-2026-10-22/disk-final/checkpoint.sqlite3": "f3ebdebac1bb102d01ee4e46b4a1d2e3817efece97f3ea7eeb9871885cd950ab",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/navigation-save-real-2026-10-22/disk-final/app.store": "3fb534ef297581911f714a633dea936f18c2a69c410c15523e54ccc009ff18a6",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/navigation-save-real-2026-10-22/disk-final/checkpoint.sqlite3-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/navigation-save-real-2026-10-22/disk-final/app.store-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/navigation-save-real-2026-10-22/disk-final/app.store-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/navigation-save-real-2026-10-22/disk-final/checkpoint.sqlite3-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+  },
+  "service_free": true,
+  "actual_new_model_requests": 0,
+  "actual_new_web_operations": 0
+}

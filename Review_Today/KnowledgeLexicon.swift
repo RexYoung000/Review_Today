@@ -105,10 +105,16 @@ enum KnowledgeLexicon {
         let source = stripCommandLead(goal).trimmingCharacters(in: .whitespacesAndNewlines)
         guard !title.isEmpty, source.count > title.count, source.hasPrefix(title) else { return false }
         // Evidence-backed legacy cuts: an unfinished quantity or a cut word.
-        // A complete short title such as “RAG” or “矩阵的阶” remains unchanged.
+        // A complete title such as “矩阵的阶” remains unchanged.
         let unfinishedQuantity = title.range(of: "[一二三四五六七八九十0-9]+个$", options: .regularExpression) != nil
         let cutStage = title.hasSuffix("阶") && source.dropFirst(title.count).hasPrefix("段")
-        return unfinishedQuantity || cutStage
+        // A separate trailing connector, continued by the same full goal, is
+        // evidence of a cutoff. The same character inside “核对” or “存在” is not.
+        let words = title.split(whereSeparator: { $0.isWhitespace })
+        let danglingConnector = words.count > 1 && words.last.map {
+            $0.unicodeScalars.count == 1 && $0.unicodeScalars.allSatisfy { incompleteEnds.contains($0) }
+        } == true
+        return unfinishedQuantity || cutStage || danglingConnector
     }
 
     private static func strongTitle(for item: Knowledge) -> String {
@@ -176,12 +182,9 @@ enum KnowledgeLexicon {
     }
 
     private static func isWeak(_ text: String) -> Bool {
-        var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let value = text.trimmingCharacters(in: .whitespacesAndNewlines)
         if value.count < 2 { return true }
         if genericTitles.contains(value) { return true }
-        if let last = value.last, String(last).unicodeScalars.allSatisfy({ incompleteEnds.contains($0) }) {
-            return true
-        }
         return false
     }
 

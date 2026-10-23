@@ -1,0 +1,29 @@
+{
+  "status": "TITLE_01_IMPLEMENTED_OFFLINE_AND_NATIVE_COMPONENT_VERIFIED",
+  "title_cases": 21,
+  "native_contract_groups": 3,
+  "real_saved_cards_checked": 5,
+  "actual_new_model_requests": 0,
+  "actual_new_web_operations": 0,
+  "daily_96_files_and_app_unchanged": true,
+  "prior_264_evidence_unchanged": true,
+  "previous_module_and_support_unchanged": true,
+  "production_swift_files_changed": [
+    "Review_Today/KnowledgeLexicon.swift"
+  ],
+  "test_runner_changed": "tests/mac/run-contracts.py",
+  "other_source_config_execution_pins_unchanged": 246,
+  "cards_source_content_version_review_unchanged": true,
+  "original_old_files_matched": 229,
+  "original_old_files_missing": 11,
+  "original_baseline_unchanged": true,
+  "historical_gap_still_open": true,
+  "missing_bytes_durably_archived": 9,
+  "old_missing_main_databases_not_confirmed": 2,
+  "historical_archive_sha256": "101a88944457fd4d138adc46fddc45dc4d6273173b55b0a1be162ee3d092d679",
+  "qa_app_and_service_closed": true,
+  "daily_app_not_loaded": true,
+  "previous_allowances_still_frozen": true,
+  "uninterrupted_fullflow_and_m1_open": true,
+  "full_voiceover_and_user_experience_not_verified": true
+}
