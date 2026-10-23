@@ -1,0 +1,16 @@
+{
+  "status": "ADMISSION_FAILED_NO_REAL_EXECUTION",
+  "fixed_inputs_unchanged": true,
+  "existing_frozen_files_unchanged": true,
+  "original_modules_unchanged": true,
+  "old_known_missing_paths_still_missing": true,
+  "daily_app_preserved": true,
+  "daily_original_directory_absent": true,
+  "runtime_unchanged_except_new_STOP": true,
+  "native_or_service_not_started": true,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "fullflow_not_run": true,
+  "original_daily_96_file_check_failed": true,
+  "user_project_diff_unchanged": true
+}

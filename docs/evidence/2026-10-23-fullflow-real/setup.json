@@ -1,0 +1,10 @@
+{
+  "directory": "/private/tmp/review-today-fresh-fullflow-zjj40h8y.noindex",
+  "port": 57440,
+  "batch_id": "22260738-75a1-4bda-ba38-b214bd28efbe",
+  "session_id": "acb350ab-88de-4132-b8f9-cd0f1c25ee0e",
+  "native_app": "/private/tmp/review-today-fresh-fullflow-zjj40h8y.noindex/FreshFullflowQA.app",
+  "native_zip": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/FreshFullflowQA.zip",
+  "native_zip_sha256": "a142632a150081402a10238fc93e993aa9415888a0b839b2010d3544848d2549",
+  "baseline_commit": "82943195405d9583131546fa7b71f5c517cdd536"
+}

@@ -1,0 +1,24 @@
+{
+  "status": "STOPPED_BEFORE_ACTIVATION",
+  "failed_gate": "pre_admission_daily_protection",
+  "expected_daily_files": 96,
+  "current_daily_files": 0,
+  "daily_support_missing": true,
+  "daily_app_exact_and_present": true,
+  "scope_rule": "stop on failed gate or protection mismatch",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "quota_not_created": true,
+  "remaining_allowance_not_activated": {
+    "model": 40,
+    "web": 16
+  },
+  "native_app_started": false,
+  "service_started": false,
+  "qa_raw_app_not_restored": true,
+  "old_allowances_not_resumed": true,
+  "prior_pending_authorization_and_HOLD_preserved": true,
+  "original_preparation_snapshots_not_changed": true,
+  "user_report": "有删除过Reviewtodayapp，那现在咋办",
+  "delete_mechanism_not_determined": true
+}

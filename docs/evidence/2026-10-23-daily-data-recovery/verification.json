@@ -1,0 +1,97 @@
+{
+  "status": "FORMAL_DATA_RECOVERY_PREPARED_PENDING",
+  "source_archive": "/Users/rexyoung/Library/Developer/ReviewTodayAppArchives.noindex/2026-10-23-daily-update-preflight/activation-evidence.zip",
+  "source_archive_sha256": "60e5fcbb9600c8f2d486874112a83dcc407e334a04b8a638a10ceef3e9f91489",
+  "original_archive_members_read_and_verified": 51,
+  "selected_formal_files_extracted": 9,
+  "source_decision": 266,
+  "source_is_formal_daily_data": true,
+  "test_cards_not_promoted": true,
+  "databases": {
+    "Data/ReviewToday.store": {
+      "integrity": "ok",
+      "all_recorded_tables_rows_and_schema_match": true,
+      "table_counts": {
+        "ATRANSACTIONSTRING": 22,
+        "ZAGENTMESSAGE": 37,
+        "ZAGENTRUN": 19,
+        "ZAGENTRUNCONTROL": 0,
+        "ZAGENTSESSION": 8,
+        "ZAPPSETTINGS": 1,
+        "ZCAPTURETASK": 0,
+        "ZFSRSSTATE": 11,
+        "ZKNOWLEDGE": 11,
+        "ZKNOWLEDGEREFERENCE": 3,
+        "ZLEARNINGTASK": 5,
+        "ZQUESTION": 14,
+        "ZREVIEWATTEMPT": 3,
+        "ZREVIEWSESSION": 4,
+        "ZSESSIONEVENTRECORD": 341,
+        "ZSESSIONFOLDER": 0,
+        "ZSESSIONSUMMARYRECORD": 0,
+        "ZSOURCE": 2,
+        "ZSOURCEREFERENCE": 8,
+        "ZTASKEVENTRECORD": 1,
+        "Z_METADATA": 1,
+        "Z_MODELCACHE": 1,
+        "Z_PRIMARYKEY": 22
+      },
+      "history_counts": {
+        "ACHANGE": 1221913,
+        "ATRANSACTION": 1208904
+      }
+    },
+    "agent-harness.sqlite3": {
+      "integrity": "ok",
+      "all_recorded_tables_rows_and_schema_match": true,
+      "table_counts": {
+        "agent_capability_batches": 6,
+        "agent_memory_policy_v2": 6,
+        "agent_session_deletions": 37,
+        "agent_sessions_v2": 9,
+        "agent_voice_usage": 1,
+        "harness_tasks": 5
+      },
+      "history_counts": {}
+    },
+    "agent-harness.review.sqlite3": {
+      "integrity": "ok",
+      "all_recorded_tables_rows_and_schema_match": true,
+      "table_counts": {
+        "review_commits": 0,
+        "review_deleted_sessions": 0,
+        "review_inputs": 0,
+        "review_sessions": 1,
+        "review_turns": 0,
+        "review_voice_usage": 2
+      },
+      "history_counts": {}
+    }
+  },
+  "native_counts": {
+    "ZAGENTSESSION": 8,
+    "ZAGENTMESSAGE": 37,
+    "ZKNOWLEDGE": 11,
+    "ZFSRSSTATE": 11
+  },
+  "staged_support": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-daily-data-recovery/staged-support",
+  "staged_files": {
+    "agent-harness.sqlite3": "0bd0eafebb355c51cf7d5d468cfdb3a58a60aa9a861b4eae0591228170b8481f",
+    "agent-harness.review.sqlite3": "42230939198caa67493b353bd139d7c5134bc606dd971dcec00fe406882e5716",
+    "Data/ReviewToday.store": "6fa576381c2f8d73590d9bfd03b81a8af44bde72ca7bdea5108289c953d3ecb0",
+    "Data/ReviewToday.store.review-v2-backup": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1"
+  },
+  "verified_stage_zip": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-daily-data-recovery/verified-staged-support.zip",
+  "verified_stage_zip_sha256": "2322e1333f2c30de510debe4750c9c24af175ace56d918b53638e6d94148e25a",
+  "target": "/Users/rexyoung/Library/Application Support/Review Today",
+  "target_absent": true,
+  "daily_data_written": false,
+  "daily_app_started": false,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "historical_Backups_89_files_not_in_this_recovery": true,
+  "changes_after_last_backup_not_recoverable_from_this_snapshot": true,
+  "sqlite_consistent_files_not_original_byte_identity": true,
+  "original_baseline_not_rewritten": true
+}

@@ -1,0 +1,13 @@
+{
+  "decision": 267,
+  "status": "USER_APPROVED_NOT_ACTIVATED_STOPPED_AT_ADMISSION",
+  "answer": "按新 40／16 上限执行（推荐）",
+  "batch_id": "22260738-75a1-4bda-ba38-b214bd28efbe",
+  "approved_at": "2026-10-23T03:20:29.911514+00:00",
+  "model_limit": 40,
+  "web_limit": 16,
+  "plan_sha256": "59ec91dc7b3420b4000efd80fcbfd467379987af1b06bf22681b6171d1acddfd",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "reason": "Daily support directory absent before admission; user reports deleting Reviewtoday app; no cause inferred beyond that report"
+}

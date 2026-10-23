@@ -1,0 +1,578 @@
+[
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/20260906-harness-library/current.store",
+    "before": "f4fae9b5b1067565c09da1959d51d90fdd1bd590495046144e52f39409233fb3",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/20260906-harness-library/current.store-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/20260906-harness-library/current.store-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/20260906-harness-library/legacy.store",
+    "before": "98653fe6fae48c6c9fe5e47d69a1a439cb0e2132f17b3fae722a15219db65000",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/20260906-harness-library/legacy.store-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/20260906-harness-library/legacy.store-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/20260906-harness-library/library.json",
+    "before": "a9bc4eedd6f667f3d8831ae29e931374e8c6b1a5becc0fbaa5505f1bc9bdcb74",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/20260906-harness-library/verification.json",
+    "before": "0d7917b0a72ce7a437c626dd7aad6374eb2f0619a3fe14f583409a12f968b0f4",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/agent-harness-before-image-compaction-20260927-215101.sqlite3",
+    "before": "b49748e6f90f8932cd2e0858706c92cb34eb6bfa52eb383b01685417736afb4f",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3",
+    "before": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/Data/ReviewToday.store",
+    "before": "43b71ed54b028c6fbd8a47bdc18b9ce880bdca258233b5730c4a8e2017ff565c",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/Data/ReviewToday.store-shm",
+    "before": "09893dd39f1a50343f9ab2982bf5f6b119863093998248e067152ddb4b26b6a0",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/Data/ReviewToday.store-wal",
+    "before": "61134b8fa8c8fc25a080e4ec92fc983110e43f90bbb71e8f49a34c480a569ed5",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/Data/ReviewToday.store.review-v2-backup",
+    "before": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/agent-harness.sqlite3",
+    "before": "a48bdcc31206093dbda0078d9f1b3ff8d0dee4dd5fa736f85c4c0928b86ace3b",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/agent-harness.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/agent-harness.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-drop-snapshot-e0db316-20260926-213500/installation.json",
+    "before": "02a579314a3c3aa027e186da46e0320f4b1dbfa17258059ef3ba21a09d408e88",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-exam-spine-20260924-194150/default.store",
+    "before": "67a59c068234b8d79c0f14faa71e47816b02d29120ba76c80d2e501f4a7b3182",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-exam-spine-20260924-194150/default.store-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-exam-spine-20260924-194150/default.store-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-exam-spine-20260924-194150/metadata.json",
+    "before": "7d83672ce5d027747f5e7451176830e467d4526b5957047a36b606e3e5f47ce6",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-image-4063395-20260926-164610/Data/ReviewToday.store",
+    "before": "79cd8e8842b2efd31b21eff50a0e711d5c5af59ddd6e410e4b65649cccf7d4b8",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-image-4063395-20260926-164610/Data/ReviewToday.store-shm",
+    "before": "de40ee5fc6bceabeb0d870eaf77a2955604526c3ca4e81d0a1e91d514772c2d5",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-image-4063395-20260926-164610/Data/ReviewToday.store-wal",
+    "before": "e80a4dea96812b85969ac61856361b5006ad01301f45d31e6eaee9d84878e3f5",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-image-4063395-20260926-164610/Data/ReviewToday.store.review-v2-backup",
+    "before": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-image-4063395-20260926-164610/agent-harness.sqlite3",
+    "before": "0c2d834aa0c8cbc0e71ab1ffd42ebb0e43e659963d6a4fcbea165038abc2b006",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-image-4063395-20260926-164610/agent-harness.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-image-4063395-20260926-164610/agent-harness.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-image-4063395-20260926-164610/manifest.json",
+    "before": "823fa84fd04179c59fcf9d0a9804d7d0cef506ccd53285496853cfbbd1d602cf",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3",
+    "before": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/Data/ReviewToday.store",
+    "before": "62ce79499030c488ae62c98d5f9096ff431bbe845bcd8a08faeff7d12df9876f",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/Data/ReviewToday.store-shm",
+    "before": "954f980fad8979d39260c5c0e2cb32bb1ff0daf1cd6f2893fba210151e6c2e62",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/Data/ReviewToday.store-wal",
+    "before": "01a9eb93829542bbc4dcab2a34fb456a4969e9e354b24a917736c4d0bad309e1",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/Data/ReviewToday.store.review-v2-backup",
+    "before": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/agent-harness.sqlite3",
+    "before": "0c2d834aa0c8cbc0e71ab1ffd42ebb0e43e659963d6a4fcbea165038abc2b006",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/agent-harness.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/agent-harness.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-jpeg-drag-04c708a-20260926-184341/installation.json",
+    "before": "3a91a5e6c812ff31d496e2af98420f5b1713df63fee324abd16c842ba599fbe1",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-blocks-20260925-192111/before.json",
+    "before": "3a82f339efa738bdbc45e4a50414d0a6e367e50eee4d129a087a6d581c104ad6",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-blocks-20260925-192111/default.store",
+    "before": "5589563e8d8bfbb273fa19f891c84f820bb3cd961eb3d3c82a013d0a56638de1",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-blocks-20260925-192111/default.store-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-blocks-20260925-192111/default.store-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-closure-20261003-233901/mac.sqlite3",
+    "before": "1645cf17d18bd72e3592f2a49dbe24bdecb34067452736a3b44c99fdaa12ae2c",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-closure-20261003-233901/mac.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-closure-20261003-233901/mac.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-closure-20261003-233901/service.sqlite3",
+    "before": "f3d25d010e17208bb27618507f5c1170bec51d6c6f8712f562a5a4f933dc8f8c",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-closure-20261003-233901/service.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-closure-20261003-233901/service.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-status-continuity-20261003-235753/mac.sqlite3",
+    "before": "70dc630d01040ea67416ebf1eb5400d08e1fa4715bff73d914b6d3ade31b0676",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-status-continuity-20261003-235753/mac.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-status-continuity-20261003-235753/mac.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-status-continuity-20261003-235753/service.sqlite3",
+    "before": "a4a6f0225fe7b4988db86fc757f29bb78363abd17429056c11b6ae2a2f65c246",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-status-continuity-20261003-235753/service.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-knowledge-status-continuity-20261003-235753/service.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-multi-image-4cde95c-20260926-182428/Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3",
+    "before": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-multi-image-4cde95c-20260926-182428/Data/ReviewToday.store",
+    "before": "0ac08f28ab446a7b4e8f03632f8364031a0fc49c44f1d47a49f6bd8aec33e674",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-multi-image-4cde95c-20260926-182428/Data/ReviewToday.store.review-v2-backup",
+    "before": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-multi-image-4cde95c-20260926-182428/agent-harness.sqlite3",
+    "before": "0c2d834aa0c8cbc0e71ab1ffd42ebb0e43e659963d6a4fcbea165038abc2b006",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-multi-image-4cde95c-20260926-182428/installation.json",
+    "before": "dc5f0ec6d4ed294ce8108fd1e36717c9af3b8c4f4b136b4e18ed339a121c6e4a",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3",
+    "before": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/Data/ReviewToday.store",
+    "before": "d76e57b186db304c9ac241c177a9e1e30978e275036bd180d20ef4987541b732",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/Data/ReviewToday.store-shm",
+    "before": "9925153bd31eae75ce065259e647566b4939c52d0ce900cc7ad39c9e02e16dfe",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/Data/ReviewToday.store-wal",
+    "before": "effdb6655686783d39b5a2f6802eedcb8c9a509e1bf305ea3b7ef5bb59cb6e64",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/Data/ReviewToday.store.review-v2-backup",
+    "before": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/agent-harness.sqlite3",
+    "before": "4cc41bf267e9c5342c6802ea85e6f62b58584d51a18c80324ae5e3391f6dbf74",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/agent-harness.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/agent-harness.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-native-image-drop-477a3a6-20260926-202518/installation.json",
+    "before": "bdf0e958c0541a44a172c0c89695c7663c8bf3bce660776e17ef5443d617d674",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/Data/.ReviewToday_SUPPORT/_EXTERNAL_DATA/558723FF-1256-4115-A1D1-4A6BF4A9C7F1",
+    "before": "250a853df7c7083ed8b5d9ae975887eb8cf4e27c869927f2123f062f3a2396ce",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3",
+    "before": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/Data/ReviewToday.store",
+    "before": "f3de903fd429c1f1d82b8b98e616c9f7ea1424e42a70cfbb1c5c80fb0e035c14",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/Data/ReviewToday.store-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/Data/ReviewToday.store-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/Data/ReviewToday.store.review-v2-backup",
+    "before": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/agent-harness.sqlite3",
+    "before": "1f8bab150e05b8bdd36abb8e676355e5e6c45264f6e40097da065e84f000368b",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/agent-harness.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-product-continuation-20260926-225905/agent-harness.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-source-provenance-20260930-121939/ReviewToday.store",
+    "before": "ca81fe5e056c3d6e190b3361386e445f01a74f0ebbb1a892be07c10d8b88fd6c",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-source-provenance-20260930-121939/agent-harness.sqlite3",
+    "before": "50f561b0b63b17161473955cabb964a0a8ad6d8dfd5d02af5e42ab2d3adca0f0",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-source-provenance-20260930-121939/before.json",
+    "before": "930671c7c104d1a11c0d01f59b674c00c5714e28bd9cdf8647e119017ea1359a",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-stream-smoothness-20260927-230724/ReviewToday.store",
+    "before": "33165ad22d4edc5ba412084d838efa3eea5b32869a0514b4406c59972caea339",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-stream-smoothness-20260927-230724/agent-harness.sqlite3",
+    "before": "57ca00d961a02cb503059a62e26da5fb415a04947a122347609b3a4f91698527",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-teaching-alignment-20261003-091534/mac.sqlite3",
+    "before": "5ea941f9904fb974ee8295034920152c607964125fa65da2c51f922fb0b08ae8",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-teaching-alignment-20261003-091534/mac.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-teaching-alignment-20261003-091534/mac.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-teaching-alignment-20261003-091534/service.sqlite3",
+    "before": "6c2ab88107973c5cb88137af67ec54298b74c2f64b8421bfe8d688b5642cde5f",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-teaching-alignment-20261003-091534/service.sqlite3-shm",
+    "before": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Backups/before-teaching-alignment-20261003-091534/service.sqlite3-wal",
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3",
+    "before": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store",
+    "before": "6858356050b11080f04e1e41c8a7a11aecf831d086d0624f3657e36a20114291",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-shm",
+    "before": "f039fba344172bca419488a24c71f9fcc1c3e42138fab58fc82573326e27b52d",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-wal",
+    "before": "7a1a5af01d7c5ca8705aaa6a1e098c510a5a18ce65551bc1bbbb011867ca55bf",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store.review-v2-backup",
+    "before": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.review.sqlite3",
+    "before": "f96a42b344a8f527ad8ef2ef7bcbc553323306dbefe261ce52c3120af5221710",
+    "after": null,
+    "size": null
+  },
+  {
+    "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3",
+    "before": "c99bf5478b0e580595e76213ac92f343d1b0573ab5ae2778a7e46cb3e2be93db",
+    "after": null,
+    "size": null
+  }
+]
