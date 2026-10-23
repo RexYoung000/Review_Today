@@ -1,0 +1,23 @@
+{
+  "status": "PREPARED_SCOPE_PENDING_CONFIRMATION",
+  "batch_id": "db156b04-c2b6-46e1-994c-6af319d9a341",
+  "scope": "same daily entry update; one startup probe batch; inspect existing data only; no messages/save/cleanup",
+  "daily_app": "/Applications/Review Today.app",
+  "actual_model_request_limit": 8,
+  "provider_web_operation_limit": 0,
+  "baseline_commit": "f38d28cb8762cfb4d4e46c4fd73baa086659237b",
+  "steps": [
+    "recheck stopped daily data, source/config, signed archives and backup hashes",
+    "replace canonical App by verified same-volume rename with App-only rollback on replacement failure",
+    "start one pinned probe-only service and await one new startup batch",
+    "open same daily App; inspect Agent, knowledge library and existing card; no message or save",
+    "normally close App and temporary service; freeze allowance and compare durable data"
+  ],
+  "stop_on_first_probe_failure": true,
+  "manual_retry_allowed": false,
+  "old_allowances_not_resumed": true,
+  "historical_cleanup": false,
+  "database_migration_or_restore_not_authorized": true,
+  "existing_test_gap": "11 original old temporary paths missing; 9 same-hash contents archived; 2 old main DB copies not confirmed",
+  "not_fullflow_m1_or_user_experience_acceptance": true
+}

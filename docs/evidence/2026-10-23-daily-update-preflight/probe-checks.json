@@ -1,0 +1,12 @@
+{
+  "outcome": "PASS",
+  "fake_sdk_requests": 8,
+  "usage_receipts": 8,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "zero_web_entries_blocked": 12,
+  "conversation_call_blocked": true,
+  "structured_and_stream_probe_paths_pass": true,
+  "ninth_probe_blocked": true,
+  "network_attempts": 0
+}

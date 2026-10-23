@@ -1,0 +1,129 @@
+{
+  "status": "SIGNED_NORMAL_BUILD_ARCHIVED_NOT_INSTALLED",
+  "zip": "/Users/rexyoung/Library/Developer/ReviewTodayAppArchives.noindex/2026-10-23-daily-update-preflight/ReviewToday-candidate.zip",
+  "zip_sha256": "247a161e5a15134d6045530c6083f17ba8badba4afb4349b398f016f11fb4727",
+  "signature": {
+    "bundle_id": "Rex.Review-Today",
+    "team": "7NDKLL3UJK",
+    "strict_verified": true,
+    "binaries": {
+      "Review_Today": "565dc6cdb3f2562c4490776169bdf300c03eb7e77c390ad3dca5f513fe422169",
+      "__preview.dylib": "bbe0b2dffd79dc8da6d4f32fc22b8df368c5967f8283b0a895a36e4a5419da60",
+      "Review_Today.debug.dylib": "c1eb02c1443cb8969fa010fcc0eeabc5421fafaf85d6b3ed080e663645d7cd37"
+    }
+  },
+  "inventory": {
+    "Contents": {
+      "type": "dir",
+      "mode": 493
+    },
+    "Contents/_CodeSignature": {
+      "type": "dir",
+      "mode": 493
+    },
+    "Contents/MacOS": {
+      "type": "dir",
+      "mode": 493
+    },
+    "Contents/Resources": {
+      "type": "dir",
+      "mode": 493
+    },
+    "Contents/Info.plist": {
+      "type": "file",
+      "mode": 420,
+      "size": 1983,
+      "sha256": "75b9373267c6d6a4743d3a83e4a96e9c8d3f9bd4a699ec53e42d5ae68fe9785e"
+    },
+    "Contents/PkgInfo": {
+      "type": "file",
+      "mode": 420,
+      "size": 8,
+      "sha256": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0"
+    },
+    "Contents/_CodeSignature/CodeResources": {
+      "type": "file",
+      "mode": 420,
+      "size": 4644,
+      "sha256": "6f86a69d4e009cc52a0b7db5833ef48a0a84b61dac9d83f0d3cb860682d6f04e"
+    },
+    "Contents/MacOS/Review_Today": {
+      "type": "file",
+      "mode": 493,
+      "size": 58864,
+      "sha256": "565dc6cdb3f2562c4490776169bdf300c03eb7e77c390ad3dca5f513fe422169"
+    },
+    "Contents/MacOS/__preview.dylib": {
+      "type": "file",
+      "mode": 493,
+      "size": 34928,
+      "sha256": "bbe0b2dffd79dc8da6d4f32fc22b8df368c5967f8283b0a895a36e4a5419da60"
+    },
+    "Contents/MacOS/Review_Today.debug.dylib": {
+      "type": "file",
+      "mode": 493,
+      "size": 32317600,
+      "sha256": "c1eb02c1443cb8969fa010fcc0eeabc5421fafaf85d6b3ed080e663645d7cd37"
+    },
+    "Contents/Resources/KNMaiyuan-Regular.ttf": {
+      "type": "file",
+      "mode": 420,
+      "size": 7996068,
+      "sha256": "94ea78c51086b1ea58c1744784b2335dea2c5ef1c5193b80e02c7d46b8e0283f"
+    },
+    "Contents/Resources/MascotMotion.html": {
+      "type": "file",
+      "mode": 420,
+      "size": 3138369,
+      "sha256": "967178efef348724018e2a2a84ae776f41056fc4fe3dc9d4270dce156ee50b95"
+    },
+    "Contents/Resources/AppIcon.icns": {
+      "type": "file",
+      "mode": 420,
+      "size": 85752,
+      "sha256": "4ee9e5aaba5594d3001384e1759fe21d2ec649d77442a853c02a144dafe76dc4"
+    },
+    "Contents/Resources/ExamEntrySpine.html": {
+      "type": "file",
+      "mode": 420,
+      "size": 179342,
+      "sha256": "2285585531776bf94e1a3baa701ae8f7f2f9d33254881d85cffbe6507a5a2b3b"
+    },
+    "Contents/Resources/Assets.car": {
+      "type": "file",
+      "mode": 420,
+      "size": 5020184,
+      "sha256": "2f9ace11dda6dd592e077a08ee60d2d77f173434a4283a8bff65cc6447d70b43"
+    },
+    "Contents/Resources/MrBMotion.html": {
+      "type": "file",
+      "mode": 420,
+      "size": 6491258,
+      "sha256": "9ca05295206546c56c104c0b4e9363fb0be048dba1afc2ed35ba5d6c810783fd"
+    },
+    "Contents/Resources/KNMaiyuan-OFL.txt": {
+      "type": "file",
+      "mode": 420,
+      "size": 4398,
+      "sha256": "8f7498fa590ac61309b0dfa40b737bfde36b1dc407ef91c8debdf5ab37716384"
+    }
+  },
+  "actual_extract_permissions_and_signature_verified": true,
+  "raw_candidate_removed": true,
+  "related_registered_entries": 1,
+  "app_source_delta": [
+    "Review_Today/KnowledgeLexicon.swift"
+  ],
+  "backend_source_delta": [
+    "agent-service/agent_service/conversation.py",
+    "agent-service/agent_service/conversation_prompts.py",
+    "agent-service/agent_service/dialogue_routing.py",
+    "agent-service/agent_service/goal_continuation.py",
+    "agent-service/agent_service/learning_navigation.py",
+    "agent-service/agent_service/schemas.py"
+  ],
+  "daily_app_updated": false,
+  "daily_app_started": false,
+  "actual_new_model_requests": 0,
+  "actual_new_web_operations": 0
+}

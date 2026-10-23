@@ -1,0 +1,54 @@
+{
+  "status": "PREPARED_AND_HELD_NOT_INSTALLED_OR_STARTED",
+  "actual_new_model_requests": 0,
+  "actual_new_web_operations": 0,
+  "production_modified": false,
+  "daily_app_updated": false,
+  "daily_app_started": false,
+  "daily_files_unchanged": 96,
+  "daily_app_and_user_project_diff_unchanged": true,
+  "execution_source_config_pins": 260,
+  "original_old_files_matched": 229,
+  "original_old_paths_still_missing": 11,
+  "historical_gap_not_reclassified": true,
+  "original_module_support_and_264_265_evidence_unchanged": true,
+  "raw_active_backup_bytes_match": true,
+  "three_consistent_db_copies_verified": true,
+  "original_and_candidate_actual_extract_signature_verified": true,
+  "raw_candidate_removed": true,
+  "authorization_cases": 10,
+  "controlled_installer_success_and_rollback": true,
+  "actual_pending_entry_checks": [
+    {
+      "entry": "install_prepared.py",
+      "pending_refused": true,
+      "service_imported": false,
+      "database_opened": false,
+      "network_opened": false
+    },
+    {
+      "entry": "start_service.py",
+      "pending_refused": true,
+      "service_imported": false,
+      "database_opened": false,
+      "network_opened": false
+    }
+  ],
+  "held_files_unchanged": true,
+  "no_execution_or_quota_created": true,
+  "fake_probe_requests": 8,
+  "fake_failure_requests": 1,
+  "ninth_probe_and_nonprobe_blocked": true,
+  "zero_web_entries_blocked": 12,
+  "first_probe_failure_stops": true,
+  "related_registered_entries": 1,
+  "spotlight_paths": [
+    "/Applications/Review Today.app"
+  ],
+  "app_and_service_stopped": true,
+  "proposed_new_model_limit": 8,
+  "proposed_new_web_limit": 0,
+  "old_allowances_frozen": true,
+  "actual_daily_update_startup_and_user_experience_not_verified": true,
+  "uninterrupted_fullflow_m1_voiceover_not_closed": true
+}
