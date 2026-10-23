@@ -1,0 +1,13 @@
+{
+  "status": "approved",
+  "batch_id": "db156b04-c2b6-46e1-994c-6af319d9a341",
+  "actual_model_request_limit": 8,
+  "provider_web_operation_limit": 0,
+  "database_path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3",
+  "daily_app": "/Applications/Review Today.app",
+  "scope": "same daily entry update; one startup probe batch; inspect existing data only; no messages/save/cleanup",
+  "approved_at": "2026-10-23T02:16:30.592927+00:00",
+  "approved_by": "Rex direct reply",
+  "approved_reply": "按 8／0 更新并检查（推荐）",
+  "decision": 266
+}

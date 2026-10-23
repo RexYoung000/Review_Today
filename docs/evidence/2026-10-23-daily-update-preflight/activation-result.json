@@ -1,0 +1,91 @@
+{
+  "status": "DAILY_UPDATED_STARTUP_AND_EXISTING_DATA_VERIFIED_STOP",
+  "decision": 266,
+  "actual_model_requests": 8,
+  "actual_web_operations": 0,
+  "unique_request_ids": 8,
+  "usage_receipts": 8,
+  "reported_tokens": {
+    "input_tokens": 1244,
+    "output_tokens": 312,
+    "total_tokens": 1556,
+    "cached_input_tokens": 256,
+    "reasoning_output_tokens": 105
+  },
+  "startup_capability_batch_id": "68ca64e1-1512-4cab-ab2c-9a433b6bba32",
+  "startup_rounds": 1,
+  "all_roles_ready": true,
+  "coach_smart_deep_streaming_ready": true,
+  "quota_closed_and_stopped": true,
+  "native_counts": {
+    "ZAGENTSESSION": 8,
+    "ZAGENTMESSAGE": 37,
+    "ZKNOWLEDGE": 11,
+    "ZFSRSSTATE": 11
+  },
+  "all_original_business_fields_preserved": true,
+  "schemas_unchanged": true,
+  "existing_review_database_unchanged": true,
+  "existing_service_rows_unchanged_except_one_new_capability_batch": true,
+  "native_preserved_tables": [
+    "ATRANSACTIONSTRING",
+    "ZAGENTMESSAGE",
+    "ZAGENTRUN",
+    "ZAGENTRUNCONTROL",
+    "ZAGENTSESSION",
+    "ZAPPSETTINGS",
+    "ZCAPTURETASK",
+    "ZFSRSSTATE",
+    "ZKNOWLEDGE",
+    "ZKNOWLEDGEREFERENCE",
+    "ZLEARNINGTASK",
+    "ZQUESTION",
+    "ZREVIEWATTEMPT",
+    "ZREVIEWSESSION",
+    "ZSESSIONEVENTRECORD",
+    "ZSESSIONFOLDER",
+    "ZSESSIONSUMMARYRECORD",
+    "ZSOURCE",
+    "ZSOURCEREFERENCE",
+    "ZTASKEVENTRECORD",
+    "Z_METADATA",
+    "Z_MODELCACHE"
+  ],
+  "allowed_native_runtime_fields": {
+    "ZAGENTSESSION": [
+      "Z_OPT"
+    ],
+    "ZLEARNINGTASK": [
+      "ZUPDATEDAT",
+      "Z_OPT"
+    ]
+  },
+  "native_runtime_rows_changed": 11,
+  "internal_history_key_counters_only": true,
+  "ui": {
+    "agent": true,
+    "library_11": true,
+    "existing_detail_and_source": true,
+    "existing_review_flag_preserved": true,
+    "messages_sent": 0,
+    "saves_clicked": 0,
+    "appearance": "light, original daily window",
+    "full_voiceover_not_run": true
+  },
+  "same_daily_entry": "/Applications/Review Today.app",
+  "registered_entries": 1,
+  "spotlight_paths": [
+    "/Applications/Review Today.app"
+  ],
+  "original_app_archived": true,
+  "app_and_temporary_service_closed": true,
+  "fixed_inputs_unchanged": 260,
+  "existing_backup_files_unchanged": 89,
+  "user_project_diff_unchanged": true,
+  "original_old_files_matched": 229,
+  "original_old_paths_still_missing": 11,
+  "historical_gap_remains_open": true,
+  "old_allowances_not_resumed": true,
+  "actual_new_fullflow_not_run": true,
+  "m1_and_rex_experience_open": true
+}

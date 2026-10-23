@@ -1,0 +1,45 @@
+[
+  {
+    "database": "Data/ReviewToday.store",
+    "table": "ZAGENTSESSION",
+    "before": 8,
+    "after": 8,
+    "inserted": 0,
+    "deleted": 0,
+    "changed_fields": {
+      "Z_OPT": 8
+    }
+  },
+  {
+    "database": "Data/ReviewToday.store",
+    "table": "ZLEARNINGTASK",
+    "before": 5,
+    "after": 5,
+    "inserted": 0,
+    "deleted": 0,
+    "changed_fields": {
+      "ZUPDATEDAT": 3,
+      "Z_OPT": 3
+    }
+  },
+  {
+    "database": "Data/ReviewToday.store",
+    "table": "Z_PRIMARYKEY",
+    "before": 22,
+    "after": 22,
+    "inserted": 0,
+    "deleted": 0,
+    "changed_fields": {
+      "Z_MAX": 3
+    }
+  },
+  {
+    "database": "agent-harness.sqlite3",
+    "table": "agent_capability_batches",
+    "before": 5,
+    "after": 6,
+    "inserted": 1,
+    "deleted": 0,
+    "changed_fields": {}
+  }
+]
