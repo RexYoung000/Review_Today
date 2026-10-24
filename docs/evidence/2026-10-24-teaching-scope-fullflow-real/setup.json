@@ -1,0 +1,9 @@
+{
+  "prepared_setup": "docs/evidence/2026-10-24-teaching-scope-fullflow-preflight/setup.json",
+  "runtime": "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex",
+  "batch_id": "5cc39132-a635-4c5a-9d27-80ed32afaa35",
+  "session_id": "815af29b-1fd0-49c4-b5bb-b9632ecca597",
+  "port": 49955,
+  "source_commit": "b0cd32c",
+  "preparation_commit": "030d55c"
+}

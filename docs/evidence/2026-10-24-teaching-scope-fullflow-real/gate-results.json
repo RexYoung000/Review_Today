@@ -1,0 +1,151 @@
+{
+  "startup": {
+    "status": "PASS",
+    "model_requests": 8,
+    "web_operations": 0,
+    "all_roles_ready": true,
+    "coach_smart_and_deep_streaming_ready": true
+  },
+  "lesson": {
+    "status": "PASS",
+    "model_requests_cumulative": 12,
+    "web_operations_cumulative": 0,
+    "teaching_model_attempts": 2,
+    "existing_single_repair_used": true,
+    "all_three_requested_topics_actually_explained": true,
+    "question_scope_matches_frozen_coverage": true,
+    "understanding": "unknown",
+    "save_authorizations": 0
+  },
+  "interruption": {
+    "app_service_and_batch_not_restarted": true,
+    "quota_remained_12_0": true,
+    "original_first_input_not_resent": true
+  },
+  "notes": [
+    "Initial valid prose used third-level teaching headings under the learning-map heading; the coverage guard rejected those evidence locations and the existing one repair produced separate second-level teaching text. Both real outputs retained.",
+    "Future plan labels overlap concepts introduced in this lesson; no whole-step mastery is inferred.",
+    "QA wrapper dependency notice remains stale after service start; actual service and role readiness verified independently."
+  ],
+  "partial_answer": {
+    "status": "PASS",
+    "model_requests_cumulative": 14,
+    "web_operations_cumulative": 0,
+    "incomplete_answer_rejected": true,
+    "missing_generation_and_checking_conditions_identified": true,
+    "invitations": 0,
+    "mastery_unchanged": true
+  },
+  "complete_answer": {
+    "status": "PASS",
+    "model_requests_cumulative": 16,
+    "web_operations_cumulative": 0,
+    "question_scoped_pass": true,
+    "whole_step_mastery": false,
+    "offer_id": "31754801-a51c-4ae4-b24f-7035ee8760fc",
+    "offer_version": 1,
+    "preview_points": 2,
+    "preview_summary_present": true,
+    "native_review_toggle_off": true,
+    "knowledge_created": 0
+  },
+  "same_topic_update": {
+    "status": "PASS",
+    "model_requests_cumulative": 19,
+    "web_operations_cumulative": 0,
+    "same_offer_id": "31754801-a51c-4ae4-b24f-7035ee8760fc",
+    "version_before": 1,
+    "version_after": 2,
+    "preview_points": 4,
+    "all_preview_quotes_grounded": true,
+    "learning_plan_and_practice_unchanged": true,
+    "no_cards_created": true
+  },
+  "native_display": {
+    "light_default_preview_checked": true,
+    "dark_default_preview_checked": true,
+    "dark_width_760_height_820_checked": true,
+    "minimum_height_620_not_reached_by_resize_attempt": true
+  },
+  "independent_question": {
+    "status": "PASS",
+    "model_requests_cumulative": 22,
+    "web_operations_cumulative": 0,
+    "ordinary_question_task_id": null,
+    "original_task_context_unchanged": true,
+    "entire_original_offer_unchanged": true,
+    "no_new_learning_goal": true
+  },
+  "return_to_rag": {
+    "status": "PASS",
+    "model_requests_cumulative": 25,
+    "web_operations_cumulative": 0,
+    "original_task_id": "0ba54b26-8ca5-41e7-856b-82cade05d05a",
+    "same_offer_id_version_and_entire_content": true,
+    "learning_plan_question_bindings_sources_practice_understanding_unchanged": true,
+    "no_python_merged": true,
+    "no_new_question_or_step": true
+  },
+  "native_save": {
+    "status": "PASS",
+    "model_requests_cumulative": 28,
+    "web_operations_cumulative": 0,
+    "clicked_offer_version": 2,
+    "actual_card_count": 5,
+    "one_durable_receipt_and_matching_mac_ack": true,
+    "no_duplicate_ids_or_python_content": true,
+    "all_review_off": true,
+    "source_view_attribution": true,
+    "provider_web_verification_used": false
+  },
+  "details_and_status": {
+    "status": "PASS",
+    "model_requests_cumulative": 30,
+    "web_operations_cumulative": 0,
+    "all_five_native_details_and_sources_opened": true,
+    "status_count_and_titles_match": true,
+    "existing_bounded_intent_schema_repair_used": true
+  },
+  "progress_before_quit": {
+    "status": "PASS",
+    "original_step_and_question_context_unchanged": true,
+    "understanding": "unknown",
+    "verified_followup_concepts": 2,
+    "whole_step_completion_demonstrated": false
+  },
+  "progress_and_disk": {
+    "status": "PASS",
+    "normal_app_quit_and_owned_service_stopped": true,
+    "fresh_native_reader": true,
+    "cards_sources_fsrs": [
+      5,
+      1,
+      5
+    ],
+    "messages_runs": [
+      15,
+      8
+    ],
+    "source_and_card_ownership_content_questions_and_evidence_match": true,
+    "native_service_cursor": 273,
+    "one_receipt_and_one_ack": true,
+    "review_off": true,
+    "learning_step_and_question_context_unchanged": true,
+    "understanding": "unknown"
+  },
+  "completion": {
+    "status": "PASS_FROZEN_FUNCTIONAL_PATH",
+    "all_planned_functional_gates_passed": true,
+    "app_service_restarts": 0,
+    "bounded_automatic_repairs": 2,
+    "model_requests": 30,
+    "web_operations": 0,
+    "frozen_unused": {
+      "model": 10,
+      "web": 16
+    },
+    "daily_data_and_app_unchanged": true,
+    "minimum_height_620_unverified": true,
+    "m1_and_rex_acceptance_open": true
+  }
+}

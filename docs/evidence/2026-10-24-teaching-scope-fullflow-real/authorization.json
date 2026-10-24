@@ -1,0 +1,12 @@
+{
+  "status": "approved",
+  "batch_id": "5cc39132-a635-4c5a-9d27-80ed32afaa35",
+  "actual_model_request_limit": 40,
+  "provider_web_operation_limit": 16,
+  "scope": "269 已修 TEACH-01 并完成原失败离线复验；本轮仅准备新的隔离真实模型与原生完整链，待明确新上限后执行，所有旧额度保持冻结。",
+  "counting": "全部启动探测、模型实际请求、格式修复、自动知识修复、兼容回退、后台与超时分别计数；每次供应商搜索、读取和兜底分别计网页额度。次数不是金额上限。",
+  "approved_at": "2026-10-24T08:02:46.339484+00:00",
+  "decision": 271,
+  "answer": "按新 40／16 上限执行（推荐）",
+  "plan_sha256": "e0701ff141f91e4d2ce51edb3765965b98c0c66553a0204e17540e086b6ab7c2"
+}

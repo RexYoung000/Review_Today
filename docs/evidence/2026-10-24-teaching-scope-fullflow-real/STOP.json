@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-24T08:54:50.108481+00:00",
+  "reason": "Authorized functional chain completed and disk verified; no further requests authorized by this closed batch.",
+  "batch_id": "5cc39132-a635-4c5a-9d27-80ed32afaa35",
+  "model_requests": 30,
+  "web_operations": 0,
+  "remaining_frozen": {
+    "model": 10,
+    "web": 16
+  },
+  "runtime_stop_sha256": "cb2214567702884769d075525c93584a5c8fe3782d91d75ed40536cb07489493",
+  "quota_sha256": "6ab99ecfd91908a53ac50ba38091f9ffecbfaa3c4614cc861dd06510c4430d9f",
+  "final_gate_failure": false,
+  "native_app_and_owned_service_stopped": true,
+  "owned_raw_qa_package_archived_and_removed": true,
+  "m1_acceptance_closed": false
+}

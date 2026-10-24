@@ -1,0 +1,200 @@
+{
+  "completed_at": "2026-10-24T08:53:21.216920+00:00",
+  "runtime": {
+    "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/runtime-final.zip",
+    "sha256": "c2c1ca6c90f5473b4f3a5a45f0c23df2ff4a32725ab3f97d97fc7677686461aa",
+    "members": {
+      "quota.json": "6ab99ecfd91908a53ac50ba38091f9ffecbfaa3c4614cc861dd06510c4430d9f",
+      "live-events.jsonl": "0d6e24fdbb8c4df6dd40ae4fa791db7b73625f1f60d3515c1eb765fa10fa9066",
+      "native-disk-reader": "39cf5be0a1c3e51b3ae967c120de7631ab86c6a9b58d565b4f1a2008c59104c0",
+      "native-disk-read.json": "d0b43b4734484978ffd7541ce2bfd197e874b46fc166ba4c1e836ab146710c6d",
+      "app.store.review-v2-backup": "2d86a61a22c10f11c3fa2aff99994d2ad40e7eed08332c4ddca12f84d4a6fe76",
+      "checkpoint.sqlite3": "f6e90180b128ce0030d837899913cc021ce03a01632b5c1ec3d69de37e5a2987",
+      "STOP": "cb2214567702884769d075525c93584a5c8fe3782d91d75ed40536cb07489493",
+      "authorization.json": "cc99dfdbe8960917ebe81fba6a6ed9bc917cb8b51489434a61a6af5218731434",
+      "app.store": "de768c8b4251d477f218da9a8156904cfeee84a821760c4dc04c47a66842cb31",
+      "native-recheck-events.jsonl": "66b133a64c4f5d01c97ed68d719c9a391ce5107f7a5060915710249d57cba07b",
+      "qa-config.json": "b57a005858b768b0acb8c0d4683d980d3b94dd48cb507aab9065b2f453d2877c",
+      "checkpoint.sqlite3-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "app.store-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "app.store-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "checkpoint.sqlite3-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "quota.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "support/FSRS.swiftmodule": "a293c3015163f01fc5acc838de5ec9fb16f86f8e632c7d77b43c21612276e0a4",
+      "support/libReviewTodayContractSupport.dylib": "5362784542dbcf82b97b0c4e68c8d17ee2905da5a914678fb9682cfe9cdba124",
+      "support/FSRS.swiftdoc": "99579deac5c853a503064a26013b03b417cf51ccbb24a4468acdde69a3ef5e8b",
+      "support/ReviewTodayContractSupport.swiftsourceinfo": "931e9e0ef0d4a6a5d04de04ede57929df0b31d5441d0c93ce9ed56dd941de037",
+      "support/ReviewTodayContractSupport.swiftdoc": "1af88b679d5ae97486551c1a26f109aca4f942f5c5e4682a2e5ab82c4d7e74a6",
+      "support/ReviewTodayContractSupport.swiftmodule": "7003d166ebd2772291d443b7d763bee90a54767f539048fd8e8386f697ac4e69",
+      "support/FSRS.swiftsourceinfo": "ba689ba886158f7faa06099530a11d4195040566818efa7083a9b8373e2868f6",
+      "support/libFSRS.dylib": "1711e56d90121dd48fad9dd8ccac91873b0c8cf585e754e8d0a2059bbf44b244",
+      "owned-project/agent-service/sitecustomize.py": "3c2a0083e2d9d3f62f6b0504c4dbb36de11e3a7f1f21f1d0008f6ed147a65a28",
+      "owned-project/agent-service/__pycache__/sitecustomize.cpython-313.pyc": "1a57892a1d73a9afa29a831e11e433b0a7f893eb6635fa1a4d7b837765fd0aef",
+      "owned-project/agent-service/.venv/pyvenv.cfg": "5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+      "probe/permission-probe-result.json": "9c94e8e9adc743c73c9500809e6c5c95f603669b7c61674cd162f6d70f5413b7",
+      "probe/permission-probe.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "probe/permission-probe.stdout": "8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+      "ReviewBackups/before-review-v2-545E17FB-A519-4AB2-9831-A7EE4957143D.sqlite3": "967d821bc991fa403d2ab788db961eb9ccdcd4ebbc1ab9b261f3dbe58d8517d4",
+      "ReviewBackups/before-review-v2-545E17FB-A519-4AB2-9831-A7EE4957143D.sqlite3-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    },
+    "actual_members_read": 32
+  },
+  "observations": {
+    "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/execution-observations.zip",
+    "sha256": "64eea0c34160f7710eb6f5b367d7566d1248e6a99a73b8ee1b9b50ad882c9bff",
+    "members": {
+      "partial-answer-snapshot.json": "a6dbbdd9ed82db9172ca6b9d091313d1c8448047d86dc9f7c2a766fe3b8193f0",
+      "native-disk-read-prelaunch.json": "a829eb3402b13631dfee174adf8d913165dfe7e014c2f6c4bbb32f9a14984b8c",
+      "native-disk-read.json": "d0b43b4734484978ffd7541ce2bfd197e874b46fc166ba4c1e836ab146710c6d",
+      "return-to-rag.json": "e34e6b4c3e38db3940b10d3cec6886c835201931bc429b018fb3bee861034038",
+      "complete-answer.json": "10df0d48f7d11f224149c733a1ff354a0e77e5125ed7371307ccbe320514c6af",
+      "same-topic-update.json": "6f105ee43b4c7ba014f4642544d001b873a226b50c9d3d20f26ccb717e7f7fca",
+      "inspect.py": "31d4837143d2fbca75efa609a9e7c994cfe5cc6ea593b94e5f345c4d39f11ae1",
+      "native-save-complete.json": "26d5c9da4bc76488e18f8c5e9ea3c988604242548c4df7b0848100573e8265f9",
+      "startup-health.json": "72a127572cbdcdec406a93f46bcfacf7f01dee305757cce724272f488acda23e",
+      "after-interruption.json": "95a8c312fcadab5146e1cca23fec80a27729c9151ebf604385bcaa1381a9601c",
+      "details-and-status.json": "a043fddbbd19d2c65d538b9755f8f63df26db0f866b616902093b43266decdd3",
+      "independent-question.json": "a334e4d5f8bc5189e524e0a3250928b4b0ef0ffb910ad4235c43f221c9e553e1",
+      "save-in-flight-observation.json": "445de96a4fb15249d258d4e6c5d9b3d074d5778215dd51a570b5641850e5a1d0",
+      "partial-answer.json": "ba1f08867b930d26af40a0d3f6cd9f794b775756fbb4b9d177d34ed069f50ee1",
+      "native-disk-read.log": "c26749567684b55326899336a8b1c54aec3ec4e48b5b04226ad538cd36243ae1",
+      "lesson-in-progress-snapshot.json": "2f8b52c73c06f23f918270f6000009a4f6c68376d1720d11837c62c42541806d"
+    },
+    "actual_members_read": 16
+  },
+  "ui": {
+    "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/execution-ui.zip",
+    "sha256": "2d377b7745e3ceed7d1a3a7a8828872cbac7b1d258648d706ff220446556028e",
+    "members": {
+      "first-preview-full.jpg": "231ee7d6cb3ef4131b9f5d5b41165e36fe60e6fe3a89a165f8a9b2a833cb8b3e",
+      "card-5-source.txt": "cf1ec4531f93b0faf780a758a3397034ac760ada568385ca9e7d7227cafd4a14",
+      "card-5-detail.txt": "ebe7bc0b00f89626cf2181da6fa3da07ca2962d557d5e0f6130d4a5eb04b1579",
+      "card-2-detail.jpg": "c58cf0162f0f5690860f79b99367ee9a23aefce90990d71fd2dd832c9836d109",
+      "partial-answer-complete.txt": "9d54123c328d66065f7f99f4b3d2e116c2912b04d5c66dbe1c5b0a34d4d282b0",
+      "card-2-source.jpg": "7ccd25e2eb2371a1e2f8cb566ea55bebc22c352778c4992d4f7c69bd14dd0f94",
+      "complete-answer.jpg": "8d3656fea2f84a76fccbb28ce552155afe6da76224048d76688b18cd019d1bab",
+      "progress-after-save.jpg": "4ceb49e019441ae603510f3ddb105744e3fa50e1975b9fb920fe579e9da9c0be",
+      "lesson.txt": "d40f545dba15b2889836765d29379e83dbbbcb2b7234cca0d50bd6e30be90e84",
+      "updated-preview-v2.jpg": "49533ce43d8256ebafce4aed134635b20d4205f27247c244ecd5730ff543fadb",
+      "apps-after-normal-quit.json": "e5744efc4cd3a2bafae2c0bc35f464be1f673c341834f4fe39dbf15f55f7f617",
+      "first-preview-full.txt": "7ae09242f852a2fbbccefea9357a605280506d0c320d966f8ba1cb8df6119d7e",
+      "card-5-detail.jpg": "69f1fea9dd52f8ec0537bb69a188f4198dd97dd787037b8f219993da5a8c4202",
+      "card-5-source.jpg": "269338c207d857a4ff77fcfaae03d511164b08b569f10b8a5abe836f41e3da63",
+      "complete-answer.txt": "e5896de6d24202148792f3576c03dc28d65aee034aee87950ce433bdbedc6aae",
+      "card-2-source.txt": "3ad391a21e0e50ee435bbc96c250942c33533ebb5b685cb80e9166d886ac4b6b",
+      "card-2-detail.txt": "e3021a81544ccd21bbb228b5c4584108f6498a6a76e92124fad5b1123cd7a943",
+      "partial-answer-complete.jpg": "a4bd9fc3ca4ed9be251e8e3498ec898f5d4ee239639bef65e345f796b1dbf32a",
+      "updated-preview-v2.txt": "417abefedaef5438f1a946c8ac6ee50120c14cd72ead596a7861347a42117138",
+      "lesson.jpg": "583bad6fb701e0938a83b80ecb39ee1c6ef8a0047012997cc53a23953cd566bf",
+      "progress-after-save.txt": "b00346c5fc5b063cf969a653fba032cf4d64f6d6d7ab6a6978f799b0973e3c32",
+      "card-1-source.txt": "f4ff211c44a84e7ab3efd085065e177058888d23e6ec275a24ee9dfb4f8b2863",
+      "card-3-detail.jpg": "140acc86878f45717ba9aa09657a1218cecff90a9fb82bca4098f05298370dba",
+      "card-1-detail.txt": "312cc0c3282b9513dea7b159090292eab679a1aee10650fd0bab8b761c43537d",
+      "card-3-source.jpg": "99bdebde63f67d518e6c6ae733efb26a83bb42490557ca483b19831d92ea971a",
+      "return-to-rag.txt": "816484a4309e3b8d53701d615b73a8ce2ee74c1cd0269d47fd68793fe06d6d4d",
+      "status-answer.txt": "fc8f66ef8a2f8b3580e64f1bd9c400a0eee2aa7f213053abb759cdad8ecefcb4",
+      "native-save-complete.jpg": "a11dbf13edc0b3f5294ad0d11d3c6a517170ba68d99c117d5f18713342c97fbc",
+      "independent-python.txt": "b3957d33dbabe84ca2afd4c631629d0603c9f738f027e75c964e2652fd54794e",
+      "card-4-source.txt": "720cea34597e3107cf1865603424c3806c2623ddda25a595ce97f396b0af139d",
+      "before-save-v2.jpg": "b1e452aab90afdb63b9e8c64d62d82372a273e4c482d5bc8ee7b75c866136ef3",
+      "card-4-detail.txt": "1d59a60d2c8e21c671d9c164d6c492e6eb24b8ab8ac648ecfcfbd6eac306aea3",
+      "first-preview-dark-width760.txt": "625f60e4035308c8e0d101d1e8b0d057f147ea757a136fbf1e4ecc504d5a176e",
+      "partial-answer.jpg": "d23525cd9ab97331d0cf380ce8a41f6fa23941b29f610515e8780126c33f7a05",
+      "startup.jpg": "af15da2c114c93053697503aec3211c663394f9cba2fd0eaaecc134ce5076ca5",
+      "first-preview-dark-resize-attempt.jpg": "4b8d5d951dadf98253857c5909a1a0baa6ce810d8f8c066e2fef9f12a2bd2c48",
+      "updated-preview-v2-full.txt": "e01edf76ead9b887a2a0a5933ca494b347605e7ac411ded9935b3133fe4ae0ef",
+      "card-3-source.txt": "859efd4bfdc760ccd088f0f9a03dc85a03fd50f53de01139da34bd8b7c81c2d1",
+      "card-1-detail.jpg": "1c675eb5ad3146c9901196dd7e9436e916db307bea8250f0dc14dc4a25df346a",
+      "card-3-detail.txt": "67c3fcfd747a55eb878657eda34fa68cbcfbe90e5e1a4e5bc8da71563c2f2b0c",
+      "card-1-source.jpg": "3a3970002fd845024402668f210ff533c03360dfff8a89f545ff6ff526486420",
+      "return-to-rag.jpg": "79cf329955bb614104cd6c30b5a6aa399633f7a49919169e9c95ca52a59b38f6",
+      "independent-python.jpg": "d0341efc8bda85cbae751ffbee03cd1702fbdda1443dd892c77282d4376138e5",
+      "native-save-complete.txt": "83d1502b482d5abcebf16766a883eb851e17e010fb956a77b0e5ddf0875c9029",
+      "status-answer.jpg": "c87447ab634407e8f15507b079bd4d079e9892f080a2d886438750d8cffe3993",
+      "startup.txt": "1c1edd4585c75b476666cfe1390371fd988cd6b5c454eaa17be2b5452febf288",
+      "partial-answer.txt": "97e7819698c211c8f986c2b45e4adb5605a864bf01fabc3dcbe769a03b276b58",
+      "first-preview-dark-width760.jpg": "b3bc780a993196e9654bf54815b7b0e2ebc912cc91476e891fea24a42b1c547d",
+      "updated-preview-v2-full.jpg": "fe5209e75d44f9906af54be744e01809107c403600831b4b92c36529de834384",
+      "first-preview-dark-resize-attempt.txt": "625f60e4035308c8e0d101d1e8b0d057f147ea757a136fbf1e4ecc504d5a176e",
+      "card-4-detail.jpg": "9209d7060773989203414caef0f8cb282212742e6b7fab265c709be9e1a7837c",
+      "card-4-source.jpg": "a103c07f8c8dbd01ad09c2ad45966f71d0ed44b71b52b28cf8d48424a513deec",
+      "before-save-v2.txt": "1c6ba7c22c5a202b2185c3bc3d337033b15cd57c6315bd3f10b26b0417bf638b"
+    },
+    "actual_members_read": 53
+  },
+  "captures": [
+    {
+      "phase": "after-quit",
+      "sha256": "3f916120c7ef5567953b46eee6e2c2564e9b2042682dc9e6ea4f3abea07f2c2c",
+      "actual_members_read": 11
+    },
+    {
+      "phase": "complete-answer",
+      "sha256": "44cb02c27210b793c290faa7c84b5cfc784130f78e8cbfc3b36307e7b6a8791a",
+      "actual_members_read": 10
+    },
+    {
+      "phase": "details-and-status",
+      "sha256": "d5a8c536dc0c013d3003681556f19740f0c25c5f54a2e9ee0d62804196e5e741",
+      "actual_members_read": 10
+    },
+    {
+      "phase": "independent-question",
+      "sha256": "76ee3a98413016a896d9599e47e45019beeb244cc44683fe92938ae47592124d",
+      "actual_members_read": 10
+    },
+    {
+      "phase": "lesson",
+      "sha256": "58605b04dc5753ad4bd17a3c6ccbae6d80c08ee0e4a975220573bd82dd02b823",
+      "actual_members_read": 10
+    },
+    {
+      "phase": "native-save",
+      "sha256": "7ae691fdb5dcd9a46df8a6b50e3d87fe3746bbb22e20cba93dce1e21831b93c6",
+      "actual_members_read": 10
+    },
+    {
+      "phase": "partial-answer",
+      "sha256": "234d5ea77c549b0d461299109f3f8b12c1f78cf2e84ce132fb1254d98d04b5eb",
+      "actual_members_read": 10
+    },
+    {
+      "phase": "prepared",
+      "sha256": "25174415334066196d9d670755d4c77dee2ad473202aa40017e86743f9a111c9",
+      "actual_members_read": 7
+    },
+    {
+      "phase": "return-to-rag",
+      "sha256": "58b082cfa866cdbc09a059ed8b11de9a13620b709ff9fb61a76e4481190338f8",
+      "actual_members_read": 10
+    },
+    {
+      "phase": "same-topic-update",
+      "sha256": "5c3aee38473ae7d773d5e3157634b2c728c0fa48f03b0879a966061cd0d2bc7d",
+      "actual_members_read": 10
+    },
+    {
+      "phase": "startup",
+      "sha256": "4035c394d351a68afe8579a8e5a54953248bd4b9e72ec6447ad9e0e7acabf967",
+      "actual_members_read": 10
+    }
+  ],
+  "signed_package_sha256": "733edef943839351dac2570ba68aa128a786b9a456189d22e0087fe533a3e7e9",
+  "signed_package_members_matched": 10,
+  "raw_owned_qa_package_removed": true,
+  "owned_data_and_modules_retained": true,
+  "daily_registered_entries": [
+    "Rex.Review-Today"
+  ],
+  "daily_spotlight_paths": [
+    "/Applications/Review Today.app"
+  ],
+  "all_seven_daily_files_and_app_unchanged": true,
+  "protected_inputs_unchanged": 296,
+  "old_evidence_unchanged": 524,
+  "original_and_owned_modules_unchanged": true,
+  "old_missing_paths": 12,
+  "old_baselines_and_allowances_preserved": true,
+  "user_project_diff_unchanged": true,
+  "cross_database_atomic_snapshot": false
+}

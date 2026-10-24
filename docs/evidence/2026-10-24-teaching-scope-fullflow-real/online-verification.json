@@ -1,0 +1,58 @@
+{
+  "observed_at": "2026-10-24T08:50:17.353435+00:00",
+  "batch_id": "5cc39132-a635-4c5a-9d27-80ed32afaa35",
+  "model_requests": 30,
+  "web_operations": 0,
+  "model_limit": 40,
+  "web_limit": 16,
+  "remaining_frozen": {
+    "model": 10,
+    "web": 16
+  },
+  "ledger_closed": true,
+  "stop_present": true,
+  "requests_vs_wire_vs_semantic_start_match": true,
+  "all_30_unique_program_ids_dispatched_usage_reported": true,
+  "quota_outcomes": {
+    "returned": 29,
+    "failed_or_cancelled": 1
+  },
+  "bounded_status_schema_failure_then_repair": {
+    "failed_request": 29,
+    "repair_request": 30
+  },
+  "audit_assumption_corrected": "An initial audit assumed every ledger outcome would be returned; actual request 29 returned HTTP 200 with usage but failed schema, so its failed_or_cancelled outcome is retained and counted. No product or model output was changed.",
+  "single_matching_durable_native_receipt": true,
+  "single_mac_ack_event": true,
+  "save_task_id": "ad940248-72ce-5c54-8d14-9d6804e69c6e",
+  "offer_id": "31754801-a51c-4ae4-b24f-7035ee8760fc",
+  "offer_version": 2,
+  "knowledge_ids": [
+    "3a8e5f21-6c47-4b9d-8e02-9f1d7c3a5b64",
+    "7d2c1a90-3f5b-4e8a-9c61-2b8f4d0e7a12",
+    "9b4f6d02-1e83-4c5a-a7d9-6e2b8f0c3d51",
+    "c5d7e9a3-2b61-4f08-8a4e-0d3c6b9f1e27",
+    "e2f8b4c6-7a19-4d35-9b0c-5f1e3a7d8c42"
+  ],
+  "card_titles": [
+    "生成阶段不忠实",
+    "链接不等于忠实",
+    "来源与适用条件核对",
+    "具体结论逐项比对",
+    "依据不足的处理"
+  ],
+  "review_off": true,
+  "original_learning_context_unchanged_after_save_and_status": true,
+  "status_answer_matches_saved_cards": true,
+  "event_counts": {
+    "bootstrap_ready": 1,
+    "semantic_start": 30,
+    "sdk_wire_request": 30,
+    "sdk_wire_response": 30,
+    "semantic_output": 29,
+    "native_http_post": 260,
+    "semantic_error": 1
+  },
+  "final_gate_failure": false,
+  "disk_verification_pending": true
+}

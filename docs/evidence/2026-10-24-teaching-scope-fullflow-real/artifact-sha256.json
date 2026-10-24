@@ -1,0 +1,15 @@
+{
+  "archive.json": "d8bf51431f74f1ffcac9e1af329f77297752fffd9495c94fc6e16f57fb3a154d",
+  "setup.json": "4ef77771e3ad15c3dd2dae6cd241255a9f4738e95d838548d79fd6d28dcfa916",
+  "lesson-review.json": "d5ae1d320c483a4f2977409ae69dd8f10c6d2b66ba74bc61a17bc8adcd7a5e60",
+  "request-accounting.json": "306f1fe516b7751f9ea590929e943c97d1e8a6303708ce61cfe6d00447d0e920",
+  "authorization.json": "cc99dfdbe8960917ebe81fba6a6ed9bc917cb8b51489434a61a6af5218731434",
+  "README.md": "1bd623305675c5b605d37e428beb743a06f061e68b41b42d4c62a0501583de9d",
+  "archive_and_close.py": "7dcf3b3537777092e893ff4321988125f56b3a637abe3503caf6500415b8df66",
+  "document-check.json": "192e3c4d46d45ed82fb9704588c8c62a06bfa3d0675062cf2a2b608b9a707114",
+  "online-verification.json": "82e9bd1d64dc06897bb7b790249ef67ca528d2154e2805facce6c6ee35baf81c",
+  "gate-results.json": "b441911bfb464c0f20203e46667c21540d76adbc1ae0a6b1e91c745cb45317f9",
+  "disk-verification.json": "7eb8b3ce5d072032601a50b5212794fe01d4efce5f98d3e216cf8fadd12c6f43",
+  "STOP.json": "5ced24e63c75bf4d4dc031f60f04f86b5d155225aeee44c65dcebcfa109204a6",
+  "verify_after_quit.py": "6d1e658590365ea1c6fb085fba5a63b96d1adae08fc6f25ac6e5cd3f3ade47d6"
+}

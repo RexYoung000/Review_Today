@@ -1,0 +1,77 @@
+{
+  "actual_teaching_attempts": 2,
+  "all_three_required_topics_actually_explained_in_both": true,
+  "first_output_rejected_for_evidence_heading_eligibility": true,
+  "initial_rejection_not_missing_teaching_content": true,
+  "existing_single_schema_repair_succeeded": true,
+  "final_question": "请复述一下：为什么“检索到的资料和问题相似度很高”仍然不能保证答案正确？请在你的回答中分别说到三件事——来源资料本身可能出错或过时、生成回答可能没有忠实依据资料，以及为什么需要核对来源和适用条件。",
+  "final_coverage": [
+    {
+      "question_quote": "请复述一下：为什么“检索到的资料和问题相似度很高”仍然不能保证答案正确？请在你的回答中分别说到三件事——",
+      "taught": true,
+      "concepts": [
+        "高相似度检索的含义与边界"
+      ],
+      "evidence_quote_indices": [
+        0
+      ]
+    },
+    {
+      "question_quote": "来源资料本身可能出错或过时",
+      "taught": true,
+      "concepts": [
+        "来源资料错误或过时的风险"
+      ],
+      "evidence_quote_indices": [
+        1,
+        2
+      ]
+    },
+    {
+      "question_quote": "、生成回答可能没有忠实依据资料",
+      "taught": true,
+      "concepts": [
+        "生成回答不忠实于资料的风险"
+      ],
+      "evidence_quote_indices": [
+        3,
+        4
+      ]
+    },
+    {
+      "question_quote": "，以及为什么需要核对来源和适用条件。",
+      "taught": true,
+      "concepts": [
+        "核对来源与适用条件"
+      ],
+      "evidence_quote_indices": [
+        5
+      ]
+    }
+  ],
+  "final_binding": {
+    "step_title": "分清“相似度高”能保证什么、不能保证什么",
+    "concepts": [
+      "高相似度检索的含义与边界",
+      "来源资料错误或过时的风险",
+      "生成回答不忠实于资料的风险",
+      "核对来源与适用条件"
+    ],
+    "evidence_quotes": [
+      "它的“高相似度”只说明某段资料在字面或语义上和问题很接近，不说明那段资料写对了、够新，也不说明模型最终会照着它说。",
+      "这段资料**确实相关，但已经过时**；高相似度分数并不包含“发布时间是否最新”这个维度。",
+      "检索环节只负责“找到它”，不负责检验它是否成立。",
+      "即便资料是对的，模型在组织回答时也可能跑偏，比如把片段里没有的条件补上、把不同文档的数字拼在一起、或忽略片段中的否定表述。",
+      "所以“依据资料生成”只是设计意图，**不保证每句输出都忠实于资料**。",
+      "回答形成后仍要回到源头核对：资料出自哪里、发布时间或版本是否适用、结论在什么条件下成立。"
+    ],
+    "scope": "concept"
+  },
+  "literal_fragments_reconstruct_entire_question": true,
+  "coverage_concept_union_matches_binding": true,
+  "final_native_question_displayed_once": true,
+  "future_plan_labels_overlap_introduced_topics": true,
+  "same_call_semantic_declaration_not_independent_semantic_proof": true,
+  "unchanged_raw_outputs_private_path": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/lesson-outputs.json",
+  "unchanged_raw_outputs_sha256": "f71b1020c78af0ea83f7ce3d6644436327facadccff47e41c6188567759b9fdc"
+}
