@@ -76,6 +76,8 @@ def flow():
                 raise ModelCallError("CONNECTION", "synthetic interrupted answer")
             return ConversationOutput(message=value.answer_text,
                 check_question="Which operation must happen first?", learning_concepts=["Operation boundary"],
+                question_coverage=[dict(question_quote="Which operation must happen first?", taught=True,
+                    concepts=["Operation boundary"], evidence_quote_indices=[0])],
                 check_binding=dict(step_title=(payload.get("learning_step") or {}).get("title", "当前资料讲解"), concepts=["Operation boundary"],
                     evidence_quotes=["A synthetic explanation grounded in the supplied excerpt."], scope="concept"))
         if schema is JDAnalysis:

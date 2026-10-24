@@ -1362,6 +1362,9 @@ class ConversationHarness(ConditionalTeaching):
             # pre-binding ConversationOutput checkpoints remain readable elsewhere.
             output_system += ("\n本轮使用可验证的教学输出：只要给出检查题就必须同时提供 check_binding，不能为 null。"
                               "题目完整条件只放 check_question，不在 message 末尾另写想一想或检查一下。")
+            if self.judgments is None:
+                from agent_service.teaching_check import INSTRUCTION
+                output_system += INSTRUCTION
         if self.judgments is not None and teaching:
             from agent_service.judgment_grading import ScoredConversationOutput, RUBRIC_RULE
             output_schema = ScoredConversationOutput
@@ -1438,7 +1441,11 @@ class ConversationHarness(ConditionalTeaching):
                     task["context"]["last_lesson"] = text
                     task["context"]["source_type"] = source_type
                     task["context"]["lesson_index"] = task["context"].get("lesson_index", 0) + 1
-                    bind_check(task, output.check_question, output.check_binding, output.learning_concepts)
+                    coverage = output.question_coverage if self.judgments is None else None
+                    binding = bind_check(task, output.check_question, output.check_binding, output.learning_concepts,
+                                         question_coverage=coverage)
+                    if self.judgments is None and output.check_question and not binding:
+                        raise ModelCallError("SCHEMA", '[{"type":"teaching_check_binding_failed"}]')
                     plan = task["context"].get("learning_plan") or {}
                     data["runs"][rid]["teaching_step_id"] = plan.get("current_step_id")
                     data["runs"][rid]["teaching_plan_version"] = plan.get("version", 0)

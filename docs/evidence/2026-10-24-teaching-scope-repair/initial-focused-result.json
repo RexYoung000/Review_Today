@@ -1,0 +1,11 @@
+{
+  "passed": 74,
+  "failed": 2,
+  "subtests": 21,
+  "seconds": 27.22,
+  "failures": [
+    "new test fixture omitted context.check_question required by bound_check",
+    "new exhaustion assertion did not handle null required_action"
+  ],
+  "resolution": "Corrected only the new test setup and null-safe assertion; production gates unchanged"
+}

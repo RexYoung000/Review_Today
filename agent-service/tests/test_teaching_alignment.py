@@ -29,6 +29,9 @@ class TeachingAlignmentTests(unittest.TestCase):
             existing = ((payload.get("context", {}).get("task") or {}).get("context", {}).get("learning_plan"))
             return ConversationOutput(message=LESSON if not existing else "本节讲解检索与生成各自的职责。",
                                       check_question=QUESTION if not existing else "检索和生成各负责什么？",
+                                      question_coverage=[dict(question_quote=QUESTION if not existing else "检索和生成各负责什么？",
+                                          taught=True, concepts=["外部资料作用"] if not existing else ["检索与生成职责"],
+                                          evidence_quote_indices=[0])],
                                       learning_concepts=["外部资料作用"] if not existing else ["检索与生成职责"],
                                       check_binding=dict(step_title="为什么需要 RAG" if not existing else payload["learning_step"]["title"],
                                           concepts=["外部资料作用"] if not existing else ["检索与生成职责"],

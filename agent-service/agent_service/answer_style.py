@@ -35,12 +35,12 @@ def with_question(text: str, question: str, title: str = "想一想") -> str:
     return text.rstrip() + f"\n\n---\n\n### {title}\n\n" + question.strip()
 
 
-def trailing_lesson_check(text: str):
-    """Locate one explicit final check section outside examples and code fences."""
+def _markdown_headings(text: str):
+    """Read standalone headings, leaving code examples and quoted text alone."""
     lines = text.splitlines(keepends=True)
-    fence, markers = None, []
+    fence, headings = None, []
     for index, line in enumerate(lines):
-        match = re.match(r"^\s*(`{3,}|~{3,})", line)
+        match = re.match(r"^ {0,3}(`{3,}|~{3,})", line)
         if match:
             token = match.group(1)
             if fence is None:
@@ -48,14 +48,52 @@ def trailing_lesson_check(text: str):
             elif token[0] == fence[0] and len(token) >= len(fence):
                 fence = None
             continue
-        if fence is None and re.fullmatch(r" {0,3}#{2,3}[ \t]+(?:想一想|检查一下)[ \t]*", line.rstrip("\r\n")):
-            markers.append(index)
+        if fence is None:
+            heading = re.fullmatch(r" {0,3}(#{1,6})[ \t]+(.+?)[ \t]*", line.rstrip("\r\n"))
+            if heading:
+                title = re.sub(r"[ \t]+#+$", "", heading[2]).strip()
+                headings.append((index, len(heading[1]), title))
+    return lines, headings, fence
+
+
+_CHECK_TITLES = {"想一想", "检查一下", "检查题", "check question", "quick check"}
+
+
+def lesson_preview(text: str) -> str:
+    """Stream the lesson body; a draft check section has no public authority."""
+    lines, headings, _ = _markdown_headings(text)
+    marker = next((i for i, _, title in headings if title.casefold() in _CHECK_TITLES), None)
+    return "".join(lines[:marker]).rstrip() if marker is not None else text
+
+
+def teaching_passages(text: str) -> list[str]:
+    """Future learning-map labels are not evidence that a point was taught."""
+    lines, headings, _ = _markdown_headings(text)
+    map_titles = {"学习地图", "学习安排", "学习计划", "learning map", "learning roadmap", "roadmap", "learning plan"}
+    passages, start, map_level = [], 0, None
+    for index, level, title in headings:
+        is_map = title.casefold() in map_titles
+        current = re.match(r"^(?:当前(?:第?[一二三四五六七八九十\d]+)?步|当前讲解|本轮讲解|current (?:step|lesson))", title, re.I)
+        if map_level is not None and (level <= map_level or current):
+            start, map_level = index, None
+        if is_map and map_level is None:
+            passages.append("".join(lines[start:index]))
+            map_level = level
+    if map_level is None:
+        passages.append("".join(lines[start:]))
+    return passages
+
+
+def trailing_lesson_check(text: str):
+    """Locate one explicit final check section outside examples and code fences."""
+    lines, headings, fence = _markdown_headings(text)
+    markers = [i for i, _, title in headings if title.casefold() in _CHECK_TITLES]
     if len(markers) != 1 or fence is not None:
         return None
     marker = markers[0]
     paragraph = "".join(lines[marker + 1:]).strip()
     # A later section is ordinary content, not part of a trailing check.
-    if not paragraph or re.search(r"(?m)^ {0,3}#{1,6}[ \t]+", paragraph):
+    if any(i > marker for i, _, _ in headings):
         return None
     body = "".join(lines[:marker]).rstrip()
     if body.endswith("\n---"):
@@ -69,6 +107,8 @@ def separate_lesson_check(text: str, question: str) -> tuple[str, str]:
     if section is None:
         return text, question
     body, paragraph = section
+    if not paragraph:
+        return body, question
     if question.strip():
         return (body, question) if normalized_text(paragraph) == normalized_text(question) else (text, question)
     if (not paragraph or re.search(r"\n\s*\n", paragraph)

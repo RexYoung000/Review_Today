@@ -1,0 +1,97 @@
+{
+  "status": "NON_DAILY_PROTECTION_PASS_DAILY_RUNTIME_DRIFT",
+  "checked_at": "2026-10-24T06:48:56.415712+00:00",
+  "fingerprint_groups": {
+    "prior_pins_outside_fix": {
+      "checked": 274,
+      "matching": 274,
+      "changed": []
+    },
+    "daily_files": {
+      "checked": 5,
+      "matching": 3,
+      "changed": [
+        {
+          "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3",
+          "expected_sha256": "0bd0eafebb355c51cf7d5d468cfdb3a58a60aa9a861b4eae0591228170b8481f",
+          "observed_sha256": "4b88cc39bbf33c0f00aaf6357b87e07bfcb16633d066090bb34ff7136bdd4d85",
+          "observed_mtime": "2026-10-24T06:43:00.086076+00:00"
+        },
+        {
+          "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store",
+          "expected_sha256": "6fa576381c2f8d73590d9bfd03b81a8af44bde72ca7bdea5108289c953d3ecb0",
+          "observed_sha256": "8e56684bbc2ac167a1564b85d2b4ea8a51869fa6b451f919e4137f9a94c26e70",
+          "observed_mtime": "2026-10-24T06:48:50.797307+00:00"
+        }
+      ]
+    },
+    "old_frozen_files": {
+      "checked": 377,
+      "matching": 377,
+      "changed": []
+    },
+    "original_module_files": {
+      "checked": 8,
+      "matching": 8,
+      "changed": []
+    },
+    "owned_support_files": {
+      "checked": 8,
+      "matching": 8,
+      "changed": []
+    },
+    "failure_public_files": {
+      "checked": 11,
+      "matching": 11,
+      "changed": []
+    }
+  },
+  "non_daily_protection_passed": true,
+  "daily_data_unchanged": false,
+  "daily_observation_is_not_atomic_database_snapshot": true,
+  "daily_app_inventory_unchanged": true,
+  "user_project_unchanged": true,
+  "failure_archive_unchanged": true,
+  "known_missing_old_paths_still_missing": 12,
+  "authorized_production_changes": [
+    "agent-service/agent_service/schemas.py",
+    "agent-service/agent_service/teaching_check.py",
+    "agent-service/agent_service/learning_progress.py",
+    "agent-service/agent_service/conversation.py",
+    "agent-service/agent_service/conversation_prompts.py",
+    "agent-service/agent_service/structured_output.py",
+    "agent-service/agent_service/answer_style.py",
+    "agent-service/agent_service/response_projection.py"
+  ],
+  "daily_app_running_pids": [
+    "58377"
+  ],
+  "daily_service_listener": "COMMAND   PID     USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nPython  58387 rexyoung   14u  IPv4 0x10ab46cd21cd6719      0t0  TCP 127.0.0.1:8742 (LISTEN)",
+  "daily_runtime_not_launched_or_stopped_by_this_work": true,
+  "observed_daily_launch_local_time": "2026-10-24 14:42:52 +0800",
+  "observed_daily_service_launch_local_time": "2026-10-24 14:42:53 +0800",
+  "controlled_full_test_start_local_time": "2026-10-24 14:45:12 +0800",
+  "daily_database_changes_cause_not_attributed": true,
+  "daily_baseline_replaced": false,
+  "daily_data_restored_or_written_by_this_work": false,
+  "daily_app_replaced": false,
+  "stopped_268_batch": {
+    "closed": true,
+    "model_requests": 11,
+    "web_operations": 0,
+    "remaining_frozen": {
+      "model": 29,
+      "web": 16
+    }
+  },
+  "source_after": {
+    "agent-service/agent_service/schemas.py": "25cb2f197a453e1b550432a45bf5a071e7d3efcb1f9b14ab3ecd64e0c7bea00d",
+    "agent-service/agent_service/teaching_check.py": "9603a6b9f4d7244746eb1c3f57917bbc96bb0f84cb9329ec7887366365f3522c",
+    "agent-service/agent_service/learning_progress.py": "0a2f593a53a79c9810124cf72c6eca66c10ac79a47c4657739e7258b0a6769fe",
+    "agent-service/agent_service/conversation.py": "741ecd11507a9f04dd9c1c7ed8e30ff2e60e45f577e28155b7641e5b77ea4b5a",
+    "agent-service/agent_service/conversation_prompts.py": "154e4e615cc197a06062dfa1ead5a395ff4a00083ba28fc471b45425deae66dd",
+    "agent-service/agent_service/structured_output.py": "5460ecdd832184ea5f4d2a4e69e7561f5390b4ccad0bb13bad1ff6042f043201",
+    "agent-service/agent_service/answer_style.py": "0b46ade484053091e133b41189f2e665865c67d43c49e6c370394d77c47acb9a",
+    "agent-service/agent_service/response_projection.py": "b58ee9a0591851b1722e6c72e75e3d5894f355869234ed0b789da49467bc546e"
+  }
+}

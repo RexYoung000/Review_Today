@@ -1,0 +1,110 @@
+{
+  "status": "IMPLEMENTED_OFFLINE_PASS_DAILY_DRIFT_RECORDED",
+  "decision": 269,
+  "verified_at": "2026-10-24T06:54:15.000258+00:00",
+  "scope": "TEACH-01 same-call question/lesson/binding coverage; existing single repair only",
+  "exact_retained_output_rejected": true,
+  "controlled_complete_same_question_accepted": true,
+  "negative_controls_rejected": 6,
+  "controlled_positive_is_not_real_generation": true,
+  "independent_semantic_verification": false,
+  "tests": {
+    "focused": {
+      "passed": 76,
+      "skipped": 0,
+      "subtests": 21,
+      "seconds": 17.14,
+      "log": "focused-final.log",
+      "sha256": "8c6a6f5373f72143b23bf36fa136f40d5316f8ce12b367c44d5ae9a1717fd2ce",
+      "raw_uncompressed_sha256": "1e025e52130001ef1717d1c47778db16a360f2f1abd39bab2c448cad2c610757"
+    },
+    "deepseek_mocked": {
+      "passed": 49,
+      "skipped": 0,
+      "subtests": 21,
+      "seconds": 13.07,
+      "log": "deepseek-focused.log",
+      "sha256": "9161f805b4ca474da305f30c4e6e89d1478618d1c357f793f0090032278d46db",
+      "raw_uncompressed_sha256": "1f857fc42ed216d252a12b9e64df87764f7c5beadd4f2344ee082a47cfa6ec53"
+    },
+    "official_controlled": {
+      "passed": 1383,
+      "skipped": 4,
+      "subtests": 654,
+      "seconds": 291.47,
+      "log": "controlled-full.log",
+      "sha256": "77478a62888fee0ccd63e30e69a9efb8fc46fa106ed65bd4b5dd5be973f5d8d7",
+      "raw_uncompressed_sha256": "98dccdcef72b1757ef67deac460bf2de924c49e1b9544abb8983746476c64a26"
+    }
+  },
+  "actual_model_requests_by_this_work": 0,
+  "actual_web_operations_by_this_work": 0,
+  "stopped_268_quota": {
+    "closed": true,
+    "model_requests": 11,
+    "web_operations": 0,
+    "remaining_frozen": {
+      "model": 29,
+      "web": 16
+    }
+  },
+  "non_daily_protection_passed": true,
+  "daily_data_unchanged": false,
+  "daily_app_inventory_unchanged": true,
+  "user_project_unchanged": true,
+  "daily_app_started_stopped_or_replaced_by_this_work": false,
+  "daily_data_rewritten_or_baseline_replaced": false,
+  "daily_runtime_active_during_work": true,
+  "daily_database_change_cause_not_attributed": true,
+  "full_chain_passed": false,
+  "real_model_generation_tested": false,
+  "native_ui_after_fix_tested": false,
+  "rex_acceptance_complete": false,
+  "production_source_sha256": {
+    "agent-service/agent_service/schemas.py": "25cb2f197a453e1b550432a45bf5a071e7d3efcb1f9b14ab3ecd64e0c7bea00d",
+    "agent-service/agent_service/teaching_check.py": "9603a6b9f4d7244746eb1c3f57917bbc96bb0f84cb9329ec7887366365f3522c",
+    "agent-service/agent_service/learning_progress.py": "0a2f593a53a79c9810124cf72c6eca66c10ac79a47c4657739e7258b0a6769fe",
+    "agent-service/agent_service/conversation.py": "741ecd11507a9f04dd9c1c7ed8e30ff2e60e45f577e28155b7641e5b77ea4b5a",
+    "agent-service/agent_service/conversation_prompts.py": "154e4e615cc197a06062dfa1ead5a395ff4a00083ba28fc471b45425deae66dd",
+    "agent-service/agent_service/structured_output.py": "5460ecdd832184ea5f4d2a4e69e7561f5390b4ccad0bb13bad1ff6042f043201",
+    "agent-service/agent_service/answer_style.py": "0b46ade484053091e133b41189f2e665865c67d43c49e6c370394d77c47acb9a",
+    "agent-service/agent_service/response_projection.py": "b58ee9a0591851b1722e6c72e75e3d5894f355869234ed0b789da49467bc546e"
+  },
+  "test_and_fixture_sha256": {
+    "agent-service/tests/test_conversation_v2.py": "7983f29e14f59027a57b5d60660272b276da5536195a42f56dca660714dff9ce",
+    "agent-service/tests/test_teaching_alignment.py": "6049e87f62bacd501062fa2cb551c37dfaa77573efe08fe0475ca5cd939201d4",
+    "agent-service/tests/test_source_selection_flow.py": "9ec51c861245714a4ee0993d9ce82e06bf9cfcd443cc2489224196abf3c207a3",
+    "agent-service/tests/test_teaching_scope_coverage.py": "78e002f58c706378e9e2fe4f69a1a7ff1a823ba0a5da474116ff751f8982faac",
+    "agent-service/tests/fixtures/teaching_scope_268.json": "dd0a89ac88298ee839c897b3da1e53db920c82c8e92fe9b2b894c0096c181b14",
+    "agent-service/tests/fixtures/teaching_scope_repaired.json": "f4991c985874d6caa4ee83e62e1d363d2bfed8b4911c5c0fe25bd21154fe5986"
+  },
+  "document_check": {
+    "status": "PASS",
+    "local_links_and_anchors_checked": 665,
+    "errors": [],
+    "evidence_json_parsed": 7,
+    "new_python_sources_parsed": true,
+    "incremental_added_links_checked": 4
+  },
+  "log_normalization": {
+    "controlled-full.log": {
+      "raw_gzip": "controlled-full.raw.log.gz",
+      "raw_uncompressed_sha256": "98dccdcef72b1757ef67deac460bf2de924c49e1b9544abb8983746476c64a26",
+      "readable_sha256": "77478a62888fee0ccd63e30e69a9efb8fc46fa106ed65bd4b5dd5be973f5d8d7",
+      "only_trailing_whitespace_removed": true
+    },
+    "focused-final.log": {
+      "raw_gzip": "focused-final.raw.log.gz",
+      "raw_uncompressed_sha256": "1e025e52130001ef1717d1c47778db16a360f2f1abd39bab2c448cad2c610757",
+      "readable_sha256": "8c6a6f5373f72143b23bf36fa136f40d5316f8ce12b367c44d5ae9a1717fd2ce",
+      "only_trailing_whitespace_removed": true
+    },
+    "deepseek-focused.log": {
+      "raw_gzip": "deepseek-focused.raw.log.gz",
+      "raw_uncompressed_sha256": "1f857fc42ed216d252a12b9e64df87764f7c5beadd4f2344ee082a47cfa6ec53",
+      "readable_sha256": "9161f805b4ca474da305f30c4e6e89d1478618d1c357f793f0090032278d46db",
+      "only_trailing_whitespace_removed": true
+    }
+  },
+  "git_diff_check_passed": true
+}

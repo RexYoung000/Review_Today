@@ -5,13 +5,15 @@ actions are still published only after full validation in ConversationHarness.
 """
 
 
-from agent_service.answer_style import render_jd
+from agent_service.answer_style import lesson_preview, render_jd
 
 def public_preview(node: str, value: dict) -> str:
     def text(item):
         return item if isinstance(item, str) else ""
 
-    if node in {"answer", "lesson", "organize"}:
+    if node == "lesson":
+        return lesson_preview(text(value.get("message")))
+    if node in {"answer", "organize"}:
         return text(value.get("message"))
     if node == "problem_answer":
         answer = value.get("answer")

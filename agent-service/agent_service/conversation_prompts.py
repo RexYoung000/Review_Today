@@ -100,7 +100,7 @@ COACH_SCENE_RULES = {
 """,
     "teaching": """每轮只讲一个小步骤，教学正文一般 400–800 汉字，避免一次输出完整课程。
 首次教学先用一两句定义或直观例子说明主题是什么，首次出现的陌生缩写给出含义，再展示紧凑学习地图并展开当前一步。地图只概括目标，不在定义前堆叠未解释的后续术语；用户指定形式优先，不机械添加开场模板。
-首次教学返回 learning_plan（goal、steps、success_check、step_conditions），使用 2–6 个具体步骤。success_check 描述整份计划的能力目标；step_conditions 与 steps 一一对应，每项只描述该步可观察的完成能力，不能把全局标准或第一步标准复制给其余步骤。续学沿用 context.task.context.learning_plan 的 current_step_id，每次只讲当前步骤；没有明确调整要求，不返回新计划。追问只解释相关内容，不修改理解状态。
+首次教学返回 learning_plan（goal、steps、success_check、step_conditions），通常使用 2–6 个具体步骤。用户明确只学一个小知识点，并指定本轮共同讲解或复述的要点时，可使用一个步骤，先讲全这些要点，不把必需内容推到后续却先考，也不删掉用户明确要求的内容。success_check 描述整份计划的能力目标；step_conditions 与 steps 一一对应，每项只描述该步可观察的完成能力，不能把全局标准或第一步标准复制给其余步骤。续学沿用 context.task.context.learning_plan 的 current_step_id，每次只讲当前步骤；没有明确调整要求，不返回新计划。追问只解释相关内容，不修改理解状态。
 learning_plan 中 goal 和 success_check 是必填字符串；steps 与 step_conditions 都是字符串数组，元素个数必须相同（例如 3 个步骤必须有 3 条条件）。step_conditions 不能替代或省略 success_check；条件不能写成嵌套对象。
 check_question 只检查当前小步骤实际教过的核心内容，与本步目标相符；可使用已明确教过的前置知识，但学习地图的后续标题不算已教内容。先讲清检查题需要的概念、关系或判断，再问一道能检验理解的题；不能在只讲动机时考尚未展开的阶段细节。无需检查时留空，不为凑题而超出本节。
 出检查题时同时给 check_binding：step_title 必须原样使用 learning_step.title（首次教学用 learning_plan.steps[0]）；concepts 只取本轮 learning_concepts 中该题实际检查的概念；evidence_quotes 逐字摘录本轮 message 中已教的依据。普通教学和补充题的 scope 固定为 concept，只代表本题覆盖概念，不能由你声明整节范围或因为一小题答对就宣称整节掌握。用户明确请求本节综合检查由程序按完整步骤要求处理，不在普通讲解中自行发起。

@@ -99,6 +99,8 @@ class ConversationTests(unittest.TestCase):
         payload = json.loads(user) if user.startswith("{") else {}
         current = payload.get("learning_step") or {}
         return ConversationOutput(message="这是本轮真实回答。", check_question="请用自己的话说明原理。",
+                                  question_coverage=[dict(question_quote="请用自己的话说明原理。", taught=True,
+                                      concepts=["本轮原理"], evidence_quote_indices=[0])],
                                   learning_concepts=["本轮原理"], check_binding=dict(
                                       step_title=current.get("title", "当前资料讲解"), concepts=["本轮原理"],
                                       evidence_quotes=["这是本轮真实回答。"], scope="concept"))

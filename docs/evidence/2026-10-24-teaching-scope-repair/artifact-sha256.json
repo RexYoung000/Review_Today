@@ -1,0 +1,17 @@
+{
+  "docs/evidence/2026-10-24-teaching-scope-repair/README.md": "7399873331216f8220fb7db67c202e714111dd95c3ddfc281799123d1b0d5eb8",
+  "docs/evidence/2026-10-24-teaching-scope-repair/baseline.json": "2d79fc5b7f3892ecb8de5168df4108e2010878847599884ca3693f48a08ec3c2",
+  "docs/evidence/2026-10-24-teaching-scope-repair/controlled-full.log": "77478a62888fee0ccd63e30e69a9efb8fc46fa106ed65bd4b5dd5be973f5d8d7",
+  "docs/evidence/2026-10-24-teaching-scope-repair/controlled-full.raw.log.gz": "f77d959a92531a4c47da4b218a0e3bd0ad45b187898f9eb5c911d0a606c682fa",
+  "docs/evidence/2026-10-24-teaching-scope-repair/deepseek-focused.log": "9161f805b4ca474da305f30c4e6e89d1478618d1c357f793f0090032278d46db",
+  "docs/evidence/2026-10-24-teaching-scope-repair/deepseek-focused.raw.log.gz": "965ed9a5b93cee2643d0ff3040ba65af5350c111869e837f5885db197b297c2e",
+  "docs/evidence/2026-10-24-teaching-scope-repair/document-check.json": "bccf6fe3304aec0761fd8003119a7f4fed9c4ebcc057f4307149f41557376099",
+  "docs/evidence/2026-10-24-teaching-scope-repair/focused-final.log": "8c6a6f5373f72143b23bf36fa136f40d5316f8ce12b367c44d5ae9a1717fd2ce",
+  "docs/evidence/2026-10-24-teaching-scope-repair/focused-final.raw.log.gz": "5c61a508c753192e2ac2b7d954afd31f4abce18d5e94760f91bcf5ce5b7cfd9a",
+  "docs/evidence/2026-10-24-teaching-scope-repair/initial-focused-result.json": "8115277f7a0af15647f4494ba6f955095f05db62db8894b22adb340b198a90a6",
+  "docs/evidence/2026-10-24-teaching-scope-repair/protection-result.json": "a757d8475ad6eb0bf2cd0d3689c7b70c762e5072f21336997b7d4735a261bf42",
+  "docs/evidence/2026-10-24-teaching-scope-repair/replay-result.json": "7befaf85f904af87311cc89cea1b7e10a9023c8e0872df7d120e57748c02e7d0",
+  "docs/evidence/2026-10-24-teaching-scope-repair/replay_retained.py": "895ad174f8dcb5966b72a76eb2e307478421ad0b40a193c348176570e34c22ca",
+  "docs/evidence/2026-10-24-teaching-scope-repair/verification.json": "fb73f95f011831b29fdf5682519e4a40411293f4b019e4333b5006a4e299d98d",
+  "docs/evidence/2026-10-24-teaching-scope-repair/verify_protection.py": "4f9600a4e7a81555601a209062055e86a421acd024918885fa745ddc857d76c3"
+}

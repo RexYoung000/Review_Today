@@ -196,7 +196,7 @@ def guard_completion(result, binding, answer):
         result.capture_scope_summary = ""
 
 
-def bind_check(task, question, proposal, taught_concepts=None, *, comprehensive=False):
+def bind_check(task, question, proposal, taught_concepts=None, *, comprehensive=False, question_coverage=None):
     """Freeze only an explicit, locally grounded scope; never infer it from an answer."""
     ctx = task["context"]
     ctx.pop("check_binding", None)
@@ -211,6 +211,10 @@ def bind_check(task, question, proposal, taught_concepts=None, *, comprehensive=
             any(not quote_matches(quote, reference) for quote in quotes) or
             taught_concepts is not None and not set(concepts).issubset(taught_concepts)):
         return None
+    if question_coverage is not None:
+        from agent_service.teaching_check import coverage_errors
+        if coverage_errors(question, question_coverage, value, taught_concepts or [], reference):
+            return None
     # A missing/legacy global condition cannot certify an entire local step.
     scope = ("step" if comprehensive and value.get("scope") == "step"
              and (step_target(task) or {}).get("completion_condition") else "concept")
@@ -221,6 +225,9 @@ def bind_check(task, question, proposal, taught_concepts=None, *, comprehensive=
                    completion_requirements=completion_requirements(step["completion_condition"]) if scope == "step" else [],
                    check_kind="comprehensive" if scope == "step" else "concept",
                    scope_policy=CHECK_SCOPE_POLICY)
+    if question_coverage is not None:
+        binding["question_coverage"] = deepcopy([
+            row.model_dump() if hasattr(row, "model_dump") else row for row in question_coverage])
     ctx["check_binding"] = binding
     return binding
 

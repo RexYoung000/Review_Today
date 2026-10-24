@@ -549,6 +549,23 @@ class CheckBinding(BaseModel):
         return values
 
 
+class TeachingQuestionPart(BaseModel):
+    question_quote: str = Field(min_length=1, max_length=2000,
+        description="按顺序分割完整 check_question 的连续逐字片段；并列必要要求分别列出，拼接须等于完整题面，保留标点和空白。")
+    taught: bool = Field(description="本轮 message 已实际讲清此项要求；计划、地图或后续标题不算已教。")
+    concepts: list[str] = Field(default_factory=list, max_length=6,
+        description="该项实际检查的已教概念，取自 check_binding.concepts；未教时为空。")
+    evidence_quote_indices: list[int] = Field(default_factory=list, max_length=6,
+        description="支撑该项的 check_binding.evidence_quotes 下标，从 0 开始；未教时为空。")
+
+    @field_validator("question_quote")
+    @classmethod
+    def nonblank_question_part(cls, value):
+        if not value.strip():
+            raise ValueError("question part must be nonblank")
+        return value
+
+
 def validate_capture_quote_fields(output, payload):
     """Invitation excerpts retain literal provenance, independent of grading."""
     import json
@@ -929,6 +946,8 @@ class ConversationOutput(BaseModel):
     learning_plan: LearningPlan | None = None
     learning_concepts: list[str] = Field(default_factory=list, max_length=6)
     check_binding: CheckBinding | None = None
+    question_coverage: list[TeachingQuestionPart] = Field(default_factory=list, max_length=16,
+        description="新教学检查题逐项的题面、已教概念与讲解依据；普通问答或不出题时为空。")
     capture_update: CaptureScopeUpdate | None = Field(default=None,
         description="本轮解释补充或纠正 capture_candidates 中同一知识点时，必须更新原邀请的具体范围；仅无相关补充时为 null。")
 
@@ -947,6 +966,7 @@ class TeachingConversationOutput(ConversationOutput):
         import json
         from agent_service.answer_style import separate_lesson_check, trailing_lesson_check
         from agent_service.learning_progress import quote_matches
+        from agent_service.teaching_check import coverage_errors
         from agent_service.openai_client import ModelCallError
         self.message, self.check_question = separate_lesson_check(self.message, self.check_question)
         errors = []
@@ -963,6 +983,8 @@ class TeachingConversationOutput(ConversationOutput):
                     any(not quote_matches(quote.strip(), self.message)
                         for quote in binding.evidence_quotes)):
                 errors.append(dict(field=["check_binding"], type="teaching_check_grounding"))
+            errors.extend(coverage_errors(self.check_question, self.question_coverage, binding,
+                                          self.learning_concepts, self.message))
         if errors:
             raise ModelCallError("SCHEMA", json.dumps(errors, ensure_ascii=False))
 

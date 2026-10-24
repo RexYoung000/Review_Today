@@ -78,6 +78,10 @@ def schema_repair_instruction(error):
         teaching_hint = ("本轮教学检查题必须提供非空 check_binding：step_title 原样使用当前 learning_step.title，"
                          "首次教学使用 learning_plan.steps[0]；concepts 仅取本轮 learning_concepts；"
                          "evidence_quotes 摘录 message 中实际讲过的依据，不能摘检查题或补造内容。"
+                         "question_coverage 按题面顺序逐项列出连续逐字 question_quote，拼接须与完整 check_question 一致，保留标点和空白；"
+                         "并列要求分别核对 taught、concepts 和 evidence_quote_indices，后者引用 check_binding.evidence_quotes 的从零起下标。"
+                         "每项须已教且有正文依据，学习地图或后续标题不算；各项 concepts 的并集须等于 check_binding.concepts。"
+                         "先补讲用户明确要求的缺项，不能删减其要求绕过校验。"
                          "题目及判断所需条件完整保留在 check_question；message 只留讲解，不重复输出想一想/检查一下题目段。"
                          "不要删除讲解里的代码示例或无关标题；确实无法依据讲解出题时才将 check_question 留空。")
     status_hint = ""
