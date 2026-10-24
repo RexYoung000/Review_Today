@@ -1,0 +1,24 @@
+{
+  "platform": "macOS",
+  "os_version": "27.0.1",
+  "os_build": "26A434",
+  "architecture": "arm64",
+  "artifact": "Current 263/265 production learning components in the prepared isolated SwiftUI/SwiftData QA",
+  "native_source": "docs/evidence/2026-10-24-fullflow-preflight/NativeFreshFullflowQA.swift",
+  "appearance_exercised": "light",
+  "input_exercised": "native mouse controls and pasted text in the real learning composer",
+  "represented_states": [
+    "empty startup",
+    "first real lesson and question",
+    "normal quit and fresh-process disk read"
+  ],
+  "lesson_failure_screenshot_pixels": {
+    "width": 2080,
+    "height": 1640
+  },
+  "screenshot_actual_format": "JPEG",
+  "original_capture_names_and_archive_bytes_preserved": true,
+  "same_bytes_correct_extension_preview": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/execution-ui/lesson-failure.jpg",
+  "voiceover_reduce_motion_dark_mode_and_later_gates_exercised": false,
+  "sensitive_or_personal_daily_content_in_the_test": false
+}
