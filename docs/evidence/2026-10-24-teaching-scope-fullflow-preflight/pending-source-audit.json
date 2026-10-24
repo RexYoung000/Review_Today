@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "external_audit_precedes_owned_audit": true,
+  "unexpected_sqlite_or_network_would_be_distinct_assertion_error": true,
+  "actual_requests": 0,
+  "runtime_files_unchanged": true,
+  "source_sha256": "3c2a0083e2d9d3f62f6b0504c4dbb36de11e3a7f1f21f1d0008f6ed147a65a28"
+}

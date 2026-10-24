@@ -1,0 +1,32 @@
+{
+  "platform": "macOS",
+  "version": "27.0.1",
+  "architecture": "arm64",
+  "os_build": "26A434",
+  "python_version": "3.13.3",
+  "python_executable": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/bin/python",
+  "provider": "deepseek",
+  "router": "deepseek-flash",
+  "coach": "deepseek-v4-flash",
+  "risk": "deepseek-v4-pro",
+  "provider_key_configured": true,
+  "existing_config_not_changed": true,
+  "config_presence_does_not_prove_credentials_or_provider_ready": true,
+  "expected_native_window": {
+    "default": [
+      1040,
+      820
+    ],
+    "minimum": [
+      760,
+      620
+    ]
+  },
+  "planned_appearances": [
+    "light",
+    "dark"
+  ],
+  "native_interaction_not_run": true,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0
+}
