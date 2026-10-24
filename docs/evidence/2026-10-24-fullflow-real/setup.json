@@ -1,0 +1,8 @@
+{
+  "prepared_setup": "docs/evidence/2026-10-24-fullflow-preflight/setup.json",
+  "runtime": "/private/tmp/review-today-fresh-fullflow-c3g9rc3e.noindex",
+  "batch_id": "160e3685-8ec2-4c47-bd40-3712ae3df4a3",
+  "session_id": "358155ee-3403-4443-a6ee-257b60631105",
+  "port": 54693,
+  "baseline_commit": "7d935fd6b009aa4e4f623361deaf4f37c43accaa"
+}

@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-10-24T06:11:19.122249+00:00",
+  "local_links_and_anchors_checked": 588,
+  "local_link_or_anchor_failures": 0,
+  "evidence_json_parsed": true,
+  "retained_grounding_script_parsed_and_executed": true,
+  "post_document_update_protection_rechecked": true,
+  "quota_remains_closed_at": "11 model / 0 web",
+  "raw_qa_removed_and_own_service_stopped": true,
+  "user_project_file_unchanged": true,
+  "full_chain_passed": false,
+  "new_model_or_web_requests_in_checks": 0
+}

@@ -1,0 +1,92 @@
+{
+  "status": "FAILED_LESSON_COVERAGE_STOPPED",
+  "decision": 268,
+  "verified_at": "2026-10-24T06:02:17.459969+00:00",
+  "startup_gate": "PASS",
+  "lesson_gate": "FAIL",
+  "later_gates": "NOT_RUN",
+  "model_requests": 11,
+  "web_operations": 0,
+  "reported_total_tokens": 24134,
+  "startup_requests": 8,
+  "learning_requests": 3,
+  "sdk_wire_requests": 11,
+  "sdk_wire_responses": 11,
+  "unique_request_identities_with_matching_usage": 11,
+  "model_output_schemas": [
+    "Probe",
+    "Probe",
+    "Probe",
+    "Probe",
+    "Probe",
+    "Probe",
+    "Probe",
+    "Probe",
+    "IntentDecision",
+    "TeachingPreparation",
+    "TeachingConversationOutput"
+  ],
+  "format_or_semantic_repair_attempts": 0,
+  "quota_closed": true,
+  "remaining_frozen": {
+    "model": 29,
+    "web": 16
+  },
+  "qa_app_stopped": true,
+  "owned_service_stopped": true,
+  "raw_qa_app_unregistered_and_removed": true,
+  "daily_data_files_unchanged": 5,
+  "daily_app_unchanged": true,
+  "fixed_source_config_qa_inputs_unchanged": 281,
+  "existing_old_evidence_files_unchanged": 377,
+  "known_missing_old_paths_still_missing": 12,
+  "original_module_files_unchanged": 8,
+  "owned_support_files_unchanged": 8,
+  "user_project_diff_unchanged": true,
+  "native_after_exit": {
+    "sessions": 1,
+    "messages": 2,
+    "runs": 1,
+    "knowledge": 0,
+    "sources": 0,
+    "fsrs": 0,
+    "cursor": 44
+  },
+  "native_service_messages_runs_and_ack_match": true,
+  "documented_role_mapping": {
+    "native": "assistant",
+    "service": "coach"
+  },
+  "understanding_remains_unknown": true,
+  "learning_step_states": [
+    "explained",
+    "pending",
+    "pending",
+    "pending"
+  ],
+  "capture_offers": 0,
+  "question": "请用自己的话复述：为什么在 RAG 中，检索到高相似度的资料，仍不能保证最终答案正确？复述时请包含三点：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料；以及为什么需要核对来源和适用条件。",
+  "binding_concepts": [
+    "检索相关性不等于答案正确性",
+    "来源错误或过时"
+  ],
+  "structural_validation_replay": "RETAINED_OUTPUT_ACCEPTED_BY_EXISTING_STRUCTURAL_VALIDATION",
+  "daily_registered_entries": 1,
+  "spotlight_paths": [
+    "/Applications/Review Today.app"
+  ],
+  "durable_execution_archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/execution-stopped.zip",
+  "durable_execution_archive_sha256": "c1c9b4f44a8ab9c9445d6d5784e2cab31c4cbed4dc43358d74c257b96184d74d",
+  "durable_actual_members_read": 38,
+  "durable_ui_evidence": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/execution-ui",
+  "per_phase_captures": [
+    "startup",
+    "lesson-failed",
+    "post-exit"
+  ],
+  "full_chain_passed": false,
+  "answer_evaluation_or_preview_or_saving_tested": false,
+  "production_code_changed": false,
+  "daily_app_updated": false,
+  "self_hosted_daily_startup_voiceover_m1_or_rex_acceptance_closed": false
+}

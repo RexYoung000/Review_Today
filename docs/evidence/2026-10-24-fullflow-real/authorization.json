@@ -1,0 +1,14 @@
+{
+  "decision": 268,
+  "status": "APPROVED_NEW_BATCH",
+  "answer": "按新 40／16 上限执行（推荐）",
+  "approved_at": "2026-10-24T05:49:20.143009+00:00",
+  "batch_id": "160e3685-8ec2-4c47-bd40-3712ae3df4a3",
+  "model_limit": 40,
+  "web_limit": 16,
+  "plan_sha256": "e3450e165485a4615105124b1ebd55123d273e8de51fad749040675813b765c1",
+  "only_isolated_data": true,
+  "stop_on_any_final_gate_failure_or_limit": true,
+  "old_allowances_not_resumed": true,
+  "daily_app_or_data_update_excluded": true
+}

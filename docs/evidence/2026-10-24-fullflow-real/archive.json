@@ -1,0 +1,11 @@
+{
+  "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/execution-stopped.zip",
+  "sha256": "c1c9b4f44a8ab9c9445d6d5784e2cab31c4cbed4dc43358d74c257b96184d74d",
+  "actual_members_read": 38,
+  "ui_evidence": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/execution-ui",
+  "per_phase_captures": [
+    "startup",
+    "lesson-failed",
+    "post-exit"
+  ]
+}

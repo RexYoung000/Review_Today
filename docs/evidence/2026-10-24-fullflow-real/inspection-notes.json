@@ -1,0 +1,11 @@
+{
+  "product_failure": "lesson coverage mismatch",
+  "diagnostic_adapter_initial_failures": [
+    "Negative-control assertion originally omitted the RT.MODEL namespace; corrected to the actual existing error code.",
+    "Initial closeout compared native assistant to service coach without the existing role mapping; original IDs and message bytes were equal."
+  ],
+  "diagnostic_adapters_corrected_without_changing_product_or_data": true,
+  "extra_model_requests": 0,
+  "extra_web_operations": 0,
+  "original_failure_not_replaced": true
+}

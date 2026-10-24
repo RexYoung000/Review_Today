@@ -1,0 +1,24 @@
+{
+  "status": "STOPPED_AT_LESSON_COVERAGE",
+  "stopped_at": "2026-10-24T05:53:22.601013+00:00",
+  "failed_gate": "lesson",
+  "reason": "The check question requires generation fidelity and checking sources/applicability, while the actual lesson teaches matching/source errors and the UI marks generation fidelity and source/applicability steps as not learned.",
+  "actual_model_requests": 11,
+  "actual_web_operations": 0,
+  "remaining_frozen": {
+    "model": 29,
+    "web": 16
+  },
+  "later_gates_not_executed": [
+    "partial_answer",
+    "complete_answer",
+    "same_topic_update",
+    "independent_question",
+    "return_to_rag",
+    "native_save",
+    "details_and_status",
+    "progress_and_disk"
+  ],
+  "original_user_and_model_outputs_preserved": true,
+  "no_runtime_or_product_patch_in_this_batch": true
+}
