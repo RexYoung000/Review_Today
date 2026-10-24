@@ -1,0 +1,12 @@
+{
+  "status": "PREPARATION_STOPPED_BEFORE_RUNTIME_CREATION",
+  "gate": "legacy_missing_paths",
+  "reason": "The referenced preparation checked its original 11 missing paths before applying the separately recorded additional missing old pending authorization.",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "daily_data_changed": false,
+  "app_or_service_started": false,
+  "runtime_created": false,
+  "empty_owned_preparation_directories_removed_for_retry": true,
+  "original_baselines_not_changed": true
+}

@@ -1,0 +1,95 @@
+{
+  "status": "PROPOSED_NEW_BATCH_PENDING",
+  "date": "2026-10-24",
+  "model_request_limit": 40,
+  "provider_web_operation_limit": 16,
+  "first_input": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请先简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料；以及为什么要核对来源和适用条件。现在只学习和作答，先不要保存知识卡，也不要进行本节综合检查。讲解阶段不需要联网。",
+  "required_concepts": [
+    "相似度衡量语义相关，不证明答案正确",
+    "来源资料本身可能错误或过时",
+    "生成可能不忠实依据或遗漏限制条件",
+    "核对原始来源可信度与时间、版本及场景适用性"
+  ],
+  "gates": [
+    {
+      "id": "startup",
+      "action": "启动独立空库 App，重新探测，不沿用旧就绪标记",
+      "pass": "服务实际加载当前源码，角色与本轮智能强度可用；全批实际请求可追溯，尚无学习输入和知识卡"
+    },
+    {
+      "id": "lesson",
+      "action": "从正式原生输入框发送 first_input 一次",
+      "pass": "真实讲解及题面覆盖必要要求，同一新会话形成真实学习任务；尚无保存授权、知识卡或复习参与",
+      "estimated_model_requests": 3
+    },
+    {
+      "id": "partial_answer",
+      "action": "按实际题面仅答语义相关与来源风险，明确遗漏生成风险及核对条件",
+      "pass": "正确部分获反馈，缺口仍待补答；不认证全题、不触发答题通过邀请、不写知识卡",
+      "estimated_model_requests": 2
+    },
+    {
+      "id": "complete_answer",
+      "action": "针对本次实际题目与补答要求完整作答，不预填模型判断",
+      "pass": "只验证该题实际概念；出现未保存的标题、少量要点和一句总结，语义忠于有效讲解与作答；不升级整节掌握",
+      "estimated_model_requests": 2
+    },
+    {
+      "id": "same_topic_update",
+      "action": "结合实际预览添加一个具体有效边界或例子；只有真实已有错误才纠正，明确更新原预览且暂不保存",
+      "pass": "同一邀请接纳有效补充并更新可见范围；版本、逐字引文及当前来源有效，旧已推翻错误不保留，无新增卡片或学习推进",
+      "estimated_model_requests": 3
+    },
+    {
+      "id": "independent_question",
+      "action": "临时问 Python 列表和元组可变性的独立问题，要求简短回答且不并入原 RAG 卡片",
+      "pass": "普通问答完成，原任务来源、学习安排与整个 RAG 邀请保持；未创建新的学习目标或保存授权",
+      "estimated_model_requests": 3
+    },
+    {
+      "id": "return_to_rag",
+      "action": "明确回到原 RAG，要求只用原任务资料简短回顾，不保存或进入下一节",
+      "pass": "实际回答仍获得原来源、忠于相关事实，原邀请未被独立问题替代或混入；版本与可见内容若变化，留存差异并按当前有效内容和引用合同判定；按 263／264 回归要求，回顾前后的当前步骤、待答题及来源保持，不把回顾误当下一节",
+      "estimated_model_requests": 3
+    },
+    {
+      "id": "native_save",
+      "action": "从原生当前有效预览点击保存一次，保持复习默认关闭",
+      "pass": "按点击版本与范围实际整理、核验和本机落盘；仅在匹配真实 ACK 后显示保存成功，知识与来源归属一致、无重复写入；确需联网走现有公开查询与核验，不因限额绕过",
+      "estimated_model_requests": 6
+    },
+    {
+      "id": "details_and_status",
+      "action": "打开本次全部实际卡片详情，再从正式原生输入框查询这次保存的数量和名称",
+      "pass": "详情为真实卡片，内容没有混入独立问题；状态由匹配保存操作与真实回执回答，数量和名称与本批磁盘一致，不预设卡片数量",
+      "estimated_model_requests": 1
+    },
+    {
+      "id": "progress_and_disk",
+      "action": "核对学习进度和复习状态，正常退出后用新原生进程读取隔离磁盘",
+      "pass": "只保留实际答题证明范围，不因保存推进下一节或认证整节；复习保持关闭；原生与服务输入、回复、Run、卡片、来源及 ACK 匹配"
+    }
+  ],
+  "startup_estimate": 8,
+  "path_estimate": 31,
+  "reserve_within_limit": 9,
+  "counting": "全部启动探测、模型实际请求、格式修复、自动知识修复、兼容回退、后台与超时分别计数；每次供应商搜索、读取和兜底分别计网页额度。次数不是金额上限。",
+  "stop_conditions": [
+    "任一关卡最终失败，保留输出及状态后停止，不手动重跑至通过",
+    "任一调用维度到限，禁止新请求，即使流程尚未完成",
+    "发生数据归属、版本、持久化或隔离保护不符",
+    "需要代码修复、人工替换输出、修改数据库或重启恢复才能推进；后续分项另记，不称本次无中断通过"
+  ],
+  "normal_behavior_allowed": "程序既有的有限格式修复及一次知识修复可正常运行且计数；成功不能证明未触发的错误恢复路径。",
+  "excluded": [
+    "日常 App 更新或日常数据写入",
+    "恢复任何旧批或本批停止后的冻结余量",
+    "新增产品规则、模型配置、核验调用或子 Agent",
+    "通用教学准确率、完整异常恢复、完整 VoiceOver、Rex 体验或 M1 总体验收关闭"
+  ],
+  "basis": "承接七项源码研究与既定连续学习保存验收；267 入场失败已停止，10 月 24 日正式数据恢复后准备新实例。新 40／16 仍待明确确认，旧额度保持。",
+  "native_package_policy": "QA ZIP only while held, .noindex runtime, no added daily entry; unload/unregister/archive after acceptance",
+  "durable_evidence": "运行目录保持既有 /tmp 隔离规则；准备态完整字节及依赖另作持久归档并逐成员核验。每关前后用 capture_evidence.py 保存真实观测和独立一致数据库副本，正常退出后再归档；不据此改写原运行数据。",
+  "post_recovery_daily_baseline": "docs/evidence/2026-10-23-daily-data-recovery/post-restore-verification.json",
+  "historical_continuity_record": "continuity.json"
+}

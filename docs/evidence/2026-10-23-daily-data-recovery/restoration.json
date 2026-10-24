@@ -1,0 +1,26 @@
+{
+  "status": "FORMAL_SNAPSHOT_RESTORED_APP_CLOSED",
+  "target": "/Users/rexyoung/Library/Application Support/Review Today",
+  "restored_files": {
+    "agent-harness.sqlite3": "0bd0eafebb355c51cf7d5d468cfdb3a58a60aa9a861b4eae0591228170b8481f",
+    "agent-harness.review.sqlite3": "42230939198caa67493b353bd139d7c5134bc606dd971dcec00fe406882e5716",
+    "Data/ReviewToday.store": "6fa576381c2f8d73590d9bfd03b81a8af44bde72ca7bdea5108289c953d3ecb0",
+    "Data/ReviewToday.store.review-v2-backup": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1"
+  },
+  "verification_sha256": "e699e3e2fc49ce4355c757b600eba30e13d140a0617a5c6274631beb0a1de614",
+  "native_counts": {
+    "ZAGENTSESSION": 8,
+    "ZAGENTMESSAGE": 37,
+    "ZKNOWLEDGE": 11,
+    "ZFSRSSTATE": 11
+  },
+  "app_started": false,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "source_archive_preserved": true,
+  "target_was_not_overwritten": true,
+  "old_96_file_baseline_not_rewritten": true,
+  "historical_Backups_89_not_restored": true,
+  "native_window_and_post_restore_startup_not_checked": true
+}

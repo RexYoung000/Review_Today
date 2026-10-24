@@ -1,0 +1,18 @@
+{
+  "prior_preparation": "docs/evidence/2026-10-23-fullflow-preflight",
+  "old_admission_stopped": "docs/evidence/2026-10-23-fullflow-real/STOP.json",
+  "formal_recovery": "docs/evidence/2026-10-23-daily-data-recovery/post-restore-verification.json",
+  "original_frozen_files": 316,
+  "existing_frozen_files_unchanged": 315,
+  "additional_missing_old_files": {
+    "/tmp/review-today-learning-save-pending-vh7ko8um/authorization.json": "b0a8a82706886406d7a44a1e19f08eefa86971b47fca4b67ab72d9f22e4846a3"
+  },
+  "additional_gap_cause_unknown": true,
+  "missing_old_authorization_not_recreated": true,
+  "original_11_missing_paths_preserved": true,
+  "legacy_96_file_baseline_preserved": true,
+  "new_daily_baseline_is_verified_five_file_recovery": true,
+  "old_stopped_batch_not_resumed": true,
+  "preparation_new_model_requests": 0,
+  "preparation_new_web_operations": 0
+}

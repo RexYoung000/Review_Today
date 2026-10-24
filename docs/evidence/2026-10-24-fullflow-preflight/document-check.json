@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-10-24T05:46:36.357768+00:00",
+  "local_links_and_anchors_checked": 442,
+  "local_link_or_anchor_failures": 0,
+  "evidence_json_parsed": true,
+  "post_document_update_prepared_protection_rechecked": true,
+  "user_project_file_unchanged": true,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "native_full_chain_executed": false,
+  "git_tracked_document_diff_check_passed": true
+}

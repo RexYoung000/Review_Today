@@ -1,0 +1,14 @@
+{
+  "status": "approved",
+  "approved_at": "2026-10-24T05:36:52.927993+00:00",
+  "user_message": "继续",
+  "authorization_context": "Rex 在已说明恢复 8 会话、37 消息、11 卡和原复习状态、下一步先恢复正式数据后回复继续。仅执行该已准备的五文件恢复；后续原生启动与真实调用单列。",
+  "target": "/Users/rexyoung/Library/Application Support/Review Today",
+  "verification_sha256": "e699e3e2fc49ce4355c757b600eba30e13d140a0617a5c6274631beb0a1de614",
+  "start_app": false,
+  "actual_model_limit": 0,
+  "actual_web_limit": 0,
+  "overwrite_existing_target": false,
+  "restore_historical_Backups_89": false,
+  "old_allowances_resumed": false
+}

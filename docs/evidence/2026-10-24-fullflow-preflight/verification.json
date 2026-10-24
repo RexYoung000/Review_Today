@@ -1,0 +1,56 @@
+{
+  "status": "READY_PENDING_NEW_40_16",
+  "authorization_confirmed": false,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "native_empty_counts": {
+    "ZKNOWLEDGE": 0,
+    "ZSOURCE": 0,
+    "ZAGENTMESSAGE": 0,
+    "ZLEARNINGTASK": 0,
+    "ZAGENTRUN": 0,
+    "ZAGENTSESSION": 0,
+    "ZFSRSSTATE": 0
+  },
+  "service_empty_counts": {
+    "agent_sessions_v2": 0,
+    "harness_tasks": 0,
+    "agent_memory_policy_v2": 0,
+    "agent_session_deletions": 0,
+    "agent_capability_batches": 0
+  },
+  "capability_batch_table_not_created": true,
+  "pending_actual_bootstrap_restore_owned_interpreter_rejected": true,
+  "pending_entries_do_not_import_service_or_open_sqlite_or_connect": true,
+  "sdk_fake_transport_cases": 11,
+  "native_compile_sign_and_actual_extract_verified": true,
+  "raw_qa_app_removed": true,
+  "original_module_files_match_verified_durable_265_archive": true,
+  "owned_dylib_text_preserved": true,
+  "durable_runtime_archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/runtime-held.zip",
+  "durable_runtime_sha256": "97d45b98d6493a14fc603125e6a8dafbf4c63397848b35658437feafbbb7529d",
+  "actual_durable_members_read": 21,
+  "prepared_capture_sha256": "f2ffac1d67621b654763c4a5487f2b3f2510b5b3120e507aa1fe2b01e5fcd21c",
+  "per_gate_capture_tool_checked_on_actual_empty_runtime": true,
+  "daily_files_unchanged": 5,
+  "daily_app_unchanged": true,
+  "source_config_qa_pins": 281,
+  "frozen_existing_files_unchanged": 377,
+  "known_missing_old_paths_still_missing": 12,
+  "historical_gap_not_restored": true,
+  "old_allowances_unchanged": true,
+  "user_project_diff_unchanged": true,
+  "registered_entries": 1,
+  "spotlight_paths": [
+    "/Applications/Review Today.app"
+  ],
+  "app_and_service_not_started": true,
+  "native_window_not_checked": true,
+  "proposed_limits": {
+    "model": 40,
+    "web": 16
+  },
+  "path_estimate": 31,
+  "reserve": 9,
+  "plan_sha256": "e3450e165485a4615105124b1ebd55123d273e8de51fad749040675813b765c1"
+}
