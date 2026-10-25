@@ -1,0 +1,12 @@
+{
+  "stopped_at": "2026-10-25T09:59:15.363013+00:00",
+  "pid": 25587,
+  "signal": "SIGINT",
+  "normal_shutdown": true,
+  "port_8742_free": true,
+  "daily_app_closed": true,
+  "model_requests": 8,
+  "provider_web_operations": 0,
+  "closed": true,
+  "all_requests_returned": true
+}

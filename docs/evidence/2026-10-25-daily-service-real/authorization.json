@@ -1,0 +1,11 @@
+{
+  "decision": 273,
+  "approved_at": "2026-10-25T09:56:45.301257+00:00",
+  "answer": "按新 8／0 启动并核对（推荐）",
+  "batch_id": "06cb3be2-d090-49b5-a9ac-6f1c34e8b7ed",
+  "model_limit": 8,
+  "web_limit": 0,
+  "plan_sha256": "51c81ae52e09c519400c585f10f31d40fbd37e80f46df1b349e4bc224a420bd9",
+  "preparation_commit": "91038f1",
+  "scope": "current workspace service only; one startup probe batch against daily service stores; daily App remains closed; no messages/save/cleanup or App replacement"
+}

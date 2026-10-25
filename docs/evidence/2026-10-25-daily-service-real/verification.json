@@ -1,0 +1,91 @@
+{
+  "status": "PASS_SERVICE_ONLY_STARTUP_CLOSED",
+  "decision": 273,
+  "date": "2026-10-25",
+  "verified_at": "2026-10-25T10:03:26.376291+00:00",
+  "batch_id": "06cb3be2-d090-49b5-a9ac-6f1c34e8b7ed",
+  "actual_model_requests": 8,
+  "provider_web_operations": 0,
+  "startup_count": 1,
+  "probe_rounds": 1,
+  "request_ids_unique_and_matched": 8,
+  "all_eight_requests_returned": true,
+  "structured_requests": 6,
+  "streaming_requests": 2,
+  "usage_totals": {
+    "input_tokens": 1244,
+    "output_tokens": 391,
+    "total_tokens": 1635,
+    "cached_input_tokens": 256,
+    "reasoning_output_tokens": 193
+  },
+  "configured_models": {
+    "router": "deepseek-flash",
+    "coach": "deepseek-v4-flash",
+    "risk": "deepseek-v4-pro"
+  },
+  "reported_models": [
+    "deepseek-flash",
+    "deepseek-v4-pro"
+  ],
+  "health_roles_and_strengths_ready": true,
+  "coach_smart_deep_streaming_ready": true,
+  "next_probe_scheduled": false,
+  "source_modules_loaded": 7,
+  "source_files_pinned": 8,
+  "source_paths_and_fingerprints_match": true,
+  "lazy_module_not_exercised": "agent-service/agent_service/teaching_check.py",
+  "daily_app_launched": false,
+  "daily_app_replaced": false,
+  "normal_shutdown": true,
+  "app_and_service_closed": true,
+  "original_formal_databases_opened_for_inspection": false,
+  "after_raw_formal_files": 7,
+  "consistent_database_copies": 3,
+  "sqlite_integrity_all_ok": true,
+  "native_and_review_all_rows_exact": true,
+  "all_existing_service_rows_logically_exact": true,
+  "old_capability_batches_exact": 7,
+  "new_capability_batches": 1,
+  "new_capability_batch": "79cd9b48-1d98-4fae-9fd5-c27144b541a7",
+  "native_counts": {
+    "ZAGENTSESSION": 8,
+    "ZAGENTMESSAGE": 37,
+    "ZKNOWLEDGE": 11,
+    "ZFSRSSTATE": 11,
+    "ZLEARNINGTASK": 5,
+    "ZAGENTRUN": 19,
+    "ZSOURCE": 2
+  },
+  "service_counts": {
+    "agent_sessions_v2": 9,
+    "harness_tasks": 5,
+    "agent_capability_batches": 8
+  },
+  "changed_formal_file_bytes": {
+    "agent-harness.sqlite3": {
+      "before": "4b88cc39bbf33c0f00aaf6357b87e07bfcb16633d066090bb34ff7136bdd4d85",
+      "after": "e7d1c3c2479e2f918da190df54c5541fae198afa0cd0aeba55705e87e786e2aa"
+    }
+  },
+  "only_logical_table_changed": "agent_capability_batches",
+  "source_config_execution_pins": 307,
+  "old_evidence_pins_preserved": 753,
+  "original_and_owned_module_files_preserved": [
+    8,
+    8
+  ],
+  "known_missing_old_paths_preserved": 12,
+  "prepared_backup_pins_preserved": 17,
+  "prepared_evidence_unchanged": true,
+  "user_project_diff_preserved": true,
+  "app_inventory_and_signature_preserved": true,
+  "allowance_closed": true,
+  "stop_present": true,
+  "prior_271_unused_10_16_frozen": true,
+  "all_old_allowances_frozen": true,
+  "web_not_verified": true,
+  "app_managed_child_startup_not_verified": true,
+  "new_native_acceptance_not_performed": true,
+  "rex_experience_and_m1_open": true
+}

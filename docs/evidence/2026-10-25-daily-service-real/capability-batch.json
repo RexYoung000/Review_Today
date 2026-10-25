@@ -1,0 +1,226 @@
+{
+  "batch_id": "79cd9b48-1d98-4fae-9fd5-c27144b541a7",
+  "provider": "deepseek",
+  "created_at": 1792922339.2868721,
+  "updated_at": 1792922343.8309288,
+  "rounds": 1,
+  "status": "finished",
+  "calls": [
+    {
+      "id": "8adb65b2-9b03-419b-8026-898871b2ea1c",
+      "round": 1,
+      "model": "deepseek-flash",
+      "roles": [
+        "router"
+      ],
+      "kind": "structured",
+      "strength": "smart",
+      "transport_requests": 1,
+      "request_ids": [
+        "36853335-5d1e-41e9-bff4-643b78a994c3"
+      ],
+      "usage": [
+        {
+          "response_id": "5d82da42-5b5f-431a-b8c9-2306e770062c",
+          "input_tokens": 130,
+          "output_tokens": 5,
+          "total_tokens": 135,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "request_id": "36853335-5d1e-41e9-bff4-643b78a994c3"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "b922c50a-6c07-4014-9121-0360df6a1af0",
+      "round": 1,
+      "model": "deepseek-v4-flash",
+      "roles": [
+        "coach"
+      ],
+      "kind": "structured",
+      "strength": "smart",
+      "transport_requests": 1,
+      "request_ids": [
+        "248a15da-6da6-4b55-beba-00ce613fcec0"
+      ],
+      "usage": [
+        {
+          "response_id": "3dd74716-4430-4ec1-91ea-cdc3c823a9bb",
+          "input_tokens": 130,
+          "output_tokens": 5,
+          "total_tokens": 135,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "request_id": "248a15da-6da6-4b55-beba-00ce613fcec0"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "94062a51-e547-4a30-95da-a0947474851a",
+      "round": 1,
+      "model": "deepseek-v4-pro",
+      "roles": [
+        "risk"
+      ],
+      "kind": "structured",
+      "strength": "smart",
+      "transport_requests": 1,
+      "request_ids": [
+        "09160f2e-227e-425b-b73f-394b2d1a613c"
+      ],
+      "usage": [
+        {
+          "response_id": "e8e8dcbd-6833-45e1-97a1-adc7694e8910",
+          "input_tokens": 129,
+          "output_tokens": 5,
+          "total_tokens": 134,
+          "cached_input_tokens": 128,
+          "reasoning_output_tokens": 0,
+          "request_id": "09160f2e-227e-425b-b73f-394b2d1a613c"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "bf4f6629-b213-421e-876b-333eb74f7a85",
+      "round": 1,
+      "model": "deepseek-flash",
+      "roles": [
+        "router"
+      ],
+      "kind": "structured",
+      "strength": "deep",
+      "transport_requests": 1,
+      "request_ids": [
+        "b3e4bcb7-65f0-423a-8c36-f80238f000d9"
+      ],
+      "usage": [
+        {
+          "response_id": "3c1a09a0-932c-41ce-b0f2-c65534829e12",
+          "input_tokens": 155,
+          "output_tokens": 27,
+          "total_tokens": 182,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 21,
+          "request_id": "b3e4bcb7-65f0-423a-8c36-f80238f000d9"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "a61b9b20-5059-4d6f-b1bb-42ddb2fc3bfa",
+      "round": 1,
+      "model": "deepseek-v4-flash",
+      "roles": [
+        "coach"
+      ],
+      "kind": "structured",
+      "strength": "deep",
+      "transport_requests": 1,
+      "request_ids": [
+        "e7287563-a77c-4d0e-9272-30581358b2dd"
+      ],
+      "usage": [
+        {
+          "response_id": "ac077736-5d02-495d-8ccd-5491893d7638",
+          "input_tokens": 155,
+          "output_tokens": 119,
+          "total_tokens": 274,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 113,
+          "request_id": "e7287563-a77c-4d0e-9272-30581358b2dd"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "31e18821-e843-4290-a8df-4553c0b15a0f",
+      "round": 1,
+      "model": "deepseek-v4-pro",
+      "roles": [
+        "risk"
+      ],
+      "kind": "structured",
+      "strength": "deep",
+      "transport_requests": 1,
+      "request_ids": [
+        "751940b6-e415-4098-be98-f992b2ac758e"
+      ],
+      "usage": [
+        {
+          "response_id": "263ca980-1624-4fe3-b24e-96e500c8182a",
+          "input_tokens": 208,
+          "output_tokens": 48,
+          "total_tokens": 256,
+          "cached_input_tokens": 128,
+          "reasoning_output_tokens": 42,
+          "request_id": "751940b6-e415-4098-be98-f992b2ac758e"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "f263e5de-63eb-42ba-8e74-f5691d4924a0",
+      "round": 1,
+      "model": "deepseek-v4-flash",
+      "roles": [
+        "coach"
+      ],
+      "kind": "streaming",
+      "strength": "smart",
+      "transport_requests": 1,
+      "request_ids": [
+        "6a195366-e78f-47e0-b193-0901f5b306b5"
+      ],
+      "usage": [
+        {
+          "response_id": "616507cb-a1d0-4cb6-8b74-3d5142d533cc",
+          "input_tokens": 156,
+          "output_tokens": 87,
+          "total_tokens": 243,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "request_id": "6a195366-e78f-47e0-b193-0901f5b306b5"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    },
+    {
+      "id": "ebd3bcf4-8b31-41e2-a86b-d25253231ec8",
+      "round": 1,
+      "model": "deepseek-v4-flash",
+      "roles": [
+        "coach"
+      ],
+      "kind": "streaming",
+      "strength": "deep",
+      "transport_requests": 1,
+      "request_ids": [
+        "8e7dc99e-55b7-4d0d-9525-1860d744bc53"
+      ],
+      "usage": [
+        {
+          "response_id": "5b835d77-9407-41bf-979d-3c1b97c8a016",
+          "input_tokens": 181,
+          "output_tokens": 95,
+          "total_tokens": 276,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 17,
+          "request_id": "8e7dc99e-55b7-4d0d-9525-1860d744bc53"
+        }
+      ],
+      "usage_state": "reported",
+      "status": "returned"
+    }
+  ]
+}

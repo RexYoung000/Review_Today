@@ -1,0 +1,9 @@
+{
+  "preparation": "docs/evidence/2026-10-25-daily-service-preflight",
+  "activation": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/daily-service-preflight-2026-10-25/activation",
+  "private_actual": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/actual",
+  "batch_id": "06cb3be2-d090-49b5-a9ac-6f1c34e8b7ed",
+  "port": 8742,
+  "source_commit": "b0cd32c",
+  "prepared_commit": "91038f1"
+}

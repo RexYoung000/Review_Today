@@ -1,0 +1,27 @@
+{
+  "pid": 25587,
+  "batch_id": "06cb3be2-d090-49b5-a9ac-6f1c34e8b7ed",
+  "model_limit": 8,
+  "web_limit": 0,
+  "probes_only": true,
+  "daily_app_will_remain_closed": true,
+  "loaded_repair_module_paths": {
+    "agent-service/agent_service/answer_style.py": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/answer_style.py",
+    "agent-service/agent_service/conversation.py": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/conversation.py",
+    "agent-service/agent_service/conversation_prompts.py": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/conversation_prompts.py",
+    "agent-service/agent_service/learning_progress.py": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/learning_progress.py",
+    "agent-service/agent_service/response_projection.py": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/response_projection.py",
+    "agent-service/agent_service/schemas.py": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/schemas.py",
+    "agent-service/agent_service/structured_output.py": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/agent_service/structured_output.py"
+  },
+  "repair_source_fingerprints": {
+    "agent-service/agent_service/answer_style.py": "0b46ade484053091e133b41189f2e665865c67d43c49e6c370394d77c47acb9a",
+    "agent-service/agent_service/conversation.py": "741ecd11507a9f04dd9c1c7ed8e30ff2e60e45f577e28155b7641e5b77ea4b5a",
+    "agent-service/agent_service/conversation_prompts.py": "154e4e615cc197a06062dfa1ead5a395ff4a00083ba28fc471b45425deae66dd",
+    "agent-service/agent_service/learning_progress.py": "0a2f593a53a79c9810124cf72c6eca66c10ac79a47c4657739e7258b0a6769fe",
+    "agent-service/agent_service/response_projection.py": "b58ee9a0591851b1722e6c72e75e3d5894f355869234ed0b789da49467bc546e",
+    "agent-service/agent_service/schemas.py": "25cb2f197a453e1b550432a45bf5a071e7d3efcb1f9b14ab3ecd64e0c7bea00d",
+    "agent-service/agent_service/structured_output.py": "5460ecdd832184ea5f4d2a4e69e7561f5390b4ccad0bb13bad1ff6042f043201",
+    "agent-service/agent_service/teaching_check.py": "9603a6b9f4d7244746eb1c3f57917bbc96bb0f84cb9329ec7887366365f3522c"
+  }
+}

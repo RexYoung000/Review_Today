@@ -1,0 +1,20 @@
+{
+  "status": "OFFLINE_OBSERVER_ASSERTION_FAILED_AFTER_DATA_CHECKS",
+  "script_sha256": "a288f230ed779cfc5ddb45c0ca8afafd32bb1a0194e6bd8de3e9c16e89f73ec6",
+  "line": 116,
+  "assertion": "set(boot[loaded_repair_module_paths]) == set(delta)",
+  "reason": "Observer incorrectly required all eight changed modules to be eagerly imported. teaching_check.py is imported only inside teaching/validation paths; no teaching request was in this startup-only batch.",
+  "actual_loaded_modules": 7,
+  "all_eight_source_fingerprints_matched": true,
+  "earlier_checks_reached_and_passed": [
+    "native and review rows exact",
+    "all old service rows exact",
+    "one new finished capability batch",
+    "8 requests and usage matched"
+  ],
+  "service_already_stopped": true,
+  "model_requests_total": 8,
+  "web_operations_total": 0,
+  "restart_or_reprobe": false,
+  "correction": "Use streaming table hashes for native/review; inspect seven actual imports and all eight pinned source files, and explicitly retain lazy-module runtime limitation."
+}

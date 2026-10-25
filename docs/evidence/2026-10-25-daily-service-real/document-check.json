@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "local_links_and_anchors_checked": 632,
+  "errors": [],
+  "python_files_parsed": 3,
+  "json_files_parsed": 11,
+  "source_config_execution_pins_unchanged": 307,
+  "old_evidence_pins_unchanged": 753,
+  "formal_files_match_post_close_observation": true,
+  "all_eight_call_statuses_returned": true,
+  "user_project_diff_and_file_preserved": true,
+  "private_runtime_members_read": 27,
+  "actual_model_requests": 8,
+  "actual_web_operations": 0,
+  "additional_provider_requests": 0,
+  "app_and_service_remain_closed": true
+}
