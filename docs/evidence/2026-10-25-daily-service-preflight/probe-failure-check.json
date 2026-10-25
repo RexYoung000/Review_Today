@@ -1,0 +1,8 @@
+{
+  "outcome": "PASS",
+  "first_failure_stops": true,
+  "second_transport_blocked": true,
+  "fake_sdk_requests": 1,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0
+}

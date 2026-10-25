@@ -1,0 +1,31 @@
+{
+  "backend_delta": [
+    "agent-service/agent_service/answer_style.py",
+    "agent-service/agent_service/conversation.py",
+    "agent-service/agent_service/conversation_prompts.py",
+    "agent-service/agent_service/learning_progress.py",
+    "agent-service/agent_service/response_projection.py",
+    "agent-service/agent_service/schemas.py",
+    "agent-service/agent_service/structured_output.py",
+    "agent-service/agent_service/teaching_check.py"
+  ],
+  "changed_swift_files": [],
+  "daily_app_matches_previous_signed_candidate": true,
+  "daily_app_replacement_needed": false,
+  "service_sources_embedded_in_app": false,
+  "native_default_source_file_present_in_installed_binary": true,
+  "native_service_launch_source": "Review_Today/AgentServiceMonitor.swift:329",
+  "existing_app_archive": "/Users/rexyoung/Library/Developer/ReviewTodayAppArchives.noindex/2026-10-23-daily-update-preflight/ReviewToday-candidate.zip",
+  "existing_app_archive_sha256": "247a161e5a15134d6045530c6083f17ba8badba4afb4349b398f016f11fb4727",
+  "existing_archive_members_read_and_current_app_matched": 13,
+  "current_signature": {
+    "bundle_id": "Rex.Review-Today",
+    "team": "7NDKLL3UJK",
+    "strict_verified": true,
+    "binaries": {
+      "Review_Today": "565dc6cdb3f2562c4490776169bdf300c03eb7e77c390ad3dca5f513fe422169",
+      "__preview.dylib": "bbe0b2dffd79dc8da6d4f32fc22b8df368c5967f8283b0a895a36e4a5419da60",
+      "Review_Today.debug.dylib": "c1eb02c1443cb8969fa010fcc0eeabc5421fafaf85d6b3ed080e663645d7cd37"
+    }
+  }
+}

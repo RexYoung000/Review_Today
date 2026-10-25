@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "local_links_and_anchors_checked": 625,
+  "errors": [],
+  "python_files_parsed": 7,
+  "json_files_parsed": 11,
+  "source_config_execution_pins_unchanged": 307,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "pending_hold_preserved": true,
+  "no_real_quota_or_execution_created": true
+}

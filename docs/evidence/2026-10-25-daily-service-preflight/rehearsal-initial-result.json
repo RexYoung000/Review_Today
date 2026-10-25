@@ -1,0 +1,16 @@
+{
+  "status": "FIXTURE_PATH_REFUSED_BEFORE_SERVICE_START",
+  "reason": "Reused strict audit accepts local SQLite paths, not SQLite URI strings. The new observer initially supplied a URI.",
+  "service_started": false,
+  "fake_requests": 0,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "formal_data_opened_or_changed": false,
+  "owned_fixture_paths": [
+    "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-activation-guard-xktbkkum",
+    "/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-activation-guard-njk44q1g"
+  ],
+  "correction": "Use local SQLite paths with query_only, and normalize tempfile.tempdir to its identical canonical directory before creating the isolated fixture. Keep the reused audit function and production code unchanged.",
+  "pre_service_fixture_refusals": 2,
+  "second_reason": "macOS /var directory alias did not match its resolved /private/var form in the reused strict fixture audit"
+}

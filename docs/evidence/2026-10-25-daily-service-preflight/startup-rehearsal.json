@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "fixture_directory": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-activation-guard-4o0a329h",
+  "real_startup_callback_executed": true,
+  "production_recovery_functions_unmodified": true,
+  "sdk_fake_requests": 8,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "socket_attempts": 0,
+  "app_launched": false,
+  "original_formal_databases_opened": false,
+  "native_and_review_rows_exact": true,
+  "all_existing_service_rows_logically_unchanged": true,
+  "changed_tables": {
+    "checkpoint.sqlite3": [
+      "agent_capability_batches"
+    ],
+    "review.sqlite3": [],
+    "app.store": []
+  },
+  "only_one_new_capability_batch": true,
+  "real_batch_authorization_untouched": true,
+  "raw_observation_private": true
+}

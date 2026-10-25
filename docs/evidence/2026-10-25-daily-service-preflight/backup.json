@@ -1,0 +1,32 @@
+{
+  "status": "PREPARED_SERVICE_ONLY_NOT_STARTED",
+  "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service",
+  "raw_formal_files": 7,
+  "consistent_database_copies": 3,
+  "private_config_files": 5,
+  "archive_sha256": "2d968b956a914c266178c782df449dbf7b0008aabd9a08e446ebf1d8cedd4e60",
+  "archive_actual_members_read": 15,
+  "formal_databases_opened": false,
+  "original_formal_files_unchanged": true,
+  "existing_app_package_reused": true,
+  "native_counts": {
+    "ZAGENTSESSION": 8,
+    "ZAGENTMESSAGE": 37,
+    "ZKNOWLEDGE": 11,
+    "ZFSRSSTATE": 11,
+    "ZLEARNINGTASK": 5,
+    "ZAGENTRUN": 19,
+    "ZSOURCE": 2
+  },
+  "service_counts": {
+    "agent_sessions_v2": 9,
+    "harness_tasks": 5,
+    "agent_capability_batches": 7
+  },
+  "original_and_consistent_copy_logical_rows_match": true,
+  "cross_database_atomic_snapshot": false,
+  "model_requests": 0,
+  "web_operations": 0,
+  "app_replaced": false,
+  "app_started": false
+}

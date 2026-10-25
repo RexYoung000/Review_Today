@@ -1,0 +1,138 @@
+{
+  "status": "READY_PENDING_SERVICE_ONLY_8_0",
+  "decision": 272,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "daily_app_replacement_needed": false,
+  "daily_app_started": false,
+  "daily_service_started": false,
+  "app_and_service_stopped": true,
+  "daily_seven_files_unchanged": true,
+  "original_formal_databases_opened": false,
+  "backup_members_read": 15,
+  "consistent_db_copies": 3,
+  "original_raw_bytes_and_consistent_logical_rows_preserved": true,
+  "source_config_execution_pins": 307,
+  "old_evidence_pins_preserved": 753,
+  "known_missing_paths_preserved": 12,
+  "approval_cases": [
+    {
+      "case": "approved exact service-only scope",
+      "passed": true
+    },
+    {
+      "case": "status mismatch",
+      "passed": true
+    },
+    {
+      "case": "batch_id mismatch",
+      "passed": true
+    },
+    {
+      "case": "actual_model_request_limit mismatch",
+      "passed": true
+    },
+    {
+      "case": "provider_web_operation_limit mismatch",
+      "passed": true
+    },
+    {
+      "case": "scope mismatch",
+      "passed": true
+    },
+    {
+      "case": "daily_app mismatch",
+      "passed": true
+    },
+    {
+      "case": "database_path mismatch",
+      "passed": true
+    },
+    {
+      "case": "plan_sha256 mismatch",
+      "passed": true
+    },
+    {
+      "case": "HOLD refuses",
+      "passed": true
+    },
+    {
+      "case": "STOP refuses",
+      "passed": true
+    },
+    {
+      "case": "second startup refuses",
+      "passed": true
+    },
+    {
+      "case": "changed source refuses",
+      "passed": true
+    },
+    {
+      "case": "changed App refuses",
+      "passed": true
+    },
+    {
+      "case": "changed data refuses",
+      "passed": true
+    }
+  ],
+  "actual_pending_entry_rejected_before_runtime": true,
+  "actual_pending_entry_files_unchanged": true,
+  "quota_and_execution_not_created": true,
+  "sdk_fake_transport_checks": {
+    "outcome": "PASS",
+    "fake_sdk_requests": 8,
+    "usage_receipts": 8,
+    "actual_model_requests": 0,
+    "actual_web_operations": 0,
+    "zero_web_entries_blocked": 12,
+    "conversation_call_blocked": true,
+    "structured_and_stream_probe_paths_pass": true,
+    "ninth_probe_blocked": true,
+    "network_attempts": 0
+  },
+  "first_failure_stop_check": {
+    "outcome": "PASS",
+    "first_failure_stops": true,
+    "second_transport_blocked": true,
+    "fake_sdk_requests": 1,
+    "actual_model_requests": 0,
+    "actual_web_operations": 0
+  },
+  "copied_daily_startup_rehearsal": {
+    "status": "PASS",
+    "fixture_directory": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-activation-guard-4o0a329h",
+    "real_startup_callback_executed": true,
+    "production_recovery_functions_unmodified": true,
+    "sdk_fake_requests": 8,
+    "actual_model_requests": 0,
+    "actual_web_operations": 0,
+    "socket_attempts": 0,
+    "app_launched": false,
+    "original_formal_databases_opened": false,
+    "native_and_review_rows_exact": true,
+    "all_existing_service_rows_logically_unchanged": true,
+    "changed_tables": {
+      "checkpoint.sqlite3": [
+        "agent_capability_batches"
+      ],
+      "review.sqlite3": [],
+      "app.store": []
+    },
+    "only_one_new_capability_batch": true,
+    "real_batch_authorization_untouched": true,
+    "raw_observation_private": true
+  },
+  "single_daily_registration": [
+    "Rex.Review-Today"
+  ],
+  "spotlight_paths": [
+    "/Applications/Review Today.app"
+  ],
+  "current_module_and_user_project_diff_preserved": true,
+  "all_old_allowances_frozen": true,
+  "new_limit_not_approved": true,
+  "original_native_functional_evidence": "271 preserved; no new native acceptance",
+  "app_managed_service_startup_and_rex_experience_not_verified": true
+}

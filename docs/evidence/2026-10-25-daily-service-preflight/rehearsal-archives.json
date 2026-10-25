@@ -1,0 +1,50 @@
+{
+  "archives": [
+    {
+      "phase": "pre-service-path-refusal",
+      "original_directory": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-activation-guard-xktbkkum",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/rehearsal-1-runtime.zip",
+      "sha256": "240564f7025e62cd28daff193e36b7128a94ff7257e9dbb5fc2bf1c18223f049",
+      "members": {
+        "checkpoint.sqlite3": "1e689983f02daefbad4f27ca01768e12ed88c29168f50b5066494f832a9a5e2a",
+        "authorization.json": "170ad9d6de708070a7b39ec130d2aeee94eadc5a77acebecf723f013762631d5",
+        "app.store": "c06dc0dcfe888f0222255d5d179f4e9546c0a44933c755060fa7810e409f566a",
+        "review.sqlite3": "42230939198caa67493b353bd139d7c5134bc606dd971dcec00fe406882e5716"
+      },
+      "actual_members_read": 4
+    },
+    {
+      "phase": "pre-service-path-refusal",
+      "original_directory": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-activation-guard-njk44q1g",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/rehearsal-2-runtime.zip",
+      "sha256": "42fac235233f82a91c711cad3992b65b344dcd6951c687ee1d6c1ddbca4b91bd",
+      "members": {
+        "checkpoint.sqlite3": "1e689983f02daefbad4f27ca01768e12ed88c29168f50b5066494f832a9a5e2a",
+        "authorization.json": "170ad9d6de708070a7b39ec130d2aeee94eadc5a77acebecf723f013762631d5",
+        "app.store": "c06dc0dcfe888f0222255d5d179f4e9546c0a44933c755060fa7810e409f566a",
+        "review.sqlite3": "42230939198caa67493b353bd139d7c5134bc606dd971dcec00fe406882e5716"
+      },
+      "actual_members_read": 4
+    },
+    {
+      "phase": "successful-fake-startup",
+      "original_directory": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-activation-guard-4o0a329h",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/rehearsal-3-runtime.zip",
+      "sha256": "dcbdf7c229724f25fe6da02c13691f4521f6d3c2a6bb3f13eb1940d07ec62941",
+      "members": {
+        "quota.json": "e2a30bd1c2b975698edc501bde645f3555ac1e697cf71d5b338b1d8a99da856b",
+        "checkpoint.sqlite3": "5d739c24b3a185e15a0384922e018e3cdd9ed92d654f3c73cd18fd046b3d23c2",
+        "STOP": "dc3e5844be351dca084f95dc8d4ce109f96348f7136a7507522c3697bdcb4e77",
+        "authorization.json": "170ad9d6de708070a7b39ec130d2aeee94eadc5a77acebecf723f013762631d5",
+        "app.store": "c06dc0dcfe888f0222255d5d179f4e9546c0a44933c755060fa7810e409f566a",
+        "review.sqlite3": "42230939198caa67493b353bd139d7c5134bc606dd971dcec00fe406882e5716",
+        "quota.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "actual_members_read": 7
+    }
+  ],
+  "all_members_read_verified": true,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "all_archives_private": true
+}

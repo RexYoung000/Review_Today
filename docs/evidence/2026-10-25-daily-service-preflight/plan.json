@@ -1,0 +1,33 @@
+{
+  "status": "PREPARED_PENDING_NEW_8_0",
+  "decision": 272,
+  "date": "2026-10-25",
+  "batch_id": "06cb3be2-d090-49b5-a9ac-6f1c34e8b7ed",
+  "scope": "current workspace service only; one startup probe batch against daily service stores; daily App remains closed; no messages/save/cleanup or App replacement",
+  "actual_model_request_limit": 8,
+  "provider_web_operation_limit": 0,
+  "startup_command": "PYTHONDONTWRITEBYTECODE=1 agent-service/.venv/bin/python -B docs/evidence/2026-10-25-daily-service-preflight/start_service.py",
+  "daily_app": "/Applications/Review Today.app",
+  "database_path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3",
+  "source_commit": "b0cd32c",
+  "previous_functional_evidence_commit": "81928af",
+  "steps": [
+    "Recheck closed daily App/service, seven bytes, source/config/old evidence pins and backup",
+    "After explicit new 8/0 approval, start this guarded service once on port 8742; pin the current workspace repair modules",
+    "Observe one new capability batch and real smart/deep streaming readiness; never manually rerun",
+    "Close the owned service normally, freeze the ledger and inspect fresh copies; original rows remain with only the new capability batch and documented startup fields allowed"
+  ],
+  "stop_conditions": [
+    "First probe failure or extra request needed",
+    "Either cap reached: no new transports",
+    "Source, data, ownership or protection mismatch"
+  ],
+  "no_app_replacement_or_launch": true,
+  "no_new_messages_or_cards": true,
+  "no_test_data_promoted": true,
+  "formal_database_writes_after_approval": "Only existing service startup behavior, including its new readiness batch; no automatic data restore",
+  "prior_271_remaining_10_16_frozen": true,
+  "all_old_allowances_frozen": true,
+  "app_managed_child_startup_and_rex_experience_not_covered": true,
+  "rationale": "All eight repair files are Python sources; the signed daily App and Swift sources are unchanged. A service-only check avoids repackaging or repeating the already passed native functional chain."
+}
