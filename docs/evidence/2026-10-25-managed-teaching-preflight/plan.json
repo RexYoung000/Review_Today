@@ -1,0 +1,92 @@
+{
+  "status": "PREPARED_PENDING_NEW_20_0",
+  "decision": 274,
+  "date": "2026-10-25",
+  "batch_id": "79d2e5c8-6bf5-41f9-886e-2c1bdb11213d",
+  "scope": "one App-managed startup and bounded native teaching check in a fresh isolated full-App clone; no daily writes, saving, web or manual service startup",
+  "model_request_limit": 20,
+  "provider_web_operation_limit": 0,
+  "startup_estimate": 8,
+  "path_estimate": 15,
+  "reserve_within_limit": 5,
+  "first_input": "直接教我一个 RAG 小知识点：高相似度检索为什么不能保证答案正确？请先简短讲解，再出一道只检查这个知识点的复述题。讲解和题目都要包含：来源资料本身可能错误或过时；生成回答可能没有忠实依据资料；以及为什么要核对来源和适用条件。现在只学习和作答，先不要保存知识卡，也不要进行本节综合检查。讲解阶段不需要联网。",
+  "required_concepts": [
+    "相似度衡量语义相关，不证明答案正确",
+    "来源资料本身可能错误或过时",
+    "生成可能不忠实依据或遗漏限制条件",
+    "核对原始来源可信度与时间、版本及场景适用性"
+  ],
+  "gates": [
+    {
+      "id": "app_managed_startup",
+      "estimated_model_requests": 8,
+      "action": "从真实完整 App 入口冷启动；8742 和本批端口都无现存监听，不独立启动 Python",
+      "pass_criteria": "记录 App PID、服务 PID 与真实父进程路径；一次准入，三角色／教学两档流式就绪；输入尚未发送、原生空库；不可借用旧服务或旧就绪"
+    },
+    {
+      "id": "lesson",
+      "action": "从正式原生输入框发送 first_input 一次",
+      "pass": "真实讲解、完整题面、question_coverage 与冻结概念一致：来源错误／过时、生成忠实性及为何核对来源／适用条件均已实际展开，地图预告不能冒充已教；原生正文只展示一次最终题目，全部理解仍未知；无邀请或保存。",
+      "estimated_model_requests": 3
+    },
+    {
+      "id": "partial_answer",
+      "action": "按实际题面仅答语义相关与来源风险，明确遗漏生成风险及核对条件",
+      "pass": "正确部分获反馈，缺口仍待补答；不认证全题、不触发答题通过邀请、不写知识卡",
+      "estimated_model_requests": 2
+    },
+    {
+      "id": "complete_answer",
+      "action": "针对本次实际题目与补答要求完整作答，不预填模型判断",
+      "pass": "只验证该题实际概念；出现未保存的标题、少量要点和一句总结，语义忠于有效讲解与作答；不升级整节掌握",
+      "estimated_model_requests": 2
+    },
+    {
+      "id": "native_experience_and_disk",
+      "estimated_model_requests": 0,
+      "action": "同一窗口核对浅色默认尺寸及深色最小内容区、键盘焦点、逐字讲解与题面完整性，正常退出并新进程读隔离盘",
+      "pass_criteria": "无截断遮挡、题目只出现一次、漏答未认证、补答只认证真实概念；预览仍未保存，零卡／来源／复习，原步骤和整节理解保持真实未知；消息／Run 与服务一致；退出 App 后托管子进程退出、无新监听或后续调用"
+    }
+  ],
+  "counting": "所有真实 SDK 请求含启动、格式与教学有界修复、重试、后台和失败均计数；所有 provider 搜索／读取／网页兜底禁止。次数不是金额上限。",
+  "stop_conditions": [
+    "启动首次探测失败，禁止新请求，不手动重新探测或重启",
+    "任一功能关最终失败、需改代码／数据库／替换输出／重新启动才能继续",
+    "任一上限到限，后续请求拒绝，在途回执留存",
+    "正式数据、源码、旧证据、版本归属或持久化保护不符"
+  ],
+  "existing_bounded_repairs_allowed_and_counted": true,
+  "formal_app_kept_closed": true,
+  "proposed_clone": "same full App executable and ContentView/AgentServiceMonitor machine code, separate NativeQA identity/data/root and ad-hoc signature",
+  "difference_from_daily_identity": "验证完整 App 托管实现及隔离体验；不代验正式签名身份的系统目录权限、日常数据恢复或 Rex 最终体验",
+  "excluded": [
+    "日常 App 更换／启动和正式库写入",
+    "知识卡保存、独立插问及完整保存链重跑",
+    "网页和所有旧额度恢复",
+    "通用教学质量、完整 VoiceOver、跨系统或 M1 总验收"
+  ],
+  "expected_environment": {
+    "platform": "macOS",
+    "version": "27.0.1",
+    "architecture": "arm64",
+    "default_content": [
+      1280,
+      820
+    ],
+    "minimum_content": [
+      760,
+      620
+    ],
+    "appearances": [
+      "light",
+      "dark"
+    ],
+    "size_evidence": "记录实际外窗和内容区尺寸；无法达到目标时不能写通过",
+    "interaction": "真实完整主界面输入与控件；原速观察／录像，语义、服务与退出磁盘相互核对"
+  },
+  "real_credentials_and_app_child_directory_permissions_not_yet_verified": true,
+  "prior_273_8_0_closed": true,
+  "all_old_allowances_frozen": true,
+  "launch_method": "After approval restore only; CUA opens full-App clone once. A fixed environment wrapper execs the unchanged App executable; that App owns the guarded Python child.",
+  "ui_environment_blocker": "Mac is locked; user must manually unlock it before any native UI action. Do not auto-unlock or start around this condition."
+}

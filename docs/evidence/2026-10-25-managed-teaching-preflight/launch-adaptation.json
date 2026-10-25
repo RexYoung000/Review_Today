@@ -1,0 +1,12 @@
+{
+  "status": "OFFLINE_PASS",
+  "prior_candidate_preserved": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/before-cua-launch-adaptation",
+  "old_package_sha256": "5037fe2359d981067fefc218016135dde0ea26ec671784c3fc97a7e2d832a5c3",
+  "new_package_sha256": "808b88fc648a446ff4c8816ee36ac74a1b742f6fcddf0375f4bad440c49f3105",
+  "wrapper_syntax_checked": true,
+  "full_app_code_unchanged": true,
+  "native_app_not_launched": true,
+  "launch_requires_cua": true,
+  "native_mac_locked": true,
+  "real_requests": 0
+}

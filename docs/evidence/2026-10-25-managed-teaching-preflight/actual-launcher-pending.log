@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-25-managed-teaching-preflight/launch_after_approval.py", line 29, in <module>
+    main()
+    ~~~~^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-25-managed-teaching-preflight/launch_after_approval.py", line 12, in main
+    check_approved(directory, ROOT)  # Must refuse pending before mutation/UI.
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-25-managed-teaching-preflight/bootstrap.py", line 19, in check_approved
+    raise PermissionError("pending/HOLD/STOP: new 20/0 batch is not active")
+PermissionError: pending/HOLD/STOP: new 20/0 batch is not active

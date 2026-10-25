@@ -1,0 +1,90 @@
+{
+  "status": "PASS",
+  "approval_cases": [
+    {
+      "case": "exact 20/0 scope",
+      "passed": true
+    },
+    {
+      "case": "status mismatch",
+      "passed": true
+    },
+    {
+      "case": "batch_id mismatch",
+      "passed": true
+    },
+    {
+      "case": "scope mismatch",
+      "passed": true
+    },
+    {
+      "case": "actual_model_request_limit mismatch",
+      "passed": true
+    },
+    {
+      "case": "provider_web_operation_limit mismatch",
+      "passed": true
+    },
+    {
+      "case": "plan_sha256 mismatch",
+      "passed": true
+    },
+    {
+      "case": "source_pins_sha256 mismatch",
+      "passed": true
+    },
+    {
+      "case": "HOLD refuses",
+      "passed": true
+    },
+    {
+      "case": "STOP refuses",
+      "passed": true
+    },
+    {
+      "case": "bootstrap-ready.json refuses",
+      "passed": true
+    },
+    {
+      "case": "startup-claim.json refuses",
+      "passed": true
+    },
+    {
+      "case": "source changed refuses",
+      "passed": true
+    }
+  ],
+  "actual_pending_child_rejected_before_interpreter_marker": true,
+  "actual_pending_launcher_refused_before_mutation_or_ui": true,
+  "external_source_audit_no_sqlite_or_socket": true,
+  "real_pending_runtime_files_unchanged": true,
+  "native_store_absent": true,
+  "service_store_absent": true,
+  "real_ledger_and_events_absent": true,
+  "sdk": {
+    "status": "PASS",
+    "fixture": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-managed-sdk-yenx5r1e.noindex",
+    "fake_sdk_requests": 20,
+    "actual_model_requests": 0,
+    "actual_web_operations": 0,
+    "zero_web_entries_denied": 12,
+    "startup_first_failure_stops": false,
+    "ordinary_structured_and_stream_paths_checked": true,
+    "twenty_first_denied": true
+  },
+  "first_failure": {
+    "status": "PASS",
+    "fixture": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-managed-sdk-svibv5c_.noindex",
+    "fake_sdk_requests": 1,
+    "actual_model_requests": 0,
+    "actual_web_operations": 0,
+    "zero_web_entries_denied": 12,
+    "startup_first_failure_stops": true,
+    "ordinary_structured_and_stream_paths_checked": false,
+    "twenty_first_denied": false
+  },
+  "app_launched": false,
+  "service_started": false,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0
+}

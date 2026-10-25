@@ -1,0 +1,23 @@
+{
+  "platform": "macOS",
+  "version": "27.0.1",
+  "build": "26A434",
+  "architecture": "arm64",
+  "python_version": "3.13.3",
+  "python_executable": "/Users/rexyoung/Desktop/vibe coding/Review_Today/agent-service/.venv/bin/python",
+  "provider": "deepseek",
+  "configured_models": {
+    "router": "deepseek-flash",
+    "coach": "deepseek-v4-flash",
+    "risk": "deepseek-v4-pro"
+  },
+  "provider_key_configured": true,
+  "config_changed": false,
+  "credentials_or_app_child_permissions_not_tested": true,
+  "native_ui_status": "MAC_LOCKED",
+  "native_ui_action_required": "User unlocks Mac manually; recheck CUA before launching once",
+  "daily_data_matches_closed_273": true,
+  "formal_databases_opened": false,
+  "model_requests": 0,
+  "web_operations": 0
+}

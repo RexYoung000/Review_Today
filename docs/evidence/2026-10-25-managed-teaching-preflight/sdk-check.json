@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "fixture": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-managed-sdk-yenx5r1e.noindex",
+  "fake_sdk_requests": 20,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "zero_web_entries_denied": 12,
+  "startup_first_failure_stops": false,
+  "ordinary_structured_and_stream_paths_checked": true,
+  "twenty_first_denied": true
+}

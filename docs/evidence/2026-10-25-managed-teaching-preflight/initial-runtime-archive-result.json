@@ -1,0 +1,16 @@
+{
+  "status": "OFFLINE_RUNTIME_ARCHIVE_PATH_CHECK_FAILED",
+  "reason": "The reused fingerprint helper resolves file symlinks; the Python reference was outside the owned runtime and could not be made relative. No App/service/provider runtime started.",
+  "partial_archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/prepared-runtime-initial-partial.zip",
+  "sha256": "28dae5e3e7dd43c54716d173bbf837b27b9c8237712121cd9b030940b34ac89d",
+  "readable_members": [
+    "authorization.json",
+    "HOLD",
+    "owned-project/agent-service/sitecustomize.py",
+    "owned-project/agent-service/__pycache__/sitecustomize.cpython-313.pyc",
+    "owned-project/agent-service/.venv/pyvenv.cfg"
+  ],
+  "correction": "Archive only owned regular files, retain symlink targets separately and keep their existing dependency fingerprints.",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0
+}

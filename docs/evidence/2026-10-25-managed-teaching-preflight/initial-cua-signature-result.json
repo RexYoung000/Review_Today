@@ -1,0 +1,11 @@
+{
+  "status": "OFFLINE_SIGNATURE_CHECK_FAILED",
+  "reason": "Changing CFBundleExecutable to the fixed environment wrapper made the previously signed full App binary a nested executable; its old Info.plist seal no longer matched. No UI or service was launched.",
+  "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/failed-cua-signature.zip",
+  "sha256": "eaaab5ea1e5372d6f45fd5caf27cda714c6933ea9ed82c2e3e3596936d742305",
+  "app_launched": false,
+  "service_started": false,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "correction": "Re-sign each owned Mach-O as nested code, then sign and strictly verify the owned wrapper bundle; require all three original text sections unchanged."
+}

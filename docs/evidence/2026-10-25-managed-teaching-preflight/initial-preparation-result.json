@@ -1,0 +1,33 @@
+{
+  "status": "OFFLINE_PREPARATION_CHECK_FAILED_BEFORE_RUNTIME",
+  "reason": "lsregister -u returned 1 with failed to scan / -10814 from spotlight; the registration dump contained neither clone path. The initial check=True stopped on that nonzero return. The specific scan-failure cause is not established.",
+  "app_launched": false,
+  "service_started": false,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "initial_runtime": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-managed-teaching-i1j29qkt.noindex",
+  "unregister_observations": [
+    {
+      "path": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-managed-teaching-i1j29qkt.noindex/ManagedTeachingQA.app",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "failed to scan /private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-managed-teaching-i1j29qkt.noindex/ManagedTeachingQA.app: -10814\n from spotlight"
+    },
+    {
+      "path": "/private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-managed-teaching-i1j29qkt.noindex/archive-check.noindex/ManagedTeachingQA.app",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "failed to scan /private/var/folders/1f/qrpq14zs5l137bq24ls4qmbr0000gn/T/review-today-managed-teaching-i1j29qkt.noindex/archive-check.noindex/ManagedTeachingQA.app: -10814\n from spotlight"
+    }
+  ],
+  "no_initial_clone_registration": true,
+  "initial_app_zip": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/initial-preparation-attempt/ManagedTeachingQA.zip",
+  "initial_app_zip_sha256": "f5d29eb2c1c66c05df0e64d16ea57c2807a2aa9784291d04a9c1cfe1fe3501e8",
+  "initial_script_sha256": null,
+  "raw_owned_app_copies_removed": true,
+  "additional_preparation_correction": "Use canonical /private/tmp runtime to satisfy the existing native isolation rule independent of macOS temp-directory aliases.",
+  "initial_script_capture_note": "The copied script was captured after the corrective edit during asynchronous cleanup. Retain it as prepare-after-correction.py. The original script is reconstructed from the exact edit; it is not a contemporaneous snapshot.",
+  "post_correction_script_sha256": "6cfab513409428903fdf9e9b91f8bd7e9cf9d01cd0c608c5174c8c4b62745446",
+  "reconstructed_initial_script_sha256": "5a68aaaa4c5025614002be8425b35910c315cfa1dd520711852500e69fc4f789",
+  "initial_script_reconstructed": true
+}

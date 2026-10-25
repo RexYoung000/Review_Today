@@ -1,0 +1,13 @@
+{
+  "status": "PASS_OFFLINE_NATIVE_UI_STILL_LOCKED_AT_LAST_CHECK",
+  "local_links_and_anchors_checked": 635,
+  "errors": [],
+  "python_files_parsed": 8,
+  "json_files_parsed": 14,
+  "current_source_pins_unchanged": 319,
+  "post_exit_native_dependencies_unchanged": 9,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "new_batch_pending_hold_no_ledger": true,
+  "app_service_and_ports_closed": true
+}
