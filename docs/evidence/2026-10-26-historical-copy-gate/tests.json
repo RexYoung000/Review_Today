@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "tests_run": 22,
+  "subtests": 11,
+  "failures": 0,
+  "errors": 0,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "network_and_sqlite_forbidden": true
+}

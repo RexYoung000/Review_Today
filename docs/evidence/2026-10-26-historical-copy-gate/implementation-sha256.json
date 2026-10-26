@@ -1,0 +1,6 @@
+{
+  "docs/evidence/2026-10-26-historical-copy-gate/evidence_gate.py": "41fd297dab3b2ded276b7b20affa1ac34e669251f647ffe5ae5f20e99a21eb16",
+  "docs/evidence/2026-10-26-historical-copy-gate/entry.py": "44e0667107851726c9a75587b0bf62dfcda06e9516f0dbcaa496480ac795a964",
+  "docs/evidence/2026-10-26-historical-copy-gate/policy.json": "a4480b6e1c2ba10790a90c0a8be0510503138e8bb90894c5160cda1b8d6a5d7d",
+  "tests/test_historical_copy_gate.py": "7d08f5573d830553bb3acfc34eba3682c2347761d21a727c99ee8d735340227a"
+}

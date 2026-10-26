@@ -1,0 +1,880 @@
+{
+  "status": "OFFLINE_PROTECTION_PASS_BATCH_STILL_STOPPED",
+  "decision": 276,
+  "historical_evidence": {
+    "expected_paths": 753,
+    "original_paths_matched": 632,
+    "original_paths_missing": [
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/quota.json",
+        "sha256": "3322d5840b39c017a6ba1c8f06ccac38d6fbcf03a7b7d26d52f5ef25d24c71de",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/3322d5840b39c017a6ba1c8f06ccac38d6fbcf03a7b7d26d52f5ef25d24c71de",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/live-events.jsonl",
+        "sha256": "e6b95c28b0bf9d6050b00fecc97175ce24fd5460fc2e610de0e47bf381be685b",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e6b95c28b0bf9d6050b00fecc97175ce24fd5460fc2e610de0e47bf381be685b",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/native-disk-reader",
+        "sha256": "af6d12999e1b91acaa7b218bc86830471a20af2e62e1e62cb96fa6002d696ef5",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/af6d12999e1b91acaa7b218bc86830471a20af2e62e1e62cb96fa6002d696ef5",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/native-disk-read.json",
+        "sha256": "1149855c58f0bc7e7fec8b02cc66ed296cc3b3ea05c79ff8a64372e6a6f8355b",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/1149855c58f0bc7e7fec8b02cc66ed296cc3b3ea05c79ff8a64372e6a6f8355b",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/app.store.review-v2-backup",
+        "sha256": "8992bdea1e6ac2927bc8810a5b2e66a2892e7921ec8a3e1955708a43763aeeeb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/8992bdea1e6ac2927bc8810a5b2e66a2892e7921ec8a3e1955708a43763aeeeb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/checkpoint.sqlite3",
+        "sha256": "dc0d043586e660015524f3cbc89b1977aa84f95108323b0a7cbf77e53bda5b03",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/dc0d043586e660015524f3cbc89b1977aa84f95108323b0a7cbf77e53bda5b03",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/STOP",
+        "sha256": "0d565b790e11cccf142d6a476df2788b7a4ee3beab5664f20c1beb390b150ced",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/0d565b790e11cccf142d6a476df2788b7a4ee3beab5664f20c1beb390b150ced",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/authorization.json",
+        "sha256": "ab4ed607e369428b93dfc5f92e30f1018780ec6572be2c1b5aebe48c226135ab",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/ab4ed607e369428b93dfc5f92e30f1018780ec6572be2c1b5aebe48c226135ab",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/NativeSaveQueryQA.swift",
+        "sha256": "d87814a7a9754f3bce0f524e6903432f45b9ea8c0643221cc6d19d660d65672c",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/d87814a7a9754f3bce0f524e6903432f45b9ea8c0643221cc6d19d660d65672c",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/app.store",
+        "sha256": "a1fad05c2e32857144783ab1d59b12ca2419bb51a5b554b9fd4a30b84e198115",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/a1fad05c2e32857144783ab1d59b12ca2419bb51a5b554b9fd4a30b84e198115",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/native-recheck-events.jsonl",
+        "sha256": "e66c7c46081abbb5d26f98de68a4f3888ca3cda12a23e275be17c36ada78b34b",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e66c7c46081abbb5d26f98de68a4f3888ca3cda12a23e275be17c36ada78b34b",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/qa-config.json",
+        "sha256": "77e1d27095e9967f97a9c9553b2e56c7ca2f4cef305bfaabd4b4e446133d618f",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/77e1d27095e9967f97a9c9553b2e56c7ca2f4cef305bfaabd4b4e446133d618f",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/source-checkpoint.json",
+        "sha256": "81f296f1fd6ac811714de35e3f39faab7303e34ac16436a5bf809c60efa84d0f",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/81f296f1fd6ac811714de35e3f39faab7303e34ac16436a5bf809c60efa84d0f",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/quota.lock",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/comparison-original/app.store.review-v2-backup",
+        "sha256": "8992bdea1e6ac2927bc8810a5b2e66a2892e7921ec8a3e1955708a43763aeeeb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/8992bdea1e6ac2927bc8810a5b2e66a2892e7921ec8a3e1955708a43763aeeeb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/comparison-original/app.store",
+        "sha256": "a6564475923dcf8033b4372aaa4a58a91edd39a31ee34be8d0d0ab9fae4572e9",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/a6564475923dcf8033b4372aaa4a58a91edd39a31ee34be8d0d0ab9fae4572e9",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/probe/permission-probe-result.json",
+        "sha256": "0a64fe6163d7013855c1f8dace206fc28b515aef49f513efcfc8eb2fdc24290a",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/0a64fe6163d7013855c1f8dace206fc28b515aef49f513efcfc8eb2fdc24290a",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/probe/permission-probe.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/probe/permission-probe.stdout",
+        "sha256": "8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/owned-project/agent-service/sitecustomize.py",
+        "sha256": "ccd3613e2586f5d4d2b56d847f67a234f5d053098e2784e0e770af06f87c70d9",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/ccd3613e2586f5d4d2b56d847f67a234f5d053098e2784e0e770af06f87c70d9",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/owned-project/agent-service/__pycache__/sitecustomize.cpython-313.pyc",
+        "sha256": "07b544d3e74ca0426fbcce0369cc2f2c044e9c3521522e5c6860896a2fea359f",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/07b544d3e74ca0426fbcce0369cc2f2c044e9c3521522e5c6860896a2fea359f",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-save-query-native-pending-18ddwmdc/owned-project/agent-service/.venv/pyvenv.cfg",
+        "sha256": "5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/quota.json",
+        "sha256": "9cb1ff896f0e5b093e7a3d1bc79639ec84c6aaa87c3e569cdcbadd8889df15d2",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/9cb1ff896f0e5b093e7a3d1bc79639ec84c6aaa87c3e569cdcbadd8889df15d2",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/live-events.jsonl",
+        "sha256": "0f4cb3d998cfadc230a352664ad3458f6caf4ffb9957f24d4e2dd48bf9219066",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/0f4cb3d998cfadc230a352664ad3458f6caf4ffb9957f24d4e2dd48bf9219066",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/native-disk-reader",
+        "sha256": "af6d12999e1b91acaa7b218bc86830471a20af2e62e1e62cb96fa6002d696ef5",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/af6d12999e1b91acaa7b218bc86830471a20af2e62e1e62cb96fa6002d696ef5",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/native-disk-read.json",
+        "sha256": "f2df62f85192e6239d80c2b3eda9214ffd345b0352270cca6f878b0dc1d1bcae",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/f2df62f85192e6239d80c2b3eda9214ffd345b0352270cca6f878b0dc1d1bcae",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/app.store.review-v2-backup",
+        "sha256": "8992bdea1e6ac2927bc8810a5b2e66a2892e7921ec8a3e1955708a43763aeeeb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/8992bdea1e6ac2927bc8810a5b2e66a2892e7921ec8a3e1955708a43763aeeeb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/checkpoint.sqlite3",
+        "sha256": "04076081a0bb2453771e3d0956ec7424e806b5575d851729b09f8b23295773c9",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/04076081a0bb2453771e3d0956ec7424e806b5575d851729b09f8b23295773c9",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/STOP",
+        "sha256": "e7f6250bb5b80bb8b3bb03343728024d738a013d95b873a952ae06d7cca3a4c8",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e7f6250bb5b80bb8b3bb03343728024d738a013d95b873a952ae06d7cca3a4c8",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/authorization.json",
+        "sha256": "1db5b34c9281eacb2b4fb2b10168d75d1b5319d0d39672e4dae802781a47a7b1",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/1db5b34c9281eacb2b4fb2b10168d75d1b5319d0d39672e4dae802781a47a7b1",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/app.store",
+        "sha256": "a6564475923dcf8033b4372aaa4a58a91edd39a31ee34be8d0d0ab9fae4572e9",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/a6564475923dcf8033b4372aaa4a58a91edd39a31ee34be8d0d0ab9fae4572e9",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/native-recheck-events.jsonl",
+        "sha256": "4982547619c3369b9bb237ef227b24bdaffd93ca8904686a7a2039fd7edf65bd",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/4982547619c3369b9bb237ef227b24bdaffd93ca8904686a7a2039fd7edf65bd",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/qa-config.json",
+        "sha256": "77e1d27095e9967f97a9c9553b2e56c7ca2f4cef305bfaabd4b4e446133d618f",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/77e1d27095e9967f97a9c9553b2e56c7ca2f4cef305bfaabd4b4e446133d618f",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/source-checkpoint.json",
+        "sha256": "81f296f1fd6ac811714de35e3f39faab7303e34ac16436a5bf809c60efa84d0f",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/81f296f1fd6ac811714de35e3f39faab7303e34ac16436a5bf809c60efa84d0f",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/app.store-shm",
+        "sha256": "9dd5633894ba05548052fb97b30c2dc5dcea5217e9c66150cbcc0ff46a6e5fe2",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/9dd5633894ba05548052fb97b30c2dc5dcea5217e9c66150cbcc0ff46a6e5fe2",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/app.store-wal",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/quota.lock",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/probe/permission-probe-result.json",
+        "sha256": "68a6344ecdc9a3d5fc85579f5fd7aaa60400b3161d12794c3b5982b0ea1c90ff",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/68a6344ecdc9a3d5fc85579f5fd7aaa60400b3161d12794c3b5982b0ea1c90ff",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/probe/permission-probe.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/probe/permission-probe.stdout",
+        "sha256": "8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/ReviewBackups/before-review-v2-2F38F8F4-CE39-44C1-9DC6-1B92E5F81550.sqlite3-shm",
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/ReviewBackups/before-review-v2-2F38F8F4-CE39-44C1-9DC6-1B92E5F81550.sqlite3",
+        "sha256": "539ccb4c79b4d690b29191304e0f3b90f955acc4f1ca542a34201d591d7a722c",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/539ccb4c79b4d690b29191304e0f3b90f955acc4f1ca542a34201d591d7a722c",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/owned-project/agent-service/sitecustomize.py",
+        "sha256": "75a3512ea065f0bf9f995137541befab70eab2e4b67f9905c786f077e554dbf0",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/75a3512ea065f0bf9f995137541befab70eab2e4b67f9905c786f077e554dbf0",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/owned-project/agent-service/__pycache__/sitecustomize.cpython-313.pyc",
+        "sha256": "323f47a3ae79ddd115ef9989ef394dfdf44d86ca7ecf708086ceb5504bdc76fb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/323f47a3ae79ddd115ef9989ef394dfdf44d86ca7ecf708086ceb5504bdc76fb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/owned-project/agent-service/.venv/pyvenv.cfg",
+        "sha256": "5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/used-native-contents/_CodeSignature/CodeResources",
+        "sha256": "6686de10a28a2fe11b36cbb86dcbacc827cfc4ea116b4dabf1845e5aee629e9b",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/6686de10a28a2fe11b36cbb86dcbacc827cfc4ea116b4dabf1845e5aee629e9b",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/used-native-contents/MacOS/ContinuousResumeQA",
+        "sha256": "2b3caa184580e9e78d7d54657d5da460f51e08b8ff61979384ffec9d57596e54",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/2b3caa184580e9e78d7d54657d5da460f51e08b8ff61979384ffec9d57596e54",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/prior-resume-app/Contents/Info.plist",
+        "sha256": "b2b1205e9c4051868fff42cdb46a301f34fbf3d7a8832fcd7aa00cbb0d275a47",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/b2b1205e9c4051868fff42cdb46a301f34fbf3d7a8832fcd7aa00cbb0d275a47",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/prior-resume-app/Contents/_CodeSignature/CodeResources",
+        "sha256": "6686de10a28a2fe11b36cbb86dcbacc827cfc4ea116b4dabf1845e5aee629e9b",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/6686de10a28a2fe11b36cbb86dcbacc827cfc4ea116b4dabf1845e5aee629e9b",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-real-az0cls1f/prior-resume-app/Contents/MacOS/ContinuousResumeQA",
+        "sha256": "ea44f651006051c6a50f54c02835eb9ee4a16c02f60df8869399785799cc5ab7",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/ea44f651006051c6a50f54c02835eb9ee4a16c02f60df8869399785799cc5ab7",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-learning-save-pending-vh7ko8um/HOLD",
+        "sha256": "2d6fc92881416d470f4e820d1320d84a47d90f2b33cff03b8c5de3a7a77ca399",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/2d6fc92881416d470f4e820d1320d84a47d90f2b33cff03b8c5de3a7a77ca399",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/quota.json",
+        "sha256": "91c4ff760d4aaf885b479c6ec40157c06d25e296df51c27fa0c2c5ffb8eccf69",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/91c4ff760d4aaf885b479c6ec40157c06d25e296df51c27fa0c2c5ffb8eccf69",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/live-events.jsonl",
+        "sha256": "1a733938890fce35479bf15d2a6685c8ae6fbf897819bbd6ac9895e001e6721a",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/1a733938890fce35479bf15d2a6685c8ae6fbf897819bbd6ac9895e001e6721a",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/empty-native-reader",
+        "sha256": "eca999d11fe7c7dd9ba8a5035ee6e897b978447488d0d0e9b00a9ce9877a6126",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/eca999d11fe7c7dd9ba8a5035ee6e897b978447488d0d0e9b00a9ce9877a6126",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/final-native-reader",
+        "sha256": "c46e74edd35ffb318ddd99fc240ffaa3826063a4721e0c2181cd9ccedbd8df8b",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/c46e74edd35ffb318ddd99fc240ffaa3826063a4721e0c2181cd9ccedbd8df8b",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/native-disk-read.json",
+        "sha256": "9090be90341f173440c2ccb9820f4d7127cbc81bacab50aacffedd36fb7bb6ab",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/9090be90341f173440c2ccb9820f4d7127cbc81bacab50aacffedd36fb7bb6ab",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/app.store.review-v2-backup",
+        "sha256": "915bc2f557332304d75c131436a5aadf0a38be898d585991b135e2f06b50feff",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/915bc2f557332304d75c131436a5aadf0a38be898d585991b135e2f06b50feff",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/checkpoint.sqlite3",
+        "sha256": "c54ecb2caf93428dbbd5a1e75c07b3813cdf50d931f34a9fe92f97ddca146240",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/c54ecb2caf93428dbbd5a1e75c07b3813cdf50d931f34a9fe92f97ddca146240",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/STOP",
+        "sha256": "df1c589e29738cae7d6c9820ecb9135aeb83ec548645745bc6abd7664a7b6e0c",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/df1c589e29738cae7d6c9820ecb9135aeb83ec548645745bc6abd7664a7b6e0c",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/authorization.json",
+        "sha256": "587ee157b9c21dbeacbdc1da61742de583103ec69ab82cd2ab0fa86a9f8bad7b",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/587ee157b9c21dbeacbdc1da61742de583103ec69ab82cd2ab0fa86a9f8bad7b",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/app.store",
+        "sha256": "f375c0114d02090acd5d2c2c8c4ff9d92be62f01983f5231cef32f4c9c71bec4",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/f375c0114d02090acd5d2c2c8c4ff9d92be62f01983f5231cef32f4c9c71bec4",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/native-recheck-events.jsonl",
+        "sha256": "029a7d1837c27f4f7759dfb323d68b66389523d9f7aaab3915611a384f48741e",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/029a7d1837c27f4f7759dfb323d68b66389523d9f7aaab3915611a384f48741e",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/qa-config.json",
+        "sha256": "16dbd006a614424ce45ba7e1908693d2238db591bf393197ca53186548faedb3",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/16dbd006a614424ce45ba7e1908693d2238db591bf393197ca53186548faedb3",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/app.store-shm",
+        "sha256": "e019fd1b5a30a31c19c7bd99280dc39c4951944f77212f08447a4103f60fe324",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e019fd1b5a30a31c19c7bd99280dc39c4951944f77212f08447a4103f60fe324",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/app.store-wal",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/quota.lock",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/probe/permission-probe-result.json",
+        "sha256": "11b6f398727f750399e515bd07edf1f044f7b3be2e30bf9efdc4099ed77319dc",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/11b6f398727f750399e515bd07edf1f044f7b3be2e30bf9efdc4099ed77319dc",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/probe/permission-probe.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/probe/permission-probe.stdout",
+        "sha256": "8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/prelaunch-empty-check/checkpoint.sqlite3",
+        "sha256": "dbaed7a81984bf653cf2dec414a35d77d890f37e7a27a8cfad3bd82384bd3f9f",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/dbaed7a81984bf653cf2dec414a35d77d890f37e7a27a8cfad3bd82384bd3f9f",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/prelaunch-empty-check/app.store",
+        "sha256": "b561ce5b2790bdd38b0b3df82d16495384be6d10e8011404ef909e2d2f19a6e0",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/b561ce5b2790bdd38b0b3df82d16495384be6d10e8011404ef909e2d2f19a6e0",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/ReviewBackups/before-review-v2-DBCEE0AA-AF1F-4AA7-94AF-5A5FBA5B5A78.sqlite3-shm",
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/ReviewBackups/before-review-v2-DBCEE0AA-AF1F-4AA7-94AF-5A5FBA5B5A78.sqlite3",
+        "sha256": "434175dfe5f3e6c1f71cb52b17ab4add015ec57121d492116828c0c3fa985660",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/434175dfe5f3e6c1f71cb52b17ab4add015ec57121d492116828c0c3fa985660",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/owned-project/agent-service/sitecustomize.py",
+        "sha256": "5bc8c929ef43d432f467fd92191de5eb302de20f2a207f1cc740ad68ac072bde",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/5bc8c929ef43d432f467fd92191de5eb302de20f2a207f1cc740ad68ac072bde",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/owned-project/agent-service/__pycache__/sitecustomize.cpython-313.pyc",
+        "sha256": "e4c33354e719e2d5c8c42fb2704e87561eb0b834d3d3746a17e2de0d8dc645c9",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e4c33354e719e2d5c8c42fb2704e87561eb0b834d3d3746a17e2de0d8dc645c9",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-continuous-learning-pending-ly7q01m0/owned-project/agent-service/.venv/pyvenv.cfg",
+        "sha256": "5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/quota.json",
+        "sha256": "615779fd7d1d6c4c23e832dc9118e168f68fb7b55f0f38379429a2a32c5b482c",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/615779fd7d1d6c4c23e832dc9118e168f68fb7b55f0f38379429a2a32c5b482c",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/live-events.jsonl",
+        "sha256": "8c82bf93e736305db6384bbcf954d9b5d509d0d47ee4b1d59450489390f580c3",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/8c82bf93e736305db6384bbcf954d9b5d509d0d47ee4b1d59450489390f580c3",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/empty-native-reader",
+        "sha256": "eca999d11fe7c7dd9ba8a5035ee6e897b978447488d0d0e9b00a9ce9877a6126",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/eca999d11fe7c7dd9ba8a5035ee6e897b978447488d0d0e9b00a9ce9877a6126",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/final-native-reader",
+        "sha256": "c46e74edd35ffb318ddd99fc240ffaa3826063a4721e0c2181cd9ccedbd8df8b",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/c46e74edd35ffb318ddd99fc240ffaa3826063a4721e0c2181cd9ccedbd8df8b",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/native-disk-read.json",
+        "sha256": "9eb7fe65447cafc6575975126f5fd13e4f9c25eb47856a1bfd02d863265d5758",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/9eb7fe65447cafc6575975126f5fd13e4f9c25eb47856a1bfd02d863265d5758",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/app.store.review-v2-backup",
+        "sha256": "d39cadcb26855f0e72d9585ac53797561679fd5d4cc1f22daca2cd8ba25498f3",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/d39cadcb26855f0e72d9585ac53797561679fd5d4cc1f22daca2cd8ba25498f3",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/checkpoint.sqlite3",
+        "sha256": "1176f985ef253756a4b5a9e8fb1327cf4a47b6839174ed7b6f1de842dfb5ec46",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/1176f985ef253756a4b5a9e8fb1327cf4a47b6839174ed7b6f1de842dfb5ec46",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/STOP",
+        "sha256": "62aac03083ae69bad82dd3a0dc957430b2e44c641d19697120213b32f9316e28",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/62aac03083ae69bad82dd3a0dc957430b2e44c641d19697120213b32f9316e28",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/authorization.json",
+        "sha256": "2e414770d6a8de7f944abc36515dc7bc13ad0e721633b7a6ce9e28b53cbac650",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/2e414770d6a8de7f944abc36515dc7bc13ad0e721633b7a6ce9e28b53cbac650",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/app.store",
+        "sha256": "82aad157d4758d2f4e0c36c500c9d90164e7da95640d6ea869c696f44994820c",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/82aad157d4758d2f4e0c36c500c9d90164e7da95640d6ea869c696f44994820c",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/native-recheck-events.jsonl",
+        "sha256": "404411a8971b72458a6d1d1aaee1eeee4f724635e7207d0b51c845bea7493741",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/404411a8971b72458a6d1d1aaee1eeee4f724635e7207d0b51c845bea7493741",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/qa-config.json",
+        "sha256": "0a8201f05028014e003840398109fa101435add2f34cbc104988ff98a8fc09d3",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/0a8201f05028014e003840398109fa101435add2f34cbc104988ff98a8fc09d3",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/app.store-shm",
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/app.store-wal",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/quota.lock",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/probe/permission-probe-result.json",
+        "sha256": "677739d6094d2df4d04c0f979dc0bcbe072a0dd95c7dfa41ec88cd5c86f2080b",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/677739d6094d2df4d04c0f979dc0bcbe072a0dd95c7dfa41ec88cd5c86f2080b",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/probe/permission-probe.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/probe/permission-probe.stdout",
+        "sha256": "8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/ReviewBackups/before-review-v2-9C8A96CF-7A0D-405B-9628-4C73877F6AEC.sqlite3",
+        "sha256": "563cfdc7d8587f641f3e890528d519f3e87926c27751c61b490946fc420a3fab",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/563cfdc7d8587f641f3e890528d519f3e87926c27751c61b490946fc420a3fab",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/ReviewBackups/before-review-v2-9C8A96CF-7A0D-405B-9628-4C73877F6AEC.sqlite3-shm",
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/owned-project/agent-service/sitecustomize.py",
+        "sha256": "e9414ed5b4ab2f952e009289fbc52d53d0c5ca60ca60b1a3389e2c3a77b02678",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e9414ed5b4ab2f952e009289fbc52d53d0c5ca60ca60b1a3389e2c3a77b02678",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/owned-project/agent-service/__pycache__/sitecustomize.cpython-313.pyc",
+        "sha256": "cf8e25ac75951a5f583bd8b0ee13779f2895c4ab03c40ae7a25043443d48fd10",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/cf8e25ac75951a5f583bd8b0ee13779f2895c4ab03c40ae7a25043443d48fd10",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-first-preview-pending-8dzum5y0/owned-project/agent-service/.venv/pyvenv.cfg",
+        "sha256": "5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/quota.json",
+        "sha256": "85e798e28305d7097539b5c4026c53ab4bc028324ca45ec363c91ca8cdf9ab02",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/85e798e28305d7097539b5c4026c53ab4bc028324ca45ec363c91ca8cdf9ab02",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/live-events.jsonl",
+        "sha256": "8fc0e210576a70d37dcc518a73679b1fa4c50bc78c8d519275403be74a04cedb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/8fc0e210576a70d37dcc518a73679b1fa4c50bc78c8d519275403be74a04cedb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/final-native-reader",
+        "sha256": "c46e74edd35ffb318ddd99fc240ffaa3826063a4721e0c2181cd9ccedbd8df8b",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/c46e74edd35ffb318ddd99fc240ffaa3826063a4721e0c2181cd9ccedbd8df8b",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/native-disk-read.json",
+        "sha256": "2f3b9169ca849ac17e2ebc0862aa48aca0ef6a33966b6beda91cb1b46d0e999d",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/2f3b9169ca849ac17e2ebc0862aa48aca0ef6a33966b6beda91cb1b46d0e999d",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/app.store.review-v2-backup",
+        "sha256": "d39cadcb26855f0e72d9585ac53797561679fd5d4cc1f22daca2cd8ba25498f3",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/d39cadcb26855f0e72d9585ac53797561679fd5d4cc1f22daca2cd8ba25498f3",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/checkpoint.sqlite3",
+        "sha256": "282e03d148f75addca9db043ffff51bfe85ed3d158ec796d58aca6c40d090327",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/282e03d148f75addca9db043ffff51bfe85ed3d158ec796d58aca6c40d090327",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/STOP",
+        "sha256": "4fdd0fcd430a7c2041b7c818d91379fb55254b8800fc2386afedea2ef5e19df9",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/4fdd0fcd430a7c2041b7c818d91379fb55254b8800fc2386afedea2ef5e19df9",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/authorization.json",
+        "sha256": "f042fce7b6c0c40a0b6f6c19c8c5fc386df79fa3cb7b47cca46c1cfeedada6b7",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/f042fce7b6c0c40a0b6f6c19c8c5fc386df79fa3cb7b47cca46c1cfeedada6b7",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/app.store",
+        "sha256": "149552c6ef97998cf2f6e7dc8495f3edd678489a40d7e851c79afe9a7ac6dc97",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/149552c6ef97998cf2f6e7dc8495f3edd678489a40d7e851c79afe9a7ac6dc97",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/native-recheck-events.jsonl",
+        "sha256": "844e7bb9ff66f478b32d636b707fb0935209438a8245e307c7892d60c5f735a0",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/844e7bb9ff66f478b32d636b707fb0935209438a8245e307c7892d60c5f735a0",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/qa-config.json",
+        "sha256": "0a8201f05028014e003840398109fa101435add2f34cbc104988ff98a8fc09d3",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/0a8201f05028014e003840398109fa101435add2f34cbc104988ff98a8fc09d3",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/app.store-shm",
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/app.store-wal",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/quota.lock",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/probe/permission-probe-result.json",
+        "sha256": "3816a6bc6a54c172d2c1c73c52552135148a69ebb7752ddd1e9bb069e1fa5ad8",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/3816a6bc6a54c172d2c1c73c52552135148a69ebb7752ddd1e9bb069e1fa5ad8",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/probe/permission-probe.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/probe/permission-probe.stdout",
+        "sha256": "8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/8fd5d0c70147a24d24c92c5ae1a300defc5a53da1de3f05a0cbd240995eacaea",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/ReviewBackups/before-review-v2-9C8A96CF-7A0D-405B-9628-4C73877F6AEC.sqlite3",
+        "sha256": "563cfdc7d8587f641f3e890528d519f3e87926c27751c61b490946fc420a3fab",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/563cfdc7d8587f641f3e890528d519f3e87926c27751c61b490946fc420a3fab",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/ReviewBackups/before-review-v2-9C8A96CF-7A0D-405B-9628-4C73877F6AEC.sqlite3-shm",
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/owned-project/agent-service/sitecustomize.py",
+        "sha256": "5628514c54536d10f7dd0dd710d1665ee319469cc5e66f31b63a0143de604751",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/5628514c54536d10f7dd0dd710d1665ee319469cc5e66f31b63a0143de604751",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/owned-project/agent-service/__pycache__/sitecustomize.cpython-313.pyc",
+        "sha256": "b5d7b7e3e59e8ce3475448b20a903aa40984f72efe3d36cade547198ea399899",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/b5d7b7e3e59e8ce3475448b20a903aa40984f72efe3d36cade547198ea399899",
+        "original_path_missing": true,
+        "bytes_verified": true
+      },
+      {
+        "original_path": "/tmp/review-today-preview-save-pending-a9aqb_be/owned-project/agent-service/.venv/pyvenv.cfg",
+        "sha256": "5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+        "durable_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects/5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+        "original_path_missing": true,
+        "bytes_verified": true
+      }
+    ],
+    "durable_paths_verified": 121,
+    "unique_durable_objects_verified": 82,
+    "original_missing_fact_retained": true,
+    "complete_runtime_restoration_claimed": false
+  },
+  "current_source_pins_strict": 319,
+  "strict_formal_files": 7,
+  "strict_execution_dependencies": 9,
+  "strict_module_counts": {
+    "original_module_files": 8,
+    "owned_support_files": 8
+  },
+  "strict_runtime_dependency_links": 2,
+  "strict_original_backup_files": 17,
+  "stopped_runtime_original_paths_strict": true,
+  "user_project_diff_preserved": true,
+  "daily_app_inventory_preserved": true,
+  "previous_12_path_gaps_preserved": true,
+  "old_20_0_pending_hold_stop_preserved": true,
+  "no_batch_activation": true,
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "formal_databases_opened": false,
+  "app_or_service_started": false
+}

@@ -1,0 +1,2 @@
+usage: entry.py [-h] [--json]
+entry.py: error: unrecognized arguments: --activate

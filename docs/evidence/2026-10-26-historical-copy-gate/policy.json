@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "decision": 276,
+  "user_answer": "用持久副本核验（推荐）",
+  "scope": "Only the 121 historical evidence paths enumerated by entry 275; keep original-path missing facts. No fallback for source, daily data, current runtime, dependencies or any unapproved path.",
+  "approved_missing_count": 121,
+  "approved_path_hashes_sha256": "0381b499fb79a43f65e8e81716a06999e07a59f9f770966b6575779288768013",
+  "copy_root": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/recovered-byte-objects",
+  "anchors": {
+    "baseline": {
+      "path": "docs/evidence/2026-10-25-daily-service-preflight/setup.json",
+      "sha256": "9aef1be313501dbffceaf5e0616dddd07e3316c0daaf54f61c658a531738cf33"
+    },
+    "entry": {
+      "path": "docs/evidence/2026-10-26-managed-teaching-entry/entry-check.json",
+      "sha256": "07e0388a673329f5ace11c50257b0eb275763e8187bf38739dc0b6ee6020f717"
+    },
+    "copies": {
+      "path": "docs/evidence/2026-10-26-managed-teaching-entry/archived-copies.json",
+      "sha256": "da4e266482a0c258b9084fce91e3fca4a1adedf82ded02031fb74a1838404a3d"
+    },
+    "prepared_setup": {
+      "path": "docs/evidence/2026-10-25-managed-teaching-preflight/setup.json",
+      "sha256": "21561037a2ad0f69e7ad0253a7bdda5acc2d64b53f7779f53617b1bd96257a71"
+    },
+    "stop": {
+      "path": "docs/evidence/2026-10-26-managed-teaching-entry/STOP.json",
+      "sha256": "a8a1b6499e27ccf1713b7dc5aec0754cf306ecd3e8419e7e0fe99f86ac5ebf3f"
+    }
+  },
+  "no_batch_activation": true,
+  "no_frozen_allowance_restore": true,
+  "strict_metadata": {
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-25-daily-service-preflight/artifact-sha256.json": "1b2330b1b8116448570ea6df9066903deaab0450028b446c17cd2ca503829824",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-25-daily-service-real/artifact-sha256.json": "dce44443830dadb715da957f63be734cc38d61e321186a9205115c2132e52fa2",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-25-managed-teaching-preflight/source-pins.json": "57bafa42d46e032e532a462a5ce174f7cb1b86eb8e242018e080ed14ffb697a4",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-25-managed-teaching-preflight/artifact-sha256.json": "dd304af1074a6876b404e1f37baf4ecab16afb8d7ee1730bd25c3718bb096a48",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/docs/evidence/2026-10-26-managed-teaching-entry/artifact-sha256.json": "7d6e2fafcde42fcc43c49293459029b37d0bd2b4116eeece08991f09d984e6c4",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/daily-service-preflight-2026-10-25/backup-pins.json": "575b628ee338a4f7658833843facfa4e9ea49802e05da54520665ab640c17c40",
+    "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/managed-teaching-preflight-2026-10-25/runtime-pins.json": "d79e72b3e31273539e4f6d000b1329ec61a4f3367e590dc9542139b1f5ec6f7c",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/actual-runtime-manifest.json": "bcd2c9c92739a532e7f2dab4ff00f95c67385f5ea5c8bd8bf20e61ea6f08a0df",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/actual-public-records-manifest.json": "a6bb210d2ef7c50da9d0709d76b9143d27a3a07771882120a931fd1994fa9157"
+  },
+  "stopped_control_files": {
+    "/private/tmp/review-today-managed-teaching-pzs53slb.noindex/STOP": "1b3202e0425d610dc8fadd3ad422264fdf78cb8371a18b17fcc06c549ae79293"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "old-launcher.log": "4efda673af14e63ec79d723c17fde8c7f19166209af6355491090adffbf65111",
+  "policy.json": "a4480b6e1c2ba10790a90c0a8be0510503138e8bb90894c5160cda1b8d6a5d7d",
+  "tests.json": "17b5f17ca6d44537d9ddbc14063ce50f0e4c011cc8b50a75019b62b5aa10e148",
+  "evidence_gate.py": "41fd297dab3b2ded276b7b20affa1ac34e669251f647ffe5ae5f20e99a21eb16",
+  "entry-result.json": "6094e193e161748cd3b477392b90901c42362316c3c457147d7893a2b6d40df8",
+  "README.md": "f73b2043a7dbe2c202b4a006654b2d8b474a825740a4b2efb92d5f32edf9f711",
+  "entry.py": "44e0667107851726c9a75587b0bf62dfcda06e9516f0dbcaa496480ac795a964",
+  "document-check.json": "a5c49a2bcaf14b3d2aba88cba358d0a5e0cc9588909281083c8d488830bba168",
+  "activation-flag.log": "cbfa5d7bd69c3002415ba99027696da1fe8addfccea46dedf4c6351371072416",
+  "verification.json": "763f80712be1cb8063d78b6bd7ae3651cd151c48cda4cf97aeb6b43a856aa001",
+  "implementation-sha256.json": "abb5a2acf904cafd6ebc70607d4c40ba866e3b8619e14a33a7002440cd8328a1"
+}
