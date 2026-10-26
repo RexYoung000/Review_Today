@@ -1,0 +1,11 @@
+{
+  "entry-check.json": "07e0388a673329f5ace11c50257b0eb275763e8187bf38739dc0b6ee6020f717",
+  "setup.json": "97f4a9839c16ce0deddb9845f8f9d61072e3dbe6c48e6aec572a5aac609e79aa",
+  "archived-copies.json": "da4e266482a0c258b9084fce91e3fca4a1adedf82ded02031fb74a1838404a3d",
+  "audit_archived_copies.py": "157c2f4ec236eac87bd0f509a409515749158b12c5128348f0b664b9679e72a3",
+  "finalize.py": "2461b9d6e80ea6fb3e6bfc05d47812c7becca2e6d1e2ec242e5b0c4cd3e88a87",
+  "README.md": "e7228cb30828bd82d3ed2a0a82699bbc33888145cfe94a0532d00ed829747db7",
+  "document-check.json": "759e6b069c95357461a34a28f9b8a6e108be77ee3c3f4a9b1771bc68e251cf8d",
+  "verification.json": "a80fe9428b0cd51d10ce4f26c6b7eae6daa0cab107d7706465cfbd1031b8f5ae",
+  "STOP.json": "a8a1b6499e27ccf1713b7dc5aec0754cf306ecd3e8419e7e0fe99f86ac5ebf3f"
+}

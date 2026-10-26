@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "local_links_and_anchors_checked": 635,
+  "python_files_parsed": 2,
+  "json_files_parsed": 5,
+  "errors": [],
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "scope": "stopped admission and exact historical byte copies; no changed admission policy or native experience validation"
+}

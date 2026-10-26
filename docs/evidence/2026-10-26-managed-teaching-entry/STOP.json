@@ -1,0 +1,11 @@
+{
+  "status": "STOPPED_BEFORE_ACTIVATION",
+  "batch_id": "79d2e5c8-6bf5-41f9-886e-2c1bdb11213d",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "unused_model_requests": 20,
+  "unused_web_operations": 0,
+  "pending_and_hold_preserved": true,
+  "real_ledger_not_created": true,
+  "no_reactivation_authorized": true
+}
