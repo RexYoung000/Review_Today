@@ -1,0 +1,431 @@
+{
+  "status": "COPIES_INSPECTED_NOT_BASELINE_APPROVAL",
+  "recorded_at": "2026-11-06T12:20:27.782705+08:00",
+  "private_copy_directory": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-formal-copy-review-91dke51e",
+  "formal_originals_unchanged_during_review": true,
+  "original_database_connections": 0,
+  "approved_new_baseline": false,
+  "current_file_pins": {
+    "agent-harness.sqlite3": "6b6b3cf0aa21a0f4e857dad37f2e65694269a556e5af07d43925d00c007b3455",
+    "agent-harness.review.sqlite3": "0f4644947dd4f683f30f15a156ba640653f949b13aaf373c826e6c7b62790d7d",
+    "Data/ReviewToday.store-shm": "da6c426a4bc7ecb6f60bd058ef159d36b1a2e06f2b6a3e3f6eb8a323586c64cf",
+    "Data/ReviewToday.store-wal": "b6447d5e598945fcc016000323acadeac5d4c6516e128e33f6d329b4df2830ee",
+    "Data/ReviewToday.store": "7fa9dfbbab53ed49d86550a6df57a98b89588b7255ae0ec6753c63d737c86899",
+    "Data/ReviewToday.store.review-v2-backup": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1"
+  },
+  "old_file_pins": {
+    "agent-harness.sqlite3": "e7d1c3c2479e2f918da190df54c5541fae198afa0cd0aeba55705e87e786e2aa",
+    "agent-harness.review.sqlite3": "42230939198caa67493b353bd139d7c5134bc606dd971dcec00fe406882e5716",
+    "Data/ReviewToday.store-shm": "05313aa02bdd045333f8d6502a86a677ee29ce88fd4f1d1554e3037c4bdbaca7",
+    "Data/ReviewToday.store-wal": "382b68616be7bdfe84348b39b1c616d29daa799b034f352956f09cf947e6f1cb",
+    "Data/ReviewToday.store": "aa0fec6995c8196bbba8894ac9bfd40ff6ff247661f1d96c6d198b15ed3254c9",
+    "Data/ReviewToday.store.review-v2-backup": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+    "Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1"
+  },
+  "databases": {
+    "native": {
+      "old_integrity": "ok",
+      "current_integrity": "ok",
+      "tables": [
+        {
+          "table": "ACHANGE",
+          "old_count": 1225463,
+          "current_count": 1333473,
+          "schema_matches": true,
+          "identical_rows": 1225463,
+          "added_ids": 108010,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ATRANSACTION",
+          "old_count": 1212449,
+          "current_count": 1320448,
+          "schema_matches": true,
+          "identical_rows": 1212449,
+          "added_ids": 107999,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ATRANSACTIONSTRING",
+          "old_count": 22,
+          "current_count": 22,
+          "schema_matches": true,
+          "identical_rows": 22,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZAGENTMESSAGE",
+          "old_count": 37,
+          "current_count": 37,
+          "schema_matches": true,
+          "identical_rows": 37,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZAGENTRUN",
+          "old_count": 19,
+          "current_count": 19,
+          "schema_matches": true,
+          "identical_rows": 19,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZAGENTRUNCONTROL",
+          "old_count": 0,
+          "current_count": 0,
+          "schema_matches": true,
+          "identical_rows": 0,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZAGENTSESSION",
+          "old_count": 8,
+          "current_count": 8,
+          "schema_matches": true,
+          "identical_rows": 0,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 8,
+          "changed_columns_counts": {
+            "Z_OPT": 8
+          }
+        },
+        {
+          "table": "ZAPPSETTINGS",
+          "old_count": 1,
+          "current_count": 1,
+          "schema_matches": true,
+          "identical_rows": 0,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 1,
+          "changed_columns_counts": {
+            "Z_OPT": 1,
+            "ZAGENTDRAFTMODE": 1
+          }
+        },
+        {
+          "table": "ZCAPTURETASK",
+          "old_count": 0,
+          "current_count": 0,
+          "schema_matches": true,
+          "identical_rows": 0,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZFSRSSTATE",
+          "old_count": 11,
+          "current_count": 11,
+          "schema_matches": true,
+          "identical_rows": 11,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZKNOWLEDGE",
+          "old_count": 11,
+          "current_count": 11,
+          "schema_matches": true,
+          "identical_rows": 11,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZKNOWLEDGEREFERENCE",
+          "old_count": 3,
+          "current_count": 3,
+          "schema_matches": true,
+          "identical_rows": 3,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZLEARNINGTASK",
+          "old_count": 5,
+          "current_count": 5,
+          "schema_matches": true,
+          "identical_rows": 2,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 3,
+          "changed_columns_counts": {
+            "Z_OPT": 3,
+            "ZUPDATEDAT": 3
+          }
+        },
+        {
+          "table": "ZQUESTION",
+          "old_count": 14,
+          "current_count": 14,
+          "schema_matches": true,
+          "identical_rows": 14,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZREVIEWATTEMPT",
+          "old_count": 3,
+          "current_count": 4,
+          "schema_matches": true,
+          "identical_rows": 3,
+          "added_ids": 1,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZREVIEWSESSION",
+          "old_count": 4,
+          "current_count": 5,
+          "schema_matches": true,
+          "identical_rows": 4,
+          "added_ids": 1,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZSESSIONEVENTRECORD",
+          "old_count": 341,
+          "current_count": 341,
+          "schema_matches": true,
+          "identical_rows": 341,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZSESSIONFOLDER",
+          "old_count": 0,
+          "current_count": 0,
+          "schema_matches": true,
+          "identical_rows": 0,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZSESSIONSUMMARYRECORD",
+          "old_count": 0,
+          "current_count": 0,
+          "schema_matches": true,
+          "identical_rows": 0,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZSOURCE",
+          "old_count": 2,
+          "current_count": 2,
+          "schema_matches": true,
+          "identical_rows": 2,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZSOURCEREFERENCE",
+          "old_count": 8,
+          "current_count": 8,
+          "schema_matches": true,
+          "identical_rows": 8,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "ZTASKEVENTRECORD",
+          "old_count": 1,
+          "current_count": 1,
+          "schema_matches": true,
+          "identical_rows": 1,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "Z_METADATA",
+          "old_count": 1,
+          "current_count": 1,
+          "schema_matches": true,
+          "identical_rows": 1,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "Z_MODELCACHE",
+          "old_count": 1,
+          "current_count": 1,
+          "schema_matches": true,
+          "identical_rows": 1,
+          "removed_row_versions": 0,
+          "added_row_versions": 0
+        },
+        {
+          "table": "Z_PRIMARYKEY",
+          "old_count": 22,
+          "current_count": 22,
+          "schema_matches": true,
+          "identical_rows": 17,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 5
+        }
+      ]
+    },
+    "service": {
+      "old_integrity": "ok",
+      "current_integrity": "ok",
+      "tables": [
+        {
+          "table": "agent_capability_batches",
+          "old_count": 8,
+          "current_count": 10,
+          "schema_matches": true,
+          "identical_rows": 8,
+          "added_ids": 2,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "agent_memory_policy_v2",
+          "old_count": 6,
+          "current_count": 6,
+          "schema_matches": true,
+          "identical_rows": 6,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "agent_session_deletions",
+          "old_count": 37,
+          "current_count": 37,
+          "schema_matches": true,
+          "identical_rows": 37,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "agent_sessions_v2",
+          "old_count": 9,
+          "current_count": 9,
+          "schema_matches": true,
+          "identical_rows": 9,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "agent_voice_usage",
+          "old_count": 1,
+          "current_count": 1,
+          "schema_matches": true,
+          "identical_rows": 1,
+          "removed_row_versions": 0,
+          "added_row_versions": 0
+        },
+        {
+          "table": "harness_tasks",
+          "old_count": 5,
+          "current_count": 5,
+          "schema_matches": true,
+          "identical_rows": 5,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        }
+      ]
+    },
+    "review": {
+      "old_integrity": "ok",
+      "current_integrity": "ok",
+      "tables": [
+        {
+          "table": "review_commits",
+          "old_count": 0,
+          "current_count": 1,
+          "schema_matches": true,
+          "identical_rows": 0,
+          "added_ids": 1,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "review_deleted_sessions",
+          "old_count": 0,
+          "current_count": 0,
+          "schema_matches": true,
+          "identical_rows": 0,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "review_inputs",
+          "old_count": 0,
+          "current_count": 0,
+          "schema_matches": true,
+          "identical_rows": 0,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "review_sessions",
+          "old_count": 1,
+          "current_count": 2,
+          "schema_matches": true,
+          "identical_rows": 1,
+          "added_ids": 1,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "review_turns",
+          "old_count": 0,
+          "current_count": 0,
+          "schema_matches": true,
+          "identical_rows": 0,
+          "added_ids": 0,
+          "removed_ids": 0,
+          "changed_ids": 0
+        },
+        {
+          "table": "review_voice_usage",
+          "old_count": 2,
+          "current_count": 2,
+          "schema_matches": true,
+          "identical_rows": 2,
+          "removed_row_versions": 0,
+          "added_row_versions": 0
+        }
+      ]
+    }
+  },
+  "limits": "Counts and exact-row comparisons only; changes are not attributed or declared semantically correct.",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "app_or_service_started": false,
+  "temporary_work_copies_removed": true,
+  "retained_current_raw_copy": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-formal-copy-review-91dke51e/current-raw",
+  "column_comparison_method": "Read-only follow-up on the same fresh working copies before cleanup; counts only, no field values exported."
+}

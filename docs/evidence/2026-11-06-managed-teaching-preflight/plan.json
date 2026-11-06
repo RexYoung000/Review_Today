@@ -92,15 +92,18 @@
   "current_desktop_state": "not_checked_in_this_offline_task",
   "entry_result": "OFFLINE_PROTECTION_BLOCKED",
   "blocking_decisions": [
-    "Preserve current formal files; approve comparison on copies and a new independent baseline only after review. Do not overwrite with the October baseline.",
+    "Preserve current formal files; copy comparison has passed integrity checks and identified changes. Approve a new independent baseline only after review. Do not overwrite with the October baseline.",
     "Retain old 274 runtime and dependency missing facts; build fresh isolated dependencies from verified copies for a new batch instead of altering old evidence."
   ],
   "prerequisites": [
-    "A separate current-data protection baseline approved after inspecting differences on copies; do not open or roll back originals.",
+    "Approve a separate current-data protection baseline after reviewing the completed copy comparison; never open or roll back originals.",
     "New UUID, durable restricted runtime root, port and pending/HOLD controls; no reuse of old runtime, quota or ready markers.",
     "Rebuild or copy exact verified execution dependencies into the new runtime and pin them at their actual paths.",
     "Repackage fixed-environment full-App NativeQA clone against the new root and current source; verify code sections/resources/signature without launching.",
     "Fresh offline negative tests for SDK budget, pending startup and zero web, plus read-only entry PASS under the separately approved new baseline.",
     "Explicit new execution and 20/0 quota confirmation; inspect actual desktop state immediately before native work."
-  ]
+  ],
+  "copy_review_completed": true,
+  "copy_review_report": "data-copy-review.json",
+  "new_baseline_approved": false
 }
