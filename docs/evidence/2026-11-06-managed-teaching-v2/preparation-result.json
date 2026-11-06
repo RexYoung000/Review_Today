@@ -1,0 +1,30 @@
+{
+  "status": "OFFLINE_CANDIDATE_PREPARED_PENDING_EXECUTION",
+  "initial": {
+    "status": "PASS_NEW_BASELINE_OFFLINE",
+    "history_original_paths": 596,
+    "history_copy_paths": 157,
+    "current_source_pins": 319,
+    "current_formal_files": 7,
+    "sealed_old_missing_paths": 23,
+    "previous_277_result_kept_blocked": true,
+    "actual_model_requests": 0,
+    "actual_web_operations": 0
+  },
+  "final": {
+    "status": "PASS_NEW_BASELINE_OFFLINE",
+    "history_original_paths": 596,
+    "history_copy_paths": 157,
+    "current_source_pins": 319,
+    "current_formal_files": 7,
+    "sealed_old_missing_paths": 23,
+    "previous_277_result_kept_blocked": true,
+    "actual_model_requests": 0,
+    "actual_web_operations": 0
+  },
+  "native_code_sections_matched": 3,
+  "native_signature_and_archive_inventory_verified": true,
+  "no_app_or_service_launch": true,
+  "real_model_requests": 0,
+  "real_web_operations": 0
+}

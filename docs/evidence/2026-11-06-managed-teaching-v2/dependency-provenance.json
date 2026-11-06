@@ -1,0 +1,70 @@
+{
+  "files": {
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-managed-teaching-v2/runtime-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/native-disk-reader": {
+      "original_missing_path": "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/native-disk-reader",
+      "sha256": "39cf5be0a1c3e51b3ae967c120de7631ab86c6a9b58d565b4f1a2008c59104c0",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/runtime-final.zip",
+      "archive_sha256": "c2c1ca6c90f5473b4f3a5a45f0c23df2ff4a32725ab3f97d97fc7677686461aa",
+      "member": "native-disk-reader"
+    },
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-managed-teaching-v2/runtime-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/support/FSRS.swiftmodule": {
+      "original_missing_path": "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/FSRS.swiftmodule",
+      "sha256": "a293c3015163f01fc5acc838de5ec9fb16f86f8e632c7d77b43c21612276e0a4",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+      "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+      "member": "support/FSRS.swiftmodule"
+    },
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-managed-teaching-v2/runtime-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/support/libReviewTodayContractSupport.dylib": {
+      "original_missing_path": "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/libReviewTodayContractSupport.dylib",
+      "sha256": "5362784542dbcf82b97b0c4e68c8d17ee2905da5a914678fb9682cfe9cdba124",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+      "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+      "member": "support/libReviewTodayContractSupport.dylib"
+    },
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-managed-teaching-v2/runtime-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/support/FSRS.swiftdoc": {
+      "original_missing_path": "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/FSRS.swiftdoc",
+      "sha256": "99579deac5c853a503064a26013b03b417cf51ccbb24a4468acdde69a3ef5e8b",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+      "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+      "member": "support/FSRS.swiftdoc"
+    },
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-managed-teaching-v2/runtime-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/support/ReviewTodayContractSupport.swiftsourceinfo": {
+      "original_missing_path": "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/ReviewTodayContractSupport.swiftsourceinfo",
+      "sha256": "931e9e0ef0d4a6a5d04de04ede57929df0b31d5441d0c93ce9ed56dd941de037",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+      "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+      "member": "support/ReviewTodayContractSupport.swiftsourceinfo"
+    },
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-managed-teaching-v2/runtime-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/support/ReviewTodayContractSupport.swiftdoc": {
+      "original_missing_path": "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/ReviewTodayContractSupport.swiftdoc",
+      "sha256": "1af88b679d5ae97486551c1a26f109aca4f942f5c5e4682a2e5ab82c4d7e74a6",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+      "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+      "member": "support/ReviewTodayContractSupport.swiftdoc"
+    },
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-managed-teaching-v2/runtime-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/support/ReviewTodayContractSupport.swiftmodule": {
+      "original_missing_path": "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/ReviewTodayContractSupport.swiftmodule",
+      "sha256": "7003d166ebd2772291d443b7d763bee90a54767f539048fd8e8386f697ac4e69",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+      "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+      "member": "support/ReviewTodayContractSupport.swiftmodule"
+    },
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-managed-teaching-v2/runtime-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/support/FSRS.swiftsourceinfo": {
+      "original_missing_path": "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/FSRS.swiftsourceinfo",
+      "sha256": "ba689ba886158f7faa06099530a11d4195040566818efa7083a9b8373e2868f6",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+      "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+      "member": "support/FSRS.swiftsourceinfo"
+    },
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-managed-teaching-v2/runtime-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/support/libFSRS.dylib": {
+      "original_missing_path": "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/libFSRS.dylib",
+      "sha256": "1711e56d90121dd48fad9dd8ccac91873b0c8cf585e754e8d0a2059bbf44b244",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+      "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+      "member": "support/libFSRS.dylib"
+    }
+  },
+  "reader_linkage": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-managed-teaching-v2/runtime-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/native-disk-reader:\n\t@rpath/libReviewTodayContractSupport.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t@rpath/libFSRS.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 5027.0.69)\n\t/System/Library/Frameworks/SwiftData.framework/Versions/A/SwiftData (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/swift/libswiftAVFoundation.dylib (compatibility version 1.0.0, current version 2450.77.5, weak)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftCoreAudio.dylib (compatibility version 1.0.0, current version 482.102.10, weak)\n\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0, weak)\n\t/usr/lib/swift/libswiftCoreImage.dylib (compatibility version 1.0.0, current version 3.0.0, weak)\n\t/usr/lib/swift/libswiftCoreMIDI.dylib (compatibility version 1.0.0, current version 6.0.0, weak)\n\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1605.0.2, weak)\n\t/usr/lib/swift/libswiftGLKit.dylib (compatibility version 1.0.0, current version 1.1.0, weak)\n\t/usr/lib/swift/libswiftIOKit.dylib (compatibility version 1.0.0, current version 1.0.0, weak)\n\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 382.5.3, weak)\n\t/usr/lib/swift/libswiftModelIO.dylib (compatibility version 1.0.0, current version 1.0.0, weak)\n\t/usr/lib/swift/libswiftNaturalLanguage.dylib (compatibility version 1.0.0, current version 4.3.0, weak)\n\t/usr/lib/swift/libswiftOSLog.dylib (compatibility version 1.0.0, current version 10.0.0, weak)\n\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 973.1.0, weak)\n\t/usr/lib/swift/libswiftQuartzCore.dylib (compatibility version 1.0.0, current version 5.0.0, weak)\n\t/usr/lib/swift/libswiftSpatial.dylib (compatibility version 1.0.0, current version 1.0.0, weak)\n\t/usr/lib/swift/libswiftSpriteKit.dylib (compatibility version 1.0.0, current version 1.2.0, weak)\n\t/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib (compatibility version 1.0.0, current version 917.0.1, weak)\n\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 167.0.2, weak)\n\t/usr/lib/swift/libswift_Builtin_float.dylib (compatibility version 0.0.0, current version 0.0.0, weak)\n\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1090.0.0, weak)\n\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 25.0.0, weak)\n",
+  "original_missing_paths_restored": false,
+  "database_opened": false
+}

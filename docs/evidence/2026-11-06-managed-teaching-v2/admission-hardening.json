@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "port_checks": [
+    "listening_denied",
+    "idle_accepted",
+    "lsof_error_denied"
+  ],
+  "optimized_python_five_invalid_authorizations_denied": true,
+  "initial_fixture_noncanonical_var_path_rejected": true,
+  "real_model_requests": 0,
+  "real_web_operations": 0
+}

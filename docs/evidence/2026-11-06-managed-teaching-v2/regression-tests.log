@@ -1,0 +1,13 @@
+test_activity_artifact_fails_even_if_inventory_is_relisted (test_managed_teaching_entry_v2.ManagedEntryV2Tests.test_activity_artifact_fails_even_if_inventory_is_relisted) ... ok
+test_added_dependency_alias_and_changed_archive_fail (test_managed_teaching_entry_v2.ManagedEntryV2Tests.test_added_dependency_alias_and_changed_archive_fail) ... ok
+test_current_baseline_fingerprint_cannot_be_replaced (test_managed_teaching_entry_v2.ManagedEntryV2Tests.test_current_baseline_fingerprint_cannot_be_replaced) ... ok
+test_exact_approved_fixture_still_checks_sources_dependencies_and_claim (test_managed_teaching_entry_v2.ManagedEntryV2Tests.test_exact_approved_fixture_still_checks_sources_dependencies_and_claim) ... ok
+test_exact_held_runtime_matches_but_cannot_execute (test_managed_teaching_entry_v2.ManagedEntryV2Tests.test_exact_held_runtime_matches_but_cannot_execute) ... ok
+test_missing_changed_and_added_runtime_files_fail (test_managed_teaching_entry_v2.ManagedEntryV2Tests.test_missing_changed_and_added_runtime_files_fail) ... ok
+test_pending_limits_cannot_expand (test_managed_teaching_entry_v2.ManagedEntryV2Tests.test_pending_limits_cannot_expand) ... ok
+test_port_checks_refuse_listener_and_inspection_error (test_managed_teaching_entry_v2.ManagedEntryV2Tests.test_port_checks_refuse_listener_and_inspection_error) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.017s
+
+OK

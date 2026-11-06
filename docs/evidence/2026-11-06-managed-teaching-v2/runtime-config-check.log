@@ -1,0 +1,1 @@
+PASS: actual production AppRuntime accepts the independent TMPDIR, NativeQA identity and port; four invalid configurations rejected; no App/database/service opened.

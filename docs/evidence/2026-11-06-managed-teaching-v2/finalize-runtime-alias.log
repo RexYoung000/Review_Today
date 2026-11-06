@@ -1,0 +1,5 @@
+/private/tmp/review-today-managed-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/ManagedTeachingQA.app/Contents/MacOS/Review_Today: replacing existing signature
+/private/tmp/review-today-managed-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/ManagedTeachingQA.app/Contents/MacOS/__preview.dylib: replacing existing signature
+/private/tmp/review-today-managed-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/ManagedTeachingQA.app/Contents/MacOS/Review_Today.debug.dylib: replacing existing signature
+/private/tmp/review-today-managed-77b19fe5-850e-440e-84f6-12e4846a86f8.noindex/ManagedTeachingQA.app: replacing existing signature
+PASS: fresh tmp alias points to durable runtime; production resolver and relocated reader pass; App candidate remains archived and pending.
