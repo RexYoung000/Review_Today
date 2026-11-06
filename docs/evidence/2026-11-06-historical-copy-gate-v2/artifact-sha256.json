@@ -1,0 +1,13 @@
+{
+  "README.md": "fdb18096bef20bd436a21a53d62b02f0a002c1b0d87da75e0b95f9cf4a6806ce",
+  "archived-copies.json": "741d0af52be3b280580b066bf854f9b043b6f3b1479db5cccf24e945511e336d",
+  "entry-result.json": "0f620083f5583aaa584a9bc145c9c36b97efea778a1694adbf6d9309f2dff676",
+  "entry.py": "0dd1e39d8b038a18f603ccd0a41c637157c6b1506f233b80751162024cc0a68d",
+  "evidence_gate_v2.py": "b9e734b1677c4f29a249ae58101211f3405ddb5b8ed72f3e558bb68a6fed750e",
+  "formal-file-observation.json": "c26372d82bf47ec4cdea90bdeb5620fcd180cb7bae93c92cf11a9f6c555fa193",
+  "policy.json": "4af757e47b7f05b5050f4f3e61f4f6c7d238d67fbf98336cd4fc265ec4a57bdb",
+  "strict-recovery-candidates.json": "e9ae57c8c7b816c969cc9a67042ad4ba6305356d720b4ded56230562974efd6f",
+  "tests.log": "4cb5ae71c0f71c4400693cd887bb2fa02b802cae610c700fb774e3314ef078f8",
+  "verification.json": "bc0e5a6c1fdef0e869f82fa33c2c89e7fd9e3a425c415cec448aad56e145d7f3",
+  "../../../tests/test_historical_copy_gate_v2.py": "fabc4c16f072ec8ef9142177629de76701843b44da5288e128de04d0a1660e8f"
+}

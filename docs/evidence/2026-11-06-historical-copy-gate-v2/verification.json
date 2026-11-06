@@ -1,0 +1,67 @@
+{
+  "status": "HISTORICAL_REPAIR_PASS_FULL_ADMISSION_BLOCKED",
+  "recorded_at": "2026-11-06T12:12:52.661523+08:00",
+  "entry_exit_code": 1,
+  "required_check_groups": 30,
+  "observed_check_groups": 30,
+  "failed_check_groups": [
+    "daily_files",
+    "formal_inventory_after",
+    "formal_inventory_before",
+    "original_module_files",
+    "owned_support_files",
+    "post_exit_native_dependencies",
+    "stopped_authorization_pending",
+    "stopped_hold_and_stop",
+    "stopped_runtime"
+  ],
+  "historical_original_paths_matched": 596,
+  "historical_missing_paths_with_verified_copies": 157,
+  "unique_copy_objects": 112,
+  "copy_bytes": 56625371,
+  "copy_root_mode": "0700",
+  "all_copy_modes": "0600",
+  "all_copy_objects_reread_and_rehashed": true,
+  "strict_unique_missing_paths": 23,
+  "strict_recovery_candidates_verified": 23,
+  "changed_formal_files": 5,
+  "formal_original_database_connections": 0,
+  "formal_baseline_replaced": false,
+  "old_runtime_restored": false,
+  "original_backups_matched": 17,
+  "current_source_pins_matched": 319,
+  "runtime_links_matched": 2,
+  "old_276_frozen_artifacts_matched": 11,
+  "regression_tests_passed": 44,
+  "regression_tests_failed": 0,
+  "regression_command": "PYTHONDONTWRITEBYTECODE=1 agent-service/.venv/bin/python -B -m unittest discover -s tests -p 'test_historical_copy_gate*.py' -v",
+  "actual_model_requests": 0,
+  "actual_web_operations": 0,
+  "app_or_service_started": false,
+  "new_batch_created": false,
+  "new_allowance_activated": false,
+  "limits_proposed_only": {
+    "model": 20,
+    "web": 0
+  },
+  "known_limits": [
+    "Formal data differences observed only as bytes/stat, not business-content or SQLite-integrity verification.",
+    "Archived strict bytes are candidates only; original missing facts remain.",
+    "Original 276 gate still fails at its frozen 121-path scope; no frozen files changed.",
+    "No native UI or current lock-state check; no M1 acceptance."
+  ],
+  "independent_reviews": [
+    {
+      "agent": "rex-researcher",
+      "scope": "read-only cleanup manifest review",
+      "backend_identity": "not_returned",
+      "main_agent_verified": "counts, retained snapshot damage and one pinned ZIP member; rejected filename/size-only recovery claims"
+    },
+    {
+      "agent": "luna-worker",
+      "scope": "read-only comparison with frozen 276 gate",
+      "backend_identity": "not_returned",
+      "main_agent_verified": "required-group omission and formal symlink alias findings fixed; 44 regressions passed"
+    }
+  ]
+}

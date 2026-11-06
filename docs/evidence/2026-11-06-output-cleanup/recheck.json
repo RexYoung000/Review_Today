@@ -1,0 +1,175 @@
+{
+  "cleanup_manifest": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-output-cleanup/cleanup-manifest.json",
+  "cleanup_manifest_sha256": "80e264cb18140a2cddb4440c4e5ba99d9b7d270d4fefc752bec15ccc0a5376e1",
+  "deleted_files": 561,
+  "deleted_bytes": 7665403495,
+  "still_missing_recorded_paths": 561,
+  "retained_snapshot_damage": [
+    {
+      "snapshot": "memory-state-backup-20261014-034238",
+      "deleted_files": 32,
+      "deleted_bytes": 829716630,
+      "backups_deleted_files": 29,
+      "backups_deleted_bytes": 788854878,
+      "remaining_units": [
+        {
+          "unit": "20260906-harness-library",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-drop-snapshot-e0db316-20260926-213500",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-exam-spine-20260924-194150",
+          "recorded_deleted_files": 1,
+          "complete": false
+        },
+        {
+          "unit": "before-image-4063395-20260926-164610",
+          "recorded_deleted_files": 3,
+          "complete": false
+        },
+        {
+          "unit": "before-jpeg-drag-04c708a-20260926-184341",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-knowledge-blocks-20260925-192111",
+          "recorded_deleted_files": 1,
+          "complete": false
+        },
+        {
+          "unit": "before-knowledge-closure-20261003-233901",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-knowledge-status-continuity-20261003-235753",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-multi-image-4cde95c-20260926-182428",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-native-image-drop-477a3a6-20260926-202518",
+          "recorded_deleted_files": 3,
+          "complete": false
+        },
+        {
+          "unit": "before-product-continuation-20260926-225905",
+          "recorded_deleted_files": 3,
+          "complete": false
+        },
+        {
+          "unit": "before-source-provenance-20260930-121939",
+          "recorded_deleted_files": 1,
+          "complete": false
+        },
+        {
+          "unit": "before-teaching-alignment-20261003-091534",
+          "recorded_deleted_files": 2,
+          "complete": false
+        }
+      ]
+    },
+    {
+      "snapshot": "local-app-preflight-2026-10-22",
+      "deleted_files": 72,
+      "deleted_bytes": 928553392,
+      "backups_deleted_files": 29,
+      "backups_deleted_bytes": 788854878,
+      "remaining_units": [
+        {
+          "unit": "20260906-harness-library",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-drop-snapshot-e0db316-20260926-213500",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-exam-spine-20260924-194150",
+          "recorded_deleted_files": 1,
+          "complete": false
+        },
+        {
+          "unit": "before-image-4063395-20260926-164610",
+          "recorded_deleted_files": 3,
+          "complete": false
+        },
+        {
+          "unit": "before-jpeg-drag-04c708a-20260926-184341",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-knowledge-blocks-20260925-192111",
+          "recorded_deleted_files": 1,
+          "complete": false
+        },
+        {
+          "unit": "before-knowledge-closure-20261003-233901",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-knowledge-status-continuity-20261003-235753",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-multi-image-4cde95c-20260926-182428",
+          "recorded_deleted_files": 2,
+          "complete": false
+        },
+        {
+          "unit": "before-native-image-drop-477a3a6-20260926-202518",
+          "recorded_deleted_files": 3,
+          "complete": false
+        },
+        {
+          "unit": "before-product-continuation-20260926-225905",
+          "recorded_deleted_files": 3,
+          "complete": false
+        },
+        {
+          "unit": "before-source-provenance-20260930-121939",
+          "recorded_deleted_files": 1,
+          "complete": false
+        },
+        {
+          "unit": "before-teaching-alignment-20261003-091534",
+          "recorded_deleted_files": 2,
+          "complete": false
+        }
+      ]
+    }
+  ],
+  "all_backups_deleted_files": 184,
+  "all_backups_deleted_bytes": 5115531828,
+  "before_settings_not_listed_in_cleanup": true,
+  "restoration_performed": false,
+  "recoverability_comprehensive": false,
+  "sqlite_opened": false,
+  "verified_archived_content_for_deleted_path": [
+    {
+      "original_path": "/Users/rexyoung/Desktop/vibe coding/Review_Today/output/navigation-save-real-2026-10-22/native-recheck-events.jsonl",
+      "sha256": "81ab1851bc4505ce9bb3ac1a59ad0949e0b68e95d48275e6dfe6ff8c4465b298",
+      "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-historical-protection/evidence-objects.zip",
+      "archive_sha256": "101a88944457fd4d138adc46fddc45dc4d6273173b55b0a1be162ee3d092d679",
+      "member": "objects/81ab1851bc4505ce9bb3ac1a59ad0949e0b68e95d48275e6dfe6ff8c4465b298",
+      "bytes_rehashed": true,
+      "restored": false
+    }
+  ],
+  "candidate_warning": "Matching size or filename alone does not prove the deleted file had the same bytes. No 26-path restoration claim is made."
+}

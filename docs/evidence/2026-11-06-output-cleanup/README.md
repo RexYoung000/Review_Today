@@ -1,63 +1,41 @@
-# output/ 空间清理与 276 离线入口修复（2026-11-06，真实 0／0）
+# output/ 清理事实与更正（2026-11-06）
 
-本轮是本机维护动作，不是产品验证批次。未启动 App／服务，未打开正式数据库，新增模型请求 0、网页操作 0。
+本轮是本机维护动作，不是产品验证。未启动 App／服务，未打开正式数据库，新增真实模型／网页 0／0。此前 `c023fb7` 中本页与工作记录含有未经证实或错误的完整性结论，本页根据实际清单重新核对后更正；旧 Git 提交保留。
 
-## 清理结果
+## 删除范围与误删
 
-| 项 | 清理前 | 清理后 |
-|---|---|---|
-| `output/` 体积 | 9.5G | 2.4G |
-| `output/` 条目数 | 75 | 72 |
-| 删除文件数 | — | 561 |
-| 释放磁盘 | — | 约 7.7G |
+私有清单位于 `~/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-output-cleanup/cleanup-manifest.json`，记录 561 个被删路径，共 **7,665,403,495 字节**。此前记录 `output/` 从 9.5G 降至 2.4G，顶层条目 75→72；磁盘空间减少不表示清理正确。清单主要保存路径与大小，不能仅凭它恢复原内容。
 
-删除内容分三类：
+本轮复核证实，清理脚本没有正确排除应保留的目录，删除范围包含历史主库和回滚文件。此前把这些统称“无引用孤立文件”、把快照称作“完好”是错误的。
 
-1. **Xcode 构建产物**——`default-brand-build`、`session-tools-build`、`ingestion-build`、`management-release`、`soft-blocks-release`、`material-check/DerivedData`、`glass-preview/daily-build-check`、`local-app-preflight-2026-10-22/build`、`ingestion-tests`、`default-brand-checks`。均可由源码重新构建。
-2. **冗余历史应用数据快照**——`card-preview-backup-20261004-215447`、`card-preview-backup-20261004-222547`、`memory-backup-20261014-000742`、`steering-backup-20261013-174841`。五份同族快照的 `Backups` 清单指纹一致（`c7e02d65…`），已确认 `card-preview` 两份全树指纹一致（`8eb4e3f6…`）。
-3. **无任何证据记录引用的孤立大文件**。
+| 清单中的保留目录 | 实际被删文件 | 实际被删字节 | 其中 Backups 下被删文件 |
+|---|---:|---:|---:|
+| `memory-state-backup-20261014-034238` | 32 | 829,716,630 | 29 |
+| `local-app-preflight-2026-10-22` | 72 | 928,553,392 | 29 |
+| 合计 | **104** | **1,758,270,022** | **58** |
 
-删除文件的路径与体积、以及被删除但仍可在原证据记录中查到的哈希关系，写在本机受限目录：
+两份目录各自仍存在的 **13 个回滚点单元，全部能在清单中找到被删文件**，不能再说“其余 13 个完好”。其中若干单元仍有复习子备份或侧车文件，也不能说目录内所有内容都已消失；关键主库缺失使完整回滚不可据此保证。全 `output/` 中位于 `Backups/` 层级的删除记录共 184 个文件、5,115,531,828 字节。
 
-`~/Library/Developer/ReviewTodayEvidence.noindex/2026-11-06-output-cleanup/cleanup-manifest.json`（目录 0700／文件 0600，不提交 Git）
+`before-stream-smoothness-20260927-230724` 与 `agent-harness-before-image-compaction-20260927-215101.sqlite3` 的删除可在清单中找到；`before-settings-20260925-200417` 没有对应清单记录，不能归因于本次清理。
 
-**保留项**：276 离线入口的三件承重文件（`output/daily-service-preflight-2026-10-25/backup-pins.json`、`…/activation/`、`output/managed-teaching-preflight-2026-10-25/runtime-pins.json`）；两份快照（`memory-state-backup-20261014-034238`、`local-app-preflight-2026-10-22`）；全部仍存在的历史证据引用文件；两个 archive tag 与 4 个 codex checkpoint ref。
+逐项计数、剩余单元与清单指纹见 [recheck.json](recheck.json)。这里更正的是已核实事实，不以目录数量替代完整性核验。
 
-## 已知不可逆损失
+## 可恢复性与仍受保护的内容
 
-保留快照内有 **3 个历史回滚点被误删**：
+“所有损失都无同哈希副本、无法恢复”的旧结论撤回。已实际从既有私有 ZIP 读取并重算哈希，确认 `output/navigation-save-real-2026-10-22/native-recheck-events.jsonl` 有与旧记录一致的内容；具体归档、成员与哈希见 `recheck.json`。本轮未写回该路径。其他同名／同大小候选只能作为追查线索，不能直接算作已确认恢复。
 
-- `Backups/before-settings-20260925-200417/`
-- `Backups/before-stream-smoothness-20260927-230724/`
-- `Backups/agent-harness-before-image-compaction-20260927-215101.sqlite3`
+历史快照主库是否还有完整可用副本尚未全面核实；当前没有完整恢复承诺。此前关于 Time Machine／APFS 快照的全局结论本轮未复验，不能据此断言永久不可恢复。原文中的两个“重复快照指纹”缺少可复验生成记录，不再作为删除合理性的依据。
 
-单份约 19–46MB。本机无 Time Machine、无 APFS 本地快照，私有归档中无同哈希副本，**无法恢复**。成因是清理脚本的"孤立大文件"规则未正确排除保留目录。其余 13 个回滚点、正式数据（`~/Library/Application Support/Review Today/`）与 17 份原备份均完好，17 份原备份逐份哈希复验通过。
+17 份专门固定的原始备份在本轮重新逐份读取，SHA-256 **17／17 匹配**；它们与上面被破坏的历史快照是不同集合。`backup-pins.json`、旧 `activation/` 和 `runtime-pins.json` 仍在。两个 archive tag 与四个 Codex checkpoint refs 保留；没有证据支持“删除 refs 一定能释放空间”或“其中某 ref 是唯一副本”的绝对判断。
 
-## 276 离线入口修复
+## 项目搬迁与工程文件
 
-项目目录从 `~/Desktop/vibe coding/Review_Today` 迁移到 `~/Desktop/vibe coding/项目导航/01 个人产品/Review_Today` 后，276 入口无法运行。两处原因，均与本次清理无关，属搬迁后的既存失效：
+旧根 `/Users/rexyoung/Desktop/vibe coding/Review_Today` 的本机符号链接指向当前仓库，使旧绝对路径记录可解析。276 原策略含五个锚点与九个严格元数据记录，不能混称“七个锚点”。本轮入口同时验证旧根确实解析到当前仓库。
 
-1. **326 条旧根绝对路径失效**——`policy.json`、274／273 `setup.json`、`archives.json` 内的绝对路径仍指向旧根。处置：在旧根建立指向新根的符号链接，使 7 条策略锚点恢复可解析。该链接是本机安排，不提交 Git；移除链接即恢复原状。
-2. **工程文件 pin 不符**——`project.pbxproj` 当前为提交版本 `854c6eac…`，而 274 pin 记录的是 2026-10-25 工作区版本 `ab9f204e…`，且当时的 `git diff` 非空。该版本在 2026-11-01 切回 `main` 时已不在工作区。
+从 checkpoint 找回的 `Review_Today.xcodeproj/project.pbxproj` 当前文件哈希为 `ab9f204e3bd83a413ba1f9ff684e9359f187ee3188cd3ebca807b4966fb48cca`，未提交 diff 哈希为 `8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502`，分别与 274 固定值匹配。**保持该既有未提交改动，不纳入本次提交。** 本轮只证明字节与 diff 匹配，没有重新构建或证明与 HEAD 版本功能等价；此前“仅排版不同”说法撤回。
 
-处置：从 Codex checkpoint `refs/codex/turn-diffs/checkpoints/a8ed3087b…/95b2ff3d…/1792990543350/df5662f8…` 取回 2026-10-25 版本并写入工作区。校验结果：
+## 离线入口的真实状态
 
-- 文件 `sha256` = `ab9f204e3bd83a413ba1f9ff684e9359f187ee3188cd3ebca807b4966fb48cca`，与 274 `source-pins.json` 完全一致
-- `git diff -- Review_Today.xcodeproj/project.pbxproj` 的 `sha256` = `8b31e8d2938a6ff21062e1a8be6de940784ea729763136d4b54573fa52c63502`，与 274 `user_project_diff_sha256` 完全一致
-- 两版**功能等价**：均声明 `XCLocalSwiftPackageReference` 指向 `Vendor/SwiftFSRS`、FSRS 产品依赖并链接进 Frameworks，差异仅为 Xcode 排版风格
+276 在新增历史路径缺失处提前失败，故此前不能据该运行宣称后续正式数据、模块和运行目录检查通过。新增 36 条历史缺失的原因没有充分证据，撤回“macOS 清理导致”的归因。
 
-**该文件保持未提交状态**——276 入口同时校验文件哈希与 `git diff` 哈希，提交或清理该改动都会使入口再次失效。
-
-4 个 codex checkpoint ref **不予删除**：它们指向的 tree 中独占 blob 为 0 字节（内容已在对象库），删除不释放任何空间，且其中一份是上述工程文件版本的唯一副本；Codex 仍在本机活跃使用该仓库。
-
-## 当前阻塞
-
-macOS 清理 `/tmp` 后，276 基线中另有 **36 条历史证据路径缺失**，超出已批准的 121 条例外范围，入口停在：
-
-```
-Unapproved historical original missing: /private/tmp/review-today-fullflow-i9njdmrd.noindex/quota.json
-```
-
-36 条分布在 `review-today-fullflow-i9njdmrd`、`review-today-fresh-fullflow-c3g9rc3e`、`review-today-teaching-scope-fullflow-3pzbuq_i` 三个旧运行目录。**全部 36 条在私有归档中有同哈希副本**，与 276 的处理方式一致可机械执行；按 276 规则须经 Rex 确认后才扩展例外范围。
-
-入口当前进度：策略锚点 7／7、当前源码与配置 pin 319／319、用户工程差异、正式七文件与依赖均通过；停在上述 36 条新增缺失。
+后续 [277 完整诊断](../2026-11-06-historical-copy-gate-v2/README.md) 分别检查了全部组：历史部分 596 原件＋157 持久副本通过，但正式七文件中五份不同于旧基线；模块／执行依赖及旧运行目录共 23 个唯一路径缺失。两个依赖链接仍匹配，旧运行文件缺失不能改成用“当前端口空闲”代验。当前数据保持原样、未回滚；完整入场继续阻塞。旧批次额度不恢复，托管首启与教学体验未在本轮执行。

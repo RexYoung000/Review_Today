@@ -1,0 +1,249 @@
+{
+  "strict_missing_paths": 23,
+  "unique_missing_hashes": 17,
+  "found_unique_hashes": 17,
+  "found_paths": 23,
+  "mapping": {
+    "/tmp/review-today-shared-contracts.xlgn66_8/FSRS.swiftmodule": {
+      "sha256": "a293c3015163f01fc5acc838de5ec9fb16f86f8e632c7d77b43c21612276e0a4",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/FSRS.swiftmodule"
+      }
+    },
+    "/tmp/review-today-shared-contracts.xlgn66_8/libReviewTodayContractSupport.dylib": {
+      "sha256": "6143fa3189a915f17212d0816adbd04e5365565c70f26e33facf90199cde0284",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-title-fallback/component-evidence.zip",
+        "archive_sha256": "d054ce2383789062be7794cb1b7a1b2f00124945ed1a4fef8e4b373049a825c3",
+        "member": "support/libReviewTodayContractSupport.dylib"
+      }
+    },
+    "/tmp/review-today-shared-contracts.xlgn66_8/FSRS.swiftdoc": {
+      "sha256": "99579deac5c853a503064a26013b03b417cf51ccbb24a4468acdde69a3ef5e8b",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/FSRS.swiftdoc"
+      }
+    },
+    "/tmp/review-today-shared-contracts.xlgn66_8/ReviewTodayContractSupport.swiftsourceinfo": {
+      "sha256": "931e9e0ef0d4a6a5d04de04ede57929df0b31d5441d0c93ce9ed56dd941de037",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/ReviewTodayContractSupport.swiftsourceinfo"
+      }
+    },
+    "/tmp/review-today-shared-contracts.xlgn66_8/ReviewTodayContractSupport.swiftdoc": {
+      "sha256": "1af88b679d5ae97486551c1a26f109aca4f942f5c5e4682a2e5ab82c4d7e74a6",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/ReviewTodayContractSupport.swiftdoc"
+      }
+    },
+    "/tmp/review-today-shared-contracts.xlgn66_8/ReviewTodayContractSupport.swiftmodule": {
+      "sha256": "7003d166ebd2772291d443b7d763bee90a54767f539048fd8e8386f697ac4e69",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/ReviewTodayContractSupport.swiftmodule"
+      }
+    },
+    "/tmp/review-today-shared-contracts.xlgn66_8/FSRS.swiftsourceinfo": {
+      "sha256": "ba689ba886158f7faa06099530a11d4195040566818efa7083a9b8373e2868f6",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/FSRS.swiftsourceinfo"
+      }
+    },
+    "/tmp/review-today-shared-contracts.xlgn66_8/libFSRS.dylib": {
+      "sha256": "8b0f795051da3380eb8319a8a187369ae09afb5f102b715c812b6a1fb12944bf",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-title-fallback/component-evidence.zip",
+        "archive_sha256": "d054ce2383789062be7794cb1b7a1b2f00124945ed1a4fef8e4b373049a825c3",
+        "member": "support/libFSRS.dylib"
+      }
+    },
+    "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/FSRS.swiftmodule": {
+      "sha256": "a293c3015163f01fc5acc838de5ec9fb16f86f8e632c7d77b43c21612276e0a4",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/FSRS.swiftmodule"
+      }
+    },
+    "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/libReviewTodayContractSupport.dylib": {
+      "sha256": "5362784542dbcf82b97b0c4e68c8d17ee2905da5a914678fb9682cfe9cdba124",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/libReviewTodayContractSupport.dylib"
+      }
+    },
+    "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/FSRS.swiftdoc": {
+      "sha256": "99579deac5c853a503064a26013b03b417cf51ccbb24a4468acdde69a3ef5e8b",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/FSRS.swiftdoc"
+      }
+    },
+    "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/ReviewTodayContractSupport.swiftsourceinfo": {
+      "sha256": "931e9e0ef0d4a6a5d04de04ede57929df0b31d5441d0c93ce9ed56dd941de037",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/ReviewTodayContractSupport.swiftsourceinfo"
+      }
+    },
+    "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/ReviewTodayContractSupport.swiftdoc": {
+      "sha256": "1af88b679d5ae97486551c1a26f109aca4f942f5c5e4682a2e5ab82c4d7e74a6",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/ReviewTodayContractSupport.swiftdoc"
+      }
+    },
+    "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/ReviewTodayContractSupport.swiftmodule": {
+      "sha256": "7003d166ebd2772291d443b7d763bee90a54767f539048fd8e8386f697ac4e69",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/ReviewTodayContractSupport.swiftmodule"
+      }
+    },
+    "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/FSRS.swiftsourceinfo": {
+      "sha256": "ba689ba886158f7faa06099530a11d4195040566818efa7083a9b8373e2868f6",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/FSRS.swiftsourceinfo"
+      }
+    },
+    "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/support/libFSRS.dylib": {
+      "sha256": "1711e56d90121dd48fad9dd8ccac91873b0c8cf585e754e8d0a2059bbf44b244",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "support/libFSRS.dylib"
+      }
+    },
+    "/private/tmp/review-today-teaching-scope-fullflow-3pzbuq_i.noindex/native-disk-reader": {
+      "sha256": "39cf5be0a1c3e51b3ae967c120de7631ab86c6a9b58d565b4f1a2008c59104c0",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/runtime-final.zip",
+        "archive_sha256": "c2c1ca6c90f5473b4f3a5a45f0c23df2ff4a32725ab3f97d97fc7677686461aa",
+        "member": "native-disk-reader"
+      }
+    },
+    "/private/tmp/review-today-managed-teaching-pzs53slb.noindex/authorization.json": {
+      "sha256": "23bef594a9607bc20665944e63d40aff009159501bd0202591897b8d9b26ec01",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/prepared-runtime.zip",
+        "archive_sha256": "ded91ef8a959a9bee71f2a7a26c1f9cbbfad5230f41f2d4c81f1458e32390f6f",
+        "member": "authorization.json"
+      }
+    },
+    "/private/tmp/review-today-managed-teaching-pzs53slb.noindex/HOLD": {
+      "sha256": "6f9d6f2a300867a18119d1ba224f2b881338d96ffe1849f2f30fe27d31e78df8",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/prepared-runtime-initial-partial.zip",
+        "archive_sha256": "28dae5e3e7dd43c54716d173bbf837b27b9c8237712121cd9b030940b34ac89d",
+        "member": "HOLD"
+      }
+    },
+    "/private/tmp/review-today-managed-teaching-pzs53slb.noindex/owned-project/agent-service/sitecustomize.py": {
+      "sha256": "bfc9ddf8a99a08f9acfeeaedb45fa312c27bcfa24b1c9b8755c532cbb528855e",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/prepared-runtime-initial-partial.zip",
+        "archive_sha256": "28dae5e3e7dd43c54716d173bbf837b27b9c8237712121cd9b030940b34ac89d",
+        "member": "owned-project/agent-service/sitecustomize.py"
+      }
+    },
+    "/private/tmp/review-today-managed-teaching-pzs53slb.noindex/owned-project/agent-service/__pycache__/sitecustomize.cpython-313.pyc": {
+      "sha256": "700eeae60ca97efde15da30757cbd44e634689d154db42283c2ea72677527e9d",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/prepared-runtime-initial-partial.zip",
+        "archive_sha256": "28dae5e3e7dd43c54716d173bbf837b27b9c8237712121cd9b030940b34ac89d",
+        "member": "owned-project/agent-service/__pycache__/sitecustomize.cpython-313.pyc"
+      }
+    },
+    "/private/tmp/review-today-managed-teaching-pzs53slb.noindex/owned-project/agent-service/.venv/pyvenv.cfg": {
+      "sha256": "5f1aa23547465ad4a80ddbcabafc7f09fd6ecea621082ec15afcb591b9642d3a",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+        "archive_sha256": "155bb34aa943dcedd065e74499a8bae7dfc7e49333011b5fd374a4d0950c08ca",
+        "member": "owned-project/agent-service/.venv/pyvenv.cfg"
+      }
+    },
+    "/private/tmp/review-today-managed-teaching-pzs53slb.noindex/STOP": {
+      "sha256": "1b3202e0425d610dc8fadd3ad422264fdf78cb8371a18b17fcc06c549ae79293",
+      "candidate": {
+        "archive": "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/verified-byte-copies.zip",
+        "archive_sha256": "527e79d94b75d87bc4e543760602b41e399879f09a38fe54e0f8e12601754806",
+        "member": "stopped-controls/STOP"
+      }
+    }
+  },
+  "archives_stream_read": [
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-daily-data-recovery/verified-staged-support.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/FreshFullflowQA.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/admission-stop-evidence.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/captures/admission-stopped.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/captures/prepared.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/preparation-evidence.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-fresh-fullflow/runtime-held.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-historical-protection/evidence-objects.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-23-title-fallback/component-evidence.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/FreshFullflowQA.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/captures/lesson-failed.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/captures/post-exit.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/captures/prepared.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/captures/startup.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/execution-stopped.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-fresh-fullflow/runtime-held.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/FreshFullflowQA.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/after-quit.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/complete-answer.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/details-and-status.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/independent-question.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/lesson.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/native-save.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/partial-answer.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/prepared.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/return-to-rag.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/same-topic-update.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/captures/startup.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/daily-closed-observation.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/execution-observations.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/execution-ui.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/public-records-final.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/runtime-final.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-24-teaching-scope-fullflow/runtime-held.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/actual-public-records.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/actual-runtime.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/prepared-backup.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/prepared-public-records.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/rehearsal-1-runtime.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/rehearsal-2-runtime.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-daily-service/rehearsal-3-runtime.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/ManagedTeachingQA.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/before-cua-launch-adaptation/ManagedTeachingQA.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/failed-cua-signature.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/initial-preparation-attempt/ManagedTeachingQA.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/prepared-public-records.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/prepared-runtime-initial-partial.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-25-managed-teaching/prepared-runtime.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-historical-copy-gate/implementation-and-records.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/public-records.zip",
+    "/Users/rexyoung/Library/Developer/ReviewTodayEvidence.noindex/2026-10-26-managed-teaching-entry/verified-byte-copies.zip"
+  ],
+  "errors": [],
+  "original_paths_restored": false,
+  "substitute_for_strict_check": false,
+  "sqlite_opened": false
+}

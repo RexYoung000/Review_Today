@@ -1,0 +1,67 @@
+{
+  "status": "OBSERVATION_ONLY_NOT_A_NEW_BASELINE",
+  "observed_at": "2026-11-06T12:11:23.827783+08:00",
+  "originals_opened_as_databases": false,
+  "read_method": "read-only bytes for SHA-256 and stat metadata",
+  "files": [
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.sqlite3",
+      "expected_sha256": "e7d1c3c2479e2f918da190df54c5541fae198afa0cd0aeba55705e87e786e2aa",
+      "observed_sha256": "6b6b3cf0aa21a0f4e857dad37f2e65694269a556e5af07d43925d00c007b3455",
+      "matches_old_baseline": false,
+      "bytes": 19374080,
+      "mtime": "2026-11-02T14:36:19.551745"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/agent-harness.review.sqlite3",
+      "expected_sha256": "42230939198caa67493b353bd139d7c5134bc606dd971dcec00fe406882e5716",
+      "observed_sha256": "0f4644947dd4f683f30f15a156ba640653f949b13aaf373c826e6c7b62790d7d",
+      "matches_old_baseline": false,
+      "bytes": 49152,
+      "mtime": "2026-10-28T10:10:31.098392"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-shm",
+      "expected_sha256": "05313aa02bdd045333f8d6502a86a677ee29ce88fd4f1d1554e3037c4bdbaca7",
+      "observed_sha256": "da6c426a4bc7ecb6f60bd058ef159d36b1a2e06f2b6a3e3f6eb8a323586c64cf",
+      "matches_old_baseline": false,
+      "bytes": 32768,
+      "mtime": "2026-11-02T14:36:09.587621"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store-wal",
+      "expected_sha256": "382b68616be7bdfe84348b39b1c616d29daa799b034f352956f09cf947e6f1cb",
+      "observed_sha256": "b6447d5e598945fcc016000323acadeac5d4c6516e128e33f6d329b4df2830ee",
+      "matches_old_baseline": false,
+      "bytes": 3765712,
+      "mtime": "2026-11-02T22:20:42.545500"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store",
+      "expected_sha256": "aa0fec6995c8196bbba8894ac9bfd40ff6ff247661f1d96c6d198b15ed3254c9",
+      "observed_sha256": "7fa9dfbbab53ed49d86550a6df57a98b89588b7255ae0ec6753c63d737c86899",
+      "matches_old_baseline": false,
+      "bytes": 191901696,
+      "mtime": "2026-11-02T22:19:09.548858"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewToday.store.review-v2-backup",
+      "expected_sha256": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+      "observed_sha256": "d6b78862935b828c5119dbc5959df3b6089438ce04a54ac7433ed8aaa528fc33",
+      "matches_old_baseline": true,
+      "bytes": 137,
+      "mtime": "2026-10-23T11:17:00.008421"
+    },
+    {
+      "path": "/Users/rexyoung/Library/Application Support/Review Today/Data/ReviewBackups/before-review-v2-698B285B-E632-47E9-8F23-55697CABE5FA.sqlite3",
+      "expected_sha256": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1",
+      "observed_sha256": "348fe581a3221627e54f26c7d3f04694de667785098068ca10e8ef3e8c7ebff1",
+      "matches_old_baseline": true,
+      "bytes": 38240256,
+      "mtime": "2026-10-23T11:17:00.094803"
+    }
+  ],
+  "cause": "unattributed",
+  "content_integrity_not_checked": true,
+  "originals_written": false
+}
