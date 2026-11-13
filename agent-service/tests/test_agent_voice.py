@@ -66,14 +66,16 @@ class FakeClient:
 
 
 class AgentVoiceContracts(unittest.IsolatedAsyncioTestCase):
+    model = v.DASHSCOPE_MODEL
+
     async def asyncSetUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.store = ConversationStore(HarnessStore(self.tmp.name + '/voice.sqlite3'))
         self.owner = str(uuid4())
         self.client, self.provider = FakeClient(), FakeProvider()
-        self.bridge = v.AudioBridge(self.client, self.provider, v.OwnerFence(self.store, self.owner))
+        self.bridge = v.AudioBridge(self.client, self.provider, v.OwnerFence(self.store, self.owner), self.model)
         self.running = asyncio.create_task(self.bridge.run())
-        self.assertEqual((await self.client.receive())['type'], 'ready')
+        self.assertEqual(await self.client.receive(), dict(type='ready', model=self.model))
 
     async def asyncTearDown(self):
         self.running.cancel()
@@ -267,6 +269,49 @@ class AgentVoiceContracts(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(json.loads(row[-1]), {'input_tokens': 4, 'total_tokens': 5})
         self.assertNotIn(self.owner, repr(row))
         self.assertIsNone(self.store.get(self.owner))
+
+
+class OpenAIAgentVoiceContracts(AgentVoiceContracts):
+    model = v.OPENAI_MODEL
+
+    async def finish_response(self, rid, text):
+        await self.provider.event('response.output_audio.delta', response_id=rid, delta=PCM)
+        await self.provider.event('response.output_audio_transcript.delta', response_id=rid, delta=text)
+        await self.provider.event('response.done', response={'id': rid, 'status': 'completed'})
+
+    async def test_manual_input_and_each_readout_uses_only_authorized_text(self):
+        settings = (await self.provider.command('session.update'))['session']
+        self.assertEqual(settings['audio']['input'], {
+            'format': {'type': 'audio/pcm', 'rate': 24000},
+            'turn_detection': None, 'transcription': {'model': v.OPENAI_TRANSCRIPTION_MODEL},
+        })
+        await self.client.send('audio', audio=PCM)
+        chunk = await self.provider.command('input_audio_buffer.append')
+        self.assertEqual(len(base64.b64decode(chunk['audio'])), 480)
+        await self.client.send('commit_audio', utterance_id=str(uuid4()), generation=1)
+        padding = await self.provider.command('input_audio_buffer.append')
+        self.assertEqual(len(base64.b64decode(padding['audio'])), 4320)
+        await self.provider.command('input_audio_buffer.commit')
+        await self.client.send('speak', text='只读这句。', speech_id=str(uuid4()))
+        request = (await self.provider.command('response.create'))['response']
+        self.assertEqual(request['conversation'], 'none')
+        self.assertEqual(len(request['input']), 1)
+        self.assertTrue(request['input'][0]['content'][0]['text'].endswith('"只读这句。"'))
+
+    async def test_cancel_racing_with_completion_keeps_socket_open(self):
+        await self.speak('旧句。')
+        await self.provider.event('response.created', response={'id': 'old'})
+        await self.client.send('interrupt')
+        cancel = await self.provider.command('response.cancel')
+        self.assertEqual(cancel['response_id'], 'old')
+        await self.finish_response('old', '旧句。')
+        await self.provider.event('error', error={
+            'event_id': cancel['event_id'], 'code': 'response_cancel_not_active',
+        })
+        fresh = await self.speak('下一句。')
+        await self.provider.event('response.created', response={'id': 'fresh'})
+        await self.finish_response('fresh', '下一句。')
+        self.assertEqual((await self.client.receive())['speech_id'], fresh)
 
 
 class AgentVoiceRouteContracts(unittest.TestCase):

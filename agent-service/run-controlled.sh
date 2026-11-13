@@ -4,6 +4,8 @@ cd "$(dirname "$0")"
 test_dir="$(mktemp -d /tmp/review-today-python-tests.XXXXXX)"
 export REVIEW_TODAY_HARNESS_DB="$test_dir/checkpoints.sqlite3"
 export OPENAI_API_KEY=''
+export REVIEW_TODAY_AGENT_VOICE_PROVIDER='dashscope'
+export REVIEW_TODAY_AGENT_VOICE_OPENAI_API_KEY=''
 export DEEPSEEK_API_KEY=''
 export DEEPSEEK_WEB_API_KEY=''
 export TYPESAFE_API_KEY=''

@@ -15,3 +15,9 @@
 Mac 连续送入 PCM16/16k 单声道音频；本机检测停顿、提交原始转写，文字模型按题目绑定标准评价。播放为 PCM24k，服务核对播报文本与本机授权文本一致才释放暂存音频；改写、擅自回答问题或增加保存声明时拦截，仍可用文字继续。暂停、关闭、结束清理临时音频，不生成复习录音文件。
 
 真实付费烟测：`uv run python -m tests.review_voice_live <新的结果文件.json>`（使用 macOS 合成音频，不开启麦克风），文字评价：`uv run python -m tests.review_text_live <新的结果文件.json>`。两者各用临时数据库。原生入口见 `tests/mac/run-review-native.sh`，须先按测试文件启动独立的 review-only 服务。实际结果与局限见 `docs/evidence/2026-09-23-review-voice/README.md`。
+
+## Agent 语音对话
+
+在 `agent-service/.env` 设置 `REVIEW_TODAY_AGENT_VOICE_PROVIDER=openai` 和 `REVIEW_TODAY_AGENT_VOICE_OPENAI_API_KEY`，然后重启 App 托管的本机服务。密钥只发送至 OpenAI 官方 Realtime 地址。该模式用 `gpt-realtime-2.1` 逐句播报，用 `gpt-transcribe` 转写本机提交的语音，保留输入框听写、复习语音和文字 Agent 各自的配置。
+
+本机 WebSocket 仍收 PCM16／16 kHz 并返回 PCM16／24 kHz。服务为 OpenAI 转换输入到 24 kHz，播报仅使用当前授权句。未配置时仍沿用 `dashscope`。显式切换到 OpenAI 后，连接失败由 App 提示并提供文字入口。将供应商设回 `dashscope` 并重启可恢复原语音通道。

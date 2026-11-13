@@ -673,6 +673,7 @@ async def live(args, manifest):
                 os.environ['REVIEW_TODAY_HARNESS_DB'] = str(Path(scratch) / 'harness.sqlite3')
                 os.environ['REVIEW_TODAY_REVIEW_DB'] = str(Path(scratch) / 'review.sqlite3')
                 os.environ['REVIEW_TODAY_JEV_TEST'] = '0'
+                os.environ['REVIEW_TODAY_AGENT_VOICE_PROVIDER'] = 'dashscope'
                 import uvicorn
                 from fastapi import FastAPI
                 from agent_service import agent_voice as voice

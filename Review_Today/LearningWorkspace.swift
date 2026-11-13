@@ -776,7 +776,7 @@ struct LearningWorkspace: View {
                 .help("录音发送至阿里云百炼北京地域识别，结束后回填草稿；最长 5 分钟")
             ChromeIconButton(title: "开始语音对话", symbol: "waveform") { startVoice() }
                 .disabled(imageImports.isLoading || dictation.pending || voice.unsentText != nil)
-                .help("连续语音对话：说完后自动发送，Agent 用语音回复；音频交给现有阿里云百炼北京地域服务处理")
+                .help("连续语音对话：说完后自动发送，Agent 用语音回复；音频发送至配置的云端语音服务")
             if dictation.pending {
                 Button("重试听写", action: retryDictation).buttonStyle(.borderless)
                 Button("丢弃录音", action: cancelDictation).buttonStyle(.borderless)
